@@ -5,7 +5,7 @@ import metas from "lume/plugins/metas.ts";
 import Shiki from "@shikijs/markdown-it";
 
 const site = lume({
-  location: new URL("https://kawafuji.dev"),
+  location: new URL("https://frenchvandal.github.io"),
 }, {
   markdown: {
     plugins: [

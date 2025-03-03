@@ -6,7 +6,7 @@ export default function GlobalLayout(
   { children, comp, url, stylesheet, title }: GlobalLayoutData & Lume.Data,
 ) {
   if (url !== "/") {
-    title += " | Masashi Kawafuji";
+    title += " | 李北洛 Philippe";
   }
 
   return (

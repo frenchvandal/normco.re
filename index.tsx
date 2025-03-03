@@ -1,6 +1,6 @@
 import { compareDesc } from "date-fns";
 
-export const title = "Masashi Kawafuji";
+export const title = "李北洛 Philippe";
 
 export const stylesheet = "/styles/index.css";
 
@@ -16,7 +16,7 @@ export default function Home({ comp, search }: Lume.Data) {
           <h1 class="p-jumbotron__title">
             Welcome to
             <br />
-            Masashi Kawafuji&apos;s Blog
+            李北洛 Philippe&apos;s Blog
           </h1>
           <p class="p-jumbotron__description">
             This is my personal blog where I mainly write about web development.

@@ -4,7 +4,7 @@ export default function GlobalHeader() {
       <div class="l-container">
         <div class="l-globalHeader__inner">
           <a href="/" class="l-globalHeader__branding">
-            Masashi Kawafuji
+            李北洛 Philippe
           </a>
         </div>
       </div>
