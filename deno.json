@@ -1,9 +1,8 @@
 {
   "imports": {
     "lume/": "https://deno.land/x/lume@v2.5.1/",
-    "preact": "npm:preact@10.25.4",
     "date-fns": "npm:date-fns@4.1.0",
-    "@shikijs/markdown-it": "npm:@shikijs/markdown-it@2.3.2"
+    "highlight.js": "npm:highlight.js@11.11.1"
   },
   "tasks": {
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
@@ -11,8 +10,6 @@
     "serve": "deno task lume -s"
   },
   "compilerOptions": {
-    "jsx": "precompile",
-    "jsxImportSource": "preact",
     "types": [
       "lume/types.ts"
     ]
