@@ -1,10 +1,15 @@
-// blog/_data.ts
-export const layout = "layouts/BlogLayout.ts";  // Note the .ts extension now
+import { MetaData } from './types.ts';
 
-export const tags = ["post"];
+// Définition du layout à utiliser
+export const layout = 'layouts/BlogLayout.ts';
 
-export const stylesheet = "/styles/blog/index.css";
+// Définition des tags par défaut pour les pages
+export const tags = ['post'];
 
-export const metas: Lume.Data["metas"] = {
-  title: (data) => data.title + " | 李北洛 Philippe",
+// Feuille de style par défaut
+export const stylesheet = '/styles/blog/index.css';
+
+// Métadonnées par défaut
+export const metas: MetaData = {
+  title: (data) => `${data.title} | 李北洛 Philippe`,
 };

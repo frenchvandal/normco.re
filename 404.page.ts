@@ -1,8 +1,10 @@
-export const title = "Page Not Found";
-export const stylesheet = "/styles/404/index.css";
-export const layout = "layouts/GlobalLayout.ts"; // Add this line
-export const metas: Lume.Data["metas"] = {
-  title: (data) => data.title + " | 李北洛 Philippe",
+import { MetaData } from './types.ts';
+
+export const title = 'Page Not Found';
+export const stylesheet = '/styles/404/index.css';
+export const layout = 'layouts/GlobalLayout.ts'; 
+export const metas: MetaData = {
+  title: (data) => `${data.title} | 李北洛 Philippe`,
 };
 
 export default () => {
