@@ -1,4 +1,4 @@
-export const layout = "layouts/BlogLayout.ts";
+export const layout = "@layouts/BlogLayout.ts";
 
 export const tags = ["post"];
 
