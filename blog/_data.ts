@@ -1,4 +1,5 @@
-export const layout = "layouts/BlogLayout.tsx";
+// blog/_data.ts
+export const layout = "layouts/BlogLayout.ts";  // Note the .ts extension now
 
 export const tags = ["post"];
 

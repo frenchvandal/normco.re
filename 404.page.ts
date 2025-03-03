@@ -1,13 +1,11 @@
 export const title = "Page Not Found";
-
 export const stylesheet = "/styles/404/index.css";
-
 export const metas: Lume.Data["metas"] = {
   title: (data) => data.title + " | 李北洛 Philippe",
 };
 
-export default function NotFound() {
-  return (
+export default (data: Lume.Data, helpers: Lume.Helpers) => {
+  return `
     <main>
       <div class="l-container">
         <section class="p-errorContent">
@@ -18,5 +16,5 @@ export default function NotFound() {
         </section>
       </div>
     </main>
-  );
-}
+  `;
+};
