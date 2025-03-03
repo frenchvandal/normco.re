@@ -13,6 +13,7 @@ import langXML from "npm:highlight.js@11.11.1/lib/languages/xml"; // This can ha
 // Configuration du site
 const site = lume({
   location: new URL("https://frenchvandal.github.io/normco.re"),
+  base: "/normco.re/", // Add the base path for GitHub Pages project site
 });
 
 // Plugins
