@@ -3,11 +3,12 @@ import sass from "lume/plugins/sass.ts";
 import metas from "lume/plugins/metas.ts";
 import codeHighlight from "lume/plugins/code_highlight.ts";
 
-// Import des langages supplémentaires pour highlight.js
-import langTypeScript from "npm:highlight.js/lib/languages/typescript";
-import langJavaScript from "npm:highlight.js/lib/languages/javascript";
-import langBash from "npm:highlight.js/lib/languages/bash";
-import langTsx from "npm:highlight.js/lib/languages/tsx";
+// Import languages from the correct path that works with Deno
+// Note: We're not importing TSX since it appears to be causing issues
+import langTypeScript from "npm:highlight.js@11.11.1/lib/languages/typescript";
+import langJavaScript from "npm:highlight.js@11.11.1/lib/languages/javascript";
+import langBash from "npm:highlight.js@11.11.1/lib/languages/bash";
+import langXML from "npm:highlight.js@11.11.1/lib/languages/xml"; // This can handle JSX/TSX markup
 
 // Configuration du site
 const site = lume({
@@ -27,8 +28,8 @@ site.use(codeHighlight({
   languages: {
     typescript: langTypeScript,
     javascript: langJavaScript,
-    tsx: langTsx,
     bash: langBash,
+    xml: langXML, // This will handle HTML/XML and parts of JSX/TSX
   },
   
   // Thème de coloration
