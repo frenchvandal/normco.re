@@ -3,28 +3,35 @@ export const title = "李北洛 Philippe";
 export const stylesheet = "/styles/index.css";
 export const layout = "layouts/GlobalLayout.ts";
 
-export default (data: Lume.Data, helpers: Lume.Helpers) => {
+export default (data: Lume.Data) => {  // Remove unused helpers parameter
   const { search } = data;
-  // Filter out the homepage from the search results
-  const posts = search.pages("post").filter((post: any) => post.url !== "/");
   
-  // Use native JavaScript for sorting by date in descending order
-  posts.sort((a: any, b: any) => b.date.getTime() - a.date.getTime());
+  // Don't explicitly type the parameters - let TypeScript infer them
+  const posts = search.pages("post").filter(post => post.url !== "/");
   
-  const postItems = posts.map((post: any) => {
-    const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
+  // Add safety checks for date comparison
+  posts.sort((a, b) => {
+    const dateA = a.date instanceof Date ? a.date.getTime() : 0;
+    const dateB = b.date instanceof Date ? b.date.getTime() : 0;
+    return dateB - dateA;
+  });
+  
+  const postItems = posts.map(post => {
+    // Handle potential undefined date values
+    const date = post.date instanceof Date ? post.date : new Date(post.date || "");
+    const formattedDate = date.toLocaleDateString('en-US', {
       year: 'numeric', month: 'long', day: 'numeric'
     });
     
     return `
       <article class="p-teasers__item">
         <h2 class="p-teasers__title">
-          <a href="${post.url}" class="p-teasers__link">
-            ${post.title}
+          <a href="${post.url || '#'}" class="p-teasers__link">
+            ${post.title || 'Untitled'}
           </a>
         </h2>
         <p class="p-teasers__date">
-          <time datetime="${post.date.toISOString().split('T')[0]}">${formattedDate}</time>
+          <time datetime="${date.toISOString().split('T')[0]}">${formattedDate}</time>
         </p>
       </article>
     `;

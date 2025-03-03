@@ -5,7 +5,7 @@ export const metas: Lume.Data["metas"] = {
   title: (data) => data.title + " | 李北洛 Philippe",
 };
 
-export default (data: Lume.Data, helpers: Lume.Helpers) => {
+export default () => {
   return `
     <main>
       <div class="l-container">
