@@ -1,7 +1,10 @@
-export const layout = "layouts/GlobalLayout.tsx";
+// blog/_data.ts
+export const layout = "layouts/BlogLayout.ts";  // Note the .ts extension now
+
+export const tags = ["post"];
+
+export const stylesheet = "/styles/blog/index.css";
 
 export const metas: Lume.Data["metas"] = {
-  title: "=title",
-  description: "李北洛 Philippe’s blog",
-  generator: true,
+  title: (data) => data.title + " | 李北洛 Philippe",
 };
