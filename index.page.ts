@@ -3,11 +3,12 @@ import { compareDesc } from "date-fns";
 
 export const title = "李北洛 Philippe";
 export const stylesheet = "/styles/index.css";
-export const layout = "layouts/GlobalLayout.ts"; // Add this line to fix the layout issue
+export const layout = "layouts/GlobalLayout.ts";
 
 export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const { search } = data;
-  const posts = search.pages("post");
+  // Filter out the homepage from the search results
+  const posts = search.pages("post").filter((post: any) => post.url !== "/");
   
   posts.sort((a: any, b: any) => compareDesc(a.date, b.date));
   
