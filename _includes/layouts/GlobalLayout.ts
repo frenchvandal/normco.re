@@ -1,11 +1,8 @@
-// _includes/layouts/GlobalLayout.ts
-interface GlobalLayoutData {
-  stylesheet: string;
-}
+import { GlobalLayoutData, LumeHelpers } from '../../types.ts';
 
-export default (data: GlobalLayoutData & Lume.Data, helpers: Lume.Helpers) => {
-  const { content, url, stylesheet, comp } = data;
-  let { title } = data;
+export default (data: GlobalLayoutData, _helpers: LumeHelpers) => {
+  const { content, stylesheet, comp } = data;
+  const { title } = data;
    
   return `
     <html lang="en">

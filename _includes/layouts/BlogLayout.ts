@@ -1,15 +1,15 @@
-// _includes/layouts/BlogLayout.ts
-export const layout = "layouts/GlobalLayout.ts";
+import { BlogLayoutData, LumeHelpers, formatDate } from '../../types.ts';
 
-export default (data: Lume.Data, helpers: Lume.Helpers) => {
+export const layout = 'layouts/GlobalLayout.ts';
+
+export default (data: BlogLayoutData, _helpers: LumeHelpers) => {
   const { content, title, date } = data;
   
-  // Format date using similar logic to the Time component
-  const formattedDate = date ? new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric'
-  }) : '';
+  // Utiliser la fonction formatDate pour la date
+  const formattedDate = formatDate(date);
+  
+  // Récupérer la valeur ISO de la date pour l'attribut datetime
+  const isoDate = date.toISOString().split('T')[0];
   
   return `
     <main>
@@ -18,7 +18,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           <header class="p-blogContent__header">
             <h1 class="p-blogContent__title">${title}</h1>
             <p class="p-blogContent__date">
-              <time datetime="${date.toISOString().split('T')[0]}">${formattedDate}</time>
+              <time datetime="${isoDate}">${formattedDate}</time>
             </p>
           </header>
           <section class="p-blogContent__body">
