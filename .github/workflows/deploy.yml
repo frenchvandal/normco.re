@@ -40,20 +40,15 @@ jobs:
       # Étape 4: Mise à jour du fichier deno.lock
       - name: Update deno.lock
         run: |
-          # Supprimer le fichier deno.lock existant
-          rm -f deno.lock
-          # Mettre à jour les dépendances pour recréer deno.lock
-          deno cache --reload _config.ts
+          # Mettre à jour les dépendances
+          deno cache --reload --lock=deno.lock --lock-write _config.ts
 
-      # Étape 5: Installation de Lume v2 spécifiquement
-      - name: Install Lume v2
-        run: deno run -A https://deno.land/x/lume@v2.5.1/install.ts
-
-      # Étape 6: Build du site
+      # Étape 5: Build du site directement avec Lume
+      # Utilise la tâche définie dans deno.json
       - name: Build site
-        run: deno task lume
+        run: deno task build
 
-      # Étape 7: Upload des artifacts
+      # Étape 6: Upload des artifacts
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
