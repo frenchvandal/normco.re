@@ -1,6 +1,4 @@
 // index.page.ts
-import { compareDesc } from "date-fns";
-
 export const title = "李北洛 Philippe";
 export const stylesheet = "/styles/index.css";
 export const layout = "layouts/GlobalLayout.ts";
@@ -10,7 +8,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   // Filter out the homepage from the search results
   const posts = search.pages("post").filter((post: any) => post.url !== "/");
   
-  posts.sort((a: any, b: any) => compareDesc(a.date, b.date));
+  // Use native JavaScript for sorting by date in descending order
+  posts.sort((a: any, b: any) => b.date.getTime() - a.date.getTime());
   
   const postItems = posts.map((post: any) => {
     const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
