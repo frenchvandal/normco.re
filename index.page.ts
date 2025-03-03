@@ -3,6 +3,7 @@ import { compareDesc } from "date-fns";
 
 export const title = "李北洛 Philippe";
 export const stylesheet = "/styles/index.css";
+export const layout = "layouts/GlobalLayout.ts"; // Add this line to fix the layout issue
 
 export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const { search } = data;

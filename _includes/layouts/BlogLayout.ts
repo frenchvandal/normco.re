@@ -5,11 +5,11 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const { content, title, date } = data;
   
   // Format date using similar logic to the Time component
-  const formattedDate = new Date(date).toLocaleDateString('en-US', {
+  const formattedDate = date ? new Date(date).toLocaleDateString('en-US', {
     year: 'numeric', 
     month: 'long', 
     day: 'numeric'
-  });
+  }) : '';
   
   return `
     <main>

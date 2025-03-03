@@ -6,11 +6,7 @@ interface GlobalLayoutData {
 export default (data: GlobalLayoutData & Lume.Data, helpers: Lume.Helpers) => {
   const { content, url, stylesheet, comp } = data;
   let { title } = data;
-  
-  if (url !== "/") {
-    title += " | 李北洛 Philippe";
-  }
-  
+   
   return `
     <html lang="en">
       <head>
