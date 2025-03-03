@@ -16,7 +16,9 @@ const site = lume({
 });
 
 // Plugins
-site.use(sass());
+site.use(sass({
+  includes: "_includes"
+}));
 site.use(metas());
 
 // Configuration du plugin de coloration syntaxique
