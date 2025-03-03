@@ -29,9 +29,9 @@ jobs:
 
       # Étape 2: Configuration de Deno
       - name: Setup Deno
-        uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@v2
         with:
-          deno-version: v1.x
+          deno-version: v2.x
 
       # Étape 3: Configuration de GitHub Pages
       - name: Setup Pages
