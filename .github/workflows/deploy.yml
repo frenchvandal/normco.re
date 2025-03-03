@@ -1,0 +1,72 @@
+name: Deploy Blog
+
+on:
+  # Exécuter l'action lors d'un push sur la branche main
+  push:
+    branches: [main]
+  
+  # Permettre l'exécution manuelle depuis l'interface GitHub
+  workflow_dispatch:
+
+# Définir les permissions nécessaires pour GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un seul déploiement à la fois
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Étape 1: Checkout du code source
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Étape 2: Configuration de Deno
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      # Étape 3: Configuration de GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # Étape 4: Mise à jour du fichier deno.lock
+      - name: Update deno.lock
+        run: |
+          # Supprimer le fichier deno.lock existant
+          rm -f deno.lock
+          # Mettre à jour les dépendances pour recréer deno.lock
+          deno cache --reload _config.ts
+
+      # Étape 5: Installation de Lume v2 spécifiquement
+      - name: Install Lume v2
+        run: deno run -A https://deno.land/x/lume@v2.5.1/install.ts
+
+      # Étape 6: Build du site
+      - name: Build site
+        run: deno task lume
+
+      # Étape 7: Upload des artifacts
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site"
+
+  # Déploiement sur GitHub Pages
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
