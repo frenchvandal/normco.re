@@ -41,7 +41,7 @@ jobs:
       - name: Update deno.lock
         run: |
           # Mettre à jour les dépendances
-          deno cache --reload --lock=deno.lock --lock-write _config.ts
+          deno cache --reload --lock=deno.lock _config.ts
 
       # Étape 5: Build du site directement avec Lume
       # Utilise la tâche définie dans deno.json
