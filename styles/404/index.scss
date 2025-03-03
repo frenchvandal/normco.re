@@ -1,19 +1,7 @@
-// ==========================================================================
-// Foundation
-// ==========================================================================
+// styles/404/index.scss
 
-@use "styles/reset";
-@use "styles/base";
-@use "styles/variables";
-
-// ==========================================================================
-// Layout
-// ==========================================================================
-
-@use "styles/layout/container";
-@use "styles/layout/global-layout";
-@use "styles/layout/global-header";
-@use "styles/layout/global-footer";
+// Import core styles (foundation and layout)
+@use "../_includes/styles/core";
 
 // ==========================================================================
 // Object

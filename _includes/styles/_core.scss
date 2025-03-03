@@ -1,0 +1,18 @@
+// _includes/styles/_core.scss
+
+// ==========================================================================
+// Foundation
+// ==========================================================================
+
+@use "styles/reset";
+@use "styles/base";
+@use "styles/variables";
+
+// ==========================================================================
+// Layout
+// ==========================================================================
+
+@use "styles/layout/container";
+@use "styles/layout/global-layout";
+@use "styles/layout/global-header";
+@use "styles/layout/global-footer";
