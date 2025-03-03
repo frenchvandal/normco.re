@@ -1,16 +1,7 @@
 {
   "imports": {
     "lume/": "https://deno.land/x/lume@v2.5.1/",
-    "highlight.js": "npm:highlight.js@11.11.1",
-    
-    "@/": "./",
-    "@components/": "./_components/",
-    "@layouts/": "./_includes/layouts/",
-    "@styles/": "./_includes/styles/",
-    "@blog/": "./blog/",
-    "@utils/": "./core/utils/",
-    "@config/": "./",
-    "@static/": "./static/"
+    "highlight.js": "npm:highlight.js@11.11.1"
   },
   "tasks": {
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",

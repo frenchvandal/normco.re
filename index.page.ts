@@ -1,7 +1,7 @@
 // index.page.ts
 export const title = "李北洛 Philippe";
 export const stylesheet = "/styles/index.css";
-export const layout = "@layouts/GlobalLayout.ts";
+export const layout = "layouts/GlobalLayout.ts";
 
 export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const { search } = data;

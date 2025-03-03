@@ -1,4 +1,5 @@
-export const layout = "@layouts/GlobalLayout.ts";
+// _includes/layouts/BlogLayout.ts
+export const layout = "layouts/GlobalLayout.ts";
 
 export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const { content, title, date } = data;
