@@ -1,28 +1,25 @@
-// index.page.ts
-export const title = "李北洛 Philippe";
-export const stylesheet = "/styles/index.css";
-export const layout = "layouts/GlobalLayout.ts";
+import { LumeData, PostData, formatDate, isDate } from './types.ts';
 
-export default (data: Lume.Data) => {  // Remove unused helpers parameter
+export const title = '李北洛 Philippe';
+export const stylesheet = '/styles/index.css';
+export const layout = 'layouts/GlobalLayout.ts';
+
+export default (data: LumeData) => {  
   const { search } = data;
   
-  // Don't explicitly type the parameters - let TypeScript infer them
-  const posts = search.pages("post").filter(post => post.url !== "/");
+  // Utiliser l'opérateur d'accès conditionnel (?.) pour gérer le cas où search est undefined
+  // Ajouter aussi un tableau vide comme fallback avec l'opérateur || en cas de valeur undefined
+  const posts = search?.pages<PostData>('post')?.filter((post: PostData) => post.url !== '/') || [];
   
-  // Add safety checks for date comparison
-  posts.sort((a, b) => {
-    const dateA = a.date instanceof Date ? a.date.getTime() : 0;
-    const dateB = b.date instanceof Date ? b.date.getTime() : 0;
+  // Trier les posts du plus récent au plus ancien
+  posts.sort((a: PostData, b: PostData) => {
+    const dateA = isDate(a.date) ? a.date.getTime() : new Date(a.date || '').getTime();
+    const dateB = isDate(b.date) ? b.date.getTime() : new Date(b.date || '').getTime();
     return dateB - dateA;
   });
   
-  const postItems = posts.map(post => {
-    // Handle potential undefined date values
-    const date = post.date instanceof Date ? post.date : new Date(post.date || "");
-    const formattedDate = date.toLocaleDateString('en-US', {
-      year: 'numeric', month: 'long', day: 'numeric'
-    });
-    
+  // Générer les éléments HTML pour chaque post
+  const postItems = posts.map((post: PostData) => {
     return `
       <article class="p-teasers__item">
         <h2 class="p-teasers__title">
@@ -31,7 +28,9 @@ export default (data: Lume.Data) => {  // Remove unused helpers parameter
           </a>
         </h2>
         <p class="p-teasers__date">
-          <time datetime="${date.toISOString().split('T')[0]}">${formattedDate}</time>
+          <time datetime="${new Date(post.date).toISOString().split('T')[0]}">
+            ${formatDate(post.date)}
+          </time>
         </p>
       </article>
     `;
