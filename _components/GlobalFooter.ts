@@ -5,7 +5,7 @@ export default () => {
         <div class="l-globalFooter__inner">
           <ul class="l-globalFooter__socialLinks" role="list">
             <li class="l-globalFooter__socialLinkWrapper">
-              
+              <a 
                 href="https://github.com/frenchvandal"
                 target="_blank"
                 class="l-globalFooter__socialLink"

@@ -14,25 +14,6 @@ export default (data: GlobalLayoutData & Lume.Data, helpers: Lume.Helpers) => {
   return `
     <html lang="en">
       <head>
-        <!-- head content -->
-      </head>
-      <body class="l-globalLayout">
-        ${comp.GlobalHeader()}
-        ${content}
-        ${comp.GlobalFooter()}
-      </body>
-    </html>
-  `;
-};
-
-
-  // Generate header HTML
-  const header = renderHeader();
-  const footer = renderFooter();
-  
-  return `
-    <html lang="en">
-      <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>${title}</title>
@@ -50,47 +31,10 @@ export default (data: GlobalLayoutData & Lume.Data, helpers: Lume.Helpers) => {
         />
       </head>
       <body class="l-globalLayout">
-        ${header}
+        ${comp.GlobalHeader()}
         ${content}
-        ${footer}
+        ${comp.GlobalFooter()}
       </body>
     </html>
   `;
 };
-
-// Functions to render header and footer
-function renderHeader() {
-  return `
-    <header class="l-globalHeader">
-      <div class="l-container">
-        <div class="l-globalHeader__inner">
-          <a href="/" class="l-globalHeader__branding">
-            李北洛 Philippe
-          </a>
-        </div>
-      </div>
-    </header>
-  `;
-}
-
-function renderFooter() {
-  return `
-    <footer class="l-globalFooter">
-      <div class="l-container">
-        <div class="l-globalFooter__inner">
-          <ul class="l-globalFooter__socialLinks" role="list">
-            <li class="l-globalFooter__socialLinkWrapper">
-              
-                href="https://github.com/frenchvandal"
-                target="_blank"
-                class="l-globalFooter__socialLink"
-              >
-                <img src="/github.svg" alt="GitHub" width="32" height="32" />
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </footer>
-  `;
-}
