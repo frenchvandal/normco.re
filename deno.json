@@ -1,7 +1,6 @@
 {
   "imports": {
-    "lume/": "https://deno.land/x/lume@v2.5.1/",
-    "highlight.js": "npm:highlight.js@11.11.1"
+    "lume/": "https://deno.land/x/lume@v2.5.1/"
   },
   "tasks": {
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
@@ -12,5 +11,6 @@
     "types": [
       "lume/types.ts"
     ]
-  }
+  },
+  "nodeModulesDir": "auto"
 }

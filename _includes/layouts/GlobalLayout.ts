@@ -12,6 +12,7 @@ export default (data: GlobalLayoutData, _helpers: LumeHelpers) => {
         <title>${title}</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="${stylesheet}" />
+        <link rel="stylesheet" href="/styles/prism-theme.css" />
       </head>
       <body class="l-globalLayout">
         ${comp.GlobalHeader()}

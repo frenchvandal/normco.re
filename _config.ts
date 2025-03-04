@@ -1,13 +1,7 @@
 import lume from 'lume/mod.ts';
 import sass from 'lume/plugins/sass.ts';
 import metas from 'lume/plugins/metas.ts';
-import codeHighlight from 'lume/plugins/code_highlight.ts';
-
-// Import languages from the correct path that works with Deno
-import langTypeScript from 'npm:highlight.js@11.11.1/lib/languages/typescript';
-import langJavaScript from 'npm:highlight.js@11.11.1/lib/languages/javascript';
-import langBash from 'npm:highlight.js@11.11.1/lib/languages/bash';
-import langXML from 'npm:highlight.js@11.11.1/lib/languages/xml';
+import prism from 'lume/plugins/prism.ts';
 
 // Configuration du site
 const site = lume({
@@ -20,23 +14,23 @@ site.use(sass({
 }));
 site.use(metas());
 
-// Configuration et utilisation directe du plugin de coloration syntaxique
-site.use(codeHighlight({
+// Import des langages supplémentaires pour Prism dans le bon ordre
+// Il faut respecter les dépendances entre composants
+import "npm:prismjs@1.29.0/components/prism-javascript.js";
+import "npm:prismjs@1.29.0/components/prism-jsx.js";
+import "npm:prismjs@1.29.0/components/prism-typescript.js";
+import "npm:prismjs@1.29.0/components/prism-tsx.js";
+import "npm:prismjs@1.29.0/components/prism-bash.js";
+
+// Configuration et utilisation du plugin Prism
+site.use(prism({
   // Extension des fichiers à traiter (HTML généré par les templates)
   extensions: ['.html'],
   
-  // Langages supplémentaires
-  languages: {
-    typescript: langTypeScript,
-    javascript: langJavaScript,
-    bash: langBash,
-    xml: langXML, // This will handle HTML/XML and parts of JSX/TSX
-  },
-  
   // Thème de coloration
   theme: {
-    name: 'github-dark', // Thème sombre similaire à celui utilisé avec Shiki
-    cssFile: '/styles/code-highlight.css',
+    name: 'okaidia', // Thème sombre similaire à github-dark
+    cssFile: '/styles/prism-theme.css',
   },
 }));
 

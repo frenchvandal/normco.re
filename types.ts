@@ -140,14 +140,9 @@ export interface SearchResult<T = Record<string, unknown>> {
 }
 
 /**
- * Type for the highlight.js language function
- */
-export type LanguageFn = unknown;
-
-/**
  * Configuration for code highlighting theme
  */
-export interface CodeHighlightTheme {
+export interface PrismTheme {
   /** Theme name to use */
   name: string;
   /** Path to the CSS file */
@@ -155,15 +150,15 @@ export interface CodeHighlightTheme {
 }
 
 /**
- * Configuration options for code highlighting
+ * Configuration options for Prism code highlighting
  */
-export interface CodeHighlightConfig {
+export interface PrismConfig {
   /** Extensions des fichiers à traiter */
   extensions?: string[];
-  /** Langages supplémentaires à supporter */
-  languages?: Record<string, LanguageFn>;
+  /** CSS selector to apply prism */
+  cssSelector?: string;
   /** Configuration du thème */
-  theme?: CodeHighlightTheme;
+  theme?: PrismTheme | PrismTheme[];
 }
 
 /**

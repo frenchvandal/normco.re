@@ -73,5 +73,27 @@
       padding: 0.2em 0.4em;
     }
   }
-}
 
+  /* Basic styling for code blocks */
+  :is(code, pre) {
+    font-size: 0.8rem;
+  }
+
+  pre {
+    border-radius: 0.5rem;
+    margin-block: 1rem;
+    max-width: calc(100vw - 2rem);
+    overflow: auto;
+    padding: 1rem;
+    /* Removing any background-color to avoid overriding Prism's theme */
+  }
+
+  /* For inline code (not in a pre block) */
+  :not(pre) {
+    > code {
+      background-color: #f7f1d2;
+      border-radius: 0.4em;
+      padding: 0.2em 0.4em;
+    }
+  }
+}
