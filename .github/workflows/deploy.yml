@@ -4,7 +4,7 @@ on:
   # Exécuter l'action lors d'un push sur la branche main
   push:
     branches: [main]
-  
+
   # Permettre l'exécution manuelle depuis l'interface GitHub
   workflow_dispatch:
 
@@ -33,22 +33,31 @@ jobs:
         with:
           deno-version: v2.x
 
-      # Étape 3: Configuration de GitHub Pages
+      # Étape 3: Restaurer le cache des modules Deno
+      - name: Restore Deno cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/deno
+          key: deno-${{ runner.os }}-${{ hashFiles('deno.lock') }}
+          restore-keys: |
+            deno-${{ runner.os }}-
+
+      # Étape 4: Configuration de GitHub Pages
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      # Étape 4: Mise à jour du fichier deno.lock
+      # Étape 5: Mise à jour du fichier deno.lock et installation des dépendances
       - name: Update deno.lock
         run: |
           # Mettre à jour les dépendances
           deno cache --reload --lock=deno.lock _config.ts
 
-      # Étape 5: Build du site directement avec Lume
+      # Étape 6: Build du site directement avec Lume
       # Utilise la tâche définie dans deno.json
       - name: Build site
         run: deno task build
 
-      # Étape 6: Upload des artifacts
+      # Étape 7: Upload des artifacts
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
