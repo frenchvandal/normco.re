@@ -5,11 +5,10 @@ export const stylesheet = '/styles/index.css';
 export const layout = 'layouts/GlobalLayout.ts';
 
 export default (data: LumeData) => {  
-  const { search } = data;
-  
-  // Utiliser l'opérateur d'accès conditionnel (?.) pour gérer le cas où search est undefined
-  // Ajouter aussi un tableau vide comme fallback avec l'opérateur || en cas de valeur undefined
-  const posts = search?.pages<PostData>('post')?.filter((post: PostData) => post.url !== '/') || [];
+  // Get posts or use empty array if search is undefined or if pages() returns undefined
+  const posts: PostData[] = data.search?.pages<PostData>('post')?.filter(
+    (post: PostData) => post.url !== '/'
+  ) ?? [];
   
   // Trier les posts du plus récent au plus ancien
   posts.sort((a: PostData, b: PostData) => {

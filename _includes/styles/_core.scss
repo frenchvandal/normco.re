@@ -4,15 +4,15 @@
 // Foundation
 // ==========================================================================
 
-@use "styles/reset";
-@use "styles/base";
-@use "styles/variables";
+@use "../reset";
+@use "../base";
+@use "../variables";
 
 // ==========================================================================
 // Layout
 // ==========================================================================
 
-@use "styles/layout/container";
-@use "styles/layout/global-layout";
-@use "styles/layout/global-header";
-@use "styles/layout/global-footer";
+@use "../layout/container";
+@use "../layout/global-layout";
+@use "../layout/global-header";
+@use "../layout/global-footer";
