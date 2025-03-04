@@ -12,16 +12,6 @@ export default (data: GlobalLayoutData, _helpers: LumeHelpers) => {
         <title>${title}</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="${stylesheet}" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Knewave&display=swap"
-          rel="stylesheet"
-        />
       </head>
       <body class="l-globalLayout">
         ${comp.GlobalHeader()}
