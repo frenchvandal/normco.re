@@ -7,7 +7,7 @@ export default (props: GlobalFooterProps = {}) => {
   const links = socialLinks.length > 0 ? socialLinks : [
     {
       platform: "GitHub",
-      url: "https://github.com/frenchvandal",
+      url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       icon: "/github.svg"
     }
   ];
