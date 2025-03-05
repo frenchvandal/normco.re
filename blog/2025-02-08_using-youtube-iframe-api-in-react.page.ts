@@ -1,39 +1,45 @@
 // blog/2025-02-08_using-youtube-iframe-api-in-react.page.ts
 export const title = "Using YouTube IFrame API in React";
 export const date = new Date("2025-02-08");
+export const tags = ["react", "youtube", "iframe", "api"];
+export const description = "Guide complet sur l'intégration et l'utilisation de l'API YouTube IFrame dans vos applications React pour un contrôle granulaire des vidéos intégrées.";
+export const readingTime = "5 min";
 
 export default `
-<p>As you know, videos on YouTube can be embedded on your websites. Furthermore,
-you can use IFrame API provided by YouTube to be gained granular controls for
-those videos, even in React projects.</p>
+<div class="post-summary">
+  <p><strong>TL;DR:</strong> Cet article vous guide à travers l'intégration de l'API YouTube IFrame dans vos applications React, vous permettant d'obtenir un contrôle précis sur les vidéos intégrées grâce à un Provider de contexte et un composant Player personnalisé.</p>
+</div>
 
-<h2>Type Definitions for IFrame API</h2>
+<h2 id="introduction">Introduction</h2>
 
-<p>Before get into the React code, I'd highly recommend to set up TypeScript to
-safely use this API. Type Definitions for this API is available on
-<a href="https://www.npmjs.com/package/@types/youtube">npm</a>.</p>
+<p>Les vidéos YouTube peuvent facilement être intégrées dans vos sites web. Mais saviez-vous que vous pouvez obtenir un contrôle granulaire sur ces vidéos grâce à l'API IFrame fournie par YouTube? Voyons comment l'implémenter efficacement dans un projet React.</p>
+
+<figure class="post-image">
+  <img src="/api/placeholder/800/400" alt="YouTube IFrame dans React" />
+  <figcaption>Intégration d'une vidéo YouTube avec contrôles personnalisés</figcaption>
+</figure>
+
+<h2 id="type-definitions">Définitions de types pour l'API IFrame</h2>
+
+<p>Avant de plonger dans le code React, je vous recommande vivement de configurer TypeScript pour utiliser cette API en toute sécurité. Les définitions de types pour cette API sont disponibles sur <a href="https://www.npmjs.com/package/@types/youtube" target="_blank" rel="noreferrer">npm</a>.</p>
 
 <pre><code class="language-bash">npm install --save-dev @types/youtube
 </code></pre>
 
-<p>After you install this package, the <code>YT</code> namespace is globally available on your
-TypeScript project and the player object is instantiated with <code>YT.Player</code>.</p>
+<p>Après avoir installé ce package, l'espace de noms <code>YT</code> est globalement disponible dans votre projet TypeScript et l'objet player est instancié avec <code>YT.Player</code>.</p>
 
-<h2>The Context Provider</h2>
+<h2 id="context-provider">Le Provider de contexte</h2>
 
-<p>To ensure that IFrame API code is loaded before player objects are created, you
-need to tell every <code>&lt;YouTubePlayer&gt;</code> components the API code is loaded.</p>
+<p>Pour garantir que le code de l'API IFrame soit chargé avant que les objets player ne soient créés, vous devez informer chaque composant <code>&lt;YouTubePlayer&gt;</code> que le code de l'API est chargé.</p>
 
-<p>There are two state variables called <code>isMounted</code> and <code>isApiReady</code>.</p>
+<p>Il y a deux variables d'état appelées <code>isMounted</code> et <code>isApiReady</code>.</p>
 
-<p>The <code>onYouTubeIframeAPIReady</code> function is called when the IFrame API is ready to
-be used. The <code>isApiReady</code> is set to <code>true</code> inside this function.</p>
+<ul>
+  <li>La fonction <code>onYouTubeIframeAPIReady</code> est appelée lorsque l'API IFrame est prête à être utilisée. La variable <code>isApiReady</code> est définie sur <code>true</code> à l'intérieur de cette fonction.</li>
+  <li>La variable <code>isMounted</code> est définie sur <code>true</code> simultanément à la définition de la fonction <code>onYouTubeIframeAPIReady</code>, car le code de l'API s'attend à ce que cette fonction soit définie à l'avance.</li>
+</ul>
 
-<p>The <code>isMounted</code> is set to <code>true</code> simultaneously with the definition of the
-<code>onYouTubeIframeAPIReady</code> function, because the API code expects that the
-<code>onYouTubeIframeAPIReady</code> function is defined in advance.</p>
-
-<p>The <code>YouTubeContext</code> can be a provider of itself in React 19.</p>
+<p>Le <code>YouTubeContext</code> peut être un fournisseur de lui-même dans React 19.</p>
 
 <pre><code class="language-tsx">// YouTubeProvider.tsx
 "use client";
@@ -70,28 +76,25 @@ export function YouTubeProvider({ children }: { children: React.ReactNode }) {
 }
 </code></pre>
 
-<p>Note that in React 19, the <code>&lt;script&gt;</code> can be located everywhere in your app, and
-the <code>&lt;script&gt;</code> will be shifted inside a <code>&lt;head&gt;</code>. React de-duplicates <code>&lt;script&gt;</code>
-elements if the <code>src</code> and the <code>async={true}</code> props are passed.</p>
+<div class="notice notice-info">
+  <p><strong>Note:</strong> Dans React 19, l'élément <code>&lt;script&gt;</code> peut être placé n'importe où dans votre application, et il sera déplacé à l'intérieur de l'élément <code>&lt;head&gt;</code>. React déduplique les éléments <code>&lt;script&gt;</code> si les propriétés <code>src</code> et <code>async={true}</code> sont passées.</p>
+</div>
 
-<h2>The Player Component</h2>
+<h2 id="player-component">Le composant Player</h2>
 
-<p>Let's create the <code>&lt;YouTubePlayer&gt;</code> component!</p>
+<p>Créons maintenant le composant <code>&lt;YouTubePlayer&gt;</code>!</p>
 
-<h3>Exposing Functions regarding a Playback.</h3>
+<h3 id="exposing-functions">Exposition des fonctions de lecture</h3>
 
-<p>To control the playback of videos, the <code>playVideo</code> function and the <code>pauseVideo</code>
-function need to called in parent components of the <code>&lt;YouTubePlayer&gt;</code> component.
-One of approaches is making these functions are available via the <code>ref</code>.</p>
+<p>Pour contrôler la lecture des vidéos, les fonctions <code>playVideo</code> et <code>pauseVideo</code> doivent être appelées dans les composants parents du composant <code>&lt;YouTubePlayer&gt;</code>. Une approche consiste à rendre ces fonctions disponibles via la référence <code>ref</code>.</p>
 
-<p>The <code>useImperativeHandle</code> hook is used to expose the <code>playVideo</code> function and
-the <code>pauseVideo</code> function outside the component. The <code>useImperativeHandle</code> hook
-can customize the <code>ref</code> object.</p>
+<p>Le hook <code>useImperativeHandle</code> est utilisé pour exposer les fonctions <code>playVideo</code> et <code>pauseVideo</code> en dehors du composant. Ce hook permet de personnaliser l'objet <code>ref</code>.</p>
 
-<p>The player object is created if the <code>isApiReady</code> is set to <code>true</code>.</p>
+<p>L'objet player est créé si la variable <code>isApiReady</code> est définie sur <code>true</code>.</p>
 
-<p>Since React 19, we can pass <code>ref</code> as a prop without <code>forwardRef</code>, and consume a
-context with <code>use</code> rather than <code>useContext</code> hook.</p>
+<div class="notice notice-success">
+  <p><strong>Astuce:</strong> Depuis React 19, nous pouvons passer <code>ref</code> comme prop sans <code>forwardRef</code>, et consommer un contexte avec <code>use</code> plutôt qu'avec le hook <code>useContext</code>.</p>
+</div>
 
 <pre><code class="language-tsx">// YouTubePlayer.tsx
 import { use, useEffect, useImperativeHandle, useRef } from "react";
@@ -139,10 +142,9 @@ export default function YouTubePlayer({
 }
 </code></pre>
 
-<h2>Using the Player Component.</h2>
+<h2 id="using-component">Utilisation du composant Player</h2>
 
-<p>Finally, you can use <code>&lt;YouTubePlayer&gt;</code> component, and control the video playback
-via the <code>ref</code> object.</p>
+<p>Enfin, vous pouvez utiliser le composant <code>&lt;YouTubePlayer&gt;</code> et contrôler la lecture vidéo via l'objet <code>ref</code>.</p>
 
 <pre><code class="language-tsx">"use client";
 
@@ -162,20 +164,47 @@ export default function Home() {
           playerVars: { origin: "http://localhost:3000" },
         }}
       />
-      <button type="button" onClick={() => playerRef.current?.playVideo()}>
-        Play
-      </button>
-      <button type="button" onClick={() => playerRef.current?.pauseVideo()}>
-        Pause
-      </button>
+      <div className="player-controls">
+        <button 
+          type="button"
+          className="control-button play" 
+          onClick={() => playerRef.current?.playVideo()}
+        >
+          Lecture
+        </button>
+        <button 
+          type="button" 
+          className="control-button pause"
+          onClick={() => playerRef.current?.pauseVideo()}
+        >
+          Pause
+        </button>
+      </div>
     </main>
   );
 }
 </code></pre>
 
-<p>The example code is
-<a href="https://github.com/m-kawafuji/youtube-iframe-player-api-demo/tree/main">here</a>.</p>
+<h2 id="conclusion">Conclusion</h2>
 
-<p>For more information about IFrame API, please read
-<a href="https://developers.google.com/youtube/iframe_api_reference">the API reference</a>.</p>
+<p>L'intégration de l'API YouTube IFrame dans vos applications React vous offre un contrôle précis sur les vidéos intégrées, vous permettant de créer des expériences utilisateur personnalisées et interactives.</p>
+
+<p>Le code d'exemple complet est disponible <a href="https://github.com/m-kawafuji/youtube-iframe-player-api-demo/tree/main" target="_blank" rel="noreferrer">ici</a>.</p>
+
+<p>Pour plus d'informations sur l'API IFrame, consultez <a href="https://developers.google.com/youtube/iframe_api_reference" target="_blank" rel="noreferrer">la référence API officielle</a>.</p>
+
+<div class="post-author">
+  <img src="/avatar.png" alt="李北洛 Philippe" class="author-avatar" />
+  <div class="author-info">
+    <h3>À propos de l'auteur</h3>
+    <p>Développeur web passionné par les technologies frontend modernes et le design d'interfaces utilisateur.</p>
+  </div>
+</div>
+
+<div class="related-posts">
+  <h3>Articles connexes</h3>
+  <ul>
+    <li><a href="/blog/2024-12-12_subscribing-media-query-changes-in-react-using-usesyncexternalstore">Subscribing Media Query Changes in React using useSyncExternalStore</a></li>
+  </ul>
+</div>
 `;
