@@ -176,4 +176,4 @@ deno fmt         # Format
 - Respond in French by default for discussions; keep code, code comments, commit
   titles, commit descriptions, merge request titles, merge request comments in
   English.
-- Adhere to Conventional Commits speficiation
+- Follow the Conventional Commits specification

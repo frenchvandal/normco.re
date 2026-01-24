@@ -1,0 +1,261 @@
+# AGENTS.md
+
+## Quick rules (read first)
+
+**Do**
+
+- Follow this file as the source of truth for all changes.
+- Use Deno + Lume only, as configured in this repository.
+- Run `deno fmt` and `deno lint` before finalizing changes.
+- Run `deno task build` when changes affect rendering or structure.
+- Keep code, comments, commit messages, and PR/MR titles in English.
+
+**Don’t**
+
+- Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
+  engines.
+- Do not add new dependencies unless explicitly requested.
+- Do not introduce Markdown content pages.
+- Do not modify generated artifacts or build outputs.
+- Do not over-engineer solutions.
+
+If a command cannot be run, clearly state which command would be run and why.
+
+---
+
+## Project context
+
+- Personal blog maintained by Phiphi (FR), based in Chengdu, China.
+- Documentation and comments are in English by default unless explicitly stated
+  otherwise.
+- Project URLs:
+  - Production: https://normco.re
+  - GitHub: https://github.com/frenchvandal/normco.re
+
+---
+
+## Stack & tooling
+
+- Runtime: **Deno**
+- SSG: **Lume**
+- Templating: **ESM + TypeScript** (no JSX/Preact, no Nunjucks/Vento)
+- Styling: **SCSS** (or modern CSS if appropriate)
+- Content: **TypeScript pages** (`*.page.ts`) rather than Markdown
+
+---
+
+## 1) TypeScript — best practices
+
+### Principles
+
+- **Strict type safety**: enable and follow strict options.
+- **Clarity over magic**: avoid opaque helpers unless strictly necessary.
+- **Immutability by default**: prefer `const` and pure functions.
+- **No `any`** unless explicitly justified with a comment.
+- **Domain-first modeling**: express business data with explicit types or
+  interfaces.
+
+### Types & structure
+
+- Use `interface` for public or stable object shapes.
+- Use `type` for unions and composition.
+- Avoid deep generics; prefer readable and maintainable types.
+- Centralize shared types when reused across modules.
+
+### Imports
+
+Recommended order:
+
+1. Deno / Lume
+2. External dependencies
+3. Local modules
+
+Separate groups with a blank line.
+
+### Functions
+
+- Small, single-responsibility functions.
+- Prefer explicit returns over hidden side effects.
+
+### Example Lume page
+
+```ts
+export const title = "Page Title";
+export const layout = "layouts/main.ts";
+
+export default (data: Lume.Data, helpers: Lume.Helpers) =>
+  `<h1>${data.title}</h1>`;
+```
+
+---
+
+## 2) CSS / SCSS — best practices
+
+### Architecture
+
+- Mobile-first and responsive.
+- Prefer CSS custom properties for theming.
+- Keep selector specificity low and predictable.
+- Avoid `!important` unless clearly documented.
+
+### Accessibility
+
+- Support `prefers-reduced-motion`.
+- Support `prefers-contrast: more` or `high` when feasible.
+- Always include `:focus-visible` for keyboard navigation.
+
+### Performance
+
+- Prefer Flexbox and Grid.
+- Avoid animations on `width`, `height`, `top`, `left`.
+- Prefer `transform` and `opacity`.
+- Keep rules simple to minimize reflows.
+
+### SCSS
+
+- Organize partials (`_*.scss`) clearly.
+- Avoid overusing SCSS variables; prefer runtime CSS variables.
+
+---
+
+## 3) UX / UI design
+
+- **Readability**: adequate font sizes and WCAG-compliant contrast.
+- **Visual hierarchy**: clear headings and spacing.
+- **Consistency**: reusable components and patterns.
+- **Feedback**: visible hover, active, and focus states.
+- **Clarity**: fewer elements, higher impact.
+- **Accessibility**: semantic HTML and ARIA when necessary.
+
+---
+
+## 4) Architecture principles
+
+- Reasonable DRY without sacrificing clarity.
+- KISS: keep solutions simple.
+- Prefer composition over inheritance.
+- One module, one primary responsibility.
+- Prefer precise naming over explanatory comments.
+
+---
+
+## 5) Naming conventions
+
+### Files
+
+- Components / Classes: `PascalCase.ts`
+- Utilities / modules: `kebab-case.ts`
+- Styles: `kebab-case.scss` or `_kebab-case.scss`
+- Pages: `kebab-case.page.ts`
+- Directories: `kebab-case`
+
+### Code
+
+- Functions: `camelCase`, verb-based.
+- Constants: `UPPER_SNAKE_CASE`.
+- Types / Interfaces: `PascalCase`.
+- Booleans: prefix with `is`, `has`, `can`, `should`.
+
+---
+
+## 6) Deno — best practices
+
+- Use `deno.json` for configuration and tasks.
+- Prefer stable, version-pinned URL imports.
+- Avoid unnecessary dependencies.
+- Keep code compliant with `deno lint` and `deno fmt`.
+- Keep `deno.lock` updated when versioned.
+
+### Common commands
+
+```bash
+deno task serve
+deno task build
+deno lint
+deno fmt
+```
+
+---
+
+## 7) Lume — best practices
+
+### Conventions
+
+- `_config.ts`: global configuration.
+- `_data.ts` or `_data/*.ts`: shared data.
+- `_includes/`: layouts (TypeScript functions).
+- `_components/`: reusable components.
+- `*.page.ts`: pages.
+
+### Approach
+
+- Prefer simple, composable layouts.
+- Keep rendering logic close to content.
+- Avoid unnecessary abstractions or templating layers.
+
+---
+
+## Agent check-list (before final output)
+
+Before considering the task complete, ensure all applicable points below are
+satisfied.
+
+### Understanding & scope
+
+- [ ] I understand this is a **personal, minimalist blog**.
+- [ ] I did not introduce abstractions or features beyond the explicit request.
+- [ ] I stayed within the Deno + Lume ecosystem defined in this repository.
+
+### Content & structure
+
+- [ ] All new pages are implemented as `*.page.ts` files.
+- [ ] No JSX, Preact, React, Nunjucks, Vento, or other templating engines were
+      introduced.
+- [ ] File and directory names follow the documented naming conventions.
+- [ ] Rendering logic is simple and colocated with content when possible.
+
+### TypeScript quality
+
+- [ ] TypeScript is strictly typed; no `any` without justification.
+- [ ] Functions are small, readable, and single-responsibility.
+- [ ] Types and interfaces are explicit and domain-oriented.
+- [ ] Imports are grouped and ordered as specified.
+
+### CSS / SCSS & accessibility
+
+- [ ] Styles are mobile-first and responsive.
+- [ ] No unnecessary selector specificity or `!important`.
+- [ ] Interactive elements include `:focus-visible`.
+- [ ] `prefers-reduced-motion` is respected if applicable.
+- [ ] Contrast and readability are preserved.
+
+### Architecture & design intent
+
+- [ ] KISS and reasonable DRY principles are respected.
+- [ ] No over-engineering or premature generalization.
+- [ ] The result aligns with the site’s minimalist identity.
+
+### Tooling & validation
+
+- [ ] `deno fmt` would pass.
+- [ ] `deno lint` would pass.
+- [ ] `deno task build` would succeed if run.
+- [ ] If commands were not run, this is explicitly stated.
+
+### Communication & output
+
+- [ ] Code, comments, commits, and PR/MR content are in English.
+- [ ] Explanations and discussions are in French unless instructed otherwise.
+- [ ] Commit messages follow the Conventional Commits specification.
+
+Only when all relevant boxes are checked should the work be considered complete.
+
+---
+
+## Agent behavior notes
+
+- Prioritize simplicity, maintainability, and accessibility.
+- Stay aligned with the site’s minimalist identity.
+- Respond in French for discussions unless instructed otherwise.
+- Use English for code, comments, commits, and PR/MR content.
+- Follow the Conventional Commits specification.
