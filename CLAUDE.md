@@ -134,7 +134,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) =>
 - Use `deno.json` for configuration and tasks.
 - Prefer **stable, version-pinned URL imports**.
 - Avoid excessive dependencies (Deno favors lean code).
-- Keep code compliant with `deno lint` and `deno fmt`.
+- Keep code compliant with `deno fmt` then `deno lint`; if Deno is not installed
+  on the environment, install it if technically possible for Claude.
+- If `deno lint` reports errors, fix them when technically possible.
 - If `deno.lock` is versioned, keep it updated to ensure reproducible builds.
 
 ### Useful commands
@@ -373,7 +375,6 @@ site.url(path, absolute = false);
 /** Get the content of any file */
 site.getContent(file, loader);
 ```
-
 ---
 
 ## Notes for Claude
