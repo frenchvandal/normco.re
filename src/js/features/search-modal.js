@@ -6,6 +6,28 @@
 import { closeModal, openModal } from "../components/modal.js";
 
 const MODAL_ID = "search-modal";
+const PAGEFIND_TIMEOUT_MS = 5000;
+
+const waitForPagefind = () =>
+  new Promise((resolve, reject) => {
+    const interval = 100;
+    let elapsed = 0;
+
+    const check = setInterval(() => {
+      if (globalThis.PagefindUI) {
+        clearInterval(check);
+        resolve();
+        return;
+      }
+
+      if (elapsed >= PAGEFIND_TIMEOUT_MS) {
+        clearInterval(check);
+        reject(new Error("Pagefind failed to load within timeout"));
+      }
+
+      elapsed += interval;
+    }, interval);
+  });
 
 /**
  * Initialize search modal functionality
@@ -15,30 +37,55 @@ export function initSearchModal() {
   const modal = document.getElementById(MODAL_ID);
   if (!modal) return;
 
+  const focusSearchInput = () => {
+    const input = modal.querySelector(".pagefind-ui__search-input");
+    if (input) {
+      input.focus();
+    }
+  };
+
   // Initialize Pagefind in modal when it opens
   let pagefindInitialized = false;
+  let isInitializing = false;
 
   modal.addEventListener("modal:open", () => {
-    if (!pagefindInitialized && globalThis.PagefindUI) {
-      const searchContainer = modal.querySelector(".search-modal__content");
-      if (searchContainer) {
-        new globalThis.PagefindUI({
-          element: searchContainer,
-          showSubResults: true,
-          showImages: false,
-          excerptLength: 15,
-          autofocus: true,
+    const searchContainer = modal.querySelector(".search-modal__content");
+    if (!searchContainer) return;
+
+    if (!pagefindInitialized && !isInitializing) {
+      isInitializing = true;
+      searchContainer.setAttribute("aria-busy", "true");
+
+      waitForPagefind()
+        .then(() => {
+          if (pagefindInitialized) return;
+          if (modal.getAttribute("data-state") !== "open") return;
+
+          new globalThis.PagefindUI({
+            element: searchContainer,
+            showSubResults: true,
+            showImages: false,
+            excerptLength: 15,
+            autofocus: true,
+          });
+          pagefindInitialized = true;
+        })
+        .catch((error) => {
+          const message = error instanceof Error
+            ? error.message
+            : "Unknown error";
+          console.warn("Search modal initialization failed:", message);
+        })
+        .finally(() => {
+          isInitializing = false;
+          searchContainer.removeAttribute("aria-busy");
+          focusSearchInput();
         });
-        pagefindInitialized = true;
-      }
     }
 
     // Focus search input after modal opens
     setTimeout(() => {
-      const input = modal.querySelector(".pagefind-ui__search-input");
-      if (input) {
-        input.focus();
-      }
+      focusSearchInput();
     }, 100);
   });
 
