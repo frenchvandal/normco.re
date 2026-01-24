@@ -1,0 +1,87 @@
+/* ==========================================================================
+   Button Component
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  font: var(--font-ui-bold);
+  text-decoration: none;
+  border: 1px solid var(--color-line);
+  border-radius: var(--border-radius);
+  background-color: var(--color-background-shade);
+  color: var(--color-base);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  background-color: var(--color-line);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn[disabled],
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Button variants */
+.btn--primary {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border-color: var(--color-primary);
+}
+
+.btn--primary:hover,
+.btn--primary:focus-visible {
+  background-color: var(--color-primary-highlight);
+  border-color: var(--color-primary-highlight);
+}
+
+.btn--ghost {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.btn--ghost:hover,
+.btn--ghost:focus-visible {
+  background-color: var(--color-background-shade);
+}
+
+/* Button sizes */
+.btn--small {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font: var(--font-small);
+}
+
+.btn--large {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font: var(--font-body-bold);
+}
+
+/* Button states */
+.btn--active,
+.btn[aria-current="page"] {
+  background-color: var(--color-base);
+  color: var(--color-background);
+  border-color: var(--color-base);
+  cursor: default;
+  transform: none;
+}
+
+.btn--active:hover,
+.btn[aria-current="page"]:hover {
+  transform: none;
+}

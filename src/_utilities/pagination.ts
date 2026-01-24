@@ -1,0 +1,20 @@
+/**
+ * Creates a pagination URL generator function
+ * @param baseUrl - The base URL path (e.g., "/archive" or "/archive/tag-name")
+ * @returns A function that generates URLs for pagination
+ */
+export function createPaginationUrl(baseUrl: string) {
+  return (pageNumber: number): string => {
+    // First page uses the base URL, subsequent pages append the page number
+    return pageNumber === 1 ? `${baseUrl}/` : `${baseUrl}/${pageNumber}/`;
+  };
+}
+
+/**
+ * Checks if a page is the first page in pagination
+ * @param pageNumber - The current page number
+ * @returns True if this is the first page
+ */
+export function isFirstPage(pageNumber: number): boolean {
+  return pageNumber === 1;
+}

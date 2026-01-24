@@ -1,0 +1,34 @@
+/* ==========================================================================
+   Theme Toggle Component
+   ========================================================================== */
+
+.theme-toggle {
+  position: relative;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: var(--spacing-sm);
+  cursor: pointer;
+  color: var(--color-base);
+  border-radius: var(--border-radius);
+  transition: background-color var(--transition-fast);
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+  background-color: var(--color-background-shade);
+}
+
+.theme-toggle .icon {
+  font-size: 1.25rem;
+  transition: transform var(--transition-base);
+}
+
+.theme-toggle:hover .icon,
+.theme-toggle:focus-visible .icon {
+  transform: rotate(180deg);
+}

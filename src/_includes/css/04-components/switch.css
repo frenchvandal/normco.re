@@ -1,0 +1,207 @@
+/* ==========================================================================
+   Switch Component (Toggle)
+   ========================================================================== */
+
+/* Switch wrapper */
+.switch-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch-wrapper--disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-disabled);
+}
+
+/* Hide native checkbox */
+.switch {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Switch track */
+.switch-track {
+  width: 2.75rem;
+  height: 1.5rem;
+  background-color: var(--color-line);
+  border-radius: 1rem;
+  position: relative;
+  transition:
+    background-color var(--transition-base) var(--ease-out),
+    box-shadow var(--transition-fast);
+  flex-shrink: 0;
+}
+
+/* Switch thumb */
+.switch-track::after {
+  content: "";
+  position: absolute;
+  top: 0.125rem;
+  left: 0.125rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: var(--color-background);
+  border-radius: 50%;
+  transition:
+    transform var(--transition-base) var(--ease-emphasized),
+    box-shadow var(--transition-fast);
+  box-shadow: var(--elevation-sm);
+}
+
+/* Hover state */
+.switch-wrapper:hover .switch-track {
+  background-color: var(--color-dim);
+}
+
+/* Focus state */
+.switch:focus-visible + .switch-track {
+  box-shadow: 0 0 0 3px rgba(191, 64, 64, 0.1);
+}
+
+[data-theme="dark"] .switch:focus-visible + .switch-track {
+  box-shadow: 0 0 0 3px rgba(244, 87, 87, 0.2);
+}
+
+/* Checked state */
+.switch:checked + .switch-track {
+  background-color: var(--color-primary);
+}
+
+.switch:checked + .switch-track::after {
+  transform: translateX(1.25rem);
+}
+
+.switch-wrapper:hover .switch:checked + .switch-track {
+  background-color: var(--color-primary-highlight);
+}
+
+/* Disabled state */
+.switch:disabled + .switch-track {
+  background-color: var(--color-background-shade);
+  cursor: not-allowed;
+}
+
+.switch:disabled + .switch-track::after {
+  box-shadow: none;
+}
+
+/* Label */
+.switch-label {
+  font: var(--font-body);
+  color: var(--color-text);
+}
+
+/* Sizes */
+.switch-track--small {
+  width: 2rem;
+  height: 1.125rem;
+}
+
+.switch-track--small::after {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.switch:checked + .switch-track--small::after {
+  transform: translateX(0.875rem);
+}
+
+.switch-track--large {
+  width: 3.5rem;
+  height: 1.875rem;
+}
+
+.switch-track--large::after {
+  width: 1.625rem;
+  height: 1.625rem;
+}
+
+.switch:checked + .switch-track--large::after {
+  transform: translateX(1.625rem);
+}
+
+/* With icons */
+.switch-track--with-icons {
+  padding: 0 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.switch-track--with-icons::before {
+  content: "✕";
+  font-size: 0.75rem;
+  color: var(--color-background);
+  z-index: 1;
+  opacity: 1;
+  transition: opacity var(--transition-fast);
+}
+
+.switch:checked + .switch-track--with-icons::before {
+  opacity: 0;
+}
+
+.switch-track--with-icons svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  color: var(--color-background);
+  z-index: 1;
+}
+
+/* Error state */
+.switch-wrapper--error .switch:checked + .switch-track {
+  background-color: var(--color-error);
+}
+
+/* Success state */
+.switch-wrapper--success .switch:checked + .switch-track {
+  background-color: var(--color-success);
+}
+
+/* Loading state */
+.switch-wrapper--loading .switch-track::after {
+  animation: pulse 1.5s var(--ease-in-out) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+  .switch-track {
+    border: 2px solid var(--color-dim);
+  }
+
+  .switch:focus-visible + .switch-track {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .switch:checked + .switch-track {
+    border-color: var(--color-primary);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .switch-track::after {
+    transition: none;
+  }
+
+  .switch-wrapper--loading .switch-track::after {
+    animation: none;
+    opacity: 0.7;
+  }
+}

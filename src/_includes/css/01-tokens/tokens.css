@@ -1,0 +1,265 @@
+/* ==========================================================================
+   Design Tokens
+   All design system variables in one place
+   ========================================================================== */
+
+:root {
+  /* ==========================================================================
+     Color Palette - Light Theme (Default)
+     ========================================================================== */
+
+  /* Base colors */
+  --color-base: #0a0c0f;
+  --color-text: #29303d;
+  --color-dim: #525f7a;
+  --color-line: #e0e4eb;
+  --color-background: #fff;
+  --color-background-shade: #f6f7f9;
+
+  /* Primary colors */
+  --color-primary: #bf4040;
+  --color-primary-highlight: #933;
+
+  /* Semantic colors */
+  --color-link: var(--color-base);
+  --color-link-hover: var(--color-dim);
+  --color-link-visited: #5e3a99;
+
+  /* Status colors */
+  --color-success: #10b981;
+  --color-success-hover: #059669;
+  --color-success-light: rgba(16, 185, 129, 0.1);
+
+  --color-warning: #f59e0b;
+  --color-warning-hover: #d97706;
+  --color-warning-light: rgba(245, 158, 11, 0.1);
+
+  --color-error: #ef4444;
+  --color-error-hover: #dc2626;
+  --color-error-light: rgba(239, 68, 68, 0.1);
+
+  --color-info: #3b82f6;
+  --color-info-hover: #2563eb;
+  --color-info-light: rgba(59, 130, 246, 0.1);
+
+  /* Code syntax highlighting */
+  --code-text: #24292e;
+  --code-comment: #6a737d;
+  --code-token-1: #d73a49; /* Keywords */
+  --code-token-2: #005cc5; /* Strings */
+  --code-token-3: #6f42c1; /* Functions */
+  --code-token-4: #e36209; /* Numbers */
+  --code-inserted: #22863a;
+  --code-deleted: #b31d28;
+  --code-background: #f6f8fa;
+  --code-border: #e1e4e8;
+
+  /* ==========================================================================
+     Typography
+     ========================================================================== */
+
+  /* Font families */
+  --font-family-ui:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  --font-family-code:
+    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+  /* Font weights */
+  --font-regular: 400;
+  --font-bold: 600;
+
+  /* Font scales - Size / Line Height */
+  --font-display: bold clamp(2.5rem, 6vw, 4rem) / 1.1 var(--font-family-ui);
+  --font-display-spacing: -0.04em;
+
+  --font-title: bold clamp(1.75rem, 4vw, 2.5rem) / 1.2 var(--font-family-ui);
+  --font-title-spacing: -0.02em;
+
+  --font-body: var(--font-regular) clamp(1rem, 2.5vw, 1.125rem) / 1.6 var(
+    --font-family-ui
+  );
+  --font-body-bold: var(--font-bold) clamp(1rem, 2.5vw, 1.125rem) / 1.6 var(
+    --font-family-ui
+  );
+  --font-body-spacing: -0.01em;
+
+  --font-small: var(--font-regular) clamp(0.8125rem, 2vw, 0.875rem) / 1.5 var(
+    --font-family-ui
+  );
+  --font-ui: var(--font-regular) clamp(0.9375rem, 2.2vw, 1rem) / 1.5 var(
+    --font-family-ui
+  );
+  --font-ui-bold: var(--font-bold) clamp(0.9375rem, 2.2vw, 1rem) / 1.5 var(
+    --font-family-ui
+  );
+
+  /* ==========================================================================
+     Spacing Scale
+     ========================================================================== */
+
+  /* Base spacing units */
+  --spacing-xs: 0.25rem; /* 4px */
+  --spacing-sm: 0.5rem; /* 8px */
+  --spacing-md: 1rem; /* 16px */
+  --spacing-lg: 1.5rem; /* 24px */
+  --spacing-xl: 2rem; /* 32px */
+  --spacing-2xl: 3rem; /* 48px */
+  --spacing-3xl: 4rem; /* 64px */
+
+  /* Row gaps (vertical spacing) */
+  --row-gap-xsmall: 1rem;
+  --row-gap-small: 2.5rem;
+  --row-gap-medium: 5rem;
+  --row-gap-large: 7.5rem;
+
+  /* ==========================================================================
+     Layout
+     ========================================================================== */
+
+  /* Content widths */
+  --content-max-width: 45rem;
+  --content-padding-desktop: 15vw;
+  --content-padding-tablet: 8vw;
+  --content-padding-mobile: 2rem;
+
+  /* Border radius */
+  --border-radius-sm: 0.25rem;
+  --border-radius-md: 0.375rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius: var(--border-radius-md); /* Default */
+
+  /* Elevation system (box-shadow) */
+  --elevation-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --elevation-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
+  --elevation-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --elevation-xl:
+    0 20px 25px rgba(0, 0, 0, 0.15), 0 10px 10px rgba(0, 0, 0, 0.04);
+
+  /* ==========================================================================
+     Animations & Transitions
+     ========================================================================== */
+
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+  --animation-duration: 0.2s;
+
+  /* Easing curves */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0, 1);
+
+  /* State tokens */
+  --opacity-hover: 0.9;
+  --opacity-active: 0.8;
+  --opacity-disabled: 0.5;
+  --opacity-subtle: 0.6;
+
+  /* Focus styles */
+  --focus-outline: 2px solid var(--color-link);
+  --focus-offset: 2px;
+
+  /* ==========================================================================
+     Breakpoints (for reference in media queries)
+     Note: CSS custom properties can't be used directly in @media
+     These are documented here for consistency
+     ========================================================================== */
+
+  --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1024px;
+  --breakpoint-wide: 1440px;
+
+  /* ==========================================================================
+     Z-index Scale
+     ========================================================================== */
+
+  --z-index-base: 0;
+  --z-index-dropdown: 100;
+  --z-index-sticky: 200;
+  --z-index-fixed: 300;
+  --z-index-modal: 400;
+  --z-index-toast: 450;
+  --z-index-popover: 500;
+  --z-index-tooltip: 600;
+  --z-index-skip-link: 9999;
+}
+
+/* ==========================================================================
+   Dark Theme
+   ========================================================================== */
+
+[data-theme="dark"] {
+  /* Base colors */
+  --color-base: #fff;
+  --color-text: #a3adc2;
+  --color-dim: #7585a3;
+  --color-line: #29303d;
+  --color-background: #14181f;
+  --color-background-shade: #1b1f28;
+
+  /* Primary colors */
+  --color-primary: #f45757;
+  --color-primary-highlight: #f66f6f;
+
+  /* Semantic colors - dark theme adjustments */
+  --color-link-visited: #b794f6;
+
+  /* Status colors - lighter for dark backgrounds */
+  --color-success: #34d399;
+  --color-success-hover: #6ee7b7;
+  --color-success-light: rgba(52, 211, 153, 0.15);
+
+  --color-warning: #fbbf24;
+  --color-warning-hover: #fcd34d;
+  --color-warning-light: rgba(251, 191, 36, 0.15);
+
+  --color-error: #f87171;
+  --color-error-hover: #fca5a5;
+  --color-error-light: rgba(248, 113, 113, 0.15);
+
+  --color-info: #60a5fa;
+  --color-info-hover: #93c5fd;
+  --color-info-light: rgba(96, 165, 250, 0.15);
+
+  /* Elevation - darker shadows for dark theme */
+  --elevation-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --elevation-md: 0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --elevation-lg: 0 10px 15px rgba(0, 0, 0, 0.5), 0 4px 6px rgba(0, 0, 0, 0.3);
+  --elevation-xl:
+    0 20px 25px rgba(0, 0, 0, 0.6), 0 10px 10px rgba(0, 0, 0, 0.4);
+
+  /* Code syntax highlighting */
+  --code-text: #e1e4e8;
+  --code-comment: #8b949e;
+  --code-token-1: #ff7b72;
+  --code-token-2: #79c0ff;
+  --code-token-3: #d2a8ff;
+  --code-token-4: #ffa657;
+  --code-inserted: #7ee787;
+  --code-deleted: #ffa198;
+  --code-background: #161b22;
+  --code-border: #30363d;
+}
+
+/* ==========================================================================
+   Pagefind UI Theme Variables
+   ========================================================================== */
+
+:root {
+  --pagefind-ui-scale: 1;
+  --pagefind-ui-primary: var(--color-primary);
+  --pagefind-ui-text: var(--color-text);
+  --pagefind-ui-background: var(--color-background);
+  --pagefind-ui-border: var(--color-line);
+  --pagefind-ui-tag: var(--color-background-shade);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: var(--border-radius);
+  --pagefind-ui-image-border-radius: var(--border-radius);
+  --pagefind-ui-image-box-ratio: 3 / 2;
+  --pagefind-ui-font: var(--font-family-ui);
+}

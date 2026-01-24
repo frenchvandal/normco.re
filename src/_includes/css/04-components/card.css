@@ -1,0 +1,119 @@
+/* ==========================================================================
+   Card Component
+   Flexible container for content (used in post lists, features, etc.)
+   ========================================================================== */
+
+.card {
+  background: var(--color-background);
+  border: 1px solid var(--color-line);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-lg);
+  transition: all var(--transition-fast);
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Card variants */
+.card--flat {
+  border: none;
+  padding: 0;
+}
+
+.card--flat:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+.card--highlight {
+  background: var(--color-background-shade);
+}
+
+.card--bordered {
+  border-width: 2px;
+}
+
+/* Card sections */
+.card-header {
+  margin-bottom: var(--spacing-md);
+}
+
+.card-header:last-child {
+  margin-bottom: 0;
+}
+
+.card-title {
+  font: var(--font-title);
+  letter-spacing: var(--font-title-spacing);
+  color: var(--color-base);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.card-subtitle {
+  font: var(--font-small);
+  color: var(--color-dim);
+  margin: 0;
+}
+
+.card-body {
+  color: var(--color-text);
+}
+
+.card-body > :first-child {
+  margin-top: 0;
+}
+
+.card-body > :last-child {
+  margin-bottom: 0;
+}
+
+.card-footer {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-line);
+  font: var(--font-small);
+  color: var(--color-dim);
+}
+
+.card-footer:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Card meta info */
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm) var(--spacing-md);
+  align-items: center;
+  font: var(--font-small);
+  color: var(--color-dim);
+}
+
+.card-meta > * {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* Card actions */
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+  }
+}

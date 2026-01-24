@@ -1,0 +1,231 @@
+/* ==========================================================================
+   Modal Component
+   ========================================================================== */
+
+/* Modal backdrop */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: var(--z-index-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  backdrop-filter: blur(2px);
+}
+
+/* Backdrop animations */
+.modal-backdrop[data-state="open"] {
+  animation: fadeIn var(--transition-base) var(--ease-out);
+}
+
+.modal-backdrop[data-state="closed"] {
+  animation: fadeOut var(--transition-base) var(--ease-in);
+}
+
+/* Modal container */
+.modal {
+  background-color: var(--color-background);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--elevation-xl);
+  width: 100%;
+  max-width: 32rem;
+  max-height: calc(100vh - var(--spacing-2xl));
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Modal animations */
+.modal-backdrop[data-state="open"] .modal {
+  animation:
+    fadeIn var(--transition-base) var(--ease-out),
+    slideInUp var(--transition-base) var(--ease-emphasized);
+}
+
+.modal-backdrop[data-state="closed"] .modal {
+  animation:
+    fadeOut var(--transition-base) var(--ease-in),
+    slideOutDown var(--transition-base) var(--ease-emphasized);
+}
+
+/* Modal header */
+.modal__header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.modal__title {
+  font: var(--font-title);
+  letter-spacing: var(--font-title-spacing);
+  color: var(--color-base);
+  margin: 0;
+}
+
+/* Close button */
+.modal__close {
+  background: none;
+  border: none;
+  color: var(--color-dim);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-sm);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.modal__close:hover {
+  background-color: var(--color-background-shade);
+  color: var(--color-base);
+}
+
+.modal__close:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+}
+
+.modal__close svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Modal body */
+.modal__body {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal__body > :first-child {
+  margin-top: 0;
+}
+
+.modal__body > :last-child {
+  margin-bottom: 0;
+}
+
+/* Modal footer */
+.modal__footer {
+  padding: var(--spacing-lg);
+  border-top: 1px solid var(--color-line);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+/* Modal sizes */
+.modal--small {
+  max-width: 24rem;
+}
+
+.modal--large {
+  max-width: 48rem;
+}
+
+.modal--fullscreen {
+  max-width: 100%;
+  max-height: 100vh;
+  height: 100vh;
+  border-radius: 0;
+}
+
+/* Modal without header/footer */
+.modal--no-padding .modal__body {
+  padding: 0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(2rem);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(2rem);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal {
+    max-width: 100%;
+    max-height: 90vh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .modal-backdrop[data-state="open"] .modal {
+    animation:
+      fadeIn var(--transition-base) var(--ease-out),
+      slideInUp var(--transition-base) var(--ease-emphasized);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+  .modal {
+    border: 3px solid var(--color-line);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal {
+    animation: none !important;
+  }
+
+  .modal-backdrop {
+    backdrop-filter: none;
+  }
+}
+
+/* Body scroll lock when modal is open */
+body:has(.modal-backdrop) {
+  overflow: hidden;
+}

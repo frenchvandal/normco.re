@@ -1,0 +1,51 @@
+/* ==========================================================================
+   Footer Layout
+   ========================================================================== */
+
+.site-footer {
+  padding: var(--spacing-2xl) 0;
+  margin: var(--spacing-3xl) auto 0;
+  max-width: min(
+    100% - var(--content-padding-desktop),
+    var(--content-max-width)
+  );
+  text-align: center;
+  font: var(--font-ui);
+  color: var(--color-dim);
+  border-block-start: 1px solid var(--color-border);
+
+  & p {
+    margin: 0;
+  }
+
+  & a {
+    font-weight: var(--font-medium);
+    text-decoration: none;
+    color: var(--color-text);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-primary);
+      text-decoration: underline;
+    }
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .site-footer {
+    padding: var(--spacing-xl) 0;
+    max-width: min(
+      100% - var(--content-padding-tablet),
+      var(--content-max-width)
+    );
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-footer {
+    padding: var(--spacing-lg) 0;
+    max-width: calc(100% - var(--content-padding-mobile));
+  }
+}

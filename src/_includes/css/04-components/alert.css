@@ -1,0 +1,87 @@
+/* ==========================================================================
+   Alert Component
+   For markdown alerts and notifications
+   ========================================================================== */
+
+.alert {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-left: 4px solid var(--color-line);
+  border-radius: var(--border-radius);
+  background-color: var(--color-background-shade);
+}
+
+.alert :first-child {
+  margin-top: 0;
+}
+
+.alert :last-child {
+  margin-bottom: 0;
+}
+
+/* Alert title */
+.alert-title {
+  font: var(--font-body-bold);
+  margin-bottom: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* Alert variants */
+.alert--info {
+  border-left-color: var(--color-info);
+  background-color: var(--color-info-light);
+}
+
+.alert--success {
+  border-left-color: var(--color-success);
+  background-color: var(--color-success-light);
+}
+
+.alert--warning {
+  border-left-color: var(--color-warning);
+  background-color: var(--color-warning-light);
+}
+
+.alert--error {
+  border-left-color: var(--color-error);
+  background-color: var(--color-error-light);
+}
+
+/* Markdown alert plugin compatibility */
+.markdown-alert {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--border-radius);
+  background-color: var(--color-background-shade);
+}
+
+.markdown-alert-title {
+  font: var(--font-body-bold);
+  margin-bottom: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.markdown-alert-note {
+  border-left-color: var(--color-info);
+}
+
+.markdown-alert-tip {
+  border-left-color: var(--color-success);
+}
+
+.markdown-alert-important {
+  border-left-color: var(--color-primary);
+}
+
+.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert-caution {
+  border-left-color: var(--color-error);
+}

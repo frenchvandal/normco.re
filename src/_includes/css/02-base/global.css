@@ -1,0 +1,168 @@
+/* ==========================================================================
+   Global Improvements & Enhancements
+   ========================================================================== */
+
+/* Color scheme support for native controls */
+:root {
+  color-scheme: light dark;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  :root {
+    --color-text: #000;
+    --color-dim: #333;
+    --color-line: #666;
+    --focus-outline: 3px solid var(--color-link);
+    --focus-offset: 3px;
+  }
+
+  [data-theme="dark"] {
+    --color-text: #fff;
+    --color-dim: #ccc;
+    --color-line: #999;
+  }
+
+  /* Stronger borders and contrasts */
+  a {
+    text-decoration-thickness: 2px !important;
+  }
+
+  button,
+  .btn {
+    border-width: 2px !important;
+  }
+}
+
+/* Smooth scrolling with accessibility consideration */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Skip to main content for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -3rem;
+  left: 1rem;
+  z-index: var(--z-index-skip-link);
+  padding: 0.75rem 1.5rem;
+  background: var(--color-base);
+  color: var(--color-background);
+  text-decoration: none;
+  border-radius: var(--border-radius-sm);
+  font-weight: var(--font-bold);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Better focus visibility */
+:focus-visible {
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-offset);
+  border-radius: 2px;
+}
+
+/* Remove default outline only when focus-visible is supported */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Smooth anchor scroll offset */
+:target {
+  scroll-margin-top: 2rem;
+}
+
+/* Theme transition */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base),
+    border-color var(--transition-base) !important;
+  transition-delay: 0s !important;
+}
+
+/* Transitions for interactive elements */
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  button,
+  summary {
+    transition:
+      color var(--transition-fast),
+      background-color var(--transition-fast),
+      border-color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+}
+
+/* Image lazy loading */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+img[loading="lazy"].loaded {
+  opacity: 1;
+}
+
+/* Performance: Reduce animations for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  img[loading="lazy"] {
+    opacity: 1;
+    transition: none;
+  }
+}
+
+/* Main content layout */
+main {
+  padding: var(--row-gap-medium) 0;
+  max-width: min(
+    100% - var(--content-padding-desktop),
+    var(--content-max-width)
+  );
+  margin: 0 auto;
+}
+
+main > :first-child {
+  margin-top: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  main {
+    max-width: min(
+      100% - var(--content-padding-tablet),
+      var(--content-max-width)
+    );
+  }
+}
+
+@media (max-width: 480px) {
+  main {
+    max-width: calc(100% - var(--content-padding-mobile));
+    padding: var(--row-gap-small) 0;
+  }
+}

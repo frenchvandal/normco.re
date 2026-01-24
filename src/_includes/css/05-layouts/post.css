@@ -1,0 +1,86 @@
+/* ==========================================================================
+   Post component
+   ========================================================================== */
+
+.post-header {
+  margin-bottom: var(--row-gap-small);
+}
+
+.post-title {
+  /* Using utility class .u-display-title */
+  margin-bottom: 0.2em;
+}
+
+.post-details {
+  display: flex;
+  flex-flow: row wrap;
+  gap: var(--spacing-sm) var(--spacing-md);
+  align-items: center;
+  font: var(--font-small);
+  color: var(--color-dim);
+
+  & p {
+    margin: 0;
+
+    /* Separator bullet */
+    &:not(:last-of-type)::after {
+      content: "•";
+      margin-left: var(--spacing-md);
+      opacity: 0.5;
+    }
+  }
+
+  & a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration-color: currentColor;
+    }
+  }
+}
+
+.post-tags {
+  display: flex;
+  flex-flow: row wrap;
+  gap: var(--spacing-sm);
+  align-items: center;
+
+  /* Using badge component styles */
+  & a {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--color-background-shade);
+    border-radius: var(--border-radius-sm);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background-color var(--transition-fast);
+
+    &:hover,
+    &:focus-visible {
+      background: var(--color-line);
+    }
+  }
+}
+
+.post-link {
+  display: inline-block;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .post-details {
+    font-size: 0.875rem;
+    gap: var(--spacing-sm);
+
+    & p:not(:last-of-type)::after {
+      margin-left: var(--spacing-sm);
+    }
+  }
+}

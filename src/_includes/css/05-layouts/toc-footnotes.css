@@ -1,0 +1,152 @@
+/* ==========================================================================
+   Table of Contents & Footnotes
+   ========================================================================== */
+
+/* Table of Contents */
+.toc {
+  background: var(--color-background-shade);
+  border: 1px solid var(--color-line);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  margin: var(--row-gap-medium) 0;
+  position: relative;
+
+  & h2 {
+    font: var(--font-body-bold);
+    margin: 0 0 var(--spacing-md);
+    color: var(--color-base);
+  }
+
+  & ol,
+  & ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    line-height: 1.8;
+  }
+
+  & li {
+    margin: var(--spacing-sm) 0;
+  }
+
+  & ul {
+    padding-left: var(--spacing-lg);
+    margin-top: var(--spacing-xs);
+  }
+
+  & a {
+    color: var(--color-dim);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+    display: inline-block;
+    position: relative;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-base);
+    }
+
+    &.active {
+      color: var(--color-base);
+      font-weight: var(--font-bold);
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: calc(-1 * var(--spacing-md));
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 1.2em;
+        background: var(--color-base);
+        border-radius: var(--border-radius-sm);
+      }
+    }
+  }
+}
+
+/* Sticky TOC on larger screens - disabled to prevent content overlay */
+@media (min-width: 1200px) {
+  .toc.toc-sticky {
+    /* Removed sticky positioning to prevent covering content when scrolling */
+    position: relative;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
+
+/* Footnotes */
+.footnotes {
+  margin-top: var(--row-gap-large);
+  padding-top: var(--row-gap-medium);
+  border-top: 2px solid var(--color-line);
+  font-size: 0.9rem;
+  color: var(--color-dim);
+
+  & dl {
+    margin: 0;
+  }
+
+  & .footnote {
+    margin: var(--spacing-md) 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 var(--spacing-md);
+    align-items: baseline;
+
+    &:target {
+      background: var(--color-background-shade);
+      margin-left: calc(-1 * var(--spacing-md));
+      margin-right: calc(-1 * var(--spacing-md));
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--border-radius-sm);
+    }
+  }
+
+  & dt {
+    font-weight: var(--font-bold);
+
+    & a {
+      color: var(--color-dim);
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        color: var(--color-base);
+      }
+    }
+  }
+
+  & dd {
+    margin: 0;
+    line-height: 1.6;
+
+    & p {
+      margin: var(--spacing-sm) 0;
+    }
+
+    & p:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .toc {
+    padding: var(--spacing-md);
+
+    & a.active::before {
+      left: calc(-1 * var(--spacing-sm));
+    }
+  }
+
+  .footnotes {
+    font-size: 0.875rem;
+
+    & .footnote {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-xs);
+    }
+  }
+}
