@@ -34,7 +34,10 @@
   & a {
     position: relative;
     text-decoration: none;
-    padding-block: var(--spacing-xs);
+    padding-block: var(--spacing-sm);
+    min-height: var(--tap-target-min);
+    display: inline-flex;
+    align-items: center;
 
     &:hover,
     &:focus-visible {

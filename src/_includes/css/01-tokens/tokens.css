@@ -159,6 +159,9 @@
   --opacity-disabled: 0.5;
   --opacity-subtle: 0.6;
 
+  /* Accessibility */
+  --tap-target-min: 2.75rem;
+
   /* Focus styles */
   --focus-outline: 2px solid var(--color-link);
   --focus-offset: 2px;
