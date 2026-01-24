@@ -28,6 +28,9 @@ export interface Options {
 }
 
 export const defaults: Options = {
+  prism: {
+    autoloadLanguages: true, // Auto-load languages for code tabs
+  },
   pagefind: {
     ui: false, // Disable auto UI injection, we handle it in main.js
   },

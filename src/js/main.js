@@ -11,6 +11,7 @@ import { enhanceAnchors } from "./features/anchors.js";
 import { enhanceExternalLinks } from "./features/external-links.js";
 import { enhanceImages } from "./features/images.js";
 import { initSearch } from "./features/search.js";
+import { initSearchModal } from "./features/search-modal.js";
 import { createThemeManager } from "./features/theme.js";
 import { enhanceTOC } from "./features/toc.js";
 
@@ -32,6 +33,7 @@ themeManager.init();
 // Initialize all features
 function initializeFeatures() {
   initSearch();
+  initSearchModal();
   enhanceImages();
   const defer = globalThis.requestIdleCallback
     ? globalThis.requestIdleCallback

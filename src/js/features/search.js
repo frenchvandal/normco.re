@@ -10,6 +10,14 @@ export function initSearch() {
   // This just adds loading state
   searchContainer.setAttribute("aria-busy", "true");
 
+  // Remove skeleton when search initializes
+  const removeSkeleton = () => {
+    const skeleton = searchContainer.querySelector(".search-skeleton");
+    if (skeleton) {
+      skeleton.remove();
+    }
+  };
+
   // Wait for Pagefind to load with Promise-based approach
   const waitForPagefind = () => {
     return new Promise((resolve, reject) => {
@@ -32,6 +40,7 @@ export function initSearch() {
 
   waitForPagefind()
     .then(() => {
+      removeSkeleton();
       new globalThis.PagefindUI({
         element: "#search",
         showSubResults: true,
@@ -41,6 +50,7 @@ export function initSearch() {
     })
     .catch((error) => {
       console.warn("Search initialization failed:", error.message);
+      removeSkeleton();
     })
     .finally(() => {
       searchContainer.removeAttribute("aria-busy");

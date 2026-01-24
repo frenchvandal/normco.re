@@ -302,3 +302,73 @@
     margin-top: -50%;
   }
 }
+
+/* ==========================================================================
+   Inline tooltip (data-tooltip attribute)
+   Lightweight tooltip for inline elements like links
+   ========================================================================== */
+
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  z-index: var(--z-index-tooltip);
+  bottom: calc(100% + var(--spacing-xs));
+  left: 50%;
+  transform: translateX(-50%) translateY(0.25rem);
+  background-color: var(--color-base);
+  color: var(--color-background);
+  font: var(--font-small);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity var(--transition-fast) var(--ease-out),
+    transform var(--transition-fast) var(--ease-out);
+}
+
+[data-tooltip]:hover::after,
+[data-tooltip]:focus::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* External link indicator icon */
+.external-link::before {
+  content: "";
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  margin-left: 0.25em;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/%3E%3Cpolyline points='15 3 21 3 21 9'/%3E%3Cline x1='10' y1='14' x2='21' y2='3'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  opacity: 0.6;
+  order: 1;
+}
+
+/* Inline tooltip reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  [data-tooltip]::after {
+    transition: opacity var(--transition-fast);
+    transform: translateX(-50%);
+  }
+
+  [data-tooltip]:hover::after,
+  [data-tooltip]:focus::after {
+    transform: translateX(-50%);
+  }
+}
+
+/* Hide tooltip on touch devices (use native title fallback) */
+@media (hover: none) {
+  [data-tooltip]::after {
+    display: none;
+  }
+}

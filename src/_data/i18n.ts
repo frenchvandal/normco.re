@@ -14,6 +14,8 @@ interface I18n {
     page: string;
     next: string;
     previous: string;
+    home: string;
+    posts: string;
   };
   post: {
     by: string;
@@ -39,6 +41,8 @@ const i18n: I18n = {
     page: "Page",
     next: "Next →",
     previous: "← Previous",
+    home: "Home",
+    posts: "Posts",
   },
   post: {
     by: "by ",

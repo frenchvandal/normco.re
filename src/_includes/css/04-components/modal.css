@@ -230,3 +230,66 @@
 body:has(.modal-backdrop) {
   overflow: hidden;
 }
+
+/* ==========================================================================
+   Modal shortcuts and search modal
+   ========================================================================== */
+
+/* Keyboard shortcut indicator */
+.modal__shortcut {
+  display: none;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font: var(--font-small);
+  color: var(--color-dim);
+  margin-right: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .modal__shortcut {
+    display: flex;
+  }
+}
+
+.modal__shortcut kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font: var(--font-small);
+  font-family: inherit;
+  background-color: var(--color-background-shade);
+  border: 1px solid var(--color-line);
+  border-radius: var(--border-radius-sm);
+  box-shadow: inset 0 -1px 0 var(--color-line);
+}
+
+/* Search modal specific styles */
+#search-modal .modal__header {
+  flex-wrap: wrap;
+}
+
+#search-modal .modal__title {
+  flex: 1;
+}
+
+#search-modal .modal__body {
+  padding: 0;
+  min-height: 20rem;
+}
+
+.search-modal__content {
+  padding: var(--spacing-md);
+}
+
+/* Pagefind UI overrides for modal */
+#search-modal .pagefind-ui__search-input {
+  font-size: 1.125rem;
+  padding: var(--spacing-md);
+}
+
+#search-modal .pagefind-ui__results-area {
+  max-height: 50vh;
+  overflow-y: auto;
+}
