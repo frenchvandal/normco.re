@@ -86,5 +86,5 @@ The CSS is organized using ITCSS and imported in `src/styles.css`:
   `src/js/components/` for behavior.
 - Wire new JS components through `src/js/core/ui-components.js` so they are
   initialized automatically.
-- Keep CSS components in `src/_includes/css/04-components/` and import them
-  from `src/styles.css`.
+- Keep CSS components in `src/_includes/css/04-components/` and import them from
+  `src/styles.css`.

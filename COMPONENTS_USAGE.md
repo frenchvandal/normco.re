@@ -1,8 +1,8 @@
 # UI Component Usage Guide
 
-This guide explains how to use the design system components in Lume templates and
-content. The focus is on the components currently implemented in this codebase
-and the APIs that are already wired up in `main.js`.
+This guide explains how to use the design system components in Lume templates
+and content. The focus is on the components currently implemented in this
+codebase and the APIs that are already wired up in `main.js`.
 
 ---
 
@@ -31,24 +31,24 @@ export default function (data: Lume.Data) {
     <h1>Tabs Example</h1>
 
     ${
-      comp.tabs({
-        tabs: [
-          {
-            label: "Overview",
-            content: "<p>Project overview</p>",
-          },
-          {
-            label: "Settings",
-            content: "<p>Configuration options</p>",
-          },
-          {
-            label: "Advanced",
-            content: "<p>Advanced controls</p>",
-            badge: "New",
-          },
-        ],
-      })
-    }
+    comp.tabs({
+      tabs: [
+        {
+          label: "Overview",
+          content: "<p>Project overview</p>",
+        },
+        {
+          label: "Settings",
+          content: "<p>Configuration options</p>",
+        },
+        {
+          label: "Advanced",
+          content: "<p>Advanced controls</p>",
+          badge: "New",
+        },
+      ],
+    })
+  }
   `;
 }
 ```
@@ -159,14 +159,14 @@ export default function (data: Lume.Data) {
     </button>
 
     ${
-      comp.modal({
-        id: "confirm-delete",
-        title: "Confirm deletion",
-        content: `
+    comp.modal({
+      id: "confirm-delete",
+      title: "Confirm deletion",
+      content: `
           <p>Are you sure you want to delete this item?</p>
           <p>This action cannot be undone.</p>
         `,
-        footer: `
+      footer: `
           <button class="button" onclick="closeModal('confirm-delete')">
             Cancel
           </button>
@@ -174,10 +174,10 @@ export default function (data: Lume.Data) {
             Delete
           </button>
         `,
-        size: "default",
-        closeable: true,
-      })
-    }
+      size: "default",
+      closeable: true,
+    })
+  }
   `;
 }
 ```

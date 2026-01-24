@@ -20,9 +20,9 @@ implementation.
 ## Introduction to Lume
 
 Lume is a static site generator built with Deno. Unlike traditional SSGs that
-rely on Node.js, Lume leverages Deno’s modern runtime for a fresh take on
-static site generation. Its plugin system enables extensive customization while
-keeping concerns cleanly separated.
+rely on Node.js, Lume leverages Deno’s modern runtime for a fresh take on static
+site generation. Its plugin system enables extensive customization while keeping
+concerns cleanly separated.
 
 ## Project Structure and Configuration
 
