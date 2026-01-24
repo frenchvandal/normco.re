@@ -3,6 +3,9 @@
 ## Project context
 - Personal blog maintained by Phiphi (FR), based in Chengdu, China.
 - Documentation and comments are in English by default unless explicitly stated otherwise.
+- Project URLs:
+  - Production: https://normco.re
+  - GitHub: https://github.com/frenchvandal/normco.re
 
 ## Stack & tooling
 - Runtime: **Deno**
@@ -57,7 +60,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) =>
 
 ### Accessibility
 - Support `prefers-reduced-motion` for animations.
-- Support `prefers-contrast: more` where feasible.
+- Support `prefers-contrast: more / high` where feasible.
 - Always include `:focus-visible` for keyboard navigation.
 
 ### Performance & modern CSS
@@ -111,6 +114,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) =>
 - Prefer **stable, version-pinned URL imports**.
 - Avoid excessive dependencies (Deno favors lean code).
 - Keep code compliant with `deno lint` and `deno fmt`.
+- If `deno.lock` is versioned, keep it updated to ensure reproducible builds.
 
 ### Useful commands
 ```bash
@@ -143,3 +147,4 @@ deno fmt         # Format
 - Always account for accessibility.
 - Avoid JSX/Preact and non-approved templating engines.
 - Stay concise and aligned with the site’s minimalist identity.
+- Respond in French by default for discussions; keep code and code comments in English.
