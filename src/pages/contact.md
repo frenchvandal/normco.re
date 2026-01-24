@@ -7,4 +7,7 @@ menu:
   order: 2
 ---
 
-Hola
+# Get in touch
+
+If you'd like to reach out, you can contact me through the links in the site
+navigation or any of the profiles listed in the footer.
