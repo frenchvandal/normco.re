@@ -6,7 +6,7 @@
   <xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>
 
   <xsl:template match="/">
-    <html lang="en" data-theme="light">
+    <html lang="en">
       <head>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -17,11 +17,14 @@
           <![CDATA[
             // Detect and apply theme preference
             (function() {
-              const savedTheme = localStorage.getItem('theme');
-              const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+              const storedTheme = localStorage.getItem('feed-theme');
+              const hasStoredTheme = storedTheme === 'dark' || storedTheme === 'light';
 
-              const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-              document.documentElement.setAttribute('data-theme', theme);
+              if (hasStoredTheme) {
+                document.documentElement.setAttribute('data-theme', storedTheme);
+              } else {
+                document.documentElement.removeAttribute('data-theme');
+              }
             })();
           ]]>
         </script>
