@@ -20,7 +20,6 @@ export default function (options: Partial<Options> = {}) {
       "_includes/css/badge.css",
       "_includes/css/variables.css",
       "_includes/css/search.css",
-      "_components/metaTags.ts",
       "_components/pagination.ts",
       "_components/postDetails.ts",
       "_components/postList.ts",

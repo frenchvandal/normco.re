@@ -6,7 +6,7 @@ const site = lume({
   location: new URL("https://normco.re"),
 });
 
-// Récupérer le commit SHA pour le pied de page
+// Get commit SHA for footer
 const getCommitSha = async (): Promise<string> => {
   try {
     const cmd = new Deno.Command("git", { args: ["rev-parse", "HEAD"] });

@@ -22,7 +22,7 @@ export default function ({
   tabs,
   variant = "default",
   vertical = false,
-  id = `tabs-${Math.random().toString(36).substr(2, 9)}`,
+  id = `tabs-${Math.random().toString(36).slice(2, 11)}`,
 }: TabsProps) {
   if (!tabs || tabs.length === 0) {
     return "";

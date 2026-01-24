@@ -3,7 +3,7 @@
  * Simple layout for content pages
  */
 export const layout = "layouts/base.ts";
-export const bodyClass = "body-tag";
+export const bodyClass = "body-page";
 
 export default function (
   { title, subtitle, content }: Lume.Data,
