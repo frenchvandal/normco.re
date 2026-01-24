@@ -11,10 +11,14 @@ codebase and the APIs that are already wired up in `main.js`.
 1. [Tabs](#tabs)
 2. [Toast Notifications](#toast-notifications)
 3. [Modal](#modal)
-4. [Form Components](#form-components)
-5. [Navigation Components](#navigation-components)
-6. [Tooltip](#tooltip)
-7. [Skeleton Loaders](#skeleton-loaders)
+4. [Post List](#post-list)
+5. [Post Details](#post-details)
+6. [Pagination](#pagination)
+7. [Meta Tags](#meta-tags)
+8. [Form Components](#form-components)
+9. [Navigation Components](#navigation-components)
+10. [Tooltip](#tooltip)
+11. [Skeleton Loaders](#skeleton-loaders)
 
 ---
 
@@ -193,6 +197,92 @@ export default function (data: Lume.Data) {
 
 - Modals are initialized automatically by `main.js`.
 - Focus trapping, ESC to close, and backdrop click handling are built in.
+
+---
+
+## Post List
+
+Render a list of posts with metadata. This component expects an array of post
+pages and the current page URL to set the active link.
+
+```typescript
+export default async function (data: Lume.Data) {
+  const { comp, search, url } = data;
+  const posts = search.pages("type=post", "date=desc");
+
+  return `
+    <section>
+      <h1>Latest posts</h1>
+      ${await comp.postList({ postslist: posts, url })}
+    </section>
+  `;
+}
+```
+
+---
+
+## Post Details
+
+Use this component when you need to show author, date, reading time, and tags
+outside of the post list.
+
+```typescript
+export default async function (data: Lume.Data) {
+  const { comp } = data;
+
+  const details = await comp.postDetails({
+    author: data.author,
+    date: data.date,
+    tags: data.tags,
+    readingInfo: data.readingInfo,
+  });
+
+  return `
+    <article>
+      <h1>${data.title}</h1>
+      ${details}
+    </article>
+  `;
+}
+```
+
+---
+
+## Pagination
+
+Pagination uses the built-in `pagination` object from Lume when a page is
+configured with pagination data.
+
+```typescript
+export default function (data: Lume.Data) {
+  const { comp, pagination, i18n } = data;
+
+  return `
+    <section>
+      ${comp.pagination({ pagination, i18n })}
+    </section>
+  `;
+}
+```
+
+---
+
+## Meta Tags
+
+The meta tags component should be called inside the document `<head>` so each
+page has consistent SEO, Open Graph, and JSON-LD data.
+
+```typescript
+export default function (data: Lume.Data) {
+  const { comp } = data;
+
+  return `
+    <head>
+      ${comp.metaTags(data)}
+    </head>
+  `;
+}
+```
 
 ---
 
