@@ -196,7 +196,7 @@ function enhanceImages() {
     } else {
       img.addEventListener("load", () => {
         img.classList.add("loaded");
-      });
+      }, { once: true });
     }
   });
 }
@@ -233,6 +233,10 @@ function enhanceExternalLinks() {
 // ==========================================================================
 
 function enhanceAnchors() {
+  const prefersReducedMotion = globalThis.matchMedia?.(
+    "(prefers-reduced-motion: reduce)",
+  )?.matches;
+
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener("click", (e) => {
       const href = anchor.getAttribute("href");
@@ -242,7 +246,7 @@ function enhanceAnchors() {
       if (target) {
         e.preventDefault();
         target.scrollIntoView({
-          behavior: "smooth",
+          behavior: prefersReducedMotion ? "auto" : "smooth",
           block: "start",
         });
 
@@ -252,6 +256,7 @@ function enhanceAnchors() {
         // Focus the target for accessibility
         target.setAttribute("tabindex", "-1");
         target.focus();
+        target.focus({ preventScroll: true });
       }
     });
   });
@@ -268,13 +273,22 @@ function enhanceTOC() {
   // Make TOC sticky on scroll
   const tocTop = toc.offsetTop;
 
-  globalThis.addEventListener("scroll", () => {
+  let isTicking = false;
+  const updateStickyState = () => {
     if (globalThis.scrollY > tocTop - 20) {
       toc.classList.add("toc-sticky");
     } else {
       toc.classList.remove("toc-sticky");
     }
-  });
+    isTicking = false;
+  };
+
+  globalThis.addEventListener("scroll", () => {
+    if (!isTicking) {
+      isTicking = true;
+      requestAnimationFrame(updateStickyState);
+    }
+  }, { passive: true });
 
   // Highlight current section in TOC
   const observer = new IntersectionObserver(

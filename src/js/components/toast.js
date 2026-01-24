@@ -16,6 +16,8 @@ export class ToastManager {
     this.maxToasts = 3;
     this.toastIdCounter = 0;
 
+    this.eventController = new AbortController();
+
     // Setup event delegation for close buttons
     this.container.addEventListener("click", (e) => {
       if (e.target.closest(".toast__close")) {
@@ -24,7 +26,7 @@ export class ToastManager {
           this.dismiss(toast.id);
         }
       }
-    });
+    }, { signal: this.eventController.signal });
   }
 
   /**
@@ -64,9 +66,11 @@ export class ToastManager {
     this.container.appendChild(toast);
 
     // Trigger enter animation
-    setTimeout(() => {
-      toast.setAttribute("data-state", "entering");
-    }, 10);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        toast.setAttribute("data-state", "entering");
+      });
+    });
 
     // Track toast
     const toastData = { id: toastId, element: toast };
@@ -219,5 +223,16 @@ export class ToastManager {
     [...this.toasts].forEach((toast) => {
       this.dismiss(toast.id);
     });
+  }
+
+  destroy() {
+    this.eventController.abort();
+
+    this.toasts.forEach(({ element, timer }) => {
+      if (timer) clearTimeout(timer);
+      element.remove();
+    });
+
+    this.toasts = [];
   }
 }

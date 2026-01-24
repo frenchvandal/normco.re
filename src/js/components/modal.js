@@ -20,6 +20,10 @@ export class ModalManager {
     this.modalId = modalId;
     this.backdrop = document.getElementById(modalId);
 
+    this.eventController = new AbortController();
+
+    this.keyController = null;
+
     if (!this.backdrop) {
       console.warn(`Modal #${modalId} not found`);
       return;
@@ -37,7 +41,9 @@ export class ModalManager {
   init() {
     // Close button listeners
     this.closeButtons.forEach((btn) => {
-      btn.addEventListener("click", () => this.close());
+      btn.addEventListener("click", () => this.close(), {
+        signal: this.eventController.signal,
+      });
     });
 
     // Backdrop click to close
@@ -45,7 +51,7 @@ export class ModalManager {
       if (e.target === this.backdrop) {
         this.close();
       }
-    });
+    }, { signal: this.eventController.signal });
 
     // Keyboard listeners
     this.handleKeyboard = this.handleKeyboard.bind(this);
@@ -80,6 +86,11 @@ export class ModalManager {
 
     // Add keyboard listener
     document.addEventListener("keydown", this.handleKeyboard);
+    this.keyController = new AbortController();
+
+    document.addEventListener("keydown", this.handleKeyboard, {
+      signal: this.keyController.signal,
+    });
 
     // Emit custom event
     this.backdrop.dispatchEvent(
@@ -100,6 +111,10 @@ export class ModalManager {
 
     // Remove keyboard listener
     document.removeEventListener("keydown", this.handleKeyboard);
+    if (this.keyController) {
+      this.keyController.abort();
+      this.keyController = null;
+    }
 
     // Restore focus
     if (this.previousFocus && this.previousFocus.focus) {
@@ -196,6 +211,12 @@ export class ModalManager {
     this.closeButtons.forEach((btn) => {
       btn.removeEventListener("click", () => this.close());
     });
+    this.eventController.abort();
+    if (this.keyController) {
+      this.keyController.abort();
+      this.keyController = null;
+    }
+    this.close();
   }
 }
 

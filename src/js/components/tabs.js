@@ -20,6 +20,8 @@ export class TabsManager {
     this.tabs = Array.from(tabsElement.querySelectorAll(".tabs__tab"));
     this.panels = Array.from(tabsElement.querySelectorAll(".tabs__panel"));
 
+    this.eventController = new AbortController();
+
     if (!this.tabList || this.tabs.length === 0 || this.panels.length === 0) {
       console.warn("Tabs component is missing required elements");
       return;
@@ -40,8 +42,12 @@ export class TabsManager {
   init() {
     // Setup event listeners
     this.tabs.forEach((tab, index) => {
-      tab.addEventListener("click", () => this.switchTab(index));
-      tab.addEventListener("keydown", (e) => this.handleKeyboard(e, index));
+      tab.addEventListener("click", () => this.switchTab(index), {
+        signal: this.eventController.signal,
+      });
+      tab.addEventListener("keydown", (e) => this.handleKeyboard(e, index), {
+        signal: this.eventController.signal,
+      });
     });
 
     // Ensure initial state is correct
@@ -101,5 +107,9 @@ export class TabsManager {
         this.switchTab(this.tabs.length - 1);
         break;
     }
+  }
+
+  destroy() {
+    this.eventController.abort();
   }
 }
