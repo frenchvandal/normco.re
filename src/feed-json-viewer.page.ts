@@ -7,7 +7,7 @@ export const url = "/feed-json-viewer/";
 
 export default function () {
   return `<!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -328,7 +328,7 @@ export default function () {
 <body>
   <div class="container">
     <div id="feed-container">
-      <div class="loading">Chargement du flux JSON...</div>
+      <div class="loading">Loading JSON feed...</div>
     </div>
   </div>
 
@@ -339,7 +339,7 @@ export default function () {
 
       try {
         const response = await fetch('/feed.json');
-        if (!response.ok) throw new Error('Impossible de charger le flux');
+        if (!response.ok) throw new Error('Unable to load feed');
 
         const feed = await response.json();
 
@@ -351,8 +351,8 @@ export default function () {
 
             <div class="feed-info">
               <h2>📋 JSON Feed</h2>
-              <p>Ceci est un flux JSON. Vous pouvez vous abonner à ce flux en copiant l'URL dans votre lecteur compatible JSON Feed.</p>
-              <p>L'URL du flux :</p>
+              <p>This is a JSON feed. You can subscribe to this feed by copying the URL into your JSON Feed-compatible reader.</p>
+              <p>Feed URL:</p>
               <code class="feed-url">\${escapeHtml(feed.feed_url || '/feed.json')}</code>
             </div>
           </header>
@@ -393,7 +393,7 @@ export default function () {
                 \` : ''}
 
                 <a href="\${escapeHtml(item.url)}" class="article-link">
-                  Lire l'article complet
+                  Read full article
                 </a>
               </li>
             \`;
@@ -413,7 +413,7 @@ export default function () {
       } catch (error) {
         container.innerHTML = \`
           <div class="error">
-            <p>Erreur lors du chargement du flux : \${escapeHtml(error.message)}</p>
+            <p>Error loading feed: \${escapeHtml(error.message)}</p>
           </div>
         \`;
       }

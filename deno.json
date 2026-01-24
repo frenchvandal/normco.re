@@ -1,8 +1,7 @@
 {
   "imports": {
     "lume/": "https://deno.land/x/lume@v3.1.4/",
-    "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.11/",
-    "lume/jsx-runtime": "https://deno.land/x/ssx@v0.1.14/jsx-runtime.ts"
+    "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.11/"
   },
   "tasks": {
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
@@ -15,9 +14,7 @@
   "compilerOptions": {
     "types": [
       "lume/types.ts"
-    ],
-    "jsx": "react-jsx",
-    "jsxImportSource": "lume"
+    ]
   },
   "lint": {
     "exclude": [
