@@ -57,8 +57,10 @@ directly in HTML. These include:
 - **Display utilities**: Flexbox and grid helpers
 - **Spacing utilities**: Margin and padding classes
 - **Typography utilities**: Text alignment and appearance classes
-- **Visibility utilities**: Screen reader only and responsive hiding classes
-- **Layout utilities**: Width, height, and positioning helpers
+- **Visibility utilities**: Screen-reader-only and responsive hiding helpers
+- **Borders and backgrounds**: Quick accent and surface treatments
+- **Sizing utilities**: Width and max-width helpers
+- **Responsive helpers**: Targeted hide/show classes for smaller screens
 
 Utilities enable rapid prototyping and provide consistent styling solutions
 without creating new CSS rules.
@@ -73,7 +75,11 @@ include:
 - **Alerts**: For notifications and messages
 - **Badges**: For status indicators
 - **Theme toggle**: For switching between light and dark modes
-- **Search**: For search interface elements
+- **Search**: For the Pagefind UI and search form elements
+- **Forms**: Input, select, checkbox, and switch controls
+- **Navigation**: Tabs and breadcrumbs for section navigation
+- **Overlays**: Modal, toast, and tooltip patterns
+- **Loading states**: Skeletons for content placeholders
 
 Each component is self-contained and follows consistent naming conventions.
 
@@ -81,11 +87,10 @@ Each component is self-contained and follows consistent naming conventions.
 
 Layout styles handle page-level and section-specific arrangements:
 
-- **Page layouts**: For organizing content sections
-- **Navigation**: For header and footer navigation
-- **Post layouts**: For blog post presentation
-- **Table of contents**: For document structure
-- **Archive layouts**: For content listings
+- **Navigation**: Navbar and footer layout styling
+- **Page layouts**: Page and post-level scaffolding
+- **Post lists**: Archive and index listings
+- **Table of contents and footnotes**: Long-form reading helpers
 
 These styles manage the arrangement of components within different page
 contexts.

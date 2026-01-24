@@ -214,6 +214,8 @@ The site uses reusable TypeScript components located in `_components/`:
 - `postList.ts`: Renders lists of blog posts
 - `pagination.ts`: Provides previous/next navigation for archives
 - `metaTags.ts`: Generates SEO metadata and structured data
+- `modal.ts`: Lightweight modal dialog markup
+- `tabs.ts`: Tablist markup and behavior hooks
 
 Components are called via the `comp` helper (e.g., `await comp.postDetails()`)
 for clean, type-safe composition of reusable UI elements.
