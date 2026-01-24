@@ -1,6 +1,6 @@
 import date, { Options as DateOptions } from "lume/plugins/date.ts";
+import esbuild from "lume/plugins/esbuild.ts";
 import lightningCss from "lume/plugins/lightningcss.ts";
-import terser from "lume/plugins/terser.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import prism, { Options as PrismOptions } from "lume/plugins/prism.ts";
 import basePath from "lume/plugins/base_path.ts";
@@ -69,14 +69,14 @@ export default function (userOptions?: Options) {
       .use(footnotes())
       .use(resolveUrls())
       .use(slugifyUrls())
-      .use(terser())
+      .use(esbuild())
       .use(sourceMaps())
       .use(pagefind(options.pagefind))
       .use(sitemap())
       .use(feed(options.feed))
       .add("fonts")
       .add("styles.css")
-      .add("js")
+      .add("js/main.js")
       .add("favicon.png")
       .add("feed.xsl")
       .add("uploads")
