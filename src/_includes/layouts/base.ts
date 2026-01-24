@@ -2,7 +2,7 @@
  * Base Layout
  * Master layout with HTML structure, navigation, and footer
  */
-export default function (
+export default async function (
   {
     lang,
     title,
@@ -16,10 +16,25 @@ export default function (
     commit,
     date,
     search,
+    comp,
   }: Lume.Data,
   { url: urlHelper, date: dateHelper }: Lume.Helpers,
 ) {
   const menuItems = search.pages("menu.visible=true", "menu.order");
+  const searchModal = await comp.modal({
+    id: "search-modal",
+    title: "Search",
+    content:
+      '<div class="search-modal__content" role="search" aria-label="Search posts"></div>',
+    size: "large",
+    initialState: "closed",
+    closeable: true,
+    closeLabel: "Close search",
+    headerExtra: `
+          <span class="modal__shortcut" aria-hidden="true">
+            <kbd>Esc</kbd> to close
+          </span>`,
+  });
 
   return `<!doctype html>
 
@@ -120,33 +135,7 @@ export default function (
     <div class="toast-container toast-container--top-right" id="toast-container"></div>
 
     <!-- Search modal (Cmd/Ctrl+K) -->
-    <div
-      class="modal-backdrop"
-      id="search-modal"
-      data-state="closed"
-      aria-hidden="true"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="search-modal-title"
-    >
-      <div class="modal modal--large">
-        <div class="modal__header">
-          <h2 class="modal__title" id="search-modal-title">Search</h2>
-          <span class="modal__shortcut" aria-hidden="true">
-            <kbd>Esc</kbd> to close
-          </span>
-          <button class="modal__close" aria-label="Close search">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-        </div>
-        <div class="modal__body">
-          <div class="search-modal__content" role="search" aria-label="Search posts"></div>
-        </div>
-      </div>
-    </div>
+    ${searchModal}
 
     <!-- Current page: ${url} -->
   </body>
