@@ -2,7 +2,7 @@
  * Base Layout
  * Master layout with HTML structure, navigation, and footer
  */
-export default async function (
+export default function (
   {
     lang,
     title,

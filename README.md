@@ -1,9 +1,9 @@
 # normco.re — Personal Blog
 
 This repository contains the source for [normco.re](https://normco.re), a
-personal blog built with [Lume](https://lume.land) on top of Deno. The site
-uses TypeScript templates, a layered CSS architecture, and a focused set of
-plugins to keep the output fast, accessible, and easy to maintain.
+personal blog built with [Lume](https://lume.land) on top of Deno. The site uses
+TypeScript templates, a layered CSS architecture, and a focused set of plugins
+to keep the output fast, accessible, and easy to maintain.
 
 ## Highlights
 
