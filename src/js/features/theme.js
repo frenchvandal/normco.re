@@ -94,6 +94,14 @@ class ThemeManager {
     this.updateToggleState();
     this.updateAriaLabel();
 
+    // Show toast feedback for user-initiated theme changes
+    if (saveToStorage && globalThis.toast) {
+      const message = theme === "dark"
+        ? "Dark theme enabled"
+        : "Light theme enabled";
+      globalThis.toast.info(message, 2000);
+    }
+
     // Remove transition class after animation
     setTimeout(() => {
       document.documentElement.classList.remove("theme-transitioning");
