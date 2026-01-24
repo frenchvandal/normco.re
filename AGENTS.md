@@ -36,11 +36,11 @@ If a command cannot be run, clearly state which command would be run and why.
 
 ## Stack & tooling
 
-- Runtime: **Deno**
-- SSG: **Lume**
-- Templating: **ESM + TypeScript** (no JSX/Preact, no Nunjucks/Vento)
-- Styling: **SCSS** (or modern CSS if appropriate)
-- Content: **TypeScript pages** (`*.page.ts`) rather than Markdown
+- Runtime: **Deno**.
+- SSG: **Lume**.
+- Templating: **ESM + TypeScript** (no JSX/Preact, no Nunjucks/Vento).
+- Styling: **SCSS** (or modern CSS if appropriate).
+- Content: **TypeScript pages** (`*.page.ts`) rather than Markdown.
 
 ---
 
@@ -66,9 +66,9 @@ If a command cannot be run, clearly state which command would be run and why.
 
 Recommended order:
 
-1. Deno / Lume
-2. External dependencies
-3. Local modules
+1. Deno / Lume.
+2. External dependencies.
+3. Local modules.
 
 Separate groups with a blank line.
 
@@ -143,11 +143,11 @@ export default (data: Lume.Data, helpers: Lume.Helpers) =>
 
 ### Files
 
-- Components / Classes: `PascalCase.ts`
-- Utilities / modules: `kebab-case.ts`
-- Styles: `kebab-case.scss` or `_kebab-case.scss`
-- Pages: `kebab-case.page.ts`
-- Directories: `kebab-case`
+- Components / Classes: `PascalCase.ts`.
+- Utilities / modules: `kebab-case.ts`.
+- Styles: `kebab-case.scss` or `_kebab-case.scss`.
+- Pages: `kebab-case.page.ts`.
+- Directories: `kebab-case`.
 
 ### Code
 
