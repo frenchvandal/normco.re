@@ -85,9 +85,7 @@ export class ModalManager {
     }
 
     // Add keyboard listener
-    document.addEventListener("keydown", this.handleKeyboard);
     this.keyController = new AbortController();
-
     document.addEventListener("keydown", this.handleKeyboard, {
       signal: this.keyController.signal,
     });
