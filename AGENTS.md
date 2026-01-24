@@ -15,7 +15,7 @@
 - Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
   engines.
 - Do not add new dependencies unless explicitly requested.
-- Do not introduce Markdown content pages.
+- Do not introduce Markdown content pages unless otherwise instructed.
 - Do not modify generated artifacts or build outputs.
 - Do not over-engineer solutions.
 

@@ -177,3 +177,12 @@ deno fmt         # Format
   titles, commit descriptions, merge request titles, merge request comments in
   English.
 - Follow the Conventional Commits specification
+- Use Deno + Lume only, as configured in this repository.
+- Run `deno fmt` and `deno lint` before finalizing changes.
+- Run `deno task build` when changes affect rendering or structure.
+- Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
+  engines.
+- Do not add new dependencies unless explicitly requested.
+- Do not introduce Markdown content pages unless otherwise instructed.
+- Do not modify generated artifacts or build outputs.
+- Do not over-engineer solutions.
