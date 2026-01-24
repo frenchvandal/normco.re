@@ -16,12 +16,9 @@ export default async function (
     commit,
     date,
     search,
-    comp,
   }: Lume.Data,
   { url: urlHelper, date: dateHelper }: Lume.Helpers,
 ) {
-  const metaTags = await comp.metaTags();
-
   const menuItems = search.pages("menu.visible=true", "menu.order");
 
   return `<!doctype html>
@@ -37,8 +34,6 @@ export default async function (
     <meta name="supported-color-schemes" content="light dark">
     <meta name="theme-color" content="hsl(220, 20%, 100%)" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="hsl(220, 20%, 10%)" media="(prefers-color-scheme: dark)">
-
-    ${metaTags}
 
     <link rel="stylesheet" href="/styles.css">
     <link rel="alternate" href="/feed.xml" type="application/atom+xml" title="${
