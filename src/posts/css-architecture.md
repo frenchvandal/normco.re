@@ -107,7 +107,7 @@ seamless theme switching without duplicating style rules.
 
 Responsive utilities and media queries ensure consistent experiences across
 devices. Breakpoints are documented in the design tokens for reference, though
-they can't be used directly in media queries due to CSS limitations.
+they can’t be used directly in media queries due to CSS limitations.
 
 ### Accessibility
 
