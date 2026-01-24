@@ -6,6 +6,7 @@ import prism, { Options as PrismOptions } from "lume/plugins/prism.ts";
 import basePath from "lume/plugins/base_path.ts";
 import slugifyUrls from "lume/plugins/slugify_urls.ts";
 import resolveUrls from "lume/plugins/resolve_urls.ts";
+import jsonLd from "lume/plugins/json_ld.ts";
 import metas from "lume/plugins/metas.ts";
 import pagefind, { Options as PagefindOptions } from "lume/plugins/pagefind.ts";
 import sitemap from "lume/plugins/sitemap.ts";
@@ -62,6 +63,7 @@ export default function (userOptions?: Options) {
       .use(prism(options.prism))
       .use(readingInfo())
       .use(date(options.date))
+      .use(jsonLd())
       .use(metas())
       .use(image())
       .use(footnotes())

@@ -2,6 +2,8 @@
  * Global site data
  */
 
+import "lume/types.ts";
+
 interface MenuLink {
   text: string;
   href: string;
@@ -24,6 +26,7 @@ interface SiteData {
   menu_links: MenuLink[];
   extra_head: string[];
   metas: MetasConfig;
+  jsonLd: Lume.Data["jsonLd"];
 }
 
 const data: SiteData = {
@@ -40,6 +43,22 @@ const data: SiteData = {
     image: "=image",
     twitter: "@frenchvandal",
     lang: "en",
+  },
+  jsonLd: {
+    "@type": "WebSite",
+    url: "=url",
+    headline: "=title || =metas.site",
+    name: "=metas.site",
+    description: "=metas.description",
+    image: "=image || =metas.image || /favicon.png",
+    publisher: {
+      "@type": "Organization",
+      name: "=metas.site",
+      logo: {
+        "@type": "ImageObject",
+        url: "/favicon.png",
+      },
+    },
   },
 };
 
