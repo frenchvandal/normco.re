@@ -1,6 +1,7 @@
 import date, { Options as DateOptions } from "lume/plugins/date.ts";
 import lightningCss from "lume/plugins/lightningcss.ts";
 import terser from "lume/plugins/terser.ts";
+import sourceMaps from "lume/plugins/source_maps.ts";
 import prism, { Options as PrismOptions } from "lume/plugins/prism.ts";
 import basePath from "lume/plugins/base_path.ts";
 import slugifyUrls from "lume/plugins/slugify_urls.ts";
@@ -67,6 +68,7 @@ export default function (userOptions?: Options) {
       .use(resolveUrls())
       .use(slugifyUrls())
       .use(terser())
+      .use(sourceMaps())
       .use(pagefind(options.pagefind))
       .use(sitemap())
       .use(feed(options.feed))
