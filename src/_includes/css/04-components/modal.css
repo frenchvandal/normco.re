@@ -15,10 +15,16 @@
   padding: var(--spacing-lg);
   overflow-y: auto;
   backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 /* Backdrop animations */
 .modal-backdrop[data-state="open"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
   animation: fadeIn var(--transition-base) var(--ease-out);
 }
 
@@ -227,7 +233,7 @@
 }
 
 /* Body scroll lock when modal is open */
-body:has(.modal-backdrop) {
+body:has(.modal-backdrop[data-state="open"]) {
   overflow: hidden;
 }
 
