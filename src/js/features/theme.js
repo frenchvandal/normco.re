@@ -97,8 +97,8 @@ class ThemeManager {
     // Show toast feedback for user-initiated theme changes
     if (saveToStorage && globalThis.toast) {
       const message = theme === "dark"
-        ? "Thème sombre activé"
-        : "Thème clair activé";
+        ? "Dark theme enabled"
+        : "Light theme enabled";
       globalThis.toast.info(message, 2000);
     }
 
