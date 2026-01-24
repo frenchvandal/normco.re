@@ -15,6 +15,7 @@
    ========================================================================== */
 @import "css/02-base/reset.css";
 @import "css/02-base/typography.css";
+@import "css/02-base/prism.css";
 @import "css/02-base/global.css";
 
 /* ==========================================================================

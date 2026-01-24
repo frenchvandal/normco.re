@@ -1,0 +1,164 @@
+/* ==========================================================================
+   Prism Syntax Highlighting Theme
+   Uses design tokens for light/dark mode support
+   ========================================================================== */
+
+/* Base token styling */
+.token {
+  color: var(--code-text);
+}
+
+/* Comments */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--code-comment);
+  font-style: italic;
+}
+
+/* Punctuation */
+.token.punctuation {
+  color: var(--code-text);
+}
+
+/* Namespaces */
+.token.namespace {
+  opacity: 0.7;
+}
+
+/* Keywords, operators, tags */
+.token.keyword,
+.token.operator,
+.token.tag,
+.token.boolean,
+.token.constant,
+.token.symbol,
+.token.important,
+.token.atrule,
+.token.builtin {
+  color: var(--code-token-1);
+}
+
+/* Strings, attributes, selectors */
+.token.string,
+.token.char,
+.token.attr-value,
+.token.selector,
+.token.regex {
+  color: var(--code-token-2);
+}
+
+/* Functions, classes, attr-names */
+.token.function,
+.token.class-name,
+.token.attr-name,
+.token.property {
+  color: var(--code-token-3);
+}
+
+/* Numbers, units */
+.token.number,
+.token.unit {
+  color: var(--code-token-4);
+}
+
+/* Insertions (diff) */
+.token.inserted {
+  color: var(--code-inserted);
+}
+
+/* Deletions (diff) */
+.token.deleted {
+  color: var(--code-deleted);
+}
+
+/* Variables */
+.token.variable {
+  color: var(--code-token-3);
+}
+
+/* URLs */
+.token.url {
+  color: var(--code-token-2);
+  text-decoration: underline;
+}
+
+/* Entity */
+.token.entity {
+  color: var(--code-token-4);
+  cursor: help;
+}
+
+/* Bold and italic */
+.token.bold {
+  font-weight: var(--font-bold);
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+/* Language-specific tokens */
+
+/* Shell/Bash */
+.language-bash .token.function,
+.language-shell .token.function {
+  color: var(--code-text);
+}
+
+.language-bash .token.parameter,
+.language-shell .token.parameter {
+  color: var(--code-token-3);
+}
+
+/* JSON */
+.language-json .token.property {
+  color: var(--code-token-2);
+}
+
+/* CSS */
+.language-css .token.property {
+  color: var(--code-token-3);
+}
+
+.language-css .token.selector {
+  color: var(--code-token-1);
+}
+
+/* Markdown */
+.language-markdown .token.title {
+  color: var(--code-token-1);
+  font-weight: var(--font-bold);
+}
+
+.language-markdown .token.url {
+  color: var(--code-token-2);
+}
+
+/* Diff */
+.language-diff .token.deleted {
+  background-color: var(--color-error-light);
+}
+
+.language-diff .token.inserted {
+  background-color: var(--color-success-light);
+}
+
+/* Selection highlight */
+pre[class*="language-"]::selection,
+pre[class*="language-"] ::selection,
+code[class*="language-"]::selection,
+code[class*="language-"] ::selection {
+  background-color: var(--color-primary-highlight);
+  color: var(--color-background);
+}
+
+/* Line highlight (for future use with line-highlight plugin) */
+.line-highlight {
+  background: linear-gradient(
+    to right,
+    rgba(var(--color-primary), 0.1) 70%,
+    transparent
+  );
+}
