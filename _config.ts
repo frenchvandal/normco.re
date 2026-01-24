@@ -25,4 +25,6 @@ site.data("commit", commitSha);
 
 site.use(plugins());
 
+site.ignore((path) => path === "/README.md" || path.endsWith("/README.md"));
+
 export default site;
