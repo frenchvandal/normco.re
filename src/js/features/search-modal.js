@@ -75,6 +75,9 @@ export function initSearchModal() {
             ? error.message
             : "Unknown error";
           console.warn("Search modal initialization failed:", message);
+          if (globalThis.toast?.error) {
+            globalThis.toast.error("Search is unavailable right now.", 4000);
+          }
         })
         .finally(() => {
           isInitializing = false;

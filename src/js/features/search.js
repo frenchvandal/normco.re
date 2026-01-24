@@ -50,6 +50,9 @@ export function initSearch() {
     })
     .catch((error) => {
       console.warn("Search initialization failed:", error.message);
+      if (globalThis.toast?.error) {
+        globalThis.toast.error("Search is unavailable right now.", 4000);
+      }
       removeSkeleton();
     })
     .finally(() => {
