@@ -6,6 +6,8 @@
 
 - Follow this file as the source of truth for all changes.
 - Use Deno + Lume only, as configured in this repository.
+- Before running any Deno command, set `DENO_TLS_CA_STORE=system` in the
+  environment.
 - Run `deno fmt` first and `deno lint` second before finalizing changes; if Deno
   is not installed on the environment, install it if technically possible for
   the agent.
