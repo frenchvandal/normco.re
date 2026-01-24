@@ -6,7 +6,10 @@
 
 - Follow this file as the source of truth for all changes.
 - Use Deno + Lume only, as configured in this repository.
-- Run `deno fmt` and `deno lint` before finalizing changes.
+- Run `deno fmt` first and `deno lint` second before finalizing changes; if Deno
+  is not installed on the environment, install it if technically possible for
+  the agent.
+- If `deno lint` reports errors, fix them when technically possible.
 - Run `deno task build` when changes affect rendering or structure.
 - Keep code, comments, commit messages, and PR/MR titles in English.
 
@@ -401,7 +404,6 @@ site.url(path, absolute = false);
 /** Get the content of any file */
 site.getContent(file, loader);
 ```
-
 ---
 
 ## Agent check-list (before final output)
