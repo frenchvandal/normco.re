@@ -15,6 +15,10 @@ export function enhanceExternalLinks() {
       link.setAttribute("rel", "noopener noreferrer");
     }
 
+    // Add tooltip for external links (CSS-driven)
+    link.setAttribute("data-tooltip", "Opens in new tab");
+    link.classList.add("external-link");
+
     // Add screen reader text
     if (!link.querySelector(".sr-only")) {
       const srText = document.createElement("span");

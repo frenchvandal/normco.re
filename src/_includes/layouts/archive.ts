@@ -38,7 +38,11 @@ export default async function (
   ${
     pagination?.page === 1
       ? `
-  <div class="search" id="search" role="search" aria-label="Search posts"></div>
+  <div class="search" id="search" role="search" aria-label="Search posts">
+    <div class="search-skeleton" aria-hidden="true">
+      <div class="skeleton skeleton--text skeleton--w-full" style="height: 2.5rem;"></div>
+    </div>
+  </div>
   `
       : ""
   }

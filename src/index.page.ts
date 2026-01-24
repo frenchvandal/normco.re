@@ -48,7 +48,11 @@ export default async function (
 <header class="page-header">
   <h1 class="page-title u-display-title">${home.welcome}</h1>
 
-  <div class="search" id="search" role="search" aria-label="Search posts"></div>
+  <div class="search" id="search" role="search" aria-label="Search posts">
+    <div class="search-skeleton" aria-hidden="true">
+      <div class="skeleton skeleton--text skeleton--w-full" style="height: 2.5rem;"></div>
+    </div>
+  </div>
 </header>
 
 <section class="postList" aria-label="Recent posts">

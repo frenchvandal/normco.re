@@ -17,9 +17,18 @@ export default async function (
   const postList = await comp.postList({ postslist: results });
   const paginationNav = await comp.pagination({ pagination, i18n });
 
+  const breadcrumbs = await comp.breadcrumbs({
+    items: [
+      { label: i18n.nav.archive_title, url: "/archive/" },
+      { label: title },
+    ],
+    homeLabel: i18n.nav.home,
+  });
+
   return `
+${breadcrumbs}
+
 <header class="page-header">
-  <p><a href="/archive/">${i18n.nav.back}</a></p>
   <h1 class="page-title">${title}</h1>
 </header>
 

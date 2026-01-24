@@ -28,10 +28,20 @@ export default async function (
     readingInfo,
   });
 
+  const breadcrumbs = await comp.breadcrumbs({
+    items: [
+      { label: i18n.nav.posts, url: "/archive/" },
+      { label: title },
+    ],
+    homeLabel: i18n.nav.home,
+  });
+
   const previousPost = search.previousPage(url, "type=post");
   const nextPost = search.nextPage(url, "type=post");
 
   return `
+${breadcrumbs}
+
 <article class="post" data-pagefind-body data-title="${title}" data-pagefind-index-attrs="data-title">
   <header class="post-header">
     <h1 class="post-title u-display-title">${title}</h1>
