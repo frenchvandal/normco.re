@@ -68,7 +68,7 @@ export default function* ({ search, i18n, paginate }: ArchiveResultData) {
       urlPrefix: "/archive",
       titlePrefix: i18n.search.by_tag,
       queryFn: byTagQuery,
-      formatTitle: (tag) => `${i18n.search.by_tag}  "${tag}"`,
+      formatTitle: (tag) => `${i18n.search.by_tag} "${tag}"`,
     },
     search,
     paginate,

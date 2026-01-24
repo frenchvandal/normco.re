@@ -32,7 +32,7 @@ export default function ({
     const tagLinks = tags.map((tag: string) => {
       const tagPage = search.page(`type=tag tag="${tag}"`);
       return tagPage
-        ? `<a data-pagefind-filter="filter" class="badge" href="${tagPage.url}">${tag}</a>`
+        ? `<a data-pagefind-filter="tag" class="badge" href="${tagPage.url}">${tag}</a>`
         : "";
     }).filter(Boolean).join("\n    ");
 

@@ -76,6 +76,9 @@ export class ModalManager {
     this.backdrop.setAttribute("data-state", "open");
     this.backdrop.removeAttribute("aria-hidden");
 
+    // Lock body scroll (fallback for browsers without :has() support)
+    document.body.style.overflow = "hidden";
+
     // Get focusable elements
     this.updateFocusableElements();
 
@@ -106,6 +109,9 @@ export class ModalManager {
     this.isOpen = false;
     this.backdrop.setAttribute("data-state", "closed");
     this.backdrop.setAttribute("aria-hidden", "true");
+
+    // Unlock body scroll (fallback for browsers without :has() support)
+    document.body.style.overflow = "";
 
     // Remove keyboard listener
     document.removeEventListener("keydown", this.handleKeyboard);
