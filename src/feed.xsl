@@ -6,12 +6,12 @@
   <xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>
 
   <xsl:template match="/">
-    <html lang="fr" data-theme="light">
+    <html lang="en" data-theme="light">
       <head>
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <title>
-          <xsl:value-of select="/rss/channel/title"/> - Flux RSS
+          <xsl:value-of select="/rss/channel/title"/> - RSS Feed
         </title>
         <script>
           <![CDATA[
@@ -467,9 +467,9 @@
             </p>
 
             <div class="feed-info">
-              <h2>📡 Flux RSS</h2>
-              <p>Ceci est un flux RSS. Vous pouvez vous abonner à ce flux en copier l'URL dans votre lecteur RSS préféré (Feedly, Inoreader, NetNewsWire, etc.).</p>
-              <p>L'URL du flux :</p>
+              <h2>📡 RSS Feed</h2>
+              <p>This is an RSS feed. Subscribe by copying the URL into your favorite reader (Feedly, Inoreader, NewsBlur, NetNewsWire, Reeder, etc.).</p>
+              <p>Feed URL:</p>
               <code class="feed-url">
                 <xsl:value-of select="/rss/channel/atom:link[@rel='self']/@href"/>
               </code>
@@ -508,7 +508,7 @@
                   </xsl:if>
 
                   <a href="{link}" class="article-link">
-                    Lire l'article complet
+                    Read the full article
                   </a>
                 </li>
               </xsl:for-each>
@@ -518,9 +518,9 @@
           <!-- Footer -->
           <footer class="footer">
             <p>
-              Flux RSS
+              RSS Feed
               <xsl:if test="/rss/channel/lastBuildDate">
-                - Dernière mise à jour le
+                - Last updated on
                 <time datetime="{/rss/channel/lastBuildDate}">
                   <xsl:value-of select="substring(/rss/channel/lastBuildDate, 1, 16)"/>
                 </time>
