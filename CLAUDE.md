@@ -11,11 +11,11 @@
 
 ## Stack & tooling
 
-- Runtime: **Deno**
-- SSG: **Lume**
-- Templating: **ESM + TypeScript** (no JSX/Preact, no Nunjucks/Vento)
-- Styling: **SCSS** (or modern CSS if appropriate)
-- Content: **TypeScript pages** (`*.page.ts`) rather than Markdown
+- Runtime: **Deno**.
+- SSG: **Lume**.
+- Templating: **ESM + TypeScript** (no JSX/Preact, no Nunjucks/Vento).
+- Styling: **SCSS** (or modern CSS if appropriate).
+- Content: **TypeScript pages** (`*.page.ts`) rather than Markdown.
 
 ---
 
@@ -39,9 +39,9 @@
 ### Imports
 
 - Recommended order:
-  1. Deno/Lume
-  2. External dependencies
-  3. Local modules
+  1. Deno/Lume.
+  2. External dependencies.
+  3. Local modules.
 - Separate groups with a blank line.
 
 ### Functions
@@ -385,7 +385,7 @@ site.getContent(file, loader);
 - Respond in French by default for discussions; keep code, code comments, commit
   titles, commit descriptions, merge request titles, merge request comments in
   English.
-- Follow the Conventional Commits specification
+- Follow the Conventional Commits specification.
 - Use Deno + Lume only, as configured in this repository.
 - Run `deno fmt` and `deno lint` before finalizing changes.
 - Run `deno task build` when changes affect rendering or structure.
