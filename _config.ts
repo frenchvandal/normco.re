@@ -10,7 +10,10 @@ const site = lume({
 const getCommitSha = async (): Promise<string> => {
   try {
     const cmd = new Deno.Command("git", { args: ["rev-parse", "HEAD"] });
-    const { stdout } = await cmd.output();
+    const { code, stdout } = await cmd.output();
+    if (code !== 0) {
+      return "";
+    }
     return new TextDecoder().decode(stdout).trim();
   } catch {
     return "";
