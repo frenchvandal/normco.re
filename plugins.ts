@@ -79,9 +79,16 @@ export default function (userOptions?: Options) {
       .mergeKey("extra_head", "stringArray")
       .preprocess([".md"], (pages) => {
         for (const page of pages) {
-          page.data.excerpt ??= (page.data.content as string).split(
-            /<!--\s*more\s*-->/i,
-          )[0];
+          if (page.data.excerpt) {
+            continue;
+          }
+          const content = typeof page.data.content === "string"
+            ? page.data.content
+            : "";
+          if (!content) {
+            continue;
+          }
+          page.data.excerpt = content.split(/<!--\s*more\s*-->/i)[0];
         }
       });
 
