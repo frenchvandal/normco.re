@@ -12,7 +12,7 @@ tags:
 ---
 
 I built my blog with Lume, a modern static site generator powered by Deno.
-Here's a look at the technical architecture and the decisions behind my
+Here’s a look at the technical architecture and the decisions behind my
 implementation.
 
 <!--more-->
@@ -20,7 +20,7 @@ implementation.
 ## Introduction to Lume
 
 Lume is a static site generator built with Deno. Unlike traditional SSGs that
-rely on Node.js, Lume leverages Deno's modern runtime for a fresh take on
+rely on Node.js, Lume leverages Deno’s modern runtime for a fresh take on
 static site generation. Its plugin system enables extensive customization while
 keeping concerns cleanly separated.
 
@@ -135,7 +135,7 @@ image loading performance:
 
 ## Data Management and Front Matter
 
-Lume's data cascade system is powerful. I use multiple levels of data
+Lume’s data cascade system is powerful. I use multiple levels of data
 configuration:
 
 1. **Global Data** (`src/_data.ts`): Site-wide information like title,
@@ -170,7 +170,7 @@ and it can be launched locally with `deno task cms`.
 ## Template Engine and Layouts
 
 The site uses TypeScript functions with template literals for all templates and
-layouts, providing strong type safety and IDE support. This leverages Lume's
+layouts, providing strong type safety and IDE support. This leverages Lume’s
 support for TypeScript modules (`.ts` files) as templates.
 
 The layout system follows a clear hierarchy in `_includes/layouts/`:
@@ -230,7 +230,7 @@ and provides full IntelliSense, including autocomplete for variables, helpers,
 and component props. This makes development faster and less error-prone.
 
 **Familiar Syntax**: Developers already know JavaScript and TypeScript—template
-literals are a core language feature, so there's no new syntax to learn.
+literals are a core language feature, so there’s no new syntax to learn.
 
 **Easier Refactoring**: IDE refactoring tools understand TypeScript, making
 large-scale changes safer when renaming properties or restructuring data.
@@ -391,8 +391,8 @@ etc.). The build process automatically handles:
 ## Conclusion
 
 Building a blog with Lume combines the flexibility of static site generation
-with modern web development practices. Deno's security model, first-class
-TypeScript support, and Lume's plugin architecture create a solid foundation for
+with modern web development practices. Deno’s security model, first-class
+TypeScript support, and Lume’s plugin architecture create a solid foundation for
 content-focused websites.
 
 This architecture balances performance, accessibility, and maintainability. The
