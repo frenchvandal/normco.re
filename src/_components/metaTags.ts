@@ -1,6 +1,6 @@
 /**
  * Meta Tags Component
- * Generates SEO meta tags including Open Graph, Twitter Cards, and JSON-LD
+ * Generates SEO meta tags including Open Graph and Twitter Cards
  */
 export default function ({
   title,
@@ -13,7 +13,6 @@ export default function ({
   date,
   author,
   tags,
-  readingInfo,
   metas,
 }: Lume.Data, { url: urlHelper, date: dateHelper }: Lume.Helpers) {
   const pageTitle = title
@@ -75,48 +74,5 @@ ${
 `
       : ""
   }
-
-<!-- JSON-LD Structured Data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "${pageType === "article" ? "BlogPosting" : "WebSite"}",
-  "headline": "${(title || metas?.site) ?? ""}",
-  "description": "${pageDescription}",
-  "url": "${pageUrl}",
-  "image": "${urlHelper(pageImage, true)}"${
-    type === "post"
-      ? `,
-  "datePublished": "${dateHelper(date, "DATETIME")}"${
-        author
-          ? `,
-  "author": {
-    "@type": "Person",
-    "name": "${author}"
-  }`
-          : ""
-      }${
-        readingInfo
-          ? `,
-  "timeRequired": "PT${readingInfo.minutes}M"`
-          : ""
-      }`
-      : ""
-  }${
-    pageType === "website"
-      ? `,
-  "name": "${metas?.site ?? ""}",
-  "publisher": {
-    "@type": "Organization",
-    "name": "${metas?.site ?? ""}",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "${urlHelper("/favicon.png", true)}"
-    }
-  }`
-      : ""
-  }
-}
-</script>
 `;
 }
