@@ -8,6 +8,7 @@ export function enhanceTOC() {
 
   // Make TOC sticky on scroll
   const tocTop = toc.offsetTop;
+  let activeLink = null;
 
   let isTicking = false;
   const updateStickyState = () => {
@@ -35,12 +36,11 @@ export function enhanceTOC() {
 
         if (tocLink) {
           if (entry.isIntersecting) {
-            // Remove active from all links
-            toc.querySelectorAll("a").forEach((link) => {
-              link.classList.remove("active");
-            });
-            // Add active to current
+            if (activeLink && activeLink !== tocLink) {
+              activeLink.classList.remove("active");
+            }
             tocLink.classList.add("active");
+            activeLink = tocLink;
           }
         }
       });

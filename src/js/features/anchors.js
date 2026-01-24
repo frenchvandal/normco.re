@@ -7,27 +7,28 @@ export function enhanceAnchors() {
     "(prefers-reduced-motion: reduce)",
   )?.matches;
 
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", (e) => {
-      const href = anchor.getAttribute("href");
-      if (href === "#") return;
+  document.addEventListener("click", (event) => {
+    const anchor = event.target.closest?.('a[href^="#"]');
+    if (!anchor) return;
 
-      const target = document.querySelector(href);
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({
-          behavior: prefersReducedMotion ? "auto" : "smooth",
-          block: "start",
-        });
+    const href = anchor.getAttribute("href");
+    if (href === "#") return;
 
-        // Update URL without triggering scroll
-        history.pushState(null, "", href);
+    const target = document.querySelector(href);
+    if (target) {
+      event.preventDefault();
+      target.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
 
-        // Focus the target for accessibility
-        target.setAttribute("tabindex", "-1");
-        target.focus();
-        target.focus({ preventScroll: true });
-      }
-    });
+      // Update URL without triggering scroll
+      history.pushState(null, "", href);
+
+      // Focus the target for accessibility
+      target.setAttribute("tabindex", "-1");
+      target.focus();
+      target.focus({ preventScroll: true });
+    }
   });
 }

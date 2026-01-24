@@ -33,9 +33,15 @@ themeManager.init();
 function initializeFeatures() {
   initSearch();
   enhanceImages();
-  enhanceExternalLinks();
-  enhanceAnchors();
-  enhanceTOC();
+  const defer = globalThis.requestIdleCallback
+    ? globalThis.requestIdleCallback
+    : (callback) => setTimeout(callback, 0);
+
+  defer(() => {
+    enhanceExternalLinks();
+    enhanceAnchors();
+    enhanceTOC();
+  });
 
   // Initialize UI components
   initializeUIComponents();
