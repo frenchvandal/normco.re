@@ -1,6 +1,7 @@
 import date, { Options as DateOptions } from "lume/plugins/date.ts";
 import esbuild from "lume/plugins/esbuild.ts";
 import lightningCss from "lume/plugins/lightningcss.ts";
+import purgecss from "lume/plugins/purgecss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import prism, { Options as PrismOptions } from "lume/plugins/prism.ts";
 import basePath from "lume/plugins/base_path.ts";
@@ -75,6 +76,7 @@ export default function (userOptions?: Options) {
       .use(esbuild())
       .use(sourceMaps())
       .use(pagefind(options.pagefind))
+      .use(purgecss())
       .use(sitemap())
       .use(feed(options.feed))
       .add("fonts")
