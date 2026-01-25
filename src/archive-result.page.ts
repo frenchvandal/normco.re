@@ -15,6 +15,13 @@ interface ArchiveConfig {
   formatTitle: (value: string) => string;
 }
 
+type ArchiveResultPageData = Lume.PaginateResult<Lume.Data> & {
+  title: string;
+  type: "tag" | "author";
+  tag?: string;
+  author?: string;
+};
+
 /**
  * Generic generator for archive result pages (tags or authors)
  */
@@ -23,7 +30,7 @@ function* generateArchiveResults(
   config: ArchiveConfig,
   search: Lume.Data["search"],
   paginate: Lume.Data["paginate"],
-): Generator<Lume.Data> {
+): Generator<ArchiveResultPageData> {
   for (const value of values) {
     const url = createPaginationUrl(`${config.urlPrefix}/${value}`);
     const pages = search.pages(config.queryFn(value));
