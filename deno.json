@@ -24,8 +24,14 @@
     "rules": {
       "tags": [
         "recommended"
+      ],
+      "exclude": [
+        "no-import-prefix"
       ]
-    }
+    },
+    "plugins": [
+      "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.4/lint.ts"
+    ]
   },
   "fmt": {
     "exclude": [
@@ -33,6 +39,7 @@
     ]
   },
   "unstable": [
-    "temporal"
+    "temporal",
+    "fmt-component"
   ]
 }
