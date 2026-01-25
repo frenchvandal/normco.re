@@ -36,6 +36,7 @@
 - **Immutability by default**: prefer `const` and pure functions.
 - **No `any`** unless explicitly justified in context (comment + reason).
 - **Domain-first**: model business data with explicit types/interfaces.
+- **DOM-first JavaScript**: prioritize the DOM API for any JavaScript work.
 
 ### Types & structure
 
