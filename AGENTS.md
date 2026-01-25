@@ -70,6 +70,7 @@ If a command cannot be run, clearly state which command would be run and why.
 - **No `any`** unless explicitly justified with a comment.
 - **Domain-first modeling**: express business data with explicit types or
   interfaces.
+- **DOM-first JavaScript**: prioritize the DOM API for any JavaScript work.
 
 ### Types & structure
 
