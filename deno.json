@@ -8,11 +8,26 @@
     "@mdit/plugin-alert": "npm:@mdit/plugin-alert@0.22.3"
   },
   "tasks": {
-    "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
-    "build": "deno task lume",
-    "serve": "deno task lume -s",
-    "update-deps": "deno update --latest -r && rm -f deno.lock && deno install",
-    "cms": "deno task lume cms"
+    "build": {
+      "description": "Build the site for production",
+      "command": "deno task lume"
+    },
+    "serve": {
+      "description": "Run and serve the site for development",
+      "command": "deno task lume -s"
+    },
+    "lume": {
+      "description": "Run Lume command",
+      "command": "deno run -P=lume lume/cli.ts"
+    },
+    "update-deps": {
+      "description": "Update dependencies",
+      "command": "deno update --latest -r && rm -f deno.lock && deno install"
+    },
+    "cms": {
+      "description": "Run the Lume CMS",
+      "command": "deno task lume cms"
+    }
   },
   "compilerOptions": {
     "types": [

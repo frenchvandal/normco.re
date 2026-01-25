@@ -81,7 +81,8 @@ At install time, the service worker pre-caches:
 ### Additional features
 
 - **Offline fallback**: Navigation failures show a cached offline page
-- **Prefetch support**: Client can request prefetching via `postMessage({ type: "prefetch", urls: [...] })`
+- **Prefetch support**: Client can request prefetching via
+  `postMessage({ type: "prefetch", urls: [...] })`
 
 ### Cache invalidation
 
