@@ -8,11 +8,7 @@ import { assertEquals, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
 import modal, { type ModalProps } from "../../src/_components/modal.ts";
-import {
-  getAttribute,
-  hasClass,
-  hasElement,
-} from "../helpers/dom.ts";
+import { getAttribute, hasClass, hasElement } from "../helpers/dom.ts";
 
 // =============================================================================
 // Test fixtures

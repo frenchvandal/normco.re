@@ -6,14 +6,14 @@ export const layout = "layouts/base.ts";
 export const bodyClass = "body-page";
 
 export default async function (
-  { title, subtitle, content, sourceCommit, sourcePath, repoUrl, i18n, comp }:
+  { title, subtitle, content, sourceCommit, sourcePath, repo, i18n, comp }:
     Lume.Data,
   { md }: Lume.Helpers,
 ) {
   const sourceInfo = await comp.SourceInfo({
     sourceCommit,
     sourcePath,
-    repoUrl,
+    repo,
     i18n,
   });
 

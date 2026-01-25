@@ -21,7 +21,7 @@ export default async function (
     comp,
     sourceCommit,
     sourcePath,
-    repoUrl,
+    repo,
   }: Lume.Data,
 ) {
   const postDetails = await comp.PostDetails({
@@ -42,7 +42,7 @@ export default async function (
   const sourceInfo = await comp.SourceInfo({
     sourceCommit,
     sourcePath,
-    repoUrl,
+    repo,
     i18n,
   });
 

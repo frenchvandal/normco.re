@@ -21,6 +21,19 @@ import { alert } from "@mdit/plugin-alert";
 
 import "lume/types.ts";
 
+interface RepoInfo {
+  baseUrl: string;
+  owner: string;
+  name: string;
+  branch: string;
+}
+
+interface GitCommandResult {
+  code: number;
+  out: string;
+  err: string;
+}
+
 export interface Options {
   prism?: Partial<PrismOptions>;
   date?: Partial<DateOptions>;
@@ -49,11 +62,116 @@ export const defaults: Options = {
   },
 };
 
+const textDecoder = new TextDecoder();
+
+const runGit = (args: string[]): GitCommandResult => {
+  const cmd = new Deno.Command("git", {
+    args,
+    stdout: "piped",
+    stderr: "piped",
+  });
+  const { code, stdout, stderr } = cmd.outputSync();
+  return {
+    code,
+    out: textDecoder.decode(stdout).trim(),
+    err: textDecoder.decode(stderr).trim(),
+  };
+};
+
+const parseGitRemote = (
+  remote: string,
+): { baseUrl: string; owner: string; name: string } | null => {
+  const ssh = remote.match(/^git@([^:]+):([^/]+)\/(.+?)(?:\.git)?$/);
+  if (ssh) {
+    return {
+      baseUrl: `https://${ssh[1]}`,
+      owner: ssh[2],
+      name: ssh[3],
+    };
+  }
+
+  const https = remote.match(/^https:\/\/([^/]+)\/([^/]+)\/(.+?)(?:\.git)?$/);
+  if (https) {
+    return {
+      baseUrl: `https://${https[1]}`,
+      owner: https[2],
+      name: https[3],
+    };
+  }
+
+  return null;
+};
+
+const getBranch = (): string => {
+  const currentBranch = runGit(["branch", "--show-current"]);
+  if (currentBranch.code === 0 && currentBranch.out) {
+    return currentBranch.out;
+  }
+
+  const headBranch = runGit(["rev-parse", "--abbrev-ref", "HEAD"]);
+  if (headBranch.code === 0 && headBranch.out !== "HEAD") {
+    return headBranch.out;
+  }
+
+  return "";
+};
+
+const getRepoInfoFromEnv = (): RepoInfo | null => {
+  const baseUrl = Deno.env.get("GITHUB_SERVER_URL");
+  const repository = Deno.env.get("GITHUB_REPOSITORY");
+  const branch = Deno.env.get("GITHUB_REF_NAME");
+
+  if (!baseUrl || !repository || !branch) {
+    return null;
+  }
+
+  const [owner, name] = repository.split("/");
+  if (!owner || !name) {
+    return null;
+  }
+
+  return {
+    baseUrl,
+    owner,
+    name,
+    branch,
+  };
+};
+
+const getRepoInfoFromGit = (): RepoInfo | null => {
+  const remote = runGit(["remote", "get-url", "origin"]);
+  if (remote.code !== 0 || !remote.out) {
+    return null;
+  }
+
+  const parsed = parseGitRemote(remote.out);
+  if (!parsed) {
+    return null;
+  }
+
+  return {
+    ...parsed,
+    branch: getBranch(),
+  };
+};
+
+const getRepoInfo = (): RepoInfo | null =>
+  getRepoInfoFromEnv() ?? getRepoInfoFromGit();
+
 /** Configure the site */
 export default function (userOptions?: Options) {
   const options = merge(defaults, userOptions);
 
   return (site: Lume.Site) => {
+    const repoInfo = getRepoInfo();
+    if (repoInfo) {
+      site.data("repo", repoInfo);
+      site.data(
+        "repoUrl",
+        `${repoInfo.baseUrl}/${repoInfo.owner}/${repoInfo.name}`,
+      );
+    }
+
     site.use(esbuild())
       .use(lightningCss({
         options: {
@@ -108,7 +226,7 @@ export default function (userOptions?: Options) {
         }
       })
       // Inject git commit SHA for each source file
-      .preprocess([".md"], async (pages) => {
+      .preprocess([".md"], (pages) => {
         for (const page of pages) {
           const src = page.src;
           if (!src?.path || !src?.ext) continue;
@@ -117,18 +235,19 @@ export default function (userOptions?: Options) {
             ? src.path
             : `/${src.path}`;
           const filePath = `src${normalizedPath}${src.ext}`;
+          page.data.sourcePath = filePath;
           try {
-            const cmd = new Deno.Command("git", {
-              args: ["log", "-1", "--format=%H", "--", filePath],
-              cwd: Deno.cwd(),
-            });
-            const { code, stdout } = await cmd.output();
-            if (code === 0) {
-              const sha = new TextDecoder().decode(stdout).trim();
-              if (sha) {
-                page.data.sourceCommit = sha;
-                page.data.sourcePath = filePath;
-              }
+            const result = runGit([
+              "log",
+              "-1",
+              "--format=%H",
+              "--follow",
+              "--no-merges",
+              "--",
+              filePath,
+            ]);
+            if (result.code === 0 && result.out) {
+              page.data.sourceCommit = result.out;
             }
           } catch {
             // Silently ignore git errors
