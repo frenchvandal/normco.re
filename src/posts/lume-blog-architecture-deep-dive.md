@@ -49,7 +49,10 @@ My blog follows Lume’s recommended structure with a few customizations:
 │   ├── js/             # Client-side JavaScript
 │   ├── posts/          # Blog posts markdown files
 │   ├── pages/          # Static pages
+│   ├── 404.md          # Not-found page
 │   ├── styles.css      # Main stylesheet entry point
+│   ├── feed.xsl        # Feed XSL stylesheet
+│   ├── favicon.png     # Site favicon
 │   ├── index.page.ts   # Homepage template
 │   ├── archive.page.ts         # Archive pagination generator
 │   ├── archive-result.page.ts  # Tag/author page generator
@@ -73,7 +76,10 @@ const site = lume({
 const getCommitSha = async (): Promise<string> => {
   try {
     const cmd = new Deno.Command("git", { args: ["rev-parse", "HEAD"] });
-    const { stdout } = await cmd.output();
+    const { code, stdout } = await cmd.output();
+    if (code !== 0) {
+      return "";
+    }
     return new TextDecoder().decode(stdout).trim();
   } catch {
     return "";
@@ -84,6 +90,8 @@ const commitSha = await getCommitSha();
 site.data("commit", commitSha);
 
 site.use(plugins());
+
+site.ignore((path) => path === "/README.md" || path.endsWith("/README.md"));
 
 export default site;
 ```
@@ -98,13 +106,16 @@ The plugin system is where Lume really shines. My `plugins.ts` file includes a
 selection of plugins that enhance functionality without bloating the build:
 
 - **Lightning CSS**: Fast CSS processing and minification
-- **Terser**: JavaScript minification for production builds
+- **ESBuild**: JavaScript bundling and minification for production builds
+- **PurgeCSS**: Removes unused CSS selectors
+- **Source Maps**: Source map generation for easier debugging
 - **Prism**: Syntax highlighting for code blocks
 - **Date**: Enhanced date handling and formatting utilities
+- **JSON-LD**: Structured data support for SEO
 - **Metas**: SEO-friendly meta tag generation (Open Graph, Twitter Cards)
 - **Pagefind**: Client-side full-text search functionality
 - **Sitemap**: Automatic XML sitemap generation
-- **Feed**: RSS (Atom) and JSON feed generation
+- **Feed**: RSS and JSON feed generation
 - **Reading Info**: Estimated reading time calculation
 - **Table of Contents (TOC)**: Automatic TOC generation from headings
 - **Footnotes**: Markdown footnote processing and formatting
@@ -154,6 +165,7 @@ interface SiteData {
   menu_links: MenuLink[];
   extra_head: string[];
   metas: MetasConfig;
+  jsonLd: Lume.Data["jsonLd"];
 }
 ```
 
@@ -203,18 +215,19 @@ The base layout handles critical aspects such as:
 
 - Meta tag generation via component system (Open Graph, Twitter Cards)
 - Theme switching with support for light/dark modes
-- Canonical URL generation and feed links (Atom and JSON)
+- Canonical URL generation and feed links (RSS and JSON)
 - Accessibility features (skip links, semantic markup, ARIA labels)
 - Footer with current git commit SHA linked to GitHub
 - Responsive navigation with dynamic menu links
 
 The site uses reusable TypeScript components located in `_components/`:
 
+- `breadcrumbs.ts`: Accessible breadcrumb navigation
+- `codeTabs.ts`: Code snippet tabs wrapper
+- `modal.ts`: Lightweight modal dialog markup
+- `pagination.ts`: Provides previous/next navigation for archives
 - `postDetails.ts`: Displays author, date, reading time, and tags
 - `postList.ts`: Renders lists of blog posts
-- `pagination.ts`: Provides previous/next navigation for archives
-- `metaTags.ts`: Generates SEO metadata and structured data
-- `modal.ts`: Lightweight modal dialog markup
 - `tabs.ts`: Tablist markup and behavior hooks
 
 Components are called via the `comp` helper (e.g., `await comp.postDetails()`)
@@ -345,13 +358,14 @@ Several optimizations improve performance:
 
 - **CSS Optimization**: Lightning CSS handles minification and modern CSS
   transformations
-- **JS Minification**: Terser compresses JavaScript for production builds
+- **CSS Pruning**: PurgeCSS removes unused selectors after the build
+- **JS Bundling**: ESBuild bundles and minifies JavaScript for production builds
 - **Image Lazy Loading**: Strategic loading based on viewport position (eager
   for first image, lazy for others)
 - **Clean URLs**: SlugifyUrls plugin converts `index.html` to clean `/` paths
 - **Semantic HTML**: Proper heading hierarchy and landmark roles for better
   parsing
-- **Feed Generation**: Pre-built Atom and JSON feeds for RSS readers
+- **Feed Generation**: Pre-built RSS and JSON feeds for RSS readers
 
 ## Accessibility Considerations
 
@@ -379,12 +393,12 @@ This generates the complete static site in the `_site` directory, ready for
 deployment to any static hosting service (Netlify, Vercel, Cloudflare Pages,
 etc.). The build process automatically handles:
 
-- Asset optimization (CSS minification via Lightning CSS, JS minification via
-  Terser)
+- Asset optimization (CSS minification via Lightning CSS, JS
+  bundling/minification via ESBuild)
 - HTML generation from TypeScript templates and Markdown
 - Search index generation (Pagefind)
 - Sitemap creation (`sitemap.xml`)
-- Feed generation (Atom feed at `/feed.xml` and JSON feed at `/feed.json`)
+- Feed generation (RSS feed at `/feed.xml` and JSON feed at `/feed.json`)
 - Dynamic page generation (archive pagination, tag/author pages)
 - URL resolution and slugification
 

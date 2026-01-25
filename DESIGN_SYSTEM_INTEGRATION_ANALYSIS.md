@@ -33,6 +33,18 @@ The JS code is split into three areas:
 
 ## Implemented UI Components
 
+### Template Components
+
+These components are rendered from `src/_components/` and used in layouts or
+pages via `comp.*` helpers:
+
+- **Breadcrumbs** (`src/_components/breadcrumbs.ts`)
+- **Code Tabs** (`src/_components/codeTabs.ts`) — wraps the tabs component for
+  code snippets
+- **Pagination** (`src/_components/pagination.ts`)
+- **Post Details** (`src/_components/postDetails.ts`)
+- **Post List** (`src/_components/postList.ts`)
+
 ### Tabs
 
 - **Template**: `src/_components/tabs.ts`
@@ -61,6 +73,7 @@ The JS code is split into three areas:
 
 The following components are styled in CSS and require no JS:
 
+- Buttons, badges, alerts, cards
 - Form inputs, selects, checkboxes, switches
 - Breadcrumbs (optional custom JS for ellipsis menus)
 - Tooltips (hover/focus behavior is CSS-based)
