@@ -113,7 +113,10 @@ export default function (userOptions?: Options) {
           const src = page.src;
           if (!src?.path || !src?.ext) continue;
 
-          const filePath = `src${src.path}${src.ext}`;
+          const normalizedPath = src.path.startsWith("/")
+            ? src.path
+            : `/${src.path}`;
+          const filePath = `src${normalizedPath}${src.ext}`;
           try {
             const cmd = new Deno.Command("git", {
               args: ["log", "-1", "--format=%H", "--", filePath],
