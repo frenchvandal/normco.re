@@ -1,7 +1,20 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@std/internal@^1.0.12": "1.0.12",
+    "jsr:@std/path@1.1.4": "1.1.4",
     "npm:@mdit/plugin-alert@0.22.3": "0.22.3"
+  },
+  "jsr": {
+    "@std/internal@1.0.12": {
+      "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    },
+    "@std/path@1.1.4": {
+      "integrity": "1d2d43f39efb1b42f0b1882a25486647cb851481862dc7313390b2bb044314b5",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    }
   },
   "npm": {
     "@mdit/plugin-alert@0.22.3": {
@@ -23,6 +36,12 @@
     "@types/mdurl@2.0.0": {
       "integrity": "sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg=="
     }
+  },
+  "remote": {
+    "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.4/core/utils/lume_config.ts": "3fa08358cdd2ee4f8279347c4c74e2f457d0aa31ccc2201f85f455d31b620f2b",
+    "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.4/core/utils/path.ts": "7a1d199113928cc35782aa3262cbe6f7a4894bc262d7d300de9385b3da45602f",
+    "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.4/deps/path.ts": "a3d24ee31773ba6ef19b588612f376acef0ad5d3d761c4d9a315f79036cc87a4",
+    "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.4/lint.ts": "41c1bb62434eb9d8e39a255c0dd9cd10734451dd208e3263b5e1c9835732556e"
   },
   "workspace": {
     "dependencies": [
