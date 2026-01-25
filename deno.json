@@ -18,7 +18,7 @@
     },
     "lume": {
       "description": "Run Lume command",
-      "command": "deno run -P=lume lume/cli.ts"
+      "command": "echo \"import 'lume/cli.ts'\" | deno run -A -"
     },
     "update-deps": {
       "description": "Update dependencies",
