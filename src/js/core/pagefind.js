@@ -23,10 +23,11 @@ export function loadPagefindUI() {
     );
 
     if (existingScript) {
-      existingScript.addEventListener("load", () => resolve());
+      existingScript.addEventListener("load", () => resolve(), { once: true });
       existingScript.addEventListener(
         "error",
         () => reject(new Error("Pagefind failed to load")),
+        { once: true },
       );
       return;
     }
@@ -39,15 +40,23 @@ export function loadPagefindUI() {
       reject(new Error("Pagefind failed to load within timeout"));
     }, PAGEFIND_TIMEOUT_MS);
 
-    script.addEventListener("load", () => {
-      clearTimeout(timeoutId);
-      resolve();
-    });
+    script.addEventListener(
+      "load",
+      () => {
+        clearTimeout(timeoutId);
+        resolve();
+      },
+      { once: true },
+    );
 
-    script.addEventListener("error", () => {
-      clearTimeout(timeoutId);
-      reject(new Error("Pagefind failed to load"));
-    });
+    script.addEventListener(
+      "error",
+      () => {
+        clearTimeout(timeoutId);
+        reject(new Error("Pagefind failed to load"));
+      },
+      { once: true },
+    );
 
     document.head.appendChild(script);
   });
