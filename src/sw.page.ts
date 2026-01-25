@@ -1,3 +1,5 @@
+import type Lume from "lume/mod.ts";
+
 /**
  * Service Worker
  * Caches core assets and refreshes cache on new builds.
@@ -6,24 +8,35 @@ export const layout = false;
 export const url = "/sw.js";
 export const contentType = "application/javascript";
 
-interface ServiceWorkerData {
+interface ServiceWorkerData extends Lume.Data {
   buildId?: string;
+  search: Lume.Data["search"];
 }
 
-export default function ({ buildId }: ServiceWorkerData): string {
+const collectCoreAssets = (search: Lume.Data["search"]): string[] => {
+  const assets = new Set<string>(["/"]);
+
+  for (const page of search.pages()) {
+    if (!page.url) {
+      continue;
+    }
+
+    assets.add(page.url);
+  }
+
+  return Array.from(assets).sort();
+};
+
+export default function (
+  { buildId, search }: ServiceWorkerData,
+): string {
   const version = buildId ?? "dev";
+  const coreAssets = collectCoreAssets(search);
 
   return `const CACHE_PREFIX = "normcore-assets";
 const CACHE_VERSION = "${version}";
 const CACHE_NAME = \`\${CACHE_PREFIX}-\${CACHE_VERSION}\`;
-const CORE_ASSETS = [
-  "/",
-  "/styles.css",
-  "/js/main.js",
-  "/favicon.png",
-  "/pagefind/pagefind-ui.css",
-  "/pagefind/pagefind-ui.js",
-];
+const CORE_ASSETS = ${JSON.stringify(coreAssets)};
 
 const isCacheableRequest = (request) => {
   if (request.method !== "GET") {
