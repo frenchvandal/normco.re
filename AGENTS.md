@@ -24,6 +24,8 @@
 - At the start of a task, run `deno task serve` and capture a browser screenshot
   of the current state before making changes so there is a baseline visual
   reference.
+- When modifying or creating JavaScript or TypeScript code, update or create the
+  corresponding unit tests in the `Tests` directory when relevant.
 - Keep code, comments, commit messages, and PR/MR titles in English.
 
 **Don’t**
