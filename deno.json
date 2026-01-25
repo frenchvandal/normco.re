@@ -10,7 +10,7 @@
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
     "build": "deno task lume",
     "serve": "deno task lume -s",
-    "update-deps": "deno update --latest -r --lock=deno.lock && rm -f deno.lock && deno install",
+    "update-deps": "deno update --latest -r && rm -f deno.lock && deno install",
     "cms": "deno task lume cms"
   },
   "compilerOptions": {
