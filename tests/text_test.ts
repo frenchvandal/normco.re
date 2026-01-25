@@ -1,6 +1,6 @@
 import { assertEquals } from "jsr:@std/assert@1.0.8";
 
-import { slugify } from "./text.ts";
+import { slugify } from "../src/_utilities/text.ts";
 
 Deno.test("slugify trims and lowercases", () => {
   assertEquals(slugify("  Hello World  "), "hello-world");

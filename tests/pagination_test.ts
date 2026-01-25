@@ -1,6 +1,9 @@
 import { assertEquals } from "jsr:@std/assert@1.0.8";
 
-import { createPaginationUrl, isFirstPage } from "./pagination.ts";
+import {
+  createPaginationUrl,
+  isFirstPage,
+} from "../src/_utilities/pagination.ts";
 
 Deno.test("createPaginationUrl builds base and paginated URLs", () => {
   const toUrl = createPaginationUrl("/archive");

@@ -5,7 +5,7 @@ import {
   byAuthorQuery,
   byTagQuery,
   firstPageQuery,
-} from "./search.ts";
+} from "../src/_utilities/search.ts";
 
 Deno.test("search query helpers return consistent query strings", () => {
   assertEquals(allPostsQuery, "type=post");

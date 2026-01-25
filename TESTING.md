@@ -28,7 +28,7 @@ DENO_TLS_CA_STORE=system deno test
 Run a focused subset:
 
 ```bash
-DENO_TLS_CA_STORE=system deno test src/_utilities
+DENO_TLS_CA_STORE=system deno test tests
 ```
 
 ## CI example (GitHub Actions)
