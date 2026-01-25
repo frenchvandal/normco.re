@@ -57,3 +57,26 @@ if (document.readyState === "loading") {
 }
 
 exposeThemeGlobals(themeManager);
+
+// ============================================================================
+// Service Worker
+// ============================================================================
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
+
+  const buildId = document.documentElement.dataset.buildId;
+  const swUrl = buildId
+    ? `/sw.js?build=${encodeURIComponent(buildId)}`
+    : "/sw.js";
+
+  globalThis.addEventListener("load", () => {
+    navigator.serviceWorker.register(swUrl).catch((error) => {
+      console.warn("Service worker registration failed:", error);
+    });
+  });
+}
+
+registerServiceWorker();

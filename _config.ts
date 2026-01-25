@@ -21,7 +21,10 @@ const getCommitSha = async (): Promise<string> => {
 };
 
 const commitSha = await getCommitSha();
+const buildId = commitSha || new Date().toISOString();
+
 site.data("commit", commitSha);
+site.data("buildId", buildId);
 
 site.use(plugins());
 
