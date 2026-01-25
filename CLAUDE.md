@@ -391,6 +391,9 @@ site.getContent(file, loader);
 - Use Deno + Lume only, as configured in this repository.
 - Run `deno fmt` and `deno lint` before finalizing changes.
 - Run `deno task build` when changes affect rendering or structure.
+- After running `deno task build`, capture a browser screenshot of at least the
+  home page and, if possible, the component impacted by the code change to
+  provide a visual preview.
 - Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
   engines.
 - Do not add new dependencies unless explicitly requested.
