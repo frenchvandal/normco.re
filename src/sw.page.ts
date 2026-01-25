@@ -6,8 +6,12 @@ export const layout = false;
 export const url = "/sw.js";
 export const contentType = "application/javascript";
 
-export default function ({ buildId }: Lume.Data) {
-  const version = buildId || "dev";
+interface ServiceWorkerData {
+  buildId?: string;
+}
+
+export default function ({ buildId }: ServiceWorkerData): string {
+  const version = buildId ?? "dev";
 
   return `const CACHE_PREFIX = "normcore-assets";
 const CACHE_VERSION = "${version}";

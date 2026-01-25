@@ -16,6 +16,7 @@ to keep the output fast, accessible, and easy to maintain.
 - **Search** via Pagefind (UI handled in client-side JS)
 - **Performance** through Lightning CSS minification and ESBuild bundling
 - **Accessibility** improvements like lazy-loaded images and required alt tags
+- **Offline support** via a service worker that caches core assets
 
 ## Project Structure
 
@@ -45,10 +46,18 @@ to keep the output fast, accessible, and easy to maintain.
 │   ├── archive-result.page.ts  # Tag/author archives
 │   ├── feed-json-viewer.page.ts # Feed JSON viewer template
 │   ├── index.page.ts       # Homepage template
+│   ├── sw.page.ts          # Service worker entry (builds to /sw.js)
 │   ├── styles.css          # CSS entry point
 │   └── feed.xsl            # Feed stylesheet
 └── _site/                  # Build output (generated)
 ```
+
+## Service Worker
+
+The service worker lives in `src/sw.page.ts` and is built to `/sw.js` during the
+Lume build. It caches core assets, refreshes them on new builds, and is
+registered in `src/js/main.js` to enable offline-friendly navigation and faster
+repeat visits.
 
 ## Development
 
