@@ -12,7 +12,6 @@ cms.document({
   name: "settings",
   description: "Global settings for the site.",
   store: "src:_data.ts",
-  url: "/",
   fields: [
     {
       name: "lang",
