@@ -10,8 +10,7 @@
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
     "build": "deno task lume",
     "serve": "deno task lume -s",
-    "update-deps": "deno cache --reload --lock=deno.lock --lock-write plugins.ts deno.json",
-    "update-cache": "deno cache --lock=deno.lock --lock-write plugins.ts deno.json",
+    "update-deps": "deno update --latest -r --lock=deno.lock",
     "cms": "deno task lume cms"
   },
   "compilerOptions": {
