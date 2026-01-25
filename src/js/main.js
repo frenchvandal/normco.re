@@ -12,10 +12,6 @@ import { enhanceExternalLinks } from "./features/external-links.js";
 import { enhanceImages } from "./features/images.js";
 import { initSearch } from "./features/search.js";
 import { initSearchModal } from "./features/search-modal.js";
-import {
-  initializeServiceWorkerNotifications,
-  prefetchAdjacentPosts,
-} from "./features/service-worker.js";
 import { createThemeManager } from "./features/theme.js";
 import { enhanceTOC } from "./features/toc.js";
 
@@ -51,10 +47,6 @@ function initializeFeatures() {
 
   // Initialize UI components
   initializeUIComponents();
-
-  // Service worker enhancements
-  initializeServiceWorkerNotifications();
-  prefetchAdjacentPosts();
 }
 
 // Initialize everything else when DOM is ready
@@ -80,16 +72,57 @@ function registerServiceWorker() {
     ? `/sw.js?build=${encodeURIComponent(buildId)}`
     : "/sw.js";
 
+  // Track if a SW was already controlling the page (not first visit)
+  const wasControlled = Boolean(navigator.serviceWorker.controller);
+
   globalThis.addEventListener("load", () => {
     navigator.serviceWorker.register(swUrl).catch((error) => {
       console.warn("Service worker registration failed:", error);
-      if (globalThis.toast?.error) {
-        globalThis.toast.error(
-          "Service worker registration failed. Offline features may be limited.",
-          6000,
-        );
-      }
     });
+  });
+
+  // Listen for update messages from service worker
+  navigator.serviceWorker.addEventListener("message", (event) => {
+    if (event.data?.type === "SW_UPDATED" && wasControlled) {
+      // Only show toast if SW was already controlling (real update, not first visit)
+      const showUpdateToast = () => {
+        if (!globalThis.toast) {
+          return;
+        }
+
+        const toastId = globalThis.toast.show({
+          message: "Site updated. Click to refresh.",
+          variant: "info",
+          duration: 0,
+          closeable: true,
+        });
+
+        // Make toast clickable to refresh
+        if (toastId) {
+          const toastElement = document.getElementById(toastId);
+          if (toastElement) {
+            toastElement.style.cursor = "pointer";
+            toastElement.addEventListener("click", (e) => {
+              // Don't refresh if clicking close button
+              if (!e.target.closest(".toast__close")) {
+                globalThis.location.reload();
+              }
+            });
+          }
+        }
+      };
+
+      // Wait for toast manager if not ready yet
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+          // Small delay to ensure UI components are initialized
+          setTimeout(showUpdateToast, 100);
+        }, { once: true });
+      } else {
+        // DOM ready, but toast might still be initializing
+        setTimeout(showUpdateToast, 100);
+      }
+    }
   });
 }
 
