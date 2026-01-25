@@ -152,7 +152,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) =>
 - Keep code compliant with `deno fmt` then `deno lint`; if Deno is not installed
   on the environment, install it if technically possible for Claude.
 - If `deno lint` reports errors, fix them when technically possible.
-- If `deno.lock` is versioned, keep it updated to ensure reproducible builds.
 
 ### Useful commands
 

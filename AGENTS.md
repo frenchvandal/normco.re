@@ -197,7 +197,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) =>
 - Prefer stable, version-pinned URL imports.
 - Avoid unnecessary dependencies.
 - Keep code compliant with `deno lint` and `deno fmt`.
-- Keep `deno.lock` updated when versioned.
 
 ### Common commands
 
