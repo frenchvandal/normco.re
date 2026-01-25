@@ -20,7 +20,8 @@ interface MetasConfig {
 
 interface SiteData {
   lang: string;
-  repoUrl: string;
+  repo?: RepoInfo;
+  repoUrl?: string;
   home: {
     welcome: string;
   };
@@ -30,9 +31,15 @@ interface SiteData {
   jsonLd: Lume.Data["jsonLd"];
 }
 
+interface RepoInfo {
+  baseUrl: string;
+  owner: string;
+  name: string;
+  branch: string;
+}
+
 const data: SiteData = {
   lang: "en",
-  repoUrl: "https://github.com/frenchvandal/normco.re",
   home: {
     welcome: "Hello, I am a person that writes stuff.",
   },

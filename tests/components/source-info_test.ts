@@ -36,7 +36,12 @@ const frenchI18n = {
 const basicProps = {
   sourceCommit: "abc123def456789012345678901234567890abcd",
   sourcePath: "src/posts/my-post.md",
-  repoUrl: "https://github.com/user/repo",
+  repo: {
+    baseUrl: "https://github.com",
+    owner: "user",
+    name: "repo",
+    branch: "master",
+  },
   i18n: defaultI18n,
 };
 
@@ -45,19 +50,21 @@ const basicProps = {
 // =============================================================================
 
 describe("sourceInfo - empty/invalid input", () => {
-  it("should return empty string when sourceCommit is missing", () => {
+  it("should render fallback when sourceCommit is missing", () => {
     const result = sourceInfo({
       sourcePath: "test.md",
-      repoUrl: "https://github.com/user/repo",
+      repo: basicProps.repo,
       i18n: defaultI18n,
     });
-    assertEquals(result, "");
+    assertStringIncludes(result, "View source");
+    assertEquals(/rev [a-f0-9]{8}/i.test(result), true);
+    assertEquals(countElements(result, "a"), 0);
   });
 
   it("should return empty string when sourcePath is missing", () => {
     const result = sourceInfo({
       sourceCommit: "abc123",
-      repoUrl: "https://github.com/user/repo",
+      repo: basicProps.repo,
       i18n: defaultI18n,
     });
     assertEquals(result, "");
@@ -65,27 +72,29 @@ describe("sourceInfo - empty/invalid input", () => {
 
   it("should return empty string when both are missing", () => {
     const result = sourceInfo({
-      repoUrl: "https://github.com/user/repo",
+      repo: basicProps.repo,
       i18n: defaultI18n,
     });
     assertEquals(result, "");
   });
 
-  it("should return empty string when sourceCommit is undefined", () => {
+  it("should render fallback when sourceCommit is undefined", () => {
     const result = sourceInfo({
       sourceCommit: undefined,
       sourcePath: "test.md",
-      repoUrl: "https://github.com/user/repo",
+      repo: basicProps.repo,
       i18n: defaultI18n,
     });
-    assertEquals(result, "");
+    assertStringIncludes(result, "View source");
+    assertEquals(/rev [a-f0-9]{8}/i.test(result), true);
+    assertEquals(countElements(result, "a"), 0);
   });
 
   it("should return empty string when sourcePath is undefined", () => {
     const result = sourceInfo({
       sourceCommit: "abc123",
       sourcePath: undefined,
-      repoUrl: "https://github.com/user/repo",
+      repo: basicProps.repo,
       i18n: defaultI18n,
     });
     assertEquals(result, "");
@@ -134,7 +143,7 @@ describe("sourceInfo - source link", () => {
   it("should render source link with correct href", () => {
     const result = sourceInfo(basicProps);
     const expectedUrl =
-      "https://github.com/user/repo/blob/main/src/posts/my-post.md";
+      "https://github.com/user/repo/blob/master/src/posts/my-post.md";
     assertStringIncludes(result, `href="${expectedUrl}"`);
   });
 
@@ -231,10 +240,15 @@ describe("sourceInfo - URL construction", () => {
   it("should handle GitLab URLs", () => {
     const gitlabProps = {
       ...basicProps,
-      repoUrl: "https://gitlab.com/user/repo",
+      repo: {
+        baseUrl: "https://gitlab.com",
+        owner: "user",
+        name: "repo",
+        branch: "master",
+      },
     };
     const result = sourceInfo(gitlabProps);
-    assertStringIncludes(result, "gitlab.com/user/repo/blob/main");
+    assertStringIncludes(result, "gitlab.com/user/repo/blob/master");
   });
 
   it("should handle different source paths", () => {
@@ -243,12 +257,12 @@ describe("sourceInfo - URL construction", () => {
       sourcePath: "src/deep/nested/path/file.ts",
     };
     const result = sourceInfo(nestedPath);
-    assertStringIncludes(result, "blob/main/src/deep/nested/path/file.ts");
+    assertStringIncludes(result, "blob/master/src/deep/nested/path/file.ts");
   });
 
   it("should handle URLs without trailing slash", () => {
     const result = sourceInfo(basicProps);
-    assertStringIncludes(result, "repo/blob/main");
+    assertStringIncludes(result, "repo/blob/master");
   });
 
   it("should handle different file extensions", () => {
@@ -329,13 +343,18 @@ describe("sourceInfo - edge cases", () => {
       sourcePath: "README.md",
     };
     const result = sourceInfo(rootFile);
-    assertStringIncludes(result, "blob/main/README.md");
+    assertStringIncludes(result, "blob/master/README.md");
   });
 
   it("should handle enterprise GitHub URLs", () => {
     const enterpriseProps = {
       ...basicProps,
-      repoUrl: "https://github.enterprise.com/org/repo",
+      repo: {
+        baseUrl: "https://github.enterprise.com",
+        owner: "org",
+        name: "repo",
+        branch: "master",
+      },
     };
     const result = sourceInfo(enterpriseProps);
     assertStringIncludes(result, "github.enterprise.com");
