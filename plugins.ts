@@ -54,28 +54,15 @@ export default function (userOptions?: Options) {
   const options = merge(defaults, userOptions);
 
   return (site: Lume.Site) => {
-    site.use(lightningCss({
-      options: {
-        minify: true,
-        drafts: {
-          customMedia: true,
+    site.use(esbuild())
+      .use(lightningCss({
+        options: {
+          minify: true,
+          drafts: {
+            customMedia: true,
+          },
         },
-      },
-    }))
-      .use(basePath())
-      .use(toc())
-      .use(prism(options.prism))
-      .use(readingInfo())
-      .use(date(options.date))
-      .use(jsonLd())
-      .use(metas())
-      .use(image())
-      .use(footnotes())
-      .use(resolveUrls())
-      .use(slugifyUrls())
-      .use(esbuild())
-      .use(sourceMaps())
-      .use(pagefind(options.pagefind))
+      }))
       .use(purgecss({
         options: {
           safelist: {
@@ -84,6 +71,19 @@ export default function (userOptions?: Options) {
           },
         },
       }))
+      .use(sourceMaps())
+      .use(basePath())
+      .use(toc())
+      .use(prism(options.prism))
+      .use(readingInfo())
+      .use(date(options.date))
+      .use(jsonLd())
+      .use(slugifyUrls())
+      .use(metas())
+      .use(image())
+      .use(footnotes())
+      .use(resolveUrls())
+      .use(pagefind(options.pagefind))
       .use(sitemap())
       .use(feed(options.feed))
       .add("fonts")
