@@ -207,6 +207,20 @@ deno lint
 deno fmt
 ```
 
+### Testing reference
+
+The repository uses Node's built-in test runner as the primary testing tool. It
+is documented here for reference when setting up tests. Running tests is not
+systematic and only happens on explicit user request.
+
+Reference documentation that agents can consult when setting up tests:
+
+- https://docs.deno.com/runtime/reference/documentation/
+- https://docs.deno.com/runtime/fundamentals/testing/
+- https://docs.deno.com/examples/testing_tutorial/
+- https://docs.deno.com/examples/mocking_tutorial/
+- https://docs.deno.com/examples/web_testing_tutorial/
+
 ---
 
 ## 7) Lume — best practices
