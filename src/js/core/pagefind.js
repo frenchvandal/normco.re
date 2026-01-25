@@ -33,7 +33,6 @@ export function loadPagefindUI() {
 
     const script = document.createElement("script");
     script.src = PAGEFIND_SCRIPT_SRC;
-    script.defer = true;
     script.dataset.pagefindUi = "true";
 
     const timeoutId = setTimeout(() => {
