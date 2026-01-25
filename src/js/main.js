@@ -12,6 +12,10 @@ import { enhanceExternalLinks } from "./features/external-links.js";
 import { enhanceImages } from "./features/images.js";
 import { initSearch } from "./features/search.js";
 import { initSearchModal } from "./features/search-modal.js";
+import {
+  initializeServiceWorkerNotifications,
+  prefetchAdjacentPosts,
+} from "./features/service-worker.js";
 import { createThemeManager } from "./features/theme.js";
 import { enhanceTOC } from "./features/toc.js";
 
@@ -47,6 +51,10 @@ function initializeFeatures() {
 
   // Initialize UI components
   initializeUIComponents();
+
+  // Service worker enhancements
+  initializeServiceWorkerNotifications();
+  prefetchAdjacentPosts();
 }
 
 // Initialize everything else when DOM is ready
@@ -75,6 +83,12 @@ function registerServiceWorker() {
   globalThis.addEventListener("load", () => {
     navigator.serviceWorker.register(swUrl).catch((error) => {
       console.warn("Service worker registration failed:", error);
+      if (globalThis.toast?.error) {
+        globalThis.toast.error(
+          "Service worker registration failed. Offline features may be limited.",
+          6000,
+        );
+      }
     });
   });
 }
