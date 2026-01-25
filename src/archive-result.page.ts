@@ -1,5 +1,8 @@
 import "lume/types.ts";
 
+import type { PaginateResult } from "lume/plugins/paginate.ts";
+import type { Data } from "lume/core/file.ts";
+
 import { createPaginationUrl } from "./_utilities/pagination.ts";
 import { PAGINATION_SIZE } from "./_config/constants.ts";
 import { byAuthorQuery, byTagQuery } from "./_utilities/search.ts";
@@ -15,12 +18,12 @@ interface ArchiveConfig {
   formatTitle: (value: string) => string;
 }
 
-type ArchiveResultPageData = Lume.PaginateResult<Lume.Data> & {
+interface ArchiveResultPageData extends PaginateResult<Data> {
   title: string;
   type: "tag" | "author";
   tag?: string;
   author?: string;
-};
+}
 
 /**
  * Generic generator for archive result pages (tags or authors)
