@@ -9,7 +9,7 @@ export default async function ({ postslist, url, comp }: Lume.Data) {
 
   const postItems = await Promise.all(
     postslist.map(async (post: Lume.Data) => {
-      const postDetails = await comp.postDetails({
+      const postDetails = await comp.PostDetails({
         date: post.date,
         tags: post.tags,
         author: post.author,

@@ -15,7 +15,7 @@ export default async function (
     comp,
   }: Lume.Data,
 ) {
-  const postList = await comp.postList({ postslist: results });
+  const postList = await comp.PostList({ postslist: results });
   const paginationNav = await comp.pagination({ pagination, i18n });
 
   const pageAuthors = pagination?.page === 1

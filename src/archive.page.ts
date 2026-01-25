@@ -1,36 +1,12 @@
+import "lume/types.ts";
+
 import { createPaginationUrl, isFirstPage } from "./_utilities/pagination.ts";
 import { ARCHIVE_MENU, PAGINATION_SIZE } from "./_config/constants.ts";
 import { allPostsQuery } from "./_utilities/search.ts";
 
 export const layout = "layouts/archive.ts";
 
-interface PaginationData {
-  pagination: {
-    page: number;
-  };
-  menu?: {
-    visible: boolean;
-    order: number;
-  };
-  [key: string]: unknown;
-}
-
-interface ArchiveData {
-  search: {
-    pages: (query: string, sort: string) => unknown[];
-  };
-  paginate: (
-    items: unknown[],
-    options: { url: (n: number) => string; size: number },
-  ) => Generator<PaginationData>;
-  i18n: {
-    nav: {
-      archive_title: string;
-    };
-  };
-}
-
-export default function* ({ search, paginate, i18n }: ArchiveData) {
+export default function* ({ search, paginate, i18n }: Lume.Data) {
   const posts = search.pages(allPostsQuery, "date=desc");
   const url = createPaginationUrl("/archive");
 
