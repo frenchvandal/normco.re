@@ -108,6 +108,40 @@ Separate groups with a blank line. Centralize all external module imports in
 `deno.json` using a readable, unique, explicit alias, and use that alias in
 TypeScript import statements.
 
+#### Naming conventions for `deno.json` imports
+
+When adding new remapped specifiers in `deno.json`:
+
+- Use the `imports` field in `deno.json` (do **not** use `import_map.json` or
+  the `importMap` field/`--import-map` option).
+- Prefer short, readable specifiers that reflect the origin and avoid
+  collisions.
+
+Suggested naming options (pick one and apply consistently):
+
+1. **Direct package name** (simplest, most common)
+   - JSR: `"@luca/cases": "jsr:@luca/cases@^1.0.0"`
+   - npm: `"cowsay": "npm:cowsay@^1.6.0"`
+   - URL: `"oak": "https://deno.land/x/oak/mod.ts"`
+
+2. **Registry-prefixed** (avoids collisions across registries)
+   - JSR: `"jsr:@luca/cases": "jsr:@luca/cases@^1.0.0"`
+   - npm: `"npm:cowsay": "npm:cowsay@^1.6.0"`
+   - URL: `"url:oak": "https://deno.land/x/oak/mod.ts"`
+
+3. **Namespace by source** (readable and explicit without protocols)
+   - JSR: `"jsr/cases": "jsr:@luca/cases@^1.0.0"`
+   - npm: `"npm/cowsay": "npm:cowsay@^1.6.0"`
+   - URL: `"x/oak": "https://deno.land/x/oak/mod.ts"`
+   - CDN: `"cdn/esmsh/react": "https://esm.sh/react@18.3.1"`
+
+Trailing slash note (for clarity):
+
+- In `deno.json`, you only need the non-slashed specifier (for example,
+  `"@std/async": "jsr:@std/async@^1.0.0"`). Deno handles subpath resolution.
+- Trailing-slash pairs are only required when using a standalone import map file
+  with `--import-map` (which we do not use here).
+
 ### Functions
 
 - Small, single-responsibility functions.
