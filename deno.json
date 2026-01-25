@@ -57,6 +57,7 @@
   },
   "unstable": [
     "temporal",
-    "fmt-component"
+    "fmt-component",
+    "worker-options"
   ]
 }
