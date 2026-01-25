@@ -13,6 +13,9 @@
 - Before running `deno task build` or `deno task serve` commands, set
   `DENO_TLS_CA_STORE=system` in the environment.
 - Run `deno task build` when changes affect rendering or structure.
+- After running `deno task build`, capture a browser screenshot of at least the
+  home page and, if possible, the component impacted by the code change to
+  provide a visual preview.
 - Keep code, comments, commit messages, and PR/MR titles in English.
 
 **Don’t**
