@@ -6,6 +6,7 @@
 
 - Follow this file as the source of truth for all changes.
 - Use Deno + Lume only, as configured in this repository.
+- Write English that is fluent, natural, and respects typographic conventions.
 - Run `deno fmt` first and `deno lint` second before finalizing changes; if Deno
   is not installed on the environment, install it if technically possible for
   the agent.
@@ -15,11 +16,15 @@
 - Run `deno task build` when changes affect rendering or structure.
 - After running `deno task build`, capture a browser screenshot of at least the
   home page and, if possible, the component impacted by the code change to
-  provide a visual preview.
+  provide a visual preview and present it to the user.
 - Keep code, comments, commit messages, and PR/MR titles in English.
 
 **Don’t**
 
+- Never proactively create documentation files (`*.md`) or README files unless
+  explicitly requested by the user. If documentation files (`*.md`) or README
+  files already exist, treat them as relevant and do not modify or delete them
+  unless explicitly requested by the user.
 - Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
   engines.
 - Do not add new dependencies unless explicitly requested.

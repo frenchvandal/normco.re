@@ -395,6 +395,7 @@ site.getContent(file, loader);
 - Always account for accessibility.
 - Avoid JSX/Preact and non-approved templating engines.
 - Stay concise and aligned with the site’s minimalist identity.
+- Write English that is fluent, natural, and respects typographic conventions.
 - Respond in French by default for discussions; keep code, code comments, commit
   titles, commit descriptions, merge request titles, merge request comments in
   English.
@@ -404,10 +405,14 @@ site.getContent(file, loader);
 - Run `deno task build` when changes affect rendering or structure.
 - After running `deno task build`, capture a browser screenshot of at least the
   home page and, if possible, the component impacted by the code change to
-  provide a visual preview.
+  provide a visual preview and present it to the user.
 - Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
   engines.
 - Do not add new dependencies unless explicitly requested.
 - Do not introduce Markdown content pages unless explicitly requested.
+- Never proactively create documentation files (`*.md`) or README files unless
+  explicitly requested by the user. If documentation files (`*.md`) or README
+  files already exist, treat them as relevant and do not modify or delete them
+  unless explicitly requested by the user.
 - Do not modify generated artifacts or build outputs.
 - Do not over-engineer solutions.
