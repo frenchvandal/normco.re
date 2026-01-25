@@ -11,6 +11,9 @@
   is not installed on the environment, install it if technically possible for
   the agent.
 - If `deno lint` reports errors, fix them when technically possible.
+- Only commit `deno.lock` when the same commit explicitly updates dependencies
+  in `deno.json`.
+- Set `DENO_TLS_CA_STORE=system` before every Deno CLI command.
 - Before running `deno task build` or `deno task serve` commands, set
   `DENO_TLS_CA_STORE=system` in the environment.
 - Run `deno task build` when changes affect rendering or structure.

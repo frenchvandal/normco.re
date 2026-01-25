@@ -404,6 +404,7 @@ site.getContent(file, loader);
 - Follow the Conventional Commits specification.
 - Use Deno + Lume only, as configured in this repository.
 - Run `deno fmt` and `deno lint` before finalizing changes.
+- Set `DENO_TLS_CA_STORE=system` before every Deno CLI command.
 - Run `deno task build` when changes affect rendering or structure.
 - After running `deno task build`, capture a browser screenshot of at least the
   home page and, if possible, the component impacted by the code change to
@@ -411,6 +412,8 @@ site.getContent(file, loader);
 - At the start of a task, run `deno task serve` and capture a browser screenshot
   of the current state before making changes so there is a baseline visual
   reference.
+- Only commit `deno.lock` when the same commit explicitly updates dependencies
+  in `deno.json`.
 - Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
   engines.
 - Do not add new dependencies unless explicitly requested.
