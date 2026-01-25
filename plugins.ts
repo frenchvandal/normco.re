@@ -66,7 +66,7 @@ export default function (userOptions?: Options) {
       .use(purgecss({
         options: {
           safelist: {
-            deep: [/token/],
+            deep: [/token/, /source-info/],
             standard: [/^language-/],
           },
         },
