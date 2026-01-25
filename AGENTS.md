@@ -7,9 +7,10 @@
 - Follow this file as the source of truth for all changes.
 - Use Deno + Lume only, as configured in this repository.
 - Write English that is fluent, natural, and respects typographic conventions.
-- Run `deno fmt` first and `deno lint` second before finalizing changes; if Deno
-  is not installed on the environment, install it if technically possible for
-  the agent.
+- Run `deno fmt` first, `deno lint` second, and `deno test` third before
+  finalizing changes; if Deno is not installed on the environment, install it if
+  technically possible for the agent. If `deno test` fails, treat it as
+  non-blocking but detail the failures in the pull request description.
 - If `deno lint` reports errors, fix them when technically possible.
 - Only commit `deno.lock` when the same commit explicitly updates dependencies
   in `deno.json`.
@@ -205,6 +206,7 @@ deno task serve
 deno task build
 deno lint
 deno fmt
+deno test
 ```
 
 ### Testing reference
@@ -493,6 +495,8 @@ satisfied.
 
 - [ ] `deno fmt` would pass.
 - [ ] `deno lint` would pass.
+- [ ] `deno test` would pass (if it failed, it is documented in the PR
+      description).
 - [ ] `deno task build` would succeed if run.
 - [ ] If commands were not run, this is explicitly stated.
 
