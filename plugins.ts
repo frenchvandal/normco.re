@@ -14,10 +14,10 @@ import sitemap from "lume/plugins/sitemap.ts";
 import feed, { Options as FeedOptions } from "lume/plugins/feed.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
 import { merge } from "lume/core/utils/object.ts";
-import toc from "https://deno.land/x/lume_markdown_plugins@v0.11.0/toc.ts";
-import image from "https://deno.land/x/lume_markdown_plugins@v0.11.0/image.ts";
-import footnotes from "https://deno.land/x/lume_markdown_plugins@v0.11.0/footnotes.ts";
-import { alert } from "npm:@mdit/plugin-alert@0.22.3";
+import toc from "lume/markdown-plugins/toc.ts";
+import image from "lume/markdown-plugins/image.ts";
+import footnotes from "lume/markdown-plugins/footnotes.ts";
+import { alert } from "@mdit/plugin-alert";
 
 import "lume/types.ts";
 

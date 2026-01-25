@@ -98,7 +98,9 @@ Recommended order:
 2. External dependencies.
 3. Local modules.
 
-Separate groups with a blank line.
+Separate groups with a blank line. Centralize all external module imports in
+`deno.json` using a readable, unique, explicit alias, and use that alias in
+TypeScript import statements.
 
 ### Functions
 
