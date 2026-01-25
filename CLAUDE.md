@@ -16,6 +16,14 @@
 - Templating: **ESM + TypeScript** (no JSX/Preact, no Nunjucks/Vento).
 - Styling: **SCSS** (or modern CSS if appropriate).
 - Content: **TypeScript pages** (`*.page.ts`) rather than Markdown.
+- References: Lume docs https://lume.land/ and Deno runtime docs
+  https://docs.deno.com/runtime/ (use these when in doubt about Lume or Deno
+  behavior).
+- The currently used Deno version is defined in `.tool-versions`.
+- Lume plugins list: https://lume.land/plugins/?status=all (official plugins
+  only; no community plugins).
+- Do not write custom code when an official Lume plugin already solves the same
+  goal; prefer adding the plugin instead of reinventing the wheel.
 
 ---
 
