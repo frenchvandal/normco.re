@@ -1,4 +1,4 @@
-import { assertEquals } from "jsr:@std/assert@1.0.8";
+import { assertEquals } from "@std/assert";
 
 import { slugify } from "../src/_utilities/text.ts";
 
