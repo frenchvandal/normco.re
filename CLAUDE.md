@@ -147,7 +147,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) =>
 deno task serve  # Local dev server
 deno task build  # Static build
 deno lint        # Lint
-
 deno fmt         # Format
 ```
 
@@ -395,6 +394,6 @@ site.getContent(file, loader);
 - Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
   engines.
 - Do not add new dependencies unless explicitly requested.
-- Do not introduce Markdown content pages unless otherwise instructed.
+- Do not introduce Markdown content pages unless explicitly requested.
 - Do not modify generated artifacts or build outputs.
 - Do not over-engineer solutions.
