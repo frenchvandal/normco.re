@@ -62,7 +62,6 @@ export default async function (
 
     <!-- Pagefind search -->
     <link rel="stylesheet" href="/pagefind/pagefind-ui.css">
-    <script src="/pagefind/pagefind-ui.js"></script>
 
     <script src="/js/main.js" type="module"></script>
     ${extra_head ? extra_head.join("\n") : ""}
