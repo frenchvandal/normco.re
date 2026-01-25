@@ -2,7 +2,42 @@
  * Search initialization (Pagefind)
  */
 
-import { loadPagefindUI } from "../core/pagefind.js";
+const PAGEFIND_TIMEOUT_MS = 5000;
+
+const waitForPagefind = () => {
+  if (globalThis.PagefindUI) {
+    return Promise.resolve();
+  }
+
+  const script = document.querySelector('script[data-pagefind-ui="true"]');
+  if (!script) {
+    return Promise.reject(new Error("Pagefind script tag not found"));
+  }
+
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject(new Error("Pagefind failed to load within timeout"));
+    }, PAGEFIND_TIMEOUT_MS);
+
+    script.addEventListener(
+      "load",
+      () => {
+        clearTimeout(timeoutId);
+        resolve();
+      },
+      { once: true },
+    );
+
+    script.addEventListener(
+      "error",
+      () => {
+        clearTimeout(timeoutId);
+        reject(new Error("Pagefind failed to load"));
+      },
+      { once: true },
+    );
+  });
+};
 
 export function initSearch() {
   const searchContainer = document.getElementById("search");
@@ -20,7 +55,7 @@ export function initSearch() {
     }
   };
 
-  loadPagefindUI()
+  waitForPagefind()
     .then(() => {
       if (!globalThis.PagefindUI) {
         throw new Error("Pagefind UI is unavailable");

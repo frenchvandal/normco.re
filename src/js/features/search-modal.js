@@ -4,9 +4,44 @@
  */
 
 import { closeModal, openModal } from "../components/modal.js";
-import { loadPagefindUI } from "../core/pagefind.js";
 
 const MODAL_ID = "search-modal";
+const PAGEFIND_TIMEOUT_MS = 5000;
+
+const waitForPagefind = () => {
+  if (globalThis.PagefindUI) {
+    return Promise.resolve();
+  }
+
+  const script = document.querySelector('script[data-pagefind-ui="true"]');
+  if (!script) {
+    return Promise.reject(new Error("Pagefind script tag not found"));
+  }
+
+  return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject(new Error("Pagefind failed to load within timeout"));
+    }, PAGEFIND_TIMEOUT_MS);
+
+    script.addEventListener(
+      "load",
+      () => {
+        clearTimeout(timeoutId);
+        resolve();
+      },
+      { once: true },
+    );
+
+    script.addEventListener(
+      "error",
+      () => {
+        clearTimeout(timeoutId);
+        reject(new Error("Pagefind failed to load"));
+      },
+      { once: true },
+    );
+  });
+};
 
 /**
  * Initialize search modal functionality
@@ -35,7 +70,7 @@ export function initSearchModal() {
       isInitializing = true;
       searchContainer.setAttribute("aria-busy", "true");
 
-      loadPagefindUI()
+      waitForPagefind()
         .then(() => {
           if (!globalThis.PagefindUI) {
             throw new Error("Pagefind UI is unavailable");
