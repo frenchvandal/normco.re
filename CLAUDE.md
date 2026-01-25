@@ -13,9 +13,11 @@
 
 - Runtime: **Deno**.
 - SSG: **Lume**.
-- Templating: **ESM + TypeScript** (no JSX/Preact, no Nunjucks/Vento).
+- Templating: **ESM + TypeScript** for layouts and components (no JSX/Preact, no
+  Nunjucks/Vento).
 - Styling: **SCSS** (or modern CSS if appropriate).
-- Content: **TypeScript pages** (`*.page.ts`) rather than Markdown.
+- Content: **Markdown** for posts and static pages (`*.md`), with dynamic pages
+  in `*.page.ts` when needed.
 - References: Lume docs https://lume.land/ and Deno runtime docs
   https://docs.deno.com/runtime/ (use these when in doubt about Lume or Deno
   behavior).
