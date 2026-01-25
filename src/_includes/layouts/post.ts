@@ -19,6 +19,9 @@ export default async function (
     search,
     i18n,
     comp,
+    sourceCommit,
+    sourcePath,
+    repoUrl,
   }: Lume.Data,
 ) {
   const postDetails = await comp.PostDetails({
@@ -34,6 +37,13 @@ export default async function (
       { label: title },
     ],
     homeLabel: i18n.nav.home,
+  });
+
+  const sourceInfo = await comp.SourceInfo({
+    sourceCommit,
+    sourcePath,
+    repoUrl,
+    i18n,
   });
 
   const previousPost = search.previousPage(url, "type=post");
@@ -114,6 +124,8 @@ ${breadcrumbs}
   `
       : ""
   }
+
+  ${sourceInfo}
 </article>
 
 <nav class="page-pagination pagination" aria-label="Post navigation">

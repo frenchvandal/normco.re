@@ -5,10 +5,18 @@
 export const layout = "layouts/base.ts";
 export const bodyClass = "body-page";
 
-export default function (
-  { title, subtitle, content }: Lume.Data,
+export default async function (
+  { title, subtitle, content, sourceCommit, sourcePath, repoUrl, i18n, comp }:
+    Lume.Data,
   { md }: Lume.Helpers,
 ) {
+  const sourceInfo = await comp.SourceInfo({
+    sourceCommit,
+    sourcePath,
+    repoUrl,
+    i18n,
+  });
+
   return `
 <article class="post" data-pagefind-body>
   <header class="post-header">
@@ -20,6 +28,8 @@ export default function (
   <div class="post-body">
     ${content}
   </div>
+
+  ${sourceInfo}
 </article>
 `;
 }

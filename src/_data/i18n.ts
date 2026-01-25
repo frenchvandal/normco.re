@@ -27,6 +27,10 @@ interface I18n {
     tags: string;
     authors: string;
   };
+  source: {
+    view_source: string;
+    revision: string;
+  };
 }
 
 const i18n: I18n = {
@@ -53,6 +57,10 @@ const i18n: I18n = {
     by_tag: "Tagged",
     tags: "Tags",
     authors: "Authors",
+  },
+  source: {
+    view_source: "View source",
+    revision: "rev",
   },
 };
 

@@ -1,0 +1,33 @@
+/* ==========================================================================
+   Source Info component
+   Displays source file link and commit revision
+   ========================================================================== */
+
+.source-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: var(--row-gap);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-line);
+  font: var(--font-small);
+  color: var(--color-dim);
+
+  & a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--transition-fast);
+
+    &:hover,
+    &:focus-visible {
+      text-decoration-color: currentColor;
+    }
+  }
+}
+
+.source-info__separator {
+  opacity: 0.5;
+}

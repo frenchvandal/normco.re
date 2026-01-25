@@ -106,6 +106,31 @@ export default function (userOptions?: Options) {
           }
           page.data.excerpt = content.split(/<!--\s*more\s*-->/i)[0];
         }
+      })
+      // Inject git commit SHA for each source file
+      .preprocess([".md"], async (pages) => {
+        for (const page of pages) {
+          const src = page.src;
+          if (!src?.path || !src?.ext) continue;
+
+          const filePath = `src${src.path}${src.ext}`;
+          try {
+            const cmd = new Deno.Command("git", {
+              args: ["log", "-1", "--format=%H", "--", filePath],
+              cwd: Deno.cwd(),
+            });
+            const { code, stdout } = await cmd.output();
+            if (code === 0) {
+              const sha = new TextDecoder().decode(stdout).trim();
+              if (sha) {
+                page.data.sourceCommit = sha;
+                page.data.sourcePath = filePath;
+              }
+            }
+          } catch {
+            // Silently ignore git errors
+          }
+        }
       });
 
     // Alert plugin
