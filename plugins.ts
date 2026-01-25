@@ -76,7 +76,14 @@ export default function (userOptions?: Options) {
       .use(esbuild())
       .use(sourceMaps())
       .use(pagefind(options.pagefind))
-      .use(purgecss())
+      .use(purgecss({
+        options: {
+          safelist: {
+            deep: [/token/],
+            standard: [/^language-/],
+          },
+        },
+      }))
       .use(sitemap())
       .use(feed(options.feed))
       .add("fonts")
