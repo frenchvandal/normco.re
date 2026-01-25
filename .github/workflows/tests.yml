@@ -1,6 +1,7 @@
 name: Tests
 
 on:
+  workflow_dispatch: 
   pull_request:
   push:
     branches: [master]
@@ -14,8 +15,8 @@ jobs:
         with:
           deno-version-file: .tool-versions
           cache: true
-      - name: Format
-        run: deno fmt
+      - name: Environment variables
+        run: printenv | sort
       - name: Lint
         run: deno lint
       - name: Test
