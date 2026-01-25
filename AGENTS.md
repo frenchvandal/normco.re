@@ -209,7 +209,7 @@ deno fmt
 
 ### Testing reference
 
-The repository uses Node's built-in test runner as the primary testing tool. It
+The repository uses Deno's built-in test runner as the primary testing tool. It
 is documented here for reference when setting up tests. Running tests is not
 systematic and only happens on explicit user request.
 

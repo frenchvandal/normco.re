@@ -168,7 +168,7 @@ The repository uses Node's built-in test runner as the primary testing tool. It
 is documented here for reference when setting up tests. Running tests is not
 systematic and only happens on explicit user request.
 
-Reference documentation that agents can consult when setting up tests:
+Reference documentation that Claude can consult when setting up tests:
 
 - https://docs.deno.com/runtime/reference/documentation/
 - https://docs.deno.com/runtime/fundamentals/testing/
