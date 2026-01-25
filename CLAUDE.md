@@ -406,6 +406,9 @@ site.getContent(file, loader);
 - After running `deno task build`, capture a browser screenshot of at least the
   home page and, if possible, the component impacted by the code change to
   provide a visual preview and present it to the user.
+- At the start of a task, run `deno task serve` and capture a browser screenshot
+  of the current state before making changes so there is a baseline visual
+  reference.
 - Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
   engines.
 - Do not add new dependencies unless explicitly requested.
