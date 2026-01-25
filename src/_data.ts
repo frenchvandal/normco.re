@@ -20,6 +20,7 @@ interface MetasConfig {
 
 interface SiteData {
   lang: string;
+  repoUrl: string;
   home: {
     welcome: string;
   };
@@ -31,6 +32,7 @@ interface SiteData {
 
 const data: SiteData = {
   lang: "en",
+  repoUrl: "https://github.com/frenchvandal/normco.re",
   home: {
     welcome: "Hello, I am a person that writes stuff.",
   },
