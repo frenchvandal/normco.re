@@ -1,7 +1,8 @@
 {
+  "lock": "deno.lock",
   "imports": {
     "lume/": "https://deno.land/x/lume@v3.1.4/",
-    "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.11/"
+    "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.12/"
   },
   "tasks": {
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",

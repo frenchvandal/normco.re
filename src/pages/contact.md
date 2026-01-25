@@ -9,5 +9,4 @@ menu:
 
 # Get in touch
 
-If you'd like to reach out, you can contact me through the links in the site
-navigation or any of the profiles listed in the footer.
+If you would like to reach out, you can contact me through GitHub.
