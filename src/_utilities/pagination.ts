@@ -4,9 +4,12 @@
  * @returns A function that generates URLs for pagination
  */
 export function createPaginationUrl(baseUrl: string) {
+  const normalizedBaseUrl = baseUrl === "/" ? "" : baseUrl.replace(/\/+$/, "");
+
   return (pageNumber: number): string => {
     // First page uses the base URL, subsequent pages append the page number
-    return pageNumber === 1 ? `${baseUrl}/` : `${baseUrl}/${pageNumber}/`;
+    const pageSuffix = pageNumber === 1 ? "" : `/${pageNumber}`;
+    return `${normalizedBaseUrl}${pageSuffix}/`;
   };
 }
 
