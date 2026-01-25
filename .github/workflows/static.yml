@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Deno environment
         uses: denoland/setup-deno@v2
         with:
@@ -39,13 +39,11 @@ jobs:
       - name: Run build task
         shell: bash
         run: |
-          deno task update-deps
-          deno task update-cache
           deno task build
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: "_site"
       - name: Deploy to GitHub Pages
