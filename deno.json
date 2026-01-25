@@ -62,6 +62,6 @@
     "fmt-component"
   ],
   "test": {
-    "exclude": ["tests/helpers/"]
+    "exclude": ["tests/helpers/dom.ts"]
   }
 }
