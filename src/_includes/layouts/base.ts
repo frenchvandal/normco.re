@@ -14,6 +14,7 @@ export default async function (
     bodyClass,
     content,
     commit,
+    buildId,
     date,
     search,
     comp,
@@ -38,7 +39,7 @@ export default async function (
 
   return `<!doctype html>
 
-<html lang="${lang}">
+<html lang="${lang}" data-build-id="${buildId ?? ""}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
