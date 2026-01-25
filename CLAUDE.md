@@ -149,8 +149,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers) =>
 - Avoid excessive dependencies (Deno favors lean code).
 - Before running `deno task build` or `deno task serve` commands, set
   `DENO_TLS_CA_STORE=system` in the environment.
-- Keep code compliant with `deno fmt` then `deno lint`; if Deno is not installed
-  on the environment, install it if technically possible for Claude.
+- Keep code compliant with `deno fmt`, then `deno lint`, then `deno test`; if
+  Deno is not installed on the environment, install it if technically possible
+  for Claude. If `deno test` fails, treat it as non-blocking but detail the
+  failures in the pull request description.
 - If `deno lint` reports errors, fix them when technically possible.
 
 ### Useful commands
@@ -160,6 +162,7 @@ deno task serve  # Local dev server
 deno task build  # Static build
 deno lint        # Lint
 deno fmt         # Format
+deno test        # Tests
 ```
 
 ### Testing reference
@@ -417,6 +420,8 @@ site.getContent(file, loader);
 - Follow the Conventional Commits specification.
 - Use Deno + Lume only, as configured in this repository.
 - Run `deno fmt` and `deno lint` before finalizing changes.
+- Run `deno test` after `deno lint`; failures are non-blocking but must be
+  detailed in the pull request description.
 - Set `DENO_TLS_CA_STORE=system` before every Deno CLI command.
 - Run `deno task build` when changes affect rendering or structure.
 - After running `deno task build`, capture a browser screenshot of at least the
