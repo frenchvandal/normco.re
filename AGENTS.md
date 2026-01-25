@@ -23,7 +23,8 @@
 - Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
   engines.
 - Do not add new dependencies unless explicitly requested.
-- Do not introduce Markdown content pages unless otherwise instructed.
+- Do not introduce Markdown content outside the existing posts/pages conventions
+  unless otherwise instructed.
 - Do not modify generated artifacts or build outputs.
 - Do not over-engineer solutions.
 
@@ -46,9 +47,11 @@ If a command cannot be run, clearly state which command would be run and why.
 
 - Runtime: **Deno**.
 - SSG: **Lume**.
-- Templating: **ESM + TypeScript** (no JSX/Preact, no Nunjucks/Vento).
+- Templating: **ESM + TypeScript** for layouts and components (no JSX/Preact, no
+  Nunjucks/Vento).
 - Styling: **SCSS** (or modern CSS if appropriate).
-- Content: **TypeScript pages** (`*.page.ts`) rather than Markdown.
+- Content: **Markdown** for posts and static pages (`*.md`), with dynamic pages
+  in `*.page.ts` when needed.
 - References: Lume docs https://lume.land/ and Deno runtime docs
   https://docs.deno.com/runtime/ (use these when in doubt about Lume or Deno
   behavior).
