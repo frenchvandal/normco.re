@@ -1,29 +1,10 @@
+import "lume/types.ts";
+
 import { createPaginationUrl } from "./_utilities/pagination.ts";
 import { PAGINATION_SIZE } from "./_config/constants.ts";
 import { byAuthorQuery, byTagQuery } from "./_utilities/search.ts";
 
 export const layout = "layouts/archive-result.ts";
-
-interface PaginationData {
-  [key: string]: unknown;
-}
-
-interface ArchiveResultData {
-  search: {
-    values: (field: string) => string[];
-    pages: (query: string) => unknown[];
-  };
-  i18n: {
-    search: {
-      by_tag: string;
-      by_author: string;
-    };
-  };
-  paginate: (
-    items: unknown[],
-    options: { url: (n: number) => string; size: number },
-  ) => Generator<PaginationData>;
-}
 
 interface ArchiveConfig {
   type: "tag" | "author";
@@ -40,9 +21,9 @@ interface ArchiveConfig {
 function* generateArchiveResults(
   values: string[],
   config: ArchiveConfig,
-  search: ArchiveResultData["search"],
-  paginate: ArchiveResultData["paginate"],
-): Generator<PaginationData> {
+  search: Lume.Data["search"],
+  paginate: Lume.Data["paginate"],
+): Generator<Lume.Data> {
   for (const value of values) {
     const url = createPaginationUrl(`${config.urlPrefix}/${value}`);
     const pages = search.pages(config.queryFn(value));
@@ -58,7 +39,7 @@ function* generateArchiveResults(
   }
 }
 
-export default function* ({ search, i18n, paginate }: ArchiveResultData) {
+export default function* ({ search, i18n, paginate }: Lume.Data) {
   // Generate a page for each tag
   yield* generateArchiveResults(
     search.values("tags"),

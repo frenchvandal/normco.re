@@ -21,7 +21,7 @@ export default async function (
     comp,
   }: Lume.Data,
 ) {
-  const postDetails = await comp.postDetails({
+  const postDetails = await comp.PostDetails({
     date,
     tags,
     author,

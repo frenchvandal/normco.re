@@ -11,31 +11,60 @@ export default function (options: Partial<Options> = {}) {
 
     // Add remote files
     const files = [
-      "_includes/css/fonts.css",
-      "_includes/css/navbar.css",
-      "_includes/css/page.css",
-      "_includes/css/post-list.css",
-      "_includes/css/post.css",
-      "_includes/css/reset.css",
-      "_includes/css/badge.css",
-      "_includes/css/variables.css",
-      "_includes/css/search.css",
+      // CSS - Design Tokens
+      "_includes/css/01-tokens/tokens.css",
+      // CSS - Base
+      "_includes/css/02-base/reset.css",
+      "_includes/css/02-base/typography.css",
+      "_includes/css/02-base/prism.css",
+      "_includes/css/02-base/global.css",
+      // CSS - Utilities
+      "_includes/css/03-utilities/utilities.css",
+      // CSS - Components
+      "_includes/css/04-components/button.css",
+      "_includes/css/04-components/badge.css",
+      "_includes/css/04-components/alert.css",
+      "_includes/css/04-components/card.css",
+      "_includes/css/04-components/theme-toggle.css",
+      "_includes/css/04-components/search.css",
+      "_includes/css/04-components/input.css",
+      "_includes/css/04-components/select.css",
+      "_includes/css/04-components/checkbox.css",
+      "_includes/css/04-components/switch.css",
+      "_includes/css/04-components/tabs.css",
+      "_includes/css/04-components/breadcrumbs.css",
+      "_includes/css/04-components/modal.css",
+      "_includes/css/04-components/toast.css",
+      "_includes/css/04-components/tooltip.css",
+      "_includes/css/04-components/skeleton.css",
+      // CSS - Layouts
+      "_includes/css/05-layouts/navbar.css",
+      "_includes/css/05-layouts/footer.css",
+      "_includes/css/05-layouts/page.css",
+      "_includes/css/05-layouts/post.css",
+      "_includes/css/05-layouts/post-list.css",
+      "_includes/css/05-layouts/toc-footnotes.css",
+      // Components
       "_components/pagination.ts",
-      "_components/postDetails.ts",
-      "_components/postList.ts",
+      "_components/PostDetails.ts",
+      "_components/PostList.ts",
+      // Layouts
       "_includes/layouts/archive-result.ts",
       "_includes/layouts/archive.ts",
       "_includes/layouts/base.ts",
       "_includes/layouts/page.ts",
       "_includes/layouts/post.ts",
+      // Data
       "posts/_data.ts",
       "_data.ts",
       "_data/i18n.ts",
+      // Pages
       "404.md",
       "archive-result.page.ts",
       "archive.page.ts",
       "index.page.ts",
       "feed-json-viewer.page.ts",
+      // Assets
       "styles.css",
       "favicon.png",
     ];

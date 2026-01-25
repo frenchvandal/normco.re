@@ -14,7 +14,7 @@ export default async function (
 
   const postArticles = await Promise.all(
     recentPosts.map(async (post) => {
-      const postDetails = await comp.postDetails({
+      const postDetails = await comp.PostDetails({
         date: post.date,
         tags: post.tags,
         author: post.author,
