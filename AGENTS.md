@@ -24,8 +24,8 @@
 - At the start of a task, run `deno task serve` and capture a browser screenshot
   of the current state before making changes so there is a baseline visual
   reference.
-- When modifying or creating JavaScript or TypeScript code, update or create the
-  corresponding unit tests in the `Tests` directory when relevant.
+- When modifying or creating JavaScript or TypeScript code, ensure JSDoc
+  comments include testable code examples that serve as documentation tests.
 - Keep code, comments, commit messages, and PR/MR titles in English.
 
 **Don’t**
@@ -247,17 +247,55 @@ deno test
 
 ### Testing reference
 
-The repository uses Deno's built-in test runner as the primary testing tool. It
-is documented here for reference when setting up tests. Running tests is not
-systematic and only happens on explicit user request.
+The repository uses **Deno's documentation tests** as the primary testing
+approach. Code examples in JSDoc comments are automatically extracted and
+executed as tests using `deno test --doc`.
+
+#### Documentation tests
+
+Deno can evaluate code snippets written in JSDoc comments. This ensures the
+examples in your documentation are up-to-date and functional.
+
+**Example:**
+
+````ts
+/**
+ * Adds two numbers together.
+ *
+ * @param a - The first number.
+ * @param b - The second number.
+ * @returns The sum of a and b.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "jsr:@std/assert/equals";
+ *
+ * const sum = add(1, 2);
+ * assertEquals(sum, 3);
+ * ```
+ */
+export function add(a: number, b: number): number {
+  return a + b;
+}
+````
+
+**Supported language identifiers:** `js`, `javascript`, `mjs`, `cjs`, `jsx`,
+`ts`, `typescript`, `mts`, `cts`, `tsx`.
+
+**Running documentation tests:**
+
+```bash
+deno test --doc src/  # Test all documentation in src/ directory
+deno test --doc       # Test all documentation in the project
+```
+
+Running tests is not systematic and only happens on explicit user request.
 
 Reference documentation that agents can consult when setting up tests:
 
-- https://docs.deno.com/runtime/reference/documentation/
+- https://docs.deno.com/runtime/fundamentals/testing/#documentation-tests
 - https://docs.deno.com/runtime/fundamentals/testing/
-- https://docs.deno.com/examples/testing_tutorial/
-- https://docs.deno.com/examples/mocking_tutorial/
-- https://docs.deno.com/examples/web_testing_tutorial/
+- https://docs.deno.com/runtime/reference/documentation/
 
 ---
 
