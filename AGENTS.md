@@ -314,9 +314,17 @@ Running tests is not systematic and only happens on explicit user request.
 
 Reference documentation that agents can consult when setting up tests:
 
-- https://docs.deno.com/runtime/fundamentals/testing/#documentation-tests
-- https://docs.deno.com/runtime/fundamentals/testing/
 - https://docs.deno.com/runtime/reference/documentation/
+- https://docs.deno.com/runtime/fundamentals/testing/
+- https://docs.deno.com/runtime/reference/cli/test/
+- https://docs.deno.com/examples/web_testing_tutorial/
+- https://docs.deno.com/examples/bdd_tutorial/
+- https://docs.deno.com/examples/mocking_tutorial/
+- https://docs.deno.com/examples/stubbing_tutorial/
+- https://docs.deno.com/examples/snapshot_tutorial/
+- https://docs.deno.com/api/deno/testing
+- https://jsr.io/@std/assert
+- https://jsr.io/@std/testing
 
 ---
 
