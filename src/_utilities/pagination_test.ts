@@ -5,6 +5,7 @@
  */
 
 import { assertEquals, assertStrictEquals } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 
 import { createPaginationUrl, isFirstPage } from "./pagination.ts";
 
@@ -12,79 +13,81 @@ import { createPaginationUrl, isFirstPage } from "./pagination.ts";
 // createPaginationUrl Tests
 // =============================================================================
 
-Deno.test("createPaginationUrl", async (t) => {
-  await t.step("returns a function", () => {
+describe("createPaginationUrl", () => {
+  it("should return a function", () => {
     const toUrl = createPaginationUrl("/archive");
     assertEquals(typeof toUrl, "function");
   });
 
-  await t.step("handles first page (page 1)", async (t) => {
-    await t.step("returns base URL with trailing slash for /archive", () => {
+  describe("first page (page 1)", () => {
+    it("should return base URL with trailing slash for /archive", () => {
       const toUrl = createPaginationUrl("/archive");
       assertEquals(toUrl(1), "/archive/");
     });
 
-    await t.step("returns base URL with trailing slash for /archive/", () => {
+    it("should return base URL with trailing slash for /archive/", () => {
       const toUrl = createPaginationUrl("/archive/");
       assertEquals(toUrl(1), "/archive/");
     });
 
-    await t.step("returns / for root path", () => {
+    it("should return / for root path", () => {
       const toUrl = createPaginationUrl("/");
       assertEquals(toUrl(1), "/");
     });
 
-    await t.step("returns / for empty string", () => {
+    it("should return / for empty string", () => {
       const toUrl = createPaginationUrl("");
       assertEquals(toUrl(1), "/");
     });
   });
 
-  await t.step("handles subsequent pages (page > 1)", async (t) => {
-    await t.step("appends page number for page 2", () => {
+  describe("subsequent pages (page > 1)", () => {
+    it("should append page number for page 2", () => {
       const toUrl = createPaginationUrl("/archive");
       assertEquals(toUrl(2), "/archive/2/");
     });
 
-    await t.step("appends page number for page 10", () => {
+    it("should append page number for page 10", () => {
       const toUrl = createPaginationUrl("/archive");
       assertEquals(toUrl(10), "/archive/10/");
     });
 
-    await t.step("appends page number for page 100", () => {
+    it("should append page number for page 100", () => {
       const toUrl = createPaginationUrl("/archive");
       assertEquals(toUrl(100), "/archive/100/");
     });
 
-    await t.step("works with trailing slash base URL", () => {
+    it("should work with trailing slash base URL", () => {
       const toUrl = createPaginationUrl("/archive/");
       assertEquals(toUrl(3), "/archive/3/");
     });
 
-    await t.step("works with root path", () => {
+    it("should work with root path", () => {
       const toUrl = createPaginationUrl("/");
       assertEquals(toUrl(2), "/2/");
     });
   });
 
-  await t.step("handles nested paths", async (t) => {
-    await t.step("handles two-level nesting", () => {
+  describe("nested paths", () => {
+    it("should handle two-level nesting", () => {
       const toUrl = createPaginationUrl("/archive/tags");
       assertEquals(toUrl(1), "/archive/tags/");
       assertEquals(toUrl(2), "/archive/tags/2/");
     });
 
-    await t.step("handles three-level nesting", () => {
+    it("should handle three-level nesting", () => {
       const toUrl = createPaginationUrl("/archive/tags/typescript");
       assertEquals(toUrl(1), "/archive/tags/typescript/");
       assertEquals(toUrl(5), "/archive/tags/typescript/5/");
     });
   });
 
-  await t.step("normalizes multiple trailing slashes", () => {
-    const toUrl = createPaginationUrl("/archive///");
-    assertEquals(toUrl(1), "/archive/");
-    assertEquals(toUrl(2), "/archive/2/");
+  describe("edge cases", () => {
+    it("should normalize multiple trailing slashes", () => {
+      const toUrl = createPaginationUrl("/archive///");
+      assertEquals(toUrl(1), "/archive/");
+      assertEquals(toUrl(2), "/archive/2/");
+    });
   });
 });
 
@@ -92,31 +95,31 @@ Deno.test("createPaginationUrl", async (t) => {
 // isFirstPage Tests
 // =============================================================================
 
-Deno.test("isFirstPage", async (t) => {
-  await t.step("returns true for page 1", () => {
+describe("isFirstPage", () => {
+  it("should return true for page 1", () => {
     assertStrictEquals(isFirstPage(1), true);
   });
 
-  await t.step("returns false for page 0", () => {
+  it("should return false for page 0", () => {
     assertStrictEquals(isFirstPage(0), false);
   });
 
-  await t.step("returns false for negative numbers", async (t) => {
-    await t.step("page -1", () => {
+  describe("negative numbers", () => {
+    it("should return false for page -1", () => {
       assertStrictEquals(isFirstPage(-1), false);
     });
 
-    await t.step("page -100", () => {
+    it("should return false for page -100", () => {
       assertStrictEquals(isFirstPage(-100), false);
     });
   });
 
-  await t.step("returns false for pages greater than 1", async (t) => {
-    await t.step("page 2", () => {
+  describe("pages greater than 1", () => {
+    it("should return false for page 2", () => {
       assertStrictEquals(isFirstPage(2), false);
     });
 
-    await t.step("page 100", () => {
+    it("should return false for page 100", () => {
       assertStrictEquals(isFirstPage(100), false);
     });
   });
