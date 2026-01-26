@@ -4,6 +4,8 @@
 
 import "lume/types.ts";
 
+import type { RepoInfo } from "../plugins.ts";
+
 interface MenuLink {
   text: string;
   href: string;
@@ -29,13 +31,6 @@ interface SiteData {
   extra_head: string[];
   metas: MetasConfig;
   jsonLd: Lume.Data["jsonLd"];
-}
-
-interface RepoInfo {
-  baseUrl: string;
-  owner: string;
-  name: string;
-  branch: string;
 }
 
 const data: SiteData = {

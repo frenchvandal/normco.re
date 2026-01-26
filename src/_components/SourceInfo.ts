@@ -3,15 +3,12 @@
  * Displays source file link and commit revision for a page
  */
 
+import type { RepoInfo } from "../../plugins.ts";
+
 interface SourceInfoProps {
   sourceCommit?: string;
   sourcePath?: string;
-  repo?: {
-    baseUrl: string;
-    owner: string;
-    name: string;
-    branch: string;
-  };
+  repo?: RepoInfo;
   i18n: {
     source: {
       view_source: string;
@@ -43,8 +40,10 @@ export default function (
     ? `${repoUrl}/commit/${sourceCommit}`
     : "";
 
-  const sourceLabel = sourceUrl
-    ? `<a href="${sourceUrl}" target="_blank" rel="noopener noreferrer">${i18n.source.view_source}</a>`
+  // Fallback to repo URL when source file URL is not available (local dev)
+  const sourceLinkUrl = sourceUrl || repoUrl;
+  const sourceLabel = sourceLinkUrl
+    ? `<a href="${sourceLinkUrl}" target="_blank" rel="noopener noreferrer">${i18n.source.view_source}</a>`
     : `<span class="source-info__text">${i18n.source.view_source}</span>`;
   const commitLabel = commitUrl
     ? `<a href="${commitUrl}" target="_blank" rel="noopener noreferrer">${i18n.source.revision} ${shortSha}</a>`

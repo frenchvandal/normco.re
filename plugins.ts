@@ -21,7 +21,7 @@ import { alert } from "@mdit/plugin-alert";
 
 import "lume/types.ts";
 
-interface RepoInfo {
+export interface RepoInfo {
   baseUrl: string;
   owner: string;
   name: string;

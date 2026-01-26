@@ -50,7 +50,7 @@ const basicProps = {
 // =============================================================================
 
 describe("sourceInfo - empty/invalid input", () => {
-  it("should render fallback when sourceCommit is missing", () => {
+  it("should fallback to repo URL when sourceCommit is missing", () => {
     const result = sourceInfo({
       sourcePath: "test.md",
       repo: basicProps.repo,
@@ -58,7 +58,9 @@ describe("sourceInfo - empty/invalid input", () => {
     });
     assertStringIncludes(result, "View source");
     assertEquals(/rev [a-f0-9]{8}/i.test(result), true);
-    assertEquals(countElements(result, "a"), 0);
+    // Should have 1 link (to repo) instead of 0
+    assertEquals(countElements(result, "a"), 1);
+    assertStringIncludes(result, "https://github.com/user/repo");
   });
 
   it("should return empty string when sourcePath is missing", () => {
@@ -78,7 +80,7 @@ describe("sourceInfo - empty/invalid input", () => {
     assertEquals(result, "");
   });
 
-  it("should render fallback when sourceCommit is undefined", () => {
+  it("should fallback to repo URL when sourceCommit is undefined", () => {
     const result = sourceInfo({
       sourceCommit: undefined,
       sourcePath: "test.md",
@@ -87,7 +89,9 @@ describe("sourceInfo - empty/invalid input", () => {
     });
     assertStringIncludes(result, "View source");
     assertEquals(/rev [a-f0-9]{8}/i.test(result), true);
-    assertEquals(countElements(result, "a"), 0);
+    // Should have 1 link (to repo) instead of 0
+    assertEquals(countElements(result, "a"), 1);
+    assertStringIncludes(result, "https://github.com/user/repo");
   });
 
   it("should return empty string when sourcePath is undefined", () => {
@@ -98,6 +102,15 @@ describe("sourceInfo - empty/invalid input", () => {
       i18n: defaultI18n,
     });
     assertEquals(result, "");
+  });
+
+  it("should render no links when repo is missing", () => {
+    const result = sourceInfo({
+      sourcePath: "test.md",
+      i18n: defaultI18n,
+    });
+    assertStringIncludes(result, "View source");
+    assertEquals(countElements(result, "a"), 0);
   });
 });
 
