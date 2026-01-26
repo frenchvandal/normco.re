@@ -207,6 +207,27 @@ The repository uses **Deno's documentation tests** as the primary testing
 approach. Code examples in JSDoc comments are automatically extracted and
 executed as tests using `deno test --doc`.
 
+### Testing strategy by code type
+
+Use the following strategy to keep tests readable and aligned with BDD:
+
+- **Utilities (pure functions, e.g., text/date helpers):** Prefer BDD-style
+  `describe`/`it` for behavior-oriented cases; include edge cases and real-world
+  examples. Keep a small number of `Deno.test` cases only for simple invariants
+  (e.g., type or idempotence) when it improves clarity.
+- **Components (TypeScript templates in `_components/`):** Use BDD-style tests
+  with sections for structure, accessibility, variants, and edge cases. Validate
+  DOM output using the helpers in `tests/helpers/dom.ts`.
+- **Client-side JS features (`src/js/**`):** Use BDD-style tests that describe
+  user-visible behavior (interaction, state transitions, accessibility). Favor
+  explicit "given/when/then" comments inside `it` blocks when behavior is
+  complex.
+- **Pages and data (`*.page.ts`, `_data/**`):** Use BDD-style tests to validate
+  rendered output, data shape, and invariants. Keep tests focused on observable
+  behavior rather than implementation details.
+- **Docs and examples (JSDoc):** Ensure JSDoc examples are runnable and serve as
+  documentation tests; they should be minimal but realistic.
+
 #### Documentation tests
 
 Deno can evaluate code snippets written in JSDoc comments. This ensures the
