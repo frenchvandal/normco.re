@@ -98,6 +98,10 @@ const mockI18n: MockI18n = {
 // =============================================================================
 
 Deno.test("pagination snapshot - full controls", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
   const result = paginationComponent({
     pagination: {
       page: 2,

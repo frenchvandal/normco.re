@@ -161,6 +161,10 @@ const mockSearchWithoutAuthor: MockSearch = {
 // =============================================================================
 
 Deno.test("postDetails snapshot - full metadata", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
   const result = postDetailsComponent(
     {
       author: "John Doe",

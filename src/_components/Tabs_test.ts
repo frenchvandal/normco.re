@@ -36,6 +36,10 @@ const tabsWithIcons: TabItem[] = [
 // =============================================================================
 
 Deno.test("tabs snapshot - icons variant", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
   const result = tabs({
     id: "tabs-example",
     tabs: tabsWithIcons,

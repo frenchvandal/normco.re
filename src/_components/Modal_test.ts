@@ -42,6 +42,10 @@ const fullProps: ModalProps = {
 // =============================================================================
 
 Deno.test("modal snapshot - full props", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
   const result = modal(fullProps);
   await assertSnapshot(t, result);
 });

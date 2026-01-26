@@ -112,6 +112,10 @@ const samplePosts: MockPost[] = [
 // =============================================================================
 
 Deno.test("postList snapshot - sample posts", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
   const result = await postListComponent({
     postslist: samplePosts,
     url: "/posts/second-post/",

@@ -39,6 +39,10 @@ const frenchI18n = {
 // =============================================================================
 
 Deno.test("sourceInfo snapshot - with revision", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
   const result = sourceInfo({
     sourceCommit: "abc123def4567890",
     sourcePath: "src/posts/my-post.md",

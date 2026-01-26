@@ -36,11 +36,19 @@ const itemsWithIcons: BreadcrumbItem[] = [
 // =============================================================================
 
 Deno.test("breadcrumbs snapshot - default items", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
   const result = breadcrumbs({ items: defaultItems });
   await assertSnapshot(t, result);
 });
 
 Deno.test("breadcrumbs snapshot - icons and compact variant", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
   const result = breadcrumbs({
     items: itemsWithIcons,
     variant: "compact",

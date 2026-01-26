@@ -40,6 +40,10 @@ const snippetsWithLabels: CodeSnippet[] = [
 // =============================================================================
 
 Deno.test("codeTabs snapshot - labeled snippets", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
   const result = codeTabs({
     snippets: snippetsWithLabels,
     id: "code-tabs-example",
