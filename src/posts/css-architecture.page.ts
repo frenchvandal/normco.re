@@ -1,15 +1,42 @@
----
-title: "Understanding the CSS Architecture of normco.re Design System"
-description: "A deep dive into the layered ITCSS-inspired structure used in the normco.re design system, exploring how design tokens, base styles, components, and utilities work together."
-date: "2026-01-24"
-author: phiphi
-tags:
-  - CSS
-  - Design System
-  - Architecture
-  - Front-End
----
+/**
+ * Post: Understanding the CSS Architecture of normco.re Design System
+ *
+ * A deep dive into the layered ITCSS-inspired structure used in the normco.re
+ * design system, exploring how design tokens, base styles, components, and
+ * utilities work together.
+ */
 
+/**
+ * Post title.
+ */
+export const title =
+  "Understanding the CSS Architecture of normco.re Design System";
+
+/**
+ * Post description for SEO and excerpts.
+ */
+export const description =
+  "A deep dive into the layered ITCSS-inspired structure used in the normco.re design system, exploring how design tokens, base styles, components, and utilities work together.";
+
+/**
+ * Publication date.
+ */
+export const date = new Date("2026-01-24");
+
+/**
+ * Post author.
+ */
+export const author = "phiphi";
+
+/**
+ * Tags for categorization.
+ */
+export const tags = ["CSS", "Design System", "Architecture", "Front-End"];
+
+/**
+ * Markdown content for the post.
+ */
+const markdownContent = `
 The normco.re design system implements a well-structured CSS architecture
 inspired by ITCSS, organizing styles into clear layers for maintainability and
 scalability. This architecture ensures consistency across the website while
@@ -20,10 +47,10 @@ maintaining clean, modular code.
 ## The Layered ITCSS Structure
 
 The design system divides CSS into five layers and a single entry point
-(`styles.css`) that imports them in order. This approach promotes separation of
+(\`styles.css\`) that imports them in order. This approach promotes separation of
 concerns and makes the codebase easier to navigate and maintain.
 
-### 1. Design Tokens (`01-tokens`)
+### 1. Design Tokens (\`01-tokens\`)
 
 The foundation of the design system lies in the design tokens – CSS custom
 properties that define the visual design language. These tokens include:
@@ -37,7 +64,7 @@ properties that define the visual design language. These tokens include:
 By centralizing these values, any design changes can be propagated throughout
 the entire system by updating a single variable.
 
-### 2. Base Styles (`02-base`)
+### 2. Base Styles (\`02-base\`)
 
 Base styles reset browser defaults and establish foundational typography. This
 layer includes:
@@ -49,7 +76,7 @@ layer includes:
 
 These styles form the typographic and structural foundation of the entire site.
 
-### 3. Utilities (`03-utilities`)
+### 3. Utilities (\`03-utilities\`)
 
 Utility classes provide single-purpose styling options that can be applied
 directly in HTML. These include:
@@ -65,7 +92,7 @@ directly in HTML. These include:
 Utilities enable rapid prototyping and provide consistent styling solutions
 without creating new CSS rules.
 
-### 4. Components (`04-components`)
+### 4. Components (\`04-components\`)
 
 Component styles define reusable UI elements with their variations. Examples
 include:
@@ -83,7 +110,7 @@ include:
 
 Each component is self-contained and follows consistent naming conventions.
 
-### 5. Layouts (`05-layouts`)
+### 5. Layouts (\`05-layouts\`)
 
 Layout styles handle page-level and section-specific arrangements:
 
@@ -100,14 +127,14 @@ contexts.
 ### Theming Support
 
 The design system includes robust dark theme support through CSS custom
-properties. A `[data-theme="dark"]` selector updates all color values, allowing
+properties. A \`[data-theme="dark"]\` selector updates all color values, allowing
 seamless theme switching without duplicating style rules.
 
 ### Responsive Design
 
 Responsive utilities and media queries ensure consistent experiences across
 devices. Breakpoints are documented in the design tokens for reference, though
-they can’t be used directly in media queries due to CSS limitations.
+they can't be used directly in media queries due to CSS limitations.
 
 ### Accessibility
 
@@ -153,3 +180,15 @@ maintaining visual coherence across all components and pages.
 
 This architecture serves as a strong example of how thoughtful CSS organization
 can improve both developer experience and end-user experience.
+`;
+
+/**
+ * Renders the post content.
+ *
+ * @param _data - Lume data object (unused).
+ * @param helpers - Lume helpers including markdown renderer.
+ * @returns The rendered HTML content.
+ */
+export default function (_data: Lume.Data, { md }: Lume.Helpers): string {
+  return md(markdownContent);
+}
