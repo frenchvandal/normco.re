@@ -49,6 +49,9 @@ to keep the output fast, accessible, and easy to maintain.
 │   ├── sw.page.ts          # Service worker entry (builds to /sw.js)
 │   ├── styles.css          # CSS entry point
 │   └── feed.xsl            # Feed stylesheet
+├── tests/                  # Integration tests and shared fixtures
+│   ├── fixtures/           # Shared DOM helpers and test utilities
+│   └── integration/        # Cross-module integration tests
 └── _site/                  # Build output (generated)
 ```
 
@@ -117,6 +120,22 @@ Launch the local CMS UI:
 
 ```bash
 deno task cms
+```
+
+## Testing
+
+Unit tests are co-located with the code they validate, while integration tests
+and fixtures live in `tests/`. Run the full test suite with read access (needed
+for snapshot assertions):
+
+```bash
+DENO_TLS_CA_STORE=system deno test --allow-read
+```
+
+Update snapshots when intentional changes occur:
+
+```bash
+DENO_TLS_CA_STORE=system deno test --allow-read --allow-write -- --update
 ```
 
 ## Content Archetypes

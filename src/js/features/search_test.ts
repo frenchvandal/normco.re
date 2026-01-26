@@ -1,13 +1,14 @@
 /**
  * Tests for search initialization behaviors.
  *
- * @module tests/js/search-init_test
+ * @module src/js/features/search_test
  */
 
 import { assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import { initSearch } from "../../src/js/features/search.js";
-import { initSearchModal } from "../../src/js/features/search-modal.js";
+
+import { initSearch } from "./search.js";
+import { initSearchModal } from "./search-modal.js";
 
 const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
 

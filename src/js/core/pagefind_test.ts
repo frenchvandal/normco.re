@@ -1,15 +1,13 @@
 /**
  * Tests for the Pagefind loader.
  *
- * @module tests/js/pagefind_test
+ * @module src/js/core/pagefind_test
  */
 
 import { assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import {
-  loadPagefindUI,
-  resetPagefindLoader,
-} from "../../src/js/core/pagefind.js";
+
+import { loadPagefindUI, resetPagefindLoader } from "./pagefind.js";
 
 const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
 

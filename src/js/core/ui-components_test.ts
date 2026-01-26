@@ -1,12 +1,13 @@
 /**
  * Tests for UI component initialization.
  *
- * @module tests/js/ui-components_test
+ * @module src/js/core/ui-components_test
  */
 
 import { assertEquals, assertExists } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import { initializeUIComponents } from "../../src/js/core/ui-components.js";
+
+import { initializeUIComponents } from "./ui-components.js";
 
 const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
 

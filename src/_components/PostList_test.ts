@@ -7,10 +7,11 @@
  * - Current page indication
  * - Title fallback behavior
  *
- * @module tests/components/post-list_test
+ * @module src/_components/PostList_test
  */
 
 import { assertEquals } from "@std/assert";
+import { assertSnapshot } from "@std/testing/snapshot";
 import { describe, it } from "@std/testing/bdd";
 
 // =============================================================================
@@ -105,6 +106,20 @@ const samplePosts: MockPost[] = [
     readingInfo: { minutes: 3 },
   },
 ];
+
+// =============================================================================
+// Snapshot Tests
+// =============================================================================
+
+Deno.test("postList snapshot - sample posts", async (t) => {
+  const result = await postListComponent({
+    postslist: samplePosts,
+    url: "/posts/second-post/",
+    comp: mockComp,
+  });
+
+  await assertSnapshot(t, result);
+});
 
 // =============================================================================
 // Empty List Tests

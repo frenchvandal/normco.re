@@ -7,7 +7,7 @@
  * - Keyboard navigation (Escape, Tab trap)
  * - ARIA attribute updates
  *
- * @module tests/js/modal-manager_test
+ * @module src/js/components/modal_test
  */
 
 import { assertEquals, assertExists } from "@std/assert";

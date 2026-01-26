@@ -1,0 +1,38 @@
+export const snapshot = {};
+
+snapshot[`modal snapshot - full props 1`] = `
+\`
+    <div
+      class="modal-backdrop"
+      id="full-modal"
+      data-state="open"
+      
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="full-modal-title"
+    >
+      <div class="modal modal--large">
+        <div class="modal__header">
+          <h2 class="modal__title" id="full-modal-title">Full Featured Modal</h2>
+          <span class='badge'>New</span>
+          
+            <button class="modal__close" aria-label="Fermer">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          
+        </div>
+        <div class="modal__body">
+          <p>Content</p>
+        </div>
+        
+          <div class="modal__footer">
+            <button>Cancel</button><button>Save</button>
+          </div>
+        
+      </div>
+    </div>
+  \`
+`;

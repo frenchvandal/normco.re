@@ -1,20 +1,21 @@
 /**
  * Tests for CodeTabs component
  *
- * @module tests/components/code-tabs_test
+ * @module src/_components/CodeTabs_test
  */
 
 import { assertEquals, assertMatch, assertStringIncludes } from "@std/assert";
+import { assertSnapshot } from "@std/testing/snapshot";
 import { describe, it } from "@std/testing/bdd";
 
-import codeTabs, { type CodeSnippet } from "../../src/_components/CodeTabs.ts";
+import codeTabs, { type CodeSnippet } from "./CodeTabs.ts";
 import {
   countElements,
   getAttribute,
   hasClass,
   hasElement,
   query,
-} from "../helpers/dom.ts";
+} from "../../tests/fixtures/dom.ts";
 
 // =============================================================================
 // Test fixtures
@@ -33,6 +34,18 @@ const snippetsWithLabels: CodeSnippet[] = [
   { lang: "ts", label: "TypeScript Example", code: "const x = 1;" },
   { lang: "js", label: "JavaScript Example", code: "const x = 1;" },
 ];
+
+// =============================================================================
+// Snapshot Tests
+// =============================================================================
+
+Deno.test("codeTabs snapshot - labeled snippets", async (t) => {
+  const result = codeTabs({
+    snippets: snippetsWithLabels,
+    id: "code-tabs-example",
+  });
+  await assertSnapshot(t, result);
+});
 
 // =============================================================================
 // Empty/Invalid Input Tests

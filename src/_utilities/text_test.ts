@@ -1,13 +1,13 @@
 /**
  * Tests for text utilities
  *
- * @module tests/text_test
+ * @module src/_utilities/text_test
  */
 
 import { assertEquals, assertStrictEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
-import { slugify } from "../src/_utilities/text.ts";
+import { slugify } from "./text.ts";
 
 // =============================================================================
 // slugify Tests using BDD style

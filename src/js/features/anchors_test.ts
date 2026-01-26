@@ -1,12 +1,13 @@
 /**
  * Tests for anchor enhancements.
  *
- * @module tests/js/anchors_test
+ * @module src/js/features/anchors_test
  */
 
 import { assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import { enhanceAnchors } from "../../src/js/features/anchors.js";
+
+import { enhanceAnchors } from "./anchors.js";
 
 const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
 

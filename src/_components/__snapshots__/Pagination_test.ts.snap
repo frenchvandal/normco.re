@@ -1,0 +1,25 @@
+export const snapshot = {};
+
+snapshot[`pagination snapshot - full controls 1`] = `
+'
+<nav class="page-pagination pagination">
+  <ul>
+    
+    <li class="pagination-prev">
+      <a href="/page/1/" rel="prev">Previous</a>
+    </li>
+    
+
+    <li class="pagination-page">
+      Page 2
+    </li>
+
+    
+    <li class="pagination-next">
+      <a href="/page/3/" rel="next">Next</a>
+    </li>
+    
+  </ul>
+</nav>
+'
+`;

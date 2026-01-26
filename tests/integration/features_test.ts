@@ -7,12 +7,13 @@
  * - Global API exposure
  * - Toast helper utilities
  *
- * @module tests/js/features_test
+ * @module tests/integration/features_test
  */
 
 import { assertEquals, assertExists } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import { DOMParser } from "@b-fuze/deno-dom";
+
 import { exposeThemeGlobals } from "../../src/js/core/globals.js";
 import { enhanceExternalLinks } from "../../src/js/features/external-links.js";
 import { createThemeManager } from "../../src/js/features/theme.js";

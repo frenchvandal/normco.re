@@ -1,19 +1,20 @@
 /**
  * Tests for SourceInfo component
  *
- * @module tests/components/source-info_test
+ * @module src/_components/SourceInfo_test
  */
 
 import { assertEquals, assertStringIncludes } from "@std/assert";
+import { assertSnapshot } from "@std/testing/snapshot";
 import { describe, it } from "@std/testing/bdd";
 
-import sourceInfo from "../../src/_components/SourceInfo.ts";
+import sourceInfo from "./SourceInfo.ts";
 import {
   countElements,
   getAttribute,
   hasClass,
   hasElement,
-} from "../helpers/dom.ts";
+} from "../../tests/fixtures/dom.ts";
 
 // =============================================================================
 // Test fixtures
@@ -32,6 +33,25 @@ const frenchI18n = {
     revision: "rév",
   },
 };
+
+// =============================================================================
+// Snapshot Tests
+// =============================================================================
+
+Deno.test("sourceInfo snapshot - with revision", async (t) => {
+  const result = sourceInfo({
+    sourceCommit: "abc123def4567890",
+    sourcePath: "src/posts/my-post.md",
+    repo: {
+      baseUrl: "https://example.com",
+      owner: "team",
+      name: "site",
+      branch: "main",
+    },
+    i18n: defaultI18n,
+  });
+  await assertSnapshot(t, result);
+});
 
 const basicProps = {
   sourceCommit: "abc123def456789012345678901234567890abcd",

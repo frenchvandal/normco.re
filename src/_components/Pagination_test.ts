@@ -6,10 +6,11 @@
  * - Hiding when only one page
  * - Correct page number display
  *
- * @module tests/components/pagination-component_test
+ * @module src/_components/Pagination_test
  */
 
 import { assertEquals } from "@std/assert";
+import { assertSnapshot } from "@std/testing/snapshot";
 import { describe, it } from "@std/testing/bdd";
 
 // =============================================================================
@@ -91,6 +92,24 @@ const mockI18n: MockI18n = {
     page: "Page",
   },
 };
+
+// =============================================================================
+// Snapshot Tests
+// =============================================================================
+
+Deno.test("pagination snapshot - full controls", async (t) => {
+  const result = paginationComponent({
+    pagination: {
+      page: 2,
+      totalPages: 5,
+      previous: "/page/1/",
+      next: "/page/3/",
+    },
+    i18n: mockI18n,
+  });
+
+  await assertSnapshot(t, result);
+});
 
 // =============================================================================
 // Empty/Single Page Tests

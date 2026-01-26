@@ -7,7 +7,7 @@
  * - ARIA attribute updates
  * - Event handling
  *
- * @module tests/js/tabs-manager_test
+ * @module src/js/components/tabs_test
  */
 
 import { assertEquals, assertExists } from "@std/assert";

@@ -1,13 +1,13 @@
 /**
  * Tests for configuration constants
  *
- * @module tests/data/constants_test
+ * @module src/_config/constants_test
  */
 
 import { assertEquals, assertExists } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
-import { ARCHIVE_MENU, PAGINATION_SIZE } from "../../src/_config/constants.ts";
+import { ARCHIVE_MENU, PAGINATION_SIZE } from "./constants.ts";
 
 // =============================================================================
 // PAGINATION_SIZE Tests

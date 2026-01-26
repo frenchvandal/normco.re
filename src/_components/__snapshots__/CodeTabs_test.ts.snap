@@ -1,0 +1,54 @@
+export const snapshot = {};
+
+snapshot[`codeTabs snapshot - labeled snippets 1`] = `
+'
+    <div class="code-tabs tabs tabs--boxed" data-tabs id="code-tabs-example">
+      <div class="tabs__list" role="tablist" aria-label="Code examples">
+        
+        <button
+          class="tabs__tab"
+          role="tab"
+          id="code-tabs-example-tab-0"
+          aria-controls="code-tabs-example-panel-0"
+          aria-selected="true"
+          tabindex="0"
+        >
+          TypeScript Example
+        </button>
+        <button
+          class="tabs__tab"
+          role="tab"
+          id="code-tabs-example-tab-1"
+          aria-controls="code-tabs-example-panel-1"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          JavaScript Example
+        </button>
+      </div>
+      <div class="tabs__panels">
+        
+        <div
+          class="tabs__panel"
+          role="tabpanel"
+          id="code-tabs-example-panel-0"
+          aria-labelledby="code-tabs-example-tab-0"
+          data-state="active"
+          
+        >
+          <pre><code class="language-ts">const x = 1;</code></pre>
+        </div>
+        <div
+          class="tabs__panel"
+          role="tabpanel"
+          id="code-tabs-example-panel-1"
+          aria-labelledby="code-tabs-example-tab-1"
+          data-state="inactive"
+          hidden
+        >
+          <pre><code class="language-js">const x = 1;</code></pre>
+        </div>
+      </div>
+    </div>
+  '
+`;

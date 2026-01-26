@@ -207,6 +207,13 @@ The repository uses **Deno's documentation tests** as the primary testing
 approach. Code examples in JSDoc comments are automatically extracted and
 executed as tests using `deno test --doc`.
 
+### Test structure and organization
+
+- **Unit tests** live alongside the code they validate (for example
+  `src/_components/Component_test.ts` or `src/js/features/feature_test.ts`).
+- **Integration tests** and shared fixtures live in `tests/` (for example
+  `tests/integration/` and `tests/fixtures/`).
+
 ### Testing strategy by code type
 
 Use the following strategy to keep tests readable and aligned with BDD:
@@ -217,7 +224,7 @@ Use the following strategy to keep tests readable and aligned with BDD:
   (e.g., type or idempotence) when it improves clarity.
 - **Components (TypeScript templates in `_components/`):** Use BDD-style tests
   with sections for structure, accessibility, variants, and edge cases. Validate
-  DOM output using the helpers in `tests/helpers/dom.ts`.
+  DOM output using the helpers in `tests/fixtures/dom.ts`.
 - **Client-side JS features (`src/js/**`):** Use BDD-style tests that describe
   user-visible behavior (interaction, state transitions, accessibility). Favor
   explicit "given/when/then" comments inside `it` blocks when behavior is
@@ -227,6 +234,18 @@ Use the following strategy to keep tests readable and aligned with BDD:
   behavior rather than implementation details.
 - **Docs and examples (JSDoc):** Ensure JSDoc examples are runnable and serve as
   documentation tests; they should be minimal but realistic.
+
+### Snapshot testing
+
+- Use `assertSnapshot` for HTML output (components, pages, or serialized
+  structures) when it reduces brittle assertion boilerplate.
+- Keep snapshots focused on the minimal markup needed to catch regressions.
+- Always make snapshot data deterministic (fixed dates, IDs, and ordering).
+- Store snapshots alongside tests in `__snapshots__/`.
+- Update snapshots with
+  `DENO_TLS_CA_STORE=system deno test --allow-read --allow-write -- --update`.
+  Verify snapshots in CI/local runs with
+  `DENO_TLS_CA_STORE=system deno test --allow-read`.
 
 #### Documentation tests
 

@@ -1,0 +1,72 @@
+export const snapshot = {};
+
+snapshot[`tabs snapshot - icons variant 1`] = `
+'
+    <div class="tabs tabs--boxed" data-tabs id="tabs-example">
+      <div class="tabs__list" role="tablist" aria-label="Tabs">
+        
+          <button
+            class="tabs__tab"
+            role="tab"
+            id="tabs-example-tab-0"
+            aria-controls="tabs-example-panel-0"
+            aria-selected="true"
+            tabindex="0"
+            
+          >
+            
+              <span class="tabs__tab-content">
+                <span class="tabs__tab-icon">🏠</span>
+                <span>Home</span>
+                
+              </span>
+            
+          </button>
+        
+          <button
+            class="tabs__tab"
+            role="tab"
+            id="tabs-example-tab-1"
+            aria-controls="tabs-example-panel-1"
+            aria-selected="false"
+            tabindex="-1"
+            
+          >
+            
+              <span class="tabs__tab-content">
+                <span class="tabs__tab-icon">⚙️</span>
+                <span>Settings</span>
+                
+              </span>
+            
+          </button>
+        
+      </div>
+      <div class="tabs__panels">
+        
+          <div
+            class="tabs__panel"
+            role="tabpanel"
+            id="tabs-example-panel-0"
+            aria-labelledby="tabs-example-tab-0"
+            data-state="active"
+            
+          >
+            Home content
+          </div>
+        
+          <div
+            class="tabs__panel"
+            role="tabpanel"
+            id="tabs-example-panel-1"
+            aria-labelledby="tabs-example-tab-1"
+            data-state="inactive"
+            hidden
+          >
+            Settings content
+          </div>
+        
+      </div>
+    </div>
+  '
+`;

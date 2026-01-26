@@ -1,0 +1,11 @@
+export const snapshot = {};
+
+snapshot[`sourceInfo snapshot - with revision 1`] = `
+'
+<aside class="source-info" aria-label="Source information">
+  <a href="https://example.com/team/site/blob/main/src/posts/my-post.md" target="_blank" rel="noopener noreferrer">View source</a>
+  <span class="source-info__separator" aria-hidden="true">&middot;</span>
+  <a href="https://example.com/team/site/commit/abc123def4567890" target="_blank" rel="noopener noreferrer">rev abc123de</a>
+</aside>
+'
+`;
