@@ -43,7 +43,7 @@ jobs:
       - name: Run build task
         shell: bash
         run: |
-          DENO_TLS_CA_STORE=system deno task build
+          deno task build
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
