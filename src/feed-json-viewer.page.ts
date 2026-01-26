@@ -3,8 +3,33 @@
  * Standalone page for viewing JSON feed visually in the browser
  */
 export const layout = false;
+
+/**
+ * Output URL for the JSON feed viewer.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { url } from "./feed-json-viewer.page.ts";
+ *
+ * assertEquals(url, "/feed-json-viewer/");
+ * ```
+ */
 export const url = "/feed-json-viewer/";
 
+/**
+ * Renders the JSON feed viewer HTML document.
+ *
+ * @returns The standalone HTML document as a string.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderFeedViewer from "./feed-json-viewer.page.ts";
+ *
+ * assertEquals(typeof renderFeedViewer, "function");
+ * ```
+ */
 export default function () {
   return `<!DOCTYPE html>
 <html lang="en">

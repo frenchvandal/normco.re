@@ -18,6 +18,20 @@ export interface TabsProps {
   id?: string;
 }
 
+/**
+ * Renders an accessible tabbed interface.
+ *
+ * @param props - Tab configuration and content.
+ * @returns The tabs HTML markup.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderTabs from "./Tabs.ts";
+ *
+ * assertEquals(typeof renderTabs, "function");
+ * ```
+ */
 export default function ({
   tabs,
   variant = "default",

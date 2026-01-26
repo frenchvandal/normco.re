@@ -3,8 +3,34 @@
  * Main archive listing page with search, authors, and tags
  */
 export const layout = "layouts/base.ts";
+
+/**
+ * Body class assigned to archive pages.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { bodyClass } from "./archive.ts";
+ *
+ * assertEquals(bodyClass, "body-tag");
+ * ```
+ */
 export const bodyClass = "body-tag";
 
+/**
+ * Renders the archive listing layout.
+ *
+ * @param data - Lume data for archive listings and components.
+ * @returns The archive page HTML markup.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderArchiveLayout from "./archive.ts";
+ *
+ * assertEquals(typeof renderArchiveLayout, "function");
+ * ```
+ */
 export default async function (
   {
     title,

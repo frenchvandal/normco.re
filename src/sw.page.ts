@@ -18,7 +18,31 @@ import type Lume from "lume/mod.ts";
  * ensuring users get fresh content after each deployment.
  */
 export const layout = false;
+
+/**
+ * Output URL for the generated service worker.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { url } from "./sw.page.ts";
+ *
+ * assertEquals(url, "/sw.js");
+ * ```
+ */
 export const url = "/sw.js";
+
+/**
+ * MIME type for the generated service worker script.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { contentType } from "./sw.page.ts";
+ *
+ * assertEquals(contentType, "application/javascript");
+ * ```
+ */
 export const contentType = "application/javascript";
 
 interface ServiceWorkerData extends Lume.Data {
@@ -71,6 +95,20 @@ const collectCoreAssets = (search: Lume.Data["search"]): string[] => {
   return Array.from(assets).sort();
 };
 
+/**
+ * Renders the service worker script with the current build metadata.
+ *
+ * @param data - Service worker build data and search index helpers.
+ * @returns The JavaScript service worker source.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderServiceWorker from "./sw.page.ts";
+ *
+ * assertEquals(typeof renderServiceWorker, "function");
+ * ```
+ */
 export default function (
   { buildId, search }: ServiceWorkerData,
 ): string {

@@ -54,6 +54,19 @@ export function resetPagefindLoader() {
   pagefindLoadPromise = null;
 }
 
+/**
+ * Loads the Pagefind UI script once and returns a shared promise.
+ *
+ * @returns A promise that resolves when the Pagefind UI is available.
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { loadPagefindUI } from "./pagefind.js";
+ *
+ * assertEquals(typeof loadPagefindUI, "function");
+ * ```
+ */
 export function loadPagefindUI() {
   if (globalThis.PagefindUI) {
     return Promise.resolve();

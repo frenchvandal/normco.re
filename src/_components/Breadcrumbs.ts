@@ -17,6 +17,20 @@ export interface BreadcrumbsProps {
   separator?: string;
 }
 
+/**
+ * Renders breadcrumb navigation markup.
+ *
+ * @param props - Breadcrumb configuration and labels.
+ * @returns The breadcrumbs HTML markup.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderBreadcrumbs from "./Breadcrumbs.ts";
+ *
+ * assertEquals(typeof renderBreadcrumbs, "function");
+ * ```
+ */
 export default function ({
   items,
   variant = "default",

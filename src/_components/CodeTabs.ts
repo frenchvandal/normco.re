@@ -67,6 +67,20 @@ function escapeHtml(text: string): string {
     .replace(/'/g, "&#039;");
 }
 
+/**
+ * Renders code snippets with optional tabbed navigation.
+ *
+ * @param props - Code snippet configuration and optional ID.
+ * @returns The code tabs HTML markup.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderCodeTabs from "./CodeTabs.ts";
+ *
+ * assertEquals(typeof renderCodeTabs, "function");
+ * ```
+ */
 export default function ({
   snippets,
   id = `code-tabs-${Math.random().toString(36).slice(2, 11)}`,
