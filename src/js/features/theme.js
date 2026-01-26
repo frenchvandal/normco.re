@@ -1,7 +1,10 @@
 /**
- * Theme management
+ * Theme management.
  */
 
+/**
+ * Handles theme state, persistence, and UI updates.
+ */
 class ThemeManager {
   constructor() {
     this.theme = this.getInitialTheme();
@@ -122,6 +125,24 @@ class ThemeManager {
   }
 }
 
+/**
+ * Create a new theme manager instance.
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { createThemeManager } from "./theme.js";
+ *
+ * globalThis.localStorage = {
+ *   getItem: () => null,
+ *   setItem: () => {},
+ * };
+ * globalThis.matchMedia = () => ({ matches: false, addEventListener: () => {} });
+ *
+ * const manager = createThemeManager();
+ * assertEquals(manager.theme, "light");
+ * ```
+ */
 export function createThemeManager() {
   return new ThemeManager();
 }
