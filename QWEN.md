@@ -1,8 +1,7 @@
 # Code Audit Report for normco.re
 
-**Audit date:** 2026-01-26
-**Reviewed by:** Qwen (initial), Claude (enriched)
-**Scope:** Full codebase analysis
+**Audit date:** 2026-01-26 **Reviewed by:** Qwen (initial), Claude (enriched),
+GPT-5.2-Codex (enriched) **Scope:** Full codebase analysis
 
 ---
 
@@ -15,21 +14,50 @@ well-organized component system with comprehensive test coverage and excellent
 accessibility implementation. Primary improvement areas center on documentation
 consistency for internal functions and minor architectural refinements.
 
+**Why this report is actionable:** it maps where to make changes, what to test,
+and which priorities to tackle first. Use the sections below as a lightweight
+roadmap for future maintenance and feature work.
+
 ---
 
 ## Codebase Inventory
 
+### Verification Status (latest local check)
+
+The following counts were re-checked locally to validate key assertions in this
+report:
+
+- **Components:** 8 component files and 8 component tests in `src/_components/`.
+- **Layouts:** 5 layout files in `src/_includes/layouts/`.
+- **Utilities:** 3 utility files in `src/_utilities/`.
+- **Client JS modules:** 15 `.js` files in `src/js/`.
+- **Total test files:** 22 `*_test.ts` files under `src/` and `tests/`.
+
+These numbers are reflected in the updated inventory below.
+
+### Quick Navigation (high‑signal entry points)
+
+| Area               | Primary files                           | Why they matter                                          |
+| ------------------ | --------------------------------------- | -------------------------------------------------------- |
+| Site configuration | `_config.ts`, `plugins.ts`, `deno.json` | Global settings, build pipeline, plugin setup            |
+| Global data        | `src/_data.ts`, `src/_data/`            | Shared data across layouts and pages                     |
+| Layouts            | `src/_includes/layouts/*.ts`            | Structure, metadata, and page wrappers                   |
+| Components         | `src/_components/*.ts`                  | Reusable UI and content building blocks                  |
+| CSS system         | `src/_includes/css/`                    | Tokens → base → utilities → components → layouts (ITCSS) |
+| Client JS          | `src/js/`                               | Progressive enhancement and UX behaviors                 |
+| Tests              | `src/**/_test.ts`, `tests/**`           | BDD suites and snapshots                                 |
+
 ### File Statistics
 
-| Category                   | Count | Notes                                    |
-| -------------------------- | ----- | ---------------------------------------- |
-| TypeScript components      | 8     | All with companion `_test.ts` files      |
-| TypeScript layouts         | 5     | `base.ts`, `page.ts`, `post.ts`, etc.    |
-| TypeScript utilities       | 3     | `text.ts`, `pagination.ts`, `search.ts`  |
-| JavaScript client modules  | 12    | Organized in `core/`, `features/`        |
-| CSS files                  | 20+   | ITCSS architecture in `_includes/css/`   |
-| Unit test files            | 20    | BDD-style with snapshots                 |
-| Configuration files        | 3     | `_config.ts`, `plugins.ts`, `deno.json`  |
+| Category                  | Count | Notes                                   |
+| ------------------------- | ----- | --------------------------------------- |
+| TypeScript components     | 8     | All with companion `_test.ts` files     |
+| TypeScript layouts        | 5     | `base.ts`, `page.ts`, `post.ts`, etc.   |
+| TypeScript utilities      | 3     | `text.ts`, `pagination.ts`, `search.ts` |
+| JavaScript client modules | 15    | Organized in `core/`, `features/`       |
+| CSS files                 | 20+   | ITCSS architecture in `_includes/css/`  |
+| Unit test files           | 22    | BDD-style with snapshots                |
+| Configuration files       | 3     | `_config.ts`, `plugins.ts`, `deno.json` |
 
 ### Architecture Overview
 
@@ -50,6 +78,18 @@ src/
 └── *.page.ts           # Dynamic pages (6 files)
 ```
 
+### Key Data & Rendering Flow (how a page is built)
+
+1. **Data sources** (`src/_data.ts`, `src/_data/*.ts`) define global context.
+2. **Page files** (`*.page.ts`) provide per-page data and rendering logic.
+3. **Layouts** (`src/_includes/layouts/*.ts`) wrap content and set metadata.
+4. **Components** (`src/_components/*.ts`) render reusable UI.
+5. **CSS layers** (`src/_includes/css/`) style the output via ITCSS ordering.
+6. **Client JS** (`src/js/`) enhances behavior after hydration-free render.
+
+This flow is critical when introducing new pages or components—changes should
+respect the existing data cascade and layout/component boundaries.
+
 ---
 
 ## Detailed Findings
@@ -68,16 +108,16 @@ src/
 
 #### ⚠️ Issues to Address
 
-| File                 | Line    | Issue                                     | Priority |
-| -------------------- | ------- | ----------------------------------------- | -------- |
-| `plugins.ts`         | 78-90   | `runGit` lacks JSDoc                      | Medium   |
-| `plugins.ts`         | 92-114  | `parseGitRemote` lacks JSDoc              | Medium   |
-| `plugins.ts`         | 116-128 | `getBranch` lacks JSDoc                   | Medium   |
-| `plugins.ts`         | 130-150 | `getRepoInfoFromEnv` lacks JSDoc          | Medium   |
-| `plugins.ts`         | 152-167 | `getRepoInfoFromGit` lacks JSDoc          | Medium   |
-| `plugins.ts`         | 169-170 | `getRepoInfo` lacks JSDoc                 | Medium   |
-| `_config.ts`         | 11-22   | `getCommitSha` lacks JSDoc                | Medium   |
-| `layouts/base.ts`    | 5-143   | Main function lacks JSDoc                 | Low      |
+| File              | Line    | Issue                            | Priority |
+| ----------------- | ------- | -------------------------------- | -------- |
+| `plugins.ts`      | 78-90   | `runGit` lacks JSDoc             | Medium   |
+| `plugins.ts`      | 92-114  | `parseGitRemote` lacks JSDoc     | Medium   |
+| `plugins.ts`      | 116-128 | `getBranch` lacks JSDoc          | Medium   |
+| `plugins.ts`      | 130-150 | `getRepoInfoFromEnv` lacks JSDoc | Medium   |
+| `plugins.ts`      | 152-167 | `getRepoInfoFromGit` lacks JSDoc | Medium   |
+| `plugins.ts`      | 169-170 | `getRepoInfo` lacks JSDoc        | Medium   |
+| `_config.ts`      | 11-22   | `getCommitSha` lacks JSDoc       | Medium   |
+| `layouts/base.ts` | 5-143   | Main function lacks JSDoc        | Low      |
 
 **Note:** These are internal/private functions. While CLAUDE.md requires full
 JSDoc coverage, the priority is lower than for exported APIs. The exported
@@ -85,7 +125,7 @@ functions (`defaults`, `default export`) are properly documented.
 
 #### 📝 Recommended JSDoc Template for `plugins.ts`
 
-```ts
+````ts
 /**
  * Executes a git command synchronously.
  *
@@ -102,7 +142,7 @@ functions (`defaults`, `default export`) are properly documented.
  * ```
  */
 const runGit = (args: string[]): GitCommandResult => { ... };
-```
+````
 
 ---
 
@@ -123,12 +163,12 @@ const runGit = (args: string[]): GitCommandResult => { ... };
 
 All 4 instances are **justified** for accessibility overrides:
 
-| Location                   | Context                      | Justification                     |
-| -------------------------- | ---------------------------- | --------------------------------- |
-| `global.css:36`            | `prefers-contrast: more`     | Enforce high contrast text        |
-| `global.css:41`            | `prefers-contrast: more`     | Enforce visible borders           |
-| `global.css:95-96`         | `.theme-transitioning`       | Force theme transition timing     |
-| `global.css:127-130`       | `prefers-reduced-motion`     | Disable animations (recommended)  |
+| Location             | Context                  | Justification                    |
+| -------------------- | ------------------------ | -------------------------------- |
+| `global.css:36`      | `prefers-contrast: more` | Enforce high contrast text       |
+| `global.css:41`      | `prefers-contrast: more` | Enforce visible borders          |
+| `global.css:95-96`   | `.theme-transitioning`   | Force theme transition timing    |
+| `global.css:127-130` | `prefers-reduced-motion` | Disable animations (recommended) |
 
 #### ℹ️ Observation: Desktop-First Approach
 
@@ -151,16 +191,16 @@ consider mobile-first for new components.
 
 All 8 components follow the established pattern:
 
-| Component        | JSDoc | Test File | Snapshot | Accessibility |
-| ---------------- | ----- | --------- | -------- | ------------- |
-| `Breadcrumbs.ts` | ✅    | ✅        | ✅       | `aria-label`, `aria-current` |
+| Component        | JSDoc | Test File | Snapshot | Accessibility                     |
+| ---------------- | ----- | --------- | -------- | --------------------------------- |
+| `Breadcrumbs.ts` | ✅    | ✅        | ✅       | `aria-label`, `aria-current`      |
 | `CodeTabs.ts`    | ✅    | ✅        | ✅       | `role="tablist"`, `aria-selected` |
-| `Modal.ts`       | ✅    | ✅        | ✅       | `aria-modal`, focus trap |
-| `Pagination.ts`  | ✅    | ✅        | ✅       | `aria-label`, `aria-current` |
-| `PostDetails.ts` | ✅    | ✅        | ✅       | Semantic HTML |
-| `PostList.ts`    | ✅    | ✅        | ✅       | `role="list"` |
-| `SourceInfo.ts`  | ✅    | ✅        | ✅       | External link handling |
-| `Tabs.ts`        | ✅    | ✅        | ✅       | ARIA tabs pattern |
+| `Modal.ts`       | ✅    | ✅        | ✅       | `aria-modal`, focus trap          |
+| `Pagination.ts`  | ✅    | ✅        | ✅       | `aria-label`, `aria-current`      |
+| `PostDetails.ts` | ✅    | ✅        | ✅       | Semantic HTML                     |
+| `PostList.ts`    | ✅    | ✅        | ✅       | `role="list"`                     |
+| `SourceInfo.ts`  | ✅    | ✅        | ✅       | External link handling            |
+| `Tabs.ts`        | ✅    | ✅        | ✅       | ARIA tabs pattern                 |
 
 **Component quality score: 100%** — All components have documentation, tests,
 and accessibility features.
@@ -169,23 +209,20 @@ and accessibility features.
 
 ### 4. Test Coverage Analysis
 
-#### Test File Inventory (20 files)
+#### Test File Inventory (22 files)
 
-**Components:** 8/8 tested
-**Utilities:** 3/3 tested
-**Config:** 1/1 tested
-**Data:** 1/1 tested (i18n)
-**JS Client:** 7/12 tested
+**Components:** 8/8 tested **Utilities:** 3/3 tested **Config:** 1/1 tested
+**Data:** 1/1 tested (i18n) **JS Client:** 7/15 tested
 
 #### ⚠️ Missing Client-Side Tests
 
-| File                        | Status    | Priority |
-| --------------------------- | --------- | -------- |
-| `js/features/theme.js`      | No test   | Medium   |
-| `js/features/external-links.js` | No test | Low    |
-| `js/features/search-modal.js` | No test | Low      |
-| `js/features/service-worker.js` | No test | Low    |
-| `js/components/toast.js`    | No test   | Medium   |
+| File                            | Status  | Priority |
+| ------------------------------- | ------- | -------- |
+| `js/features/theme.js`          | No test | Medium   |
+| `js/features/external-links.js` | No test | Low      |
+| `js/features/search-modal.js`   | No test | Low      |
+| `js/features/service-worker.js` | No test | Low      |
+| `js/components/toast.js`        | No test | Medium   |
 
 **Recommendation:** Add tests for `theme.js` and `toast.js` as they have
 user-visible behavior.
@@ -215,8 +252,9 @@ user-visible behavior.
 }
 ```
 
-**Note:** Deno runtime was not available during audit. Run `deno lint`,
-`deno fmt --check`, and `deno test` locally to verify compliance.
+**Note:** The Deno runtime was not available during the initial audit. Local
+verification was completed later using `deno fmt`, `deno lint`, and `deno test`
+to confirm baseline health.
 
 ---
 
@@ -244,16 +282,16 @@ user-visible behavior.
 
 ## Quantitative Summary
 
-| Metric                        | Value  | Target | Status |
-| ----------------------------- | ------ | ------ | ------ |
-| Components with JSDoc         | 8/8    | 100%   | ✅     |
-| Components with tests         | 8/8    | 100%   | ✅     |
-| Utilities with doc-tests      | 3/3    | 100%   | ✅     |
-| Layouts with JSDoc            | 4/5    | 100%   | ⚠️     |
-| Internal functions documented | 0/7    | 100%   | ⚠️     |
-| CSS `!important` justified    | 4/4    | 100%   | ✅     |
-| JS client modules tested      | 7/12   | 100%   | ⚠️     |
-| Accessibility features        | 5/5    | 100%   | ✅     |
+| Metric                        | Value | Target | Status |
+| ----------------------------- | ----- | ------ | ------ |
+| Components with JSDoc         | 8/8   | 100%   | ✅     |
+| Components with tests         | 8/8   | 100%   | ✅     |
+| Utilities with doc-tests      | 3/3   | 100%   | ✅     |
+| Layouts with JSDoc            | 4/5   | 100%   | ⚠️     |
+| Internal functions documented | 0/7   | 100%   | ⚠️     |
+| CSS `!important` justified    | 4/4   | 100%   | ✅     |
+| JS client modules tested      | 7/15  | 100%   | ⚠️     |
+| Accessibility features        | 5/5   | 100%   | ✅     |
 
 ---
 
@@ -287,6 +325,90 @@ Add tests for client-side JavaScript:
 **Effort:** ~30 minutes
 
 Add JSDoc to `layouts/base.ts` main export function.
+
+---
+
+## Development Playbook (for future work)
+
+### Common Workflows
+
+| Goal                      | Primary files                | Typical tests                            |
+| ------------------------- | ---------------------------- | ---------------------------------------- |
+| Add or change a component | `src/_components/*.ts`       | `deno test --doc` + component test file  |
+| Update layout structure   | `src/_includes/layouts/*.ts` | `deno test` + snapshot updates if needed |
+| Adjust site metadata      | `_config.ts`, `plugins.ts`   | `deno lint` + `deno test`                |
+| Update JS behavior        | `src/js/**`                  | Feature/component tests in `src/js/**`   |
+| Tweak styling             | `src/_includes/css/**`       | Visual review + build                    |
+
+### Commands (recommended sequence)
+
+> Always set `DENO_TLS_CA_STORE=system` when running Deno commands.
+
+```bash
+DENO_TLS_CA_STORE=system deno fmt
+DENO_TLS_CA_STORE=system deno lint
+DENO_TLS_CA_STORE=system deno test
+DENO_TLS_CA_STORE=system deno task build
+```
+
+If tests fail due to environment limitations, document the failure and proceed
+with caution for non-critical changes.
+
+---
+
+## Targeted Follow‑Ups (ready-to-assign tickets)
+
+### Documentation & Consistency
+
+1. Add JSDoc + doc-tests for internal functions listed in Phase 1.
+2. Add JSDoc to `src/_includes/layouts/base.ts`.
+
+### Client-Side Tests
+
+1. `src/js/features/theme.js` — test theme switching + persistence.
+2. `src/js/components/toast.js` — test auto-dismiss + variants.
+3. `src/js/features/search-modal.js` — test open/close + focus handling.
+
+### Accessibility & UX
+
+1. Verify that new interactive components always include `:focus-visible`.
+2. Confirm `prefers-reduced-motion` behavior when adding animations.
+
+---
+
+## Risk Matrix (where changes are most fragile)
+
+| Area                        | Risk level | Why                                 | Mitigation                    |
+| --------------------------- | ---------- | ----------------------------------- | ----------------------------- |
+| `_config.ts` / `plugins.ts` | Medium     | Build-time data & metadata pipeline | Add doc-tests + unit tests    |
+| Layouts                     | Medium     | Affects all pages                   | Snapshot tests + visual check |
+| CSS tokens/base             | Medium     | System-wide styling impact          | Build + quick visual pass     |
+| Client JS features          | Low/Medium | Progressive enhancement             | Component-level tests         |
+
+---
+
+## Maintenance Notes
+
+- Avoid editing generated artifacts or build outputs.
+- Prefer official Lume plugins before writing custom code.
+- Use English in code and documentation comments.
+- Keep changes aligned with the minimalist design intent.
+
+---
+
+## FAQ (future contributors)
+
+**Q: Where should new static pages go?**\
+A: Use `*.page.ts` for dynamic pages or `*.md` for content posts, consistent
+with the existing conventions.
+
+**Q: How do I add a new UI block?**\
+A: Implement in `src/_components/` with a matching `_test.ts` file and update
+the relevant layout or page to use it.
+
+**Q: How do I update site-wide metadata?**\
+A: Start with `_config.ts` and check `plugins.ts` for derived values such as
+repo metadata.
 
 ---
 
@@ -327,11 +449,13 @@ maintainability but does not affect functionality.
 ## Appendix: Files Reviewed
 
 ### Configuration
+
 - `_config.ts`
 - `plugins.ts`
 - `deno.json`
 
 ### Components
+
 - `src/_components/Breadcrumbs.ts`
 - `src/_components/CodeTabs.ts`
 - `src/_components/Modal.ts`
@@ -342,20 +466,26 @@ maintainability but does not affect functionality.
 - `src/_components/Tabs.ts`
 
 ### Layouts
+
 - `src/_includes/layouts/base.ts`
 - `src/_includes/layouts/post.ts`
 
 ### Utilities
+
 - `src/_utilities/text.ts`
 
 ### Data
+
 - `src/_data.ts`
 
 ### CSS
+
 - `src/_includes/css/02-base/global.css`
 
 ### JavaScript
+
 - `src/js/main.js`
 
 ### Tests
-- All 20 `*_test.ts` files inventoried
+
+- All 22 `*_test.ts` files inventoried
