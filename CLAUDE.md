@@ -554,8 +554,9 @@ site.getContent(file, loader);
   reference.
 - When modifying or creating JavaScript or TypeScript code, ensure JSDoc
   comments include testable code examples that serve as documentation tests.
-- Only commit `deno.lock` when the same commit explicitly updates dependencies
-  in `deno.json`.
+- Commit `deno.lock` only when dependencies are explicitly updated in deno.json
+  within the same commit. In that case, run `deno task update-deps` before
+  staging `deno.lock`.
 - Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
   engines.
 - Do not add new dependencies unless explicitly requested.

@@ -12,8 +12,9 @@
   technically possible for the agent. If `deno test` fails, treat it as
   non-blocking but detail the failures in the pull request description.
 - If `deno lint` reports errors, fix them when technically possible.
-- Only commit `deno.lock` when the same commit explicitly updates dependencies
-  in `deno.json`.
+- Commit `deno.lock` only when dependencies are explicitly updated in deno.json
+  within the same commit. In that case, run `deno task update-deps` before
+  staging `deno.lock`.
 - Set `DENO_TLS_CA_STORE=system` before every Deno CLI command.
 - Before running `deno task build` or `deno task serve` commands, set
   `DENO_TLS_CA_STORE=system` in the environment.
