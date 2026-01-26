@@ -1,12 +1,58 @@
 /**
- * Pagefind UI loader
- * Ensures the script is loaded once and avoids blocking the initial render
+ * Pagefind UI loader.
+ * Ensures the script is loaded once and avoids blocking the initial render.
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { loadPagefindUI } from "./pagefind.js";
+ *
+ * let appended = false;
+ * const script = {
+ *   addEventListener: (event, handler) => {
+ *     if (event === "load") {
+ *       handler();
+ *     }
+ *   },
+ *   dataset: {},
+ * };
+ *
+ * globalThis.document = {
+ *   querySelector: () => null,
+ *   createElement: () => script,
+ *   head: {
+ *     appendChild: () => {
+ *       appended = true;
+ *     },
+ *   },
+ * };
+ *
+ * await loadPagefindUI();
+ * assertEquals(appended, true);
+ * ```
  */
 
 const PAGEFIND_SCRIPT_SRC = "/pagefind/pagefind-ui.js";
 const PAGEFIND_TIMEOUT_MS = 5000;
 
 let pagefindLoadPromise = null;
+
+/**
+ * Reset the internal loader cache (primarily for tests).
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { resetPagefindLoader, loadPagefindUI } from "./pagefind.js";
+ *
+ * resetPagefindLoader();
+ * const loader = loadPagefindUI();
+ * assertEquals(typeof loader.then, "function");
+ * ```
+ */
+export function resetPagefindLoader() {
+  pagefindLoadPromise = null;
+}
 
 export function loadPagefindUI() {
   if (globalThis.PagefindUI) {

@@ -1,135 +1,152 @@
 /**
- * Tests for JavaScript features
+ * Tests for JavaScript features.
  *
  * These tests verify various JavaScript features including:
  * - Theme management logic
  * - External link enhancement
  * - Global API exposure
+ * - Toast helper utilities
  *
  * @module tests/js/features_test
  */
 
 import { assertEquals, assertExists } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import { DOMParser, HTMLDocument } from "@b-fuze/deno-dom";
+import { DOMParser } from "@b-fuze/deno-dom";
+import { exposeThemeGlobals } from "../../src/js/core/globals.js";
+import { enhanceExternalLinks } from "../../src/js/features/external-links.js";
+import { createThemeManager } from "../../src/js/features/theme.js";
+import { ToastManager } from "../../src/js/components/toast.js";
+
+const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
+
+const ORIGINAL_GLOBALS = {
+  document: globalScope.document,
+  location: globalScope.location,
+  localStorage: globalScope.localStorage,
+  matchMedia: globalScope.matchMedia,
+  changeTheme: globalScope.changeTheme,
+  themeManager: globalScope.themeManager,
+  toast: globalScope.toast,
+  setTimeout: globalScope.setTimeout,
+};
+const ORIGINAL_DESCRIPTORS = {
+  localStorage: Object.getOwnPropertyDescriptor(globalThis, "localStorage"),
+  toast: Object.getOwnPropertyDescriptor(globalThis, "toast"),
+};
+
+function defineGlobalProperty<T>(key: string, value: T): void {
+  Object.defineProperty(globalThis, key, {
+    value,
+    configurable: true,
+    writable: true,
+  });
+}
+
+function restoreGlobals(): void {
+  globalScope.document = ORIGINAL_GLOBALS.document;
+  globalScope.location = ORIGINAL_GLOBALS.location;
+  globalScope.localStorage = ORIGINAL_GLOBALS.localStorage;
+  globalScope.matchMedia = ORIGINAL_GLOBALS.matchMedia;
+  globalScope.changeTheme = ORIGINAL_GLOBALS.changeTheme;
+  globalScope.themeManager = ORIGINAL_GLOBALS.themeManager;
+  globalScope.toast = ORIGINAL_GLOBALS.toast;
+  globalScope.setTimeout = ORIGINAL_GLOBALS.setTimeout;
+
+  if (ORIGINAL_DESCRIPTORS.localStorage) {
+    Object.defineProperty(
+      globalThis,
+      "localStorage",
+      ORIGINAL_DESCRIPTORS.localStorage,
+    );
+  } else {
+    delete (globalThis as { localStorage?: Storage }).localStorage;
+  }
+
+  if (ORIGINAL_DESCRIPTORS.toast) {
+    Object.defineProperty(
+      globalThis,
+      "toast",
+      ORIGINAL_DESCRIPTORS.toast,
+    );
+  } else {
+    delete (globalThis as { toast?: { info?: () => void } }).toast;
+  }
+}
 
 // =============================================================================
 // Theme Manager Tests
 // =============================================================================
 
-/**
- * Mock ThemeManager for testing
- */
-class MockThemeManager {
-  theme: string;
-  themeToggle: Element | null;
+describe("ThemeManager", () => {
+  it("uses stored theme when available", () => {
+    defineGlobalProperty("localStorage", {
+      getItem: () => "dark",
+      setItem: () => {},
+    } as unknown as Storage);
+    globalScope.matchMedia = (() => ({
+      matches: false,
+      addEventListener: () => {},
+    })) as unknown as typeof globalThis.matchMedia;
 
-  constructor(initialTheme: string = "light") {
-    this.theme = initialTheme;
-    this.themeToggle = null;
-  }
+    const manager = createThemeManager();
 
-  getInitialTheme(
-    storedTheme: string | null,
-    prefersDark: boolean,
-  ): string {
-    // Check localStorage first
-    if (storedTheme) return storedTheme;
-
-    // Check system preference
-    return prefersDark ? "dark" : "light";
-  }
-
-  toggle(): string {
-    this.theme = this.theme === "dark" ? "light" : "dark";
-    return this.theme;
-  }
-
-  setTheme(theme: string): void {
-    this.theme = theme;
-  }
-
-  getAriaLabel(): string {
-    return this.theme === "dark"
-      ? "Switch to light mode"
-      : "Switch to dark mode";
-  }
-}
-
-describe("ThemeManager - getInitialTheme", () => {
-  it("should return stored theme from localStorage", () => {
-    const manager = new MockThemeManager();
-    const result = manager.getInitialTheme("dark", false);
-    assertEquals(result, "dark");
-  });
-
-  it("should return light when no stored theme and prefers-light", () => {
-    const manager = new MockThemeManager();
-    const result = manager.getInitialTheme(null, false);
-    assertEquals(result, "light");
-  });
-
-  it("should return dark when no stored theme and prefers-dark", () => {
-    const manager = new MockThemeManager();
-    const result = manager.getInitialTheme(null, true);
-    assertEquals(result, "dark");
-  });
-
-  it("should prioritize stored theme over system preference", () => {
-    const manager = new MockThemeManager();
-    const result = manager.getInitialTheme("light", true); // System prefers dark
-    assertEquals(result, "light");
-  });
-});
-
-describe("ThemeManager - toggle", () => {
-  it("should toggle from light to dark", () => {
-    const manager = new MockThemeManager("light");
-    const newTheme = manager.toggle();
-    assertEquals(newTheme, "dark");
     assertEquals(manager.theme, "dark");
+    restoreGlobals();
   });
 
-  it("should toggle from dark to light", () => {
-    const manager = new MockThemeManager("dark");
-    const newTheme = manager.toggle();
-    assertEquals(newTheme, "light");
-    assertEquals(manager.theme, "light");
-  });
+  it("falls back to system preference when storage is empty", () => {
+    defineGlobalProperty("localStorage", {
+      getItem: () => null,
+      setItem: () => {},
+    } as unknown as Storage);
+    globalScope.matchMedia = (() => ({
+      matches: true,
+      addEventListener: () => {},
+    })) as unknown as typeof globalThis.matchMedia;
 
-  it("should toggle multiple times correctly", () => {
-    const manager = new MockThemeManager("light");
-    manager.toggle();
-    manager.toggle();
-    assertEquals(manager.theme, "light");
-    manager.toggle();
+    const manager = createThemeManager();
+
     assertEquals(manager.theme, "dark");
-  });
-});
-
-describe("ThemeManager - setTheme", () => {
-  it("should set theme to dark", () => {
-    const manager = new MockThemeManager("light");
-    manager.setTheme("dark");
-    assertEquals(manager.theme, "dark");
+    restoreGlobals();
   });
 
-  it("should set theme to light", () => {
-    const manager = new MockThemeManager("dark");
-    manager.setTheme("light");
-    assertEquals(manager.theme, "light");
-  });
-});
+  it("updates dataset and persistence when setting theme", () => {
+    const calls: string[] = [];
+    const documentElement = {
+      dataset: {} as { theme?: string },
+      classList: {
+        add: () => calls.push("add"),
+        remove: () => calls.push("remove"),
+      },
+    };
 
-describe("ThemeManager - getAriaLabel", () => {
-  it("should return switch to light when in dark mode", () => {
-    const manager = new MockThemeManager("dark");
-    assertEquals(manager.getAriaLabel(), "Switch to light mode");
-  });
+    globalScope.document = {
+      documentElement,
+    } as unknown as Document;
+    defineGlobalProperty("localStorage", {
+      getItem: () => null,
+      setItem: (_key: string, value: string) => calls.push(value),
+    } as unknown as Storage);
+    globalScope.matchMedia = (() => ({
+      matches: false,
+      addEventListener: () => {},
+    })) as unknown as typeof globalThis.matchMedia;
+    defineGlobalProperty("toast", {
+      info: () => calls.push("toast"),
+    } as { info: () => void });
+    globalScope.setTimeout = ((handler: () => void) => {
+      handler();
+      return 0;
+    }) as typeof globalThis.setTimeout;
 
-  it("should return switch to dark when in light mode", () => {
-    const manager = new MockThemeManager("light");
-    assertEquals(manager.getAriaLabel(), "Switch to dark mode");
+    const manager = createThemeManager();
+    manager.setTheme("dark", true);
+
+    assertEquals(documentElement.dataset.theme, "dark");
+    assertEquals(calls.includes("dark"), true);
+    assertEquals(calls.includes("toast"), true);
+    restoreGlobals();
   });
 });
 
@@ -137,154 +154,105 @@ describe("ThemeManager - getAriaLabel", () => {
 // External Links Enhancement Tests
 // =============================================================================
 
-/**
- * Creates a DOM with various links for testing
- */
-function createLinksDOM(): HTMLDocument {
-  const html = `
-    <!DOCTYPE html>
-    <html>
-    <body>
-      <a href="https://example.com" id="external1">External Link</a>
-      <a href="https://other.com" id="external2" target="_blank">Already has target</a>
-      <a href="/internal" id="internal">Internal Link</a>
-      <a href="http://insecure.com" id="http">HTTP Link</a>
-      <a href="https://example.com" class="external-link" id="already-enhanced">
-        <span class="sr-only"> (opens in new tab)</span>
-      </a>
-    </body>
-    </html>
-  `;
-
-  return new DOMParser().parseFromString(html, "text/html")!;
+interface MockLink {
+  hostname: string;
+  attributes: Map<string, string>;
+  classList: {
+    add: (value: string) => void;
+    contains: (value: string) => boolean;
+  };
+  children: { className: string; textContent: string }[];
+  hasAttribute: (name: string) => boolean;
+  setAttribute: (name: string, value: string) => void;
+  querySelector: (
+    selector: string,
+  ) => { className: string; textContent: string } | null;
+  appendChild: (node: { className: string; textContent: string }) => void;
 }
 
-/**
- * Mock function that simulates enhanceExternalLinks behavior
- */
-function mockEnhanceExternalLinks(
-  document: HTMLDocument,
-  currentHostname: string,
-): void {
-  const links = document.querySelectorAll("a[href^='http']");
+function createMockLink(
+  hostname: string,
+  hasScreenReaderText = false,
+): MockLink {
+  const attributes = new Map<string, string>();
+  const classValues = new Set<string>();
+  const children = hasScreenReaderText
+    ? [{ className: "sr-only", textContent: " (opens in new tab)" }]
+    : [];
 
-  links.forEach((link) => {
-    // Parse hostname from href
-    const href = link.getAttribute("href") || "";
-    let hostname = "";
-    try {
-      const url = new URL(href);
-      hostname = url.hostname;
-    } catch {
-      return;
-    }
-
-    // Skip if it's a link to the current domain
-    if (hostname === currentHostname) return;
-
-    // Add external indicator
-    if (!link.hasAttribute("target")) {
-      link.setAttribute("target", "_blank");
-      link.setAttribute("rel", "noopener noreferrer");
-    }
-
-    // Add tooltip for external links (CSS-driven)
-    link.setAttribute("data-tooltip", "Opens in new tab");
-    link.classList.add("external-link");
-
-    // Add screen reader text
-    if (!link.querySelector(".sr-only")) {
-      const srText = document.createElement("span");
-      srText.className = "sr-only";
-      srText.textContent = " (opens in new tab)";
-      link.appendChild(srText);
-    }
-  });
+  return {
+    hostname,
+    attributes,
+    children,
+    classList: {
+      add: (value: string) => classValues.add(value),
+      contains: (value: string) => classValues.has(value),
+    },
+    hasAttribute: (name: string) => attributes.has(name),
+    setAttribute: (name: string, value: string) => {
+      attributes.set(name, value);
+    },
+    querySelector: (selector: string) => {
+      if (selector === ".sr-only") {
+        return children.find((child) => child.className === "sr-only") ?? null;
+      }
+      return null;
+    },
+    appendChild: (node: { className: string; textContent: string }) => {
+      children.push(node);
+    },
+  };
 }
 
-describe("enhanceExternalLinks - basic functionality", () => {
-  it("should add target=_blank to external links", () => {
-    const document = createLinksDOM();
-    mockEnhanceExternalLinks(document, "localhost");
+describe("enhanceExternalLinks", () => {
+  it("adds external link affordances", () => {
+    const link = createMockLink("example.com");
 
-    const link = document.getElementById("external1");
-    assertEquals(link?.getAttribute("target"), "_blank");
+    globalScope.location = { hostname: "localhost" } as Location;
+    globalScope.document = {
+      querySelectorAll: () => [link],
+      createElement: () => ({ className: "", textContent: "" }),
+    } as unknown as Document;
+
+    enhanceExternalLinks();
+
+    assertEquals(link.attributes.get("target"), "_blank");
+    assertEquals(link.attributes.get("rel"), "noopener noreferrer");
+    assertEquals(link.attributes.get("data-tooltip"), "Opens in new tab");
+    assertEquals(link.classList.contains("external-link"), true);
+    assertExists(link.querySelector(".sr-only"));
+    restoreGlobals();
   });
 
-  it("should add rel=noopener noreferrer to external links", () => {
-    const document = createLinksDOM();
-    mockEnhanceExternalLinks(document, "localhost");
+  it("skips internal links", () => {
+    const link = createMockLink("localhost");
 
-    const link = document.getElementById("external1");
-    assertEquals(link?.getAttribute("rel"), "noopener noreferrer");
+    globalScope.location = { hostname: "localhost" } as Location;
+    globalScope.document = {
+      querySelectorAll: () => [link],
+      createElement: () => ({ className: "", textContent: "" }),
+    } as unknown as Document;
+
+    enhanceExternalLinks();
+
+    assertEquals(link.attributes.size, 0);
+    assertEquals(link.classList.contains("external-link"), false);
+    restoreGlobals();
   });
 
-  it("should add data-tooltip to external links", () => {
-    const document = createLinksDOM();
-    mockEnhanceExternalLinks(document, "localhost");
+  it("avoids duplicating screen reader text", () => {
+    const link = createMockLink("example.com", true);
 
-    const link = document.getElementById("external1");
-    assertEquals(link?.getAttribute("data-tooltip"), "Opens in new tab");
-  });
+    globalScope.location = { hostname: "localhost" } as Location;
+    globalScope.document = {
+      querySelectorAll: () => [link],
+      createElement: () => ({ className: "", textContent: "" }),
+    } as unknown as Document;
 
-  it("should add external-link class to external links", () => {
-    const document = createLinksDOM();
-    mockEnhanceExternalLinks(document, "localhost");
+    enhanceExternalLinks();
 
-    const link = document.getElementById("external1");
-    assertEquals(link?.classList.contains("external-link"), true);
-  });
-
-  it("should add screen reader text to external links", () => {
-    const document = createLinksDOM();
-    mockEnhanceExternalLinks(document, "localhost");
-
-    const link = document.getElementById("external1");
-    const srText = link?.querySelector(".sr-only");
-    assertExists(srText);
-    assertEquals(srText?.textContent, " (opens in new tab)");
-  });
-});
-
-describe("enhanceExternalLinks - skip conditions", () => {
-  it("should not modify links with existing target", () => {
-    const document = createLinksDOM();
-    mockEnhanceExternalLinks(document, "localhost");
-
-    const link = document.getElementById("external2");
-    // Should keep existing target but still enhance
-    assertEquals(link?.getAttribute("target"), "_blank");
-    assertEquals(link?.classList.contains("external-link"), true);
-  });
-
-  it("should not add duplicate screen reader text", () => {
-    const document = createLinksDOM();
-    mockEnhanceExternalLinks(document, "localhost");
-
-    const link = document.getElementById("already-enhanced");
-    const srTexts = link?.querySelectorAll(".sr-only");
-    assertEquals(srTexts?.length, 1);
-  });
-
-  it("should not modify internal links", () => {
-    const document = createLinksDOM();
-    mockEnhanceExternalLinks(document, "localhost");
-
-    const link = document.getElementById("internal");
-    assertEquals(link?.hasAttribute("target"), false);
-    assertEquals(link?.classList.contains("external-link"), false);
-  });
-});
-
-describe("enhanceExternalLinks - same domain detection", () => {
-  it("should not enhance links to the same domain", () => {
-    const document = createLinksDOM();
-    // Pretend example.com is current domain
-    mockEnhanceExternalLinks(document, "example.com");
-
-    const link = document.getElementById("external1");
-    // Should not be enhanced because it's the same domain
-    assertEquals(link?.classList.contains("external-link"), false);
+    assertEquals(link.children.length, 1);
+    restoreGlobals();
   });
 });
 
@@ -293,128 +261,66 @@ describe("enhanceExternalLinks - same domain detection", () => {
 // =============================================================================
 
 describe("globals - exposeThemeGlobals", () => {
-  /**
-   * Mock function that simulates exposeThemeGlobals
-   */
-  function mockExposeThemeGlobals(
-    target: Record<string, unknown>,
-    themeManager: MockThemeManager,
-  ): void {
-    target.themeManager = themeManager;
-    target.changeTheme = () => themeManager.toggle();
-  }
+  it("exposes theme manager and changeTheme on global scope", () => {
+    const manager = { toggle: () => {} };
 
-  it("should expose themeManager on target", () => {
-    const target: Record<string, unknown> = {};
-    const manager = new MockThemeManager();
+    exposeThemeGlobals(manager);
 
-    mockExposeThemeGlobals(target, manager);
-
-    assertExists(target.themeManager);
-    assertEquals(target.themeManager, manager);
+    assertExists(globalScope.themeManager);
+    assertExists(globalScope.changeTheme);
+    restoreGlobals();
   });
 
-  it("should expose changeTheme function on target", () => {
-    const target: Record<string, unknown> = {};
-    const manager = new MockThemeManager();
-
-    mockExposeThemeGlobals(target, manager);
-
-    assertExists(target.changeTheme);
-    assertEquals(typeof target.changeTheme, "function");
-  });
-
-  it("should toggle theme when changeTheme is called", () => {
-    const target: Record<string, unknown> = {};
-    const manager = new MockThemeManager("light");
-
-    mockExposeThemeGlobals(target, manager);
-    (target.changeTheme as () => void)();
-
-    assertEquals(manager.theme, "dark");
-  });
-});
-
-// =============================================================================
-// Toast Manager Logic Tests
-// =============================================================================
-
-describe("ToastManager - escapeHtml", () => {
-  /**
-   * Mock escapeHtml function
-   */
-  function escapeHtml(text: string): string {
-    const escapeMap: Record<string, string> = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;",
+  it("invokes theme toggle through changeTheme", () => {
+    let toggled = false;
+    const manager = {
+      toggle: () => {
+        toggled = true;
+      },
     };
-    return text.replace(/[&<>"']/g, (char) => escapeMap[char]);
-  }
 
-  it("should escape ampersand", () => {
-    assertEquals(escapeHtml("A & B"), "A &amp; B");
-  });
+    exposeThemeGlobals(manager);
+    (globalScope.changeTheme as () => void)();
 
-  it("should escape less than", () => {
-    assertEquals(escapeHtml("A < B"), "A &lt; B");
-  });
-
-  it("should escape greater than", () => {
-    assertEquals(escapeHtml("A > B"), "A &gt; B");
-  });
-
-  it("should escape double quotes", () => {
-    assertEquals(escapeHtml('say "hello"'), "say &quot;hello&quot;");
-  });
-
-  it("should escape single quotes", () => {
-    assertEquals(escapeHtml("it's"), "it&#039;s");
-  });
-
-  it("should escape multiple characters", () => {
-    assertEquals(
-      escapeHtml("<script>alert('xss')</script>"),
-      "&lt;script&gt;alert(&#039;xss&#039;)&lt;/script&gt;",
-    );
-  });
-
-  it("should return unchanged string without special chars", () => {
-    assertEquals(escapeHtml("Hello World"), "Hello World");
+    assertEquals(toggled, true);
+    restoreGlobals();
   });
 });
 
-describe("ToastManager - getIcon", () => {
-  const icons: Record<string, boolean> = {
-    success: true,
-    error: true,
-    warning: true,
-    info: true,
-  };
+// =============================================================================
+// Toast Manager Utility Tests
+// =============================================================================
 
-  function hasIcon(variant: string): boolean {
-    return icons[variant] ?? false;
-  }
+describe("ToastManager utilities", () => {
+  it("escapes HTML content", () => {
+    const document = new DOMParser().parseFromString(
+      "<!DOCTYPE html><html><body><div id='toast-container'></div></body></html>",
+      "text/html",
+    )!;
 
-  it("should have icon for success variant", () => {
-    assertEquals(hasIcon("success"), true);
+    globalScope.document = document as unknown as Document;
+
+    const manager = new ToastManager();
+
+    assertEquals(
+      manager.escapeHtml("<script>alert('xss')</script>"),
+      "&lt;script&gt;alert('xss')&lt;/script&gt;",
+    );
+    restoreGlobals();
   });
 
-  it("should have icon for error variant", () => {
-    assertEquals(hasIcon("error"), true);
-  });
+  it("returns icons for known variants", () => {
+    const document = new DOMParser().parseFromString(
+      "<!DOCTYPE html><html><body><div id='toast-container'></div></body></html>",
+      "text/html",
+    )!;
 
-  it("should have icon for warning variant", () => {
-    assertEquals(hasIcon("warning"), true);
-  });
+    globalScope.document = document as unknown as Document;
 
-  it("should have icon for info variant", () => {
-    assertEquals(hasIcon("info"), true);
-  });
+    const manager = new ToastManager();
 
-  it("should not have icon for unknown variant", () => {
-    assertEquals(hasIcon("custom"), false);
+    assertEquals(manager.getIcon("success").includes("<svg"), true);
+    assertEquals(manager.getIcon("info").includes("<svg"), true);
+    restoreGlobals();
   });
 });

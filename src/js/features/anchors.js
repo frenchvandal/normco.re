@@ -1,7 +1,24 @@
 /**
- * Smooth scroll for anchor links
+ * Smooth scroll for anchor links.
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { enhanceAnchors } from "./anchors.js";
+ *
+ * let clickHandler;
+ * globalThis.matchMedia = () => ({ matches: true });
+ * globalThis.document = {
+ *   addEventListener: (_event, handler) => {
+ *     clickHandler = handler;
+ *   },
+ *   querySelector: () => null,
+ * };
+ *
+ * enhanceAnchors();
+ * assertEquals(typeof clickHandler, "function");
+ * ```
  */
-
 export function enhanceAnchors() {
   const prefersReducedMotion = globalThis.matchMedia?.(
     "(prefers-reduced-motion: reduce)",

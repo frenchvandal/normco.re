@@ -1,7 +1,33 @@
 /**
- * External link enhancements
+ * External link enhancements.
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { enhanceExternalLinks } from "./external-links.js";
+ *
+ * const link = {
+ *   hostname: "example.com",
+ *   attributes: new Map(),
+ *   classList: { add: () => {} },
+ *   hasAttribute: () => false,
+ *   setAttribute(name, value) {
+ *     this.attributes.set(name, value);
+ *   },
+ *   querySelector: () => null,
+ *   appendChild: () => {},
+ * };
+ *
+ * globalThis.location = { hostname: "localhost" };
+ * globalThis.document = {
+ *   querySelectorAll: () => [link],
+ *   createElement: () => ({ className: "", textContent: "", appendChild: () => {} }),
+ * };
+ *
+ * enhanceExternalLinks();
+ * assertEquals(link.attributes.get("target"), "_blank");
+ * ```
  */
-
 export function enhanceExternalLinks() {
   const links = document.querySelectorAll("a[href^='http']");
 

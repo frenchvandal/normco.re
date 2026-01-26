@@ -1,6 +1,6 @@
 /**
  * Search Modal
- * Global search modal with Cmd/Ctrl+K shortcut
+ * Global search modal with Cmd/Ctrl+K shortcut.
  */
 
 import { closeModal, openModal } from "../components/modal.js";
@@ -9,9 +9,62 @@ import { loadPagefindUI } from "../core/pagefind.js";
 const MODAL_ID = "search-modal";
 
 /**
- * Initialize search modal functionality
+ * Initialize search modal functionality.
+ *
+ * @param {object} [dependencies] - Optional dependency overrides.
+ * @param {(id: string) => void} [dependencies.openModal] - Open modal helper.
+ * @param {(id: string) => void} [dependencies.closeModal] - Close modal helper.
+ * @param {() => Promise<void>} [dependencies.loadPagefindUI] - Loader override.
+ * @param {new (options: object) => void} [dependencies.PagefindUI] - Pagefind UI constructor.
+ * @param {{ error?: (message: string, duration: number) => void }} [dependencies.toast]
+ *   - Toast helper.
+ * @param {(handler: () => void, timeout: number) => number} [dependencies.setTimeout]
+ *   - Timer override.
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { initSearchModal } from "./search-modal.js";
+ *
+ * let openCalled = false;
+ * const modal = {
+ *   getAttribute: () => "open",
+ *   setAttribute: () => {},
+ *   removeAttribute: () => {},
+ *   querySelector: () => ({ focus: () => {} }),
+ *   addEventListener: () => {},
+ * };
+ *
+ * globalThis.document = {
+ *   getElementById: () => modal,
+ *   addEventListener: (_event, handler) => handler({ metaKey: true, key: "k", preventDefault: () => {} }),
+ * };
+ *
+ * initSearchModal({
+ *   openModal: () => {
+ *     openCalled = true;
+ *   },
+ *   closeModal: () => {},
+ *   loadPagefindUI: () => Promise.resolve(),
+ *   PagefindUI: class {},
+ *   setTimeout: (handler) => {
+ *     handler();
+ *     return 0;
+ *   },
+ * });
+ *
+ * assertEquals(openCalled, true);
+ * ```
  */
-export function initSearchModal() {
+export function initSearchModal(dependencies = {}) {
+  const {
+    openModal: openModalImpl = openModal,
+    closeModal: closeModalImpl = closeModal,
+    loadPagefindUI: loadPagefindUIImpl = loadPagefindUI,
+    PagefindUI: PagefindUIImpl = globalThis.PagefindUI,
+    toast = globalThis.toast,
+    setTimeout: setTimeoutImpl = setTimeout,
+  } = dependencies;
   // Check if modal exists
   const modal = document.getElementById(MODAL_ID);
   if (!modal) return;
@@ -35,15 +88,16 @@ export function initSearchModal() {
       isInitializing = true;
       searchContainer.setAttribute("aria-busy", "true");
 
-      loadPagefindUI()
+      loadPagefindUIImpl()
         .then(() => {
-          if (!globalThis.PagefindUI) {
+          const PagefindUI = PagefindUIImpl ?? globalThis.PagefindUI;
+          if (!PagefindUI) {
             throw new Error("Pagefind UI is unavailable");
           }
           if (pagefindInitialized) return;
           if (modal.getAttribute("data-state") !== "open") return;
 
-          new globalThis.PagefindUI({
+          new PagefindUI({
             element: searchContainer,
             showSubResults: true,
             showImages: false,
@@ -57,8 +111,8 @@ export function initSearchModal() {
             ? error.message
             : "Unknown error";
           console.warn("Search modal initialization failed:", message);
-          if (globalThis.toast?.error) {
-            globalThis.toast.error("Search is unavailable right now.", 4000);
+          if (toast?.error) {
+            toast.error("Search is unavailable right now.", 4000);
           }
         })
         .finally(() => {
@@ -69,7 +123,7 @@ export function initSearchModal() {
     }
 
     // Focus search input after modal opens
-    setTimeout(() => {
+    setTimeoutImpl(() => {
       focusSearchInput();
     }, 100);
   });
@@ -78,7 +132,7 @@ export function initSearchModal() {
   document.addEventListener("keydown", (event) => {
     if ((event.metaKey || event.ctrlKey) && event.key === "k") {
       event.preventDefault();
-      openModal(MODAL_ID);
+      openModalImpl(MODAL_ID);
     }
   });
 
@@ -86,7 +140,7 @@ export function initSearchModal() {
   modal.addEventListener("click", (event) => {
     const link = event.target.closest("a");
     if (link && link.href) {
-      closeModal(MODAL_ID);
+      closeModalImpl(MODAL_ID);
     }
   });
 }
