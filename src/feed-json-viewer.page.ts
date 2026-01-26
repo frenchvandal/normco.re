@@ -12,6 +12,19 @@ export default function () {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JSON Feed Viewer</title>
+  <script>
+    // Detect and apply theme preference (synced with main site)
+    (function() {
+      const storedTheme = localStorage.getItem('theme');
+      const hasStoredTheme = storedTheme === 'dark' || storedTheme === 'light';
+
+      if (hasStoredTheme) {
+        document.documentElement.setAttribute('data-theme', storedTheme);
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+    })();
+  </script>
   <style>
     /* ==========================================================================
        Design Tokens - Identique au design system
@@ -76,6 +89,18 @@ export default function () {
         --color-primary: #f45757;
         --color-primary-highlight: #f66f6f;
       }
+    }
+
+    /* Explicit dark theme override (synced with main site localStorage) */
+    [data-theme="dark"] {
+      --color-base: #fff;
+      --color-text: #a3adc2;
+      --color-dim: #7585a3;
+      --color-line: #29303d;
+      --color-background: #14181f;
+      --color-background-shade: #1b1f28;
+      --color-primary: #f45757;
+      --color-primary-highlight: #f66f6f;
     }
 
     /* ==========================================================================
