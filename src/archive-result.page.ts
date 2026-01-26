@@ -1,5 +1,4 @@
 import "lume/types.ts";
-
 import type { PaginateResult } from "lume/plugins/paginate.ts";
 import type { Data } from "lume/core/file.ts";
 

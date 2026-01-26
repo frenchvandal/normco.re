@@ -7,7 +7,7 @@
 import { assertEquals, assertMatch, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
-import tabs, { type TabItem } from "../../src/_components/tabs.ts";
+import tabs, { type TabItem } from "../../src/_components/Tabs.ts";
 import {
   countElements,
   getAttribute,

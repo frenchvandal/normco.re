@@ -31,7 +31,7 @@ export default async function (
     readingInfo,
   });
 
-  const breadcrumbs = await comp.breadcrumbs({
+  const breadcrumbs = await comp.Breadcrumbs({
     items: [
       { label: i18n.nav.posts, url: "/archive/" },
       { label: title },

@@ -16,7 +16,7 @@ export default async function (
   }: Lume.Data,
 ) {
   const postList = await comp.PostList({ postslist: results });
-  const paginationNav = await comp.pagination({ pagination, i18n });
+  const paginationNav = await comp.Pagination({ pagination, i18n });
 
   const pageAuthors = pagination?.page === 1
     ? search.pages("type=author pagination.page=1", "author")
