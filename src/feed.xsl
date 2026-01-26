@@ -15,9 +15,9 @@
         </title>
         <script>
           <![CDATA[
-            // Detect and apply theme preference
+            // Detect and apply theme preference (synced with main site)
             (function() {
-              const storedTheme = localStorage.getItem('feed-theme');
+              const storedTheme = localStorage.getItem('theme');
               const hasStoredTheme = storedTheme === 'dark' || storedTheme === 'light';
 
               if (hasStoredTheme) {
