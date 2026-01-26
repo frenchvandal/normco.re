@@ -9,7 +9,7 @@ import { describe, it } from "@std/testing/bdd";
 
 import breadcrumbs, {
   type BreadcrumbItem,
-} from "../../src/_components/breadcrumbs.ts";
+} from "../../src/_components/Breadcrumbs.ts";
 import {
   countElements,
   getAttribute,

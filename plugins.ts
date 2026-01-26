@@ -17,9 +17,9 @@ import { merge } from "lume/core/utils/object.ts";
 import toc from "lume/markdown-plugins/toc.ts";
 import image from "lume/markdown-plugins/image.ts";
 import footnotes from "lume/markdown-plugins/footnotes.ts";
-import { alert } from "@mdit/plugin-alert";
-
 import "lume/types.ts";
+
+import { alert } from "@mdit/plugin-alert";
 
 export interface RepoInfo {
   baseUrl: string;

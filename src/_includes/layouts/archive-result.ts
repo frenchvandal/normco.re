@@ -15,9 +15,9 @@ export default async function (
   }: Lume.Data,
 ) {
   const postList = await comp.PostList({ postslist: results });
-  const paginationNav = await comp.pagination({ pagination, i18n });
+  const paginationNav = await comp.Pagination({ pagination, i18n });
 
-  const breadcrumbs = await comp.breadcrumbs({
+  const breadcrumbs = await comp.Breadcrumbs({
     items: [
       { label: i18n.nav.archive_title, url: "/archive/" },
       { label: title },

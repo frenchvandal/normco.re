@@ -22,7 +22,7 @@ export default async function (
   { url: urlHelper, date: dateHelper }: Lume.Helpers,
 ) {
   const menuItems = search.pages("menu.visible=true", "menu.order");
-  const searchModal = await comp.modal({
+  const searchModal = await comp.Modal({
     id: "search-modal",
     title: "Search",
     content:
