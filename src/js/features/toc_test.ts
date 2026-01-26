@@ -1,12 +1,13 @@
 /**
  * Tests for table of contents enhancements.
  *
- * @module tests/js/toc_test
+ * @module src/js/features/toc_test
  */
 
 import { assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import { enhanceTOC } from "../../src/js/features/toc.js";
+
+import { enhanceTOC } from "./toc.js";
 
 const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
 

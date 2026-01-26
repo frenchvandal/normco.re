@@ -1,7 +1,7 @@
 /**
  * Tests for search utilities
  *
- * @module tests/search_test
+ * @module src/_utilities/search_test
  */
 
 import { assertEquals, assertStringIncludes } from "@std/assert";
@@ -12,7 +12,7 @@ import {
   byAuthorQuery,
   byTagQuery,
   firstPageQuery,
-} from "../src/_utilities/search.ts";
+} from "./search.ts";
 
 // =============================================================================
 // allPostsQuery Tests

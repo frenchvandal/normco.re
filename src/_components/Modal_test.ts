@@ -1,14 +1,19 @@
 /**
  * Tests for Modal component (TypeScript template)
  *
- * @module tests/components/modal_test
+ * @module src/_components/Modal_test
  */
 
 import { assertEquals, assertStringIncludes } from "@std/assert";
+import { assertSnapshot } from "@std/testing/snapshot";
 import { describe, it } from "@std/testing/bdd";
 
-import modal, { type ModalProps } from "../../src/_components/Modal.ts";
-import { getAttribute, hasClass, hasElement } from "../helpers/dom.ts";
+import modal, { type ModalProps } from "./Modal.ts";
+import {
+  getAttribute,
+  hasClass,
+  hasElement,
+} from "../../tests/fixtures/dom.ts";
 
 // =============================================================================
 // Test fixtures
@@ -31,6 +36,19 @@ const fullProps: ModalProps = {
   closeLabel: "Fermer",
   headerExtra: "<span class='badge'>New</span>",
 };
+
+// =============================================================================
+// Snapshot Tests
+// =============================================================================
+
+Deno.test("modal snapshot - full props", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
+  const result = modal(fullProps);
+  await assertSnapshot(t, result);
+});
 
 // =============================================================================
 // Basic Structure Tests

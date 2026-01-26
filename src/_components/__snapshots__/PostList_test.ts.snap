@@ -1,0 +1,28 @@
+export const snapshot = {};
+
+snapshot[`postList snapshot - sample posts 1`] = `
+'
+<ul class="postList">
+  
+  <li class="post">
+    <h2 class="post-title">
+      <a href="/posts/first-post/">
+        First Post
+      </a>
+    </h2>
+
+    <div class="post-details">Details</div>
+  </li>
+
+  <li class="post">
+    <h2 class="post-title">
+      <a href="/posts/second-post/" aria-current="page">
+        Second Post
+      </a>
+    </h2>
+
+    <div class="post-details">Details</div>
+  </li>
+</ul>
+'
+`;

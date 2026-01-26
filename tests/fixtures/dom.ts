@@ -3,7 +3,7 @@
  *
  * Provides utilities for testing HTML output using deno-dom
  *
- * @module tests/helpers/dom
+ * @module tests/fixtures/dom
  */
 
 import { DOMParser, Element, HTMLDocument } from "@b-fuze/deno-dom";

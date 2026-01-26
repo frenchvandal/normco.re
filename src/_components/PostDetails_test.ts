@@ -7,10 +7,11 @@
  * - Reading time display
  * - Tags rendering
  *
- * @module tests/components/post-details_test
+ * @module src/_components/PostDetails_test
  */
 
 import { assertEquals } from "@std/assert";
+import { assertSnapshot } from "@std/testing/snapshot";
 import { describe, it } from "@std/testing/bdd";
 
 // =============================================================================
@@ -154,6 +155,33 @@ const mockSearchWithAuthor: MockSearch = {
 const mockSearchWithoutAuthor: MockSearch = {
   page: (_query: string) => null,
 };
+
+// =============================================================================
+// Snapshot Tests
+// =============================================================================
+
+Deno.test("postDetails snapshot - full metadata", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
+  const result = postDetailsComponent(
+    {
+      author: "John Doe",
+      date: new Date("2024-01-15T00:00:00.000Z"),
+      tags: ["Lume", "Deno"],
+      readingInfo: { minutes: 5 },
+      i18n: mockI18n,
+      search: mockSearchWithAuthor,
+    },
+    {
+      date: (_date, format) =>
+        format === "DATETIME" ? "2024-01-15T00:00:00.000Z" : "January 15, 2024",
+    },
+  );
+
+  await assertSnapshot(t, result);
+});
 
 // =============================================================================
 // Basic Rendering Tests

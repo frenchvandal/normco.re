@@ -1,13 +1,13 @@
 /**
  * Tests for internationalization data
  *
- * @module tests/data/i18n_test
+ * @module src/_data/i18n_test
  */
 
 import { assertEquals, assertExists, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
-import i18n from "../../src/_data/i18n.ts";
+import i18n from "./i18n.ts";
 
 // =============================================================================
 // Structure Tests

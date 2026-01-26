@@ -1,22 +1,21 @@
 /**
  * Tests for Breadcrumbs component
  *
- * @module tests/components/breadcrumbs_test
+ * @module src/_components/Breadcrumbs_test
  */
 
 import { assertEquals, assertStringIncludes } from "@std/assert";
+import { assertSnapshot } from "@std/testing/snapshot";
 import { describe, it } from "@std/testing/bdd";
 
-import breadcrumbs, {
-  type BreadcrumbItem,
-} from "../../src/_components/Breadcrumbs.ts";
+import breadcrumbs, { type BreadcrumbItem } from "./Breadcrumbs.ts";
 import {
   countElements,
   getAttribute,
   getTextContents,
   hasClass,
   hasElement,
-} from "../helpers/dom.ts";
+} from "../../tests/fixtures/dom.ts";
 
 // =============================================================================
 // Test fixtures
@@ -31,6 +30,32 @@ const itemsWithIcons: BreadcrumbItem[] = [
   { label: "Blog", url: "/blog/", icon: "📝" },
   { label: "Article", icon: "📄" },
 ];
+
+// =============================================================================
+// Snapshot Tests
+// =============================================================================
+
+Deno.test("breadcrumbs snapshot - default items", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
+  const result = breadcrumbs({ items: defaultItems });
+  await assertSnapshot(t, result);
+});
+
+Deno.test("breadcrumbs snapshot - icons and compact variant", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
+  const result = breadcrumbs({
+    items: itemsWithIcons,
+    variant: "compact",
+    separator: ">",
+  });
+  await assertSnapshot(t, result);
+});
 
 // =============================================================================
 // Empty/Invalid Input Tests

@@ -1,0 +1,18 @@
+export const snapshot = {};
+
+snapshot[`postDetails snapshot - full metadata 1`] = `
+'
+<div class="post-details">
+  <p>By <a data-pagefind-filter="author" href="/authors/john-doe/">John Doe</a></p>
+
+  <p><time datetime="2024-01-15T00:00:00.000Z">January 15, 2024</time></p>
+
+  <p>5 min read</p>
+  
+  <div class="post-tags">
+    <a data-pagefind-filter="tag" class="badge" href="/tags/lume/">Lume</a>
+    <a data-pagefind-filter="tag" class="badge" href="/tags/deno/">Deno</a>
+  </div>
+</div>
+'
+`;

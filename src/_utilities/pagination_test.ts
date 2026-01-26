@@ -1,15 +1,12 @@
 /**
  * Tests for pagination utilities
  *
- * @module tests/pagination_test
+ * @module src/_utilities/pagination_test
  */
 
 import { assertEquals, assertStrictEquals } from "@std/assert";
 
-import {
-  createPaginationUrl,
-  isFirstPage,
-} from "../src/_utilities/pagination.ts";
+import { createPaginationUrl, isFirstPage } from "./pagination.ts";
 
 // =============================================================================
 // createPaginationUrl Tests

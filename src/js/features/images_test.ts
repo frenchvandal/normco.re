@@ -1,12 +1,13 @@
 /**
  * Tests for image enhancements.
  *
- * @module tests/js/images_test
+ * @module src/js/features/images_test
  */
 
 import { assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import { enhanceImages } from "../../src/js/features/images.js";
+
+import { enhanceImages } from "./images.js";
 
 const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
 

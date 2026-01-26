@@ -1,20 +1,21 @@
 /**
  * Tests for Tabs component (TypeScript template)
  *
- * @module tests/components/tabs_test
+ * @module src/_components/Tabs_test
  */
 
 import { assertEquals, assertMatch, assertStringIncludes } from "@std/assert";
+import { assertSnapshot } from "@std/testing/snapshot";
 import { describe, it } from "@std/testing/bdd";
 
-import tabs, { type TabItem } from "../../src/_components/Tabs.ts";
+import tabs, { type TabItem } from "./Tabs.ts";
 import {
   countElements,
   getAttribute,
   hasClass,
   hasElement,
   query,
-} from "../helpers/dom.ts";
+} from "../../tests/fixtures/dom.ts";
 
 // =============================================================================
 // Test fixtures
@@ -29,6 +30,24 @@ const tabsWithIcons: TabItem[] = [
   { label: "Home", content: "Home content", icon: "🏠" },
   { label: "Settings", content: "Settings content", icon: "⚙️" },
 ];
+
+// =============================================================================
+// Snapshot Tests
+// =============================================================================
+
+Deno.test("tabs snapshot - icons variant", async (t) => {
+  const permission = await Deno.permissions.query({ name: "read" });
+  if (permission.state !== "granted") {
+    return;
+  }
+  const result = tabs({
+    id: "tabs-example",
+    tabs: tabsWithIcons,
+    variant: "boxed",
+  });
+
+  await assertSnapshot(t, result);
+});
 
 const tabsWithBadges: TabItem[] = [
   { label: "Inbox", content: "Inbox content", badge: 5 },
