@@ -117,7 +117,19 @@
             }
           }
 
-          /* Explicit dark theme override */
+          /* Explicit light theme override (synced with main site localStorage) */
+          [data-theme="light"] {
+            --color-base: #0a0c0f;
+            --color-text: #29303d;
+            --color-dim: #525f7a;
+            --color-line: #e0e4eb;
+            --color-background: #fff;
+            --color-background-shade: #f6f7f9;
+            --color-primary: #005cc5;
+            --color-primary-highlight: #3388ff;
+          }
+
+          /* Explicit dark theme override (synced with main site localStorage) */
           [data-theme="dark"] {
             --color-base: #fff;
             --color-text: #a3adc2;
