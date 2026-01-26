@@ -3,15 +3,12 @@
  * Displays source file link and commit revision for a page
  */
 
+import type { RepoInfo } from "../../plugins.ts";
+
 interface SourceInfoProps {
   sourceCommit?: string;
   sourcePath?: string;
-  repo?: {
-    baseUrl: string;
-    owner: string;
-    name: string;
-    branch: string;
-  };
+  repo?: RepoInfo;
   i18n: {
     source: {
       view_source: string;
