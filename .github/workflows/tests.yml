@@ -15,9 +15,7 @@ jobs:
         with:
           deno-version-file: .tool-versions
           cache: true
-      - name: Environment variables
-        run: printenv | sort
       - name: Lint
-        run: deno lint
+        run: deno lint --check
       - name: Test
-        run: deno test --coverage --ignore=tests/helpers/dom.ts
+        run: deno test --coverage
