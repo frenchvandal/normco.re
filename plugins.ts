@@ -41,6 +41,17 @@ export interface Options {
   feed?: Partial<FeedOptions>;
 }
 
+/**
+ * Default plugin configuration overrides.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { defaults } from "./plugins.ts";
+ *
+ * assertEquals(typeof defaults, "object");
+ * ```
+ */
 export const defaults: Options = {
   prism: {
     autoloadLanguages: true, // Auto-load languages for code tabs
@@ -158,7 +169,20 @@ const getRepoInfoFromGit = (): RepoInfo | null => {
 const getRepoInfo = (): RepoInfo | null =>
   getRepoInfoFromEnv() ?? getRepoInfoFromGit();
 
-/** Configure the site */
+/**
+ * Configure the Lume site with the blog's plugin stack.
+ *
+ * @param userOptions - Optional overrides for plugin configuration.
+ * @returns A Lume site configuration function.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import configureSite from "./plugins.ts";
+ *
+ * assertEquals(typeof configureSite, "function");
+ * ```
+ */
 export default function (userOptions?: Options) {
   const options = merge(defaults, userOptions);
 

@@ -239,6 +239,19 @@ export function openModal(modalId) {
   backdrop._modalManager.open();
 }
 
+/**
+ * Closes an open modal by ID.
+ *
+ * @param modalId - The modal element ID.
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { closeModal } from "./modal.js";
+ *
+ * assertEquals(typeof closeModal, "function");
+ * ```
+ */
 export function closeModal(modalId) {
   const backdrop = document.getElementById(modalId);
   if (!backdrop || !backdrop._modalManager) return;
@@ -246,6 +259,19 @@ export function closeModal(modalId) {
   backdrop._modalManager.close();
 }
 
+/**
+ * Toggles a modal open or closed by ID.
+ *
+ * @param modalId - The modal element ID.
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { toggleModal } from "./modal.js";
+ *
+ * assertEquals(typeof toggleModal, "function");
+ * ```
+ */
 export function toggleModal(modalId) {
   const backdrop = document.getElementById(modalId);
   if (!backdrop) return;

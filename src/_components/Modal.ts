@@ -15,6 +15,20 @@ export interface ModalProps {
   headerExtra?: string;
 }
 
+/**
+ * Renders an accessible modal dialog.
+ *
+ * @param props - Modal configuration and content.
+ * @returns The modal HTML markup.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderModal from "./Modal.ts";
+ *
+ * assertEquals(typeof renderModal, "function");
+ * ```
+ */
 export default function ({
   id,
   title,

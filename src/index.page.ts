@@ -2,10 +2,60 @@
  * Home Page
  * Homepage listing the 3 most recent posts
  */
+/**
+ * Layout template used for the home page.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { layout } from "./index.page.ts";
+ *
+ * assertEquals(layout, "layouts/base.ts");
+ * ```
+ */
 export const layout = "layouts/base.ts";
+
+/**
+ * Body class assigned to the home page.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { bodyClass } from "./index.page.ts";
+ *
+ * assertEquals(bodyClass, "body-home");
+ * ```
+ */
 export const bodyClass = "body-home";
+
+/**
+ * Default title for the home page.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { title } from "./index.page.ts";
+ *
+ * assertEquals(title, "Home");
+ * ```
+ */
 export const title = "Home";
 
+/**
+ * Renders the home page HTML.
+ *
+ * @param data - Lume data helpers for rendering the home page.
+ * @param helpers - Lume helpers for markdown rendering.
+ * @returns The HTML string for the home page.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderHome from "./index.page.ts";
+ *
+ * assertEquals(typeof renderHome, "function");
+ * ```
+ */
 export default async function (
   { home, search, i18n, comp }: Lume.Data,
   { md }: Lume.Helpers,

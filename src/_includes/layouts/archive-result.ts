@@ -3,8 +3,34 @@
  * Layout for filtered archive results (by tag or author)
  */
 export const layout = "layouts/base.ts";
+
+/**
+ * Body class assigned to archive result pages.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { bodyClass } from "./archive-result.ts";
+ *
+ * assertEquals(bodyClass, "body-tag");
+ * ```
+ */
 export const bodyClass = "body-tag";
 
+/**
+ * Renders the archive result page layout.
+ *
+ * @param data - Lume data for archive results and components.
+ * @returns The archive result HTML markup.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderArchiveResultLayout from "./archive-result.ts";
+ *
+ * assertEquals(typeof renderArchiveResultLayout, "function");
+ * ```
+ */
 export default async function (
   {
     title,

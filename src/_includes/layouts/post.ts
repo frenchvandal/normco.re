@@ -3,8 +3,34 @@
  * Layout for individual blog posts with TOC and post navigation
  */
 export const layout = "layouts/base.ts";
+
+/**
+ * Body class assigned to post pages.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { bodyClass } from "./post.ts";
+ *
+ * assertEquals(bodyClass, "body-post");
+ * ```
+ */
 export const bodyClass = "body-post";
 
+/**
+ * Renders the post layout with metadata, TOC, and navigation.
+ *
+ * @param data - Lume data for the post and shared components.
+ * @returns The post HTML markup.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderPostLayout from "./post.ts";
+ *
+ * assertEquals(typeof renderPostLayout, "function");
+ * ```
+ */
 export default async function (
   {
     title,

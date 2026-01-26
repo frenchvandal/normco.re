@@ -17,6 +17,20 @@ interface SourceInfoProps {
   };
 }
 
+/**
+ * Renders source file metadata and repository links.
+ *
+ * @param props - Source metadata and translations.
+ * @returns The source info HTML markup.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderSourceInfo from "./SourceInfo.ts";
+ *
+ * assertEquals(typeof renderSourceInfo, "function");
+ * ```
+ */
 export default function (
   { sourceCommit, sourcePath, repo, i18n }: SourceInfoProps,
 ) {

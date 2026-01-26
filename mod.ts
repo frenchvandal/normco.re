@@ -4,6 +4,20 @@ import "lume/types.ts";
 
 export type { Options } from "./plugins.ts";
 
+/**
+ * Registers the Normco plugin bundle with Lume.
+ *
+ * @param options - Partial options to override plugin defaults.
+ * @returns A Lume site configuration function.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import createNormcore from "./mod.ts";
+ *
+ * assertEquals(typeof createNormcore, "function");
+ * ```
+ */
 export default function (options: Partial<Options> = {}) {
   return (site: Lume.Site) => {
     // Configure the site

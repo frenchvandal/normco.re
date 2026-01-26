@@ -4,8 +4,33 @@ import { createPaginationUrl, isFirstPage } from "./_utilities/pagination.ts";
 import { ARCHIVE_MENU, PAGINATION_SIZE } from "./_config/constants.ts";
 import { allPostsQuery } from "./_utilities/search.ts";
 
+/**
+ * Layout template used for archive pages.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { layout } from "./archive.page.ts";
+ *
+ * assertEquals(layout, "layouts/archive.ts");
+ * ```
+ */
 export const layout = "layouts/archive.ts";
 
+/**
+ * Generates paginated archive pages.
+ *
+ * @param data - Lume data helpers for search, pagination, and translations.
+ * @returns A generator of archive page data.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import generateArchive from "./archive.page.ts";
+ *
+ * assertEquals(typeof generateArchive, "function");
+ * ```
+ */
 export default function* ({ search, paginate, i18n }: Lume.Data) {
   const posts = search.pages(allPostsQuery, "date=desc");
   const url = createPaginationUrl("/archive");

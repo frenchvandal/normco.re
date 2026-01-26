@@ -1,3 +1,5 @@
+import { loadPagefindUI } from "../core/pagefind.js";
+
 /**
  * Search initialization (Pagefind).
  *
@@ -35,9 +37,6 @@
  * assertEquals(calls.includes("pagefind"), true);
  * ```
  */
-
-import { loadPagefindUI } from "../core/pagefind.js";
-
 export function initSearch(dependencies = {}) {
   const {
     loadPagefindUI: loadPagefindUIImpl = loadPagefindUI,

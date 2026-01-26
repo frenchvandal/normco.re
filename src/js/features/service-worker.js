@@ -47,6 +47,17 @@ const showToast = (variant, message, duration = 5000) => {
   globalThis.toast[variant](message, duration);
 };
 
+/**
+ * Prefetches the next and previous post pages when appropriate.
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { prefetchAdjacentPosts } from "./service-worker.js";
+ *
+ * assertEquals(typeof prefetchAdjacentPosts, "function");
+ * ```
+ */
 export const prefetchAdjacentPosts = () => {
   if (!("serviceWorker" in navigator)) {
     return;
@@ -60,6 +71,17 @@ export const prefetchAdjacentPosts = () => {
   sendPrefetchMessage(urls);
 };
 
+/**
+ * Registers service worker update notifications and connection toasts.
+ *
+ * @example
+ * ```js
+ * import { assertEquals } from "@std/assert";
+ * import { initializeServiceWorkerNotifications } from "./service-worker.js";
+ *
+ * assertEquals(typeof initializeServiceWorkerNotifications, "function");
+ * ```
+ */
 export const initializeServiceWorkerNotifications = () => {
   if (!("serviceWorker" in navigator)) {
     return;

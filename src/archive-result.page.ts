@@ -6,6 +6,17 @@ import { createPaginationUrl } from "./_utilities/pagination.ts";
 import { PAGINATION_SIZE } from "./_config/constants.ts";
 import { byAuthorQuery, byTagQuery } from "./_utilities/search.ts";
 
+/**
+ * Layout template used for archive result pages.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import { layout } from "./archive-result.page.ts";
+ *
+ * assertEquals(layout, "layouts/archive-result.ts");
+ * ```
+ */
 export const layout = "layouts/archive-result.ts";
 
 interface ArchiveConfig {
@@ -48,6 +59,20 @@ function* generateArchiveResults(
   }
 }
 
+/**
+ * Generates archive result pages for tags and authors.
+ *
+ * @param data - Lume data helpers for search, pagination, and translations.
+ * @returns A generator of archive result page data.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import generateArchiveResults from "./archive-result.page.ts";
+ *
+ * assertEquals(typeof generateArchiveResults, "function");
+ * ```
+ */
 export default function* ({ search, i18n, paginate }: Lume.Data) {
   // Generate a page for each tag
   yield* generateArchiveResults(
