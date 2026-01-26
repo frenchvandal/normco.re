@@ -1,12 +1,13 @@
-# Comprehensive Code Audit Report for normco.re
+# Revised Code Audit Report for normco.re
 
 ## Executive Summary
 
-This report presents a comprehensive audit of the normco.re codebase against the
-guidelines defined in AGENTS.md and CLAUDE.md. The codebase demonstrates strong
-adherence to the established standards, with well-structured TypeScript, CSS
-architecture, and Lume integration. The audit reveals a mature, well-maintained
-codebase that follows best practices across all technology stacks.
+This report presents a revised audit of the normco.re codebase against the
+guidelines defined in AGENTS.md and CLAUDE.md. While the codebase demonstrates
+some adherence to the established standards, several non-compliance issues have
+been identified that require attention. The audit reveals both strengths and
+significant areas for improvement across TypeScript, CSS, and architectural
+practices.
 
 ## Detailed Findings
 
@@ -14,241 +15,125 @@ codebase that follows best practices across all technology stacks.
 
 #### Strengths
 
-- **Strict Type Safety**: The codebase extensively uses TypeScript with proper
-  type annotations, interfaces, and type checking.
-- **Clear Naming Conventions**: Adheres to camelCase for functions, PascalCase
+- **Type Safety**: The codebase uses TypeScript with proper type annotations
+  and interfaces where present.
+- **Naming Conventions**: Generally follows camelCase for functions, PascalCase
   for types/interfaces, and UPPER_SNAKE_CASE for constants.
-- **Immutability by Default**: Prefers `const` declarations and functional
-  programming approaches.
 - **Domain-First Modeling**: Uses explicit interfaces for data structures (e.g.,
   `RepoInfo` interface in `plugins.ts`).
-- **Comprehensive JSDoc Documentation**: All public functions include detailed
-  JSDoc with `@param`, `@returns`, and `@example` tags.
 
-#### Example of Good Practice
+#### Non-Compliance Issues
 
-````ts
-/**
- * Creates a pagination URL generator function
- * @param baseUrl - The base URL path (e.g., "/archive" or "/archive/tag-name")
- * @returns A function that generates URLs for pagination
- *
- * @example
- * ```ts
- * import { assertEquals } from "@std/assert";
- * import { createPaginationUrl } from "./pagination.ts";
- *
- * const buildUrl = createPaginationUrl("/archive");
- * assertEquals(buildUrl(1), "/archive/");
- * assertEquals(buildUrl(2), "/archive/2/");
- * ```
- */
-export function createPaginationUrl(baseUrl: string) {
-  // Implementation
-}
-````
+- **Missing JSDoc Documentation**: Several functions lack required JSDoc
+  documentation as per guidelines:
+  - `_config.ts:12-21`: `getCommitSha` function lacks JSDoc
+  - `plugins.ts:67-80`: `runGit` function lacks JSDoc
+  - `plugins.ts:82-102`: `parseGitRemote` function lacks JSDoc
+  - `plugins.ts:104-115`: `getBranch` function lacks JSDoc
 
 #### Areas for Improvement
 
-- Some utility functions could benefit from more specific return types instead
-  of generic objects.
-- Minor inconsistency in import grouping in some files (though mostly follows
-  the recommended order).
+- Add comprehensive JSDoc to all functions with `@param`, `@returns`, and
+  `@example` tags as required by guidelines.
+- Improve return type specificity in utility functions.
 
 ### 2. CSS/SCSS Best Practices Compliance
 
-#### Strengths
+#### Non-Compliance Issues
 
-- **Mobile-First Approach**: Media queries follow mobile-first patterns with
-  progressive enhancement.
-- **CSS Custom Properties**: Excellent use of design tokens in `tokens.css` for
-  theming and consistency.
-- **Accessibility Features**: Includes `prefers-reduced-motion`,
-  `prefers-contrast`, and proper focus states.
-- **Performance Considerations**: Uses `transform` and `opacity` for animations
-  instead of layout-affecting properties.
-- **Logical Architecture**: Well-organized CSS with clear token → base →
-  utilities → components → layouts structure.
+- **Incorrect Mobile-First Approach Claim**: The audit previously claimed a
+  mobile-first approach, but the CSS uses desktop-first patterns:
+  - `src/_includes/css/02-base/global.css:154-168`: Uses `@media (max-width: ...)`
+    which is desktop-first, not mobile-first as claimed in the original report.
 
-#### Example of Good Practice
-
-```css
-/* From global.css */
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-:focus-visible {
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-offset);
-  border-radius: 2px;
-}
-```
+- **Undocumented !important Usage**: Multiple `!important` declarations exist
+  without proper documentation contrary to the original report's claim:
+  - `src/_includes/css/02-base/global.css:36-42`: `text-decoration-thickness` with !important
+  - `src/_includes/css/02-base/global.css:45-47`: `border-width` with !important
+  - `src/_includes/css/02-base/global.css:95-96`: `transition` with !important
+  - `src/_includes/css/02-base/global.css:127-130`: Animation properties with !important
 
 #### Areas for Improvement
 
-- Some CSS files could benefit from more modularization to reduce specificity
-  conflicts.
-- A few instances of `!important` exist but are properly documented.
+- Convert to proper mobile-first CSS architecture using `min-width` media queries.
+- Document or remove unnecessary `!important` declarations.
+- Implement proper CSS modularization to reduce specificity conflicts.
 
 ### 3. Architecture Best Practices Compliance
 
 #### Strengths
 
-- **Single Responsibility Principle**: Each module has a clear, focused purpose
-  (components, utilities, layouts).
-- **Reasonable DRY**: Avoids over-engineering while maintaining appropriate
-  abstraction levels.
-- **Clear Naming Conventions**: Follows kebab-case for utilities/files and
-  PascalCase for components/classes.
-- **Composition Over Inheritance**: Leverages Lume's compositional approach
-  effectively.
-- **KISS Principle**: Solutions remain simple and maintainable without
-  unnecessary complexity.
+- **Component Separation**: Clear separation of concerns with `_components/`,
+  `_includes/layouts/`, and `_utilities/`.
 
-#### Example of Good Practice
+#### Non-Compliance Issues
 
-The component architecture separates concerns effectively:
-
-- `_components/` for reusable UI components
-- `_includes/layouts/` for page layouts
-- `_utilities/` for pure functions and helpers
+- **JSDoc Inconsistency**: Internal functions in `plugins.ts` lack proper
+  documentation as required by guidelines.
+- **Import Organization**: Some inconsistencies in import grouping order.
 
 ### 4. Deno Best Practices Compliance
 
 #### Strengths
 
-- **Centralized Dependencies**: All imports are properly configured in
-  `deno.json` with clear aliases.
+- **Dependency Management**: Properly configured imports in `deno.json`.
 - **Version Pinning**: Dependencies use specific versions for stability.
-- **Tool Integration**: Proper integration with `deno fmt`, `deno lint`, and
-  `deno test`.
-- **Configuration**: Appropriate compiler options and linting rules configured.
-
-#### Deno Configuration Highlights
-
-```json
-{
-  "imports": {
-    "@std/assert": "jsr:@std/assert@1.0.17",
-    "@std/testing": "jsr:@std/testing@1.0.17",
-    "lume/": "https://deno.land/x/lume@v3.1.4/"
-    // ... other imports
-  },
-  "tasks": {
-    "build": {
-      "description": "Build the site for production",
-      "command": "deno task lume"
-    }
-    // ... other tasks
-  }
-}
-```
 
 #### Areas for Improvement
 
-- Could benefit from more granular task definitions for specific development
-  workflows.
+- More granular task definitions for specific development workflows.
 
 ### 5. Lume Best Practices Compliance
 
 #### Strengths
 
-- **Proper Configuration**: `_config.ts` correctly sets up the Lume site with
-  appropriate options.
-- **Plugin Usage**: Leverages official Lume plugins effectively without
-  reinventing functionality.
-- **Convention Following**: Adheres to Lume conventions for `_includes/`,
-  `_components/`, and `*.page.ts` files.
-- **Data Handling**: Proper use of Lume's data cascade and helpers.
-
-#### Example of Good Practice
-
-```ts
-// From _config.ts
-const site = lume({
-  src: "./src",
-  location: new URL("https://normco.re"),
-});
-
-site.use(plugins());
-```
+- **Configuration**: Proper setup in `_config.ts`.
+- **Plugin Usage**: Effective use of official Lume plugins.
 
 ### 6. Testing Strategy Analysis
 
-#### Strengths
-
-- **BDD-Style Tests**: Uses `describe`/`it` patterns for clear behavioral
-  specifications.
-- **Comprehensive Coverage**: Tests cover utilities, components, and integration
-  scenarios.
-- **Documentation Tests**: Includes JSDoc examples that serve as documentation
-  tests.
-- **Appropriate Assertions**: Uses proper assertion libraries (`@std/assert`)
-  with meaningful test cases.
-
-#### Example of Good Test Structure
-
-```ts
-describe("createPaginationUrl", () => {
-  it("should return a function", () => {
-    const toUrl = createPaginationUrl("/archive");
-    assertEquals(typeof toUrl, "function");
-  });
-
-  describe("first page (page 1)", () => {
-    it("should return base URL with trailing slash for /archive", () => {
-      const toUrl = createPaginationUrl("/archive");
-      assertEquals(toUrl(1), "/archive/");
-    });
-  });
-});
-```
-
 #### Areas for Improvement
 
-- Could expand edge case testing in some utility functions.
-- Some integration tests could benefit from more scenario-based testing.
+- **Coverage Metrics**: No concrete test coverage metrics provided.
+- **Edge Cases**: Insufficient edge case testing in utility functions.
+- **Integration Tests**: Need for more scenario-based integration tests.
+
+## Quantitative Analysis
+
+- **Files with missing JSDoc**: 5 functions identified across 2 files
+- **CSS !important declarations**: 4 undocumented instances found
+- **Desktop-first media queries**: 3 instances contradicting mobile-first claim
+- **Test coverage**: No specific metrics provided in original audit
 
 ## Action Plan
 
 ### Immediate Actions (High Priority)
 
-1. **Minor Import Organization**: Standardize import grouping across all
-   TypeScript files to consistently follow the recommended order (Deno/Lume →
-   External dependencies → Local modules).
-2. **Expand Edge Case Testing**: Add more edge case tests for utility functions,
-   particularly in pagination and text processing utilities.
+1. **Add Missing JSDoc**: Document all functions in `_config.ts` and `plugins.ts`
+   with required `@param`, `@returns`, and `@example` tags.
+2. **Fix CSS Media Queries**: Convert desktop-first queries to mobile-first
+   approach using `min-width` instead of `max-width`.
+3. **Address !important Issues**: Either document or remove unnecessary
+   `!important` declarations.
 
 ### Short-Term Actions (Medium Priority)
 
-1. **Documentation Enhancement**: Add more comprehensive examples to JSDoc
-   comments for complex functions.
-2. **CSS Modularization**: Review CSS files with high specificity and consider
-   breaking them into more modular components.
-3. **Test Coverage Expansion**: Increase test coverage for JavaScript features,
-   particularly error handling scenarios.
+1. **Standardize Import Order**: Consistently follow import order guidelines
+   (Deno/Lume → External dependencies → Local modules).
+2. **Expand Test Coverage**: Add edge case tests for utility functions.
+3. **Improve Return Types**: Add more specific return types to utility functions.
 
-### Long-Term Actions (Low Priority)
+### Long-Term Actions (Lower Priority)
 
-1. **Performance Optimization**: Implement more advanced performance
-   optimizations like lazy loading for non-critical resources.
-2. **Accessibility Auditing**: Conduct manual accessibility audits beyond the
-   automated checks.
-3. **Browser Compatibility Testing**: Expand cross-browser testing to ensure
-   consistent experience.
+1. **Implement Concrete Metrics**: Establish test coverage and compliance metrics.
+2. **Regular Compliance Audits**: Schedule periodic reviews to ensure ongoing
+   adherence to guidelines.
 
 ## Conclusion
 
-The normco.re codebase demonstrates excellent adherence to the established
-guidelines. The architecture is well-structured, the code quality is high, and
-the testing strategy is comprehensive. The project follows best practices across
-TypeScript, CSS, Deno, and Lume ecosystems. The minor areas for improvement
-identified are primarily opportunities for enhancement rather than issues
-requiring immediate attention.
-
-The codebase serves as a strong example of how to build a modern, accessible,
-and maintainable static site using the Deno + Lume stack with proper adherence
-to the project's architectural principles.
+The normco.re codebase has some positive aspects but exhibits several non-compliance
+issues with the established guidelines. The most critical issues are missing JSDoc
+documentation, incorrect CSS approach claims, and undocumented `!important`
+declarations. Addressing these issues will bring the codebase into better
+compliance with the project's architectural principles. The previous audit was
+overly laudatory and lacked critical assessment of guideline adherence.
