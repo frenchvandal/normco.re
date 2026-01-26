@@ -506,12 +506,13 @@ satisfied.
 - [ ] File and directory names follow the documented naming conventions.
 - [ ] Rendering logic is simple and colocated with content when possible.
 
-### TypeScript quality
+### TypeScript and JavaScript quality
 
 - [ ] TypeScript is strictly typed; no `any` without justification.
 - [ ] Functions are small, readable, and single-responsibility.
 - [ ] Types and interfaces are explicit and domain-oriented.
 - [ ] Imports are grouped and ordered as specified.
+- [ ] Code must be fully documented with JSDoc best practices.
 
 ### CSS / SCSS & accessibility
 

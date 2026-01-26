@@ -154,6 +154,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers) =>
 - **Composition** over inheritance.
 - **Clear responsibilities**: one module, one primary role.
 - **Precise naming**: a good name beats a comment.
+- **JSDoc**: all TypeScript and Javascript must be fully documented with JSDoc
+  best practices.
 
 ---
 
