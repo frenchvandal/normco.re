@@ -24,8 +24,9 @@ export default function ({
   const dateHtml = `<p><time datetime="${dateHelper(date, "DATETIME")}">${
     dateHelper(date, "HUMAN_DATE")
   }</time></p>`;
-  const readingTimeHtml =
-    `<p>${readingInfo.minutes} ${i18n.post.reading_time}</p>`;
+  const readingTimeHtml = readingInfo?.minutes
+    ? `<p>${readingInfo.minutes} ${i18n.post.reading_time}</p>`
+    : "";
 
   let tagsHtml = "";
   if (tags && tags.length > 0) {
