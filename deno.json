@@ -61,8 +61,5 @@
   "unstable": [
     "temporal",
     "fmt-component"
-  ],
-  "test": {
-    "exclude": ["tests/fixtures/dom.ts"]
-  }
+  ]
 }
