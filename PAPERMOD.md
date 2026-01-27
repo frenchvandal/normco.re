@@ -6,11 +6,6 @@ feasible, what is risky or infeasible, which PaperMod features are likely to be
 lost under Lume, and which existing Lume site features could be lost by adopting
 PaperMod.
 
-> **Review note (January 2026)**: This document has been reviewed and amended by
-> Claude (Anthropic) to validate ChatGPT's original analysis, correct
-> inaccuracies, and provide additional technical details based on the actual
-> Lume plugin ecosystem and codebase state.
-
 ## Guideline exceptions — PaperMod migration
 
 As part of the PaperMod migration project, the AI agent or Claude may deviate
@@ -29,8 +24,8 @@ Any such deviation must be intentional, transparent, and traceable.
   the `dev` branch, never the `master` branch, unless explicitly stated
   otherwise by the human user.
 - No `deno test --coverage` required for tasks related to the PaperMod project.
-- The Lume architecture in the `dev` branch may be modified compared to the
-  current architecture in the `master` branch in order to accommodate the
+- The Lume architecture in the `dev` branch MAY be modified if required compared
+  to the current architecture in the `master` branch in order to accommodate the
   migration to PaperMod. What matters is the final outcome—achieving behavior as
   close as possible to a one-to-one match with PaperMod—not the specific
   implementation approach used to get there.
@@ -66,6 +61,7 @@ Any such deviation must be intentional, transparent, and traceable.
 ## Reference documentation for Hugo and PaperMod
 
 - https://github.com/adityatelange/hugo-PaperMod
+- https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite
 - https://adityatelange.github.io/hugo-PaperMod/
 - https://github.com/adityatelange/hugo-PaperMod/wiki
 - https://gohugo.io
@@ -81,7 +77,7 @@ Any such deviation must be intentional, transparent, and traceable.
 - Preserve the current content model (Markdown posts + Lume pages).
 - Avoid new dependencies unless strictly required.
 - Do not modify generated output in `_site/`.
-- Keep a `licence.css` file in Lume and add `Copyright (c) 2026 frenchvandal`.
+- Keep a `license.css` file in Lume and add `Copyright (c) 2026 frenchvandal`.
 
 ## High-level feasibility
 
@@ -91,18 +87,18 @@ patterns using custom layouts and components. The main risks lie in
 Hugo-specific features (image processing, shortcodes, taxonomies) that require
 Lume equivalents.
 
-**Claude's assessment:** The original ChatGPT analysis is accurate. The
+**Claude’s assessment:** The original ChatGPT analysis is accurate. The
 migration is highly feasible given that:
 
-1. Lume's official plugin ecosystem (88 plugins) covers nearly all PaperMod
+1. Lume’s official plugin ecosystem (88 plugins) covers nearly all PaperMod
    functionality.
 2. The current codebase already implements many PaperMod patterns (theme toggle,
    TOC, reading time, search modal, breadcrumbs, post navigation).
-3. Hugo's image processing disadvantage is **overstated**—Lume's Transform
+3. Hugo’s image processing disadvantage is **overstated**—Lume’s Transform
    Images + Picture plugins actually provide **better** responsive image
    automation with modern format support (AVIF, WebP).
 4. The TypeScript-based component architecture in Lume is more maintainable than
-   Hugo's Go templates.
+   Hugo’s Go templates.
 
 ## Estimated cost (rough order of magnitude)
 
@@ -189,7 +185,7 @@ custom `RelatedPosts.ts` component using the Search plugin.
 
 ### Multilanguage plugin (i18n) — detailed analysis
 
-The Lume Multilanguage plugin provides **full feature parity** with Hugo's i18n
+The Lume Multilanguage plugin provides **full feature parity** with Hugo’s i18n
 system and in some ways is **more flexible**. Here is a technical comparison:
 
 | Feature                          | Hugo/PaperMod               | Lume Multilanguage                        |
@@ -258,16 +254,16 @@ The following items remain genuinely challenging:
    or preprocessors. Common shortcodes like `figure`, `highlight`, and `ref` can
    be replicated, but theme-specific shortcodes need case-by-case evaluation.
 
-2. **Hugo's built-in image filters** — Hugo provides 12+ image filters (Blur,
+2. **Hugo’s built-in image filters** — Hugo provides 12+ image filters (Blur,
    Brightness, Contrast, Saturation, Hue, Grayscale, etc.) out of the box.
-   Lume's Transform Images uses Sharp, which supports custom functions but
+   Lume’s Transform Images uses Sharp, which supports custom functions but
    requires Sharp API knowledge. For a blog, this is rarely needed.
 
-3. **Hugo `.Resources` pattern** — Hugo's page bundles with `.Resources` for
+3. **Hugo `.Resources` pattern** — Hugo’s page bundles with `.Resources` for
    co-located assets require a different mental model in Lume. Files should be
    placed in `src/` or referenced via front matter.
 
-4. **Exact Hugo taxonomy URL semantics** — Hugo's default `/tags/foo/` and
+4. **Exact Hugo taxonomy URL semantics** — Hugo’s default `/tags/foo/` and
    `/categories/bar/` URLs with automatic pluralization are not automatic in
    Lume. However, the Search plugin + custom archive pages achieve the same
    result with explicit control.
@@ -283,7 +279,7 @@ are the **only features genuinely at risk**:
 | ------------------------------ | ---------- | -------------------------------------------------------- |
 | Hugo-specific shortcodes       | ⚠️ Medium  | Identify used shortcodes and create Lume equivalents     |
 | JXL image format support       | ❌ Lost    | Sharp (Lume backend) does not support JXL; use AVIF/WebP |
-| Hugo's 12+ image filters       | ⚠️ Medium  | Custom Sharp functions required if needed                |
+| Hugo’s 12+ image filters       | ⚠️ Medium  | Custom Sharp functions required if needed                |
 | Exact `.Resources` co-location | 🔄 Changed | Different pattern but equivalent functionality           |
 
 ### Features previously listed as "lost" but actually available
@@ -302,31 +298,43 @@ are the **only features genuinely at risk**:
 The following capabilities exist in the current Lume site and **may be lost**
 when moving toward PaperMod unless explicitly rebuilt:
 
-### Features to preserve (recommended)
+### Features to preserve (REQUIRED)
 
 | Feature                  | Current status         | Recommendation                                   |
 | ------------------------ | ---------------------- | ------------------------------------------------ |
-| Service worker + offline | `sw.page.ts`           | ✅ **Keep** — PaperMod doesn't have this         |
+| Service worker + offline | `sw.page.ts`           | ✅ **Keep** — PaperMod doesn’t have this         |
 | Pagefind search          | Integrated with modal  | ✅ **Keep** — Superior to Fuse.js (static index) |
 | Toast notifications      | `toast.js` + component | ✅ **Keep** — Useful for UX feedback             |
 | Modal component          | `Modal.ts`             | ✅ **Keep** — Used by search, extensible         |
-| JSON-LD structured data  | Fully configured       | ✅ **Keep** — Already matches PaperMod's SEO     |
+| JSON-LD structured data  | Fully configured       | ✅ **Keep** — Already matches PaperMod’s SEO     |
 | Git commit tracking      | `SourceInfo.ts`        | ✅ **Keep** — Unique feature not in PaperMod     |
 | Code tabs component      | `CodeTabs.ts`          | ✅ **Keep** — Enhancement over PaperMod          |
-| Alert/admonition styling | `@mdit/plugin-alert`   | ✅ **Keep** — Better than PaperMod's default     |
+| Alert/admonition styling | `@mdit/plugin-alert`   | ✅ **Keep** — Better than PaperMod’s default     |
 | Feed XSL stylesheet      | `feed.xsl`             | ✅ **Keep** — Better UX for RSS viewing          |
 
 ### Features that may need adaptation
 
 | Feature                | Current status      | Impact of migration                             |
 | ---------------------- | ------------------- | ----------------------------------------------- |
-| Archive page structure | `archive.page.ts`   | May need restyling to match PaperMod's timeline |
+| Archive page structure | `archive.page.ts`   | May need restyling to match PaperMod’s timeline |
 | i18n data structure    | `_data/i18n/`       | Migrate to Multilanguage plugin pattern         |
-| Current footer design  | Minimal with commit | May adopt PaperMod's copyright + social links   |
+| Current footer design  | Minimal with commit | May adopt PaperMod’s copyright + social links   |
 
 ### Features unique to current Lume site (not in PaperMod)
 
-These features are **enhancements** over PaperMod that should be retained:
+These features are **enhancements** over PaperMod that MUST be retained:
+
+### Footer evolution
+
+As part of the migration, the footer must be extended with an additional icon
+linking to the JSON feed viewer.
+
+- A dedicated JSON feed icon MUST be added to the footer.
+- The icon MUST link to `.../feed-json-viewer/`.
+- The icon may be sourced from an appropriate open icon set (for example via the
+  Lume Icons plugin or an equivalent SVG source). If not, an icon asset is
+  stored on the `dev` branch at the following path in the repository:
+  `PaperMod/jsonfeed.svg`.
 
 1. **Service worker with update notifications** — PaperMod has no offline
    support. The current implementation provides progressive enhancement.
@@ -337,9 +345,22 @@ These features are **enhancements** over PaperMod that should be retained:
 4. **Toast notification system** — Provides feedback for theme changes, updates,
    and actions.
 5. **Pagefind search** — Static search index is faster and more reliable than
-   PaperMod's Fuse.js client-side search.
+   PaperMod’s Fuse.js client-side search.
 
-## Suggested approach if you proceed
+## Content migration requirement
+
+As part of the PaperMod migration, the content of the official Hugo PaperMod
+example site must also be recreated.
+
+- The content located at:
+  https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content must
+  be reimplemented as Lume pages.
+- All tasks described in this section MUST be performed exclusively on the `dev`
+  branch.
+- The goal is to achieve functional and structural parity with the original
+  PaperMod example site, adapted to Lume’s content and layout model.
+
+## Approved approach
 
 1. **Audit the content model** (front matter fields, existing layouts).
 2. **Port PaperMod styles** into SCSS using CSS variables for theming.
@@ -358,19 +379,19 @@ These features are **enhancements** over PaperMod that should be retained:
 - Established baseline PaperMod-inspired design tokens (colors, typography,
   layout widths) with a matching dark theme palette.
 - Aligned global layout spacing and navigation/post list spacing to reflect
-  PaperMod's compact rhythm.
-- Refined page header and footer treatments to match PaperMod's divider-driven
+  PaperMod’s compact rhythm.
+- Refined page header and footer treatments to match PaperMod’s divider-driven
   structure.
 - Updated the main header navigation structure to mirror PaperMod (inner
   container alignment, tighter menu spacing, and an isolated theme toggle
   control).
 - Expanded the shared post list rendering to include post headers, excerpts, and
-  a read-more affordance so archive listings align with PaperMod's list rhythm.
+  a read-more affordance so archive listings align with PaperMod’s list rhythm.
 - Restructured post metadata blocks to mirror PaperMod (meta line + tags row
   with label and hashtag styling).
 - Added post description support in the single post header and tightened header
-  spacing to better match PaperMod's title block rhythm.
-- Fixed search input focus ring color to match the design system's primary blue
+  spacing to better match PaperMod’s title block rhythm.
+- Fixed search input focus ring color to match the design system’s primary blue
   (`--color-primary`) instead of an inconsistent red value
   (`src/_includes/css/04-components/search.css`).
 - Improved `Pagination` component (`src/_components/Pagination.ts`):
@@ -379,14 +400,14 @@ These features are **enhancements** over PaperMod that should be retained:
   - Added `role="list"` to the navigation list.
   - Added `aria-current="page"` to the current page indicator.
 - Enhanced pagination styles (`src/_includes/css/05-layouts/page.css`) to match
-  PaperMod's layout: flexbox-based layout with previous/next links on opposite
+  PaperMod’s layout: flexbox-based layout with previous/next links on opposite
   sides and centered page indicator.
 - Created comprehensive Pagefind UI styles
-  (`src/_includes/css/04-components/pagefind.css`) matching PaperMod's search
+  (`src/_includes/css/04-components/pagefind.css`) matching PaperMod’s search
   panel aesthetic with custom input, result card, and loading state styling.
 - Improved search modal styles (`src/_includes/css/04-components/modal.css`)
   with better scrollbar styling, refined padding, and enhanced results area.
-- Refined post navigation (prev/next) styles to match PaperMod's two-column
+- Refined post navigation (prev/next) styles to match PaperMod’s two-column
   layout with background container, uppercase labels, title truncation, and
   responsive stacking on mobile.
 - Updated post list styles (`src/_includes/css/05-layouts/post-list.css`) with
@@ -397,7 +418,7 @@ These features are **enhancements** over PaperMod that should be retained:
 - Added theme toggle CSS (`src/_includes/css/04-components/theme-toggle.css`)
   with icon visibility switching between light/dark themes, hover animation, and
   reduced motion support.
-- Aligned Prism syntax highlighting colors with PaperMod's dark code block style
+- Aligned Prism syntax highlighting colors with PaperMod’s dark code block style
   (`src/_includes/css/01-tokens/tokens.css`):
   - Code blocks now use dark backgrounds in both light and dark themes (PaperMod
     style).
@@ -468,7 +489,7 @@ These features are **enhancements** over PaperMod that should be retained:
 
 - CSS architecture is well organized: design tokens, base styles, utilities,
   components, and layouts follow a clear separation.
-- Component structure mirrors PaperMod's patterns: `PostList`, `PostDetails`,
+- Component structure mirrors PaperMod’s patterns: `PostList`, `PostDetails`,
   `Pagination`, `Breadcrumbs`, `Modal`, and `SourceInfo` components are
   functional.
 - Theme toggle works correctly with localStorage persistence and system
@@ -501,7 +522,7 @@ These features are **enhancements** over PaperMod that should be retained:
 
 ### Remaining work checklist (living)
 
-- [x] Search modal: style `.pagefind-ui__*` classes to match PaperMod's search
+- [x] Search modal: style `.pagefind-ui__*` classes to match PaperMod’s search
       panel (input, results, loading states).
 - [x] Post navigation (prev/next): verify two-column layout and title truncation
       in `layouts/post.ts` pagination block.
@@ -516,7 +537,7 @@ These features are **enhancements** over PaperMod that should be retained:
       icon sizing, hover/focus states, and alignment in the navigation bar.
 - [x] Responsive QA: breakpoints at 480px/768px verified consistent across all
       layout files.
-- [x] Code blocks: aligned Prism syntax highlighting colors with PaperMod's dark
+- [x] Code blocks: aligned Prism syntax highlighting colors with PaperMod’s dark
       code block style in both themes.
 - [x] Footer: added `.footer-commit` monospace styling and improved separators.
 - [ ] Cross-browser testing: verify rendering in Chrome, Firefox, Safari, Edge.
@@ -547,27 +568,27 @@ These features are **enhancements** over PaperMod that should be retained:
 ## Accepted trade-offs
 
 1. ~~i18n migration can be delayed~~ — **RETRACTED**: The Lume Multilanguage
-   plugin provides full feature parity with Hugo's i18n system. i18n can be
+   plugin provides full feature parity with Hugo’s i18n system. i18n can be
    implemented as part of the migration using the Multilanguage plugin.
 2. Search will rely on Pagefind UI with PaperMod-like styling (this is an
-   **improvement** over PaperMod's Fuse.js client-side search).
+   **improvement** over PaperMod’s Fuse.js client-side search).
 
 ## Recommendation
 
 PaperMod can be ported to Lume with **excellent parity**. The original concerns
-about Hugo's image pipeline and i18n have been resolved:
+about Hugo’s image pipeline and i18n have been resolved:
 
-- **Image processing**: Lume's Transform Images + Picture plugins provide
+- **Image processing**: Lume’s Transform Images + Picture plugins provide
   **superior** responsive image automation with modern format support (AVIF,
   WebP).
-- **i18n**: The Multilanguage plugin offers **full feature parity** with Hugo's
+- **i18n**: The Multilanguage plugin offers **full feature parity** with Hugo’s
   i18n system and is more flexible (single-file multilingual content support).
 
 The remaining high-friction areas are limited to:
 
 1. **Complex Hugo shortcodes** — Require case-by-case evaluation and custom
    Markdown-it plugins.
-2. **Hugo's 12+ image filters** — Rarely needed for blogs; custom Sharp
+2. **Hugo’s 12+ image filters** — Rarely needed for blogs; custom Sharp
    functions available if required.
 
 **Recommended approach**: Proceed with full migration rather than selective
