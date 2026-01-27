@@ -16,16 +16,30 @@ import { DOMParser, HTMLDocument } from "@b-fuze/deno-dom";
 
 import { enhanceExternalLinks } from "./external-links.js";
 
-const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
+const ORIGINAL_PROPERTY_DESCRIPTORS = new Map<
+  string,
+  PropertyDescriptor | undefined
+>([
+  ["document", Object.getOwnPropertyDescriptor(globalThis, "document")],
+  ["location", Object.getOwnPropertyDescriptor(globalThis, "location")],
+]);
 
-const ORIGINAL_GLOBALS = {
-  document: globalScope.document,
-  location: globalScope.location,
-};
+function setGlobalValue(key: string, value: unknown): void {
+  Object.defineProperty(globalThis, key, {
+    configurable: true,
+    writable: true,
+    value,
+  });
+}
 
 function restoreGlobals(): void {
-  globalScope.document = ORIGINAL_GLOBALS.document;
-  globalScope.location = ORIGINAL_GLOBALS.location;
+  ORIGINAL_PROPERTY_DESCRIPTORS.forEach((descriptor, key) => {
+    if (descriptor) {
+      Object.defineProperty(globalThis, key, descriptor);
+    } else {
+      delete (globalThis as Record<string, unknown>)[key];
+    }
+  });
 }
 
 /**
@@ -55,8 +69,19 @@ function setupMockEnvironment(
   document: HTMLDocument,
   hostname = "localhost",
 ): void {
-  globalScope.document = document as unknown as Document;
-  globalScope.location = { hostname } as Location;
+  setGlobalValue("document", document as unknown as Document);
+  setGlobalValue("location", { hostname } as Location);
+
+  document.querySelectorAll("a[href]").forEach((link) => {
+    const href = link.getAttribute("href") ?? "";
+    if (href.startsWith("http")) {
+      const url = new URL(href);
+      Object.defineProperty(link, "hostname", {
+        configurable: true,
+        value: url.hostname,
+      });
+    }
+  });
 }
 
 // =============================================================================

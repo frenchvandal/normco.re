@@ -17,21 +17,9 @@ import { createThemeManager } from "./theme.js";
 
 type ThemeManager = ReturnType<typeof createThemeManager>;
 
-const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
-
-interface MockMediaQueryList {
-  matches: boolean;
-  addEventListener: (
-    event: string,
-    handler: (e: { matches: boolean }) => void,
-  ) => void;
-}
-
-interface MockLocalStorage {
-  getItem: (key: string) => string | null;
-  setItem: (key: string, value: string) => void;
+type MockLocalStorage = Storage & {
   storage: Record<string, string>;
-}
+};
 
 interface MockDocument {
   documentElement: {
@@ -43,30 +31,61 @@ interface MockDocument {
     };
   };
   readyState: string;
-  addEventListener: (event: string, handler: () => void) => void;
+  addEventListener: (
+    event: string,
+    handler: EventListenerOrEventListenerObject,
+  ) => void;
   getElementById: (id: string) => MockToggleButton | null;
 }
 
 interface MockToggleButton {
   setAttribute: (name: string, value: string) => void;
   getAttribute: (name: string) => string | null;
-  addEventListener: (event: string, handler: () => void) => void;
+  addEventListener: (
+    event: string,
+    handler: EventListenerOrEventListenerObject,
+  ) => void;
   attributes: Record<string, string>;
   clickHandler: (() => void) | null;
 }
 
-const ORIGINAL_GLOBALS = {
-  document: globalScope.document,
-  localStorage: globalScope.localStorage,
-  matchMedia: globalScope.matchMedia,
-  toast: globalScope.toast,
-};
+const ORIGINAL_PROPERTY_DESCRIPTORS = new Map<
+  string,
+  PropertyDescriptor | undefined
+>([
+  ["document", Object.getOwnPropertyDescriptor(globalThis, "document")],
+  ["localStorage", Object.getOwnPropertyDescriptor(globalThis, "localStorage")],
+  ["matchMedia", Object.getOwnPropertyDescriptor(globalThis, "matchMedia")],
+  ["setTimeout", Object.getOwnPropertyDescriptor(globalThis, "setTimeout")],
+  ["toast", Object.getOwnPropertyDescriptor(globalThis, "toast")],
+]);
+
+function setGlobalValue(key: string, value: unknown): void {
+  Object.defineProperty(globalThis, key, {
+    configurable: true,
+    writable: true,
+    value,
+  });
+}
+
+beforeEach(() => {
+  setGlobalValue(
+    "setTimeout",
+    ((handler: (...args: unknown[]) => void) => {
+      handler();
+      return 0;
+    }) as typeof globalThis.setTimeout,
+  );
+});
 
 function restoreGlobals(): void {
-  globalScope.document = ORIGINAL_GLOBALS.document;
-  globalScope.localStorage = ORIGINAL_GLOBALS.localStorage;
-  globalScope.matchMedia = ORIGINAL_GLOBALS.matchMedia;
-  globalScope.toast = ORIGINAL_GLOBALS.toast;
+  ORIGINAL_PROPERTY_DESCRIPTORS.forEach((descriptor, key) => {
+    if (descriptor) {
+      Object.defineProperty(globalThis, key, descriptor);
+    } else {
+      delete (globalThis as Record<string, unknown>)[key];
+    }
+  });
 }
 
 function createMockLocalStorage(
@@ -76,21 +95,38 @@ function createMockLocalStorage(
   if (initialTheme) {
     storage["theme"] = initialTheme;
   }
+  const getStorageKeys = () => Object.keys(storage);
   return {
     storage,
     getItem: (key: string) => storage[key] ?? null,
     setItem: (key: string, value: string) => {
       storage[key] = value;
     },
+    clear: () => {
+      Object.keys(storage).forEach((key) => delete storage[key]);
+    },
+    key: (index: number) => getStorageKeys()[index] ?? null,
+    removeItem: (key: string) => {
+      delete storage[key];
+    },
+    get length() {
+      return getStorageKeys().length;
+    },
   };
 }
 
 function createMockMatchMedia(prefersDark = false): (
   query: string,
-) => MockMediaQueryList {
-  return (_query: string) => ({
+) => MediaQueryList {
+  return (query: string) => ({
     matches: prefersDark,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
     addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
   });
 }
 
@@ -110,9 +146,12 @@ function createMockDocument(readyState = "complete"): MockDocument {
       },
     },
     readyState,
-    addEventListener: (_event: string, handler: () => void) => {
-      if (readyState === "loading") {
-        handler();
+    addEventListener: (
+      _event: string,
+      handler: EventListenerOrEventListenerObject,
+    ) => {
+      if (readyState === "loading" && typeof handler === "function") {
+        handler(new Event("DOMContentLoaded"));
       }
     },
     getElementById: () => null,
@@ -129,8 +168,13 @@ function createMockToggleButton(): MockToggleButton {
     getAttribute(name: string) {
       return this.attributes[name] ?? null;
     },
-    addEventListener(_event: string, handler: () => void) {
-      this.clickHandler = handler;
+    addEventListener(
+      _event: string,
+      handler: EventListenerOrEventListenerObject,
+    ) {
+      if (typeof handler === "function") {
+        this.clickHandler = () => handler(new Event("click"));
+      }
     },
   };
 }
@@ -145,8 +189,8 @@ describe("ThemeManager - theme detection", () => {
   });
 
   it("should use localStorage theme when available", () => {
-    globalScope.localStorage = createMockLocalStorage("dark");
-    globalScope.matchMedia = createMockMatchMedia(false);
+    setGlobalValue("localStorage", createMockLocalStorage("dark"));
+    setGlobalValue("matchMedia", createMockMatchMedia(false));
 
     const manager = createThemeManager();
 
@@ -154,8 +198,8 @@ describe("ThemeManager - theme detection", () => {
   });
 
   it("should use system preference when localStorage is empty", () => {
-    globalScope.localStorage = createMockLocalStorage(null);
-    globalScope.matchMedia = createMockMatchMedia(true);
+    setGlobalValue("localStorage", createMockLocalStorage(null));
+    setGlobalValue("matchMedia", createMockMatchMedia(true));
 
     const manager = createThemeManager();
 
@@ -163,8 +207,8 @@ describe("ThemeManager - theme detection", () => {
   });
 
   it("should default to light when system prefers light", () => {
-    globalScope.localStorage = createMockLocalStorage(null);
-    globalScope.matchMedia = createMockMatchMedia(false);
+    setGlobalValue("localStorage", createMockLocalStorage(null));
+    setGlobalValue("matchMedia", createMockMatchMedia(false));
 
     const manager = createThemeManager();
 
@@ -172,13 +216,12 @@ describe("ThemeManager - theme detection", () => {
   });
 
   it("should default to light when localStorage throws", () => {
-    globalScope.localStorage = {
-      getItem: () => {
-        throw new Error("Storage unavailable");
-      },
-      setItem: () => {},
+    const mockStorage = createMockLocalStorage(null);
+    mockStorage.getItem = () => {
+      throw new Error("Storage unavailable");
     };
-    globalScope.matchMedia = createMockMatchMedia(false);
+    setGlobalValue("localStorage", mockStorage);
+    setGlobalValue("matchMedia", createMockMatchMedia(false));
 
     const manager = createThemeManager();
 
@@ -186,10 +229,13 @@ describe("ThemeManager - theme detection", () => {
   });
 
   it("should default to light when matchMedia throws", () => {
-    globalScope.localStorage = createMockLocalStorage(null);
-    globalScope.matchMedia = () => {
-      throw new Error("matchMedia unavailable");
-    };
+    setGlobalValue("localStorage", createMockLocalStorage(null));
+    setGlobalValue(
+      "matchMedia",
+      (() => {
+        throw new Error("matchMedia unavailable");
+      }) as typeof globalThis.matchMedia,
+    );
 
     const manager = createThemeManager();
 
@@ -207,11 +253,11 @@ describe("ThemeManager - initialization", () => {
   });
 
   it("should apply theme to documentElement on init", () => {
-    globalScope.localStorage = createMockLocalStorage("dark");
-    globalScope.matchMedia = createMockMatchMedia(false);
+    setGlobalValue("localStorage", createMockLocalStorage("dark"));
+    setGlobalValue("matchMedia", createMockMatchMedia(false));
 
     const mockDoc = createMockDocument();
-    globalScope.document = mockDoc as unknown as Document;
+    setGlobalValue("document", mockDoc as unknown as Document);
 
     const manager = createThemeManager();
     manager.init();
@@ -220,14 +266,14 @@ describe("ThemeManager - initialization", () => {
   });
 
   it("should set up when DOM is ready", () => {
-    globalScope.localStorage = createMockLocalStorage("light");
-    globalScope.matchMedia = createMockMatchMedia(false);
+    setGlobalValue("localStorage", createMockLocalStorage("light"));
+    setGlobalValue("matchMedia", createMockMatchMedia(false));
 
     const mockToggle = createMockToggleButton();
     const mockDoc = createMockDocument("complete");
     mockDoc.getElementById = (id: string) =>
       id === "theme-toggle" ? mockToggle : null;
-    globalScope.document = mockDoc as unknown as Document;
+    setGlobalValue("document", mockDoc as unknown as Document);
 
     const manager = createThemeManager();
     manager.init();
@@ -237,10 +283,10 @@ describe("ThemeManager - initialization", () => {
   });
 
   it("should set up listener for DOMContentLoaded when loading", () => {
-    globalScope.localStorage = createMockLocalStorage("light");
-    globalScope.matchMedia = createMockMatchMedia(false);
+    setGlobalValue("localStorage", createMockLocalStorage("light"));
+    setGlobalValue("matchMedia", createMockMatchMedia(false));
 
-    let domContentLoadedHandler: (() => void) | null = null;
+    const domContentLoadedHandlers: Array<(event: Event) => void> = [];
     const mockToggle = createMockToggleButton();
     const mockDoc: MockDocument = {
       documentElement: {
@@ -252,20 +298,27 @@ describe("ThemeManager - initialization", () => {
         },
       },
       readyState: "loading",
-      addEventListener: (_event: string, handler: () => void) => {
-        domContentLoadedHandler = handler;
+      addEventListener: (
+        _event: string,
+        handler: EventListenerOrEventListenerObject,
+      ) => {
+        if (typeof handler === "function") {
+          domContentLoadedHandlers.push(
+            handler as (event: Event) => void,
+          );
+        }
       },
       getElementById: (id: string) => id === "theme-toggle" ? mockToggle : null,
     };
-    globalScope.document = mockDoc as unknown as Document;
+    setGlobalValue("document", mockDoc as unknown as Document);
 
     const manager = createThemeManager();
     manager.init();
 
     // Simulate DOMContentLoaded
-    if (domContentLoadedHandler) {
-      domContentLoadedHandler();
-    }
+    domContentLoadedHandlers.forEach((handler) => {
+      handler(new Event("DOMContentLoaded"));
+    });
 
     assertEquals(mockToggle.attributes["data-theme"], "light");
   });
@@ -283,15 +336,15 @@ describe("ThemeManager - toggle", () => {
 
   beforeEach(() => {
     mockStorage = createMockLocalStorage("light");
-    globalScope.localStorage = mockStorage;
-    globalScope.matchMedia = createMockMatchMedia(false);
-    globalScope.toast = undefined;
+    setGlobalValue("localStorage", mockStorage);
+    setGlobalValue("matchMedia", createMockMatchMedia(false));
+    setGlobalValue("toast", undefined);
 
     mockToggle = createMockToggleButton();
     mockDoc = createMockDocument();
     mockDoc.getElementById = (id: string) =>
       id === "theme-toggle" ? mockToggle : null;
-    globalScope.document = mockDoc as unknown as Document;
+    setGlobalValue("document", mockDoc as unknown as Document);
 
     manager = createThemeManager();
     manager.init();
@@ -330,6 +383,15 @@ describe("ThemeManager - toggle", () => {
   });
 
   it("should add transitioning class temporarily", () => {
+    const timeoutHandlers: Array<() => void> = [];
+    setGlobalValue(
+      "setTimeout",
+      ((handler: () => void) => {
+        timeoutHandlers.push(handler);
+        return 0;
+      }) as typeof globalThis.setTimeout,
+    );
+
     manager.toggle();
 
     assertEquals(
@@ -337,6 +399,14 @@ describe("ThemeManager - toggle", () => {
         "theme-transitioning",
       ),
       true,
+    );
+
+    timeoutHandlers.forEach((handler) => handler());
+    assertEquals(
+      mockDoc.documentElement.classList.classes.includes(
+        "theme-transitioning",
+      ),
+      false,
     );
   });
 });
@@ -352,12 +422,12 @@ describe("ThemeManager - setTheme", () => {
 
   beforeEach(() => {
     mockStorage = createMockLocalStorage("light");
-    globalScope.localStorage = mockStorage;
-    globalScope.matchMedia = createMockMatchMedia(false);
-    globalScope.toast = undefined;
+    setGlobalValue("localStorage", mockStorage);
+    setGlobalValue("matchMedia", createMockMatchMedia(false));
+    setGlobalValue("toast", undefined);
 
     mockDoc = createMockDocument();
-    globalScope.document = mockDoc as unknown as Document;
+    setGlobalValue("document", mockDoc as unknown as Document);
 
     manager = createThemeManager();
     manager.init();
@@ -371,16 +441,16 @@ describe("ThemeManager - setTheme", () => {
     manager.setTheme("dark", false);
 
     assertEquals(manager.theme, "dark");
-    assertEquals(mockStorage.storage["theme"], undefined);
+    assertEquals(mockStorage.storage["theme"], "light");
   });
 
   it("should show toast when saveToStorage is true and toast exists", () => {
     let toastMessage = "";
-    globalScope.toast = {
+    setGlobalValue("toast", {
       info: (message: string) => {
         toastMessage = message;
       },
-    };
+    });
 
     manager.setTheme("dark", true);
 
@@ -388,12 +458,11 @@ describe("ThemeManager - setTheme", () => {
   });
 
   it("should handle localStorage errors gracefully", () => {
-    globalScope.localStorage = {
-      getItem: () => "light",
-      setItem: () => {
-        throw new Error("Storage full");
-      },
+    const mockStorage = createMockLocalStorage("light");
+    mockStorage.setItem = () => {
+      throw new Error("Storage full");
     };
+    setGlobalValue("localStorage", mockStorage);
 
     // Should not throw
     manager.setTheme("dark", true);
@@ -412,63 +481,79 @@ describe("ThemeManager - system theme listener", () => {
   });
 
   it("should respond to system theme changes when no stored preference", () => {
-    let themeChangeHandler:
-      | ((e: { matches: boolean }) => void)
-      | null = null;
+    const themeChangeHandlers: Array<(event: MediaQueryListEvent) => void> = [];
 
-    globalScope.localStorage = createMockLocalStorage(null);
-    globalScope.matchMedia = (_query: string) => ({
+    setGlobalValue("localStorage", createMockLocalStorage(null));
+    setGlobalValue("matchMedia", (_query: string) => ({
       matches: false,
+      media: "",
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
       addEventListener: (
         _event: string,
-        handler: (e: { matches: boolean }) => void,
+        handler: EventListenerOrEventListenerObject,
       ) => {
-        themeChangeHandler = handler;
+        if (typeof handler === "function") {
+          themeChangeHandlers.push(
+            handler as (event: MediaQueryListEvent) => void,
+          );
+        }
       },
-    });
-    globalScope.toast = undefined;
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }));
+    setGlobalValue("toast", undefined);
 
     const mockDoc = createMockDocument();
-    globalScope.document = mockDoc as unknown as Document;
+    setGlobalValue("document", mockDoc as unknown as Document);
 
     const manager = createThemeManager();
     manager.init();
 
     // Simulate system theme change
-    if (themeChangeHandler) {
-      themeChangeHandler({ matches: true });
-    }
+    themeChangeHandlers.forEach((handler) => {
+      handler({ matches: true } as MediaQueryListEvent);
+    });
 
     assertEquals(manager.theme, "dark");
   });
 
   it("should not respond to system changes when user has stored preference", () => {
-    let themeChangeHandler:
-      | ((e: { matches: boolean }) => void)
-      | null = null;
+    const themeChangeHandlers: Array<(event: MediaQueryListEvent) => void> = [];
 
-    globalScope.localStorage = createMockLocalStorage("light");
-    globalScope.matchMedia = (_query: string) => ({
+    setGlobalValue("localStorage", createMockLocalStorage("light"));
+    setGlobalValue("matchMedia", (_query: string) => ({
       matches: false,
+      media: "",
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
       addEventListener: (
         _event: string,
-        handler: (e: { matches: boolean }) => void,
+        handler: EventListenerOrEventListenerObject,
       ) => {
-        themeChangeHandler = handler;
+        if (typeof handler === "function") {
+          themeChangeHandlers.push(
+            handler as (event: MediaQueryListEvent) => void,
+          );
+        }
       },
-    });
-    globalScope.toast = undefined;
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }));
+    setGlobalValue("toast", undefined);
 
     const mockDoc = createMockDocument();
-    globalScope.document = mockDoc as unknown as Document;
+    setGlobalValue("document", mockDoc as unknown as Document);
 
     const manager = createThemeManager();
     manager.init();
 
     // Simulate system theme change
-    if (themeChangeHandler) {
-      themeChangeHandler({ matches: true });
-    }
+    themeChangeHandlers.forEach((handler) => {
+      handler({ matches: true } as MediaQueryListEvent);
+    });
 
     // Should stay light because user has stored preference
     assertEquals(manager.theme, "light");
@@ -485,12 +570,12 @@ describe("ThemeManager - edge cases", () => {
   });
 
   it("should handle missing toggle button gracefully", () => {
-    globalScope.localStorage = createMockLocalStorage("light");
-    globalScope.matchMedia = createMockMatchMedia(false);
+    setGlobalValue("localStorage", createMockLocalStorage("light"));
+    setGlobalValue("matchMedia", createMockMatchMedia(false));
 
     const mockDoc = createMockDocument();
     mockDoc.getElementById = () => null;
-    globalScope.document = mockDoc as unknown as Document;
+    setGlobalValue("document", mockDoc as unknown as Document);
 
     const manager = createThemeManager();
     manager.init();
@@ -502,16 +587,22 @@ describe("ThemeManager - edge cases", () => {
   });
 
   it("should handle matchMedia listener setup failure", () => {
-    globalScope.localStorage = createMockLocalStorage(null);
-    globalScope.matchMedia = (_query: string) => ({
+    setGlobalValue("localStorage", createMockLocalStorage(null));
+    setGlobalValue("matchMedia", (_query: string) => ({
       matches: false,
+      media: "",
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
       addEventListener: () => {
         throw new Error("Listener setup failed");
       },
-    });
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }));
 
     const mockDoc = createMockDocument();
-    globalScope.document = mockDoc as unknown as Document;
+    setGlobalValue("document", mockDoc as unknown as Document);
 
     // Should not throw
     const manager = createThemeManager();
