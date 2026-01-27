@@ -217,9 +217,7 @@ export default function (userOptions?: Options) {
       .use(basePath())
       .use(toc())
       .use(prism(options.prism))
-      .use(readingInfo({
-        extensions: [".md", ".page.ts"],
-      }))
+      .use(readingInfo())
       .use(date(options.date))
       .use(jsonLd())
       .use(slugifyUrls())
