@@ -80,6 +80,23 @@
       margin-bottom: 0.5rem;
     }
   }
+
+  & .post-link {
+    margin-top: var(--spacing-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font: var(--font-small);
+    color: var(--color-dim);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--color-base);
+      text-decoration: underline;
+    }
+  }
 }
 
 /* Responsive adjustments */
