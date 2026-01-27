@@ -41,13 +41,13 @@
 .search input:focus,
 .search input:focus-visible {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(191, 64, 64, 0.1);
+  box-shadow: 0 0 0 3px rgba(47, 111, 221, 0.15);
   outline: none;
 }
 
 [data-theme="dark"] .search input:focus,
 [data-theme="dark"] .search input:focus-visible {
-  box-shadow: 0 0 0 3px rgba(244, 87, 87, 0.2);
+  box-shadow: 0 0 0 3px rgba(106, 160, 255, 0.2);
 }
 
 .search input::placeholder {
