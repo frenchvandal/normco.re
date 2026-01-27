@@ -35,6 +35,7 @@
 @import "css/04-components/source-info.css";
 @import "css/04-components/theme-toggle.css";
 @import "css/04-components/search.css";
+@import "css/04-components/pagefind.css";
 
 /* Form components */
 @import "css/04-components/input.css";

@@ -70,9 +70,13 @@
     margin: 0;
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-between;
     gap: var(--spacing-md);
+    background: var(--color-background-shade);
+    border: 1px solid var(--color-line);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
   }
 
   & .pagination-prev,
@@ -87,6 +91,7 @@
 
   & .pagination-next {
     text-align: right;
+    margin-inline-start: auto;
   }
 
   & .pagination-page {
@@ -94,6 +99,9 @@
     color: var(--color-dim);
     text-align: center;
     order: 1;
+    padding: var(--spacing-md);
+    display: flex;
+    align-items: center;
   }
 
   & .pagination-prev {
@@ -105,20 +113,78 @@
   }
 
   & a {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md) var(--spacing-lg);
     text-decoration: none;
-    font-weight: var(--font-bold);
     color: var(--color-base);
-    transition: color var(--transition-fast);
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+    height: 100%;
 
     &:hover,
     &:focus-visible {
+      background-color: var(--color-line);
+    }
+
+    & span {
+      font: var(--font-small);
       color: var(--color-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.75rem;
+    }
+
+    & strong {
+      font: var(--font-body-bold);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 20ch;
     }
   }
 }
 
+/* Post-specific pagination adjustments */
+.body-post .page-pagination {
+  & .pagination-next a strong {
+    text-align: right;
+  }
+}
+
 /* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-pagination {
+    & ul {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    & .pagination-prev,
+    & .pagination-next {
+      width: 100%;
+      text-align: left;
+    }
+
+    & .pagination-next {
+      border-top: 1px solid var(--color-line);
+    }
+
+    & a strong {
+      max-width: none;
+      white-space: normal;
+    }
+  }
+
+  .body-post .page-pagination {
+    & .pagination-next a strong {
+      text-align: left;
+    }
+  }
+}
+
 @media (max-width: 480px) {
   .page-navigation {
     & ul {
@@ -128,6 +194,12 @@
     & li a {
       padding: var(--spacing-xs) var(--spacing-sm);
       font-size: 0.875rem;
+    }
+  }
+
+  .page-pagination {
+    & a {
+      padding: var(--spacing-sm) var(--spacing-md);
     }
   }
 }
