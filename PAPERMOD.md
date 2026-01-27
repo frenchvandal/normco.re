@@ -22,11 +22,22 @@ PaperMod.
   migration to PaperMod. What matters is the final outcome—achieving behavior as
   close as possible to a one-to-one match with PaperMod—not the specific
   implementation approach used to get there.
-- As part of the PaperMod project, the `PAPERMOD.md` file must be updated
-  progressively with both completed work and remaining tasks, in the most
-  detailed and explicit manner possible, so that human developpers, AI agents
-  and Claude can seamlessly and efficiently take over the continuation of the
-  migration work.
+  - As part of the PaperMod project, the `PAPERMOD.md` file must be updated
+    progressively and continuously.
+  - The document must explicitly and distinctly describe:
+    - **What has already been completed**: implemented features, finished
+      migrations, validated behaviors, and any confirmed deviations from the
+      original PaperMod behavior.
+    - **What remains to be done**: missing features, partial implementations,
+      known limitations, technical debt, and unresolved questions.
+    - **The next concrete tasks to perform**: actions required to reach a full
+      and functional PaperMod migration, including priorities, dependencies, and
+      relevant technical notes.
+  - Each update must be as detailed and explicit as possible, avoiding implicit
+    knowledge or assumptions, so that:
+    - human developers,
+    - AI agents,
+    - and Claude
 
 ### PaperMod Development Branching Rules
 
@@ -104,82 +115,82 @@ PaperMod’s optional features are required.
 
 ### Complete PaperMod feature analysis
 
-| PaperMod feature             | Feasibility  | Lume solution                                     | Status in codebase        |
-| ---------------------------- | ------------ | ------------------------------------------------- | ------------------------- |
-| Light/dark theme + toggle    | ✅ Feasible  | CSS vars + localStorage + `theme.js`              | ✅ **Implemented**        |
-| Auto theme (system pref)     | ✅ Feasible  | `prefers-color-scheme` media query in `theme.js`  | ✅ **Implemented**        |
-| Themed scroll bar            | ✅ Feasible  | CSS `::-webkit-scrollbar` + CSS vars              | ⬜ Not yet                |
-| Smooth scroll                | ✅ Feasible  | CSS `scroll-behavior: smooth`                     | ⬜ Not yet                |
-| Scroll-to-top button         | ✅ Feasible  | JS component + CSS positioning                    | ⬜ Not yet                |
-| Responsive layout            | ✅ Feasible  | Lightning CSS + mobile-first SCSS                 | ✅ **Implemented**        |
-| Search (Fuse.js in PaperMod) | ✅ Feasible  | Pagefind plugin (better: static index)            | ✅ **Implemented**        |
-| Search keyboard nav          | ✅ Feasible  | Pagefind UI built-in + custom JS                  | ✅ **Implemented**        |
-| Table of contents            | ✅ Feasible  | `lume/markdown-plugins/toc.ts`                    | ✅ **Implemented**        |
-| Reading time                 | ✅ Feasible  | `reading_info` plugin                             | ✅ **Implemented**        |
-| Word count                   | ✅ Feasible  | `reading_info` plugin (provides both)             | ✅ **Implemented**        |
-| Syntax highlighting          | ✅ Feasible  | Prism plugin                                      | ✅ **Implemented**        |
-| Code copy button             | ✅ Feasible  | Custom JS + clipboard API                         | ⬜ Not yet                |
-| Social icons                 | ✅ Feasible  | `icons` plugin or inline SVGs                     | ⬜ Not yet                |
-| Breadcrumbs                  | ✅ Feasible  | `Breadcrumbs.ts` component                        | ✅ **Implemented**        |
-| Post cover image             | ✅ Feasible  | Front matter `image` + layout logic               | ⬜ Not yet                |
-| Responsive images            | ✅ Feasible  | Transform Images + Picture plugins                | ⬜ Not yet                |
-| Archive/tag pages            | ✅ Feasible  | Search plugin + paginate + archive layout         | ✅ **Implemented**        |
-| Share buttons                | ✅ Feasible  | Template links (Twitter, Facebook, etc.)          | ⬜ Not yet                |
-| RSS/JSON feeds               | ✅ Feasible  | Feed plugin                                       | ✅ **Implemented**        |
-| Sitemap                      | ✅ Feasible  | Sitemap plugin                                    | ✅ **Implemented**        |
-| Robots.txt                   | ✅ Feasible  | Robots plugin                                     | ⬜ Not yet (easy add)     |
-| Related posts                | ✅ Feasible  | Search plugin query by tags                       | ⬜ Not yet                |
-| Prev/next post navigation    | ✅ Feasible  | `search.previousPage`/`nextPage`                  | ✅ **Implemented**        |
-| Author profile widget        | ✅ Feasible  | Data-driven component                             | ⬜ Not yet                |
-| Profile mode (home layout)   | ✅ Feasible  | Custom `index.page.ts` layout                     | ⬜ Not yet                |
-| Home-Info mode               | ✅ Feasible  | Custom `index.page.ts` layout                     | ⬜ Partial (welcome text) |
-| Comments integration         | ✅ Feasible  | Embed script (Utterances/Giscus/Disqus)           | ⬜ Not yet                |
-| SEO meta tags                | ✅ Feasible  | Metas plugin                                      | ✅ **Implemented**        |
-| JSON-LD structured data      | ✅ Feasible  | JSON-LD plugin                                    | ✅ **Implemented**        |
-| OpenGraph / Twitter Cards    | ✅ Feasible  | Metas plugin                                      | ✅ **Implemented**        |
-| OG image generation          | ✅ Feasible  | OG images plugin                                  | ⬜ Not yet                |
-| Favicon generation           | ✅ Feasible  | Favicon plugin                                    | ⬜ Not yet (manual)       |
-| Draft page indicators        | ✅ Feasible  | Front matter `draft: true` + filter               | ⬜ Not yet                |
-| Edit post link (GitHub)      | ✅ Feasible  | `SourceInfo.ts` component                         | ✅ **Implemented**        |
-| Multi-language (i18n)        | ✅ Feasible  | Multilanguage plugin (full feature parity)        | ⬜ Not yet                |
-| Access key shortcuts         | ✅ Feasible  | Custom JS keybindings                             | ⬜ Not yet                |
-| Archives layout (timeline)   | ✅ Feasible  | Custom archive layout                             | ✅ **Implemented**        |
+| PaperMod feature             | Feasibility | Lume solution                                    | Status in codebase        |
+| ---------------------------- | ----------- | ------------------------------------------------ | ------------------------- |
+| Light/dark theme + toggle    | ✅ Feasible | CSS vars + localStorage + `theme.js`             | ✅ **Implemented**        |
+| Auto theme (system pref)     | ✅ Feasible | `prefers-color-scheme` media query in `theme.js` | ✅ **Implemented**        |
+| Themed scroll bar            | ✅ Feasible | CSS `::-webkit-scrollbar` + CSS vars             | ⬜ Not yet                |
+| Smooth scroll                | ✅ Feasible | CSS `scroll-behavior: smooth`                    | ⬜ Not yet                |
+| Scroll-to-top button         | ✅ Feasible | JS component + CSS positioning                   | ⬜ Not yet                |
+| Responsive layout            | ✅ Feasible | Lightning CSS + mobile-first SCSS                | ✅ **Implemented**        |
+| Search (Fuse.js in PaperMod) | ✅ Feasible | Pagefind plugin (better: static index)           | ✅ **Implemented**        |
+| Search keyboard nav          | ✅ Feasible | Pagefind UI built-in + custom JS                 | ✅ **Implemented**        |
+| Table of contents            | ✅ Feasible | `lume/markdown-plugins/toc.ts`                   | ✅ **Implemented**        |
+| Reading time                 | ✅ Feasible | `reading_info` plugin                            | ✅ **Implemented**        |
+| Word count                   | ✅ Feasible | `reading_info` plugin (provides both)            | ✅ **Implemented**        |
+| Syntax highlighting          | ✅ Feasible | Prism plugin                                     | ✅ **Implemented**        |
+| Code copy button             | ✅ Feasible | Custom JS + clipboard API                        | ⬜ Not yet                |
+| Social icons                 | ✅ Feasible | `icons` plugin or inline SVGs                    | ⬜ Not yet                |
+| Breadcrumbs                  | ✅ Feasible | `Breadcrumbs.ts` component                       | ✅ **Implemented**        |
+| Post cover image             | ✅ Feasible | Front matter `image` + layout logic              | ⬜ Not yet                |
+| Responsive images            | ✅ Feasible | Transform Images + Picture plugins               | ⬜ Not yet                |
+| Archive/tag pages            | ✅ Feasible | Search plugin + paginate + archive layout        | ✅ **Implemented**        |
+| Share buttons                | ✅ Feasible | Template links (Twitter, Facebook, etc.)         | ⬜ Not yet                |
+| RSS/JSON feeds               | ✅ Feasible | Feed plugin                                      | ✅ **Implemented**        |
+| Sitemap                      | ✅ Feasible | Sitemap plugin                                   | ✅ **Implemented**        |
+| Robots.txt                   | ✅ Feasible | Robots plugin                                    | ⬜ Not yet (easy add)     |
+| Related posts                | ✅ Feasible | Search plugin query by tags                      | ⬜ Not yet                |
+| Prev/next post navigation    | ✅ Feasible | `search.previousPage`/`nextPage`                 | ✅ **Implemented**        |
+| Author profile widget        | ✅ Feasible | Data-driven component                            | ⬜ Not yet                |
+| Profile mode (home layout)   | ✅ Feasible | Custom `index.page.ts` layout                    | ⬜ Not yet                |
+| Home-Info mode               | ✅ Feasible | Custom `index.page.ts` layout                    | ⬜ Partial (welcome text) |
+| Comments integration         | ✅ Feasible | Embed script (Utterances/Giscus/Disqus)          | ⬜ Not yet                |
+| SEO meta tags                | ✅ Feasible | Metas plugin                                     | ✅ **Implemented**        |
+| JSON-LD structured data      | ✅ Feasible | JSON-LD plugin                                   | ✅ **Implemented**        |
+| OpenGraph / Twitter Cards    | ✅ Feasible | Metas plugin                                     | ✅ **Implemented**        |
+| OG image generation          | ✅ Feasible | OG images plugin                                 | ⬜ Not yet                |
+| Favicon generation           | ✅ Feasible | Favicon plugin                                   | ⬜ Not yet (manual)       |
+| Draft page indicators        | ✅ Feasible | Front matter `draft: true` + filter              | ⬜ Not yet                |
+| Edit post link (GitHub)      | ✅ Feasible | `SourceInfo.ts` component                        | ✅ **Implemented**        |
+| Multi-language (i18n)        | ✅ Feasible | Multilanguage plugin (full feature parity)       | ⬜ Not yet                |
+| Access key shortcuts         | ✅ Feasible | Custom JS keybindings                            | ⬜ Not yet                |
+| Archives layout (timeline)   | ✅ Feasible | Custom archive layout                            | ✅ **Implemented**        |
 
 ### Lume plugins available (not yet used)
 
 The following official Lume plugins can enhance the migration:
 
-| Plugin           | Purpose                          | Relevance                              |
-| ---------------- | -------------------------------- | -------------------------------------- |
-| Transform Images | Image resize, format conversion  | Post cover images, responsive srcsets  |
-| Picture          | `<picture>` element generation   | Modern format delivery (AVIF, WebP)    |
-| Favicon          | Auto-generate all favicon sizes  | Replace manual favicon management      |
-| Icons            | Import icons from icon libraries | Social icons, UI icons                 |
-| OG images        | Auto-generate OpenGraph images   | Social sharing preview                 |
-| Robots           | Generate robots.txt              | SEO compliance                         |
-| Relations        | Automatic page relations         | Related posts feature                  |
-| Nav              | Build menus and breadcrumbs      | Could simplify `Breadcrumbs.ts`        |
-| SVGO             | Optimize SVG files               | Icon optimization                      |
-| Minify HTML      | HTML minification                | Performance optimization               |
-| Multilanguage    | Multi-language site support      | Full i18n with hreflang + alternates   |
+| Plugin           | Purpose                          | Relevance                             |
+| ---------------- | -------------------------------- | ------------------------------------- |
+| Transform Images | Image resize, format conversion  | Post cover images, responsive srcsets |
+| Picture          | `<picture>` element generation   | Modern format delivery (AVIF, WebP)   |
+| Favicon          | Auto-generate all favicon sizes  | Replace manual favicon management     |
+| Icons            | Import icons from icon libraries | Social icons, UI icons                |
+| OG images        | Auto-generate OpenGraph images   | Social sharing preview                |
+| Robots           | Generate robots.txt              | SEO compliance                        |
+| Relations        | Automatic page relations         | Related posts feature                 |
+| Nav              | Build menus and breadcrumbs      | Could simplify `Breadcrumbs.ts`       |
+| SVGO             | Optimize SVG files               | Icon optimization                     |
+| Minify HTML      | HTML minification                | Performance optimization              |
+| Multilanguage    | Multi-language site support      | Full i18n with hreflang + alternates  |
 
 ### Multilanguage plugin (i18n) — detailed analysis
 
 The Lume Multilanguage plugin provides **full feature parity** with Hugo's i18n
 system and in some ways is **more flexible**. Here is a technical comparison:
 
-| Feature                          | Hugo/PaperMod                      | Lume Multilanguage                        |
-| -------------------------------- | ---------------------------------- | ----------------------------------------- |
-| URL prefixing by language        | `/fr/about/`, `/en/about/`         | ✅ Same (configurable default language)   |
-| Default language without prefix  | ✅ `defaultContentLanguage`        | ✅ `defaultLanguage` option               |
-| UI string translations           | `i18n/*.yaml` files                | ✅ `_data.ts` with language-keyed values  |
-| Automatic `hreflang` tags        | ✅ Built-in                        | ✅ Automatic `<link rel="alternate">`     |
-| Language selector (alternates)   | Manual template                    | ✅ `alternates` variable exposed          |
-| Single-file multilingual content | ❌ Not supported                   | ✅ `lang: [en, fr, es]` generates all     |
-| Separate file per language       | ✅ Standard approach               | ✅ Same with `id` + `lang` front matter   |
-| Translation linking by ID        | Filename convention                | ✅ Explicit `id` variable (more reliable) |
-| `x-default` hreflang             | Manual                             | ✅ Automatic support                      |
-| Paginated multilingual pages     | Complex setup                      | ✅ Works with explicit `id` assignment    |
+| Feature                          | Hugo/PaperMod               | Lume Multilanguage                        |
+| -------------------------------- | --------------------------- | ----------------------------------------- |
+| URL prefixing by language        | `/fr/about/`, `/en/about/`  | ✅ Same (configurable default language)   |
+| Default language without prefix  | ✅ `defaultContentLanguage` | ✅ `defaultLanguage` option               |
+| UI string translations           | `i18n/*.yaml` files         | ✅ `_data.ts` with language-keyed values  |
+| Automatic `hreflang` tags        | ✅ Built-in                 | ✅ Automatic `<link rel="alternate">`     |
+| Language selector (alternates)   | Manual template             | ✅ `alternates` variable exposed          |
+| Single-file multilingual content | ❌ Not supported            | ✅ `lang: [en, fr, es]` generates all     |
+| Separate file per language       | ✅ Standard approach        | ✅ Same with `id` + `lang` front matter   |
+| Translation linking by ID        | Filename convention         | ✅ Explicit `id` variable (more reliable) |
+| `x-default` hreflang             | Manual                      | ✅ Automatic support                      |
+| Paginated multilingual pages     | Complex setup               | ✅ Works with explicit `id` assignment    |
 
 **Implementation approach for normco.re:**
 
@@ -216,14 +227,14 @@ constraints.
 
 ### Revised assessment (Claude)
 
-| Feature                    | ChatGPT assessment | Claude reassessment           | Rationale                                                                            |
-| -------------------------- | ------------------ | ----------------------------- | ------------------------------------------------------------------------------------ |
-| Hugo image processing      | High friction      | ✅ **Feasible (better)**      | Lume Transform Images + Picture plugins provide superior responsive image automation |
-| Hugo shortcodes            | High friction      | ⚠️ Medium friction            | Lume components + Markdown-it plugins can replicate most shortcode functionality     |
-| Hugo taxonomy behavior     | High friction      | ✅ **Feasible**               | Lume Search plugin + paginate covers all taxonomy needs                              |
-| Hugo Pipes asset pipeline  | High friction      | ✅ **Feasible (equivalent)**  | ESbuild + Lightning CSS + PurgeCSS already configured                                |
-| Hugo `.Summary` behavior   | High friction      | ✅ **Already implemented**    | `<!--more-->` excerpt extraction in `plugins.ts` preprocessor                        |
-| Hugo `.TableOfContents`    | High friction      | ✅ **Already implemented**    | `lume/markdown-plugins/toc.ts` provides identical functionality                      |
+| Feature                   | ChatGPT assessment | Claude reassessment          | Rationale                                                                            |
+| ------------------------- | ------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
+| Hugo image processing     | High friction      | ✅ **Feasible (better)**     | Lume Transform Images + Picture plugins provide superior responsive image automation |
+| Hugo shortcodes           | High friction      | ⚠️ Medium friction           | Lume components + Markdown-it plugins can replicate most shortcode functionality     |
+| Hugo taxonomy behavior    | High friction      | ✅ **Feasible**              | Lume Search plugin + paginate covers all taxonomy needs                              |
+| Hugo Pipes asset pipeline | High friction      | ✅ **Feasible (equivalent)** | ESbuild + Lightning CSS + PurgeCSS already configured                                |
+| Hugo `.Summary` behavior  | High friction      | ✅ **Already implemented**   | `<!--more-->` excerpt extraction in `plugins.ts` preprocessor                        |
+| Hugo `.TableOfContents`   | High friction      | ✅ **Already implemented**   | `lume/markdown-plugins/toc.ts` provides identical functionality                      |
 
 ### True high-friction items
 
@@ -234,9 +245,9 @@ The following items remain genuinely challenging:
    or preprocessors. Common shortcodes like `figure`, `highlight`, and `ref` can
    be replicated, but theme-specific shortcodes need case-by-case evaluation.
 
-2. **Hugo's built-in image filters** — Hugo provides 12+ image filters
-   (Blur, Brightness, Contrast, Saturation, Hue, Grayscale, etc.) out of the
-   box. Lume's Transform Images uses Sharp, which supports custom functions but
+2. **Hugo's built-in image filters** — Hugo provides 12+ image filters (Blur,
+   Brightness, Contrast, Saturation, Hue, Grayscale, etc.) out of the box.
+   Lume's Transform Images uses Sharp, which supports custom functions but
    requires Sharp API knowledge. For a blog, this is rarely needed.
 
 3. **Hugo `.Resources` pattern** — Hugo's page bundles with `.Resources` for
@@ -255,11 +266,11 @@ The following items remain genuinely challenging:
 Most PaperMod features can be replicated or improved upon in Lume. The following
 are the **only features genuinely at risk**:
 
-| Feature                       | Risk level | Mitigation                                               |
-| ----------------------------- | ---------- | -------------------------------------------------------- |
-| Hugo-specific shortcodes      | ⚠️ Medium  | Identify used shortcodes and create Lume equivalents     |
-| JXL image format support      | ❌ Lost    | Sharp (Lume backend) does not support JXL; use AVIF/WebP |
-| Hugo's 12+ image filters      | ⚠️ Medium  | Custom Sharp functions required if needed                |
+| Feature                        | Risk level | Mitigation                                               |
+| ------------------------------ | ---------- | -------------------------------------------------------- |
+| Hugo-specific shortcodes       | ⚠️ Medium  | Identify used shortcodes and create Lume equivalents     |
+| JXL image format support       | ❌ Lost    | Sharp (Lume backend) does not support JXL; use AVIF/WebP |
+| Hugo's 12+ image filters       | ⚠️ Medium  | Custom Sharp functions required if needed                |
 | Exact `.Resources` co-location | 🔄 Changed | Different pattern but equivalent functionality           |
 
 ### Features previously listed as "lost" but actually available
@@ -268,7 +279,8 @@ are the **only features genuinely at risk**:
   (actually **better** with AVIF support)
 - **Responsive srcsets** → ✅ Picture plugin generates automatic srcsets
 - **WebP conversion** → ✅ Transform Images plugin
-- **`.Summary` behavior** → ✅ Already implemented via `<!--more-->` preprocessor
+- **`.Summary` behavior** → ✅ Already implemented via `<!--more-->`
+  preprocessor
 - **`.TableOfContents`** → ✅ TOC Markdown plugin already in use
 - **Taxonomy URLs** → ✅ Search plugin + archive pages (already working)
 
@@ -279,25 +291,25 @@ when moving toward PaperMod unless explicitly rebuilt:
 
 ### Features to preserve (recommended)
 
-| Feature                        | Current status          | Recommendation                                    |
-| ------------------------------ | ----------------------- | ------------------------------------------------- |
-| Service worker + offline       | `sw.page.ts`            | ✅ **Keep** — PaperMod doesn't have this          |
-| Pagefind search                | Integrated with modal   | ✅ **Keep** — Superior to Fuse.js (static index)  |
-| Toast notifications            | `toast.js` + component  | ✅ **Keep** — Useful for UX feedback              |
-| Modal component                | `Modal.ts`              | ✅ **Keep** — Used by search, extensible          |
-| JSON-LD structured data        | Fully configured        | ✅ **Keep** — Already matches PaperMod's SEO      |
-| Git commit tracking            | `SourceInfo.ts`         | ✅ **Keep** — Unique feature not in PaperMod      |
-| Code tabs component            | `CodeTabs.ts`           | ✅ **Keep** — Enhancement over PaperMod           |
-| Alert/admonition styling       | `@mdit/plugin-alert`    | ✅ **Keep** — Better than PaperMod's default      |
-| Feed XSL stylesheet            | `feed.xsl`              | ✅ **Keep** — Better UX for RSS viewing           |
+| Feature                  | Current status         | Recommendation                                   |
+| ------------------------ | ---------------------- | ------------------------------------------------ |
+| Service worker + offline | `sw.page.ts`           | ✅ **Keep** — PaperMod doesn't have this         |
+| Pagefind search          | Integrated with modal  | ✅ **Keep** — Superior to Fuse.js (static index) |
+| Toast notifications      | `toast.js` + component | ✅ **Keep** — Useful for UX feedback             |
+| Modal component          | `Modal.ts`             | ✅ **Keep** — Used by search, extensible         |
+| JSON-LD structured data  | Fully configured       | ✅ **Keep** — Already matches PaperMod's SEO     |
+| Git commit tracking      | `SourceInfo.ts`        | ✅ **Keep** — Unique feature not in PaperMod     |
+| Code tabs component      | `CodeTabs.ts`          | ✅ **Keep** — Enhancement over PaperMod          |
+| Alert/admonition styling | `@mdit/plugin-alert`   | ✅ **Keep** — Better than PaperMod's default     |
+| Feed XSL stylesheet      | `feed.xsl`             | ✅ **Keep** — Better UX for RSS viewing          |
 
 ### Features that may need adaptation
 
-| Feature                        | Current status          | Impact of migration                               |
-| ------------------------------ | ----------------------- | ------------------------------------------------- |
-| Archive page structure         | `archive.page.ts`       | May need restyling to match PaperMod's timeline   |
-| i18n data structure            | `_data/i18n/`           | Migrate to Multilanguage plugin pattern           |
-| Current footer design          | Minimal with commit     | May adopt PaperMod's copyright + social links     |
+| Feature                | Current status      | Impact of migration                             |
+| ---------------------- | ------------------- | ----------------------------------------------- |
+| Archive page structure | `archive.page.ts`   | May need restyling to match PaperMod's timeline |
+| i18n data structure    | `_data/i18n/`       | Migrate to Multilanguage plugin pattern         |
+| Current footer design  | Minimal with commit | May adopt PaperMod's copyright + social links   |
 
 ### Features unique to current Lume site (not in PaperMod)
 
