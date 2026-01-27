@@ -75,6 +75,14 @@ export const defaults: Options = {
 
 const textDecoder = new TextDecoder();
 
+/**
+ * Executes a git command synchronously.
+ *
+ * @param args - Git command arguments to pass to the git executable.
+ * @returns Object containing exit code, stdout, and stderr output.
+ *
+ * @internal
+ */
 const runGit = (args: string[]): GitCommandResult => {
   const cmd = new Deno.Command("git", {
     args,
@@ -89,6 +97,17 @@ const runGit = (args: string[]): GitCommandResult => {
   };
 };
 
+/**
+ * Parses a git remote URL and extracts repository information.
+ *
+ * Supports both SSH (`git@host:owner/repo.git`) and HTTPS
+ * (`https://host/owner/repo.git`) formats.
+ *
+ * @param remote - The git remote URL string to parse.
+ * @returns Parsed repository info (baseUrl, owner, name) or null if parsing fails.
+ *
+ * @internal
+ */
 const parseGitRemote = (
   remote: string,
 ): { baseUrl: string; owner: string; name: string } | null => {
@@ -113,6 +132,17 @@ const parseGitRemote = (
   return null;
 };
 
+/**
+ * Retrieves the current git branch name.
+ *
+ * Tries `git branch --show-current` first, then falls back to
+ * `git rev-parse --abbrev-ref HEAD` for detached HEAD states.
+ *
+ * @returns The current branch name, or an empty string if not in a git repo
+ *          or in detached HEAD state without a branch reference.
+ *
+ * @internal
+ */
 const getBranch = (): string => {
   const currentBranch = runGit(["branch", "--show-current"]);
   if (currentBranch.code === 0 && currentBranch.out) {
@@ -127,6 +157,16 @@ const getBranch = (): string => {
   return "";
 };
 
+/**
+ * Extracts repository information from GitHub Actions environment variables.
+ *
+ * Reads `GITHUB_SERVER_URL`, `GITHUB_REPOSITORY`, and `GITHUB_REF_NAME`
+ * to construct repository metadata when running in CI.
+ *
+ * @returns Repository info object or null if required env vars are missing.
+ *
+ * @internal
+ */
 const getRepoInfoFromEnv = (): RepoInfo | null => {
   const baseUrl = Deno.env.get("GITHUB_SERVER_URL");
   const repository = Deno.env.get("GITHUB_REPOSITORY");
@@ -149,6 +189,16 @@ const getRepoInfoFromEnv = (): RepoInfo | null => {
   };
 };
 
+/**
+ * Extracts repository information from local git configuration.
+ *
+ * Reads the `origin` remote URL and current branch name using git commands.
+ * Used as a fallback when GitHub Actions environment variables are not available.
+ *
+ * @returns Repository info object or null if not in a git repo or remote is not set.
+ *
+ * @internal
+ */
 const getRepoInfoFromGit = (): RepoInfo | null => {
   const remote = runGit(["remote", "get-url", "origin"]);
   if (remote.code !== 0 || !remote.out) {
@@ -166,6 +216,16 @@ const getRepoInfoFromGit = (): RepoInfo | null => {
   };
 };
 
+/**
+ * Retrieves repository information from available sources.
+ *
+ * Tries GitHub Actions environment variables first, then falls back
+ * to local git configuration.
+ *
+ * @returns Repository info object or null if no source is available.
+ *
+ * @internal
+ */
 const getRepoInfo = (): RepoInfo | null =>
   getRepoInfoFromEnv() ?? getRepoInfoFromGit();
 

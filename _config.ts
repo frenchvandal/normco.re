@@ -7,7 +7,16 @@ const site = lume({
   location: new URL("https://normco.re"),
 });
 
-// Get commit SHA for footer
+/**
+ * Retrieves the current git commit SHA asynchronously.
+ *
+ * Used to generate a build identifier for cache busting and footer display.
+ * Returns an empty string if git is unavailable or not in a repository.
+ *
+ * @returns The full commit SHA hash, or an empty string on failure.
+ *
+ * @internal
+ */
 const getCommitSha = async (): Promise<string> => {
   try {
     const cmd = new Deno.Command("git", { args: ["rev-parse", "HEAD"] });
