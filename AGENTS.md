@@ -103,6 +103,10 @@ If a command cannot be run, clearly state which command would be run and why.
 - SSG: **Lume**.
 - Templating: **ESM + TypeScript** for layouts and components (no JSX/Preact, no
   Nunjucks/Vento).
+  - **Exception (PaperMod project only)**: The use of non-ESM or non-TypeScript
+    template engines is permitted when required by official Lume plugins. In
+    such cases, the mandated template engine may be used without restriction. If
+    JSX is required, `.tsx` must be preferred over `.jsx` whenever possible.
 - Styling: **SCSS** (or modern CSS if appropriate).
 - Content: **Markdown** for posts and static pages (`*.md`), with dynamic pages
   in `*.page.ts` when needed.
