@@ -1,20 +1,36 @@
 # CLAUDE.md — Guidelines (TypeScript, CSS, UX/UI, Architecture, Deno, Lume)
 
-## IMPORTANT — MUST DO
+**IMPORTANT — MUST DO**
 
 - All merge requests and commits related to the PaperMod project must be made in
   the `dev` branch, never in the `master` branch, unless explicitly stated
   otherwise by the human user.
+
 - No `deno test --coverage` is required for tasks related to the PaperMod
   project.
+
 - The PaperMod project is documented in the `PAPERMOD.md` file.
-- Any task impacting the PaperMod project must be documented by updating the
-  `PAPERMOD.md` file.
-- As part of the PaperMod project, the `PAPERMOD.md` file must be updated
-  progressively with both completed work and remaining tasks, in the most
-  detailed and explicit manner possible, so that human developpers, AI agents
-  and Claude can seamlessly and efficiently take over the continuation of the
-  migration work.
+  - Any task impacting the PaperMod project must be documented by updating the
+    `PAPERMOD.md` file.
+  - As part of the PaperMod project, the `PAPERMOD.md` file must be updated
+    progressively and continuously.
+  - The document must explicitly and distinctly describe:
+    - **What has already been completed**: implemented features, finished
+      migrations, validated behaviors, and any confirmed deviations from the
+      original PaperMod behavior.
+    - **What remains to be done**: missing features, partial implementations,
+      known limitations, technical debt, and unresolved questions.
+    - **The next concrete tasks to perform**: actions required to reach a full
+      and functional PaperMod migration, including priorities, dependencies, and
+      relevant technical notes.
+  - Each update must be as detailed and explicit as possible, avoiding implicit
+    knowledge or assumptions, so that:
+    - human developers,
+    - AI agents,
+    - and Claude
+
+    can seamlessly, accurately, and efficiently take over the continuation of
+    the migration work without additional context or clarification.
 
 ## Project context
 
