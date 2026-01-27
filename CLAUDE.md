@@ -1,5 +1,12 @@
 # CLAUDE.md — Guidelines (TypeScript, CSS, UX/UI, Architecture, Deno, Lume)
 
+## IMPORTANT — MUST DO
+
+- All merge requests and commits related to the PaperMod project must be done in
+  the `dev` branch, never the `master` branch, unless explicitly stated
+  otherwise by the human user.
+- No `deno test --coverage` required for tasks related to the PaperMod project.
+
 ## Project context
 
 - Personal blog maintained by Phiphi (FR), based in Chengdu, China.

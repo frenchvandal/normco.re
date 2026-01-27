@@ -2,8 +2,18 @@
 
 ## Quick rules (read first)
 
+**IMPORTANT — MUST DO**
+
+- All merge requests and commits related to the PaperMod project must be done in
+  the `dev` branch, never the `master` branch, unless explicitly stated
+  otherwise by the human user.
+- No `deno test --coverage` required for tasks related to the PaperMod project.
+
 **Do**
 
+- All merge requests and commits related to the PaperMod project must be done in
+  the `dev` branch, never the `master` branch, unless explicitly stated
+  otherwise by the human user.
 - Follow this file as the source of truth for all changes.
 - Use Deno + Lume only, as configured in this repository.
 - Write English that is fluent, natural, and respects typographic conventions.
