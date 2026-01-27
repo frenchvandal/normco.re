@@ -34,6 +34,7 @@ export const bodyClass = "body-post";
 export default async function (
   {
     title,
+    description,
     date,
     tags,
     author,
@@ -81,6 +82,8 @@ ${breadcrumbs}
 <article class="post" data-pagefind-body data-title="${title}" data-pagefind-index-attrs="data-title">
   <header class="post-header">
     <h1 class="post-title u-display-title">${title}</h1>
+
+    ${description ? `<p class="post-description">${description}</p>` : ""}
 
     ${postDetails}
   </header>
