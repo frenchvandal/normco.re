@@ -1,5 +1,6 @@
 /* ==========================================================================
    Post list component
+   Styled to match PaperMod's archive list aesthetic.
    ========================================================================== */
 
 .postList {
@@ -7,20 +8,30 @@
   padding: 0;
   margin: 0;
 
-  /* Spacing between posts */
-  & article.post + article.post {
-    margin-top: var(--spacing-2xl);
-    padding-top: var(--spacing-2xl);
-    border-top: 1px solid var(--color-line);
+  /* Spacing between posts using li elements */
+  & > li.post {
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--color-line);
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
-  & li.post + li.post {
-    margin-top: var(--row-gap-small);
+  /* Spacing between posts using article elements */
+  & article.post + article.post {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-xl);
+    border-top: 1px solid var(--color-line);
   }
 
   /* Adjust post header spacing in list context */
   & .post-header {
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
   }
 
   /* Adjust post details in list context */
@@ -28,12 +39,13 @@
     font: var(--font-small);
   }
 
-  /* Post title styling in list */
+  /* Post title styling in list - PaperMod style */
   & .post-title {
-    font: var(--font-title);
-    letter-spacing: var(--font-title-spacing);
+    font: var(--font-body-bold);
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
     display: block;
-    margin-bottom: var(--spacing-xs);
+    margin: 0 0 var(--spacing-xs);
 
     & a {
       text-decoration: none;
@@ -42,42 +54,39 @@
 
       &:hover,
       &:focus-visible {
-        color: var(--color-dim);
+        color: var(--color-primary);
       }
     }
   }
 
   /* Excerpt styling */
   & .post-excerpt {
-    color: var(--color-dim);
+    color: var(--color-text);
     margin: var(--spacing-sm) 0 0;
-    line-height: 1.7;
+    line-height: 1.6;
+    font: var(--font-body);
 
-    /* Scale down headings in excerpts to be more proportional */
-    & h1 {
-      font-size: 1.5rem;
-      margin-top: 1rem;
-      margin-bottom: 0.5rem;
+    /* Limit excerpt length for cleaner appearance */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    /* Reset for nested content */
+    & > * {
+      margin: 0;
     }
 
-    & h2 {
-      font-size: 1.25rem;
-      margin-top: 1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    & h3 {
-      font-size: 1.125rem;
-      margin-top: 0.75rem;
-      margin-bottom: 0.5rem;
-    }
-
+    /* Scale down headings in excerpts */
+    & h1,
+    & h2,
+    & h3,
     & h4,
     & h5,
     & h6 {
       font-size: 1rem;
-      margin-top: 0.75rem;
-      margin-bottom: 0.5rem;
+      margin: 0;
+      font-weight: var(--font-bold);
     }
   }
 
@@ -87,28 +96,90 @@
     align-items: center;
     gap: var(--spacing-xs);
     font: var(--font-small);
-    color: var(--color-dim);
+    color: var(--color-primary);
     text-decoration: none;
     letter-spacing: 0.01em;
+    font-weight: var(--font-bold);
+
+    &::after {
+      content: "→";
+      transition: transform var(--transition-fast);
+    }
 
     &:hover,
     &:focus-visible {
-      color: var(--color-base);
       text-decoration: underline;
+
+      &::after {
+        transform: translateX(2px);
+      }
+    }
+  }
+
+  /* Post meta in list - more compact */
+  & .post-meta {
+    gap: var(--spacing-xs) var(--spacing-sm);
+    color: var(--color-dim);
+
+    & .post-meta__item:not(:last-child)::after {
+      margin-left: var(--spacing-sm);
     }
   }
 }
 
+/* Archive-specific adjustments */
+.body-tag .postList,
+.body-archive .postList {
+  /* More compact spacing for archive pages */
+  & > li.post {
+    padding: var(--spacing-sm) 0;
+  }
+
+  & .post-title {
+    font-size: 1rem;
+  }
+
+  & .post-excerpt {
+    -webkit-line-clamp: 2;
+  }
+}
+
 /* Responsive adjustments */
+@media (max-width: 768px) {
+  .postList {
+    & .post-title {
+      font-size: 1rem;
+    }
+
+    & .post-excerpt {
+      -webkit-line-clamp: 2;
+      font-size: 0.9375rem;
+    }
+  }
+}
+
 @media (max-width: 480px) {
   .postList {
     & article.post + article.post {
-      margin-top: var(--row-gap-small);
-      padding-top: var(--row-gap-small);
+      margin-top: var(--spacing-lg);
+      padding-top: var(--spacing-lg);
     }
 
-    & .post-title {
-      font-size: 1.25rem;
+    & > li.post {
+      padding: var(--spacing-sm) 0;
+    }
+
+    & .post-header {
+      margin-bottom: var(--spacing-xs);
+    }
+
+    & .post-excerpt {
+      margin-top: var(--spacing-xs);
+    }
+
+    & .post-link {
+      margin-top: var(--spacing-xs);
+      font-size: 0.8125rem;
     }
   }
 }

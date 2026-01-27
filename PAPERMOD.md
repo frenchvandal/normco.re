@@ -190,6 +190,22 @@ when moving toward PaperMod unless explicitly rebuilt:
 - Enhanced pagination styles (`src/_includes/css/05-layouts/page.css`) to match
   PaperMod's layout: flexbox-based layout with previous/next links on opposite
   sides and centered page indicator.
+- Created comprehensive Pagefind UI styles
+  (`src/_includes/css/04-components/pagefind.css`) matching PaperMod's search
+  panel aesthetic with custom input, result card, and loading state styling.
+- Improved search modal styles (`src/_includes/css/04-components/modal.css`)
+  with better scrollbar styling, refined padding, and enhanced results area.
+- Refined post navigation (prev/next) styles to match PaperMod's two-column
+  layout with background container, uppercase labels, title truncation, and
+  responsive stacking on mobile.
+- Updated post list styles (`src/_includes/css/05-layouts/post-list.css`) with
+  more compact spacing, line-clamped excerpts, animated read-more links with
+  arrow indicator, and archive-specific density adjustments.
+- Replaced theme toggle Unicode character (`◐`) with proper SVG sun/moon icons
+  (`src/_includes/layouts/base.ts`) for better cross-platform rendering.
+- Added theme toggle CSS (`src/_includes/css/04-components/theme-toggle.css`)
+  with icon visibility switching between light/dark themes, hover animation,
+  and reduced motion support.
 
 ### Audit summary (January 2026)
 
@@ -211,43 +227,38 @@ when moving toward PaperMod unless explicitly rebuilt:
 
 **Items requiring attention:**
 
-- Search modal: Pagefind UI styling could be further refined to match PaperMod's
-  search panel aesthetic.
-- Post pagination (previous/next post): layout and spacing may need additional
-  fine-tuning.
-- Archive/tag pages: list density and typography may diverge from PaperMod's
-  compact rhythm.
-- Theme toggle icon: consider replacing the Unicode character (`◐`) with an SVG
-  for better rendering consistency.
+- Post content view: verify the post header structure (including description),
+  spacing above content, and typography for the lead section.
+- Responsive QA: check 480px/768px breakpoints for header wrapping, post lists,
+  and typography scaling.
+- Code blocks: verify Prism syntax highlighting colors match PaperMod's
+  light/dark themes.
 
 ### Next priorities (in order)
 
-1. **Search modal styling**: refine Pagefind UI within the modal to better match
-   PaperMod's search panel (input sizing, result card styling, keyboard hints).
-2. **Post navigation (prev/next)**: verify that the post-level pagination
-   (`layouts/post.ts`) aligns with PaperMod's two-column layout with title
-   previews.
-3. **Archive/tag pages parity**: ensure list density, metadata ordering, and
-   title sizing match PaperMod's archive listings.
-4. **Theme toggle polish**: consider SVG icons instead of Unicode; verify icon
-   sizing, hover/focus states, and alignment across breakpoints.
-5. **QA + polish**: review responsive breakpoints, contrast ratios (WCAG), and
+1. **QA + polish**: review responsive breakpoints, contrast ratios (WCAG), and
    component spacing for final parity.
+2. **Code block styling**: ensure Prism syntax highlighting colors align with
+   PaperMod's light/dark theme palettes.
+3. **Post content view**: fine-tune post header structure and lead section
+   typography.
+4. **Footer polish**: verify copyright line and commit link styling match
+   PaperMod.
 
 ### Remaining work checklist (living)
 
-- [ ] Search modal: style `.pagefind-ui__*` classes to match PaperMod's search
+- [x] Search modal: style `.pagefind-ui__*` classes to match PaperMod's search
       panel (input, results, loading states).
-- [ ] Post navigation (prev/next): verify two-column layout and title truncation
+- [x] Post navigation (prev/next): verify two-column layout and title truncation
       in `layouts/post.ts` pagination block.
-- [ ] Post list layout: verify metadata ordering (date/reading time), spacing
+- [x] Post list layout: verify metadata ordering (date/reading time), spacing
       between title/excerpt, and confirm read-more link sizing across archive
       vs. home.
 - [ ] Post content view: verify the post header structure (including
       description), spacing above content, and typography for the lead section.
-- [ ] Archive/tag pages: ensure list density, metadata, and title sizing are
+- [x] Archive/tag pages: ensure list density, metadata, and title sizing are
       aligned with PaperMod.
-- [ ] Theme toggle: consider SVG icon for cross-platform consistency; confirm
+- [x] Theme toggle: consider SVG icon for cross-platform consistency; confirm
       icon sizing, hover/focus states, and alignment in the navigation bar.
 - [ ] Responsive QA: check 480px/768px breakpoints for header wrapping, post
       lists, and typography scaling.
