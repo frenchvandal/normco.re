@@ -172,11 +172,13 @@ when moving toward PaperMod unless explicitly rebuilt:
   a read-more affordance so archive listings align with PaperMod’s list rhythm.
 - Restructured post metadata blocks to mirror PaperMod (meta line + tags row
   with label and hashtag styling).
+- Added post description support in the single post header and tightened header
+  spacing to better match PaperMod’s title block rhythm.
 
 ### Next priorities (in order)
 
-1. **Single post template parity**: align post header, metadata, and content
-   spacing; verify TOC/footnotes layout.
+1. **Single post template parity**: refine TOC/footnotes spacing, pagination
+   layout, and ensure description styling matches PaperMod’s lead text.
 2. **Search UI parity**: restyle Pagefind UI to match PaperMod search modal.
 3. **Archive/tag pages parity**: ensure layouts, spacing, and metadata match
    PaperMod’s archive listings.
@@ -190,8 +192,10 @@ when moving toward PaperMod unless explicitly rebuilt:
 - Post list layout: verify metadata ordering (date/reading time), spacing
   between title/excerpt, and confirm read-more link sizing across archive vs.
   home.
-- Post content view: verify the post header structure, spacing above content,
-  and typography for the lead section.
+- Post content view: verify the post header structure (including description),
+  spacing above content, and typography for the lead section.
+- Post pagination: confirm alignment, spacing, and typography in the previous/
+  next post navigation.
 - Search modal: restyle the Pagefind UI to match PaperMod’s search panel and
   keyboard hints.
 - Archive/tag pages: ensure list density, metadata, and title sizing are aligned

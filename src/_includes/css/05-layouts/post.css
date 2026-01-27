@@ -3,12 +3,21 @@
    ========================================================================== */
 
 .post-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
   margin-bottom: var(--row-gap-small);
 }
 
 .post-title {
   /* Using utility class .u-display-title */
-  margin-bottom: 0.2em;
+  margin: 0;
+}
+
+.post-description {
+  margin: 0;
+  font: var(--font-body);
+  color: var(--color-dim);
 }
 
 .post-details {
