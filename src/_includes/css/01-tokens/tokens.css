@@ -9,21 +9,22 @@
      ========================================================================== */
 
   /* Base colors */
-  --color-base: #0a0c0f;
-  --color-text: #29303d;
-  --color-dim: #525f7a;
-  --color-line: #e0e4eb;
+  --color-base: #1f1f1f;
+  --color-text: #2f2f2f;
+  --color-dim: #6b7280;
+  --color-line: #e5e7eb;
+  --color-border: var(--color-line);
   --color-background: #fff;
-  --color-background-shade: #f6f7f9;
+  --color-background-shade: #f5f5f7;
 
   /* Primary colors */
-  --color-primary: #bf4040;
-  --color-primary-highlight: #933;
+  --color-primary: #2f6fdd;
+  --color-primary-highlight: #1f5ac7;
 
   /* Semantic colors */
   --color-link: var(--color-base);
   --color-link-hover: var(--color-dim);
-  --color-link-visited: #5e3a99;
+  --color-link-visited: #5b4b8a;
 
   /* Status colors */
   --color-success: #10b981;
@@ -60,9 +61,9 @@
 
   /* Font families */
   --font-family-ui:
-    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol";
+    "Inter", "SF Pro Text", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --font-family-code:
     "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 
@@ -71,16 +72,20 @@
   --font-bold: 600;
 
   /* Font scales - Size / Line Height */
-  --font-display: bold clamp(2.5rem, 6vw, 4rem) / 1.1 var(--font-family-ui);
-  --font-display-spacing: -0.04em;
-
-  --font-title: bold clamp(1.75rem, 4vw, 2.5rem) / 1.2 var(--font-family-ui);
-  --font-title-spacing: -0.02em;
-
-  --font-body: var(--font-regular) clamp(1rem, 2.5vw, 1.125rem) / 1.6 var(
+  --font-display: bold clamp(2.25rem, 5.5vw, 3.5rem) / 1.15 var(
     --font-family-ui
   );
-  --font-body-bold: var(--font-bold) clamp(1rem, 2.5vw, 1.125rem) / 1.6 var(
+  --font-display-spacing: -0.04em;
+
+  --font-title: bold clamp(1.625rem, 3.5vw, 2.25rem) / 1.25 var(
+    --font-family-ui
+  );
+  --font-title-spacing: -0.015em;
+
+  --font-body: var(--font-regular) clamp(1rem, 2.2vw, 1.125rem) / 1.7 var(
+    --font-family-ui
+  );
+  --font-body-bold: var(--font-bold) clamp(1rem, 2.2vw, 1.125rem) / 1.7 var(
     --font-family-ui
   );
   --font-body-spacing: -0.01em;
@@ -119,10 +124,10 @@
      ========================================================================== */
 
   /* Content widths */
-  --content-max-width: 45rem;
-  --content-padding-desktop: 15vw;
-  --content-padding-tablet: 8vw;
-  --content-padding-mobile: 2rem;
+  --content-max-width: 44rem;
+  --content-padding-desktop: 12vw;
+  --content-padding-tablet: 6vw;
+  --content-padding-mobile: 1.5rem;
 
   /* Border radius */
   --border-radius-sm: 0.25rem;
@@ -198,16 +203,17 @@
 
 [data-theme="dark"] {
   /* Base colors */
-  --color-base: #fff;
-  --color-text: #a3adc2;
-  --color-dim: #7585a3;
-  --color-line: #29303d;
-  --color-background: #14181f;
-  --color-background-shade: #1b1f28;
+  --color-base: #f5f5f5;
+  --color-text: #cbd5e1;
+  --color-dim: #9aa5b1;
+  --color-line: #2b2f36;
+  --color-border: var(--color-line);
+  --color-background: #0b0d10;
+  --color-background-shade: #141820;
 
   /* Primary colors */
-  --color-primary: #f45757;
-  --color-primary-highlight: #f66f6f;
+  --color-primary: #6aa0ff;
+  --color-primary-highlight: #8ab4ff;
 
   /* Semantic colors - dark theme adjustments */
   --color-link-visited: #b794f6;
