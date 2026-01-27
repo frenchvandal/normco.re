@@ -71,7 +71,6 @@ export default async function (
     <link rel="alternate" href="/feed.json" type="application/json" title="${
     metas?.site ?? ""
   }">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
     <link rel="canonical" href="${urlHelper(url, true)}">
 
     <!-- Pagefind search -->
@@ -86,22 +85,26 @@ export default async function (
 
     <nav class="navbar" role="navigation" aria-label="Main navigation">
       <div class="navbar__inner">
-        <a href="/" class="navbar-home">
+        <a href="/" class="navbar-home" data-accesskey="home">
           ${logo ? logo : `<strong>${metas?.site ?? ""}</strong>`}
         </a>
 
         <div class="navbar__menu">
           <ul class="navbar-links">
           ${
-    menuItems.map((entry) => `
+    menuItems.map((entry) => {
+      const isArchives = entry.url === "/posts/" || entry.url === "/archives/";
+      const accessKeyAttr = isArchives ? ' data-accesskey="archives"' : "";
+      return `
             <li>
               <a href="${entry.url}"${
-      entry.url === url ? ' aria-current="page"' : ""
-    }>
+        entry.url === url ? ' aria-current="page"' : ""
+      }${accessKeyAttr}>
                 ${entry.menu.title || entry.title}
               </a>
             </li>
-          `).join("")
+          `;
+    }).join("")
   }
           ${
     menu_links.map(
@@ -166,7 +169,14 @@ export default async function (
     <!-- Toast notifications container -->
     <div class="toast-container toast-container--top-right" id="toast-container"></div>
 
-    <!-- Search modal (Cmd/Ctrl+K) -->
+    <!-- Search modal (Cmd/Ctrl+K or access key S) -->
+    <button
+      type="button"
+      data-accesskey="search"
+      data-modal-trigger="search-modal"
+      class="visually-hidden"
+      aria-label="Open search (access key: s)"
+    >Open search</button>
     ${searchModal}
 
     <!-- Current page: ${url} -->

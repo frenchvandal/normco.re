@@ -1,6 +1,8 @@
 import date, { Options as DateOptions } from "lume/plugins/date.ts";
 import esbuild from "lume/plugins/esbuild.ts";
+import favicon from "lume/plugins/favicon.ts";
 import lightningCss from "lume/plugins/lightningcss.ts";
+import ogImages from "lume/plugins/og_images.ts";
 import purgecss from "lume/plugins/purgecss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import prism, { Options as PrismOptions } from "lume/plugins/prism.ts";
@@ -284,12 +286,16 @@ export default function (userOptions?: Options) {
       }))
       .use(sourceMaps())
       .use(basePath())
+      .use(favicon({
+        input: "/favicon.png",
+      }))
       .use(toc())
       .use(prism(options.prism))
       .use(readingInfo())
       .use(date(options.date))
       .use(jsonLd())
       .use(slugifyUrls())
+      .use(ogImages())
       .use(picture())
       .use(transformImages())
       .use(metas())
@@ -303,7 +309,6 @@ export default function (userOptions?: Options) {
       .add("fonts")
       .add("styles.css")
       .add("js/main.js")
-      .add("favicon.png")
       .add("feed.xsl")
       .add("uploads")
       .mergeKey("extra_head", "stringArray")

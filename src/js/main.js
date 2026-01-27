@@ -7,6 +7,7 @@
 // Feature Imports
 // ============================================================================
 
+import { initAccessKeys } from "./features/accesskeys.js";
 import { enhanceAnchors } from "./features/anchors.js";
 import { initCodeCopy } from "./features/code-copy.js";
 import { enhanceExternalLinks } from "./features/external-links.js";
@@ -38,6 +39,7 @@ function initializeFeatures() {
   initSearch();
   initSearchModal();
   initScrollToTop();
+  initAccessKeys();
   enhanceImages();
   const defer = globalThis.requestIdleCallback
     ? globalThis.requestIdleCallback

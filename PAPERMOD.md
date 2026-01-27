@@ -123,65 +123,60 @@ PaperMod’s optional features are required.
 
 ### Complete PaperMod feature analysis
 
-| PaperMod feature             | Feasibility | Lume solution                                    | Status in codebase  |
-| ---------------------------- | ----------- | ------------------------------------------------ | ------------------- |
-| Light/dark theme + toggle    | ✅ Feasible | CSS vars + localStorage + `theme.js`             | ✅ **Implemented**  |
-| Auto theme (system pref)     | ✅ Feasible | `prefers-color-scheme` media query in `theme.js` | ✅ **Implemented**  |
-| Themed scroll bar            | ✅ Feasible | CSS `::-webkit-scrollbar` + CSS vars             | ✅ **Implemented**  |
-| Smooth scroll                | ✅ Feasible | CSS `scroll-behavior: smooth`                    | ✅ **Implemented**  |
-| Scroll-to-top button         | ✅ Feasible | `scroll-to-top.js` + CSS                         | ✅ **Implemented**  |
-| Responsive layout            | ✅ Feasible | Lightning CSS + mobile-first SCSS                | ✅ **Implemented**  |
-| Search (Fuse.js in PaperMod) | ✅ Feasible | Pagefind plugin (better: static index)           | ✅ **Implemented**  |
-| Search keyboard nav          | ✅ Feasible | Pagefind UI built-in + custom JS                 | ✅ **Implemented**  |
-| Table of contents            | ✅ Feasible | `lume/markdown-plugins/toc.ts`                   | ✅ **Implemented**  |
-| Reading time                 | ✅ Feasible | `reading_info` plugin                            | ✅ **Implemented**  |
-| Word count                   | ✅ Feasible | `reading_info` plugin (provides both)            | ✅ **Implemented**  |
-| Syntax highlighting          | ✅ Feasible | Prism plugin                                     | ✅ **Implemented**  |
-| Code copy button             | ✅ Feasible | `code-copy.js` + clipboard API                   | ✅ **Implemented**  |
-| Social icons                 | ✅ Feasible | `SocialIcons.ts` component with inline SVGs      | ✅ **Implemented**  |
-| Breadcrumbs                  | ✅ Feasible | `Breadcrumbs.ts` component                       | ✅ **Implemented**  |
-| Post cover image             | ✅ Feasible | Front matter `image` + layout logic              | ✅ **Implemented**  |
-| Responsive images            | ✅ Feasible | Transform Images + Picture plugins               | ✅ **Implemented**  |
-| Archive/tag pages            | ✅ Feasible | Search plugin + paginate + archive layout        | ✅ **Implemented**  |
-| Share buttons                | ✅ Feasible | Template links (Twitter, Facebook, etc.)         | ✅ **Implemented**  |
-| RSS/JSON feeds               | ✅ Feasible | Feed plugin                                      | ✅ **Implemented**  |
-| Sitemap                      | ✅ Feasible | Sitemap plugin                                   | ✅ **Implemented**  |
-| Robots.txt                   | ✅ Feasible | Robots plugin                                    | ✅ **Implemented**  |
-| Related posts                | ✅ Feasible | `RelatedPosts.ts` component + Search plugin      | ✅ **Implemented**  |
-| Prev/next post navigation    | ✅ Feasible | `search.previousPage`/`nextPage`                 | ✅ **Implemented**  |
-| Author profile widget        | ✅ Feasible | Data-driven component                            | ✅ **Implemented**  |
-| Profile mode (home layout)   | ✅ Feasible | Custom `index.page.ts` layout                    | ✅ **Implemented**  |
-| Home-Info mode               | ✅ Feasible | Custom `index.page.ts` layout                    | ✅ **Implemented**  |
-| Comments integration         | ✅ Feasible | Embed script (Utterances/Giscus/Disqus)          | ⬜ Not yet          |
-| SEO meta tags                | ✅ Feasible | Metas plugin                                     | ✅ **Implemented**  |
-| JSON-LD structured data      | ✅ Feasible | JSON-LD plugin                                   | ✅ **Implemented**  |
-| OpenGraph / Twitter Cards    | ✅ Feasible | Metas plugin                                     | ✅ **Implemented**  |
-| OG image generation          | ✅ Feasible | OG images plugin                                 | ⬜ Not yet          |
-| Favicon generation           | ✅ Feasible | Favicon plugin                                   | ⬜ Not yet (manual) |
-| Draft page indicators        | ✅ Feasible | `badge--draft` CSS + layout logic                | ✅ **Implemented**  |
-| Edit post link (GitHub)      | ✅ Feasible | `SourceInfo.ts` component                        | ✅ **Implemented**  |
-| Multi-language (i18n)        | ✅ Feasible | Multilanguage plugin (full feature parity)       | ⬜ Not yet          |
-| Access key shortcuts         | ✅ Feasible | Custom JS keybindings                            | ⬜ Not yet          |
-| Archives layout (timeline)   | ✅ Feasible | Custom archive layout                            | ✅ **Implemented**  |
+| PaperMod feature             | Feasibility | Lume solution                                    | Status in codebase |
+| ---------------------------- | ----------- | ------------------------------------------------ | ------------------ |
+| Light/dark theme + toggle    | ✅ Feasible | CSS vars + localStorage + `theme.js`             | ✅ **Implemented** |
+| Auto theme (system pref)     | ✅ Feasible | `prefers-color-scheme` media query in `theme.js` | ✅ **Implemented** |
+| Themed scroll bar            | ✅ Feasible | CSS `::-webkit-scrollbar` + CSS vars             | ✅ **Implemented** |
+| Smooth scroll                | ✅ Feasible | CSS `scroll-behavior: smooth`                    | ✅ **Implemented** |
+| Scroll-to-top button         | ✅ Feasible | `scroll-to-top.js` + CSS                         | ✅ **Implemented** |
+| Responsive layout            | ✅ Feasible | Lightning CSS + mobile-first SCSS                | ✅ **Implemented** |
+| Search (Fuse.js in PaperMod) | ✅ Feasible | Pagefind plugin (better: static index)           | ✅ **Implemented** |
+| Search keyboard nav          | ✅ Feasible | Pagefind UI built-in + custom JS                 | ✅ **Implemented** |
+| Table of contents            | ✅ Feasible | `lume/markdown-plugins/toc.ts`                   | ✅ **Implemented** |
+| Reading time                 | ✅ Feasible | `reading_info` plugin                            | ✅ **Implemented** |
+| Word count                   | ✅ Feasible | `reading_info` plugin (provides both)            | ✅ **Implemented** |
+| Syntax highlighting          | ✅ Feasible | Prism plugin                                     | ✅ **Implemented** |
+| Code copy button             | ✅ Feasible | `code-copy.js` + clipboard API                   | ✅ **Implemented** |
+| Social icons                 | ✅ Feasible | `SocialIcons.ts` component with inline SVGs      | ✅ **Implemented** |
+| Breadcrumbs                  | ✅ Feasible | `Breadcrumbs.ts` component                       | ✅ **Implemented** |
+| Post cover image             | ✅ Feasible | Front matter `image` + layout logic              | ✅ **Implemented** |
+| Responsive images            | ✅ Feasible | Transform Images + Picture plugins               | ✅ **Implemented** |
+| Archive/tag pages            | ✅ Feasible | Search plugin + paginate + archive layout        | ✅ **Implemented** |
+| Share buttons                | ✅ Feasible | Template links (Twitter, Facebook, etc.)         | ✅ **Implemented** |
+| RSS/JSON feeds               | ✅ Feasible | Feed plugin                                      | ✅ **Implemented** |
+| Sitemap                      | ✅ Feasible | Sitemap plugin                                   | ✅ **Implemented** |
+| Robots.txt                   | ✅ Feasible | Robots plugin                                    | ✅ **Implemented** |
+| Related posts                | ✅ Feasible | `RelatedPosts.ts` component + Search plugin      | ✅ **Implemented** |
+| Prev/next post navigation    | ✅ Feasible | `search.previousPage`/`nextPage`                 | ✅ **Implemented** |
+| Author profile widget        | ✅ Feasible | Data-driven component                            | ✅ **Implemented** |
+| Profile mode (home layout)   | ✅ Feasible | Custom `index.page.ts` layout                    | ✅ **Implemented** |
+| Home-Info mode               | ✅ Feasible | Custom `index.page.ts` layout                    | ✅ **Implemented** |
+| Comments integration         | ✅ Feasible | Embed script (Utterances/Giscus/Disqus)          | ⬜ Not yet         |
+| SEO meta tags                | ✅ Feasible | Metas plugin                                     | ✅ **Implemented** |
+| JSON-LD structured data      | ✅ Feasible | JSON-LD plugin                                   | ✅ **Implemented** |
+| OpenGraph / Twitter Cards    | ✅ Feasible | Metas plugin                                     | ✅ **Implemented** |
+| OG image generation          | ✅ Feasible | OG images plugin + TSX layout                    | ✅ **Implemented** |
+| Favicon generation           | ✅ Feasible | Favicon plugin                                   | ✅ **Implemented** |
+| Draft page indicators        | ✅ Feasible | `badge--draft` CSS + layout logic                | ✅ **Implemented** |
+| Edit post link (GitHub)      | ✅ Feasible | `SourceInfo.ts` component                        | ✅ **Implemented** |
+| Multi-language (i18n)        | ✅ Feasible | Multilanguage plugin (full feature parity)       | ⬜ Not yet         |
+| Access key shortcuts         | ✅ Feasible | `accesskeys.js` module                           | ✅ **Implemented** |
+| Archives layout (timeline)   | ✅ Feasible | Custom archive layout                            | ✅ **Implemented** |
 
 ### Lume plugins available (not yet used)
 
 The following official Lume plugins can enhance the migration:
 
-| Plugin           | Purpose                          | Relevance                             |
-| ---------------- | -------------------------------- | ------------------------------------- |
-| Transform Images | Image resize, format conversion  | Post cover images, responsive srcsets |
-| Picture          | `<picture>` element generation   | Modern format delivery (AVIF, WebP)   |
-| Favicon          | Auto-generate all favicon sizes  | Replace manual favicon management     |
-| Icons            | Import icons from icon libraries | Social icons, UI icons                |
-| OG images        | Auto-generate OpenGraph images   | Social sharing preview                |
-| Nav              | Build menus and breadcrumbs      | Could simplify `Breadcrumbs.ts`       |
-| SVGO             | Optimize SVG files               | Icon optimization                     |
-| Minify HTML      | HTML minification                | Performance optimization              |
-| Multilanguage    | Multi-language site support      | Full i18n with hreflang + alternates  |
+| Plugin | Purpose                          | Relevance                       |
+| ------ | -------------------------------- | ------------------------------- |
+| Icons  | Import icons from icon libraries | Social icons, UI icons          |
+| Nav    | Build menus and breadcrumbs      | Could simplify `Breadcrumbs.ts` |
+| SVGO   | Optimize SVG files               | Icon optimization               |
 
-**Note:** Robots plugin is now in use. Related posts are implemented via a
-custom `RelatedPosts.ts` component using the Search plugin.
+**Note:** Transform Images, Picture, Favicon, OG Images, and Robots plugins are
+now in use. Related posts are implemented via a custom `RelatedPosts.ts`
+component using the Search plugin.
 
 ### Multilanguage plugin (i18n) — detailed analysis
 
@@ -526,6 +521,27 @@ example site must also be recreated.
   - Created `home-profile.css` with responsive styling for profile display.
   - Integrates site-wide `social_links` into profile display.
   - Also satisfies "Home-Info mode" requirement (welcome text in posts mode).
+- Implemented access key shortcuts (`src/js/features/accesskeys.js`):
+  - PaperMod-style keyboard navigation: h (home), a (archives), s (search).
+  - Platform-aware modifier detection: Alt+key on Windows/Linux,
+    Control+Option+key on macOS.
+  - Added `data-accesskey` attributes to navigation elements in `base.ts`.
+  - Hidden search trigger button for access key activation.
+  - Added `.visually-hidden` utility class for screen reader accessibility.
+- Implemented Favicon plugin (`plugins.ts`):
+  - Configured Favicon plugin with `favicon.png` as input source.
+  - Plugin auto-generates `favicon.ico` and `apple-touch-icon.png`.
+  - Removed manual favicon link from `base.ts` (plugin injects automatically).
+  - Removed `.add("favicon.png")` from build (plugin handles it).
+- Implemented OG Images plugin (`plugins.ts`,
+  `src/_includes/layouts/og_images.tsx`):
+  - Created PaperMod-style TSX layout for Open Graph image generation.
+  - Configured JSX support in `deno.json` (jsx-runtime, compilerOptions).
+  - Added `openGraphLayout` to global `_data.ts` for site-wide OG images.
+  - Layout features: dark background, site name, title, description, reading
+    time.
+  - Updated `CLAUDE.md` to allow JSX/TSX exception for OG images (justified
+    deviation documented).
 
 ### Audit summary (January 2026)
 
@@ -555,14 +571,18 @@ example site must also be recreated.
 
 ### Next priorities (in order)
 
-1. **Cross-browser QA**: test on Chrome, Firefox, Safari, and Edge to ensure
+1. **i18n implementation**: configure Multilanguage plugin, migrate UI strings,
+   create language selector component.
+2. **Cross-browser QA**: test on Chrome, Firefox, Safari, and Edge to ensure
    consistent rendering.
-2. **Mobile device testing**: validate on real iOS and Android devices for touch
+3. **Mobile device testing**: validate on real iOS and Android devices for touch
    targets and gestures.
-3. **Performance optimization**: audit CSS bundle size, consider code splitting
+4. **Performance optimization**: audit CSS bundle size, consider code splitting
    or critical CSS.
-4. **Content migration**: test with real production content to identify edge
+5. **Content migration**: test with real production content to identify edge
    cases.
+6. **Comments integration**: implement Utterances/Giscus/Disqus support (lowest
+   priority, deferred).
 
 ### Remaining work checklist (living)
 
@@ -610,6 +630,16 @@ example site must also be recreated.
       support.
 - [x] Draft page indicators: implemented with `badge--draft` CSS, i18n string,
       and integration in `PostList.ts` and `layouts/post.ts`.
+- [x] Access key shortcuts: implemented `accesskeys.js` module with
+      PaperMod-style keyboard navigation (h=home, a=archives, s=search).
+      Supports both Alt+key (Windows/Linux) and Control+Option+key (macOS)
+      combinations.
+- [x] Favicon generation: configured Favicon plugin in `plugins.ts` with
+      `favicon.png` as input. Plugin auto-generates `favicon.ico`,
+      `apple-touch-icon.png`, and injects appropriate `<link>` tags.
+- [x] OG image generation: implemented via OG Images plugin with TSX layout.
+      JSX/TSX exception documented in `CLAUDE.md` for PaperMod project.
+- [ ] Comments integration: deferred to lowest priority per user request.
 
 ## Accepted trade-offs
 

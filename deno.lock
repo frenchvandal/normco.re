@@ -746,6 +746,13 @@
     "lightningcss-wasm@1.30.2": {
       "integrity": "sha512-3QB24h07oFTwiXI/wItgEv5De1prsmrZFWluuTyLO7/CFk4kEC5zgG7V6qQNGLBB5+QhSnGMixUALWHXj+J3Ug=="
     },
+    "linebreak@1.1.0": {
+      "integrity": "sha512-MHp03UImeVhB7XZtjd0E4n6+3xr5Dq/9xI/5FptGk5FrbDR3zagPa2DS6U8ks/3HjbKWG9Q1M2ufOzxV2qLYSQ==",
+      "dependencies": [
+        "base64-js",
+        "unicode-trie"
+      ]
+    },
     "linkify-it@5.0.0": {
       "integrity": "sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==",
       "dependencies": [
