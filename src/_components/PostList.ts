@@ -30,6 +30,16 @@ export default async function (
         author: post.author,
         readingInfo: post.readingInfo,
       });
+
+      const coverImage = post.image
+        ? await comp.CoverImage({
+          src: post.image,
+          alt: post.imageAlt || post.title,
+          link: post.url,
+          loading: "lazy",
+        })
+        : "";
+
       const excerptHtml = post.excerpt
         ? `<div class="post-excerpt body">
       ${md(post.excerpt)}
@@ -41,7 +51,8 @@ export default async function (
         : "";
 
       return `
-  <li class="post${post.draft ? " post--draft" : ""}">
+  <li class="post-entry${post.draft ? " post--draft" : ""}">
+    ${coverImage}
     <header class="post-header">
       <h2 class="post-title">
         ${draftBadge}

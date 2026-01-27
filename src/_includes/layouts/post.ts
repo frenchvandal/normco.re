@@ -50,6 +50,9 @@ export default async function (
     sourcePath,
     repo,
     draft,
+    image,
+    imageAlt,
+    imageCaption,
   }: Lume.Data,
 ) {
   const postDetails = await comp.PostDetails({
@@ -89,6 +92,15 @@ export default async function (
     ? `<span class="badge badge--draft">${i18n.post.draft}</span>`
     : "";
 
+  const coverImage = image
+    ? await comp.CoverImage({
+      src: image,
+      alt: imageAlt || title,
+      caption: imageCaption,
+      loading: "eager",
+    })
+    : "";
+
   return `
 ${breadcrumbs}
 
@@ -102,6 +114,8 @@ ${breadcrumbs}
     ${description ? `<p class="post-description">${description}</p>` : ""}
 
     ${postDetails}
+
+    ${coverImage}
   </header>
 
   ${

@@ -64,6 +64,7 @@
 
 /* Content components */
 @import "css/04-components/related-posts.css";
+@import "css/04-components/cover-image.css";
 
 /* Social components */
 @import "css/04-components/social-icons.css";
