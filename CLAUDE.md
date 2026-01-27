@@ -2,10 +2,14 @@
 
 ## IMPORTANT — MUST DO
 
-- All merge requests and commits related to the PaperMod project must be done in
-  the `dev` branch, never the `master` branch, unless explicitly stated
+- All merge requests and commits related to the PaperMod project must be made in
+  the `dev` branch, never in the `master` branch, unless explicitly stated
   otherwise by the human user.
-- No `deno test --coverage` required for tasks related to the PaperMod project.
+- No `deno test --coverage` is required for tasks related to the PaperMod
+  project.
+- The PaperMod project is documented in the `PAPERMOD.md` file.
+- Any task impacting the PaperMod project must be documented by updating the
+  `PAPERMOD.md` file.
 
 ## Project context
 

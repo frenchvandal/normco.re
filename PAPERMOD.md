@@ -8,9 +8,10 @@ PaperMod.
 
 ## MUST-DO
 
-All merge requests and commits related to the PaperMod project must be done in
-the `dev` branch, never the `master` branch, unless explicitly stated otherwise
-by the human user.
+- All merge requests and commits related to the PaperMod project must be done in
+  the `dev` branch, never the `master` branch, unless explicitly stated
+  otherwise by the human user.
+- No `deno test --coverage` required for tasks related to the PaperMod project.
 
 ## Reference documentation for Hugo and PaperMod
 
