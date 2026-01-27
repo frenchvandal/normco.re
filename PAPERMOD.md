@@ -170,6 +170,8 @@ when moving toward PaperMod unless explicitly rebuilt:
   control).
 - Expanded the shared post list rendering to include post headers, excerpts, and
   a read-more affordance so archive listings align with PaperMod’s list rhythm.
+- Restructured post metadata blocks to mirror PaperMod (meta line + tags row
+  with label and hashtag styling).
 
 ### Next priorities (in order)
 
@@ -190,8 +192,6 @@ when moving toward PaperMod unless explicitly rebuilt:
   home.
 - Post content view: verify the post header structure, spacing above content,
   and typography for the lead section.
-- Post meta blocks: confirm date, reading time, and tags match PaperMod’s visual
-  hierarchy and separator treatment.
 - Search modal: restyle the Pagefind UI to match PaperMod’s search panel and
   keyboard hints.
 - Archive/tag pages: ensure list density, metadata, and title sizing are aligned
