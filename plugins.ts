@@ -2,6 +2,7 @@ import date, { Options as DateOptions } from "lume/plugins/date.ts";
 import esbuild from "lume/plugins/esbuild.ts";
 import favicon from "lume/plugins/favicon.ts";
 import lightningCss from "lume/plugins/lightningcss.ts";
+import ogImages from "lume/plugins/og_images.ts";
 import purgecss from "lume/plugins/purgecss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import prism, { Options as PrismOptions } from "lume/plugins/prism.ts";
@@ -294,6 +295,7 @@ export default function (userOptions?: Options) {
       .use(date(options.date))
       .use(jsonLd())
       .use(slugifyUrls())
+      .use(ogImages())
       .use(picture())
       .use(transformImages())
       .use(metas())

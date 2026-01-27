@@ -156,7 +156,7 @@ PaperMod’s optional features are required.
 | SEO meta tags                | ✅ Feasible | Metas plugin                                     | ✅ **Implemented** |
 | JSON-LD structured data      | ✅ Feasible | JSON-LD plugin                                   | ✅ **Implemented** |
 | OpenGraph / Twitter Cards    | ✅ Feasible | Metas plugin                                     | ✅ **Implemented** |
-| OG image generation          | ⚠️ Blocked  | OG images plugin (requires JSX)                  | ⬜ Deferred        |
+| OG image generation          | ✅ Feasible | OG images plugin + TSX layout                    | ✅ **Implemented** |
 | Favicon generation           | ✅ Feasible | Favicon plugin                                   | ✅ **Implemented** |
 | Draft page indicators        | ✅ Feasible | `badge--draft` CSS + layout logic                | ✅ **Implemented** |
 | Edit post link (GitHub)      | ✅ Feasible | `SourceInfo.ts` component                        | ✅ **Implemented** |
@@ -168,16 +168,14 @@ PaperMod’s optional features are required.
 
 The following official Lume plugins can enhance the migration:
 
-| Plugin    | Purpose                          | Relevance                            |
-| --------- | -------------------------------- | ------------------------------------ |
-| Icons     | Import icons from icon libraries | Social icons, UI icons               |
-| OG images | Auto-generate OpenGraph images   | Requires JSX (blocked by guidelines) |
-| Nav       | Build menus and breadcrumbs      | Could simplify `Breadcrumbs.ts`      |
-| SVGO      | Optimize SVG files               | Icon optimization                    |
+| Plugin | Purpose                          | Relevance                       |
+| ------ | -------------------------------- | ------------------------------- |
+| Icons  | Import icons from icon libraries | Social icons, UI icons          |
+| Nav    | Build menus and breadcrumbs      | Could simplify `Breadcrumbs.ts` |
+| SVGO   | Optimize SVG files               | Icon optimization               |
 
-**Note:** Transform Images, Picture, Favicon, and Robots plugins are now in use.
-OG images plugin requires JSX, which conflicts with project guidelines
-(`CLAUDE.md`). Related posts are implemented via a custom `RelatedPosts.ts`
+**Note:** Transform Images, Picture, Favicon, OG Images, and Robots plugins are
+now in use. Related posts are implemented via a custom `RelatedPosts.ts`
 component using the Search plugin.
 
 ### Multilanguage plugin (i18n) — detailed analysis
@@ -535,6 +533,15 @@ example site must also be recreated.
   - Plugin auto-generates `favicon.ico` and `apple-touch-icon.png`.
   - Removed manual favicon link from `base.ts` (plugin injects automatically).
   - Removed `.add("favicon.png")` from build (plugin handles it).
+- Implemented OG Images plugin (`plugins.ts`,
+  `src/_includes/layouts/og_images.tsx`):
+  - Created PaperMod-style TSX layout for Open Graph image generation.
+  - Configured JSX support in `deno.json` (jsx-runtime, compilerOptions).
+  - Added `openGraphLayout` to global `_data.ts` for site-wide OG images.
+  - Layout features: dark background, site name, title, description, reading
+    time.
+  - Updated `CLAUDE.md` to allow JSX/TSX exception for OG images (justified
+    deviation documented).
 
 ### Audit summary (January 2026)
 
@@ -630,8 +637,8 @@ example site must also be recreated.
 - [x] Favicon generation: configured Favicon plugin in `plugins.ts` with
       `favicon.png` as input. Plugin auto-generates `favicon.ico`,
       `apple-touch-icon.png`, and injects appropriate `<link>` tags.
-- [ ] OG image generation: deferred — Lume's OG images plugin requires JSX,
-      which conflicts with project guidelines prohibiting JSX/Preact/React.
+- [x] OG image generation: implemented via OG Images plugin with TSX layout.
+      JSX/TSX exception documented in `CLAUDE.md` for PaperMod project.
 - [ ] Comments integration: deferred to lowest priority per user request.
 
 ## Accepted trade-offs

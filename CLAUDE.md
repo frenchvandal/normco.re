@@ -47,6 +47,11 @@
 - SSG: **Lume**.
 - Templating: **ESM + TypeScript** for layouts and components (no JSX/Preact, no
   Nunjucks/Vento).
+  - **Exception (PaperMod project only)**: JSX/TSX is permitted exclusively for
+    Lume's OG Images plugin layouts, which require JSX to define image
+    templates. Prefer `.tsx` over `.jsx` when possible. This exception is scoped
+    to `src/_includes/layouts/og_images.tsx` (or similar OG image layout files)
+    and does not extend to other parts of the codebase.
 - Styling: **SCSS** (or modern CSS if appropriate).
 - Content: **Markdown** for posts and static pages (`*.md`), with dynamic pages
   in `*.page.ts` when needed.
@@ -594,7 +599,8 @@ site.getContent(file, loader);
   within the same commit. In that case, run `deno task update-deps` before
   staging `deno.lock`.
 - Do not introduce JSX, Preact, React, Nunjucks, Vento, or other templating
-  engines.
+  engines, **except** for Lume's OG Images plugin layouts (see "Stack & tooling"
+  exception for PaperMod project).
 - Do not add new dependencies unless explicitly requested.
 - Do not introduce Markdown content pages unless explicitly requested.
 - Never proactively create documentation files (`*.md`) or README files unless

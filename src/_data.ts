@@ -66,10 +66,13 @@ interface SiteData {
   extra_head: string[];
   metas: MetasConfig;
   jsonLd: Lume.Data["jsonLd"];
+  /** OG Images plugin layout for generating social sharing images */
+  openGraphLayout: string;
 }
 
 const data: SiteData = {
   lang: "en",
+  openGraphLayout: "layouts/og_images.tsx",
   home: {
     welcome: "Hello, I am a person that writes stuff.",
     mode: "posts",
