@@ -123,46 +123,46 @@ PaperMod’s optional features are required.
 
 ### Complete PaperMod feature analysis
 
-| PaperMod feature             | Feasibility | Lume solution                                    | Status in codebase        |
-| ---------------------------- | ----------- | ------------------------------------------------ | ------------------------- |
-| Light/dark theme + toggle    | ✅ Feasible | CSS vars + localStorage + `theme.js`             | ✅ **Implemented**        |
-| Auto theme (system pref)     | ✅ Feasible | `prefers-color-scheme` media query in `theme.js` | ✅ **Implemented**        |
-| Themed scroll bar            | ✅ Feasible | CSS `::-webkit-scrollbar` + CSS vars             | ✅ **Implemented**        |
-| Smooth scroll                | ✅ Feasible | CSS `scroll-behavior: smooth`                    | ✅ **Implemented**        |
-| Scroll-to-top button         | ✅ Feasible | `scroll-to-top.js` + CSS                         | ✅ **Implemented**        |
-| Responsive layout            | ✅ Feasible | Lightning CSS + mobile-first SCSS                | ✅ **Implemented**        |
-| Search (Fuse.js in PaperMod) | ✅ Feasible | Pagefind plugin (better: static index)           | ✅ **Implemented**        |
-| Search keyboard nav          | ✅ Feasible | Pagefind UI built-in + custom JS                 | ✅ **Implemented**        |
-| Table of contents            | ✅ Feasible | `lume/markdown-plugins/toc.ts`                   | ✅ **Implemented**        |
-| Reading time                 | ✅ Feasible | `reading_info` plugin                            | ✅ **Implemented**        |
-| Word count                   | ✅ Feasible | `reading_info` plugin (provides both)            | ✅ **Implemented**        |
-| Syntax highlighting          | ✅ Feasible | Prism plugin                                     | ✅ **Implemented**        |
-| Code copy button             | ✅ Feasible | `code-copy.js` + clipboard API                   | ✅ **Implemented**        |
-| Social icons                 | ✅ Feasible | `SocialIcons.ts` component with inline SVGs      | ✅ **Implemented**        |
-| Breadcrumbs                  | ✅ Feasible | `Breadcrumbs.ts` component                       | ✅ **Implemented**        |
-| Post cover image             | ✅ Feasible | Front matter `image` + layout logic              | ✅ **Implemented**        |
-| Responsive images            | ✅ Feasible | Transform Images + Picture plugins               | ✅ **Implemented**        |
-| Archive/tag pages            | ✅ Feasible | Search plugin + paginate + archive layout        | ✅ **Implemented**        |
-| Share buttons                | ✅ Feasible | Template links (Twitter, Facebook, etc.)         | ✅ **Implemented**        |
-| RSS/JSON feeds               | ✅ Feasible | Feed plugin                                      | ✅ **Implemented**        |
-| Sitemap                      | ✅ Feasible | Sitemap plugin                                   | ✅ **Implemented**        |
-| Robots.txt                   | ✅ Feasible | Robots plugin                                    | ✅ **Implemented**        |
-| Related posts                | ✅ Feasible | `RelatedPosts.ts` component + Search plugin      | ✅ **Implemented**        |
-| Prev/next post navigation    | ✅ Feasible | `search.previousPage`/`nextPage`                 | ✅ **Implemented**        |
-| Author profile widget        | ✅ Feasible | Data-driven component                            | ✅ **Implemented**        |
-| Profile mode (home layout)   | ✅ Feasible | Custom `index.page.ts` layout                    | ⬜ Not yet                |
-| Home-Info mode               | ✅ Feasible | Custom `index.page.ts` layout                    | ⬜ Partial (welcome text) |
-| Comments integration         | ✅ Feasible | Embed script (Utterances/Giscus/Disqus)          | ⬜ Not yet                |
-| SEO meta tags                | ✅ Feasible | Metas plugin                                     | ✅ **Implemented**        |
-| JSON-LD structured data      | ✅ Feasible | JSON-LD plugin                                   | ✅ **Implemented**        |
-| OpenGraph / Twitter Cards    | ✅ Feasible | Metas plugin                                     | ✅ **Implemented**        |
-| OG image generation          | ✅ Feasible | OG images plugin                                 | ⬜ Not yet                |
-| Favicon generation           | ✅ Feasible | Favicon plugin                                   | ⬜ Not yet (manual)       |
-| Draft page indicators        | ✅ Feasible | `badge--draft` CSS + layout logic                | ✅ **Implemented**        |
-| Edit post link (GitHub)      | ✅ Feasible | `SourceInfo.ts` component                        | ✅ **Implemented**        |
-| Multi-language (i18n)        | ✅ Feasible | Multilanguage plugin (full feature parity)       | ⬜ Not yet                |
-| Access key shortcuts         | ✅ Feasible | Custom JS keybindings                            | ⬜ Not yet                |
-| Archives layout (timeline)   | ✅ Feasible | Custom archive layout                            | ✅ **Implemented**        |
+| PaperMod feature             | Feasibility | Lume solution                                    | Status in codebase  |
+| ---------------------------- | ----------- | ------------------------------------------------ | ------------------- |
+| Light/dark theme + toggle    | ✅ Feasible | CSS vars + localStorage + `theme.js`             | ✅ **Implemented**  |
+| Auto theme (system pref)     | ✅ Feasible | `prefers-color-scheme` media query in `theme.js` | ✅ **Implemented**  |
+| Themed scroll bar            | ✅ Feasible | CSS `::-webkit-scrollbar` + CSS vars             | ✅ **Implemented**  |
+| Smooth scroll                | ✅ Feasible | CSS `scroll-behavior: smooth`                    | ✅ **Implemented**  |
+| Scroll-to-top button         | ✅ Feasible | `scroll-to-top.js` + CSS                         | ✅ **Implemented**  |
+| Responsive layout            | ✅ Feasible | Lightning CSS + mobile-first SCSS                | ✅ **Implemented**  |
+| Search (Fuse.js in PaperMod) | ✅ Feasible | Pagefind plugin (better: static index)           | ✅ **Implemented**  |
+| Search keyboard nav          | ✅ Feasible | Pagefind UI built-in + custom JS                 | ✅ **Implemented**  |
+| Table of contents            | ✅ Feasible | `lume/markdown-plugins/toc.ts`                   | ✅ **Implemented**  |
+| Reading time                 | ✅ Feasible | `reading_info` plugin                            | ✅ **Implemented**  |
+| Word count                   | ✅ Feasible | `reading_info` plugin (provides both)            | ✅ **Implemented**  |
+| Syntax highlighting          | ✅ Feasible | Prism plugin                                     | ✅ **Implemented**  |
+| Code copy button             | ✅ Feasible | `code-copy.js` + clipboard API                   | ✅ **Implemented**  |
+| Social icons                 | ✅ Feasible | `SocialIcons.ts` component with inline SVGs      | ✅ **Implemented**  |
+| Breadcrumbs                  | ✅ Feasible | `Breadcrumbs.ts` component                       | ✅ **Implemented**  |
+| Post cover image             | ✅ Feasible | Front matter `image` + layout logic              | ✅ **Implemented**  |
+| Responsive images            | ✅ Feasible | Transform Images + Picture plugins               | ✅ **Implemented**  |
+| Archive/tag pages            | ✅ Feasible | Search plugin + paginate + archive layout        | ✅ **Implemented**  |
+| Share buttons                | ✅ Feasible | Template links (Twitter, Facebook, etc.)         | ✅ **Implemented**  |
+| RSS/JSON feeds               | ✅ Feasible | Feed plugin                                      | ✅ **Implemented**  |
+| Sitemap                      | ✅ Feasible | Sitemap plugin                                   | ✅ **Implemented**  |
+| Robots.txt                   | ✅ Feasible | Robots plugin                                    | ✅ **Implemented**  |
+| Related posts                | ✅ Feasible | `RelatedPosts.ts` component + Search plugin      | ✅ **Implemented**  |
+| Prev/next post navigation    | ✅ Feasible | `search.previousPage`/`nextPage`                 | ✅ **Implemented**  |
+| Author profile widget        | ✅ Feasible | Data-driven component                            | ✅ **Implemented**  |
+| Profile mode (home layout)   | ✅ Feasible | Custom `index.page.ts` layout                    | ✅ **Implemented**  |
+| Home-Info mode               | ✅ Feasible | Custom `index.page.ts` layout                    | ✅ **Implemented**  |
+| Comments integration         | ✅ Feasible | Embed script (Utterances/Giscus/Disqus)          | ⬜ Not yet          |
+| SEO meta tags                | ✅ Feasible | Metas plugin                                     | ✅ **Implemented**  |
+| JSON-LD structured data      | ✅ Feasible | JSON-LD plugin                                   | ✅ **Implemented**  |
+| OpenGraph / Twitter Cards    | ✅ Feasible | Metas plugin                                     | ✅ **Implemented**  |
+| OG image generation          | ✅ Feasible | OG images plugin                                 | ⬜ Not yet          |
+| Favicon generation           | ✅ Feasible | Favicon plugin                                   | ⬜ Not yet (manual) |
+| Draft page indicators        | ✅ Feasible | `badge--draft` CSS + layout logic                | ✅ **Implemented**  |
+| Edit post link (GitHub)      | ✅ Feasible | `SourceInfo.ts` component                        | ✅ **Implemented**  |
+| Multi-language (i18n)        | ✅ Feasible | Multilanguage plugin (full feature parity)       | ⬜ Not yet          |
+| Access key shortcuts         | ✅ Feasible | Custom JS keybindings                            | ⬜ Not yet          |
+| Archives layout (timeline)   | ✅ Feasible | Custom archive layout                            | ✅ **Implemented**  |
 
 ### Lume plugins available (not yet used)
 
@@ -516,6 +516,16 @@ example site must also be recreated.
   - Responsive design with mobile-friendly adjustments.
   - Added `author` i18n strings to `src/_data/i18n.ts`.
   - Updated purgecss safelist to include `author-profile` pattern.
+- Implemented Profile mode for home page (`src/index.page.ts`,
+  `src/_includes/css/05-layouts/home-profile.css`):
+  - Added `home.mode` configuration option in `src/_data.ts` supporting "posts"
+    (default) and "profile" modes.
+  - Profile mode displays centered author profile using `AuthorProfile`
+    component in "full" variant.
+  - Added `home.profile` configuration with name, avatar, and bio fields.
+  - Created `home-profile.css` with responsive styling for profile display.
+  - Integrates site-wide `social_links` into profile display.
+  - Also satisfies "Home-Info mode" requirement (welcome text in posts mode).
 
 ### Audit summary (January 2026)
 

@@ -44,6 +44,10 @@ export const title = "Home";
 /**
  * Renders the home page HTML.
  *
+ * Supports two modes configured via `home.mode` in `_data.ts`:
+ * - "posts" (default): Shows welcome message, search, and recent posts
+ * - "profile": Shows author profile with bio and social links (PaperMod style)
+ *
  * @param data - Lume data helpers for rendering the home page.
  * @param helpers - Lume helpers for markdown rendering.
  * @returns The HTML string for the home page.
@@ -57,9 +61,42 @@ export const title = "Home";
  * ```
  */
 export default async function (
-  { home, search, i18n, comp }: Lume.Data,
+  { home, search, i18n, comp, social_links }: Lume.Data,
   { md }: Lume.Helpers,
 ) {
+  const mode = home.mode || "posts";
+
+  // Profile mode: display author profile centered on the page
+  if (mode === "profile" && home.profile) {
+    const profile = home.profile;
+
+    // Convert social_links to AuthorProfile format
+    const socialLinks = social_links?.map(
+      (link: { platform: string; url: string; label: string }) => ({
+        platform: link.platform,
+        url: link.url,
+        label: link.label,
+      }),
+    ) || [];
+
+    const authorProfile = await comp.AuthorProfile({
+      author: {
+        name: profile.name,
+        avatar: profile.avatar,
+        bio: profile.bio,
+        social: socialLinks,
+      },
+      variant: "full",
+    });
+
+    return `
+<main class="home-profile">
+  ${authorProfile}
+</main>
+`;
+  }
+
+  // Posts mode (default): show recent posts
   const recentPosts = search.pages("type=post", "date=desc", 3);
 
   const postArticles = await Promise.all(
