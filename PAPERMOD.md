@@ -6,6 +6,13 @@ feasible, what is risky or infeasible, which PaperMod features are likely to be
 lost under Lume, and which current Lume site features could be lost by adopting
 PaperMod.
 
+## Reference documentation for Hugo and PaperMod
+
+- https://github.com/adityatelange/hugo-PaperMod
+- https://adityatelange.github.io/hugo-PaperMod/
+- https://github.com/adityatelange/hugo-PaperMod/wiki
+- https://gohugo.io
+
 ## Scope & assumptions
 
 - Target: Port PaperMod’s **visual system and UX** to Lume (not Hugo itself).
@@ -115,6 +122,11 @@ when moving toward PaperMod unless explicitly rebuilt:
    or drop them.
 6. **QA with a content snapshot** to validate typography, spacing, and layout
    fidelity.
+
+## Accepted trade-offs
+
+1. i18n can be delayed, keep existing Lume as is because
+2. Search with Pagefind UI with PaperMod-like styling.
 
 ## Recommendation
 
