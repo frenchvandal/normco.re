@@ -15,6 +15,9 @@
 
 **Do**
 
+- Before executing any Deno command for the very first time on an environment,
+  verify whether Deno is already installed. If it is not installed, install Deno
+  first, provided this is technically possible for Claude.
 - All merge requests and commits related to the PaperMod project must be done in
   the `dev` branch, never the `master` branch, unless explicitly stated
   otherwise by the human user.

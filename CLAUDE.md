@@ -542,6 +542,9 @@ site.getContent(file, loader);
 
 ## Notes for Claude
 
+- Before executing any Deno command for the very first time on an environment,
+  verify whether Deno is already installed. If it is not installed, install Deno
+  first, provided this is technically possible for Claude.
 - Prioritize simplicity, maintainability, and reasonable DRY.
 - Always account for accessibility.
 - Avoid JSX/Preact and non-approved templating engines.
