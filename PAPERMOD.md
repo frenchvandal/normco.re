@@ -138,6 +138,33 @@ when moving toward PaperMod unless explicitly rebuilt:
 6. **Run QA on a content snapshot** to validate typography, spacing, and layout
    fidelity.
 
+## Implementation log (PaperMod → Lume)
+
+### Completed
+
+- Established baseline PaperMod-inspired design tokens (colors, typography,
+  layout widths) with a matching dark theme palette.
+- Aligned global layout spacing and navigation/post list spacing to reflect
+  PaperMod’s compact rhythm.
+- Refined page header and footer treatments to match PaperMod’s divider-driven
+  structure.
+
+### Next priorities (in order)
+
+1. **Header + navigation parity**: align brand lockup, menu spacing, and theme
+   toggle positioning with PaperMod’s header layout.
+2. **Post list template parity**: adjust list metadata, excerpt rhythm, and
+   read-more affordance; confirm typography for titles and meta.
+3. **Single post template parity**: align post header, metadata, and content
+   spacing; verify TOC/footnotes layout.
+4. **Search UI parity**: restyle Pagefind UI to match PaperMod search modal.
+5. **Archive/tag pages parity**: ensure layouts, spacing, and metadata match
+   PaperMod’s archive listings.
+6. **Theme toggle details**: ensure toggle UI, focus states, and persistence
+   match PaperMod behavior.
+7. **QA + polish**: review responsive breakpoints, contrast, and component
+   spacing for final parity.
+
 ## Accepted trade-offs
 
 1. i18n migration can be delayed; i18n will be removed from the PaperMod-based

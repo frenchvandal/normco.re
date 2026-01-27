@@ -3,7 +3,9 @@
    ========================================================================== */
 
 .page-header {
-  margin-bottom: var(--row-gap-medium);
+  margin-bottom: var(--row-gap-small);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-line);
 
   & > p:first-child {
     margin-top: 0;

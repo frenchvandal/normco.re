@@ -138,7 +138,7 @@ img[loading="lazy"].loaded {
 
 /* Main content layout */
 main {
-  padding: var(--row-gap-medium) 0;
+  padding: var(--row-gap-small) 0;
   max-width: min(
     100% - var(--content-padding-desktop),
     var(--content-max-width)
@@ -163,6 +163,6 @@ main > :first-child {
 @media (max-width: 480px) {
   main {
     max-width: calc(100% - var(--content-padding-mobile));
-    padding: var(--row-gap-small) 0;
+    padding: var(--spacing-lg) 0;
   }
 }
