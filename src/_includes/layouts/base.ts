@@ -84,44 +84,48 @@ export default async function (
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <nav class="navbar" role="navigation" aria-label="Main navigation">
-      <a href="/" class="navbar-home">
-        ${logo ? logo : `<strong>${metas?.site ?? ""}</strong>`}
-      </a>
+      <div class="navbar__inner">
+        <a href="/" class="navbar-home">
+          ${logo ? logo : `<strong>${metas?.site ?? ""}</strong>`}
+        </a>
 
-      <ul class="navbar-links">
-      ${
+        <div class="navbar__menu">
+          <ul class="navbar-links">
+          ${
     menuItems.map((entry) => `
-        <li>
-          <a href="${entry.url}"${
+            <li>
+              <a href="${entry.url}"${
       entry.url === url ? ' aria-current="page"' : ""
     }>
-            ${entry.menu.title || entry.title}
-          </a>
-        </li>
-      `).join("")
+                ${entry.menu.title || entry.title}
+              </a>
+            </li>
+          `).join("")
   }
-      ${
-    menu_links.map((link: { href: string; target?: string; text: string }) => `
-        <li>
-          <a href="${link.href}"${
-      link.target ? ` target="${link.target}"` : ""
-    }>
-            ${link.text}
-          </a>
-        </li>
-      `).join("")
+          ${
+    menu_links.map(
+      (link: { href: string; target?: string; text: string }) => `
+            <li>
+              <a href="${link.href}"${
+        link.target ? ` target="${link.target}"` : ""
+      }>
+                ${link.text}
+              </a>
+            </li>
+          `,
+    ).join("")
   }
-      <li>
-        <button
-          id="theme-toggle"
-          class="button theme-toggle"
-          aria-label="Switch theme"
-          aria-live="polite"
-        >
-          <span class="icon" aria-hidden="true">◐</span>
-        </button>
-      </li>
-      </ul>
+          </ul>
+          <button
+            id="theme-toggle"
+            class="button theme-toggle"
+            aria-label="Switch theme"
+            aria-live="polite"
+          >
+            <span class="icon" aria-hidden="true">◐</span>
+          </button>
+        </div>
+      </div>
     </nav>
 
     <main id="main-content" class="${bodyClass || ""}" role="main">
