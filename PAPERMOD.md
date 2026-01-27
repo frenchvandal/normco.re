@@ -143,7 +143,7 @@ PaperMod’s optional features are required.
 | Post cover image             | ✅ Feasible | Front matter `image` + layout logic              | ✅ **Implemented**        |
 | Responsive images            | ✅ Feasible | Transform Images + Picture plugins               | ✅ **Implemented**        |
 | Archive/tag pages            | ✅ Feasible | Search plugin + paginate + archive layout        | ✅ **Implemented**        |
-| Share buttons                | ✅ Feasible | Template links (Twitter, Facebook, etc.)         | ⬜ Not yet                |
+| Share buttons                | ✅ Feasible | Template links (Twitter, Facebook, etc.)         | ✅ **Implemented**        |
 | RSS/JSON feeds               | ✅ Feasible | Feed plugin                                      | ✅ **Implemented**        |
 | Sitemap                      | ✅ Feasible | Sitemap plugin                                   | ✅ **Implemented**        |
 | Robots.txt                   | ✅ Feasible | Robots plugin                                    | ✅ **Implemented**        |
@@ -495,6 +495,17 @@ example site must also be recreated.
   - Added `cover-image.css` with responsive styling, dark theme support, and
     post list integration.
   - Updated purgecss safelist to include `cover-image` pattern.
+- Implemented share buttons component (`src/_components/ShareButtons.ts`,
+  `src/_includes/css/04-components/share-buttons.css`,
+  `src/js/features/share-copy.js`):
+  - Created `ShareButtons.ts` component with Twitter, Facebook, LinkedIn,
+    WhatsApp, and copy-to-clipboard buttons.
+  - Platform-specific hover colors matching brand guidelines.
+  - Accessible with ARIA labels and keyboard navigation.
+  - Uses Clipboard API with fallback for older browsers.
+  - Integrated into `layouts/post.ts` between source info and related posts.
+  - Added `share` i18n strings to `src/_data/i18n.ts`.
+  - Updated purgecss safelist to include `share-button` pattern.
 
 ### Audit summary (January 2026)
 

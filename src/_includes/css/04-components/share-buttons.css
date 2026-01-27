@@ -1,0 +1,164 @@
+/**
+ * Share Buttons Component Styles
+ *
+ * Social sharing buttons with platform-specific hover colors.
+ * Follows PaperMod's compact button style with icon + optional label.
+ */
+
+/* ============================================================================
+   Container
+   ============================================================================ */
+
+.share-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-300);
+  margin-block: var(--space-500);
+  padding-block: var(--space-400);
+  border-block-start: 1px solid var(--color-border);
+}
+
+.share-buttons__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
+.share-buttons__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-200);
+}
+
+/* ============================================================================
+   Button Base
+   ============================================================================ */
+
+.share-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-100);
+  padding: var(--space-150) var(--space-250);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.share-button:hover {
+  color: var(--color-background);
+  transform: translateY(-1px);
+}
+
+.share-button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.share-button:active {
+  transform: translateY(0);
+}
+
+.share-button svg {
+  flex-shrink: 0;
+}
+
+/* Hide labels on small screens, show only icons */
+.share-button__label {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .share-button__label {
+    display: inline;
+  }
+}
+
+/* ============================================================================
+   Platform-specific Colors
+   ============================================================================ */
+
+.share-button--twitter:hover {
+  background-color: #1da1f2;
+  border-color: #1da1f2;
+}
+
+.share-button--facebook:hover {
+  background-color: #1877f2;
+  border-color: #1877f2;
+}
+
+.share-button--linkedin:hover {
+  background-color: #0a66c2;
+  border-color: #0a66c2;
+}
+
+.share-button--whatsapp:hover {
+  background-color: #25d366;
+  border-color: #25d366;
+}
+
+.share-button--copy:hover {
+  color: var(--color-background);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ============================================================================
+   Copy Button States
+   ============================================================================ */
+
+.share-button--copy[data-copied="true"] {
+  color: var(--color-background);
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.share-button--copy[data-copied="true"] .share-button__label::after {
+  content: " ✓";
+}
+
+/* ============================================================================
+   Dark Theme Adjustments
+   ============================================================================ */
+
+[data-theme="dark"] .share-button {
+  background-color: var(--color-surface-alt);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .share-button:hover {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .share-button--twitter:hover,
+[data-theme="dark"] .share-button--facebook:hover,
+[data-theme="dark"] .share-button--linkedin:hover,
+[data-theme="dark"] .share-button--whatsapp:hover,
+[data-theme="dark"] .share-button--copy:hover {
+  color: #fff;
+}
+
+/* ============================================================================
+   Reduced Motion
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .share-button {
+    transition: none;
+  }
+
+  .share-button:hover {
+    transform: none;
+  }
+}

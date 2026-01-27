@@ -53,6 +53,7 @@ export default async function (
     image,
     imageAlt,
     imageCaption,
+    metas,
   }: Lume.Data,
 ) {
   const postDetails = await comp.PostDetails({
@@ -100,6 +101,17 @@ export default async function (
       loading: "eager",
     })
     : "";
+
+  // Build absolute URL for sharing
+  const siteUrl = metas?.site ? `https://${metas.site}` : "";
+  const absoluteUrl = `${siteUrl}${url}`;
+
+  const shareButtons = await comp.ShareButtons({
+    url: absoluteUrl,
+    title,
+    description,
+    i18n: i18n.share,
+  });
 
   return `
 ${breadcrumbs}
@@ -185,6 +197,8 @@ ${breadcrumbs}
   }
 
   ${sourceInfo}
+
+  ${shareButtons}
 
   ${relatedPosts}
 </article>
