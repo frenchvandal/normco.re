@@ -76,6 +76,14 @@ export default async function (
   const previousPost = search.previousPage(url, "type=post");
   const nextPost = search.nextPage(url, "type=post");
 
+  const relatedPosts = await comp.RelatedPosts({
+    currentUrl: url,
+    tags,
+    limit: 3,
+    search,
+    i18n: { related_posts: i18n.post.related_posts },
+  });
+
   return `
 ${breadcrumbs}
 
@@ -155,6 +163,8 @@ ${breadcrumbs}
   }
 
   ${sourceInfo}
+
+  ${relatedPosts}
 </article>
 
 <nav class="page-pagination pagination" aria-label="Post navigation">
