@@ -19,8 +19,6 @@ import {
   prefetchAdjacentPosts,
 } from "./service-worker.js";
 
-const globalScope = globalThis as typeof globalThis & Record<string, unknown>;
-
 interface MockConnection {
   saveData?: boolean;
   effectiveType?: string;
@@ -30,9 +28,15 @@ interface MockServiceWorkerRegistration {
   active: { postMessage: (msg: unknown) => void } | null;
   installing: {
     state: string;
-    addEventListener: (event: string, handler: () => void) => void;
+    addEventListener: (
+      event: string,
+      handler: EventListenerOrEventListenerObject,
+    ) => void;
   } | null;
-  addEventListener: (event: string, handler: () => void) => void;
+  addEventListener: (
+    event: string,
+    handler: EventListenerOrEventListenerObject,
+  ) => void;
 }
 
 interface MockNavigator {
@@ -44,18 +48,35 @@ interface MockNavigator {
   onLine?: boolean;
 }
 
-const ORIGINAL_GLOBALS = {
-  document: globalScope.document,
-  navigator: globalScope.navigator,
-  toast: globalScope.toast,
-  addEventListener: globalScope.addEventListener,
-};
+const ORIGINAL_PROPERTY_DESCRIPTORS = new Map<
+  string,
+  PropertyDescriptor | undefined
+>([
+  ["document", Object.getOwnPropertyDescriptor(globalThis, "document")],
+  ["navigator", Object.getOwnPropertyDescriptor(globalThis, "navigator")],
+  ["toast", Object.getOwnPropertyDescriptor(globalThis, "toast")],
+  [
+    "addEventListener",
+    Object.getOwnPropertyDescriptor(globalThis, "addEventListener"),
+  ],
+]);
+
+function setGlobalValue(key: string, value: unknown): void {
+  Object.defineProperty(globalThis, key, {
+    configurable: true,
+    writable: true,
+    value,
+  });
+}
 
 function restoreGlobals(): void {
-  globalScope.document = ORIGINAL_GLOBALS.document;
-  globalScope.navigator = ORIGINAL_GLOBALS.navigator;
-  globalScope.toast = ORIGINAL_GLOBALS.toast;
-  globalScope.addEventListener = ORIGINAL_GLOBALS.addEventListener;
+  ORIGINAL_PROPERTY_DESCRIPTORS.forEach((descriptor, key) => {
+    if (descriptor) {
+      Object.defineProperty(globalThis, key, descriptor);
+    } else {
+      delete (globalThis as Record<string, unknown>)[key];
+    }
+  });
 }
 
 /**
@@ -126,7 +147,7 @@ describe("prefetchAdjacentPosts - service worker check", () => {
   });
 
   it("should not prefetch when service worker is unavailable", () => {
-    globalScope.navigator = {} as Navigator;
+    setGlobalValue("navigator", {} as Navigator);
 
     // Should not throw
     prefetchAdjacentPosts();
@@ -140,8 +161,8 @@ describe("prefetchAdjacentPosts - connection checks", () => {
 
   it("should prefetch when no connection info available", () => {
     const document = createNavLinksDOM("/next-post", "/prev-post");
-    globalScope.document = document as unknown as Document;
-    globalScope.navigator = {
+    setGlobalValue("document", document as unknown as Document);
+    setGlobalValue("navigator", {
       connection: null,
       serviceWorker: {
         ready: Promise.resolve({
@@ -153,7 +174,7 @@ describe("prefetchAdjacentPosts - connection checks", () => {
         }),
         controller: {},
       },
-    } as unknown as Navigator;
+    } as unknown as Navigator);
 
     prefetchAdjacentPosts();
 
@@ -163,8 +184,8 @@ describe("prefetchAdjacentPosts - connection checks", () => {
 
   it("should not prefetch when saveData is enabled", () => {
     const document = createNavLinksDOM("/next-post", "/prev-post");
-    globalScope.document = document as unknown as Document;
-    globalScope.navigator = {
+    setGlobalValue("document", document as unknown as Document);
+    setGlobalValue("navigator", {
       connection: { saveData: true },
       serviceWorker: {
         ready: Promise.resolve({
@@ -174,7 +195,7 @@ describe("prefetchAdjacentPosts - connection checks", () => {
         }),
         controller: {},
       },
-    } as unknown as Navigator;
+    } as unknown as Navigator);
 
     // Should not throw and should skip prefetch
     prefetchAdjacentPosts();
@@ -182,8 +203,8 @@ describe("prefetchAdjacentPosts - connection checks", () => {
 
   it("should not prefetch on slow 2G connection", () => {
     const document = createNavLinksDOM("/next-post");
-    globalScope.document = document as unknown as Document;
-    globalScope.navigator = {
+    setGlobalValue("document", document as unknown as Document);
+    setGlobalValue("navigator", {
       connection: { saveData: false, effectiveType: "slow-2g" },
       serviceWorker: {
         ready: Promise.resolve({
@@ -193,7 +214,7 @@ describe("prefetchAdjacentPosts - connection checks", () => {
         }),
         controller: {},
       },
-    } as unknown as Navigator;
+    } as unknown as Navigator);
 
     // Should not throw and should skip prefetch
     prefetchAdjacentPosts();
@@ -201,8 +222,8 @@ describe("prefetchAdjacentPosts - connection checks", () => {
 
   it("should not prefetch on 2G connection", () => {
     const document = createNavLinksDOM("/next-post");
-    globalScope.document = document as unknown as Document;
-    globalScope.navigator = {
+    setGlobalValue("document", document as unknown as Document);
+    setGlobalValue("navigator", {
       connection: { saveData: false, effectiveType: "2g" },
       serviceWorker: {
         ready: Promise.resolve({
@@ -212,7 +233,7 @@ describe("prefetchAdjacentPosts - connection checks", () => {
         }),
         controller: {},
       },
-    } as unknown as Navigator;
+    } as unknown as Navigator);
 
     // Should not throw and should skip prefetch
     prefetchAdjacentPosts();
@@ -220,8 +241,8 @@ describe("prefetchAdjacentPosts - connection checks", () => {
 
   it("should prefetch on 3G connection", () => {
     const document = createNavLinksDOM("/next-post");
-    globalScope.document = document as unknown as Document;
-    globalScope.navigator = {
+    setGlobalValue("document", document as unknown as Document);
+    setGlobalValue("navigator", {
       connection: { saveData: false, effectiveType: "3g" },
       serviceWorker: {
         ready: Promise.resolve({
@@ -231,7 +252,7 @@ describe("prefetchAdjacentPosts - connection checks", () => {
         }),
         controller: {},
       },
-    } as unknown as Navigator;
+    } as unknown as Navigator);
 
     // Should not throw
     prefetchAdjacentPosts();
@@ -239,8 +260,8 @@ describe("prefetchAdjacentPosts - connection checks", () => {
 
   it("should prefetch on 4G connection", () => {
     const document = createNavLinksDOM("/next-post");
-    globalScope.document = document as unknown as Document;
-    globalScope.navigator = {
+    setGlobalValue("document", document as unknown as Document);
+    setGlobalValue("navigator", {
       connection: { saveData: false, effectiveType: "4g" },
       serviceWorker: {
         ready: Promise.resolve({
@@ -250,7 +271,7 @@ describe("prefetchAdjacentPosts - connection checks", () => {
         }),
         controller: {},
       },
-    } as unknown as Navigator;
+    } as unknown as Navigator);
 
     // Should not throw
     prefetchAdjacentPosts();
@@ -268,8 +289,8 @@ describe("prefetchAdjacentPosts - URL detection", () => {
       "https://example.com/next",
       "https://example.com/prev",
     );
-    globalScope.document = document as unknown as Document;
-    globalScope.navigator = {
+    setGlobalValue("document", document as unknown as Document);
+    setGlobalValue("navigator", {
       connection: null,
       serviceWorker: {
         ready: Promise.resolve({
@@ -283,7 +304,7 @@ describe("prefetchAdjacentPosts - URL detection", () => {
         }),
         controller: {},
       },
-    } as unknown as Navigator;
+    } as unknown as Navigator);
 
     prefetchAdjacentPosts();
 
@@ -293,8 +314,8 @@ describe("prefetchAdjacentPosts - URL detection", () => {
 
   it("should handle page with only next link", () => {
     const document = createNavLinksDOM("https://example.com/next");
-    globalScope.document = document as unknown as Document;
-    globalScope.navigator = createMockNavigator() as unknown as Navigator;
+    setGlobalValue("document", document as unknown as Document);
+    setGlobalValue("navigator", createMockNavigator() as unknown as Navigator);
 
     // Should not throw
     prefetchAdjacentPosts();
@@ -302,8 +323,8 @@ describe("prefetchAdjacentPosts - URL detection", () => {
 
   it("should handle page with only prev link", () => {
     const document = createNavLinksDOM(undefined, "https://example.com/prev");
-    globalScope.document = document as unknown as Document;
-    globalScope.navigator = createMockNavigator() as unknown as Navigator;
+    setGlobalValue("document", document as unknown as Document);
+    setGlobalValue("navigator", createMockNavigator() as unknown as Navigator);
 
     // Should not throw
     prefetchAdjacentPosts();
@@ -311,8 +332,8 @@ describe("prefetchAdjacentPosts - URL detection", () => {
 
   it("should handle page with no navigation links", () => {
     const document = createNavLinksDOM();
-    globalScope.document = document as unknown as Document;
-    globalScope.navigator = createMockNavigator() as unknown as Navigator;
+    setGlobalValue("document", document as unknown as Document);
+    setGlobalValue("navigator", createMockNavigator() as unknown as Navigator);
 
     // Should not throw
     prefetchAdjacentPosts();
@@ -329,7 +350,7 @@ describe("initializeServiceWorkerNotifications - service worker check", () => {
   });
 
   it("should not initialize when service worker is unavailable", () => {
-    globalScope.navigator = {} as Navigator;
+    setGlobalValue("navigator", {} as Navigator);
 
     // Should not throw
     initializeServiceWorkerNotifications();
@@ -337,14 +358,21 @@ describe("initializeServiceWorkerNotifications - service worker check", () => {
 });
 
 describe("initializeServiceWorkerNotifications - online/offline", () => {
-  let eventHandlers: Record<string, (() => void)[]>;
+  let eventHandlers: Record<string, EventListener[]>;
 
   beforeEach(() => {
     eventHandlers = {};
-    globalScope.addEventListener = (event: string, handler: () => void) => {
+    setGlobalValue("addEventListener", (
+      event: string,
+      handler: EventListenerOrEventListenerObject,
+    ) => {
       if (!eventHandlers[event]) eventHandlers[event] = [];
-      eventHandlers[event].push(handler);
-    };
+      if (typeof handler === "function") {
+        eventHandlers[event].push(handler);
+      } else {
+        eventHandlers[event].push((evt) => handler.handleEvent(evt));
+      }
+    });
   });
 
   afterEach(() => {
@@ -355,7 +383,7 @@ describe("initializeServiceWorkerNotifications - online/offline", () => {
     let toastCalled = false;
     let toastVariant = "";
 
-    globalScope.navigator = {
+    setGlobalValue("navigator", {
       onLine: false,
       serviceWorker: {
         ready: Promise.resolve({
@@ -365,16 +393,16 @@ describe("initializeServiceWorkerNotifications - online/offline", () => {
         }),
         controller: null,
       },
-    } as unknown as Navigator;
+    } as unknown as Navigator);
 
-    globalScope.toast = {
+    setGlobalValue("toast", {
       warning: () => {
         toastCalled = true;
         toastVariant = "warning";
       },
       success: () => {},
       info: () => {},
-    };
+    });
 
     initializeServiceWorkerNotifications();
 
@@ -383,14 +411,17 @@ describe("initializeServiceWorkerNotifications - online/offline", () => {
   });
 
   it("should register offline event listener", () => {
-    globalScope.navigator = createMockNavigator({
-      onLine: true,
-    }) as unknown as Navigator;
-    globalScope.toast = {
+    setGlobalValue(
+      "navigator",
+      createMockNavigator({
+        onLine: true,
+      }) as unknown as Navigator,
+    );
+    setGlobalValue("toast", {
       warning: () => {},
       success: () => {},
       info: () => {},
-    };
+    });
 
     initializeServiceWorkerNotifications();
 
@@ -398,14 +429,17 @@ describe("initializeServiceWorkerNotifications - online/offline", () => {
   });
 
   it("should register online event listener", () => {
-    globalScope.navigator = createMockNavigator({
-      onLine: true,
-    }) as unknown as Navigator;
-    globalScope.toast = {
+    setGlobalValue(
+      "navigator",
+      createMockNavigator({
+        onLine: true,
+      }) as unknown as Navigator,
+    );
+    setGlobalValue("toast", {
       warning: () => {},
       success: () => {},
       info: () => {},
-    };
+    });
 
     initializeServiceWorkerNotifications();
 
@@ -415,21 +449,26 @@ describe("initializeServiceWorkerNotifications - online/offline", () => {
   it("should show warning toast when going offline", () => {
     let toastMessage = "";
 
-    globalScope.navigator = createMockNavigator({
-      onLine: true,
-    }) as unknown as Navigator;
-    globalScope.toast = {
+    setGlobalValue(
+      "navigator",
+      createMockNavigator({
+        onLine: true,
+      }) as unknown as Navigator,
+    );
+    setGlobalValue("toast", {
       warning: (message: string) => {
         toastMessage = message;
       },
       success: () => {},
       info: () => {},
-    };
+    });
 
     initializeServiceWorkerNotifications();
 
     // Trigger offline event
-    eventHandlers["offline"]?.forEach((handler) => handler());
+    eventHandlers["offline"]?.forEach((handler) =>
+      handler(new Event("offline"))
+    );
 
     assertEquals(
       toastMessage.includes("offline"),
@@ -440,21 +479,24 @@ describe("initializeServiceWorkerNotifications - online/offline", () => {
   it("should show success toast when coming back online", () => {
     let toastMessage = "";
 
-    globalScope.navigator = createMockNavigator({
-      onLine: true,
-    }) as unknown as Navigator;
-    globalScope.toast = {
+    setGlobalValue(
+      "navigator",
+      createMockNavigator({
+        onLine: true,
+      }) as unknown as Navigator,
+    );
+    setGlobalValue("toast", {
       warning: () => {},
       success: (message: string) => {
         toastMessage = message;
       },
       info: () => {},
-    };
+    });
 
     initializeServiceWorkerNotifications();
 
     // Trigger online event
-    eventHandlers["online"]?.forEach((handler) => handler());
+    eventHandlers["online"]?.forEach((handler) => handler(new Event("online")));
 
     assertEquals(
       toastMessage.includes("online"),
@@ -469,40 +511,50 @@ describe("initializeServiceWorkerNotifications - update notifications", () => {
   });
 
   it("should show info toast when new version is available", async () => {
+    const updateFoundHandlers: Array<(event: Event) => void> = [];
+    const stateChangeHandlers: Array<(event: Event) => void> = [];
     let toastMessage = "";
-    let updateFoundHandler: (() => void) | null = null;
-    let stateChangeHandler: (() => void) | null = null;
 
     const mockRegistration: MockServiceWorkerRegistration = {
       active: { postMessage: () => {} },
       installing: {
         state: "installed",
-        addEventListener: (_event: string, handler: () => void) => {
-          stateChangeHandler = handler;
+        addEventListener: (
+          _event: string,
+          handler: EventListenerOrEventListenerObject,
+        ) => {
+          if (typeof handler === "function") {
+            stateChangeHandlers.push(handler as (event: Event) => void);
+          }
         },
       },
-      addEventListener: (event: string, handler: () => void) => {
+      addEventListener: (
+        event: string,
+        handler: EventListenerOrEventListenerObject,
+      ) => {
         if (event === "updatefound") {
-          updateFoundHandler = handler;
+          if (typeof handler === "function") {
+            updateFoundHandlers.push(handler as (event: Event) => void);
+          }
         }
       },
     };
 
-    globalScope.addEventListener = () => {};
-    globalScope.navigator = {
+    setGlobalValue("addEventListener", () => {});
+    setGlobalValue("navigator", {
       onLine: true,
       serviceWorker: {
         ready: Promise.resolve(mockRegistration),
         controller: {},
       },
-    } as unknown as Navigator;
-    globalScope.toast = {
+    } as unknown as Navigator);
+    setGlobalValue("toast", {
       warning: () => {},
       success: () => {},
       info: (message: string) => {
         toastMessage = message;
       },
-    };
+    });
 
     initializeServiceWorkerNotifications();
 
@@ -510,14 +562,14 @@ describe("initializeServiceWorkerNotifications - update notifications", () => {
     await Promise.resolve();
 
     // Trigger updatefound
-    if (updateFoundHandler) {
-      updateFoundHandler();
-    }
+    updateFoundHandlers.forEach((handler) => {
+      handler(new Event("updatefound"));
+    });
 
     // Trigger statechange with installed state
-    if (stateChangeHandler) {
-      stateChangeHandler();
-    }
+    stateChangeHandlers.forEach((handler) => {
+      handler(new Event("statechange"));
+    });
 
     assertEquals(
       toastMessage.includes("new version"),
@@ -536,8 +588,8 @@ describe("initializeServiceWorkerNotifications - edge cases", () => {
   });
 
   it("should handle missing toast gracefully", () => {
-    globalScope.addEventListener = () => {};
-    globalScope.navigator = {
+    setGlobalValue("addEventListener", () => {});
+    setGlobalValue("navigator", {
       onLine: false,
       serviceWorker: {
         ready: Promise.resolve({
@@ -547,16 +599,16 @@ describe("initializeServiceWorkerNotifications - edge cases", () => {
         }),
         controller: null,
       },
-    } as unknown as Navigator;
-    globalScope.toast = undefined;
+    } as unknown as Navigator);
+    setGlobalValue("toast", undefined);
 
     // Should not throw even without toast
     initializeServiceWorkerNotifications();
   });
 
   it("should handle missing active worker in registration", async () => {
-    globalScope.addEventListener = () => {};
-    globalScope.navigator = {
+    setGlobalValue("addEventListener", () => {});
+    setGlobalValue("navigator", {
       onLine: true,
       serviceWorker: {
         ready: Promise.resolve({
@@ -566,12 +618,12 @@ describe("initializeServiceWorkerNotifications - edge cases", () => {
         }),
         controller: null,
       },
-    } as unknown as Navigator;
-    globalScope.toast = {
+    } as unknown as Navigator);
+    setGlobalValue("toast", {
       warning: () => {},
       success: () => {},
       info: () => {},
-    };
+    });
 
     // Should not throw
     initializeServiceWorkerNotifications();

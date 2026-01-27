@@ -152,3 +152,8 @@ migration. The highest-cost areas are Hugo’s image pipeline and shortcodes. If
 the primary goal is to refresh the visual system, selectively adopting
 PaperMod’s typography, spacing, and component styling on top of the current Lume
 stack will be less risky than attempting full feature parity.
+
+## Maintenance notes
+
+- Updated client-side test mocks for toast, theme, and service worker features
+  to align with stricter type checking.
