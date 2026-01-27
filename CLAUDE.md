@@ -552,6 +552,7 @@ site.getContent(file, loader);
 - At the start of a task, run `deno task serve` and capture a browser screenshot
   of the current state before making changes so there is a baseline visual
   reference.
+- Whenever possible include all these screenshots in the pull request.
 - When modifying or creating JavaScript or TypeScript code, ensure JSDoc
   comments include testable code examples that serve as documentation tests.
 - Commit `deno.lock` only when dependencies are explicitly updated in deno.json
