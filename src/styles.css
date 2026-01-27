@@ -16,6 +16,7 @@
 @import "css/02-base/reset.css";
 @import "css/02-base/typography.css";
 @import "css/02-base/prism.css";
+@import "css/02-base/scrollbar.css";
 @import "css/02-base/global.css";
 
 /* ==========================================================================
@@ -63,6 +64,9 @@
 
 /* Content components */
 @import "css/04-components/related-posts.css";
+
+/* Social components */
+@import "css/04-components/social-icons.css";
 
 /* ==========================================================================
    05. Layouts

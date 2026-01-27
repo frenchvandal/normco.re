@@ -45,3 +45,20 @@ a.badge:focus-visible {
   padding: var(--spacing-sm) var(--spacing-md);
   font-size: 1rem;
 }
+
+/* Status badges */
+.badge--draft {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+  text-transform: uppercase;
+  font-weight: var(--font-bold);
+  font-size: 0.6875rem;
+  letter-spacing: 0.05em;
+}
+
+.badge--published {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}

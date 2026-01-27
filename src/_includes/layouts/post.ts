@@ -49,6 +49,7 @@ export default async function (
     sourceCommit,
     sourcePath,
     repo,
+    draft,
   }: Lume.Data,
 ) {
   const postDetails = await comp.PostDetails({
@@ -84,11 +85,18 @@ export default async function (
     i18n: { related_posts: i18n.post.related_posts },
   });
 
+  const draftBadge = draft
+    ? `<span class="badge badge--draft">${i18n.post.draft}</span>`
+    : "";
+
   return `
 ${breadcrumbs}
 
-<article class="post" data-pagefind-body data-title="${title}" data-pagefind-index-attrs="data-title">
+<article class="post${
+    draft ? " post--draft" : ""
+  }" data-pagefind-body data-title="${title}" data-pagefind-index-attrs="data-title">
   <header class="post-header">
+    ${draftBadge}
     <h1 class="post-title u-display-title">${title}</h1>
 
     ${description ? `<p class="post-description">${description}</p>` : ""}

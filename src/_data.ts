@@ -11,6 +11,18 @@ interface MenuLink {
   href: string;
 }
 
+/**
+ * Social link configuration for footer icons.
+ */
+interface SocialLink {
+  /** Platform identifier (e.g., "github", "twitter", "email") */
+  platform: string;
+  /** URL or mailto link */
+  url: string;
+  /** Accessible label for the link */
+  label: string;
+}
+
 interface MetasConfig {
   site: string;
   description: string;
@@ -28,6 +40,7 @@ interface SiteData {
     welcome: string;
   };
   menu_links: MenuLink[];
+  social_links: SocialLink[];
   extra_head: string[];
   metas: MetasConfig;
   jsonLd: Lume.Data["jsonLd"];
@@ -39,6 +52,23 @@ const data: SiteData = {
     welcome: "Hello, I am a person that writes stuff.",
   },
   menu_links: [],
+  social_links: [
+    {
+      platform: "github",
+      url: "https://github.com/frenchvandal",
+      label: "GitHub",
+    },
+    {
+      platform: "twitter",
+      url: "https://twitter.com/frenchvandal",
+      label: "Twitter",
+    },
+    {
+      platform: "rss",
+      url: "/feed.xml",
+      label: "RSS Feed",
+    },
+  ],
   extra_head: [],
   metas: {
     site: "normco.re",

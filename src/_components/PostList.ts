@@ -36,10 +36,15 @@ export default async function (
     </div>`
         : "";
 
+      const draftBadge = post.draft
+        ? `<span class="badge badge--small badge--draft">${i18n.post.draft}</span>`
+        : "";
+
       return `
-  <li class="post">
+  <li class="post${post.draft ? " post--draft" : ""}">
     <header class="post-header">
       <h2 class="post-title">
+        ${draftBadge}
         <a href="${post.url}"${post.url === url ? ' aria-current="page"' : ""}>
           ${post.title || post.url}
         </a>

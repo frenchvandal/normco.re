@@ -1,0 +1,115 @@
+/* ==========================================================================
+   Social Icons Component
+   List of social media links with SVG icons.
+   ========================================================================== */
+
+.social-icons {
+  display: flex;
+  align-items: center;
+}
+
+.social-icons ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--color-dim);
+  border-radius: var(--border-radius);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.social-icon:hover,
+.social-icon:focus-visible {
+  color: var(--color-base);
+  background-color: var(--color-background-shade);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .social-icon:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.social-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Platform-specific hover colors */
+.social-icon--github:hover,
+.social-icon--github:focus-visible {
+  color: #333;
+}
+
+[data-theme="dark"] .social-icon--github:hover,
+[data-theme="dark"] .social-icon--github:focus-visible {
+  color: #f5f5f5;
+}
+
+.social-icon--twitter:hover,
+.social-icon--twitter:focus-visible {
+  color: #1da1f2;
+}
+
+.social-icon--linkedin:hover,
+.social-icon--linkedin:focus-visible {
+  color: #0a66c2;
+}
+
+.social-icon--mastodon:hover,
+.social-icon--mastodon:focus-visible {
+  color: #6364ff;
+}
+
+.social-icon--youtube:hover,
+.social-icon--youtube:focus-visible {
+  color: #ff0000;
+}
+
+.social-icon--instagram:hover,
+.social-icon--instagram:focus-visible {
+  color: #e4405f;
+}
+
+.social-icon--facebook:hover,
+.social-icon--facebook:focus-visible {
+  color: #1877f2;
+}
+
+.social-icon--twitch:hover,
+.social-icon--twitch:focus-visible {
+  color: #9146ff;
+}
+
+.social-icon--rss:hover,
+.social-icon--rss:focus-visible {
+  color: #f26522;
+}
+
+.social-icon--email:hover,
+.social-icon--email:focus-visible {
+  color: var(--color-primary);
+}
+
+/* Footer integration */
+.site-footer .social-icons {
+  margin-top: var(--spacing-md);
+  justify-content: center;
+}
+
+.site-footer .social-icons ul {
+  justify-content: center;
+}
