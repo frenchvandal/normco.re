@@ -274,18 +274,11 @@ Use the following strategy to keep tests readable and aligned with BDD:
   user-visible behavior (interaction, state transitions, accessibility). Favor
   explicit "given/when/then" comments inside `it` blocks when behavior is
   complex.
-- **Data files (`_data/**`):** Use BDD-style tests to validate data shape and
-  invariants. Keep tests focused on observable behavior rather than
-  implementation details.
+- **Pages and data (`*.page.ts`, `_data/**`):** Use BDD-style tests to validate
+  rendered output, data shape, and invariants. Keep tests focused on observable
+  behavior rather than implementation details.
 - **Docs and examples (JSDoc):** Ensure JSDoc examples are runnable and serve as
   documentation tests; they should be minimal but realistic.
-
-### Out of scope for TypeScript and JavaScript tests
-
-- **Page files (`*.page.ts`):** These files are Lume content pages that define
-  metadata exports and rendering functions. They are out of scope for unit tests
-  because their output is validated through the build process and visual
-  inspection rather than automated testing.
 
 ### Snapshot testing
 
