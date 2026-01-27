@@ -119,8 +119,8 @@ PaperMod’s optional features are required.
 | ---------------------------- | ----------- | ------------------------------------------------ | ------------------------- |
 | Light/dark theme + toggle    | ✅ Feasible | CSS vars + localStorage + `theme.js`             | ✅ **Implemented**        |
 | Auto theme (system pref)     | ✅ Feasible | `prefers-color-scheme` media query in `theme.js` | ✅ **Implemented**        |
-| Themed scroll bar            | ✅ Feasible | CSS `::-webkit-scrollbar` + CSS vars             | ⬜ Not yet                |
-| Smooth scroll                | ✅ Feasible | CSS `scroll-behavior: smooth`                    | ⬜ Not yet                |
+| Themed scroll bar            | ✅ Feasible | CSS `::-webkit-scrollbar` + CSS vars             | ✅ **Implemented**        |
+| Smooth scroll                | ✅ Feasible | CSS `scroll-behavior: smooth`                    | ✅ **Implemented**        |
 | Scroll-to-top button         | ✅ Feasible | `scroll-to-top.js` + CSS                         | ✅ **Implemented**        |
 | Responsive layout            | ✅ Feasible | Lightning CSS + mobile-first SCSS                | ✅ **Implemented**        |
 | Search (Fuse.js in PaperMod) | ✅ Feasible | Pagefind plugin (better: static index)           | ✅ **Implemented**        |
@@ -130,7 +130,7 @@ PaperMod’s optional features are required.
 | Word count                   | ✅ Feasible | `reading_info` plugin (provides both)            | ✅ **Implemented**        |
 | Syntax highlighting          | ✅ Feasible | Prism plugin                                     | ✅ **Implemented**        |
 | Code copy button             | ✅ Feasible | `code-copy.js` + clipboard API                   | ✅ **Implemented**        |
-| Social icons                 | ✅ Feasible | `icons` plugin or inline SVGs                    | ⬜ Not yet                |
+| Social icons                 | ✅ Feasible | `SocialIcons.ts` component with inline SVGs      | ✅ **Implemented**        |
 | Breadcrumbs                  | ✅ Feasible | `Breadcrumbs.ts` component                       | ✅ **Implemented**        |
 | Post cover image             | ✅ Feasible | Front matter `image` + layout logic              | ⬜ Not yet                |
 | Responsive images            | ✅ Feasible | Transform Images + Picture plugins               | ⬜ Not yet                |
@@ -150,7 +150,7 @@ PaperMod’s optional features are required.
 | OpenGraph / Twitter Cards    | ✅ Feasible | Metas plugin                                     | ✅ **Implemented**        |
 | OG image generation          | ✅ Feasible | OG images plugin                                 | ⬜ Not yet                |
 | Favicon generation           | ✅ Feasible | Favicon plugin                                   | ⬜ Not yet (manual)       |
-| Draft page indicators        | ✅ Feasible | Front matter `draft: true` + filter              | ⬜ Not yet                |
+| Draft page indicators        | ✅ Feasible | `badge--draft` CSS + layout logic                | ✅ **Implemented**        |
 | Edit post link (GitHub)      | ✅ Feasible | `SourceInfo.ts` component                        | ✅ **Implemented**        |
 | Multi-language (i18n)        | ✅ Feasible | Multilanguage plugin (full feature parity)       | ⬜ Not yet                |
 | Access key shortcuts         | ✅ Feasible | Custom JS keybindings                            | ⬜ Not yet                |
@@ -425,6 +425,30 @@ These features are **enhancements** over PaperMod that should be retained:
   - Sorted by relevance (tag overlap count), then by date.
   - Integrated into `layouts/post.ts` between source info and navigation.
   - Added `related_posts` i18n string to `src/_data/i18n.ts`.
+- Implemented themed scrollbar (`src/_includes/css/02-base/scrollbar.css`):
+  - Custom scrollbar styling using CSS `::-webkit-scrollbar` and
+    `scrollbar-color` for Firefox.
+  - Adapts to light/dark theme via CSS variables.
+  - Narrower scrollbars for code blocks and TOC containers.
+  - PaperMod-style aesthetic with rounded thumb and subtle track.
+- Smooth scroll already implemented in `global.css` with
+  `prefers-reduced-motion` support.
+- Implemented draft page indicators:
+  - Added `badge--draft` CSS variant in `badge.css` with warning color and
+    uppercase styling.
+  - Modified `PostList.ts` to display draft badge before post title.
+  - Modified `layouts/post.ts` to display draft badge in single post view.
+  - Added `draft` i18n string to `src/_data/i18n.ts`.
+  - Posts with `draft: true` front matter now show visual indicator.
+- Implemented social icons component (`src/_components/SocialIcons.ts`,
+  `src/_includes/css/04-components/social-icons.css`):
+  - Renders social media links with inline SVG icons (Feather Icons).
+  - Supports GitHub, Twitter, LinkedIn, Mastodon, YouTube, Instagram, Facebook,
+    Twitch, Email, and RSS platforms.
+  - Platform-specific hover colors for visual feedback.
+  - Integrated into site footer via `layouts/base.ts`.
+  - Configurable via `social_links` array in `src/_data.ts`.
+  - Accessible with `aria-label` on each link.
 
 ### Audit summary (January 2026)
 
@@ -495,11 +519,18 @@ These features are **enhancements** over PaperMod that should be retained:
       smooth scroll, throttled visibility toggle, and reduced motion support.
 - [x] Code copy button: implemented clipboard API integration for code blocks
       with visual feedback (success/error states), fallback for older browsers.
-- [ ] Social icons: configure Icons plugin or create inline SVG components.
+- [x] Social icons: implemented `SocialIcons.ts` component with inline SVGs
+      (Feather Icons), platform-specific hover colors, integrated into footer.
 - [x] Robots.txt: added Robots plugin to `plugins.ts`, auto-generates
       `robots.txt`.
 - [x] Related posts: implemented using Search plugin query by tags, displays up
       to 3 related posts sorted by relevance (shared tag count) then by date.
+- [x] Themed scrollbar: implemented in `scrollbar.css` with theme-aware colors,
+      Firefox support via `scrollbar-color`, and narrower scrollbars for code.
+- [x] Smooth scroll: already implemented in `global.css` with reduced motion
+      support.
+- [x] Draft page indicators: implemented with `badge--draft` CSS, i18n string,
+      and integration in `PostList.ts` and `layouts/post.ts`.
 
 ## Accepted trade-offs
 

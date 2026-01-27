@@ -22,6 +22,7 @@ export default async function (
     extra_head,
     logo,
     menu_links,
+    social_links,
     url,
     bodyClass,
     content,
@@ -156,6 +157,7 @@ export default async function (
           ${commit.substring(0, 8)}
         </a>
       </p>
+      ${await comp.SocialIcons({ social_links })}
     </footer>
     `
       : ""
