@@ -13,12 +13,18 @@ PaperMod.
 - https://github.com/adityatelange/hugo-PaperMod/wiki
 - https://gohugo.io
 
+## Reference documentation for Deno and Lume
+
+- https://docs.deno.com/runtime/
+- https://lume.land/docs/overview/about-lume/
+
 ## Scope & assumptions
 
 - Target: Port PaperMod’s **visual system and UX** to Lume (not Hugo itself).
 - Preserve the current content model (Markdown posts + Lume pages).
 - Avoid new dependencies unless strictly required.
 - Do not modify generated output in `_site/`.
+- Keep a `licence.css` file in Lume and add `Copyright (c) 2026 frenchvandal`.
 
 ## High-level feasibility
 
@@ -125,7 +131,9 @@ when moving toward PaperMod unless explicitly rebuilt:
 
 ## Accepted trade-offs
 
-1. i18n can be delayed, keep existing Lume as is because
+1. i18n migration can be delayed, remove i18n from the new Lume under PaperMod
+   as it is not currently used in production (to be implemented in a separate
+   project)
 2. Search with Pagefind UI with PaperMod-like styling.
 
 ## Recommendation
