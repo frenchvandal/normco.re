@@ -12,6 +12,10 @@
 - The PaperMod project is documented in the `PAPERMOD.md` file.
 - Any task impacting the PaperMod project must be documented by updating the
   `PAPERMOD.md` file.
+- As part of the PaperMod project, the `PAPERMOD.md` file must be updated
+  progressively with both completed work and remaining tasks, in the most
+  detailed and explicit manner possible, so that AI agents and Claude can
+  seamlessly and efficiently take over the continuation of the migration work.
 
 **Do**
 

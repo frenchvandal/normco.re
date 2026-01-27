@@ -17,6 +17,10 @@ PaperMod.
   migration to PaperMod. What matters is the final outcome—achieving behavior as
   close as possible to a one-to-one match with PaperMod—not the specific
   implementation approach used to get there.
+- As part of the PaperMod project, the `PAPERMOD.md` file must be updated
+  progressively with both completed work and remaining tasks, in the most
+  detailed and explicit manner possible, so that AI agents and Claude can
+  seamlessly and efficiently take over the continuation of the migration work.
 
 ### PaperMod Development Branching Rules
 
