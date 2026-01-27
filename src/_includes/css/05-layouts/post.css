@@ -102,6 +102,42 @@
   }
 }
 
+/* Post body content styling */
+.post-body {
+  /* Lead paragraph - first paragraph gets emphasized styling */
+  & > p:first-child {
+    font-size: 1.125em;
+    line-height: 1.75;
+    color: var(--color-text);
+  }
+
+  /* Improved heading anchors */
+  & h2,
+  & h3,
+  & h4 {
+    position: relative;
+
+    & a.header-anchor {
+      position: absolute;
+      left: -1.25em;
+      color: var(--color-dim);
+      text-decoration: none;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+
+      &:hover,
+      &:focus-visible {
+        color: var(--color-primary);
+        opacity: 1;
+      }
+    }
+
+    &:hover a.header-anchor {
+      opacity: 0.5;
+    }
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 480px) {
   .post-meta {

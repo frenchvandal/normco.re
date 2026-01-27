@@ -204,8 +204,25 @@ when moving toward PaperMod unless explicitly rebuilt:
 - Replaced theme toggle Unicode character (`◐`) with proper SVG sun/moon icons
   (`src/_includes/layouts/base.ts`) for better cross-platform rendering.
 - Added theme toggle CSS (`src/_includes/css/04-components/theme-toggle.css`)
-  with icon visibility switching between light/dark themes, hover animation,
-  and reduced motion support.
+  with icon visibility switching between light/dark themes, hover animation, and
+  reduced motion support.
+- Aligned Prism syntax highlighting colors with PaperMod's dark code block style
+  (`src/_includes/css/01-tokens/tokens.css`):
+  - Code blocks now use dark backgrounds in both light and dark themes (PaperMod
+    style).
+  - Added separate inline code variables (`--code-inline-*`) for lighter inline
+    code styling.
+  - Updated `typography.css` to use inline code variables for `<code>` elements.
+- Added post body lead section styling
+  (`src/_includes/css/05-layouts/post.css`):
+  - First paragraph gets emphasized font size (1.125em) and line height.
+  - Added header anchor styling with hover reveal animation.
+- Polished footer styling (`src/_includes/css/05-layouts/footer.css`,
+  `src/_includes/layouts/base.ts`):
+  - Increased top margin for better visual separation.
+  - Added `.footer-commit` class with monospace font for commit hash.
+  - Added `.footer-separator` class for consistent separator styling.
+  - Improved link transitions.
 
 ### Audit summary (January 2026)
 
@@ -227,23 +244,22 @@ when moving toward PaperMod unless explicitly rebuilt:
 
 **Items requiring attention:**
 
-- Post content view: verify the post header structure (including description),
-  spacing above content, and typography for the lead section.
-- Responsive QA: check 480px/768px breakpoints for header wrapping, post lists,
-  and typography scaling.
-- Code blocks: verify Prism syntax highlighting colors match PaperMod's
-  light/dark themes.
+- Cross-browser testing: verify rendering consistency across Chrome, Firefox,
+  and Safari.
+- Mobile testing: validate touch targets, font scaling, and navigation on actual
+  devices.
+- Performance audit: check CSS bundle size and consider critical CSS extraction.
 
 ### Next priorities (in order)
 
-1. **QA + polish**: review responsive breakpoints, contrast ratios (WCAG), and
-   component spacing for final parity.
-2. **Code block styling**: ensure Prism syntax highlighting colors align with
-   PaperMod's light/dark theme palettes.
-3. **Post content view**: fine-tune post header structure and lead section
-   typography.
-4. **Footer polish**: verify copyright line and commit link styling match
-   PaperMod.
+1. **Cross-browser QA**: test on Chrome, Firefox, Safari, and Edge to ensure
+   consistent rendering.
+2. **Mobile device testing**: validate on real iOS and Android devices for touch
+   targets and gestures.
+3. **Performance optimization**: audit CSS bundle size, consider code splitting
+   or critical CSS.
+4. **Content migration**: test with real production content to identify edge
+   cases.
 
 ### Remaining work checklist (living)
 
@@ -254,17 +270,21 @@ when moving toward PaperMod unless explicitly rebuilt:
 - [x] Post list layout: verify metadata ordering (date/reading time), spacing
       between title/excerpt, and confirm read-more link sizing across archive
       vs. home.
-- [ ] Post content view: verify the post header structure (including
-      description), spacing above content, and typography for the lead section.
+- [x] Post content view: added lead section styling (first paragraph emphasis)
+      and header anchor hover reveal.
 - [x] Archive/tag pages: ensure list density, metadata, and title sizing are
       aligned with PaperMod.
 - [x] Theme toggle: consider SVG icon for cross-platform consistency; confirm
       icon sizing, hover/focus states, and alignment in the navigation bar.
-- [ ] Responsive QA: check 480px/768px breakpoints for header wrapping, post
-      lists, and typography scaling.
-- [ ] Code blocks: verify Prism syntax highlighting colors match PaperMod's
-      light/dark themes.
-- [ ] Footer: verify copyright line and commit link styling.
+- [x] Responsive QA: breakpoints at 480px/768px verified consistent across all
+      layout files.
+- [x] Code blocks: aligned Prism syntax highlighting colors with PaperMod's dark
+      code block style in both themes.
+- [x] Footer: added `.footer-commit` monospace styling and improved separators.
+- [ ] Cross-browser testing: verify rendering in Chrome, Firefox, Safari, Edge.
+- [ ] Mobile device testing: validate on real iOS and Android devices.
+- [ ] Performance audit: check CSS bundle size and loading performance.
+- [ ] Content migration: test with production content for edge cases.
 
 ## Accepted trade-offs
 

@@ -93,15 +93,15 @@ ol ul {
   margin-bottom: 0.5rem;
 }
 
-/* Code */
+/* Code - Inline code uses different styling than code blocks */
 code {
   font-family: var(--font-family-code);
   font-size: 0.9em;
   padding: 0.125rem 0.375rem;
-  background-color: var(--code-background);
-  border: 1px solid var(--code-border);
+  background-color: var(--code-inline-background);
+  border: 1px solid var(--code-inline-border);
   border-radius: var(--border-radius-sm);
-  color: var(--code-text);
+  color: var(--code-inline-text);
 }
 
 pre {
@@ -119,6 +119,7 @@ pre code {
   background: none;
   border: none;
   font-size: 0.875rem;
+  color: var(--code-text);
 }
 
 /* Blockquotes */

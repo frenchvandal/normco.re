@@ -150,9 +150,10 @@ export default async function (
       ? `
     <footer class="site-footer" role="contentinfo">
       <p>
-        &copy; ${dateHelper(date, "yyyy")} &middot;
-        <a href="https://github.com/frenchvandal/normco.re/commit/${commit}" target="_blank" rel="noopener noreferrer">
-          rev ${commit.substring(0, 8)}
+        &copy; ${dateHelper(date, "yyyy")}
+        <span class="footer-separator" aria-hidden="true">&middot;</span>
+        <a class="footer-commit" href="https://github.com/frenchvandal/normco.re/commit/${commit}" target="_blank" rel="noopener noreferrer">
+          ${commit.substring(0, 8)}
         </a>
       </p>
     </footer>
