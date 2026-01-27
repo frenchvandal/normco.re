@@ -11,6 +11,18 @@ PaperMod.
 > inaccuracies, and provide additional technical details based on the actual
 > Lume plugin ecosystem and codebase state.
 
+## Guideline exceptions — PaperMod migration
+
+As part of the PaperMod migration project, the AI agent or Claude may deviate
+from the guidelines defined in `CLAUDE.md` and `AGENTS.md` **only if**:
+
+- the deviation is explicitly justified to the human user, and
+- the rationale is clearly and durably documented somewhere, for example:
+  - in code comments, or
+  - in the commit description.
+
+Any such deviation must be intentional, transparent, and traceable.
+
 ## MUST-DO
 
 - All merge requests and commits related to the PaperMod project must be done in
