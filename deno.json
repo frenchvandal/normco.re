@@ -54,7 +54,8 @@
   },
   "fmt": {
     "exclude": [
-      "./_site"
+      "./_site",
+      "LICENSE"
     ]
   },
   "unstable": [
