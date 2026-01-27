@@ -1,8 +1,23 @@
 /**
  * Post List Component
- * Renders a list of posts with their details
+ * Renders a list of posts with their details.
+ *
+ * @param data - Lume data containing the posts and helpers.
+ * @param helpers - Lume helpers for markdown rendering.
+ * @returns The HTML markup for the post list.
+ *
+ * @example
+ * ```ts
+ * import { assertEquals } from "@std/assert";
+ * import renderPostList from "./PostList.ts";
+ *
+ * assertEquals(typeof renderPostList, "function");
+ * ```
  */
-export default async function ({ postslist, url, comp }: Lume.Data) {
+export default async function (
+  { postslist, url, comp, i18n }: Lume.Data,
+  { md }: Lume.Helpers,
+) {
   if (!postslist || postslist.length === 0) {
     return "";
   }
@@ -15,16 +30,29 @@ export default async function ({ postslist, url, comp }: Lume.Data) {
         author: post.author,
         readingInfo: post.readingInfo,
       });
+      const excerptHtml = post.excerpt
+        ? `<div class="post-excerpt body">
+      ${md(post.excerpt)}
+    </div>`
+        : "";
 
       return `
   <li class="post">
-    <h2 class="post-title">
-      <a href="${post.url}"${post.url === url ? ' aria-current="page"' : ""}>
-        ${post.title || post.url}
-      </a>
-    </h2>
+    <header class="post-header">
+      <h2 class="post-title">
+        <a href="${post.url}"${post.url === url ? ' aria-current="page"' : ""}>
+          ${post.title || post.url}
+        </a>
+      </h2>
 
-    ${postDetails}
+      ${postDetails}
+    </header>
+
+    ${excerptHtml}
+
+    <a href="${post.url}" class="post-link">
+      ${i18n.nav.continue_reading}
+    </a>
   </li>`;
     }),
   );

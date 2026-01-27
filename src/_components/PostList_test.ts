@@ -25,6 +25,7 @@ interface MockPost {
   tags?: string[];
   author?: string;
   readingInfo?: { minutes: number };
+  excerpt?: string;
 }
 
 interface MockComp {
@@ -42,10 +43,14 @@ async function postListComponent({
   postslist,
   url,
   comp,
+  i18n,
+  md,
 }: {
   postslist?: MockPost[];
   url: string;
   comp: MockComp;
+  i18n: { nav: { continue_reading: string } };
+  md: (input: string) => string;
 }): Promise<string> {
   if (!postslist || postslist.length === 0) {
     return "";
@@ -59,16 +64,29 @@ async function postListComponent({
         author: post.author,
         readingInfo: post.readingInfo,
       });
+      const excerptHtml = post.excerpt
+        ? `<div class="post-excerpt body">
+      ${md(post.excerpt)}
+    </div>`
+        : "";
 
       return `
   <li class="post">
-    <h2 class="post-title">
-      <a href="${post.url}"${post.url === url ? ' aria-current="page"' : ""}>
-        ${post.title || post.url}
-      </a>
-    </h2>
+    <header class="post-header">
+      <h2 class="post-title">
+        <a href="${post.url}"${post.url === url ? ' aria-current="page"' : ""}>
+          ${post.title || post.url}
+        </a>
+      </h2>
 
-    ${postDetails}
+      ${postDetails}
+    </header>
+
+    ${excerptHtml}
+
+    <a href="${post.url}" class="post-link">
+      ${i18n.nav.continue_reading}
+    </a>
   </li>`;
     }),
   );
@@ -88,6 +106,14 @@ const mockComp: MockComp = {
   PostDetails: () => Promise.resolve('<div class="post-details">Details</div>'),
 };
 
+const mockI18n = {
+  nav: {
+    continue_reading: "Continue reading →",
+  },
+};
+
+const mockMd = (input: string) => `<p>${input}</p>`;
+
 const samplePosts: MockPost[] = [
   {
     url: "/posts/first-post/",
@@ -96,6 +122,7 @@ const samplePosts: MockPost[] = [
     tags: ["JavaScript"],
     author: "John",
     readingInfo: { minutes: 5 },
+    excerpt: "First summary.",
   },
   {
     url: "/posts/second-post/",
@@ -104,6 +131,7 @@ const samplePosts: MockPost[] = [
     tags: ["TypeScript"],
     author: "Jane",
     readingInfo: { minutes: 3 },
+    excerpt: "Second summary.",
   },
 ];
 
@@ -120,6 +148,8 @@ Deno.test("postList snapshot - sample posts", async (t) => {
     postslist: samplePosts,
     url: "/posts/second-post/",
     comp: mockComp,
+    i18n: mockI18n,
+    md: mockMd,
   });
 
   await assertSnapshot(t, result);
@@ -135,6 +165,8 @@ describe("PostList Component - empty list", () => {
       postslist: undefined,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result, "");
@@ -145,6 +177,8 @@ describe("PostList Component - empty list", () => {
       postslist: [],
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result, "");
@@ -161,6 +195,8 @@ describe("PostList Component - basic rendering", () => {
       postslist: samplePosts,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result.includes('class="postList"'), true);
@@ -173,6 +209,8 @@ describe("PostList Component - basic rendering", () => {
       postslist: samplePosts,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     const liCount = (result.match(/<li class="post">/g) || []).length;
@@ -184,6 +222,8 @@ describe("PostList Component - basic rendering", () => {
       postslist: samplePosts,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result.includes('class="post-title"'), true);
@@ -197,10 +237,39 @@ describe("PostList Component - basic rendering", () => {
       postslist: samplePosts,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result.includes('href="/posts/first-post/"'), true);
     assertEquals(result.includes('href="/posts/second-post/"'), true);
+  });
+
+  it("should render excerpts when available", async () => {
+    const result = await postListComponent({
+      postslist: samplePosts,
+      url: "/",
+      comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
+    });
+
+    assertEquals(result.includes("First summary."), true);
+    assertEquals(result.includes("Second summary."), true);
+  });
+
+  it("should render a continue reading link for each post", async () => {
+    const result = await postListComponent({
+      postslist: samplePosts,
+      url: "/",
+      comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
+    });
+
+    const linkCount = (result.match(/class="post-link"/g) || []).length;
+    assertEquals(linkCount, 2);
+    assertEquals(result.includes(mockI18n.nav.continue_reading), true);
   });
 });
 
@@ -214,6 +283,8 @@ describe("PostList Component - current page indication", () => {
       postslist: samplePosts,
       url: "/posts/first-post/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result.includes('aria-current="page"'), true);
@@ -224,6 +295,8 @@ describe("PostList Component - current page indication", () => {
       postslist: samplePosts,
       url: "/different-page/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result.includes('aria-current="page"'), false);
@@ -234,6 +307,8 @@ describe("PostList Component - current page indication", () => {
       postslist: samplePosts,
       url: "/posts/first-post/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     const ariaCurrentCount =
@@ -259,6 +334,8 @@ describe("PostList Component - title fallback", () => {
       postslist: postsWithoutTitle,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result.includes("/posts/untitled/"), true);
@@ -277,6 +354,8 @@ describe("PostList Component - title fallback", () => {
       postslist: postsWithTitle,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result.includes("My Great Post"), true);
@@ -295,6 +374,8 @@ describe("PostList Component - title fallback", () => {
       postslist: postsWithEmptyTitle,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     // Empty string is falsy, so URL should be used
@@ -320,6 +401,8 @@ describe("PostList Component - PostDetails integration", () => {
       postslist: samplePosts,
       url: "/",
       comp: trackingComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(callCount, 2);
@@ -338,6 +421,8 @@ describe("PostList Component - PostDetails integration", () => {
       postslist: samplePosts,
       url: "/",
       comp: capturingComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(receivedData.length, 2);
@@ -355,6 +440,8 @@ describe("PostList Component - PostDetails integration", () => {
       postslist: samplePosts,
       url: "/",
       comp: customComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result.includes("Custom Content"), true);
@@ -379,6 +466,8 @@ describe("PostList Component - edge cases", () => {
       postslist: singlePost,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     assertEquals(result.includes("Only One"), true);
@@ -397,6 +486,8 @@ describe("PostList Component - edge cases", () => {
       postslist: manyPosts,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     const liCount = (result.match(/<li class="post">/g) || []).length;
@@ -416,6 +507,8 @@ describe("PostList Component - edge cases", () => {
       postslist: postsWithSpecialChars,
       url: "/",
       comp: mockComp,
+      i18n: mockI18n,
+      md: mockMd,
     });
 
     // The component doesn't escape HTML, so it should contain the original
