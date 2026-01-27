@@ -148,22 +148,40 @@ when moving toward PaperMod unless explicitly rebuilt:
   PaperMod’s compact rhythm.
 - Refined page header and footer treatments to match PaperMod’s divider-driven
   structure.
+- Updated the main header navigation structure to mirror PaperMod (inner
+  container alignment, tighter menu spacing, and an isolated theme toggle
+  control).
 
 ### Next priorities (in order)
 
-1. **Header + navigation parity**: align brand lockup, menu spacing, and theme
-   toggle positioning with PaperMod’s header layout.
-2. **Post list template parity**: adjust list metadata, excerpt rhythm, and
+1. **Post list template parity**: adjust list metadata, excerpt rhythm, and
    read-more affordance; confirm typography for titles and meta.
-3. **Single post template parity**: align post header, metadata, and content
+2. **Single post template parity**: align post header, metadata, and content
    spacing; verify TOC/footnotes layout.
-4. **Search UI parity**: restyle Pagefind UI to match PaperMod search modal.
-5. **Archive/tag pages parity**: ensure layouts, spacing, and metadata match
+3. **Search UI parity**: restyle Pagefind UI to match PaperMod search modal.
+4. **Archive/tag pages parity**: ensure layouts, spacing, and metadata match
    PaperMod’s archive listings.
-6. **Theme toggle details**: ensure toggle UI, focus states, and persistence
+5. **Theme toggle details**: ensure toggle UI, focus states, and persistence
    match PaperMod behavior.
-7. **QA + polish**: review responsive breakpoints, contrast, and component
+6. **QA + polish**: review responsive breakpoints, contrast, and component
    spacing for final parity.
+
+### Remaining work checklist (living)
+
+- Post list layout: align metadata ordering, spacing between title/excerpt, and
+  add a PaperMod-like read-more affordance.
+- Post content view: verify the post header structure, spacing above content,
+  and typography for the lead section.
+- Post meta blocks: confirm date, reading time, and tags match PaperMod’s visual
+  hierarchy and separator treatment.
+- Search modal: restyle the Pagefind UI to match PaperMod’s search panel and
+  keyboard hints.
+- Archive/tag pages: ensure list density, metadata, and title sizing are aligned
+  with PaperMod.
+- Theme toggle: confirm icon sizing, hover/focus states, and alignment in the
+  navigation bar across breakpoints.
+- Responsive QA: check 480px/768px breakpoints for header wrapping, post lists,
+  and typography scaling.
 
 ## Accepted trade-offs
 
