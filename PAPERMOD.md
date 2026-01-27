@@ -121,7 +121,7 @@ PaperMod’s optional features are required.
 | Auto theme (system pref)     | ✅ Feasible | `prefers-color-scheme` media query in `theme.js` | ✅ **Implemented**        |
 | Themed scroll bar            | ✅ Feasible | CSS `::-webkit-scrollbar` + CSS vars             | ⬜ Not yet                |
 | Smooth scroll                | ✅ Feasible | CSS `scroll-behavior: smooth`                    | ⬜ Not yet                |
-| Scroll-to-top button         | ✅ Feasible | JS component + CSS positioning                   | ⬜ Not yet                |
+| Scroll-to-top button         | ✅ Feasible | `scroll-to-top.js` + CSS                         | ✅ **Implemented**        |
 | Responsive layout            | ✅ Feasible | Lightning CSS + mobile-first SCSS                | ✅ **Implemented**        |
 | Search (Fuse.js in PaperMod) | ✅ Feasible | Pagefind plugin (better: static index)           | ✅ **Implemented**        |
 | Search keyboard nav          | ✅ Feasible | Pagefind UI built-in + custom JS                 | ✅ **Implemented**        |
@@ -129,7 +129,7 @@ PaperMod’s optional features are required.
 | Reading time                 | ✅ Feasible | `reading_info` plugin                            | ✅ **Implemented**        |
 | Word count                   | ✅ Feasible | `reading_info` plugin (provides both)            | ✅ **Implemented**        |
 | Syntax highlighting          | ✅ Feasible | Prism plugin                                     | ✅ **Implemented**        |
-| Code copy button             | ✅ Feasible | Custom JS + clipboard API                        | ⬜ Not yet                |
+| Code copy button             | ✅ Feasible | `code-copy.js` + clipboard API                   | ✅ **Implemented**        |
 | Social icons                 | ✅ Feasible | `icons` plugin or inline SVGs                    | ⬜ Not yet                |
 | Breadcrumbs                  | ✅ Feasible | `Breadcrumbs.ts` component                       | ✅ **Implemented**        |
 | Post cover image             | ✅ Feasible | Front matter `image` + layout logic              | ⬜ Not yet                |
@@ -138,8 +138,8 @@ PaperMod’s optional features are required.
 | Share buttons                | ✅ Feasible | Template links (Twitter, Facebook, etc.)         | ⬜ Not yet                |
 | RSS/JSON feeds               | ✅ Feasible | Feed plugin                                      | ✅ **Implemented**        |
 | Sitemap                      | ✅ Feasible | Sitemap plugin                                   | ✅ **Implemented**        |
-| Robots.txt                   | ✅ Feasible | Robots plugin                                    | ⬜ Not yet (easy add)     |
-| Related posts                | ✅ Feasible | Search plugin query by tags                      | ⬜ Not yet                |
+| Robots.txt                   | ✅ Feasible | Robots plugin                                    | ✅ **Implemented**        |
+| Related posts                | ✅ Feasible | `RelatedPosts.ts` component + Search plugin      | ✅ **Implemented**        |
 | Prev/next post navigation    | ✅ Feasible | `search.previousPage`/`nextPage`                 | ✅ **Implemented**        |
 | Author profile widget        | ✅ Feasible | Data-driven component                            | ⬜ Not yet                |
 | Profile mode (home layout)   | ✅ Feasible | Custom `index.page.ts` layout                    | ⬜ Not yet                |
@@ -167,12 +167,13 @@ The following official Lume plugins can enhance the migration:
 | Favicon          | Auto-generate all favicon sizes  | Replace manual favicon management     |
 | Icons            | Import icons from icon libraries | Social icons, UI icons                |
 | OG images        | Auto-generate OpenGraph images   | Social sharing preview                |
-| Robots           | Generate robots.txt              | SEO compliance                        |
-| Relations        | Automatic page relations         | Related posts feature                 |
 | Nav              | Build menus and breadcrumbs      | Could simplify `Breadcrumbs.ts`       |
 | SVGO             | Optimize SVG files               | Icon optimization                     |
 | Minify HTML      | HTML minification                | Performance optimization              |
 | Multilanguage    | Multi-language site support      | Full i18n with hreflang + alternates  |
+
+**Note:** Robots plugin is now in use. Related posts are implemented via a
+custom `RelatedPosts.ts` component using the Search plugin.
 
 ### Multilanguage plugin (i18n) — detailed analysis
 
@@ -401,6 +402,29 @@ These features are **enhancements** over PaperMod that should be retained:
   - Added `.footer-commit` class with monospace font for commit hash.
   - Added `.footer-separator` class for consistent separator styling.
   - Improved link transitions.
+- Implemented scroll-to-top button (`src/js/features/scroll-to-top.js`,
+  `src/_includes/css/04-components/scroll-to-top.css`):
+  - Floating button appears after scrolling 300px.
+  - Smooth scroll behavior with `prefers-reduced-motion` support.
+  - Throttled scroll event handling for performance.
+  - Keyboard accessible with Enter/Space activation.
+  - Hover/focus states with primary color highlight.
+- Implemented code copy button (`src/js/features/code-copy.js`,
+  `src/_includes/css/04-components/code-copy.css`):
+  - Adds copy button to all `<pre><code>` blocks.
+  - Visual feedback with success (green) and error (red) states.
+  - Clipboard API with fallback for older browsers.
+  - Button reveals on hover/focus, always visible on mobile.
+  - Respects reduced motion preferences.
+- Added Robots plugin (`plugins.ts`):
+  - Auto-generates `robots.txt` with sitemap reference.
+  - Configured in the plugin chain after Pagefind.
+- Implemented related posts component (`src/_components/RelatedPosts.ts`,
+  `src/_includes/css/04-components/related-posts.css`):
+  - Displays up to 3 related posts based on shared tags.
+  - Sorted by relevance (tag overlap count), then by date.
+  - Integrated into `layouts/post.ts` between source info and navigation.
+  - Added `related_posts` i18n string to `src/_data/i18n.ts`.
 
 ### Audit summary (January 2026)
 
@@ -467,11 +491,15 @@ These features are **enhancements** over PaperMod that should be retained:
       create language selector component.
 - [ ] Responsive images: configure Transform Images + Picture plugins for post
       cover images and content images.
-- [ ] Scroll-to-top button: implement JS component with CSS positioning.
-- [ ] Code copy button: implement clipboard API integration for code blocks.
+- [x] Scroll-to-top button: implemented JS component with CSS positioning,
+      smooth scroll, throttled visibility toggle, and reduced motion support.
+- [x] Code copy button: implemented clipboard API integration for code blocks
+      with visual feedback (success/error states), fallback for older browsers.
 - [ ] Social icons: configure Icons plugin or create inline SVG components.
-- [ ] Robots.txt: add Robots plugin to `_config.ts`.
-- [ ] Related posts: implement using Search plugin query by tags.
+- [x] Robots.txt: added Robots plugin to `plugins.ts`, auto-generates
+      `robots.txt`.
+- [x] Related posts: implemented using Search plugin query by tags, displays up
+      to 3 related posts sorted by relevance (shared tag count) then by date.
 
 ## Accepted trade-offs
 

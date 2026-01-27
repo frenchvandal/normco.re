@@ -20,6 +20,7 @@ interface I18n {
   post: {
     by: string;
     reading_time: string;
+    related_posts: string;
   };
   search: {
     by_author: string;
@@ -51,6 +52,7 @@ const i18n: I18n = {
   post: {
     by: "by ",
     reading_time: "min read",
+    related_posts: "Related Posts",
   },
   search: {
     by_author: "Posts by",

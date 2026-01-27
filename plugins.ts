@@ -10,6 +10,7 @@ import resolveUrls from "lume/plugins/resolve_urls.ts";
 import jsonLd from "lume/plugins/json_ld.ts";
 import metas from "lume/plugins/metas.ts";
 import pagefind, { Options as PagefindOptions } from "lume/plugins/pagefind.ts";
+import robots from "lume/plugins/robots.ts";
 import sitemap from "lume/plugins/sitemap.ts";
 import feed, { Options as FeedOptions } from "lume/plugins/feed.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
@@ -286,6 +287,7 @@ export default function (userOptions?: Options) {
       .use(footnotes())
       .use(resolveUrls())
       .use(pagefind(options.pagefind))
+      .use(robots())
       .use(sitemap())
       .use(feed(options.feed))
       .add("fonts")

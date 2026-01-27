@@ -8,8 +8,10 @@
 // ============================================================================
 
 import { enhanceAnchors } from "./features/anchors.js";
+import { initCodeCopy } from "./features/code-copy.js";
 import { enhanceExternalLinks } from "./features/external-links.js";
 import { enhanceImages } from "./features/images.js";
+import { initScrollToTop } from "./features/scroll-to-top.js";
 import { initSearch } from "./features/search.js";
 import { initSearchModal } from "./features/search-modal.js";
 import { createThemeManager } from "./features/theme.js";
@@ -34,6 +36,7 @@ themeManager.init();
 function initializeFeatures() {
   initSearch();
   initSearchModal();
+  initScrollToTop();
   enhanceImages();
   const defer = globalThis.requestIdleCallback
     ? globalThis.requestIdleCallback
@@ -43,6 +46,7 @@ function initializeFeatures() {
     enhanceExternalLinks();
     enhanceAnchors();
     enhanceTOC();
+    initCodeCopy();
   });
 
   // Initialize UI components
