@@ -12,6 +12,11 @@ PaperMod.
   the `dev` branch, never the `master` branch, unless explicitly stated
   otherwise by the human user.
 - No `deno test --coverage` required for tasks related to the PaperMod project.
+- The Lume architecture in the `dev` branch may be modified compared to the
+  current architecture in the `master` branch in order to accommodate the
+  migration to PaperMod. What matters is the final outcome—achieving behavior as
+  close as possible to a one-to-one match with PaperMod—not the specific
+  implementation approach used to get there.
 
 ## Reference documentation for Hugo and PaperMod
 
