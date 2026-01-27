@@ -271,7 +271,13 @@ export default function (userOptions?: Options) {
       .use(purgecss({
         options: {
           safelist: {
-            deep: [/token/, /source-info/, /cover-image/, /share-button/],
+            deep: [
+              /token/,
+              /source-info/,
+              /cover-image/,
+              /share-button/,
+              /author-profile/,
+            ],
             standard: [/^language-/],
           },
         },

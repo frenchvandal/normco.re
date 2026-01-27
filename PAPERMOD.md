@@ -149,7 +149,7 @@ PaperMod’s optional features are required.
 | Robots.txt                   | ✅ Feasible | Robots plugin                                    | ✅ **Implemented**        |
 | Related posts                | ✅ Feasible | `RelatedPosts.ts` component + Search plugin      | ✅ **Implemented**        |
 | Prev/next post navigation    | ✅ Feasible | `search.previousPage`/`nextPage`                 | ✅ **Implemented**        |
-| Author profile widget        | ✅ Feasible | Data-driven component                            | ⬜ Not yet                |
+| Author profile widget        | ✅ Feasible | Data-driven component                            | ✅ **Implemented**        |
 | Profile mode (home layout)   | ✅ Feasible | Custom `index.page.ts` layout                    | ⬜ Not yet                |
 | Home-Info mode               | ✅ Feasible | Custom `index.page.ts` layout                    | ⬜ Partial (welcome text) |
 | Comments integration         | ✅ Feasible | Embed script (Utterances/Giscus/Disqus)          | ⬜ Not yet                |
@@ -506,6 +506,16 @@ example site must also be recreated.
   - Integrated into `layouts/post.ts` between source info and related posts.
   - Added `share` i18n strings to `src/_data/i18n.ts`.
   - Updated purgecss safelist to include `share-button` pattern.
+- Implemented author profile widget (`src/_components/AuthorProfile.ts`,
+  `src/_includes/css/04-components/author-profile.css`):
+  - Created `AuthorProfile.ts` component with two variants: "compact" for post
+    footers and "full" for profile pages.
+  - Supports avatar (with placeholder fallback), name, bio, email, website, and
+    social links.
+  - Social icons for GitHub, Twitter, LinkedIn, Mastodon, email, and website.
+  - Responsive design with mobile-friendly adjustments.
+  - Added `author` i18n strings to `src/_data/i18n.ts`.
+  - Updated purgecss safelist to include `author-profile` pattern.
 
 ### Audit summary (January 2026)
 

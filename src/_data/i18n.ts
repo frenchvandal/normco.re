@@ -38,6 +38,9 @@ interface I18n {
     copy_link: string;
     copied: string;
   };
+  author: {
+    written_by: string;
+  };
 }
 
 const i18n: I18n = {
@@ -75,6 +78,9 @@ const i18n: I18n = {
     share: "Share",
     copy_link: "Copy link",
     copied: "Copied!",
+  },
+  author: {
+    written_by: "Written by",
   },
 };
 
