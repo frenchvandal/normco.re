@@ -18,6 +18,18 @@ PaperMod.
   close as possible to a one-to-one match with PaperMod—not the specific
   implementation approach used to get there.
 
+### PaperMod Development Branching Rules
+
+- The **PaperMod project must be developed exclusively in the `dev` branch**.
+- The **`master` branch represents the existing, stable Lume setup without
+  PaperMod**.
+- No PaperMod-related changes, experiments, or refactors are allowed on the
+  `master` branch.
+- The `master` branch must remain a clean reference of the original Lume
+  implementation.
+- All work related to PaperMod (code, configuration, documentation, or
+  experiments) must target the `dev` branch only.
+
 ## Reference documentation for Hugo and PaperMod
 
 - https://github.com/adityatelange/hugo-PaperMod
