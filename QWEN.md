@@ -11,8 +11,12 @@ This comprehensive audit evaluates the normco.re codebase against the guidelines
 defined in CLAUDE.md. The project demonstrates strong adherence to best
 practices in accessibility, architecture, and testing. Key strengths include a
 well-organized component system with comprehensive test coverage and excellent
-accessibility implementation. Primary improvement areas center on documentation
-consistency for internal functions and minor architectural refinements.
+accessibility implementation.
+
+**Update (2026-01-27):** All documentation issues identified in the initial
+audit have been resolved. JSDoc has been added to all internal functions in
+`plugins.ts`, `_config.ts`, and `layouts/base.ts`. The only remaining
+improvement area is test coverage for client-side JavaScript modules.
 
 **Why this report is actionable:** it maps where to make changes, what to test,
 and which priorities to tackle first. Use the sections below as a lightweight
@@ -106,43 +110,23 @@ respect the existing data cascade and layout/component boundaries.
   centralized aliases in `deno.json`
 - **Immutability**: Preference for `const` and pure functions throughout
 
-#### ⚠️ Issues to Address
+#### ✅ Issues Resolved (2026-01-27)
 
-| File              | Line    | Issue                            | Priority |
+All previously identified JSDoc issues have been addressed:
+
+| File              | Line    | Issue                            | Status   |
 | ----------------- | ------- | -------------------------------- | -------- |
-| `plugins.ts`      | 78-90   | `runGit` lacks JSDoc             | Medium   |
-| `plugins.ts`      | 92-114  | `parseGitRemote` lacks JSDoc     | Medium   |
-| `plugins.ts`      | 116-128 | `getBranch` lacks JSDoc          | Medium   |
-| `plugins.ts`      | 130-150 | `getRepoInfoFromEnv` lacks JSDoc | Medium   |
-| `plugins.ts`      | 152-167 | `getRepoInfoFromGit` lacks JSDoc | Medium   |
-| `plugins.ts`      | 169-170 | `getRepoInfo` lacks JSDoc        | Medium   |
-| `_config.ts`      | 11-22   | `getCommitSha` lacks JSDoc       | Medium   |
-| `layouts/base.ts` | 5-143   | Main function lacks JSDoc        | Low      |
+| `plugins.ts`      | 78-90   | `runGit` lacks JSDoc             | ✅ Fixed |
+| `plugins.ts`      | 92-114  | `parseGitRemote` lacks JSDoc     | ✅ Fixed |
+| `plugins.ts`      | 116-128 | `getBranch` lacks JSDoc          | ✅ Fixed |
+| `plugins.ts`      | 130-150 | `getRepoInfoFromEnv` lacks JSDoc | ✅ Fixed |
+| `plugins.ts`      | 152-167 | `getRepoInfoFromGit` lacks JSDoc | ✅ Fixed |
+| `plugins.ts`      | 169-170 | `getRepoInfo` lacks JSDoc        | ✅ Fixed |
+| `_config.ts`      | 11-22   | `getCommitSha` lacks JSDoc       | ✅ Fixed |
+| `layouts/base.ts` | 5-143   | Main function lacks JSDoc        | ✅ Fixed |
 
-**Note:** These are internal/private functions. While CLAUDE.md requires full
-JSDoc coverage, the priority is lower than for exported APIs. The exported
-functions (`defaults`, `default export`) are properly documented.
-
-#### 📝 Recommended JSDoc Template for `plugins.ts`
-
-````ts
-/**
- * Executes a git command synchronously.
- *
- * @param args - Git command arguments.
- * @returns Object containing exit code, stdout, and stderr.
- *
- * @example
- * ```ts
- * import { assertEquals } from "@std/assert";
- *
- * // Internal function - example for documentation only
- * const result = runGit(["status"]);
- * assertEquals(typeof result.code, "number");
- * ```
- */
-const runGit = (args: string[]): GitCommandResult => { ... };
-````
+**Note:** All internal functions now include `@internal` tags to indicate their
+private nature while maintaining full documentation coverage.
 
 ---
 
@@ -287,8 +271,8 @@ to confirm baseline health.
 | Components with JSDoc         | 8/8   | 100%   | ✅     |
 | Components with tests         | 8/8   | 100%   | ✅     |
 | Utilities with doc-tests      | 3/3   | 100%   | ✅     |
-| Layouts with JSDoc            | 4/5   | 100%   | ⚠️     |
-| Internal functions documented | 0/7   | 100%   | ⚠️     |
+| Layouts with JSDoc            | 5/5   | 100%   | ✅     |
+| Internal functions documented | 7/7   | 100%   | ✅     |
 | CSS `!important` justified    | 4/4   | 100%   | ✅     |
 | JS client modules tested      | 7/15  | 100%   | ⚠️     |
 | Accessibility features        | 5/5   | 100%   | ✅     |
@@ -297,21 +281,21 @@ to confirm baseline health.
 
 ## Action Plan
 
-### Phase 1: Documentation (Medium Priority)
+### ✅ Phase 1: Documentation (Completed 2026-01-27)
 
-**Effort:** ~1-2 hours
+~~**Effort:** ~1-2 hours~~
 
-Add JSDoc to internal functions in `plugins.ts` and `_config.ts`:
+All internal functions in `plugins.ts` and `_config.ts` now have JSDoc:
 
-1. `plugins.ts:78` — Document `runGit`
-2. `plugins.ts:92` — Document `parseGitRemote`
-3. `plugins.ts:116` — Document `getBranch`
-4. `plugins.ts:130` — Document `getRepoInfoFromEnv`
-5. `plugins.ts:152` — Document `getRepoInfoFromGit`
-6. `plugins.ts:169` — Document `getRepoInfo`
-7. `_config.ts:11` — Document `getCommitSha`
+1. ~~`plugins.ts:78` — Document `runGit`~~ ✅
+2. ~~`plugins.ts:92` — Document `parseGitRemote`~~ ✅
+3. ~~`plugins.ts:116` — Document `getBranch`~~ ✅
+4. ~~`plugins.ts:130` — Document `getRepoInfoFromEnv`~~ ✅
+5. ~~`plugins.ts:152` — Document `getRepoInfoFromGit`~~ ✅
+6. ~~`plugins.ts:169` — Document `getRepoInfo`~~ ✅
+7. ~~`_config.ts:11` — Document `getCommitSha`~~ ✅
 
-### Phase 2: Test Coverage (Low Priority)
+### Phase 2: Test Coverage (Low Priority) — Remaining
 
 **Effort:** ~2-3 hours
 
@@ -320,11 +304,11 @@ Add tests for client-side JavaScript:
 1. `js/features/theme.js` — Test theme switching, localStorage persistence
 2. `js/components/toast.js` — Test toast display, auto-dismiss, variants
 
-### Phase 3: Layout Documentation (Low Priority)
+### ✅ Phase 3: Layout Documentation (Completed 2026-01-27)
 
-**Effort:** ~30 minutes
+~~**Effort:** ~30 minutes~~
 
-Add JSDoc to `layouts/base.ts` main export function.
+~~Add JSDoc to `layouts/base.ts` main export function.~~ ✅
 
 ---
 
@@ -358,18 +342,18 @@ with caution for non-critical changes.
 
 ## Targeted Follow‑Ups (ready-to-assign tickets)
 
-### Documentation & Consistency
+### ✅ Documentation & Consistency (Completed 2026-01-27)
 
-1. Add JSDoc + doc-tests for internal functions listed in Phase 1.
-2. Add JSDoc to `src/_includes/layouts/base.ts`.
+1. ~~Add JSDoc + doc-tests for internal functions listed in Phase 1.~~ ✅
+2. ~~Add JSDoc to `src/_includes/layouts/base.ts`.~~ ✅
 
-### Client-Side Tests
+### Client-Side Tests — Remaining
 
 1. `src/js/features/theme.js` — test theme switching + persistence.
 2. `src/js/components/toast.js` — test auto-dismiss + variants.
 3. `src/js/features/search-modal.js` — test open/close + focus handling.
 
-### Accessibility & UX
+### Accessibility & UX — Ongoing
 
 1. Verify that new interactive components always include `:focus-visible`.
 2. Confirm `prefers-reduced-motion` behavior when adding animations.
@@ -435,14 +419,16 @@ CLAUDE.md:
 - **Accessibility:** Comprehensive implementation (skip links, focus management,
   motion/contrast preferences)
 - **Testing:** Strong coverage for components and utilities with BDD style
-- **Documentation:** Good for public APIs, needs improvement for internal
-  functions
+- **Documentation:** ✅ Full JSDoc coverage for all public APIs and internal
+  functions (completed 2026-01-27)
 
-The primary actionable improvement is adding JSDoc to 7 internal functions in
-`plugins.ts` and `_config.ts`. This is a medium-priority task that enhances
-maintainability but does not affect functionality.
+**Remaining improvements:**
 
-**Overall assessment: Production-ready with minor documentation gaps.**
+- Add tests for client-side JavaScript modules (`theme.js`, `toast.js`,
+  `search-modal.js`)
+
+**Overall assessment: Production-ready with full documentation coverage. Only
+minor test coverage gaps remain for client-side JavaScript.**
 
 ---
 

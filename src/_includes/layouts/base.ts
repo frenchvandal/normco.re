@@ -1,6 +1,18 @@
 /**
- * Base Layout
- * Master layout with HTML structure, navigation, and footer
+ * Base layout template for the site.
+ *
+ * Renders the complete HTML document structure including:
+ * - Document head with meta tags, stylesheets, and scripts
+ * - Skip link for keyboard accessibility
+ * - Navigation bar with menu items and theme toggle
+ * - Main content area
+ * - Footer with commit information
+ * - Toast notifications container
+ * - Search modal (activated via Cmd/Ctrl+K)
+ *
+ * @param data - Lume page data containing title, metas, content, and other page variables.
+ * @param helpers - Lume helper functions for URL generation and date formatting.
+ * @returns The complete HTML document as a string.
  */
 export default async function (
   {
