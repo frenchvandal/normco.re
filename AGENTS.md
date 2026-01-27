@@ -12,12 +12,17 @@
 - The PaperMod project is documented in the `PAPERMOD.md` file.
 - Any task impacting the PaperMod project must be documented by updating the
   `PAPERMOD.md` file.
+- As part of the PaperMod project, the `PAPERMOD.md` file must be updated
+  progressively with both completed work and remaining tasks, in the most
+  detailed and explicit manner possible, so that human developpers, AI agents
+  and Claude can seamlessly and efficiently take over the continuation of the
+  migration work.
 
 **Do**
 
 - Before executing any Deno command for the very first time on an environment,
   verify whether Deno is already installed. If it is not installed, install Deno
-  first, provided this is technically possible for Claude.
+  first, provided this is technically possible for the AI Agent.
 - All merge requests and commits related to the PaperMod project must be done in
   the `dev` branch, never the `master` branch, unless explicitly stated
   otherwise by the human user.
