@@ -32,13 +32,35 @@ interface MetasConfig {
   lang: string;
 }
 
+/**
+ * Profile configuration for home page profile mode.
+ */
+interface ProfileConfig {
+  /** Author's display name */
+  name: string;
+  /** Author's avatar image URL */
+  avatar?: string;
+  /** Short bio or tagline */
+  bio?: string;
+}
+
+/**
+ * Home page configuration.
+ */
+interface HomeConfig {
+  /** Welcome message for posts mode */
+  welcome: string;
+  /** Home page mode: "posts" shows recent posts, "profile" shows author profile */
+  mode?: "posts" | "profile";
+  /** Profile configuration (used when mode is "profile") */
+  profile?: ProfileConfig;
+}
+
 interface SiteData {
   lang: string;
   repo?: RepoInfo;
   repoUrl?: string;
-  home: {
-    welcome: string;
-  };
+  home: HomeConfig;
   menu_links: MenuLink[];
   social_links: SocialLink[];
   extra_head: string[];
@@ -50,6 +72,11 @@ const data: SiteData = {
   lang: "en",
   home: {
     welcome: "Hello, I am a person that writes stuff.",
+    mode: "posts",
+    profile: {
+      name: "Phiphi",
+      bio: "Finding liberation into being nothing special",
+    },
   },
   menu_links: [],
   social_links: [

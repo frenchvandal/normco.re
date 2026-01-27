@@ -14,6 +14,8 @@ import robots from "lume/plugins/robots.ts";
 import sitemap from "lume/plugins/sitemap.ts";
 import feed, { Options as FeedOptions } from "lume/plugins/feed.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
+import picture from "lume/plugins/picture.ts";
+import transformImages from "lume/plugins/transform_images.ts";
 import { merge } from "lume/core/utils/object.ts";
 import toc from "lume/markdown-plugins/toc.ts";
 import image from "lume/markdown-plugins/image.ts";
@@ -269,7 +271,13 @@ export default function (userOptions?: Options) {
       .use(purgecss({
         options: {
           safelist: {
-            deep: [/token/, /source-info/],
+            deep: [
+              /token/,
+              /source-info/,
+              /cover-image/,
+              /share-button/,
+              /author-profile/,
+            ],
             standard: [/^language-/],
           },
         },
@@ -282,6 +290,8 @@ export default function (userOptions?: Options) {
       .use(date(options.date))
       .use(jsonLd())
       .use(slugifyUrls())
+      .use(picture())
+      .use(transformImages())
       .use(metas())
       .use(image())
       .use(footnotes())

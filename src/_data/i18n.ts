@@ -33,6 +33,14 @@ interface I18n {
     view_source: string;
     revision: string;
   };
+  share: {
+    share: string;
+    copy_link: string;
+    copied: string;
+  };
+  author: {
+    written_by: string;
+  };
 }
 
 const i18n: I18n = {
@@ -65,6 +73,14 @@ const i18n: I18n = {
   source: {
     view_source: "View source",
     revision: "rev",
+  },
+  share: {
+    share: "Share",
+    copy_link: "Copy link",
+    copied: "Copied!",
+  },
+  author: {
+    written_by: "Written by",
   },
 };
 

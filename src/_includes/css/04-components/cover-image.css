@@ -1,0 +1,111 @@
+/**
+ * Cover Image Component Styles
+ *
+ * Responsive cover image for blog posts with PaperMod-inspired design.
+ * Supports captions, links, and modern image formats via the Picture plugin.
+ */
+
+/* ============================================================================
+   Cover Image Container
+   ============================================================================ */
+
+.cover-image {
+  margin: 0;
+  margin-block-end: var(--space-600);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--color-surface-alt);
+}
+
+/* ============================================================================
+   Image Element
+   ============================================================================ */
+
+.cover-image img,
+.cover-image picture {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* ============================================================================
+   Link Wrapper
+   ============================================================================ */
+
+.cover-image__link {
+  display: block;
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+
+.cover-image__link:hover {
+  opacity: 0.9;
+}
+
+.cover-image__link:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ============================================================================
+   Caption
+   ============================================================================ */
+
+.cover-image__caption {
+  padding: var(--space-200) var(--space-300);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  background-color: var(--color-surface-alt);
+}
+
+/* ============================================================================
+   Post Header Integration
+   ============================================================================ */
+
+.post-header .cover-image {
+  margin-block-start: var(--space-400);
+}
+
+/* ============================================================================
+   Post List Integration
+   ============================================================================ */
+
+.post-entry .cover-image {
+  margin-block-end: var(--space-300);
+  border-radius: var(--radius-sm);
+}
+
+.post-entry .cover-image img {
+  aspect-ratio: 2 / 1;
+}
+
+/* ============================================================================
+   Responsive Adjustments
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .cover-image {
+    margin-inline: calc(-1 * var(--space-400));
+    border-radius: 0;
+  }
+
+  .post-entry .cover-image {
+    margin-inline: 0;
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* ============================================================================
+   Dark Theme Adjustments
+   ============================================================================ */
+
+[data-theme="dark"] .cover-image {
+  background-color: var(--color-surface-alt);
+}
+
+[data-theme="dark"] .cover-image__link:hover {
+  opacity: 0.85;
+}

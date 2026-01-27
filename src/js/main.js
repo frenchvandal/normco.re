@@ -14,6 +14,7 @@ import { enhanceImages } from "./features/images.js";
 import { initScrollToTop } from "./features/scroll-to-top.js";
 import { initSearch } from "./features/search.js";
 import { initSearchModal } from "./features/search-modal.js";
+import { initShareCopy } from "./features/share-copy.js";
 import { createThemeManager } from "./features/theme.js";
 import { enhanceTOC } from "./features/toc.js";
 
@@ -47,6 +48,7 @@ function initializeFeatures() {
     enhanceAnchors();
     enhanceTOC();
     initCodeCopy();
+    initShareCopy();
   });
 
   // Initialize UI components

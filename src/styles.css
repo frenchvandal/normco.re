@@ -64,9 +64,12 @@
 
 /* Content components */
 @import "css/04-components/related-posts.css";
+@import "css/04-components/cover-image.css";
 
 /* Social components */
 @import "css/04-components/social-icons.css";
+@import "css/04-components/share-buttons.css";
+@import "css/04-components/author-profile.css";
 
 /* ==========================================================================
    05. Layouts
@@ -78,3 +81,4 @@
 @import "css/05-layouts/post.css";
 @import "css/05-layouts/post-list.css";
 @import "css/05-layouts/toc-footnotes.css";
+@import "css/05-layouts/home-profile.css";

@@ -50,6 +50,10 @@ export default async function (
     sourcePath,
     repo,
     draft,
+    image,
+    imageAlt,
+    imageCaption,
+    metas,
   }: Lume.Data,
 ) {
   const postDetails = await comp.PostDetails({
@@ -89,6 +93,26 @@ export default async function (
     ? `<span class="badge badge--draft">${i18n.post.draft}</span>`
     : "";
 
+  const coverImage = image
+    ? await comp.CoverImage({
+      src: image,
+      alt: imageAlt || title,
+      caption: imageCaption,
+      loading: "eager",
+    })
+    : "";
+
+  // Build absolute URL for sharing
+  const siteUrl = metas?.site ? `https://${metas.site}` : "";
+  const absoluteUrl = `${siteUrl}${url}`;
+
+  const shareButtons = await comp.ShareButtons({
+    url: absoluteUrl,
+    title,
+    description,
+    i18n: i18n.share,
+  });
+
   return `
 ${breadcrumbs}
 
@@ -102,6 +126,8 @@ ${breadcrumbs}
     ${description ? `<p class="post-description">${description}</p>` : ""}
 
     ${postDetails}
+
+    ${coverImage}
   </header>
 
   ${
@@ -171,6 +197,8 @@ ${breadcrumbs}
   }
 
   ${sourceInfo}
+
+  ${shareButtons}
 
   ${relatedPosts}
 </article>
