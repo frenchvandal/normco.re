@@ -12,6 +12,28 @@ PaperMod.
   the `dev` branch, never the `master` branch, unless explicitly stated
   otherwise by the human user.
 - No `deno test --coverage` required for tasks related to the PaperMod project.
+- The Lume architecture in the `dev` branch may be modified compared to the
+  current architecture in the `master` branch in order to accommodate the
+  migration to PaperMod. What matters is the final outcome—achieving behavior as
+  close as possible to a one-to-one match with PaperMod—not the specific
+  implementation approach used to get there.
+- As part of the PaperMod project, the `PAPERMOD.md` file must be updated
+  progressively with both completed work and remaining tasks, in the most
+  detailed and explicit manner possible, so that human developpers, AI agents
+  and Claude can seamlessly and efficiently take over the continuation of the
+  migration work.
+
+### PaperMod Development Branching Rules
+
+- The **PaperMod project must be developed exclusively in the `dev` branch**.
+- The **`master` branch represents the existing, stable Lume setup without
+  PaperMod**.
+- No PaperMod-related changes, experiments, or refactors are allowed on the
+  `master` branch.
+- The `master` branch must remain a clean reference of the original Lume
+  implementation.
+- All work related to PaperMod (code, configuration, documentation, or
+  experiments) must target the `dev` branch only.
 
 ## Reference documentation for Hugo and PaperMod
 
@@ -137,6 +159,101 @@ when moving toward PaperMod unless explicitly rebuilt:
    or drop them.
 6. **Run QA on a content snapshot** to validate typography, spacing, and layout
    fidelity.
+
+## Implementation log (PaperMod → Lume)
+
+### Completed
+
+- Established baseline PaperMod-inspired design tokens (colors, typography,
+  layout widths) with a matching dark theme palette.
+- Aligned global layout spacing and navigation/post list spacing to reflect
+  PaperMod's compact rhythm.
+- Refined page header and footer treatments to match PaperMod's divider-driven
+  structure.
+- Updated the main header navigation structure to mirror PaperMod (inner
+  container alignment, tighter menu spacing, and an isolated theme toggle
+  control).
+- Expanded the shared post list rendering to include post headers, excerpts, and
+  a read-more affordance so archive listings align with PaperMod's list rhythm.
+- Restructured post metadata blocks to mirror PaperMod (meta line + tags row
+  with label and hashtag styling).
+- Added post description support in the single post header and tightened header
+  spacing to better match PaperMod's title block rhythm.
+- Fixed search input focus ring color to match the design system's primary blue
+  (`--color-primary`) instead of an inconsistent red value
+  (`src/_includes/css/04-components/search.css`).
+- Improved `Pagination` component (`src/_components/Pagination.ts`):
+  - Added complete JSDoc documentation with testable code examples.
+  - Added `aria-label="Pagination"` for accessibility.
+  - Added `role="list"` to the navigation list.
+  - Added `aria-current="page"` to the current page indicator.
+- Enhanced pagination styles (`src/_includes/css/05-layouts/page.css`) to match
+  PaperMod's layout: flexbox-based layout with previous/next links on opposite
+  sides and centered page indicator.
+
+### Audit summary (January 2026)
+
+**What is working well:**
+
+- CSS architecture is well organized: design tokens, base styles, utilities,
+  components, and layouts follow a clear separation.
+- Component structure mirrors PaperMod's patterns: `PostList`, `PostDetails`,
+  `Pagination`, `Breadcrumbs`, `Modal`, and `SourceInfo` components are
+  functional.
+- Theme toggle works correctly with localStorage persistence and system
+  preference detection (`prefers-color-scheme`).
+- Search modal with Pagefind integration responds to `Cmd/Ctrl+K` shortcut.
+- TOC and footnotes are styled and functional.
+- Responsive breakpoints at 480px and 768px are applied consistently.
+- Accessibility: skip links, ARIA labels, `focus-visible` states, and semantic
+  HTML are in place.
+- JS tests for theme, toast, modal, and other features are well structured.
+
+**Items requiring attention:**
+
+- Search modal: Pagefind UI styling could be further refined to match PaperMod's
+  search panel aesthetic.
+- Post pagination (previous/next post): layout and spacing may need additional
+  fine-tuning.
+- Archive/tag pages: list density and typography may diverge from PaperMod's
+  compact rhythm.
+- Theme toggle icon: consider replacing the Unicode character (`◐`) with an SVG
+  for better rendering consistency.
+
+### Next priorities (in order)
+
+1. **Search modal styling**: refine Pagefind UI within the modal to better match
+   PaperMod's search panel (input sizing, result card styling, keyboard hints).
+2. **Post navigation (prev/next)**: verify that the post-level pagination
+   (`layouts/post.ts`) aligns with PaperMod's two-column layout with title
+   previews.
+3. **Archive/tag pages parity**: ensure list density, metadata ordering, and
+   title sizing match PaperMod's archive listings.
+4. **Theme toggle polish**: consider SVG icons instead of Unicode; verify icon
+   sizing, hover/focus states, and alignment across breakpoints.
+5. **QA + polish**: review responsive breakpoints, contrast ratios (WCAG), and
+   component spacing for final parity.
+
+### Remaining work checklist (living)
+
+- [ ] Search modal: style `.pagefind-ui__*` classes to match PaperMod's search
+      panel (input, results, loading states).
+- [ ] Post navigation (prev/next): verify two-column layout and title truncation
+      in `layouts/post.ts` pagination block.
+- [ ] Post list layout: verify metadata ordering (date/reading time), spacing
+      between title/excerpt, and confirm read-more link sizing across archive
+      vs. home.
+- [ ] Post content view: verify the post header structure (including
+      description), spacing above content, and typography for the lead section.
+- [ ] Archive/tag pages: ensure list density, metadata, and title sizing are
+      aligned with PaperMod.
+- [ ] Theme toggle: consider SVG icon for cross-platform consistency; confirm
+      icon sizing, hover/focus states, and alignment in the navigation bar.
+- [ ] Responsive QA: check 480px/768px breakpoints for header wrapping, post
+      lists, and typography scaling.
+- [ ] Code blocks: verify Prism syntax highlighting colors match PaperMod's
+      light/dark themes.
+- [ ] Footer: verify copyright line and commit link styling.
 
 ## Accepted trade-offs
 
