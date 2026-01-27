@@ -43,17 +43,22 @@
   --color-info-hover: #2563eb;
   --color-info-light: rgba(59, 130, 246, 0.1);
 
-  /* Code syntax highlighting */
-  --code-text: #24292e;
-  --code-comment: #6a737d;
-  --code-token-1: #d73a49; /* Keywords */
-  --code-token-2: #005cc5; /* Strings */
-  --code-token-3: #6f42c1; /* Functions */
-  --code-token-4: #e36209; /* Numbers */
-  --code-inserted: #22863a;
-  --code-deleted: #b31d28;
-  --code-background: #f6f8fa;
-  --code-border: #e1e4e8;
+  /* Code syntax highlighting - PaperMod style with dark code blocks */
+  --code-text: #d5d5d6;
+  --code-comment: #8b949e;
+  --code-token-1: #ff7b72; /* Keywords */
+  --code-token-2: #a5d6ff; /* Strings */
+  --code-token-3: #d2a8ff; /* Functions */
+  --code-token-4: #ffa657; /* Numbers */
+  --code-inserted: #7ee787;
+  --code-deleted: #ffa198;
+  --code-background: #1c1d21;
+  --code-border: #30363d;
+
+  /* Inline code uses lighter background */
+  --code-inline-background: #f5f5f5;
+  --code-inline-text: #24292e;
+  --code-inline-border: #e1e4e8;
 
   /* ==========================================================================
      Typography
@@ -242,17 +247,22 @@
   --elevation-xl:
     0 20px 25px rgba(0, 0, 0, 0.6), 0 10px 10px rgba(0, 0, 0, 0.4);
 
-  /* Code syntax highlighting */
-  --code-text: #e1e4e8;
+  /* Code syntax highlighting - PaperMod style dark code blocks */
+  --code-text: #d5d5d6;
   --code-comment: #8b949e;
   --code-token-1: #ff7b72;
-  --code-token-2: #79c0ff;
+  --code-token-2: #a5d6ff;
   --code-token-3: #d2a8ff;
   --code-token-4: #ffa657;
   --code-inserted: #7ee787;
   --code-deleted: #ffa198;
-  --code-background: #161b22;
-  --code-border: #30363d;
+  --code-background: #2e2e33;
+  --code-border: #3d3d42;
+
+  /* Inline code uses darker background in dark mode */
+  --code-inline-background: #37383e;
+  --code-inline-text: #d5d5d6;
+  --code-inline-border: #3d3d42;
 }
 
 /* ==========================================================================
