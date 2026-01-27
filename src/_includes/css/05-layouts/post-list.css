@@ -25,7 +25,7 @@
 
   /* Adjust post details in list context */
   & .post-details {
-    font: var(--font-ui);
+    font: var(--font-small);
   }
 
   /* Post title styling in list */
