@@ -3,7 +3,13 @@
   "imports": {
     "@std/assert": "jsr:@std/assert@1.0.17",
     "@std/testing": "jsr:@std/testing@1.0.17",
+    "@std/path": "jsr:@std/path@1.0.9",
+    "@std/fs": "jsr:@std/fs@1.0.12",
+    "@std/fmt": "jsr:@std/fmt@1.0.5",
     "@b-fuze/deno-dom": "jsr:@b-fuze/deno-dom@0.1.56",
+    "playwright": "npm:playwright@1.50.1",
+    "pixelmatch": "npm:pixelmatch@6.0.0",
+    "pngjs": "npm:pngjs@7.0.0",
     "lume/": "https://deno.land/x/lume@v3.1.4/",
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.12/",
     "lume/markdown-plugins/": "https://deno.land/x/lume_markdown_plugins@v0.11.0/",
@@ -30,6 +36,26 @@
     "cms": {
       "description": "Run the Lume CMS",
       "command": "deno task lume cms"
+    },
+    "visual:capture": {
+      "description": "Capture screenshots for visual comparison",
+      "command": "deno run -A tests/visual/capture.ts"
+    },
+    "visual:compare": {
+      "description": "Compare Lume vs PaperMod screenshots",
+      "command": "deno run -A tests/visual/compare.ts"
+    },
+    "visual:tokens": {
+      "description": "Compare CSS tokens between Lume and PaperMod",
+      "command": "deno run -A tests/visual/tokens.ts"
+    },
+    "visual:report": {
+      "description": "Generate visual comparison report",
+      "command": "deno run -A tests/visual/report.ts"
+    },
+    "visual:all": {
+      "description": "Run all visual tests (capture, compare, report)",
+      "command": "deno task visual:capture && deno task visual:compare && deno task visual:report"
     }
   },
   "compilerOptions": {

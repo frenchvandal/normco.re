@@ -1482,8 +1482,14 @@
     "dependencies": [
       "jsr:@b-fuze/deno-dom@0.1.56",
       "jsr:@std/assert@1.0.17",
+      "jsr:@std/fmt@1.0.5",
+      "jsr:@std/fs@1.0.12",
+      "jsr:@std/path@1.0.9",
       "jsr:@std/testing@1.0.17",
-      "npm:@mdit/plugin-alert@0.22.3"
+      "npm:@mdit/plugin-alert@0.22.3",
+      "npm:pixelmatch@6.0.0",
+      "npm:playwright@1.50.1",
+      "npm:pngjs@7.0.0"
     ]
   }
 }
