@@ -22,6 +22,28 @@
     }
   }
 
+  /* Post entry - PaperMod style with interaction animations */
+  & .post-entry {
+    display: block;
+    padding: var(--spacing-lg);
+    background: var(--color-background);
+    border: 1px solid var(--color-line);
+    border-radius: var(--border-radius-lg);
+    transition:
+      transform 0.1s ease-in-out,
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+
+    &:hover {
+      border-color: var(--color-dim);
+    }
+
+    /* PaperMod-style scale on active/pressed state */
+    &:active {
+      transform: scale(0.96);
+    }
+  }
+
   /* Spacing between posts using article elements */
   & article.post + article.post {
     margin-top: var(--spacing-xl);
@@ -127,8 +149,7 @@
   }
 }
 
-/* Archive-specific adjustments */
-.body-tag .postList,
+/* Archive-specific adjustments for PostList (when used on archive pages) */
 .body-archive .postList {
   /* More compact spacing for archive pages */
   & > li.post {
@@ -180,6 +201,21 @@
     & .post-link {
       margin-top: var(--spacing-xs);
       font-size: 0.8125rem;
+    }
+
+    & .post-entry {
+      padding: var(--spacing-md);
+    }
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .postList .post-entry {
+    transition: none;
+
+    &:active {
+      transform: none;
     }
   }
 }
