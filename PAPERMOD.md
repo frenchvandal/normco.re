@@ -661,6 +661,7 @@ example site must also be recreated.
       `apple-touch-icon.png`, and injects appropriate `<link>` tags.
 - [x] OG image generation: implemented via OG Images plugin with TSX layout.
       JSX/TSX exception documented in `CLAUDE.md` for PaperMod project.
+- [ ] Create Chinese version of all posts.
 - [ ] Comments integration
 - [ ] Update `README.md`, `COMPONENTS_USAGE.md`,
       `DESIGN_SYSTEM_INTEGRATION_ANALYSIS.md`, `tests/README.md` according to
