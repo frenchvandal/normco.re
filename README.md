@@ -5,18 +5,41 @@ personal blog built with [Lume](https://lume.land) on top of Deno. The site uses
 TypeScript templates, a layered CSS architecture, and a focused set of plugins
 to keep the output fast, accessible, and easy to maintain.
 
+The design system is inspired by
+[Hugo PaperMod](https://github.com/adityatelange/hugo-PaperMod) and has been
+fully migrated to Lume with TypeScript components and modern CSS.
+
 ## Highlights
 
 - **Deno + Lume stack** with TypeScript-based pages, layouts, and components
+- **PaperMod-inspired design** with dark/light theme toggle, smooth scrolling,
+  and responsive layout
 - **Layered CSS architecture** (tokens, base, utilities, components, layouts)
 - **Markdown content** with table of contents, footnotes, alerts, and image
   enhancements
-- **SEO tooling** (meta tags, JSON-LD, sitemap)
+- **SEO tooling** (meta tags, JSON-LD, sitemap, OG image generation)
 - **Feeds** (RSS + JSON with a custom XSL stylesheet)
-- **Search** via Pagefind (UI handled in client-side JS)
+- **Search** via Pagefind with keyboard shortcut (Cmd/Ctrl+K)
+- **i18n** with Multilanguage plugin (English, French, Chinese)
 - **Performance** through Lightning CSS minification and ESBuild bundling
-- **Accessibility** improvements like lazy-loaded images and required alt tags
+- **Accessibility** with keyboard navigation, ARIA labels, and focus management
 - **Offline support** via a service worker that caches core assets
+
+## PaperMod Features
+
+The following PaperMod features have been implemented:
+
+- **Theme toggle** with system preference detection and localStorage persistence
+- **Scroll-to-top button** with smooth scroll and reduced motion support
+- **Code copy button** with visual feedback (success/error states)
+- **Related posts** based on shared tags
+- **Share buttons** (Twitter, Facebook, LinkedIn, WhatsApp, copy link)
+- **Social icons** in footer (GitHub, Twitter, RSS, etc.)
+- **Author profile** widget with avatar and bio
+- **Cover images** with responsive srcsets (AVIF, WebP, JPG)
+- **Draft indicators** for unpublished posts
+- **Access key shortcuts** (h=home, a=archives, s=search)
+- **Language selector** dropdown for multilingual content
 
 ## Project Structure
 
