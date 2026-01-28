@@ -662,9 +662,11 @@ example site must also be recreated.
 - [x] OG image generation: implemented via OG Images plugin with TSX layout.
       JSX/TSX exception documented in `CLAUDE.md` for PaperMod project.
 - [ ] Comments integration: deferred to lowest priority per user request.
-- [ ] Update `README.md`, `COMPONENTS_USAGE.md`,
+- [x] Update `README.md`, `COMPONENTS_USAGE.md`,
       `DESIGN_SYSTEM_INTEGRATION_ANALYSIS.md`, `tests/README.md` according to
-      the new PaperMod architecture.
+      the new PaperMod architecture. Updated January 28, 2026: added new
+      PaperMod components documentation, feature modules table, and PaperMod
+      features list in README.
 
 ## Accepted trade-offs
 
