@@ -15,7 +15,7 @@
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.12/",
     "lume/markdown-plugins/": "https://deno.land/x/lume_markdown_plugins@v0.11.0/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
-    "@mdit/plugin-alert": "npm:@mdit/plugin-alert@0.22.3"
+    "@mdit/plugin-alert": "npm:@mdit/plugin-alert@0.22.4"
   },
   "tasks": {
     "build": {
