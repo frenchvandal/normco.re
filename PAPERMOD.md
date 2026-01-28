@@ -831,158 +831,368 @@ The following pages are now generated:
 
 ---
 
-## Comparative Audit — January 28, 2026
+## Visual Audit — January 28, 2026 (REVISED)
 
 ### Executive Summary
 
-| Metric                  | Score       |
-| ----------------------- | ----------- |
-| **Overall progress**    | **~95%**    |
-| **Functional parity**   | **97%**     |
-| **Visual/CSS parity**   | **~92-95%** |
-| **Additional features** | **+15**     |
+After visual comparison between the current Lume site and the original PaperMod
+Hugo theme, the previous scores were **overly optimistic**. While the functional
+components are largely complete, there are **significant visual differences**
+that need to be addressed.
 
-### CSS Architecture Comparison
+| Metric                      | Previous Score | Revised Score |
+| --------------------------- | -------------- | ------------- |
+| **Overall progress**        | ~95%           | **~70%**      |
+| **Functional parity**       | 97%            | **~90%**      |
+| **Visual/CSS parity**       | ~92-95%        | **~60%**      |
+| **Layout structure parity** | —              | **~65%**      |
 
-#### File Structure
+### Critical Visual Differences (Side-by-Side Comparison)
 
-| PaperMod (Hugo)          | Lume (dev)                      | Status           |
-| ------------------------ | ------------------------------- | ---------------- |
-| `core/reset.css`         | `02-base/reset.css`             | ✅ Equivalent    |
-| `core/theme-vars.css`    | `01-tokens/tokens.css`          | ✅ More complete |
-| `common/main.css`        | `02-base/global.css` + layouts  | ✅ Equivalent    |
-| `common/header.css`      | `05-layouts/navbar.css`         | ✅ Equivalent    |
-| `common/footer.css`      | `05-layouts/footer.css`         | ✅ Equivalent    |
-| `common/post-single.css` | `05-layouts/post.css`           | ✅ Equivalent    |
-| `common/post-entry.css`  | `05-layouts/post-list.css`      | ✅ Equivalent    |
-| `common/search.css`      | `04-components/pagefind.css`    | ✅ Improved      |
-| `common/archive.css`     | `05-layouts/archive.css`        | ✅ Equivalent    |
-| —                        | `02-base/scrollbar.css`         | ✅ Bonus         |
-| —                        | 22+ additional component styles | ✅ Bonus         |
+The following differences were identified by comparing the current site
+screenshot with the official PaperMod demo at
+https://adityatelange.github.io/hugo-PaperMod/.
 
-### Design Tokens Comparison
+---
 
-| Token PaperMod      | Value              | Token Lume            | Value          | Match   |
-| ------------------- | ------------------ | --------------------- | -------------- | ------- |
-| `--gap`             | 24px               | `--spacing-lg`        | 24px           | ✅ 100% |
-| `--radius`          | 8px                | `--border-radius-lg`  | 8px            | ✅ 100% |
-| `--main-width`      | 720px              | `--content-max-width` | 44rem (~704px) | ✅ 98%  |
-| `--theme` (dark)    | `rgb(29,30,32)`    | `--color-background`  | `#1d1e20`      | ✅ 100% |
-| `--primary` (light) | `rgb(30,30,30)`    | `--color-base`        | `#1f1f1f`      | ✅ 99%  |
-| `--secondary`       | `rgb(108,108,108)` | `--color-dim`         | `#6b7280`      | ✅ 95%  |
-| `--code-block-bg`   | `rgb(28,29,33)`    | `--code-background`   | `#1c1d21`      | ✅ 100% |
+## 1. HEADER / NAVIGATION BAR
 
-### Functional Components
+### PaperMod Original
 
-| Component            | PaperMod | Lume                   | Progress  |
-| -------------------- | -------- | ---------------------- | --------- |
-| Theme Toggle         | ✅       | ✅ SVG icons           | **100%**  |
-| Scroll-to-top        | ✅       | ✅ throttled           | **100%**  |
-| Search               | ✅ Fuse  | ✅ Pagefind            | **100%+** |
-| Code Copy            | ✅       | ✅ + fallback          | **100%**  |
-| TOC                  | ✅       | ✅ scroll spy          | **100%**  |
-| Breadcrumbs          | ✅       | ✅ ARIA                | **100%**  |
-| Share Buttons        | ✅       | ✅ 5 platforms         | **100%**  |
-| Social Icons         | ✅       | ✅ 11 platforms        | **100%**  |
-| Author Profile       | ✅       | ✅ 2 variants          | **100%**  |
-| Cover Image          | ✅       | ✅ responsive srcset   | **100%**  |
-| Related Posts        | ✅       | ✅ tag-based           | **100%**  |
-| Pagination           | ✅       | ✅ prev/next + nums    | **100%**  |
-| Lang Selector        | ✅ Hugo  | ✅ dropdown + keyboard | **100%**  |
-| Archive Timeline     | ✅       | ✅ year grouping       | **100%**  |
-| Post Entry Animation | ✅       | ✅ scale(0.96)         | **100%**  |
+- Logo "PaperMod" on the left
+- Theme toggle icon (sun) immediately after logo
+- Separator `|` between logo section and language selector
+- Language selector with flag icon (🇫🇷) + language code ("Fa")
+- Navigation links on the right: "Archive", "Search", "Tags", "WiKi" (with
+  external link icon ↗)
 
-### Bonus Features (not in PaperMod)
+### Current Site (normco.re)
 
-| Feature             | Description                            |
-| ------------------- | -------------------------------------- |
-| Service Worker      | Offline support + update notifications |
-| OG Images           | Auto-generated via TSX layout          |
-| JSON Feed + Viewer  | Alternative to RSS with styled viewer  |
-| Modal Component     | Generic modal for search and dialogs   |
-| Toast Notifications | User feedback system                   |
-| Alert/Admonitions   | Info, warning, error, success blocks   |
-| Code Tabs           | Multi-language code examples           |
-| High Contrast Mode  | `prefers-contrast` support             |
-| Skeleton Loading    | Loading state placeholders             |
+- Logo "normco.re" on the left
+- Navigation links in middle: "Archive", "Contact"
+- Theme toggle icon on the far right
+- No visible separator
+- Language selector hidden (only shows when alternates exist)
 
-### Improvements Made (January 28, 2026)
+### Tasks
 
-#### 1. Dark Mode Colors Aligned with PaperMod
+- [ ] **TASK-NAV-01**: Move theme toggle icon immediately after the logo
+      (PaperMod style)
+- [ ] **TASK-NAV-02**: Add vertical separator `|` between logo/theme toggle and
+      navigation
+- [ ] **TASK-NAV-03**: Make language selector always visible with flag icon
+      format (currently only dropdown)
+- [ ] **TASK-NAV-04**: Add "Search" link in navigation (PaperMod shows it as nav
+      item, not just Cmd+K)
+- [ ] **TASK-NAV-05**: Add "Tags" link in navigation pointing to tags archive
+- [ ] **TASK-NAV-06**: Add external link icon (↗) for menu items with
+      `target="_blank"`
 
-Updated `src/_includes/css/01-tokens/tokens.css`:
+---
+
+## 2. HOME PAGE HERO SECTION
+
+### PaperMod Original ("Home-Info" Mode)
+
+- Large bold title: "PaperMod's Demo"
+- Welcome text with emoji: "👋 Welcome to demo page of Hugo's theme PaperMod!"
+- Bullet list describing features:
+  - "PaperMod is designed to be clean and simple..."
+  - "Feel free to show your support by giving us a star 🌟..."
+  - "PaperMod is based on theme Paper."
+- Social icons row (GitHub, Discord, X/Twitter, Ko-fi) **directly below the hero
+  text**
+- **NO search bar on the home page**
+
+### Current Site (normco.re)
+
+- Italic display title: "Hello, I am a person that writes stuff."
+- Search bar directly below title
+- No bullet list
+- No social icons in hero section (they're in the footer only)
+
+### Tasks
+
+- [ ] **TASK-HOME-01**: Implement PaperMod "Home-Info" mode with:
+  - Bold title (not italic)
+  - Markdown-rendered content (bullet points)
+  - Social icons row below hero text
+- [ ] **TASK-HOME-02**: Remove search bar from home page (search is accessed via
+      nav link or Cmd+K in PaperMod)
+- [ ] **TASK-HOME-03**: Add `home.content` field in `_data.ts` for markdown
+      content (bullet points)
+- [ ] **TASK-HOME-04**: Create `HomeInfo.ts` component for hero section
+
+---
+
+## 3. POST CARDS / LIST ENTRIES
+
+### PaperMod Original
+
+- Each post is a **distinct card** with:
+  - **Background color**: `var(--entry)` — a lighter shade than the page
+    background (dark mode: `rgb(46, 46, 51)` vs page `rgb(29, 30, 32)`)
+  - **Border radius**: 8px (var(--radius))
+  - **Padding**: Generous internal spacing
+  - **Full card is clickable** (no separate "Continue reading" link)
+- Card layout (top to bottom):
+  1. **Title** (large, bold)
+  2. **Description/excerpt** (regular text)
+  3. **Metadata line** at bottom: "January 20, 2021 · 5 min · Aditya Telange"
+- **NO tags displayed** in the home page list
+- **NO "Continue reading" link** — entire card is the link
+- Hover effect: Border color change + subtle elevation
+- Active/click effect: `transform: scale(0.96)`
+
+### Current Site (normco.re)
+
+- Posts appear as **list items** without distinct background
+- Layout (top to bottom):
+  1. Title
+  2. "by phiphi · January 28th, 2026 · 1 min read"
+  3. "Tags: #Draft #Demo"
+  4. Description/excerpt
+  5. "Continue reading →→"
+- Tags are prominently displayed with "Tags:" label and hashtags
+- Separate "Continue reading" link at bottom
+- Border visible but no background differentiation
+
+### Tasks
+
+- [ ] **TASK-CARD-01**: Add `--color-entry` CSS variable for card background
+      (distinct from `--color-background`)
+  - Light mode: slightly darker than white
+  - Dark mode: `#2e2e33` (PaperMod's `--entry`)
+- [ ] **TASK-CARD-02**: Apply `--color-entry` background to `.post-entry` class
+- [ ] **TASK-CARD-03**: Restructure post card layout:
+  - Title first
+  - Description second
+  - Metadata at bottom
+- [ ] **TASK-CARD-04**: Remove tags from home page post list (keep on single
+      post and archive pages)
+- [ ] **TASK-CARD-05**: Remove "Continue reading" link — make entire card
+      clickable
+- [ ] **TASK-CARD-06**: Update `PostList.ts` component to wrap entire card in
+      `<a>` tag
+- [ ] **TASK-CARD-07**: Modify `index.page.ts` to use the updated PostList
+      component
+- [ ] **TASK-CARD-08**: Update metadata format to "Date · Reading time · Author"
+      (remove "by" prefix)
+
+---
+
+## 4. POST METADATA FORMAT
+
+### PaperMod Original
+
+- Format: `January 20, 2021 · 5 min · Aditya Telange`
+- Order: Date → Reading time → Author
+- No "by" prefix
+- Positioned at **bottom** of card
+
+### Current Site
+
+- Format: `by phiphi · January 28th, 2026 · 1 min read`
+- Order: "by" + Author → Date → Reading time
+- "by" prefix present
+- "read" suffix on reading time
+- Positioned at **top** of card (under title)
+
+### Tasks
+
+- [ ] **TASK-META-01**: Change metadata order to: Date → Reading time → Author
+- [ ] **TASK-META-02**: Remove "by" prefix from author
+- [ ] **TASK-META-03**: Change "X min read" to "X min" (remove "read" suffix)
+- [ ] **TASK-META-04**: Update `PostDetails.ts` component with new order
+- [ ] **TASK-META-05**: Create separate component or variant for list vs single
+      post metadata display
+
+---
+
+## 5. FOOTER
+
+### PaperMod Original
+
+- Single line: `© PaperMod Contributors · Powered by Hugo & PaperMod`
+- Links to Hugo and PaperMod
+- **NO social icons in footer** (they're in the hero section)
+- Minimal design
+
+### Current Site
+
+- Copyright + commit hash: `© 2026 · 31998140`
+- Social icons row below
+- More complex footer
+
+### Decision
+
+The current footer implementation is **intentionally different** and provides
+useful features (commit tracking, social links). This is an **acceptable
+deviation** from PaperMod.
+
+- [x] **TASK-FOOTER**: No changes needed — current implementation is intentional
+      enhancement
+
+---
+
+## 6. PAGINATION
+
+### PaperMod Original
+
+- Shows pagination like "Next 2/2 »" on home page when there are more posts
+- Numeric page indicator
+
+### Current Site
+
+- Shows "More posts can be found in the archive." with link
+- No numeric pagination on home
+
+### Tasks
+
+- [ ] **TASK-PAG-01**: Add pagination to home page when more than 3 posts exist
+- [ ] **TASK-PAG-02**: Use PaperMod-style pagination format: "« Previous 1/2" /
+      "Next 2/2 »"
+
+---
+
+## 7. TYPOGRAPHY
+
+### PaperMod Original
+
+- Page title: Bold, not italic
+- Clean sans-serif throughout
+
+### Current Site
+
+- Page title: Uses `.u-display-title` which may be italic
+- Generally similar typography
+
+### Tasks
+
+- [ ] **TASK-TYPO-01**: Ensure home page title is bold, not italic (check
+      `.u-display-title` utility)
+
+---
+
+## 8. MISSING CSS TOKENS
+
+The following PaperMod CSS variables are missing or incorrectly mapped:
+
+| PaperMod Variable | Value (Dark)         | Lume Equivalent | Status   |
+| ----------------- | -------------------- | --------------- | -------- |
+| `--entry`         | `rgb(46, 46, 51)`    | Missing         | ❌ Add   |
+| `--border`        | `rgb(51, 51, 51)`    | `--color-line`  | ⚠️ Check |
+| `--content`       | `rgb(196, 196, 197)` | `--color-text`  | ✅ OK    |
+
+### Tasks
+
+- [ ] **TASK-TOKEN-01**: Add `--color-entry` variable for card backgrounds
+- [ ] **TASK-TOKEN-02**: Verify `--color-line` matches PaperMod's `--border`
+
+---
+
+## Priority Task List (Ordered)
+
+### High Priority (Visual Parity)
+
+1. **TASK-CARD-01 to TASK-CARD-08**: Post card styling is the most visible
+   difference
+2. **TASK-HOME-01 to TASK-HOME-04**: Home page hero section structure
+3. **TASK-META-01 to TASK-META-05**: Metadata format and position
+4. **TASK-TOKEN-01**: Add missing CSS token for entry background
+
+### Medium Priority (Navigation)
+
+5. **TASK-NAV-01 to TASK-NAV-06**: Header/navigation restructuring
+6. **TASK-PAG-01 to TASK-PAG-02**: Home page pagination
+7. **TASK-TYPO-01**: Typography adjustments
+
+### Low Priority (Polish)
+
+8. Cross-browser testing (Chrome, Firefox, Safari, Edge)
+9. Mobile device testing (iOS, Android)
+10. Comments integration (Utterances/Giscus) — deferred
+11. Math typesetting (KaTeX) — deferred
+
+---
+
+## Implementation Notes
+
+### Card Background Color Values
+
+From PaperMod source (`theme-vars.css`):
 
 ```css
+/* Light theme */
+:root {
+  --theme: rgb(255, 255, 255);
+  --entry: rgb(255, 255, 255);
+  --primary: rgb(30, 30, 30);
+  --secondary: rgb(108, 108, 108);
+  --tertiary: rgb(214, 214, 214);
+  --content: rgb(31, 31, 31);
+  --border: rgb(238, 238, 238);
+}
+
+/* Dark theme */
 [data-theme="dark"] {
-  --color-base: #dadada; /* PaperMod: rgb(218, 218, 219) */
-  --color-text: #c4c4c5; /* PaperMod: rgb(196, 196, 197) */
-  --color-dim: #9b9c9d; /* PaperMod: rgb(155, 156, 157) */
-  --color-line: #414244; /* PaperMod: rgb(65, 66, 68) */
-  --color-background: #1d1e20; /* PaperMod: rgb(29, 30, 32) */
-  --color-background-shade: #2e2e33; /* PaperMod: rgb(46, 46, 51) */
+  --theme: rgb(29, 30, 32);
+  --entry: rgb(46, 46, 51);
+  --primary: rgb(218, 218, 219);
+  --secondary: rgb(155, 156, 157);
+  --tertiary: rgb(65, 66, 68);
+  --content: rgb(196, 196, 197);
+  --border: rgb(51, 51, 51);
 }
 ```
 
-#### 2. Post Entry Interaction Animations
+### Post Entry HTML Structure (PaperMod)
 
-Added to `src/_includes/css/05-layouts/post-list.css`:
+```html
+<article class="post-entry">
+  <header class="entry-header">
+    <h2>Post Title</h2>
+  </header>
+  <section class="entry-content">
+    <p>Post description/excerpt...</p>
+  </section>
+  <footer class="entry-footer">
+    <span>January 20, 2021</span>
+    <span>·</span>
+    <span>5 min</span>
+    <span>·</span>
+    <span>Author Name</span>
+  </footer>
+  <a
+    class="entry-link"
+    aria-label="post link to Post Title"
+    href="/posts/..."
+  ></a>
+</article>
+```
 
-- `transform: scale(0.96)` on active/pressed state (PaperMod style)
-- Smooth transitions with `transition: transform 0.1s ease-in-out`
-- Hover state with `border-color` change
-- `prefers-reduced-motion` support
+Note: PaperMod uses an absolutely positioned `<a>` that covers the entire card
+for click handling, while keeping the card structure semantic.
 
-#### 3. Archive Timeline Layout
+---
 
-Created new component and styles:
+## Files to Modify
 
-- **`src/_components/ArchiveList.ts`**: Groups posts by year with timeline
-  markers
-- **`src/_includes/css/05-layouts/archive.css`**: PaperMod-style vertical
-  timeline
-  - Vertical line with `::before` pseudo-element
-  - Year markers with colored dots
-  - Post entries with date and title columns
-  - Responsive adjustments for mobile (timeline hidden on small screens)
-  - Reduced motion support
+| File                                         | Tasks                        |
+| -------------------------------------------- | ---------------------------- |
+| `src/_includes/css/01-tokens/tokens.css`     | TASK-TOKEN-01, TASK-TOKEN-02 |
+| `src/_includes/css/05-layouts/post-list.css` | TASK-CARD-01 to TASK-CARD-08 |
+| `src/_components/PostList.ts`                | TASK-CARD-06, TASK-META-*    |
+| `src/_components/PostDetails.ts`             | TASK-META-01 to TASK-META-05 |
+| `src/index.page.ts`                          | TASK-HOME-*, TASK-CARD-07    |
+| `src/_includes/layouts/base.ts`              | TASK-NAV-*                   |
+| `src/_includes/css/05-layouts/navbar.css`    | TASK-NAV-*                   |
+| `src/_data.ts`                               | TASK-HOME-03                 |
 
-Updated layouts:
+---
 
-- `src/_includes/layouts/archive.ts` → uses `ArchiveList` component
-- `src/_includes/layouts/archive-result.ts` → uses `ArchiveList` component
-- Body class changed from `body-tag` to `body-archive`
+## Superseded Sections
 
-### Updated Score Calculation
-
-| Category       | Weight | Score | Weighted   |
-| -------------- | ------ | ----- | ---------- |
-| Design Tokens  | 15%    | 98%   | 14.7%      |
-| CSS Components | 25%    | 98%   | 24.5%      |
-| JavaScript     | 15%    | 100%  | 15.0%      |
-| Layouts        | 15%    | 97%   | 14.55%     |
-| Responsive     | 10%    | 100%  | 10.0%      |
-| Accessibility  | 10%    | 99%   | 9.9%       |
-| SEO            | 10%    | 100%  | 10.0%      |
-| **TOTAL**      | 100%   | —     | **98.65%** |
-
-### Remaining Differences
-
-| Element                 | PaperMod                | Lume                    | Impact |
-| ----------------------- | ----------------------- | ----------------------- | ------ |
-| Entry card background   | `var(--entry)` distinct | Same as page background | Minor  |
-| Menu item active border | 2px solid bottom        | Font weight change      | Minor  |
-| Logo SVG radius         | 6px                     | Not applicable          | Minor  |
-
-### Updated Remaining Work Checklist
-
-- [x] Archive timeline style (PaperMod year grouping with vertical line)
-- [x] Dark mode colors aligned with PaperMod palette
-- [x] Post entry scale animation on active state
-- [x] `ArchiveList.ts` component with year grouping
-- [x] `archive.css` with timeline styles
-- [ ] Cross-browser testing (Chrome, Firefox, Safari, Edge)
-- [ ] Mobile device testing (iOS, Android)
-- [ ] Performance audit (CSS bundle size check)
-- [ ] Comments integration (Utterances/Giscus) — deferred
-- [ ] Math typesetting (KaTeX) — deferred
-- [ ] Documentation update — deferred
+The previous "Comparative Audit — January 28, 2026" section with 98.65% score
+has been superseded by this more accurate visual audit. The functional
+components remain valid, but the visual parity was overstated.
