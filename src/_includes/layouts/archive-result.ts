@@ -1,6 +1,7 @@
 /**
  * Archive Result Layout
- * Layout for filtered archive results (by tag or author)
+ * Layout for filtered archive results (by tag or author).
+ * Uses PaperMod-style timeline layout for post listings.
  */
 export const layout = "layouts/base.ts";
 
@@ -12,10 +13,10 @@ export const layout = "layouts/base.ts";
  * import { assertEquals } from "@std/assert";
  * import { bodyClass } from "./archive-result.ts";
  *
- * assertEquals(bodyClass, "body-tag");
+ * assertEquals(bodyClass, "body-archive");
  * ```
  */
-export const bodyClass = "body-tag";
+export const bodyClass = "body-archive";
 
 /**
  * Renders the archive result page layout.
@@ -37,10 +38,16 @@ export default async function (
     pagination,
     results,
     i18n,
+    lang,
     comp,
   }: Lume.Data,
 ) {
-  const postList = await comp.PostList({ postslist: results });
+  // Use timeline-style ArchiveList for tag/author filtered results
+  const archiveList = await comp.ArchiveList({
+    postslist: results,
+    i18n,
+    lang,
+  });
   const paginationNav = await comp.Pagination({ pagination, i18n });
 
   const breadcrumbs = await comp.Breadcrumbs({
@@ -58,7 +65,7 @@ ${breadcrumbs}
   <h1 class="page-title">${title}</h1>
 </header>
 
-${postList}
+${archiveList}
 ${paginationNav}
 `;
 }

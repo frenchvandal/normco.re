@@ -1,6 +1,7 @@
 /**
  * Archive Layout
- * Main archive listing page with search, authors, and tags
+ * Main archive listing page with search, authors, and tags.
+ * Uses PaperMod-style timeline layout for post listings.
  */
 export const layout = "layouts/base.ts";
 
@@ -12,10 +13,10 @@ export const layout = "layouts/base.ts";
  * import { assertEquals } from "@std/assert";
  * import { bodyClass } from "./archive.ts";
  *
- * assertEquals(bodyClass, "body-tag");
+ * assertEquals(bodyClass, "body-archive");
  * ```
  */
-export const bodyClass = "body-tag";
+export const bodyClass = "body-archive";
 
 /**
  * Renders the archive listing layout.
@@ -38,10 +39,16 @@ export default async function (
     results,
     search,
     i18n,
+    lang,
     comp,
   }: Lume.Data,
 ) {
-  const postList = await comp.PostList({ postslist: results });
+  // Use timeline-style ArchiveList for main archive page
+  const archiveList = await comp.ArchiveList({
+    postslist: results,
+    i18n,
+    lang,
+  });
   const paginationNav = await comp.Pagination({ pagination, i18n });
 
   const pageAuthors = pagination?.page === 1
@@ -110,7 +117,7 @@ ${
       : ""
   }
 
-${postList}
+${archiveList}
 ${paginationNav}
 `;
 }
