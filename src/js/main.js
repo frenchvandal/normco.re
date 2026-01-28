@@ -12,6 +12,7 @@ import { enhanceAnchors } from "./features/anchors.js";
 import { initCodeCopy } from "./features/code-copy.js";
 import { enhanceExternalLinks } from "./features/external-links.js";
 import { enhanceImages } from "./features/images.js";
+import { initLanguageSelector } from "./features/lang-selector.js";
 import { initScrollToTop } from "./features/scroll-to-top.js";
 import { initSearch } from "./features/search.js";
 import { initSearchModal } from "./features/search-modal.js";
@@ -40,6 +41,7 @@ function initializeFeatures() {
   initSearchModal();
   initScrollToTop();
   initAccessKeys();
+  initLanguageSelector();
   enhanceImages();
   const defer = globalThis.requestIdleCallback
     ? globalThis.requestIdleCallback

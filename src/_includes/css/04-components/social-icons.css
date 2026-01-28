@@ -99,6 +99,11 @@
   color: #f26522;
 }
 
+.social-icon--jsonfeed:hover,
+.social-icon--jsonfeed:focus-visible {
+  color: #f5a623;
+}
+
 .social-icon--email:hover,
 .social-icon--email:focus-visible {
   color: var(--color-primary);

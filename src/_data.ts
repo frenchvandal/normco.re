@@ -1,10 +1,17 @@
 /**
  * Global site data
+ *
+ * This module exports site-wide data with multilanguage support.
+ * The Lume Multilanguage plugin uses named exports (fr, zh) as
+ * language-specific overrides for the default data.
+ *
+ * @module
  */
 
 import "lume/types.ts";
 
 import type { RepoInfo } from "../plugins.ts";
+import i18nEn, { fr as i18nFr, type I18n, zh as i18nZh } from "./_data/i18n.ts";
 
 interface MenuLink {
   text: string;
@@ -68,11 +75,14 @@ interface SiteData {
   jsonLd: Lume.Data["jsonLd"];
   /** OG Images plugin layout for generating social sharing images */
   openGraphLayout: string;
+  /** Internationalization strings */
+  i18n: I18n;
 }
 
 const data: SiteData = {
   lang: "en",
   openGraphLayout: "layouts/og_images.tsx",
+  i18n: i18nEn,
   home: {
     welcome: "Hello, I am a person that writes stuff.",
     mode: "posts",
@@ -97,6 +107,11 @@ const data: SiteData = {
       platform: "rss",
       url: "/feed.xml",
       label: "RSS Feed",
+    },
+    {
+      platform: "jsonfeed",
+      url: "/feed-json-viewer/",
+      label: "JSON Feed",
     },
   ],
   extra_head: [],
@@ -123,6 +138,36 @@ const data: SiteData = {
         url: "/favicon.png",
       },
     },
+  },
+};
+
+/**
+ * French language overrides.
+ * Used by Lume Multilanguage plugin to generate French pages.
+ */
+export const fr = {
+  i18n: i18nFr,
+  home: {
+    welcome: "Bonjour, je suis quelqu'un qui écrit des trucs.",
+  },
+  metas: {
+    description: "Trouver la libération dans le fait de n'être rien de spécial",
+    lang: "fr",
+  },
+};
+
+/**
+ * Chinese language overrides.
+ * Used by Lume Multilanguage plugin to generate Chinese pages.
+ */
+export const zh = {
+  i18n: i18nZh,
+  home: {
+    welcome: "你好，我是一个写东西的人。",
+  },
+  metas: {
+    description: "在平凡中找到解放",
+    lang: "zh",
   },
 };
 

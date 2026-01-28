@@ -31,6 +31,8 @@ export default async function (
     date,
     search,
     comp,
+    alternates,
+    i18n,
   }: Lume.Data,
   { url: urlHelper, date: dateHelper }: Lume.Helpers,
 ) {
@@ -120,6 +122,7 @@ export default async function (
     ).join("")
   }
           </ul>
+          ${await comp.LanguageSelector({ lang, alternates, i18n })}
           <button
             id="theme-toggle"
             class="button theme-toggle"

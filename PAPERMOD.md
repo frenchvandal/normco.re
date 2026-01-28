@@ -160,7 +160,7 @@ PaperMod’s optional features are required.
 | Favicon generation           | ✅ Feasible | Favicon plugin                                   | ✅ **Implemented** |
 | Draft page indicators        | ✅ Feasible | `badge--draft` CSS + layout logic                | ✅ **Implemented** |
 | Edit post link (GitHub)      | ✅ Feasible | `SourceInfo.ts` component                        | ✅ **Implemented** |
-| Multi-language (i18n)        | ✅ Feasible | Multilanguage plugin (full feature parity)       | ⬜ Not yet         |
+| Multi-language (i18n)        | ✅ Feasible | Multilanguage plugin (full feature parity)       | ✅ **Implemented** |
 | Access key shortcuts         | ✅ Feasible | `accesskeys.js` module                           | ✅ **Implemented** |
 | Archives layout (timeline)   | ✅ Feasible | Custom archive layout                            | ✅ **Implemented** |
 
@@ -542,6 +542,27 @@ example site must also be recreated.
     time.
   - Updated `CLAUDE.md` to allow JSX/TSX exception for OG images (justified
     deviation documented).
+- Implemented i18n with Multilanguage plugin (`plugins.ts`, `src/_data/i18n.ts`,
+  `src/_data.ts`, `src/_components/LanguageSelector.ts`):
+  - Configured Multilanguage plugin with three languages: English (default),
+    French, and Chinese.
+  - Created comprehensive translations for all UI strings (navigation, post
+    metadata, search, sharing, author profile).
+  - Implemented `LanguageSelector.ts` component with:
+    - Dropdown menu with language options.
+    - Keyboard navigation (Arrow keys, Escape, Home/End).
+    - Click-outside-to-close behavior.
+    - Mobile-responsive design (globe icon on small screens).
+    - Proper ARIA attributes and `hreflang` support.
+  - Added CSS styles in `lang-selector.css` with theme-aware colors.
+  - Added JavaScript module `lang-selector.js` for dropdown interactions.
+  - Integrated language selector into header navigation in `layouts/base.ts`.
+  - Plugin automatically generates `<link rel="alternate" hreflang>` tags.
+- Added JSON feed icon to footer (`src/_components/SocialIcons.ts`,
+  `src/_data.ts`, `social-icons.css`):
+  - Added `jsonfeed` SVG icon to SocialIcons component.
+  - Added JSON feed entry in `social_links` pointing to `/feed-json-viewer/`.
+  - Added hover color style for jsonfeed icon (#f5a623).
 
 ### Audit summary (January 2026)
 
@@ -571,17 +592,15 @@ example site must also be recreated.
 
 ### Next priorities (in order)
 
-1. **i18n implementation**: configure Multilanguage plugin, migrate UI strings,
-   create language selector component.
-2. **Cross-browser QA**: test on Chrome, Firefox, Safari, and Edge to ensure
+1. **Cross-browser QA**: test on Chrome, Firefox, Safari, and Edge to ensure
    consistent rendering.
-3. **Mobile device testing**: validate on real iOS and Android devices for touch
+2. **Mobile device testing**: validate on real iOS and Android devices for touch
    targets and gestures.
-4. **Performance optimization**: audit CSS bundle size, consider code splitting
+3. **Performance optimization**: audit CSS bundle size, consider code splitting
    or critical CSS.
-5. **Content migration**: test with real production content to identify edge
+4. **Content migration**: test with real production content to identify edge
    cases.
-6. **Comments integration**: implement Utterances/Giscus/Disqus support (lowest
+5. **Comments integration**: implement Utterances/Giscus/Disqus support (lowest
    priority, deferred).
 
 ### Remaining work checklist (living)
@@ -608,8 +627,11 @@ example site must also be recreated.
 - [ ] Mobile device testing: validate on real iOS and Android devices.
 - [ ] Performance audit: check CSS bundle size and loading performance.
 - [ ] Content migration: test with production content for edge cases.
-- [ ] i18n implementation: configure Multilanguage plugin, migrate UI strings,
-      create language selector component.
+- [x] i18n implementation: configured Multilanguage plugin with English (default),
+      French, and Chinese languages. Created `LanguageSelector.ts` component with
+      dropdown menu, keyboard navigation, and mobile-responsive design. Added
+      translations for all UI strings in `src/_data/i18n.ts`. Integrated language
+      selector into header navigation via `layouts/base.ts`.
 - [x] Responsive images: configured Transform Images + Picture plugins for post
       cover images and content images. Created `CoverImage.ts` component with
       AVIF/WebP/JPG format support at 640/1024/1280px widths. Integrated into

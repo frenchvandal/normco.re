@@ -71,6 +71,9 @@
 @import "css/04-components/share-buttons.css";
 @import "css/04-components/author-profile.css";
 
+/* Language selector */
+@import "css/04-components/lang-selector.css";
+
 /* ==========================================================================
    05. Layouts
    Page-specific and layout-specific styles

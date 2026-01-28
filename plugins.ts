@@ -2,6 +2,7 @@ import date, { Options as DateOptions } from "lume/plugins/date.ts";
 import esbuild from "lume/plugins/esbuild.ts";
 import favicon from "lume/plugins/favicon.ts";
 import lightningCss from "lume/plugins/lightningcss.ts";
+import multilanguage from "lume/plugins/multilanguage.ts";
 import ogImages from "lume/plugins/og_images.ts";
 import purgecss from "lume/plugins/purgecss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
@@ -279,6 +280,7 @@ export default function (userOptions?: Options) {
               /cover-image/,
               /share-button/,
               /author-profile/,
+              /lang-selector/,
             ],
             standard: [/^language-/],
           },
@@ -286,6 +288,10 @@ export default function (userOptions?: Options) {
       }))
       .use(sourceMaps())
       .use(basePath())
+      .use(multilanguage({
+        languages: ["en", "fr", "zh"],
+        defaultLanguage: "en",
+      }))
       .use(favicon({
         input: "/favicon.png",
       }))
