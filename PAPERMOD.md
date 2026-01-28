@@ -661,12 +661,12 @@ example site must also be recreated.
       `apple-touch-icon.png`, and injects appropriate `<link>` tags.
 - [x] OG image generation: implemented via OG Images plugin with TSX layout.
       JSX/TSX exception documented in `CLAUDE.md` for PaperMod project.
-- [ ] Comments integration: deferred to lowest priority per user request.
-- [x] Update `README.md`, `COMPONENTS_USAGE.md`,
+- [ ] Comments integration
+- [ ] Update `README.md`, `COMPONENTS_USAGE.md`,
       `DESIGN_SYSTEM_INTEGRATION_ANALYSIS.md`, `tests/README.md` according to
       the new PaperMod architecture. Updated January 28, 2026: added new
       PaperMod components documentation, feature modules table, and PaperMod
-      features list in README.
+      features list in README. Deferred to lowest priority per user request.
 
 ## Accepted trade-offs
 
