@@ -627,11 +627,11 @@ example site must also be recreated.
 - [ ] Mobile device testing: validate on real iOS and Android devices.
 - [ ] Performance audit: check CSS bundle size and loading performance.
 - [ ] Content migration: test with production content for edge cases.
-- [x] i18n implementation: configured Multilanguage plugin with English (default),
-      French, and Chinese languages. Created `LanguageSelector.ts` component with
-      dropdown menu, keyboard navigation, and mobile-responsive design. Added
-      translations for all UI strings in `src/_data/i18n.ts`. Integrated language
-      selector into header navigation via `layouts/base.ts`.
+- [x] i18n implementation: configured Multilanguage plugin with English
+      (default), French, and Chinese languages. Created `LanguageSelector.ts`
+      component with dropdown menu, keyboard navigation, and mobile-responsive
+      design. Added translations for all UI strings in `src/_data/i18n.ts`.
+      Integrated language selector into header navigation via `layouts/base.ts`.
 - [x] Responsive images: configured Transform Images + Picture plugins for post
       cover images and content images. Created `CoverImage.ts` component with
       AVIF/WebP/JPG format support at 640/1024/1280px widths. Integrated into
@@ -697,3 +697,93 @@ and the plugin ecosystem covers the remaining functionality.
 
 - Updated client-side test mocks for toast, theme, and service worker features
   to align with stricter type checking.
+
+---
+
+## Status update — January 28, 2026
+
+### Build verification
+
+- ✅ **Build successful**: 66 files generated in ~2 seconds
+- ✅ **Linting passes**: `deno lint` — no errors
+- ✅ **Formatting passes**: `deno fmt` — all files formatted
+
+### Performance audit results
+
+| Asset      | Size  | Notes                                              |
+| ---------- | ----- | -------------------------------------------------- |
+| styles.css | 59 KB | ~40 CSS modules, minified by LightningCSS          |
+| main.js    | 24 KB | All JS features bundled via ESBuild                |
+| sw.js      | 2.5KB | Service worker                                     |
+| style.css  | 40 B  | Lume component CSS (empty — components use inline) |
+
+The CSS bundle size (59KB) is reasonable for a complete design system with:
+
+- Design tokens and theming (light/dark)
+- Base styles (reset, typography, Prism syntax highlighting, scrollbars)
+- 25+ component styles (buttons, badges, alerts, modals, etc.)
+- 7 layout styles (navbar, footer, posts, archives, etc.)
+
+PurgeCSS is configured with appropriate safelists for dynamic classes.
+
+### i18n status
+
+The Multilanguage plugin is fully configured with:
+
+- Languages: English (default), French, Chinese
+- `LanguageSelector.ts` component with dropdown menu, keyboard navigation
+- Comprehensive translations in `src/_data/i18n.ts`
+
+**Note:** The language selector only appears when a page has alternate versions
+in other languages (using matching `id` values). Current demo content is
+English-only, so the selector is correctly hidden.
+
+### Content migration — PaperMod example site
+
+The content from the PaperMod example site has **not yet been migrated**.
+
+**Source:**
+https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content
+
+**Required content to recreate:**
+
+1. **Demo posts** (to showcase theme features):
+   - `code_syntax.md` — Code syntax highlighting examples
+   - `emoji-support.md` — Emoji rendering test
+   - `markdown-syntax.md` — Markdown feature showcase (+ fr, fa versions)
+   - `math-typesetting.md` — Math/LaTeX rendering (requires KaTeX plugin)
+   - `rich-content.md` — Embedded content examples
+
+2. **Documentation pages:**
+   - `archives.md` — ✅ Already implemented as `archive.page.ts`
+   - `search.md` — ✅ Already implemented via Pagefind modal
+
+3. **PaperMod-specific docs** (optional, for reference):
+   - `papermod/papermod-faq.md`
+   - `papermod/papermod-icons.md`
+   - `papermod/papermod-installation.md`
+   - `papermod/papermod-variables.md`
+   - `papermod/papermod-features/*`
+
+**Priority:** Create demo posts to showcase implemented features before
+cross-browser testing.
+
+### Next actions (ordered)
+
+1. **Create demo content** — Add demo posts showcasing:
+   - Code syntax highlighting with multiple languages
+   - Markdown features (headings, lists, tables, blockquotes)
+   - Emoji rendering
+   - Image handling with cover images
+   - Draft post example
+
+2. **Add multilingual demo content** — Create French versions of demo posts to
+   test the language selector functionality.
+
+3. **Cross-browser QA** — Test on Chrome, Firefox, Safari, Edge once demo
+   content is in place.
+
+4. **Mobile testing** — Validate on real iOS/Android devices.
+
+5. **Comments integration** — Implement Utterances/Giscus (deferred, lowest
+   priority).
