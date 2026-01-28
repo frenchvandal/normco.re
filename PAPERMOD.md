@@ -662,6 +662,9 @@ example site must also be recreated.
 - [x] OG image generation: implemented via OG Images plugin with TSX layout.
       JSX/TSX exception documented in `CLAUDE.md` for PaperMod project.
 - [ ] Comments integration: deferred to lowest priority per user request.
+- [ ] Update `README.md`, `COMPONENTS_USAGE.md`,
+      `DESIGN_SYSTEM_INTEGRATION_ANALYSIS.md`, `tests/README.md` according to
+      the new PaperMod architecture.
 
 ## Accepted trade-offs
 
@@ -819,3 +822,6 @@ The following pages are now generated:
 
 4. **Comments integration** — Implement Utterances/Giscus (deferred, lowest
    priority).
+
+5. **Update Documentation** — Files `README.md`, `COMPONENTS_USAGE.md`,
+   `DESIGN_SYSTEM_INTEGRATION_ANALYSIS.md`, and `tests/README.md`.
