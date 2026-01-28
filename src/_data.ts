@@ -98,6 +98,11 @@ const data: SiteData = {
       url: "/feed.xml",
       label: "RSS Feed",
     },
+    {
+      platform: "jsonfeed",
+      url: "/feed-json-viewer/",
+      label: "JSON Feed",
+    },
   ],
   extra_head: [],
   metas: {
