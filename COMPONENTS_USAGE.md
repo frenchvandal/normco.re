@@ -20,6 +20,13 @@ codebase and the APIs that are already wired up in `main.js`.
 10. [Navigation Components](#navigation-components)
 11. [Tooltip](#tooltip)
 12. [Skeleton Loaders](#skeleton-loaders)
+13. [Author Profile](#author-profile)
+14. [Cover Image](#cover-image)
+15. [Related Posts](#related-posts)
+16. [Share Buttons](#share-buttons)
+17. [Social Icons](#social-icons)
+18. [Language Selector](#language-selector)
+19. [Source Info](#source-info)
 
 ---
 
@@ -453,3 +460,262 @@ Skeleton loaders are CSS-only. Apply the base class plus a size variant.
 ```
 
 Use these placeholders while content is loading to keep layout stability.
+
+---
+
+## Author Profile
+
+Display author information with avatar, bio, and social links. Supports two
+variants: "compact" for post footers and "full" for profile pages.
+
+### Lume Usage
+
+```typescript
+export default function (data: Lume.Data) {
+  const { comp } = data;
+
+  return `
+    ${
+    comp.authorProfile({
+      author: {
+        name: "Phiphi",
+        avatar: "/images/avatar.png",
+        bio: "Developer and writer based in Chengdu, China.",
+        email: "phiphi@example.com",
+        website: "https://normco.re",
+        social: {
+          github: "frenchvandal",
+          twitter: "frenchvandal",
+        },
+      },
+      variant: "full",
+      i18n: data.i18n,
+    })
+  }
+  `;
+}
+```
+
+### Variants
+
+- `compact`: Smaller layout for post footers (avatar + name + bio inline)
+- `full`: Larger layout for profile pages (centered, with social icons)
+
+### Social Links
+
+Supported platforms: `github`, `twitter`, `linkedin`, `mastodon`, `email`,
+`website`.
+
+---
+
+## Cover Image
+
+Render responsive post cover images with AVIF, WebP, and JPG format support.
+
+### Lume Usage
+
+```typescript
+export default function (data: Lume.Data) {
+  const { comp } = data;
+
+  return `
+    ${
+    comp.coverImage({
+      image: "/images/cover.jpg",
+      imageAlt: "A scenic mountain view",
+      imageCaption: "Photo taken in Sichuan, China",
+      loading: "eager",
+    })
+  }
+  `;
+}
+```
+
+### Parameters
+
+- `image`: Path to the image file (required)
+- `imageAlt`: Alt text for accessibility (required)
+- `imageCaption`: Optional caption displayed below the image
+- `loading`: `"eager"` (default for above-fold) or `"lazy"` (for below-fold)
+
+### Responsive Behavior
+
+The component generates srcsets at 640px, 1024px, and 1280px widths with
+automatic format selection (AVIF → WebP → JPG).
+
+---
+
+## Related Posts
+
+Display up to 3 related posts based on shared tags, sorted by relevance (tag
+overlap count) then by date.
+
+### Lume Usage
+
+```typescript
+export default function (data: Lume.Data) {
+  const { comp, search, url, tags, i18n } = data;
+
+  return `
+    ${
+    comp.relatedPosts({
+      search,
+      url,
+      tags,
+      i18n,
+      maxPosts: 3,
+    })
+  }
+  `;
+}
+```
+
+### Parameters
+
+- `search`: Lume search helper (required)
+- `url`: Current page URL (required)
+- `tags`: Array of tags from current post (required)
+- `i18n`: Internationalization object (required)
+- `maxPosts`: Maximum number of related posts to display (default: 3)
+
+---
+
+## Share Buttons
+
+Social sharing buttons for posts with Twitter, Facebook, LinkedIn, WhatsApp, and
+copy-to-clipboard functionality.
+
+### Lume Usage
+
+```typescript
+export default function (data: Lume.Data) {
+  const { comp, title, url, i18n } = data;
+
+  return `
+    ${
+    comp.shareButtons({
+      title,
+      url,
+      i18n,
+    })
+  }
+  `;
+}
+```
+
+### Features
+
+- Platform-specific hover colors matching brand guidelines
+- Clipboard API with fallback for older browsers
+- Accessible with ARIA labels and keyboard navigation
+- Copy button provides visual feedback on success/error
+
+---
+
+## Social Icons
+
+Render social media links with inline SVG icons (based on Feather Icons).
+
+### Lume Usage
+
+```typescript
+export default function (data: Lume.Data) {
+  const { comp, social_links } = data;
+
+  return `
+    <footer>
+      ${comp.socialIcons({ links: social_links })}
+    </footer>
+  `;
+}
+```
+
+### Supported Platforms
+
+`github`, `twitter`, `linkedin`, `mastodon`, `youtube`, `instagram`, `facebook`,
+`twitch`, `email`, `rss`, `jsonfeed`
+
+### Configuration
+
+Social links are configured in `src/_data.ts`:
+
+```typescript
+export const social_links = [
+  { platform: "github", url: "https://github.com/frenchvandal" },
+  { platform: "twitter", url: "https://twitter.com/frenchvandal" },
+  { platform: "rss", url: "/feed.xml" },
+];
+```
+
+---
+
+## Language Selector
+
+Dropdown menu for switching between available language versions of a page.
+
+### Lume Usage
+
+The language selector is automatically integrated into the header navigation via
+`layouts/base.ts`. It appears only when alternate language versions are
+available.
+
+```typescript
+export default function (data: Lume.Data) {
+  const { comp, alternates, lang } = data;
+
+  return `
+    ${
+    comp.languageSelector({
+      alternates,
+      currentLang: lang,
+    })
+  }
+  `;
+}
+```
+
+### Features
+
+- Dropdown menu with keyboard navigation (Arrow keys, Escape, Home/End)
+- Click-outside-to-close behavior
+- Mobile-responsive design (globe icon on small screens)
+- Proper ARIA attributes and `hreflang` support
+
+### Keyboard Navigation
+
+- **Arrow Down/Up**: Navigate between language options
+- **Enter/Space**: Select language
+- **Escape**: Close dropdown
+- **Home/End**: Jump to first/last option
+
+---
+
+## Source Info
+
+Display Git source information including last commit hash, date, and edit link.
+
+### Lume Usage
+
+```typescript
+export default function (data: Lume.Data) {
+  const { comp, sourceFile, date, i18n } = data;
+
+  return `
+    ${
+    comp.sourceInfo({
+      sourceFile,
+      date,
+      i18n,
+      repoUrl: "https://github.com/frenchvandal/normco.re",
+    })
+  }
+  `;
+}
+```
+
+### Features
+
+- Shows last modified date
+- Links to source file on GitHub
+- Displays commit hash with monospace styling
+- Integrates with footer design

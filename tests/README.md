@@ -70,3 +70,32 @@ jobs:
   `src/_components/Component_test.ts` or `src/js/features/feature_test.ts`).
 - Integration tests and fixtures live in `tests/` (for example
   `tests/integration/` and `tests/fixtures/`).
+
+## Component tests
+
+The following components have unit tests:
+
+| Component   | Test file                             |
+| ----------- | ------------------------------------- |
+| Breadcrumbs | `src/_components/Breadcrumbs_test.ts` |
+| CodeTabs    | `src/_components/CodeTabs_test.ts`    |
+| Modal       | `src/_components/Modal_test.ts`       |
+| Pagination  | `src/_components/Pagination_test.ts`  |
+| PostDetails | `src/_components/PostDetails_test.ts` |
+| PostList    | `src/_components/PostList_test.ts`    |
+| SourceInfo  | `src/_components/SourceInfo_test.ts`  |
+| Tabs        | `src/_components/Tabs_test.ts`        |
+
+## Feature tests
+
+Client-side feature tests are located in `src/js/features/` alongside their
+implementations. Tests use BDD-style `describe`/`it` blocks with DOM mocking via
+`tests/fixtures/dom.ts`.
+
+## Documentation tests
+
+Code examples in JSDoc comments are automatically tested:
+
+```bash
+DENO_TLS_CA_STORE=system deno test --doc src/
+```
