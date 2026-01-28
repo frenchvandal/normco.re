@@ -704,7 +704,7 @@ and the plugin ecosystem covers the remaining functionality.
 
 ### Build verification
 
-- ✅ **Build successful**: 66 files generated in ~2 seconds
+- ✅ **Build successful**: 111 files generated in ~3 seconds
 - ✅ **Linting passes**: `deno lint` — no errors
 - ✅ **Formatting passes**: `deno fmt` — all files formatted
 
@@ -734,56 +734,88 @@ The Multilanguage plugin is fully configured with:
 - `LanguageSelector.ts` component with dropdown menu, keyboard navigation
 - Comprehensive translations in `src/_data/i18n.ts`
 
-**Note:** The language selector only appears when a page has alternate versions
-in other languages (using matching `id` values). Current demo content is
-English-only, so the selector is correctly hidden.
+**Language selector is now functional:** The selector appears on pages with
+alternate language versions. Tested with the following multilingual content:
+
+- `markdown-syntax.md` (EN) / `markdown-syntax.fr.md` (FR)
+- `code-syntax.md` (EN) / `code-syntax.fr.md` (FR)
+- `emoji-support.md` (EN) / `emoji-support.fr.md` (FR)
+- `rich-content.md` (EN) / `rich-content.fr.md` (FR)
+
+The `hreflang` tags are automatically generated in the HTML `<head>`.
 
 ### Content migration — PaperMod example site
 
-The content from the PaperMod example site has **not yet been migrated**.
+**Status: COMPLETED**
+
+All required demo posts have been created:
+
+1. **Demo posts** (to showcase theme features):
+   - ✅ `code-syntax.md` — Code syntax highlighting (JS, TS, Python, Go, Rust,
+     HTML, CSS, Bash, JSON, YAML, diff)
+   - ✅ `emoji-support.md` — Emoji rendering (smileys, nature, food, tech,
+     symbols, flags)
+   - ✅ `markdown-syntax.md` — Markdown feature showcase (headings, lists,
+     tables, blockquotes, alerts)
+   - ⬜ `math-typesetting.md` — Math/LaTeX rendering (requires KaTeX plugin —
+     deferred)
+   - ✅ `rich-content.md` — Embedded content (YouTube, Vimeo, audio, collapsible
+     sections, ASCII diagrams)
+   - ✅ `draft-post.md` — Draft indicator demonstration
+
+2. **French translations** (for i18n testing):
+   - ✅ `markdown-syntax.fr.md`
+   - ✅ `code-syntax.fr.md`
+   - ✅ `emoji-support.fr.md`
+   - ✅ `rich-content.fr.md`
+
+3. **Documentation pages:**
+   - ✅ `archives.md` — Already implemented as `archive.page.ts`
+   - ✅ `search.md` — Already implemented via Pagefind modal
 
 **Source:**
 https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content
 
-**Required content to recreate:**
+### Generated pages
 
-1. **Demo posts** (to showcase theme features):
-   - `code_syntax.md` — Code syntax highlighting examples
-   - `emoji-support.md` — Emoji rendering test
-   - `markdown-syntax.md` — Markdown feature showcase (+ fr, fa versions)
-   - `math-typesetting.md` — Math/LaTeX rendering (requires KaTeX plugin)
-   - `rich-content.md` — Embedded content examples
+The following pages are now generated:
 
-2. **Documentation pages:**
-   - `archives.md` — ✅ Already implemented as `archive.page.ts`
-   - `search.md` — ✅ Already implemented via Pagefind modal
+**English posts:**
 
-3. **PaperMod-specific docs** (optional, for reference):
-   - `papermod/papermod-faq.md`
-   - `papermod/papermod-icons.md`
-   - `papermod/papermod-installation.md`
-   - `papermod/papermod-variables.md`
-   - `papermod/papermod-features/*`
+- `/posts/code-syntax/`
+- `/posts/markdown-syntax/`
+- `/posts/emoji-support/`
+- `/posts/rich-content/`
+- `/posts/css-architecture/`
+- `/posts/lume-blog-architecture-deep-dive/`
 
-**Priority:** Create demo posts to showcase implemented features before
-cross-browser testing.
+**French posts:**
+
+- `/fr/posts/code-syntax-fr/`
+- `/fr/posts/markdown-syntax-fr/`
+- `/fr/posts/emoji-support-fr/`
+- `/fr/posts/rich-content-fr/`
+
+**Archive pages** (auto-generated from tags):
+
+- `/archive/` (main)
+- `/archive/markdown/`
+- `/archive/code/`
+- `/archive/syntax/`
+- `/archive/emoji/`
+- `/archive/demo/`
+- `/archive/media/`
+- `/author/phiphi/`
 
 ### Next actions (ordered)
 
-1. **Create demo content** — Add demo posts showcasing:
-   - Code syntax highlighting with multiple languages
-   - Markdown features (headings, lists, tables, blockquotes)
-   - Emoji rendering
-   - Image handling with cover images
-   - Draft post example
+1. **Cross-browser QA** — Test on Chrome, Firefox, Safari, Edge with the new
+   demo content in place.
 
-2. **Add multilingual demo content** — Create French versions of demo posts to
-   test the language selector functionality.
+2. **Mobile testing** — Validate on real iOS/Android devices.
 
-3. **Cross-browser QA** — Test on Chrome, Firefox, Safari, Edge once demo
-   content is in place.
+3. **Math typesetting** — Add KaTeX plugin for math rendering (optional,
+   deferred).
 
-4. **Mobile testing** — Validate on real iOS/Android devices.
-
-5. **Comments integration** — Implement Utterances/Giscus (deferred, lowest
+4. **Comments integration** — Implement Utterances/Giscus (deferred, lowest
    priority).

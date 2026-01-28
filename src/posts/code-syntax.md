@@ -8,6 +8,7 @@ tags:
   - Code
   - Syntax
 id: code-syntax
+lang: en
 ---
 
 This post demonstrates how code blocks are rendered with syntax highlighting
