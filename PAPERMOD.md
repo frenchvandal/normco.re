@@ -834,76 +834,76 @@ The following pages are now generated:
 
 ### Executive Summary
 
-| Metric                     | Score       |
-| -------------------------- | ----------- |
-| **Overall progress**       | **~95%**    |
-| **Functional parity**      | **97%**     |
-| **Visual/CSS parity**      | **~92-95%** |
-| **Additional features**    | **+15**     |
+| Metric                  | Score       |
+| ----------------------- | ----------- |
+| **Overall progress**    | **~95%**    |
+| **Functional parity**   | **97%**     |
+| **Visual/CSS parity**   | **~92-95%** |
+| **Additional features** | **+15**     |
 
 ### CSS Architecture Comparison
 
 #### File Structure
 
-| PaperMod (Hugo)          | Lume (dev)                       | Status          |
-| ------------------------ | -------------------------------- | --------------- |
-| `core/reset.css`         | `02-base/reset.css`              | ✅ Equivalent   |
-| `core/theme-vars.css`    | `01-tokens/tokens.css`           | ✅ More complete |
-| `common/main.css`        | `02-base/global.css` + layouts   | ✅ Equivalent   |
-| `common/header.css`      | `05-layouts/navbar.css`          | ✅ Equivalent   |
-| `common/footer.css`      | `05-layouts/footer.css`          | ✅ Equivalent   |
-| `common/post-single.css` | `05-layouts/post.css`            | ✅ Equivalent   |
-| `common/post-entry.css`  | `05-layouts/post-list.css`       | ✅ Equivalent   |
-| `common/search.css`      | `04-components/pagefind.css`     | ✅ Improved     |
-| `common/archive.css`     | `05-layouts/archive.css`         | ✅ Equivalent   |
-| —                        | `02-base/scrollbar.css`          | ✅ Bonus        |
-| —                        | 22+ additional component styles  | ✅ Bonus        |
+| PaperMod (Hugo)          | Lume (dev)                      | Status           |
+| ------------------------ | ------------------------------- | ---------------- |
+| `core/reset.css`         | `02-base/reset.css`             | ✅ Equivalent    |
+| `core/theme-vars.css`    | `01-tokens/tokens.css`          | ✅ More complete |
+| `common/main.css`        | `02-base/global.css` + layouts  | ✅ Equivalent    |
+| `common/header.css`      | `05-layouts/navbar.css`         | ✅ Equivalent    |
+| `common/footer.css`      | `05-layouts/footer.css`         | ✅ Equivalent    |
+| `common/post-single.css` | `05-layouts/post.css`           | ✅ Equivalent    |
+| `common/post-entry.css`  | `05-layouts/post-list.css`      | ✅ Equivalent    |
+| `common/search.css`      | `04-components/pagefind.css`    | ✅ Improved      |
+| `common/archive.css`     | `05-layouts/archive.css`        | ✅ Equivalent    |
+| —                        | `02-base/scrollbar.css`         | ✅ Bonus         |
+| —                        | 22+ additional component styles | ✅ Bonus         |
 
 ### Design Tokens Comparison
 
-| Token PaperMod          | Value               | Token Lume             | Value               | Match  |
-| ----------------------- | ------------------- | ---------------------- | ------------------- | ------ |
-| `--gap`                 | 24px                | `--spacing-lg`         | 24px                | ✅ 100% |
-| `--radius`              | 8px                 | `--border-radius-lg`   | 8px                 | ✅ 100% |
-| `--main-width`          | 720px               | `--content-max-width`  | 44rem (~704px)      | ✅ 98%  |
-| `--theme` (dark)        | `rgb(29,30,32)`     | `--color-background`   | `#1d1e20`           | ✅ 100% |
-| `--primary` (light)     | `rgb(30,30,30)`     | `--color-base`         | `#1f1f1f`           | ✅ 99%  |
-| `--secondary`           | `rgb(108,108,108)`  | `--color-dim`          | `#6b7280`           | ✅ 95%  |
-| `--code-block-bg`       | `rgb(28,29,33)`     | `--code-background`    | `#1c1d21`           | ✅ 100% |
+| Token PaperMod      | Value              | Token Lume            | Value          | Match   |
+| ------------------- | ------------------ | --------------------- | -------------- | ------- |
+| `--gap`             | 24px               | `--spacing-lg`        | 24px           | ✅ 100% |
+| `--radius`          | 8px                | `--border-radius-lg`  | 8px            | ✅ 100% |
+| `--main-width`      | 720px              | `--content-max-width` | 44rem (~704px) | ✅ 98%  |
+| `--theme` (dark)    | `rgb(29,30,32)`    | `--color-background`  | `#1d1e20`      | ✅ 100% |
+| `--primary` (light) | `rgb(30,30,30)`    | `--color-base`        | `#1f1f1f`      | ✅ 99%  |
+| `--secondary`       | `rgb(108,108,108)` | `--color-dim`         | `#6b7280`      | ✅ 95%  |
+| `--code-block-bg`   | `rgb(28,29,33)`    | `--code-background`   | `#1c1d21`      | ✅ 100% |
 
 ### Functional Components
 
-| Component           | PaperMod | Lume                  | Progress  |
-| ------------------- | -------- | --------------------- | --------- |
-| Theme Toggle        | ✅       | ✅ SVG icons          | **100%**  |
-| Scroll-to-top       | ✅       | ✅ throttled          | **100%**  |
-| Search              | ✅ Fuse  | ✅ Pagefind           | **100%+** |
-| Code Copy           | ✅       | ✅ + fallback         | **100%**  |
-| TOC                 | ✅       | ✅ scroll spy         | **100%**  |
-| Breadcrumbs         | ✅       | ✅ ARIA               | **100%**  |
-| Share Buttons       | ✅       | ✅ 5 platforms        | **100%**  |
-| Social Icons        | ✅       | ✅ 11 platforms       | **100%**  |
-| Author Profile      | ✅       | ✅ 2 variants         | **100%**  |
-| Cover Image         | ✅       | ✅ responsive srcset  | **100%**  |
-| Related Posts       | ✅       | ✅ tag-based          | **100%**  |
-| Pagination          | ✅       | ✅ prev/next + nums   | **100%**  |
-| Lang Selector       | ✅ Hugo  | ✅ dropdown + keyboard| **100%**  |
-| Archive Timeline    | ✅       | ✅ year grouping      | **100%**  |
-| Post Entry Animation| ✅       | ✅ scale(0.96)        | **100%**  |
+| Component            | PaperMod | Lume                   | Progress  |
+| -------------------- | -------- | ---------------------- | --------- |
+| Theme Toggle         | ✅       | ✅ SVG icons           | **100%**  |
+| Scroll-to-top        | ✅       | ✅ throttled           | **100%**  |
+| Search               | ✅ Fuse  | ✅ Pagefind            | **100%+** |
+| Code Copy            | ✅       | ✅ + fallback          | **100%**  |
+| TOC                  | ✅       | ✅ scroll spy          | **100%**  |
+| Breadcrumbs          | ✅       | ✅ ARIA                | **100%**  |
+| Share Buttons        | ✅       | ✅ 5 platforms         | **100%**  |
+| Social Icons         | ✅       | ✅ 11 platforms        | **100%**  |
+| Author Profile       | ✅       | ✅ 2 variants          | **100%**  |
+| Cover Image          | ✅       | ✅ responsive srcset   | **100%**  |
+| Related Posts        | ✅       | ✅ tag-based           | **100%**  |
+| Pagination           | ✅       | ✅ prev/next + nums    | **100%**  |
+| Lang Selector        | ✅ Hugo  | ✅ dropdown + keyboard | **100%**  |
+| Archive Timeline     | ✅       | ✅ year grouping       | **100%**  |
+| Post Entry Animation | ✅       | ✅ scale(0.96)         | **100%**  |
 
 ### Bonus Features (not in PaperMod)
 
-| Feature               | Description                                |
-| --------------------- | ------------------------------------------ |
-| Service Worker        | Offline support + update notifications     |
-| OG Images             | Auto-generated via TSX layout              |
-| JSON Feed + Viewer    | Alternative to RSS with styled viewer      |
-| Modal Component       | Generic modal for search and dialogs       |
-| Toast Notifications   | User feedback system                       |
-| Alert/Admonitions     | Info, warning, error, success blocks       |
-| Code Tabs             | Multi-language code examples               |
-| High Contrast Mode    | `prefers-contrast` support                 |
-| Skeleton Loading      | Loading state placeholders                 |
+| Feature             | Description                            |
+| ------------------- | -------------------------------------- |
+| Service Worker      | Offline support + update notifications |
+| OG Images           | Auto-generated via TSX layout          |
+| JSON Feed + Viewer  | Alternative to RSS with styled viewer  |
+| Modal Component     | Generic modal for search and dialogs   |
+| Toast Notifications | User feedback system                   |
+| Alert/Admonitions   | Info, warning, error, success blocks   |
+| Code Tabs           | Multi-language code examples           |
+| High Contrast Mode  | `prefers-contrast` support             |
+| Skeleton Loading    | Loading state placeholders             |
 
 ### Improvements Made (January 28, 2026)
 
@@ -913,11 +913,11 @@ Updated `src/_includes/css/01-tokens/tokens.css`:
 
 ```css
 [data-theme="dark"] {
-  --color-base: #dadada;        /* PaperMod: rgb(218, 218, 219) */
-  --color-text: #c4c4c5;        /* PaperMod: rgb(196, 196, 197) */
-  --color-dim: #9b9c9d;         /* PaperMod: rgb(155, 156, 157) */
-  --color-line: #414244;        /* PaperMod: rgb(65, 66, 68) */
-  --color-background: #1d1e20;  /* PaperMod: rgb(29, 30, 32) */
+  --color-base: #dadada; /* PaperMod: rgb(218, 218, 219) */
+  --color-text: #c4c4c5; /* PaperMod: rgb(196, 196, 197) */
+  --color-dim: #9b9c9d; /* PaperMod: rgb(155, 156, 157) */
+  --color-line: #414244; /* PaperMod: rgb(65, 66, 68) */
+  --color-background: #1d1e20; /* PaperMod: rgb(29, 30, 32) */
   --color-background-shade: #2e2e33; /* PaperMod: rgb(46, 46, 51) */
 }
 ```
@@ -935,8 +935,10 @@ Added to `src/_includes/css/05-layouts/post-list.css`:
 
 Created new component and styles:
 
-- **`src/_components/ArchiveList.ts`**: Groups posts by year with timeline markers
-- **`src/_includes/css/05-layouts/archive.css`**: PaperMod-style vertical timeline
+- **`src/_components/ArchiveList.ts`**: Groups posts by year with timeline
+  markers
+- **`src/_includes/css/05-layouts/archive.css`**: PaperMod-style vertical
+  timeline
   - Vertical line with `::before` pseudo-element
   - Year markers with colored dots
   - Post entries with date and title columns
@@ -944,30 +946,31 @@ Created new component and styles:
   - Reduced motion support
 
 Updated layouts:
+
 - `src/_includes/layouts/archive.ts` → uses `ArchiveList` component
 - `src/_includes/layouts/archive-result.ts` → uses `ArchiveList` component
 - Body class changed from `body-tag` to `body-archive`
 
 ### Updated Score Calculation
 
-| Category          | Weight | Score  | Weighted |
-| ----------------- | ------ | ------ | -------- |
-| Design Tokens     | 15%    | 98%    | 14.7%    |
-| CSS Components    | 25%    | 98%    | 24.5%    |
-| JavaScript        | 15%    | 100%   | 15.0%    |
-| Layouts           | 15%    | 97%    | 14.55%   |
-| Responsive        | 10%    | 100%   | 10.0%    |
-| Accessibility     | 10%    | 99%    | 9.9%     |
-| SEO               | 10%    | 100%   | 10.0%    |
-| **TOTAL**         | 100%   | —      | **98.65%** |
+| Category       | Weight | Score | Weighted   |
+| -------------- | ------ | ----- | ---------- |
+| Design Tokens  | 15%    | 98%   | 14.7%      |
+| CSS Components | 25%    | 98%   | 24.5%      |
+| JavaScript     | 15%    | 100%  | 15.0%      |
+| Layouts        | 15%    | 97%   | 14.55%     |
+| Responsive     | 10%    | 100%  | 10.0%      |
+| Accessibility  | 10%    | 99%   | 9.9%       |
+| SEO            | 10%    | 100%  | 10.0%      |
+| **TOTAL**      | 100%   | —     | **98.65%** |
 
 ### Remaining Differences
 
-| Element                  | PaperMod                    | Lume                        | Impact |
-| ------------------------ | --------------------------- | --------------------------- | ------ |
-| Entry card background    | `var(--entry)` distinct     | Same as page background     | Minor  |
-| Menu item active border  | 2px solid bottom            | Font weight change          | Minor  |
-| Logo SVG radius          | 6px                         | Not applicable              | Minor  |
+| Element                 | PaperMod                | Lume                    | Impact |
+| ----------------------- | ----------------------- | ----------------------- | ------ |
+| Entry card background   | `var(--entry)` distinct | Same as page background | Minor  |
+| Menu item active border | 2px solid bottom        | Font weight change      | Minor  |
+| Logo SVG radius         | 6px                     | Not applicable          | Minor  |
 
 ### Updated Remaining Work Checklist
 

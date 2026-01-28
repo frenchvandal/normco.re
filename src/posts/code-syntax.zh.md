@@ -8,7 +8,7 @@ tags:
   - Code
   - Syntax
 id: code-syntax
-lang: zh-CN
+lang: zh
 ---
 
 本文演示了如何使用 Prism.js 对代码块进行语法高亮渲染。
