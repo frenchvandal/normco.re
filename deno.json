@@ -2,7 +2,6 @@
   "imports": {
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
-    "blog/": "https://cdn.jsdelivr.net/gh/lumeland/theme-simple-blog@1.16.2/",
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/"
   },
   "permissions": {
@@ -44,6 +43,10 @@
     "serve": {
       "description": "Run and serve the site for development",
       "command": "deno task lume -s"
+    },
+    "update-deps": {
+      "description": "Update Lume and regenerate lock file",
+      "command": "deno task lume update"
     }
   },
   "compilerOptions": {
