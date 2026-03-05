@@ -1,3 +1,3 @@
-import cms from "blog/_cms.ts";
+import CMS from "lume/cms/mod.ts";
 
-export default cms;
+export default CMS();
