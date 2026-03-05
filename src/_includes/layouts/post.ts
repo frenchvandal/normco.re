@@ -3,27 +3,39 @@
 /** This layout is itself wrapped by the base layout. */
 export const layout = "layouts/base.ts";
 
-/** Formats a `Date` as "Month Day, Year" in en-US locale. */
-function formatDate(date: unknown): string {
-  if (!(date instanceof Date)) return "";
-  return new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(date);
-}
+/** Typed helpers used in this layout. */
+type H = {
+  date: (value: unknown, format: string) => string;
+  class: (...args: Array<string | Record<string, boolean>>) => string;
+};
 
-/** Returns an ISO 8601 date string, or empty string when the value is not a Date. */
-function isoDate(date: unknown): string {
-  if (!(date instanceof Date)) return "";
-  return date.toISOString();
-}
+/**
+ * Minimal interface for the nav helper injected by the nav plugin.
+ * Only the methods used in this layout are declared.
+ */
+type NavHelper = {
+  previousPage: (
+    url: string,
+    base?: string,
+    query?: string,
+    sort?: string,
+  ) => Lume.Data | undefined;
+  nextPage: (
+    url: string,
+    base?: string,
+    query?: string,
+    sort?: string,
+  ) => Lume.Data | undefined;
+};
 
-export default function (data: Lume.Data, _helpers: Lume.Helpers): string {
-  const allPosts = data.search.pages("type=post", "date=asc") as Lume.Data[];
-  const idx = allPosts.findIndex((p) => p.url === data.url);
-  const prev = idx > 0 ? allPosts[idx - 1] : undefined;
-  const next = idx < allPosts.length - 1 ? allPosts[idx + 1] : undefined;
+export default function (data: Lume.Data, helpers: Lume.Helpers): string {
+  const { date: dateFormat, class: cls } = helpers as unknown as H;
+
+  // Use the nav plugin to find adjacent posts ordered chronologically.
+  const n = data.nav as unknown as NavHelper;
+  const currentUrl = data.url ?? "/";
+  const prev = n.previousPage(currentUrl, "/posts/", "type=post", "date=asc");
+  const next = n.nextPage(currentUrl, "/posts/", "type=post", "date=asc");
 
   const minutes = typeof data.readingTime === "number"
     ? Math.ceil(data.readingTime as number)
@@ -34,14 +46,14 @@ export default function (data: Lume.Data, _helpers: Lume.Helpers): string {
     : "";
 
   const prevNav = prev
-    ? `<div class="post-nav-item">
+    ? `<div class="${cls("post-nav-item")}">
         <span class="post-nav-label">Previous</span>
         <a href="${prev.url}" class="post-nav-title">${prev.title}</a>
       </div>`
     : `<div></div>`;
 
   const nextNav = next
-    ? `<div class="post-nav-item post-nav-item--next">
+    ? `<div class="${cls("post-nav-item", "post-nav-item--next")}">
         <span class="post-nav-label">Next</span>
         <a href="${next.url}" class="post-nav-title">${next.title}</a>
       </div>`
@@ -51,7 +63,9 @@ export default function (data: Lume.Data, _helpers: Lume.Helpers): string {
   <header class="post-header">
     <h1 class="post-title">${data.title}</h1>
     <div class="post-meta">
-      <time datetime="${isoDate(data.date)}">${formatDate(data.date)}</time>
+      <time datetime="${dateFormat(data.date, "ATOM")}">${
+    dateFormat(data.date, "HUMAN_DATE")
+  }</time>
       ${readingTimePart}
     </div>
   </header>

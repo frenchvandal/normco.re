@@ -5,20 +5,17 @@ export const layout = "layouts/base.ts";
 export const title = "Writing";
 export const description = "All posts, grouped by year.";
 
-/** Formats a `Date` as "Mon D" (short month + day). */
-function formatArchiveDate(date: Date): string {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-  }).format(date);
-}
+// Override the `type = "post"` inherited from _data.ts so this page
+// is not matched by `search.pages("type=post")` or nav plugin queries.
+export const type = "archive";
 
-/** Returns an ISO 8601 date string. */
-function isoDate(date: Date): string {
-  return date.toISOString();
-}
+/** Typed helpers used in this page. */
+type H = {
+  date: (value: unknown, format: string) => string;
+};
 
-export default function (data: Lume.Data, _helpers: Lume.Helpers): string {
+export default function (data: Lume.Data, helpers: Lume.Helpers): string {
+  const { date: dateFormat } = helpers as unknown as H;
   const posts = data.search.pages("type=post", "date=desc") as Lume.Data[];
 
   // Group posts by year.
@@ -37,7 +34,6 @@ export default function (data: Lume.Data, _helpers: Lume.Helpers): string {
   const sections = years.map((year) => {
     const yearPosts = byYear.get(year) ?? [];
     const items = yearPosts.map((post) => {
-      const date = post.date instanceof Date ? post.date : new Date();
       const minutes = typeof post.readingTime === "number"
         ? Math.ceil(post.readingTime as number)
         : undefined;
@@ -46,8 +42,8 @@ export default function (data: Lume.Data, _helpers: Lume.Helpers): string {
         : `<span></span>`;
 
       return `<li class="archive-item">
-  <time class="archive-date" datetime="${isoDate(date)}">${
-        formatArchiveDate(date)
+  <time class="archive-date" datetime="${dateFormat(post.date, "ATOM")}">${
+        dateFormat(post.date, "SHORT")
       }</time>
   <a href="${post.url}" class="archive-title">${post.title}</a>
   ${readingTimePart}

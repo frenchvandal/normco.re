@@ -5,34 +5,27 @@ export const layout = "layouts/base.ts";
 export const title = "normco.re";
 export const description = "Personal blog by Phiphi, based in Chengdu, China.";
 
-/** Formats a `Date` as "Mon D" (no year — used in post cards on the home page). */
-function formatShortDate(date: unknown): string {
-  if (!(date instanceof Date)) return "";
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-  }).format(date);
-}
+/** Typed helpers used in this page. */
+type H = {
+  date: (value: unknown, format: string) => string;
+};
 
-export default function (data: Lume.Data, _helpers: Lume.Helpers): string {
+export default function (data: Lume.Data, helpers: Lume.Helpers): string {
+  const { date: dateFormat } = helpers as unknown as H;
   const recent = data.search.pages("type=post", "date=desc", 5) as Lume.Data[];
 
   const postItems = recent.map((post) => {
-    const date = post.date instanceof Date ? post.date : new Date();
     const minutes = typeof post.readingTime === "number"
       ? Math.ceil(post.readingTime as number)
       : undefined;
-    const meta = minutes !== undefined
-      ? `<span class="post-card-meta">${minutes} min read</span>`
-      : "";
 
-    return `<article class="post-card">
-  <time class="post-card-date" datetime="${date.toISOString()}">${
-      formatShortDate(date)
-    }</time>
-  <h2 class="post-card-title"><a href="${post.url}">${post.title}</a></h2>
-  ${meta}
-</article>`;
+    return data.comp.PostCard({
+      title: post.title as string,
+      url: post.url as string,
+      dateStr: dateFormat(post.date, "SHORT"),
+      dateIso: dateFormat(post.date, "ATOM"),
+      readingTime: minutes,
+    });
   }).join("\n");
 
   return `<section class="hero" aria-label="Introduction">
