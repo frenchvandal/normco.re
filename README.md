@@ -2,8 +2,7 @@
 
 A minimalist personal blog by Phiphi, based in Chengdu, China. Built with
 [Deno](https://deno.com/) and [Lume](https://lume.land/), authored entirely in
-ESM TypeScript, and deployed as a static site to
-[normco.re](https://normco.re).
+ESM TypeScript, and deployed as a static site to [normco.re](https://normco.re).
 
 ---
 
@@ -39,17 +38,17 @@ written in modern CSS rather than a framework, and the only runtime is Deno.
 
 ## Tech Stack
 
-| Layer       | Technology                                                      |
-| ----------- | --------------------------------------------------------------- |
-| Runtime     | [Deno](https://deno.com/) 2.7.4 (version pinned in `.tool-versions`) |
-| SSG         | [Lume](https://lume.land/) 3.2.1                                |
-| Templating  | ESM + TypeScript (`*.page.ts`, `*.ts` layouts and components)   |
-| Styling     | Modern CSS (`style.css`, processed by Lightning CSS)            |
-| Feeds       | RSS 2.0 and JSON Feed 1.1                                       |
-| Testing     | Deno's built-in test runner with `@std/testing/bdd`             |
-| Git hooks   | [Lefthook](https://github.com/evilmartians/lefthook)            |
-| Static analysis | [Knip](https://knip.dev/) (via `npx`)                       |
-| Deployment  | GitHub Pages (via GitHub Actions)                               |
+| Layer           | Technology                                                           |
+| --------------- | -------------------------------------------------------------------- |
+| Runtime         | [Deno](https://deno.com/) 2.7.4 (version pinned in `.tool-versions`) |
+| SSG             | [Lume](https://lume.land/) 3.2.1                                     |
+| Templating      | ESM + TypeScript (`*.page.ts`, `*.ts` layouts and components)        |
+| Styling         | Modern CSS (`style.css`, processed by Lightning CSS)                 |
+| Feeds           | RSS 2.0 and JSON Feed 1.1                                            |
+| Testing         | Deno's built-in test runner with `@std/testing/bdd`                  |
+| Git hooks       | [Lefthook](https://github.com/evilmartians/lefthook)                 |
+| Static analysis | [Knip](https://knip.dev/) (via `npx`)                                |
+| Deployment      | GitHub Pages (via GitHub Actions)                                    |
 
 ---
 
@@ -203,15 +202,15 @@ DENO_TLS_CA_STORE=system deno task lint-commit
 
 ### Available tasks
 
-| Task              | Command                                  | Description                              |
-| ----------------- | ---------------------------------------- | ---------------------------------------- |
-| `build`           | `deno task build`                        | Production build into `_site/`           |
-| `serve`           | `deno task serve`                        | Dev server at `localhost:3000` (live reload) |
-| `check`           | `deno task check`                        | Type-check all `.ts`/`.tsx` files        |
-| `lint:doc`        | `deno task lint:doc`                     | Lint JSDoc comments                      |
-| `lint-commit`     | `deno task lint-commit`                  | Validate the last commit message         |
-| `update-deps`     | `deno task update-deps`                  | Update Lume and regenerate `deno.lock`   |
-| `knip`            | `deno task knip`                         | Detect unused exports and dead code      |
+| Task          | Command                 | Description                                  |
+| ------------- | ----------------------- | -------------------------------------------- |
+| `build`       | `deno task build`       | Production build into `_site/`               |
+| `serve`       | `deno task serve`       | Dev server at `localhost:3000` (live reload) |
+| `check`       | `deno task check`       | Type-check all `.ts`/`.tsx` files            |
+| `lint:doc`    | `deno task lint:doc`    | Lint JSDoc comments                          |
+| `lint-commit` | `deno task lint-commit` | Validate the last commit message             |
+| `update-deps` | `deno task update-deps` | Update Lume and regenerate `deno.lock`       |
+| `knip`        | `deno task knip`        | Detect unused exports and dead code          |
 
 ---
 
@@ -241,9 +240,8 @@ TypeScript (`*.page.ts`).
 
 ### Reading time
 
-The post layout computes and displays reading time automatically, based on
-238 words per minute (Brysbaert et al., 2019). No manual configuration is
-required.
+The post layout computes and displays reading time automatically, based on 238
+words per minute (Brysbaert et al., 2019). No manual configuration is required.
 
 ### Feeds
 
@@ -263,26 +261,26 @@ A syndication hub listing all feed endpoints is available at `/feeds/`.
 
 The central Lume configuration file. Key settings:
 
-| Setting             | Value                     | Notes                                      |
-| ------------------- | ------------------------- | ------------------------------------------ |
-| Source directory    | `./src`                   |                                            |
-| Output directory    | `./_site`                 | Git-ignored; do not edit generated files   |
-| Production URL      | `https://normco.re`       |                                            |
-| Pretty URLs         | `true`                    | `/about/` instead of `/about.html`         |
-| Reading speed       | 238 wpm                   | Brysbaert et al., 2019                     |
+| Setting          | Value               | Notes                                    |
+| ---------------- | ------------------- | ---------------------------------------- |
+| Source directory | `./src`             |                                          |
+| Output directory | `./_site`           | Git-ignored; do not edit generated files |
+| Production URL   | `https://normco.re` |                                          |
+| Pretty URLs      | `true`              | `/about/` instead of `/about.html`       |
+| Reading speed    | 238 wpm             | Brysbaert et al., 2019                   |
 
 **Active plugins:**
 
-| Plugin          | Purpose                                              |
-| --------------- | ---------------------------------------------------- |
-| `lightningcss`  | Minifies CSS; targets modern browsers                |
-| `sourceMaps`    | Generates source maps for the minified stylesheet    |
-| `attributes`    | HTML attribute helpers in templates                  |
-| `date`          | Date formatting (e.g., `"SHORT"` → `"MMM d"`)        |
-| `sitemap`       | Generates `/sitemap.xml` and `/robots.txt`           |
-| `nav`           | Navigation tree for previous/next post links         |
-| `codeHighlight` | Syntax highlighting for fenced code blocks           |
-| `feed`          | Generates RSS 2.0 and JSON Feed 1.1                  |
+| Plugin          | Purpose                                           |
+| --------------- | ------------------------------------------------- |
+| `lightningcss`  | Minifies CSS; targets modern browsers             |
+| `sourceMaps`    | Generates source maps for the minified stylesheet |
+| `attributes`    | HTML attribute helpers in templates               |
+| `date`          | Date formatting (e.g., `"SHORT"` → `"MMM d"`)     |
+| `sitemap`       | Generates `/sitemap.xml` and `/robots.txt`        |
+| `nav`           | Navigation tree for previous/next post links      |
+| `codeHighlight` | Syntax highlighting for fenced code blocks        |
+| `feed`          | Generates RSS 2.0 and JSON Feed 1.1               |
 
 ### `deno.json` — Deno manifest
 
@@ -331,8 +329,8 @@ wide-gamut support:
 
 ```css
 :root {
-  --color-bg:     light-dark(oklch(97% …), oklch(11% …));
-  --color-text:   light-dark(oklch(14% …), oklch(88% …));
+  --color-bg: light-dark(oklch(97% …), oklch(11% …));
+  --color-text: light-dark(oklch(14% …), oklch(88% …));
   --color-accent: light-dark(oklch(42% …), oklch(70% …));
 }
 ```
@@ -363,7 +361,8 @@ The stylesheet explicitly handles:
 
 ## Testing
 
-Tests use Deno's built-in runner with BDD-style grouping from `@std/testing/bdd`.
+Tests use Deno's built-in runner with BDD-style grouping from
+`@std/testing/bdd`.
 
 ```sh
 DENO_TLS_CA_STORE=system deno test
@@ -377,13 +376,13 @@ belong in `tests/`.
 
 ### What is tested
 
-| Code type      | Strategy                                                        |
-| -------------- | --------------------------------------------------------------- |
-| Components     | Structure, accessibility, variants, edge cases                  |
-| Layouts        | Rendered HTML structure, data propagation                       |
-| Pages          | Hero content, dynamic sections, fallback behavior               |
-| Utilities      | Edge cases with `describe`/`it` and `assertEquals`             |
-| JSDoc examples | Run as documentation tests via `deno test --doc`               |
+| Code type      | Strategy                                           |
+| -------------- | -------------------------------------------------- |
+| Components     | Structure, accessibility, variants, edge cases     |
+| Layouts        | Rendered HTML structure, data propagation          |
+| Pages          | Hero content, dynamic sections, fallback behavior  |
+| Utilities      | Edge cases with `describe`/`it` and `assertEquals` |
+| JSDoc examples | Run as documentation tests via `deno test --doc`   |
 
 ### Coverage
 
@@ -406,6 +405,7 @@ mirroring the rules of `@commitlint/config-conventional`.
 `refactor`, `revert`, `style`, `test`
 
 **Rules enforced:**
+
 - Header maximum 100 characters
 - Type must be lowercase and from the allowed list
 - Subject must not end with a period
@@ -424,11 +424,11 @@ DENO_TLS_CA_STORE=system deno task lint-commit path/to/COMMIT_EDITMSG
 
 ### Git hooks — Lefthook (`lefthook.yml`)
 
-| Hook         | Command                              | Scope                       |
-| ------------ | ------------------------------------ | --------------------------- |
-| `pre-commit` | `deno fmt --check` (parallel)        | `*.{ts,tsx,js,jsx,css,…}`   |
-| `pre-commit` | `deno lint` (parallel)               | `*.{ts,tsx,js,jsx}`         |
-| `commit-msg` | `deno task lint-commit <msg-file>`   | all commits                 |
+| Hook         | Command                            | Scope                     |
+| ------------ | ---------------------------------- | ------------------------- |
+| `pre-commit` | `deno fmt --check` (parallel)      | `*.{ts,tsx,js,jsx,css,…}` |
+| `pre-commit` | `deno lint` (parallel)             | `*.{ts,tsx,js,jsx}`       |
+| `commit-msg` | `deno task lint-commit <msg-file>` | all commits               |
 
 ### Static analysis — Knip (`deno task knip`)
 
@@ -450,8 +450,8 @@ with `continue-on-error: true` — failures are informational, not blocking.
 DENO_TLS_CA_STORE=system deno task update-deps
 ```
 
-Commit `deno.lock` only when `deno.json` dependencies change in the same
-commit. Do not add new dependencies unless explicitly required.
+Commit `deno.lock` only when `deno.json` dependencies change in the same commit.
+Do not add new dependencies unless explicitly required.
 
 ---
 
@@ -469,8 +469,8 @@ on every push to `master`.
 5. Upload `_site/` as a GitHub Pages artifact.
 6. Deploy to GitHub Pages.
 
-The site is served from `https://normco.re`. No server-side runtime is
-involved; the output is entirely static HTML, CSS, and JavaScript.
+The site is served from `https://normco.re`. No server-side runtime is involved;
+the output is entirely static HTML, CSS, and JavaScript.
 
 ---
 
