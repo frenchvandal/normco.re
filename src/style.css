@@ -113,6 +113,10 @@
     color: var(--color-text);
     background-color: var(--color-bg);
     scroll-behavior: smooth;
+    /* Smooth color transition on user-initiated theme changes. */
+    transition:
+      background-color 0.25s ease-in-out,
+      color 0.25s ease-in-out;
   }
 
   body {
@@ -373,12 +377,18 @@
 @layer components {
   /* ——— Theme toggle ——— */
 
+  /*
+   * A single geometric icon (half-filled circle) represents the
+   * light/dark duality — no icon swapping needed.
+   * Min 44×44 px touch target (WCAG 2.5.5 / iOS HIG).
+   * Monochrome: inherits text color, no accent decoration.
+   */
   .theme-toggle {
+    min-inline-size: 44px;
+    min-block-size: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
-    inline-size: 2rem;
-    block-size: 2rem;
     padding: 0;
     border: none;
     background: transparent;
@@ -394,50 +404,13 @@
   }
 
   .theme-toggle:focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid currentColor;
     outline-offset: 3px;
   }
 
-  /*
-   * Icon visibility — show moon in light mode (to switch to dark),
-   * show sun in dark mode (to switch to light).
-   *
-   * Default: assume light (show moon).
-   */
-  .icon-sun {
-    display: none;
-  }
-
-  .icon-moon {
+  .theme-icon {
     display: block;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .icon-sun {
-      display: block;
-    }
-
-    .icon-moon {
-      display: none;
-    }
-  }
-
-  /* User override: forced light mode. */
-  :root[data-color-scheme="light"] .icon-sun {
-    display: none;
-  }
-
-  :root[data-color-scheme="light"] .icon-moon {
-    display: block;
-  }
-
-  /* User override: forced dark mode. */
-  :root[data-color-scheme="dark"] .icon-sun {
-    display: block;
-  }
-
-  :root[data-color-scheme="dark"] .icon-moon {
-    display: none;
+    flex-shrink: 0;
   }
 
   /* Site logo */
