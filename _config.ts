@@ -9,6 +9,7 @@ import attributes from "lume/plugins/attributes.ts";
 import nav from "lume/plugins/nav.ts";
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
+import otelPlugin from "./plugins/otel.ts";
 
 /** Lume site instance — entry point for the build pipeline. */
 const site: Site = lume({
@@ -119,5 +120,9 @@ site.process([".xml"], (pages: Page[]) => {
     page.content = content.replace(XML_PI_PATTERN, `$1\n${pi}`);
   }
 });
+
+// OpenTelemetry build observability — no-op without OTEL_DENO=true.
+// Use `deno task build:otel` or `deno task serve:otel` to activate.
+site.use(otelPlugin());
 
 export default site;
