@@ -195,6 +195,26 @@ For disposable resources (file handles, connections). Objects implementing
 using file = openFile("template.vto"); // auto-disposed at scope exit
 ```
 
+#### Native collection methods
+
+Prefer the native `Map` and `WeakMap` methods from the TC39 `upsert` proposal
+(`getOrInsert`, `getOrInsertComputed`) over manual check-then-set idioms that
+require non-null assertions or redundant `has` + `get` pairs:
+
+```ts
+// Avoid:
+if (!map.has(key)) map.set(key, computeDefault());
+const value = map.get(key)!;
+
+// Prefer — single atomic operation, no non-null assertion needed:
+const value = map.getOrInsert(key, defaultValue);
+
+// Prefer — lazy default for expensive computations:
+const value = map.getOrInsertComputed(key, () => computeDefault());
+```
+
+Both methods are available on `Map` and `WeakMap`.
+
 ### 5.4. Patterns to avoid
 
 | Deprecated pattern          | Replacement                            | Rationale                                                                                                                                |
@@ -320,7 +340,7 @@ Always include an issue number or author handle:
 > whitespace, and content readability. No superfluous borders, shadows, or
 > background noise.
 
-### 6.1. Modern CSS first, SCSS as fallback
+### 6.1. Modern CSS first, SCSS as fallback, CSS-in-JS prohibited
 
 Native CSS now covers nesting, custom properties, `oklch()` color functions,
 `@layer` cascade layers, `:has()`, container queries, and `@scope`. Use SCSS
@@ -328,17 +348,79 @@ only for features that still require a preprocessor (maps, loops, complex
 mixins). When SCSS is used, organize partials clearly (`_*.scss`) and prefer
 runtime CSS custom properties over SCSS variables.
 
-### 6.2. Design tokens via custom properties
+**CSS-in-JS is prohibited.** Libraries such as Emotion, styled-components, or
+any runtime style injection add significant performance overhead (forced style
+recalculations, hydration costs, bloated JS bundles) and are incompatible with
+the site's zero-JavaScript philosophy.
 
-Define all colors, typography scales, and spacing at `:root` using CSS custom
-properties. Use `oklch()` for perceptually uniform color and wide gamut:
+**Component style encapsulation via `@scope`:** use the native `@scope` at-rule
+to restrict styles to a component's subtree without resorting to verbose
+BEM-style class chains or CSS Modules. The `to (…)` donut scope limits
+inheritance leakage to inner components:
+
+```css
+@scope (.card) to (.card *[data-scope]) {
+  h2 { font-size: 1.25rem; }
+  p  { color: var(--color-text-muted); }
+}
+```
+
+This eliminates specificity conflicts at zero runtime cost and keeps selectors
+short and readable.
+
+### 6.2. Design tokens via custom properties (W3C DTCG 2025.10)
+
+Define all colors, typography scales, and spacing at `:root` as CSS custom
+properties following the **W3C Design Token Community Group (DTCG) 2025.10**
+naming standard. Use a strict three-level hierarchical convention:
+`category-property-modifier`.
+
+| Level    | Purpose                                 | Example                    |
+| -------- | --------------------------------------- | -------------------------- |
+| Category | Token domain (`color`, `space`, `font`) | `color`                    |
+| Property | Semantic role (`background`, `text`)    | `color-background`         |
+| Modifier | State or variant (`default`, `hover`)   | `color-background-hover`   |
+
+Use `oklch()` for all color tokens — perceptually uniform, wide-gamut, and
+trivially adjustable for lightness, chroma, and hue in a single edit:
+
+```css
+:root {
+  /* Colors — W3C DTCG category-property-modifier naming */
+  --color-background-default: oklch(97% 0.005 264);
+  --color-background-hover:   oklch(93% 0.008 264);
+  --color-text-default:       oklch(15% 0.010 264);
+  --color-text-muted:         oklch(45% 0.010 264);
+  --color-accent-default:     oklch(55% 0.130 264);
+  --color-accent-hover:       oklch(50% 0.130 264);
+  --color-border-default:     oklch(80% 0.005 264);
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-s:  0.5rem;
+  --space-m:  1rem;
+  --space-l:  2rem;
+  --space-xl: 4rem;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-default: oklch(15% 0.010 264);
+    --color-text-default:       oklch(92% 0.005 264);
+    --color-text-muted:         oklch(60% 0.010 264);
+    --color-border-default:     oklch(30% 0.005 264);
+  }
+}
+```
 
 - **Light mode:** off-white background, near-black text, subtle gray for
   metadata.
 - **Dark mode:** deep charcoal background, soft off-white text.
 - **Accent:** a single muted, elegant color for interactive states.
 - Declare `color-scheme: light dark;` on `:root` to inform the browser. Use
-  `light-dark()` or `prefers-color-scheme` media queries for theme switching.
+  `light-dark()` for concise inline theme switching when appropriate.
 
 ### 6.3. Typography
 
@@ -362,6 +444,24 @@ properties. Use `oklch()` for perceptually uniform color and wide gamut:
 - **CSS subgrid** when child elements must align to a parent grid.
 - **Container queries** (`@container`) for component-level responsive design
   when appropriate.
+- **Scroll-state container queries** (`container-type: scroll-state`) — replace
+  JavaScript scroll event listeners for scroll-position-dependent styling (e.g.,
+  sticky header elevation, back-to-top button visibility). Zero JS overhead, no
+  layout thrashing:
+
+  ```css
+  .site-header {
+    container-type: scroll-state;
+    container-name: site-header;
+  }
+
+  @container site-header scroll-state(stuck: top) {
+    .site-header__inner {
+      box-shadow: 0 1px 4px oklch(0% 0 0 / 10%);
+    }
+  }
+  ```
+
 - **Logical properties** (`inline-start`/`block-end` instead of `left`/`bottom`)
   for future internationalization readiness.
 
@@ -416,6 +516,36 @@ content breathe. Define spacing tokens as custom properties (`--space-xs`,
 - Keep selector specificity low and predictable.
 - Avoid `!important` unless clearly documented.
 - Use **`:where()`** to zero out specificity when needed.
+
+### 6.10. Native form styling
+
+Style native `<select>` elements using **`appearance: base-select`** and the
+**`::picker(select)`** pseudo-element. This preserves native accessibility
+semantics, works with the browser's built-in picker, and requires zero
+JavaScript — never build fake selectors from `<div>` or `<ul>` elements:
+
+```css
+select {
+  appearance: base-select;
+  border: 1px solid var(--color-border-default);
+  border-radius: 4px;
+  padding-inline: var(--space-s);
+  padding-block: var(--space-xs);
+  color: var(--color-text-default);
+  background: var(--color-background-default);
+}
+
+::picker(select) {
+  border: 1px solid var(--color-border-default);
+  border-radius: 4px;
+  padding-block: var(--space-xs);
+  background: var(--color-background-default);
+}
+```
+
+Custom `<div>`-based dropdowns cannot replicate native keyboard navigation,
+screen reader announcements, or OS-level picker behavior. Use the native
+`<select>` and style it with `appearance: base-select`.
 
 ---
 
@@ -1034,9 +1164,17 @@ before merging.
 
 ### Styles and accessibility
 
-- [ ] Modern CSS first; SCSS only when native CSS is insufficient (§6.1).
-- [ ] Design tokens defined as CSS custom properties at `:root` (§6.2).
+- [ ] Modern CSS first; SCSS only when native CSS is insufficient; no CSS-in-JS
+      (§6.1).
+- [ ] Component styles use `@scope` for encapsulation instead of BEM chains or
+      CSS Modules (§6.1).
+- [ ] Design tokens follow the W3C DTCG 2025.10 `category-property-modifier`
+      naming convention; all colors use `oklch()` (§6.2).
 - [ ] System fonts only; fluid typography with `clamp()` (§6.3).
+- [ ] Scroll-position-dependent styles use `container-type: scroll-state`
+      instead of JavaScript scroll event listeners (§6.4).
+- [ ] Native `<select>` elements styled with `appearance: base-select` and
+      `::picker(select)`; no custom `<div>`-based dropdowns (§6.10).
 - [ ] `:focus-visible`, `prefers-reduced-motion`, `prefers-contrast`,
       `prefers-color-scheme`, and `forced-colors` are handled (§6.7).
 - [ ] Semantic HTML with proper heading hierarchy and landmarks (§7.2).
