@@ -91,6 +91,10 @@
 
     /* Layout */
     --measure: 68ch;
+
+    /* Interaction tokens */
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 3px;
   }
 
   /* User-initiated color scheme overrides — applied before paint via anti-flash script. */
@@ -140,10 +144,15 @@
   }
 
   a:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 3px;
+    outline: var(--focus-ring-width) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset);
     border-radius: 2px;
     text-decoration: none;
+  }
+
+  :where(button, [role="button"], input, select, textarea):focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset);
   }
 
   /* Headings */
@@ -402,8 +411,8 @@
   }
 
   .theme-toggle:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 3px;
+    outline: var(--focus-ring-width) solid currentColor;
+    outline-offset: var(--focus-ring-offset);
   }
 
   .theme-icon {
@@ -950,7 +959,7 @@
     color: var(--color-accent);
     font-weight: 700;
     font-size: var(--text-sm);
-    border: 2px solid var(--color-accent);
+    border: var(--focus-ring-width) solid var(--color-accent);
     border-radius: 4px;
     text-decoration: none;
     z-index: 999;
