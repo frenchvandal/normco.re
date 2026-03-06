@@ -7,8 +7,10 @@ import lightningcss from "lume/plugins/lightningcss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
 import nav from "lume/plugins/nav.ts";
+import type { Site } from "lume/core/site.ts";
 
-const site = lume({
+/** Lume site instance — entry point for the build pipeline. */
+const site: Site = lume({
   src: "./src",
   location: new URL("https://normco.re"),
 });

@@ -13,6 +13,7 @@ type Comp = {
   Footer: (props: Record<never, never>) => Promise<string>;
 };
 
+/** Renders the full HTML document shell. */
 export default async function (
   { title, description, content, url, comp }: Lume.Data,
   helpers: Lume.Helpers,

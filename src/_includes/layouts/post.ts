@@ -28,6 +28,7 @@ type NavHelper = {
   ) => Lume.Data | undefined;
 };
 
+/** Renders the post page within the base layout. */
 export default function (data: Lume.Data, helpers: Lume.Helpers): string {
   // Lume.Helpers is loosely typed; cast to the minimal interface declared above
   // to get type-safe access to the `date` and `class` helpers (§5.4 — library boundary).

@@ -1,8 +1,11 @@
 /** Home page — hero + five most recent posts. */
 
 export const url = "/";
+/** Lume layout template. */
 export const layout = "layouts/base.ts";
+/** Page title. */
 export const title = "normco.re";
+/** Page meta description. */
 export const description = "Personal blog by Phiphi, based in Chengdu, China.";
 
 /** Typed helpers used in this page. */
@@ -21,6 +24,7 @@ type Comp = {
   }) => Promise<string>;
 };
 
+/** Renders the home page body. */
 export default async function (
   data: Lume.Data,
   helpers: Lume.Helpers,

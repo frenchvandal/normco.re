@@ -1,11 +1,15 @@
 /** Sample post #3 — Proin facilisis (2025). */
 
 export const title = "Proin Facilisis: Making Things Easier";
+/** Publication date. */
 export const date = new Date("2025-04-12");
+/** Post meta description. */
 export const description =
   "On the philosophy of reducing friction — in code, in design, and in everyday life.";
+/** Post tags. */
 export const tags = ["software", "design"];
 
+/** Renders the post body. */
 export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
   return `<p>
   <em>Proin facilisis</em> — Latin for "promoting ease." It appears in old
