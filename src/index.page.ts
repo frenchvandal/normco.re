@@ -10,13 +10,26 @@ type H = {
   date: (value: unknown, format: string) => string;
 };
 
+/** Typed component functions used on this page. */
+type Comp = {
+  PostCard: (props: {
+    readonly title: string;
+    readonly url: string;
+    readonly dateStr: string;
+    readonly dateIso: string;
+    readonly readingTime?: number;
+  }) => Promise<string>;
+};
+
 export default async function (
   data: Lume.Data,
   helpers: Lume.Helpers,
 ): Promise<string> {
-  // Lume.Helpers is loosely typed; cast to the minimal interface declared above
-  // to get type-safe access to the `date` helper (§5.4 — library boundary).
+  // Lume.Helpers and Lume.comp are loosely typed; cast to minimal interfaces above
+  // (§5.4 — library boundary).
   const { date: dateFormat } = helpers as unknown as H;
+  // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 — library boundary).
+  const { PostCard } = data.comp as unknown as Comp;
   const recent = data.search.pages("type=post", "date=desc", 5) as Lume.Data[];
 
   const postItems = (await Promise.all(recent.map((post) => {
@@ -24,12 +37,13 @@ export default async function (
       ? Math.ceil(post.readingTime)
       : undefined;
 
-    return data.comp.PostCard({
+    // exactOptionalPropertyTypes: only include readingTime when it has a value.
+    return PostCard({
       title: post.title as string,
       url: post.url as string,
       dateStr: dateFormat(post.date, "SHORT"),
       dateIso: dateFormat(post.date, "ATOM"),
-      readingTime: minutes,
+      ...(minutes !== undefined ? { readingTime: minutes } : {}),
     });
   }))).join("\n");
 
