@@ -14,12 +14,14 @@ export default async function (
   data: Lume.Data,
   helpers: Lume.Helpers,
 ): Promise<string> {
+  // Lume.Helpers is loosely typed; cast to the minimal interface declared above
+  // to get type-safe access to the `date` helper (§5.4 — library boundary).
   const { date: dateFormat } = helpers as unknown as H;
   const recent = data.search.pages("type=post", "date=desc", 5) as Lume.Data[];
 
   const postItems = (await Promise.all(recent.map((post) => {
     const minutes = typeof post.readingTime === "number"
-      ? Math.ceil(post.readingTime as number)
+      ? Math.ceil(post.readingTime)
       : undefined;
 
     return data.comp.PostCard({

@@ -15,6 +15,8 @@ type H = {
 };
 
 export default function (data: Lume.Data, helpers: Lume.Helpers): string {
+  // Lume.Helpers is loosely typed; cast to the minimal interface declared above
+  // to get type-safe access to the `date` helper (§5.4 — library boundary).
   const { date: dateFormat } = helpers as unknown as H;
   const posts = data.search.pages("type=post", "date=desc") as Lume.Data[];
 
@@ -35,7 +37,7 @@ export default function (data: Lume.Data, helpers: Lume.Helpers): string {
     const yearPosts = byYear.get(year) ?? [];
     const items = yearPosts.map((post) => {
       const minutes = typeof post.readingTime === "number"
-        ? Math.ceil(post.readingTime as number)
+        ? Math.ceil(post.readingTime)
         : undefined;
       const readingTimePart = minutes !== undefined
         ? `<span class="archive-reading-time">${minutes} min</span>`

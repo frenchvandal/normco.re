@@ -29,16 +29,19 @@ type NavHelper = {
 };
 
 export default function (data: Lume.Data, helpers: Lume.Helpers): string {
+  // Lume.Helpers is loosely typed; cast to the minimal interface declared above
+  // to get type-safe access to the `date` and `class` helpers (§5.4 — library boundary).
   const { date: dateFormat, class: cls } = helpers as unknown as H;
 
-  // Use the nav plugin to find adjacent posts ordered chronologically.
+  // data.nav is typed as `unknown` by Lume; cast to the minimal NavHelper
+  // interface declared above (§5.4 — library boundary).
   const n = data.nav as unknown as NavHelper;
   const currentUrl = data.url ?? "/";
   const prev = n.previousPage(currentUrl, "/posts/", "type=post", "date=asc");
   const next = n.nextPage(currentUrl, "/posts/", "type=post", "date=asc");
 
   const minutes = typeof data.readingTime === "number"
-    ? Math.ceil(data.readingTime as number)
+    ? Math.ceil(data.readingTime)
     : undefined;
   const readingTimePart = minutes !== undefined
     ? `<span class="post-meta-separator" aria-hidden="true">·</span>
