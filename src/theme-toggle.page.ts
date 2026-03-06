@@ -18,7 +18,7 @@ export default function (): string {
   const btn=document.getElementById("theme-toggle");
   if(!btn)return;
 
-  const mq=window.matchMedia("(prefers-color-scheme: dark)");
+  const mq=globalThis.matchMedia("(prefers-color-scheme: dark)");
 
   function effective(){
     return root.getAttribute("data-color-scheme")||(mq.matches?"dark":"light");
