@@ -10,8 +10,9 @@
 
 - **Runtime:** Deno (version pinned in `.tool-versions`). Install it before any
   Deno command if it is not already present.
-- **Required env var:** set `DENO_TLS_CA_STORE=system` before every Deno CLI
-  command.
+- **TLS note:** if you encounter TLS or certificate errors (corporate proxy,
+  custom CA, etc.), set `DENO_TLS_CA_STORE=system` before the Deno CLI command.
+  On most personal setups this is not required.
 - **SSG:** Lume. Prefer official plugins over custom code
   (<https://lume.land/plugins/?status=all>).
 - **References:** Lume docs (<https://lume.land/>), Deno docs
@@ -21,15 +22,16 @@
 
 ## 2. Mandatory workflow
 
-Run the following commands **in order** before finalizing any change:
+Before finalizing a change (opening a PR or merging), run the following commands **in order**:
 
 1. `deno fmt`
 1. `deno lint` — fix reported errors when technically possible.
 1. `deno task check` — type-check the entire project; fix all type errors.
 1. `deno task lint:doc` — lint JSDoc comments; fix reported errors when
    technically possible.
-1. `deno test` — if it fails, treat as non-blocking but detail failures and
-   possible fixes in the PR description.
+1. `deno test` — tests **should pass** before merge. Known flaky or pre-existing
+   failures may be treated as non-blocking, but must be documented in the PR
+   description (current status and proposed fix).
 1. `deno task build` — run when changes affect rendering or structure.
 1. `deno task knip` — detect unused files, exports, and dependencies; requires
    Node.js ≥ 18 and npm ≥ 7. Treat failures as non-blocking but document any
@@ -49,16 +51,23 @@ first argument to validate an arbitrary file.
 
 ### Screenshots
 
-- **Before** starting work: run `deno task serve`, capture the home page (and
-  the affected component if applicable) as a baseline.
-- **After** building: capture the same pages for a visual diff.
-- Attach all captures to the pull request.
+- **For changes that affect rendering (HTML, CSS, layouts, components):**
+  - Before starting work, run `deno task serve`, capture the home page (and the
+    affected component or page if applicable) as a baseline.
+  - After building, capture the same views for a visual diff.
+  - Attach all captures to the pull request.
+- For purely internal or tooling-only changes (scripts, tests, data with no
+  visual impact), screenshots are optional but welcome if they help
+  documentation.
 
 ### Dependency and lock file rules
 
 - Commit `deno.lock` **only** when `deno.json` dependencies change in the same
   commit; run `deno task update-deps` before staging the lock file.
 - Do not add new dependencies unless explicitly requested.
+- During experimentation, you may install additional dependencies locally. Only
+  commit them — along with the updated `deno.lock` — when they are part of an
+  intentional design decision and documented in the PR.
 
 ---
 
@@ -73,8 +82,10 @@ first argument to validate an arbitrary file.
 
 ### Don’t
 
-- Never create documentation files (`*.md`) or READMEs unless explicitly
-  requested. Existing ones must not be modified or deleted without instruction.
+- **For AI agents:** never create new documentation files (`*.md`) or READMEs
+  unless explicitly requested, and do not modify or delete existing documentation
+  files without explicit instruction. Human contributors are free to evolve
+  documentation as needed, following the project's tone and structure.
 - Always prefer ESM + TypeScript for everything: pages, layouts, data files, and
   components. Another engine (Vento, Nunjucks, JSX, etc.) may be used only as a
   fallback when ESM + TypeScript cannot achieve the goal (e.g., a plugin that
@@ -190,7 +201,7 @@ using file = openFile("template.vto"); // auto-disposed at scope exit
 
 | Deprecated pattern          | Replacement                            | Rationale                                               |
 | --------------------------- | -------------------------------------- | ------------------------------------------------------- |
-| `enum`                      | `as const` object + derived union type | Non-erasable syntax; `erasableSyntaxOnly` blocks it     |
+| `enum`                      | `as const` object + derived union type | Non-erasable syntax; `erasableSyntaxOnly` blocks it. Strongly discouraged — use only in exceptional cases with a comment explaining why. |
 | `namespace`                 | ES modules (`import`/`export`)         | Non-erasable; replaced by module system                 |
 | `any`                       | `unknown` + narrowing                  | Disables type checking entirely                         |
 | `@ts-ignore`                | `@ts-expect-error`                     | Catches stale suppressions                              |
@@ -228,8 +239,8 @@ type HttpStatus = (typeof HttpStatus)[keyof typeof HttpStatus]; // 200 | 404 | 5
 
 ### 5.7. Functions and API design
 
-- **Top-level functions use `function`, not arrow syntax.** Arrow functions are
-  reserved for closures and inline callbacks. **Exception for Lume render
+- **Prefer `function` for top-level functions**, and reserve arrow functions for
+  closures and inline callbacks. **Exception (and requirement) for Lume render
   files:** pages (`*.page.ts`), layouts, and components use `export default`
   with an arrow function as the render entry point — this is a hard framework
   requirement, not a style choice (see §9 for examples).
@@ -259,7 +270,9 @@ type ParseResult =
 
 ### 5.9. JSDoc
 
-- **Every exported symbol** should have a JSDoc comment.
+- **Every exported symbol** should have a JSDoc comment, except trivial cases
+  where the intent is completely obvious from the name and type (very small
+  helpers, simple types). When in doubt, prefer documenting.
 - Use **single-line JSDoc** when possible:
   `/** Formats a date as ISO string. */`
 - Use **markdown** in JSDoc for rich text; **HTML tags are forbidden**.
@@ -268,7 +281,9 @@ type ParseResult =
   (TypeScript already provides it).
 - **Code examples** in JSDoc use markdown fenced blocks, contain no extra
   comments, and are not indented. Deno runs them as documentation tests
-  (`deno test --doc`).
+  (`deno test --doc`). It is acceptable to mark examples as `ignore` when they
+  would be too heavy or difficult to stabilize (e.g., network or time-dependent
+  examples).
 
 ### 5.10. Imports and dependencies
 
@@ -385,7 +400,8 @@ content breathe. Define spacing tokens as custom properties (`--space-xs`,
 
 ### 6.8. Performance
 
-- **Zero layout shifts** — explicit dimensions on images/embeds, no CLS.
+- **Aim for zero layout shifts** — explicit dimensions on images/embeds, CLS as
+  close to 0 as reasonably possible.
 - **`content-visibility: auto`** on off-screen sections for rendering
   performance.
 - **Critical CSS** above the fold when applicable.
@@ -460,7 +476,7 @@ whitespace, and content quality — not by decorative elements.
 ### 7.7. Performance as UX
 
 - Instantaneous perceived load times.
-- Zero layout shifts (CLS = 0).
+- CLS as close to 0 as reasonably possible.
 - Fully accessible keyboard navigation.
 - `prefers-reduced-motion` and `prefers-color-scheme` respected everywhere.
 
@@ -592,8 +608,9 @@ export default function ({ content }: { readonly content: string }) {
 
 ## 10. Testing
 
-Tests use **Deno’s built-in test runner** (`deno test`). Running tests is not
-systematic and happens only on explicit user request.
+Tests use **Deno’s built-in test runner** (`deno test`). During local iteration,
+running the full suite is optional; **before opening a PR or merging, tests are
+expected to pass** (see §2).
 
 ### File placement
 
@@ -1000,7 +1017,9 @@ site.getOrCreatePage(url);
 
 ## 13. Pre-commit checklist
 
-Before considering a task complete, verify every applicable item.
+Before considering a task complete, use this checklist as a target. Not every
+item will apply to every change, but **all relevant items** should be satisfied
+before merging.
 
 ### Scope
 
@@ -1010,12 +1029,12 @@ Before considering a task complete, verify every applicable item.
 
 ### Code quality
 
-- [ ] TypeScript is strictly typed; no unjustified `any`; no `enum` or
-      `namespace`.
+- [ ] TypeScript is strictly typed; no unjustified `any`; no `namespace`; `enum`
+      used only with a justifying comment (§5.4).
 - [ ] Functions are small, readable, and single-responsibility.
 - [ ] Function signatures follow the 1–2 positional + options object rule
       (§5.7).
-- [ ] Top-level functions use `function` keyword, not arrow syntax.
+- [ ] Top-level functions prefer the `function` keyword over arrow syntax (§5.7).
 - [ ] Named exports only; `export default` used only in Lume render files
       (`*.page.ts`, layouts, components) as required by the framework (§9). No
       barrel files; `mod.ts` allowed only for narrow public APIs (§8).
@@ -1048,7 +1067,7 @@ Before considering a task complete, verify every applicable item.
 
 - [ ] All new content uses `*.page.ts`; no new Markdown files.
 - [ ] Components use `comp` variable, not direct `import`.
-- [ ] File/directory names follow §8.
+- [ ] File and directory names follow the conventions in §8.
 - [ ] Commit messages follow Conventional Commits.
 - [ ] Screenshots (before/after) are attached to the PR.
 - [ ] Code, comments, and PR content are in English.
