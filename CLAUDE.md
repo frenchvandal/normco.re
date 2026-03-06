@@ -34,9 +34,6 @@ Before finalizing a change (opening a PR or merging), run the following commands
    failures may be treated as non-blocking, but must be documented in the PR
    description (current status and proposed fix).
 1. `deno task build` — run when changes affect rendering or structure.
-1. `deno task knip` — detect unused files, exports, and dependencies; requires
-   Node.js ≥ 18 and npm ≥ 7. Treat failures as non-blocking but document any
-   dead code found in the PR description.
 
 ### Commit message validation
 
@@ -896,24 +893,6 @@ lefthook install
 | `pre-commit` | `deno lint` (parallel)             | `*.{ts,tsx,js,jsx}`     |
 | `commit-msg` | `deno task lint-commit <msg-file>` | —                       |
 
-### 11.3. Static analysis — Knip (`deno task knip`)
-
-Knip detects unused files, orphaned exports, and unreferenced dependencies.
-
-**Configuration:** `knip.jsonc` at the repository root.
-
-**Requirements:** Node.js ≥ 18 and npm ≥ 7 (used via `npx --yes knip@5`).
-
-**Usage:**
-
-```sh
-DENO_TLS_CA_STORE=system deno task knip
-```
-
-Run after significant refactors or before merging to identify dead code. The CI
-workflow runs Knip with `continue-on-error: true` — failures are informational,
-not blocking.
-
 ---
 
 ## 12. Lume API cheat sheet
@@ -1050,8 +1029,6 @@ before merging.
 - [ ] `deno task check` passes — no type errors.
 - [ ] `deno task lint:doc` passes — JSDoc comments are valid.
 - [ ] `deno task build` succeeds when rendering or structure is affected.
-- [ ] `deno task knip` has been run; any findings are documented in the PR
-      description (non-blocking).
 - [ ] `deno task lint-commit` validates the commit message (Conventional
       Commits, run automatically by Lefthook `commit-msg` hook).
 
