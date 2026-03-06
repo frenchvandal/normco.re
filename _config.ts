@@ -7,7 +7,8 @@ import lightningcss from "lume/plugins/lightningcss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
 import nav from "lume/plugins/nav.ts";
-import type { Site } from "lume/core/site.ts";
+import type Site from "lume/core/site.ts";
+import type { Page } from "lume/core/file.ts";
 
 /** Lume site instance — entry point for the build pipeline. */
 const site: Site = lume({
@@ -18,7 +19,7 @@ const site: Site = lume({
 // Reading time — computed from the plain-text length of each post's content.
 // Average adult reading speed: 238 words per minute (source: Brysbaert et al., 2019).
 const WORDS_PER_MINUTE = 238;
-site.preprocess([".ts"], (pages) => {
+site.preprocess([".ts"], (pages: Page[]) => {
   for (const page of pages) {
     const raw = String(page.data.content ?? "");
     // Strip HTML tags to count only visible words.
@@ -103,7 +104,7 @@ site.use(
 // Inject <?xml-stylesheet?> processing instructions into XML outputs so browsers
 // can render them as styled HTML pages via the XSLT stylesheets above.
 const XML_PI_PATTERN = /^(<\?xml[^?]*\?>)/;
-site.process([".xml"], (pages) => {
+site.process([".xml"], (pages: Page[]) => {
   for (const page of pages) {
     const pageUrl = page.data.url as string;
     let xslHref: string | undefined;
