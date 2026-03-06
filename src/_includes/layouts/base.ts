@@ -7,15 +7,18 @@ type H = {
   attr: (attrs: Record<string, unknown>) => string;
 };
 
-export default function (
+export default async function (
   { title, description, content, url, comp }: Lume.Data,
   helpers: Lume.Helpers,
-): string {
+): Promise<string> {
   const { attr } = helpers as unknown as H;
 
   const pageTitle = title ? `${title} — normco.re` : "normco.re";
   const metaDescription = description ??
     "Personal blog by Phiphi, based in Chengdu, China.";
+
+  const header = await comp.Header({ currentUrl: url ?? "/" });
+  const footer = await comp.Footer({});
 
   return `<!doctype html>
 <html lang="en">
@@ -34,11 +37,11 @@ export default function (
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="site-wrapper">
-      ${comp.Header({ currentUrl: url ?? "/" })}
+      ${header}
       <main class="site-main" id="main-content">
         ${content}
       </main>
-      ${comp.Footer({})}
+      ${footer}
     </div>
     <script src="/theme-toggle.js"></script>
   </body>

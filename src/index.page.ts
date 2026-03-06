@@ -10,11 +10,14 @@ type H = {
   date: (value: unknown, format: string) => string;
 };
 
-export default function (data: Lume.Data, helpers: Lume.Helpers): string {
+export default async function (
+  data: Lume.Data,
+  helpers: Lume.Helpers,
+): Promise<string> {
   const { date: dateFormat } = helpers as unknown as H;
   const recent = data.search.pages("type=post", "date=desc", 5) as Lume.Data[];
 
-  const postItems = recent.map((post) => {
+  const postItems = (await Promise.all(recent.map((post) => {
     const minutes = typeof post.readingTime === "number"
       ? Math.ceil(post.readingTime as number)
       : undefined;
@@ -26,7 +29,7 @@ export default function (data: Lume.Data, helpers: Lume.Helpers): string {
       dateIso: dateFormat(post.date, "ATOM"),
       readingTime: minutes,
     });
-  }).join("\n");
+  }))).join("\n");
 
   return `<section class="hero" aria-label="Introduction">
   <h1 class="hero-title">Writing about things that matter.</h1>
