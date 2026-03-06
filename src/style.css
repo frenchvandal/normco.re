@@ -93,6 +93,15 @@
     --measure: 68ch;
   }
 
+  /* User-initiated color scheme overrides — applied before paint via anti-flash script. */
+  :root[data-color-scheme="light"] {
+    color-scheme: light;
+  }
+
+  :root[data-color-scheme="dark"] {
+    color-scheme: dark;
+  }
+
   ::selection {
     background-color: var(--color-selection-bg);
   }
@@ -104,6 +113,10 @@
     color: var(--color-text);
     background-color: var(--color-bg);
     scroll-behavior: smooth;
+    /* Smooth color transition on user-initiated theme changes. */
+    transition:
+      background-color 0.25s ease-in-out,
+      color 0.25s ease-in-out;
   }
 
   body {
@@ -289,10 +302,17 @@
 
   .site-header-inner {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     gap: var(--space-m);
     flex-wrap: wrap;
+  }
+
+  /* Groups nav links + theme toggle on the trailing side of the header. */
+  .site-header-end {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
   }
 
   /* Navigation */
@@ -355,6 +375,44 @@
    COMPONENTS
    ============================================================ */
 @layer components {
+  /* ——— Theme toggle ——— */
+
+  /*
+   * A single geometric icon (half-filled circle) represents the
+   * light/dark duality — no icon swapping needed.
+   * Min 44×44 px touch target (WCAG 2.5.5 / iOS HIG).
+   * Monochrome: inherits text color, no accent decoration.
+   */
+  .theme-toggle {
+    min-inline-size: 44px;
+    min-block-size: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--color-meta);
+    cursor: pointer;
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: color 0.15s ease;
+  }
+
+  .theme-toggle:hover {
+    color: var(--color-text);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  .theme-icon {
+    display: block;
+    flex-shrink: 0;
+  }
+
   /* Site logo */
   .site-name {
     font-size: var(--text-base);
