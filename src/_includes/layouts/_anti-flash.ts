@@ -10,4 +10,4 @@
  * `defer` or `async` would arrive too late to suppress the flash.
  */
 export const ANTI_FLASH_SCRIPT =
-  `(function(){var t=localStorage.getItem("color-scheme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-color-scheme",t);}})();`;
+  `(()=>{const t=localStorage.getItem("color-scheme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-color-scheme",t)})();`;
