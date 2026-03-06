@@ -1,10 +1,10 @@
- # AGENTS.md
+# AGENTS.md
 
-> Source of truth for all AI agent work on this repository.
-> Code, comments, commits, and PR/MR titles: **English**.
-> Discussions and explanations: **French** (unless instructed otherwise).
+> Source of truth for all AI agent work on this repository. Code, comments,
+> commits, and PR/MR titles: **English**. Discussions and explanations:
+> **French** (unless instructed otherwise).
 
------
+---
 
 ## 1. Environment setup
 
@@ -17,7 +17,7 @@
 - **References:** Lume docs (<https://lume.land/>), Deno docs
   (<https://docs.deno.com/runtime/>).
 
------
+---
 
 ## 2. Mandatory workflow
 
@@ -42,7 +42,7 @@ Run the following commands **in order** before finalizing any change:
   commit; run `deno task update-deps` before staging the lock file.
 - Do not add new dependencies unless explicitly requested.
 
------
+---
 
 ## 3. Do / Don’t quick reference
 
@@ -68,7 +68,7 @@ Run the following commands **in order** before finalizing any change:
 
 If a command cannot be run, state which command would be needed and why.
 
------
+---
 
 ## 4. Project context
 
@@ -78,16 +78,16 @@ If a command cannot be run, state which command would be needed and why.
 
 ### Stack summary
 
-|Layer     |Technology                                                       |
-|----------|-----------------------------------------------------------------|
-|Runtime   |Deno (version in `.tool-versions`)                               |
-|SSG       |Lume (official plugins only)                                     |
-|Templating|ESM + TypeScript (all pages, layouts, data, components)          |
-|Styling   |Modern CSS (SCSS only when native CSS cannot achieve the goal)   |
-|Content   |TypeScript (`*.page.ts`) for all posts and pages                 |
-|Fallback  |Other template engines only when ESM+TS is technically impossible|
+| Layer      | Technology                                                        |
+| ---------- | ----------------------------------------------------------------- |
+| Runtime    | Deno (version in `.tool-versions`)                                |
+| SSG        | Lume (official plugins only)                                      |
+| Templating | ESM + TypeScript (all pages, layouts, data, components)           |
+| Styling    | Modern CSS (SCSS only when native CSS cannot achieve the goal)    |
+| Content    | TypeScript (`*.page.ts`) for all posts and pages                  |
+| Fallback   | Other template engines only when ESM+TS is technically impossible |
 
------
+---
 
 ## 5. TypeScript & JavaScript best practices
 
@@ -129,8 +129,7 @@ Deno enables `strict: true` by default. Add these “beyond strict” flags in
 #### `as const satisfies Type`
 
 The gold standard for module-level configuration objects and lookup tables.
-Combines compile-time validation, literal type inference, and deep
-immutability:
+Combines compile-time validation, literal type inference, and deep immutability:
 
 ```ts
 const ROUTES = {
@@ -142,13 +141,13 @@ const ROUTES = {
 
 #### When to use each typing approach
 
-|Pattern                  |Use when                                                                    |
-|-------------------------|----------------------------------------------------------------------------|
-|`: Type` annotation      |Function params, return types, variables where you want the broad type      |
-|`satisfies Type`         |You need validation AND narrow inference (config, lookup tables)            |
-|`as const`               |Value should never change; narrow to literal types                          |
-|`as const satisfies Type`|**Default for module-level config objects** — immutable + validated + narrow|
-|`as Type` assertion      |Last resort only — DOM casting, loosely-typed library boundaries            |
+| Pattern                   | Use when                                                                     |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| `: Type` annotation       | Function params, return types, variables where you want the broad type       |
+| `satisfies Type`          | You need validation AND narrow inference (config, lookup tables)             |
+| `as const`                | Value should never change; narrow to literal types                           |
+| `as const satisfies Type` | **Default for module-level config objects** — immutable + validated + narrow |
+| `as Type` assertion       | Last resort only — DOM casting, loosely-typed library boundaries             |
 
 #### Discriminated unions
 
@@ -171,16 +170,16 @@ using file = openFile("template.vto"); // auto-disposed at scope exit
 
 ### 5.4. Patterns to avoid
 
-|Deprecated pattern         |Replacement                           |Rationale                                              |
-|---------------------------|--------------------------------------|-------------------------------------------------------|
-|`enum`                     |`as const` object + derived union type|Non-erasable syntax; `erasableSyntaxOnly` blocks it    |
-|`namespace`                |ES modules (`import`/`export`)        |Non-erasable; replaced by module system                |
-|`any`                      |`unknown` + narrowing                 |Disables type checking entirely                        |
-|`@ts-ignore`               |`@ts-expect-error`                    |Catches stale suppressions                             |
-|Default exports            |Named exports                         |Better IDE support, auto-import, discoverability       |
-|`interface IFoo` (I-prefix)|`interface Foo`                       |Hungarian notation — universally discouraged           |
-|`deps.ts` (Deno v1 pattern)|Import maps in `deno.json`            |Superseded by import maps standard                     |
-|Barrel files (`index.ts`)  |Direct imports                        |Breaks tree-shaking, causes circular deps, slows builds|
+| Deprecated pattern          | Replacement                            | Rationale                                               |
+| --------------------------- | -------------------------------------- | ------------------------------------------------------- |
+| `enum`                      | `as const` object + derived union type | Non-erasable syntax; `erasableSyntaxOnly` blocks it     |
+| `namespace`                 | ES modules (`import`/`export`)         | Non-erasable; replaced by module system                 |
+| `any`                       | `unknown` + narrowing                  | Disables type checking entirely                         |
+| `@ts-ignore`                | `@ts-expect-error`                     | Catches stale suppressions                              |
+| Default exports             | Named exports                          | Better IDE support, auto-import, discoverability        |
+| `interface IFoo` (I-prefix) | `interface Foo`                        | Hungarian notation — universally discouraged            |
+| `deps.ts` (Deno v1 pattern) | Import maps in `deno.json`             | Superseded by import maps standard                      |
+| Barrel files (`index.ts`)   | Direct imports                         | Breaks tree-shaking, causes circular deps, slows builds |
 
 The `as const` object pattern that replaces enums:
 
@@ -234,8 +233,8 @@ type ParseResult =
 
 - Reserve `try/catch` for application boundaries and third-party code.
 - **Error message style** (for user-facing errors): sentence case, no trailing
-  period, no contractions, active voice, colon for additional context.
-  Example: `"Cannot parse config: unexpected token at line 42"`
+  period, no contractions, active voice, colon for additional context. Example:
+  `"Cannot parse config: unexpected token at line 42"`
 
 ### 5.9. JSDoc
 
@@ -252,9 +251,9 @@ type ParseResult =
 
 ### 5.10. Imports and dependencies
 
-Order: (1) Deno / Lume → (2) external dependencies → (3) local modules.
-Separate groups with a blank line. Use `import type` for type-only imports
-(enforced by `verbatimModuleSyntax`).
+Order: (1) Deno / Lume → (2) external dependencies → (3) local modules. Separate
+groups with a blank line. Use `import type` for type-only imports (enforced by
+`verbatimModuleSyntax`).
 
 All external imports must be aliased in the `imports` field of `deno.json`
 (never `import_map.json`). Use `jsr:` for Deno packages, `npm:` for Node
@@ -264,8 +263,8 @@ packages, `node:` for Node built-ins. Naming convention for aliases:
 - npm: `"npm/cowsay": "npm:cowsay@^1.6.0"`
 
 **Minimize dependencies; never introduce circular imports.** Avoid barrel files
-in application code — prefer direct imports. Extract shared types into
-dedicated `types.ts` files to break potential cycles.
+in application code — prefer direct imports. Extract shared types into dedicated
+`types.ts` files to break potential cycles.
 
 ### 5.11. TODO and FIXME comments
 
@@ -277,7 +276,7 @@ Always include an issue number or author handle:
 // FIXME(#17): Breaks when date is undefined.
 ```
 
------
+---
 
 ## 6. CSS best practices
 
@@ -333,8 +332,8 @@ properties. Use `oklch()` for perceptually uniform color and wide gamut:
 ### 6.5. Spacing
 
 Base-4 or Base-8 `rem` scaling system. Generous margins and padding to let
-content breathe. Define spacing tokens as custom properties
-(`--space-xs`, `--space-s`, `--space-m`, `--space-l`, `--space-xl`).
+content breathe. Define spacing tokens as custom properties (`--space-xs`,
+`--space-s`, `--space-m`, `--space-l`, `--space-xl`).
 
 ### 6.6. Interactions and animations
 
@@ -375,12 +374,13 @@ content breathe. Define spacing tokens as custom properties
 
 ### 6.9. Cascade management
 
-- Use **`@layer`** to organize cascade precedence: `@layer reset, base, layout, components, utilities;`
+- Use **`@layer`** to organize cascade precedence:
+  `@layer reset, base, layout, components, utilities;`
 - Keep selector specificity low and predictable.
 - Avoid `!important` unless clearly documented.
 - Use **`:where()`** to zero out specificity when needed.
 
------
+---
 
 ## 7. UX / UI design principles
 
@@ -421,9 +421,9 @@ whitespace, and content quality — not by decorative elements.
   feed links.
 - **Post list / Archive (`/posts/`):** chronological, grouped by year, clean
   flush-left list.
-- **Individual post (`/posts/slug/`):** title (H1), date, reading time, body
-  at `65ch`–`70ch` max-width, syntax-highlighted code blocks with “Copy”
-  button, previous/next navigation.
+- **Individual post (`/posts/slug/`):** title (H1), date, reading time, body at
+  `65ch`–`70ch` max-width, syntax-highlighted code blocks with “Copy” button,
+  previous/next navigation.
 - **About (`/about/`):** prose-heavy, optional grayscale portrait.
 - **Search:** Lume `pagefind` plugin, large borderless input with auto-focus,
   instant client-side results, term highlighting.
@@ -441,24 +441,24 @@ whitespace, and content quality — not by decorative elements.
 - Fully accessible keyboard navigation.
 - `prefers-reduced-motion` and `prefers-color-scheme` respected everywhere.
 
------
+---
 
 ## 8. Naming conventions
 
 ### Files and directories
 
-|Kind               |Convention                 |Example                |
-|-------------------|---------------------------|-----------------------|
-|Component / Class  |`PascalCase.ts`            |`PostCard.ts`          |
-|Utility / module   |`kebab-case.ts`            |`date-helpers.ts`      |
-|Styles             |`kebab-case.css` or `.scss`|`_post-card.css`       |
-|Page               |`kebab-case`               |`about.page.ts`        |
-|Directory          |`kebab-case`               |`blog-posts/`          |
-|Default entry point|`mod.ts`                   |`utils/mod.ts`         |
-|Internal module    |`_kebab-case.ts`           |`_parse-frontmatter.ts`|
+| Kind                | Convention                  | Example                 |
+| ------------------- | --------------------------- | ----------------------- |
+| Component / Class   | `PascalCase.ts`             | `PostCard.ts`           |
+| Utility / module    | `kebab-case.ts`             | `date-helpers.ts`       |
+| Styles              | `kebab-case.css` or `.scss` | `_post-card.css`        |
+| Page                | `kebab-case`                | `about.page.ts`         |
+| Directory           | `kebab-case`                | `blog-posts/`           |
+| Default entry point | `mod.ts`                    | `utils/mod.ts`          |
+| Internal module     | `_kebab-case.ts`            | `_parse-frontmatter.ts` |
 
-- **Never use `index.ts` / `index.js`** — Deno does not resolve them
-  implicitly. Use `mod.ts` when a directory needs a default entry point.
+- **Never use `index.ts` / `index.js`** — Deno does not resolve them implicitly.
+  Use `mod.ts` when a directory needs a default entry point.
 - **Never use barrel files** (`index.ts` re-exporting everything) in application
   code — they break tree-shaking, cause circular deps, and slow builds.
 - **Files prefixed with `_`** are internal: only files in the same directory
@@ -466,14 +466,14 @@ whitespace, and content quality — not by decorative elements.
 
 ### Code identifiers
 
-|Kind                                                    |Convention                |Example        |
-|--------------------------------------------------------|--------------------------|---------------|
-|Function / method                                       |`camelCase` (verb)        |`formatDate()` |
-|Local variable                                          |`camelCase`               |`currentPage`  |
-|Module-level constant (primitive, RegExp, frozen object)|`UPPER_SNAKE_CASE`        |`MAX_PAGE_SIZE`|
-|Type / Interface                                        |`PascalCase`              |`PostData`     |
-|Class                                                   |`PascalCase`              |`HttpClient`   |
-|Boolean                                                 |`is/has/can/should` prefix|`isVisible`    |
+| Kind                                                     | Convention                 | Example         |
+| -------------------------------------------------------- | -------------------------- | --------------- |
+| Function / method                                        | `camelCase` (verb)         | `formatDate()`  |
+| Local variable                                           | `camelCase`                | `currentPage`   |
+| Module-level constant (primitive, RegExp, frozen object) | `UPPER_SNAKE_CASE`         | `MAX_PAGE_SIZE` |
+| Type / Interface                                         | `PascalCase`               | `PostData`      |
+| Class                                                    | `PascalCase`               | `HttpClient`    |
+| Boolean                                                  | `is/has/can/should` prefix | `isVisible`     |
 
 `UPPER_SNAKE_CASE` is reserved for truly static, module-level, immutable
 primitives and frozen objects. Regular `const` bindings that happen to be
@@ -488,7 +488,7 @@ acronyms**:
 - `convertUrl()`, not `convertURL()`.
 - `parseHtmlFragment()`, not `parseHTMLFragment()`.
 
------
+---
 
 ## 9. Lume conventions
 
@@ -497,18 +497,18 @@ acronyms**:
 All content — posts, pages, layouts, data, and components — is authored in ESM
 TypeScript. Markdown is not used for new content.
 
-|File type    |Extension                 |Example                    |
-|-------------|--------------------------|---------------------------|
-|Post / Page  |`*.page.ts`               |`posts/my-article.page.ts` |
-|Layout       |`*.ts` in `_includes/`    |`_includes/layouts/main.ts`|
-|Data (shared)|`_data.ts` or `_data/*.ts`|`_data/site.ts`            |
-|Component    |`*.ts` in `_components/`  |`_components/PostCard.ts`  |
-|Config       |`_config.ts`              |`_config.ts`               |
+| File type     | Extension                  | Example                     |
+| ------------- | -------------------------- | --------------------------- |
+| Post / Page   | `*.page.ts`                | `posts/my-article.page.ts`  |
+| Layout        | `*.ts` in `_includes/`     | `_includes/layouts/main.ts` |
+| Data (shared) | `_data.ts` or `_data/*.ts` | `_data/site.ts`             |
+| Component     | `*.ts` in `_components/`   | `_components/PostCard.ts`   |
+| Config        | `_config.ts`               | `_config.ts`                |
 
 ### Page structure
 
-A `*.page.ts` file exports named variables for metadata and a default export
-for the content (string or render function):
+A `*.page.ts` file exports named variables for metadata and a default export for
+the content (string or render function):
 
 ```ts
 export const title = "My Article";
@@ -562,7 +562,7 @@ export default function ({ content }: { readonly content: string }) {
   for static configuration.
 - Avoid unnecessary abstractions or indirection layers.
 
------
+---
 
 ## 10. Testing
 
@@ -602,10 +602,9 @@ this project). Both `@std/assert` (`assertEquals`, `assertThrows`, etc.) and
 
 Deno provides built-in hooks directly on `Deno.test`:
 
-- `Deno.test.beforeAll(fn)` / `Deno.test.afterAll(fn)` — run once for the
-  entire scope.
-- `Deno.test.beforeEach(fn)` / `Deno.test.afterEach(fn)` — run around each
-  test.
+- `Deno.test.beforeAll(fn)` / `Deno.test.afterAll(fn)` — run once for the entire
+  scope.
+- `Deno.test.beforeEach(fn)` / `Deno.test.afterEach(fn)` — run around each test.
 
 `beforeAll`/`beforeEach` execute in FIFO order; `afterEach`/`afterAll` execute
 in LIFO order. These are in addition to the BDD hooks (`beforeAll`, `afterEach`,
@@ -681,7 +680,8 @@ Common stubbing patterns:
 
 - **Environment variables:**
   `using envStub = stub(Deno.env, "get", (k) => k === "KEY" ? "value" : undefined);`
-- **Fetch:** `using fetchStub = stub(globalThis, "fetch", () => Promise.resolve(new Response(...)));`
+- **Fetch:**
+  `using fetchStub = stub(globalThis, "fetch", () => Promise.resolve(new Response(...)));`
 
 #### FakeTime
 
@@ -696,8 +696,8 @@ time.tickAsync(ms);  // like tick, but runs pending microtasks first
 time.runAllAsync();  // like runAll, but runs microtasks between timers
 ```
 
-Options: `advanceRate` (auto-tick relative to real time) and
-`advanceFrequency` (update interval in ms when `advanceRate` is set).
+Options: `advanceRate` (auto-tick relative to real time) and `advanceFrequency`
+(update interval in ms when `advanceRate` is set).
 
 #### Auto-restore with `using`
 
@@ -747,14 +747,14 @@ For tests with many mocks, `mockSession()` and `restore(id?)` from
 ### Documentation tests
 
 Deno extracts and runs code blocks from JSDoc comments (`deno test --doc`).
-Exported items from the documented module are **automatically imported** into the
-generated test — you do not need to re-import them in the example.
+Exported items from the documented module are **automatically imported** into
+the generated test — you do not need to re-import them in the example.
 
 Supported language identifiers: `js`, `javascript`, `mjs`, `cjs`, `jsx`, `ts`,
 `typescript`, `mts`, `cts`, `tsx`. Add the `ignore` attribute to skip a block
 (e.g., ````ts ignore`).
 
-```ts
+````ts
 /**
  * Adds two numbers together.
  *
@@ -773,7 +773,7 @@ Supported language identifiers: `js`, `javascript`, `mjs`, `cjs`, `jsx`, `ts`,
 export function add(a: number, b: number): number {
   return a + b;
 }
-```
+````
 
 ### Coverage
 
@@ -803,7 +803,7 @@ Use coverage ignore comments to exclude code from reports:
 - <https://jsr.io/@std/testing>
 - <https://jsr.io/@std/expect>
 
------
+---
 
 ## 11. Lume API cheat sheet
 
@@ -911,26 +911,26 @@ Before considering a task complete, verify every applicable item.
 
 ### Scope
 
-- [ ] Changes stay within the Deno + Lume ecosystem; no unnecessary
-  abstractions were introduced.
+- [ ] Changes stay within the Deno + Lume ecosystem; no unnecessary abstractions
+      were introduced.
 - [ ] The result aligns with the site’s minimalist identity.
 
 ### Code quality
 
 - [ ] TypeScript is strictly typed; no unjustified `any`; no `enum` or
-  `namespace`.
+      `namespace`.
 - [ ] Functions are small, readable, and single-responsibility.
 - [ ] Function signatures follow the 1–2 positional + options object rule
-  (§5.7).
+      (§5.7).
 - [ ] Top-level functions use `function` keyword, not arrow syntax.
 - [ ] Named exports only (no default exports); no barrel files.
 - [ ] JSDoc is present on all exported symbols, following §5.9 conventions.
-- [ ] Imports are grouped and ordered per §5.10; `import type` for type-only;
-  no circular imports.
+- [ ] Imports are grouped and ordered per §5.10; `import type` for type-only; no
+      circular imports.
 - [ ] Error handling uses discriminated union results for internal logic,
-  `try/catch` only at boundaries (§5.8).
+      `try/catch` only at boundaries (§5.8).
 - [ ] `deno fmt`, `deno lint`, and `deno test` pass (or failures are
-  documented).
+      documented).
 - [ ] `deno task build` succeeds when rendering or structure is affected.
 
 ### Styles and accessibility
@@ -939,7 +939,7 @@ Before considering a task complete, verify every applicable item.
 - [ ] Design tokens defined as CSS custom properties at `:root` (§6.2).
 - [ ] System fonts only; fluid typography with `clamp()` (§6.3).
 - [ ] `:focus-visible`, `prefers-reduced-motion`, `prefers-contrast`,
-  `prefers-color-scheme`, and `forced-colors` are handled (§6.7).
+      `prefers-color-scheme`, and `forced-colors` are handled (§6.7).
 - [ ] Semantic HTML with proper heading hierarchy and landmarks (§7.2).
 - [ ] Zero layout shifts; Core Web Vitals optimized (§6.8).
 

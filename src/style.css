@@ -114,9 +114,7 @@
     background-color: var(--color-bg);
     scroll-behavior: smooth;
     /* Smooth color transition on user-initiated theme changes. */
-    transition:
-      background-color 0.25s ease-in-out,
-      color 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out, color 0.25s ease-in-out;
   }
 
   body {
