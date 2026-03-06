@@ -1,8 +1,6 @@
 /** 404 error page. */
 
 export const url = "/404.html";
-/** Lume layout template. */
-export const layout = "layouts/base.ts";
 /** Page title. */
 export const title = "Page not found";
 /** Page meta description. */

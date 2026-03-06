@@ -3,6 +3,9 @@
 /** Primary language of the site. */
 export const lang = "en";
 
+/** Default layout applied to every page. Posts override this via `src/posts/_data.ts`. */
+export const layout = "layouts/base.ts";
+
 /** Site metadata used for meta tags and feeds. */
 export const metas = {
   site: "normco.re",
