@@ -25,9 +25,24 @@ Run the following commands **in order** before finalizing any change:
 
 1. `deno fmt`
 1. `deno lint` — fix reported errors when technically possible.
+1. `deno task check` — type-check the entire project; fix all type errors.
+1. `deno task lint:doc` — lint JSDoc comments; fix reported errors when
+   technically possible.
 1. `deno test` — if it fails, treat as non-blocking but detail failures and
    possible fixes in the PR description.
 1. `deno task build` — run when changes affect rendering or structure.
+
+### Commit message validation
+
+Validate every commit message against the Conventional Commits specification
+before pushing:
+
+```sh
+DENO_TLS_CA_STORE=system deno task lint-commit
+```
+
+The script reads `.git/COMMIT_EDITMSG` by default. Pass an explicit path as the
+first argument to validate an arbitrary file.
 
 ### Screenshots
 
@@ -805,7 +820,74 @@ Use coverage ignore comments to exclude code from reports:
 
 ---
 
-## 11. Lume API cheat sheet
+## 11. Developer tooling
+
+### 11.1. Commit linting (`deno task lint-commit`)
+
+Validates the commit message against the Conventional Commits specification,
+mirroring the rules of `@commitlint/config-conventional`.
+
+**Script location:** `scripts/lint-commit.ts`
+
+**Allowed types:** `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`,
+`refactor`, `revert`, `style`, `test`
+
+**Usage:**
+
+```sh
+# Validate the last commit message (default — reads .git/COMMIT_EDITMSG):
+DENO_TLS_CA_STORE=system deno task lint-commit
+
+# Validate an explicit file (e.g., from a Lefthook commit-msg hook):
+DENO_TLS_CA_STORE=system deno task lint-commit .git/COMMIT_EDITMSG
+```
+
+Exit code `0` = valid; exit code `1` = one or more errors.
+
+### 11.2. Git hooks — Lefthook (`lefthook.yml`)
+
+Lefthook manages Git hooks and runs checks automatically on `pre-commit` and
+`commit-msg` events.
+
+**Installation via Deno (recommended):**
+
+```sh
+deno install --global --allow-all --name lefthook npm:lefthook
+lefthook install
+```
+
+**Alternative installations:** Homebrew (`brew install lefthook`) or Go
+(`go install github.com/evilmartians/lefthook@latest`).
+
+**Configured hooks:**
+
+| Hook         | Task                               | File glob               |
+| ------------ | ---------------------------------- | ----------------------- |
+| `pre-commit` | `deno fmt --check` (parallel)      | `*.{ts,tsx,js,jsx,...}` |
+| `pre-commit` | `deno lint` (parallel)             | `*.{ts,tsx,js,jsx}`     |
+| `commit-msg` | `deno task lint-commit <msg-file>` | —                       |
+
+### 11.3. Static analysis — Knip (`deno task knip`)
+
+Knip detects unused files, orphaned exports, and unreferenced dependencies.
+
+**Configuration:** `knip.jsonc` at the repository root.
+
+**Requirements:** Node.js ≥ 18 and npm ≥ 7 (used via `npx --yes knip@5`).
+
+**Usage:**
+
+```sh
+DENO_TLS_CA_STORE=system deno task knip
+```
+
+Run after significant refactors or before merging to identify dead code. The CI
+workflow runs Knip with `continue-on-error: true` — failures are informational,
+not blocking.
+
+---
+
+## 12. Lume API cheat sheet
 
 > Informational reference only — does not override instructions above.
 
@@ -931,7 +1013,11 @@ Before considering a task complete, verify every applicable item.
       `try/catch` only at boundaries (§5.8).
 - [ ] `deno fmt`, `deno lint`, and `deno test` pass (or failures are
       documented).
+- [ ] `deno task check` passes — no type errors.
+- [ ] `deno task lint:doc` passes — JSDoc comments are valid.
 - [ ] `deno task build` succeeds when rendering or structure is affected.
+- [ ] `deno task lint-commit` validates the commit message (Conventional
+      Commits, run automatically by Lefthook `commit-msg` hook).
 
 ### Styles and accessibility
 
