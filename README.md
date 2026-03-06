@@ -47,7 +47,6 @@ written in modern CSS rather than a framework, and the only runtime is Deno.
 | Feeds           | RSS 2.0 and JSON Feed 1.1                                            |
 | Testing         | Deno's built-in test runner with `@std/testing/bdd`                  |
 | Git hooks       | [Lefthook](https://github.com/evilmartians/lefthook)                 |
-| Static analysis | [Knip](https://knip.dev/) (via `npx`)                                |
 | Deployment      | GitHub Pages (via GitHub Actions)                                    |
 
 ---
@@ -72,9 +71,6 @@ written in modern CSS rather than a framework, and the only runtime is Deno.
 
   Alternatively: `brew install lefthook` (macOS) or
   `go install github.com/evilmartians/lefthook@latest`.
-
-- **Node.js ≥ 18 + npm ≥ 7** (optional) — required only for `deno task knip`
-  (static analysis via `npx`).
 
 > **Important:** Set the environment variable `DENO_TLS_CA_STORE=system` before
 > every Deno CLI command, especially in corporate or proxy environments. All
@@ -149,7 +145,6 @@ automatically on file changes.
 ├── deno.json                 # Deno manifest: import map, tasks, compiler options
 ├── deno.lock                 # Dependency lock file
 ├── favicon.png
-└── knip.jsonc                # Knip static-analysis configuration
 ```
 
 ### Source directory (`src/`)
@@ -210,7 +205,6 @@ DENO_TLS_CA_STORE=system deno task lint-commit
 | `lint:doc`    | `deno task lint:doc`    | Lint JSDoc comments                          |
 | `lint-commit` | `deno task lint-commit` | Validate the last commit message             |
 | `update-deps` | `deno task update-deps` | Update Lume and regenerate `deno.lock`       |
-| `knip`        | `deno task knip`        | Detect unused exports and dead code          |
 
 ---
 
@@ -430,19 +424,6 @@ DENO_TLS_CA_STORE=system deno task lint-commit path/to/COMMIT_EDITMSG
 | `pre-commit` | `deno lint` (parallel)             | `*.{ts,tsx,js,jsx}`       |
 | `commit-msg` | `deno task lint-commit <msg-file>` | all commits               |
 
-### Static analysis — Knip (`deno task knip`)
-
-[Knip](https://knip.dev/) detects unused files, orphaned exports, and
-unreferenced dependencies. It requires Node.js ≥ 18 and npm ≥ 7, and is invoked
-via `npx`.
-
-```sh
-DENO_TLS_CA_STORE=system deno task knip
-```
-
-Run after significant refactors or before merging a branch. In CI, Knip runs
-with `continue-on-error: true` — failures are informational, not blocking.
-
 ### Dependency management
 
 ```sh
@@ -465,9 +446,8 @@ on every push to `master`.
 1. Check out the repository (full history).
 2. Set up Deno from `.tool-versions`, with caching enabled.
 3. Run `deno task build` to produce `_site/`.
-4. Run `deno task knip` (non-blocking static analysis).
-5. Upload `_site/` as a GitHub Pages artifact.
-6. Deploy to GitHub Pages.
+4. Upload `_site/` as a GitHub Pages artifact.
+5. Deploy to GitHub Pages.
 
 The site is served from `https://normco.re`. No server-side runtime is involved;
 the output is entirely static HTML, CSS, and JavaScript.
