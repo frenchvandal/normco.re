@@ -31,6 +31,9 @@ Run the following commands **in order** before finalizing any change:
 1. `deno test` — if it fails, treat as non-blocking but detail failures and
    possible fixes in the PR description.
 1. `deno task build` — run when changes affect rendering or structure.
+1. `deno task knip` — detect unused files, exports, and dependencies; requires
+   Node.js ≥ 18 and npm ≥ 7. Treat failures as non-blocking but document any
+   dead code found in the PR description.
 
 ### Commit message validation
 
@@ -1016,6 +1019,8 @@ Before considering a task complete, verify every applicable item.
 - [ ] `deno task check` passes — no type errors.
 - [ ] `deno task lint:doc` passes — JSDoc comments are valid.
 - [ ] `deno task build` succeeds when rendering or structure is affected.
+- [ ] `deno task knip` has been run; any findings are documented in the PR
+      description (non-blocking).
 - [ ] `deno task lint-commit` validates the commit message (Conventional
       Commits, run automatically by Lefthook `commit-msg` hook).
 
