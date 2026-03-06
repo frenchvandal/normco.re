@@ -1,11 +1,15 @@
 /** Sample post #1 — Lorem ipsum (2026). */
 
 export const title = "Lorem Ipsum and the Art of Placeholder Text";
+/** Publication date. */
 export const date = new Date("2026-02-18");
+/** Post meta description. */
 export const description =
   "A meditation on placeholder text, its history, and why it still matters in modern design workflows.";
+/** Post tags. */
 export const tags = ["design", "writing"];
 
+/** Renders the post body. */
 export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
   return `<p>
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor

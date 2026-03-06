@@ -1,11 +1,15 @@
 /** Sample post #2 — Vestibulum ante (2025). */
 
 export const title = "Vestibulum Ante: On Thresholds and New Beginnings";
+/** Publication date. */
 export const date = new Date("2025-09-04");
+/** Post meta description. */
 export const description =
   "Reflections on transitions, the in-between spaces of life, and what it means to stand at a threshold.";
+/** Post tags. */
 export const tags = ["life", "essay"];
 
+/** Renders the post body. */
 export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
   return `<p>
   Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere

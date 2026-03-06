@@ -1,11 +1,15 @@
 /** About page — prose introduction. */
 
 export const url = "/about/";
+/** Lume layout template. */
 export const layout = "layouts/base.ts";
+/** Page title. */
 export const title = "About";
+/** Page meta description. */
 export const description =
   "About Phiphi — a software person writing from Chengdu, China.";
 
+/** Renders the About page body. */
 export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
   return `<h1 class="about-title">About</h1>
 <div class="about-content">

@@ -1,12 +1,16 @@
 /** Posts archive — all posts grouped by year, newest first. */
 
 export const url = "/posts/";
+/** Lume layout template. */
 export const layout = "layouts/base.ts";
+/** Page title. */
 export const title = "Writing";
+/** Page meta description. */
 export const description = "All posts, grouped by year.";
 
 // Override the `type = "post"` inherited from _data.ts so this page
 // is not matched by `search.pages("type=post")` or nav plugin queries.
+/** Page type — overrides the inherited `"post"` to exclude this page from post queries. */
 export const type = "archive";
 
 /** Typed helpers used in this page. */
@@ -14,6 +18,7 @@ type H = {
   date: (value: unknown, format: string) => string;
 };
 
+/** Renders the posts archive page body. */
 export default function (data: Lume.Data, helpers: Lume.Helpers): string {
   // Lume.Helpers is loosely typed; cast to the minimal interface declared above
   // to get type-safe access to the `date` helper (§5.4 — library boundary).

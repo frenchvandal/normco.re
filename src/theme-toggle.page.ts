@@ -12,6 +12,7 @@
 /** Output path in the built site. */
 export const url = "/theme-toggle.js";
 
+/** Renders the theme-toggle client script. */
 export default function (): string {
   return `(function(){
   const root=document.documentElement;

@@ -1,8 +1,11 @@
 /** Feeds hub page — lists all syndication and discovery endpoints. */
 
 export const url = "/feeds/";
+/** Lume layout template. */
 export const layout = "layouts/base.ts";
+/** Page title. */
 export const title = "Feeds";
+/** Page meta description. */
 export const description =
   "All syndication feeds and discovery endpoints for normco.re.";
 
@@ -38,6 +41,7 @@ const FEEDS = [
   },
 ] as const satisfies ReadonlyArray<FeedEntry>;
 
+/** Renders the feeds hub page body. */
 export default function (): string {
   const items = FEEDS.map(
     ({ label, href, type, description }) =>
