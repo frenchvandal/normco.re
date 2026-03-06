@@ -1,4 +1,4 @@
-# AGENTS.md
+# CLAUDE.md
 
 > Source of truth for all AI agent work on this repository. Code, comments,
 > commits, and PR/MR titles: **English**. Discussions and explanations:
