@@ -2,7 +2,7 @@ import lume from "lume/mod.ts";
 import date from "lume/plugins/date.ts";
 import sitemap from "lume/plugins/sitemap.ts";
 import feed from "lume/plugins/feed.ts";
-import codeHighlight from "lume/plugins/code_highlight.ts";
+import prism from "lume/plugins/prism.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
@@ -75,7 +75,9 @@ site.use(sitemap());
 // Navigation tree: data.nav.menu(), data.nav.nextPage(), data.nav.previousPage()
 site.use(nav());
 
-site.use(codeHighlight());
+// Prism is preferred over highlight.js for its autoloadLanguages feature,
+// which detects and loads language grammars on demand — no manual imports needed.
+site.use(prism({ autoloadLanguages: true }));
 
 site.use(
   feed({
