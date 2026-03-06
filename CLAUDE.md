@@ -194,7 +194,7 @@ using file = openFile("template.vto"); // auto-disposed at scope exit
 | `namespace`                 | ES modules (`import`/`export`)         | Non-erasable; replaced by module system                 |
 | `any`                       | `unknown` + narrowing                  | Disables type checking entirely                         |
 | `@ts-ignore`                | `@ts-expect-error`                     | Catches stale suppressions                              |
-| Default exports             | Named exports                          | Better IDE support, auto-import, discoverability        |
+| Default exports             | Named exports (Lume exception: see §9) | Better IDE support, auto-import, discoverability        |
 | `interface IFoo` (I-prefix) | `interface Foo`                        | Hungarian notation — universally discouraged            |
 | `deps.ts` (Deno v1 pattern) | Import maps in `deno.json`             | Superseded by import maps standard                      |
 | Barrel files (`index.ts`)   | Direct imports                         | Breaks tree-shaking, causes circular deps, slows builds |
@@ -229,7 +229,10 @@ type HttpStatus = (typeof HttpStatus)[keyof typeof HttpStatus]; // 200 | 404 | 5
 ### 5.7. Functions and API design
 
 - **Top-level functions use `function`, not arrow syntax.** Arrow functions are
-  reserved for closures and inline callbacks.
+  reserved for closures and inline callbacks. **Exception for Lume render
+  files:** pages (`*.page.ts`), layouts, and components use `export default`
+  with an arrow function as the render entry point — this is a hard framework
+  requirement, not a style choice (see §9 for examples).
 - **1–2 params → positional; 3+ → destructured options object.** Multiple
   boolean params always use an options object regardless of count.
 - **Prefer union types over function overloads** unless the return type changes
@@ -281,8 +284,10 @@ packages, `node:` for Node built-ins. Naming convention for aliases:
 - npm: `"npm/cowsay": "npm:cowsay@^1.6.0"`
 
 **Minimize dependencies; never introduce circular imports.** Avoid barrel files
-in application code — prefer direct imports. Extract shared types into dedicated
-`types.ts` files to break potential cycles.
+in application code — prefer direct imports. A `mod.ts` that exposes a narrow
+public API for a self-contained module is acceptable; a `mod.ts` that
+indiscriminately re-exports everything is not (see §8). Extract shared types
+into dedicated `types.ts` files to break potential cycles.
 
 ### 5.11. TODO and FIXME comments
 
@@ -478,7 +483,10 @@ whitespace, and content quality — not by decorative elements.
 - **Never use `index.ts` / `index.js`** — Deno does not resolve them implicitly.
   Use `mod.ts` when a directory needs a default entry point.
 - **Never use barrel files** (`index.ts` re-exporting everything) in application
-  code — they break tree-shaking, cause circular deps, and slow builds.
+  code — they break tree-shaking, cause circular deps, and slow builds. A
+  `mod.ts` is acceptable only when it exposes a narrow, intentional public API
+  for a self-contained module; it must not blindly re-export every symbol from
+  every file in the directory.
 - **Files prefixed with `_`** are internal: only files in the same directory
   should import them.
 
@@ -990,7 +998,7 @@ site.getOrCreatePage(url);
 
 </details>
 
-## 12. Pre-commit checklist
+## 13. Pre-commit checklist
 
 Before considering a task complete, verify every applicable item.
 
@@ -1008,7 +1016,9 @@ Before considering a task complete, verify every applicable item.
 - [ ] Function signatures follow the 1–2 positional + options object rule
       (§5.7).
 - [ ] Top-level functions use `function` keyword, not arrow syntax.
-- [ ] Named exports only (no default exports); no barrel files.
+- [ ] Named exports only; `export default` used only in Lume render files
+      (`*.page.ts`, layouts, components) as required by the framework (§9). No
+      barrel files; `mod.ts` allowed only for narrow public APIs (§8).
 - [ ] JSDoc is present on all exported symbols, following §5.9 conventions.
 - [ ] Imports are grouped and ordered per §5.10; `import type` for type-only; no
       circular imports.
