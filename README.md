@@ -38,16 +38,16 @@ written in modern CSS rather than a framework, and the only runtime is Deno.
 
 ## Tech Stack
 
-| Layer           | Technology                                                           |
-| --------------- | -------------------------------------------------------------------- |
-| Runtime         | [Deno](https://deno.com/) 2.7.4 (version pinned in `.tool-versions`) |
-| SSG             | [Lume](https://lume.land/) 3.2.1                                     |
-| Templating      | ESM + TypeScript (`*.page.ts`, `*.ts` layouts and components)        |
-| Styling         | Modern CSS (`style.css`, processed by Lightning CSS)                 |
-| Feeds           | RSS 2.0 and JSON Feed 1.1                                            |
-| Testing         | Deno's built-in test runner with `@std/testing/bdd`                  |
-| Git hooks       | [Lefthook](https://github.com/evilmartians/lefthook)                 |
-| Deployment      | GitHub Pages (via GitHub Actions)                                    |
+| Layer      | Technology                                                           |
+| ---------- | -------------------------------------------------------------------- |
+| Runtime    | [Deno](https://deno.com/) 2.7.4 (version pinned in `.tool-versions`) |
+| SSG        | [Lume](https://lume.land/) 3.2.1                                     |
+| Templating | ESM + TypeScript (`*.page.ts`, `*.ts` layouts and components)        |
+| Styling    | Modern CSS (`style.css`, processed by Lightning CSS)                 |
+| Feeds      | RSS 2.0 and JSON Feed 1.1                                            |
+| Testing    | Deno's built-in test runner with `@std/testing/bdd`                  |
+| Git hooks  | [Lefthook](https://github.com/evilmartians/lefthook)                 |
+| Deployment | GitHub Pages (via GitHub Actions)                                    |
 
 ---
 
