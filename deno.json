@@ -4,7 +4,8 @@
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",
     "jsr/assert": "jsr:@std/assert@^1.0.19",
-    "jsr/testing-bdd": "jsr:@std/testing@^1.0.17/bdd"
+    "jsr/testing-bdd": "jsr:@std/testing@^1.0.17/bdd",
+    "npm/opentelemetry-api": "npm:@opentelemetry/api@^1.9.0"
   },
   "permissions": {
     "lume": {
@@ -24,7 +25,9 @@
         "fonts.googleapis.com:443",
         "fonts.gstatic.com:443",
         "registry.npmjs.org:443",
-        "contrib.rocks:443"
+        "contrib.rocks:443",
+        "localhost:4318",
+        "127.0.0.1:4318"
       ],
       "env": true,
       "run": true,
@@ -54,12 +57,20 @@
       "command": "deno check **/*.ts **/*.tsx"
     },
     "lint:doc": {
-      "description": "Lint documentation comments (src and scripts only; root config files are excluded — they reference private Lume types by framework requirement)",
-      "command": "deno doc --lint src/**/*.ts src/**/*.tsx scripts/**/*.ts"
+      "description": "Lint documentation comments (src, scripts, and plugins; root config files are excluded — they reference private Lume types by framework requirement)",
+      "command": "deno doc --lint src/**/*.ts src/**/*.tsx scripts/**/*.ts plugins/**/*.ts"
     },
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"
+    },
+    "build:otel": {
+      "description": "Build the site with OpenTelemetry enabled (exports to localhost:4318)",
+      "command": "OTEL_DENO=true OTEL_SERVICE_NAME=normcore deno task lume"
+    },
+    "serve:otel": {
+      "description": "Run the dev server with OpenTelemetry enabled (exports to localhost:4318)",
+      "command": "OTEL_DENO=true OTEL_SERVICE_NAME=normcore deno task lume -s"
     }
   },
   "compilerOptions": {

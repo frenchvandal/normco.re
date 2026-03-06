@@ -19,8 +19,9 @@ ESM TypeScript, and deployed as a static site to [normco.re](https://normco.re).
 9. [Styling](#styling)
 10. [Testing](#testing)
 11. [Tooling](#tooling)
-12. [Deployment](#deployment)
-13. [Design Principles](#design-principles)
+12. [Observability](#observability)
+13. [Deployment](#deployment)
+14. [Design Principles](#design-principles)
 
 ---
 
@@ -136,6 +137,8 @@ automatically on file changes.
 │   ├── sitemap.xsl           # XSLT stylesheet for the sitemap
 │   ├── style.css             # Main stylesheet (~870 lines, modern CSS)
 │   └── theme-toggle.page.ts  # Client-side theme toggle script (/theme-toggle.js)
+├── plugins/
+│   └── otel.ts               # Lume plugin for OpenTelemetry build observability
 ├── .cms.ts                   # Lume CMS configuration
 ├── .gitignore
 ├── .tool-versions            # Pins Deno version (used by asdf)
@@ -201,6 +204,8 @@ DENO_TLS_CA_STORE=system deno task lint-commit
 | ------------- | ----------------------- | -------------------------------------------- |
 | `build`       | `deno task build`       | Production build into `_site/`               |
 | `serve`       | `deno task serve`       | Dev server at `localhost:3000` (live reload) |
+| `build:otel`  | `deno task build:otel`  | Production build with OpenTelemetry enabled  |
+| `serve:otel`  | `deno task serve:otel`  | Dev server with OpenTelemetry enabled        |
 | `check`       | `deno task check`       | Type-check all `.ts`/`.tsx` files            |
 | `lint:doc`    | `deno task lint:doc`    | Lint JSDoc comments                          |
 | `lint-commit` | `deno task lint-commit` | Validate the last commit message             |
@@ -433,6 +438,83 @@ DENO_TLS_CA_STORE=system deno task update-deps
 
 Commit `deno.lock` only when `deno.json` dependencies change in the same commit.
 Do not add new dependencies unless explicitly required.
+
+---
+
+## Observability
+
+The project integrates with [OpenTelemetry](https://opentelemetry.io/) via
+Deno's built-in support. Observability is opt-in: set `OTEL_DENO=true` to
+activate it. Without that variable, all instrumentation is a no-op with
+negligible overhead.
+
+### Getting started
+
+If you do not have a collector yet, spin up a local
+[LGTM stack](https://github.com/grafana/docker-otel-lgtm) (Loki, Grafana, Tempo,
+Prometheus) in Docker:
+
+```sh
+docker run --name lgtm -p 3000:3000 -p 4317:4317 -p 4318:4318 --rm -ti \
+  -v "$PWD"/lgtm/grafana:/data/grafana \
+  -v "$PWD"/lgtm/prometheus:/data/prometheus \
+  -v "$PWD"/lgtm/loki:/data/loki \
+  -e GF_PATHS_DATA=/data/grafana \
+  docker.io/grafana/otel-lgtm:0.8.1
+```
+
+Then open the Grafana dashboard at `http://localhost:3000` (username `admin`,
+password `admin`). Telemetry is exported to the OTLP endpoint at
+`localhost:4318` by default.
+
+### Build observability
+
+The `plugins/otel.ts` Lume plugin instruments the static build pipeline:
+
+| Signal    | Name                  | Description                    |
+| --------- | --------------------- | ------------------------------ |
+| Trace     | `lume.build`          | Span covering the full build   |
+| Histogram | `lume.build.duration` | Build duration in milliseconds |
+| Counter   | `lume.build.count`    | Number of builds completed     |
+
+```sh
+# Production build with telemetry
+DENO_TLS_CA_STORE=system deno task build:otel
+```
+
+Or equivalently via the dedicated task:
+
+```sh
+DENO_TLS_CA_STORE=system deno task build:otel
+```
+
+### Development server observability
+
+When running the dev server with `OTEL_DENO=true`, Deno automatically
+instruments the underlying `Deno.serve` instance:
+
+- **HTTP traces** — a span per request with method, URL, and status code
+- **`http.server.request.duration`** — request duration histogram
+- **`http.server.active_requests`** — in-flight request gauge
+- **Logs** — all `console.*` output is forwarded to the OTLP endpoint
+
+```sh
+# Dev server with telemetry
+DENO_TLS_CA_STORE=system deno task serve:otel
+```
+
+### Configuration
+
+All configuration is done through standard OpenTelemetry environment variables:
+
+| Variable                      | Default          | Description                            |
+| ----------------------------- | ---------------- | -------------------------------------- |
+| `OTEL_DENO`                   | `false`          | Enable the integration                 |
+| `OTEL_SERVICE_NAME`           | `normcore`       | Service name in all signals            |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `localhost:4318` | OTLP collector endpoint                |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf`  | Exporter protocol                      |
+| `OTEL_EXPORTER_OTLP_HEADERS`  | —                | Auth headers (e.g., for Grafana Cloud) |
+| `OTEL_METRIC_EXPORT_INTERVAL` | `60000`          | Metric flush interval (ms)             |
 
 ---
 
