@@ -55,6 +55,14 @@
     "lint:doc": {
       "description": "Lint documentation comments",
       "command": "deno doc --lint **/*.ts **/*.tsx"
+    },
+    "lint-commit": {
+      "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
+      "command": "deno run --allow-read scripts/lint-commit.ts"
+    },
+    "knip": {
+      "description": "Run Knip static analysis to detect unused files, exports, and dependencies",
+      "command": "npx --yes knip@5 --config knip.jsonc"
     }
   },
   "compilerOptions": {

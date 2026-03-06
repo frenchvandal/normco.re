@@ -41,7 +41,12 @@ jobs:
       - name: Run build task
         shell: bash
         run: |
-          deno task build
+          DENO_TLS_CA_STORE=system deno task build
+      - name: Run Knip static analysis
+        shell: bash
+        continue-on-error: true
+        run: |
+          DENO_TLS_CA_STORE=system deno task knip
       - name: Environment variables
         run: printenv
       - name: Setup Pages

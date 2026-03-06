@@ -704,6 +704,105 @@
     max-inline-size: var(--measure);
   }
 
+  /* ——— Feeds hub page ——— */
+
+  .feeds-page {
+    max-inline-size: var(--measure);
+  }
+
+  .feeds-page-title {
+    margin-block-end: var(--space-s);
+  }
+
+  .feeds-page-lead {
+    color: var(--color-meta);
+    margin-block-end: var(--space-xl);
+  }
+
+  .feeds-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+  }
+
+  .feeds-entry-title {
+    font-size: var(--text-lg);
+    margin-block-end: var(--space-xs);
+  }
+
+  .feeds-entry-link {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .feeds-entry-link:hover {
+    color: var(--color-accent);
+  }
+
+  .feeds-entry-type {
+    font-size: var(--text-sm);
+    color: var(--color-meta);
+    margin-block-end: var(--space-xs);
+  }
+
+  .feeds-entry-description {
+    color: var(--color-meta);
+    font-size: var(--text-sm);
+  }
+
+  /* ——— Feed/sitemap XSLT page ——— */
+
+  .feed-page {
+    max-inline-size: var(--measure);
+  }
+
+  .feed-page-header {
+    margin-block-end: var(--space-xl);
+  }
+
+  .feed-page-title {
+    margin-block-end: var(--space-s);
+  }
+
+  .feed-page-description {
+    color: var(--color-meta);
+    margin-block-end: var(--space-s);
+  }
+
+  .feed-page-hint {
+    font-size: var(--text-sm);
+    color: var(--color-meta);
+    font-style: italic;
+  }
+
+  .feed-entry-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+  }
+
+  .feed-entry-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    margin-block-end: var(--space-xs);
+  }
+
+  .feed-entry-link {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .feed-entry-link:hover {
+    color: var(--color-accent);
+  }
+
+  .feed-entry-meta {
+    font-size: var(--text-sm);
+    color: var(--color-meta);
+  }
+
   /* ——— 404 page ——— */
 
   .not-found {

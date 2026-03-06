@@ -1,0 +1,31 @@
+# lefthook.yml — Git hook manager configuration.
+#
+# Installation via Deno (recommended — no Node.js required):
+#   deno install --global --allow-all --name lefthook npm:lefthook
+#   lefthook install
+#
+# Alternative installation methods:
+#   brew install lefthook                    # macOS via Homebrew
+#   go install github.com/evilmartians/lefthook@latest  # via Go
+#
+# Reference: https://github.com/evilmartians/lefthook
+
+pre-commit:
+  # Independent tasks run in parallel for speed.
+  parallel: true
+  commands:
+    fmt:
+      name: deno fmt
+      glob: "*.{ts,tsx,js,jsx,json,jsonc,css,scss,md}"
+      run: DENO_TLS_CA_STORE=system deno fmt --check {staged_files}
+    lint:
+      name: deno lint
+      glob: "*.{ts,tsx,js,jsx}"
+      run: DENO_TLS_CA_STORE=system deno lint {staged_files}
+
+commit-msg:
+  commands:
+    lint-commit:
+      name: lint-commit
+      # {1} is the path to the commit message file supplied by Git.
+      run: DENO_TLS_CA_STORE=system deno task lint-commit {1}

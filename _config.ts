@@ -32,6 +32,10 @@ site.preprocess([".ts"], (pages) => {
 // Register the stylesheet so Lume discovers it before lightningcss runs.
 site.add("/style.css");
 
+// Copy XSLT stylesheets to the output as static assets.
+site.add("/feed.xsl");
+site.add("/sitemap.xsl");
+
 // lightningcss minifies the stylesheet and prepares source-map metadata.
 // Targets modern browsers that natively support oklch(), light-dark(),
 // @layer, @container, and @view-transition — no polyfilling needed.
@@ -91,5 +95,24 @@ site.use(
     },
   }),
 );
+
+// Inject <?xml-stylesheet?> processing instructions into XML outputs so browsers
+// can render them as styled HTML pages via the XSLT stylesheets above.
+const XML_PI_PATTERN = /^(<\?xml[^?]*\?>)/;
+site.process([".xml"], (pages) => {
+  for (const page of pages) {
+    const pageUrl = page.data.url as string;
+    let xslHref: string | undefined;
+
+    if (pageUrl === "/feed.xml") xslHref = "/feed.xsl";
+    else if (pageUrl === "/sitemap.xml") xslHref = "/sitemap.xsl";
+
+    if (xslHref === undefined) continue;
+
+    const content = String(page.content);
+    const pi = `<?xml-stylesheet type="text/xsl" href="${xslHref}"?>`;
+    page.content = content.replace(XML_PI_PATTERN, `$1\n${pi}`);
+  }
+});
 
 export default site;

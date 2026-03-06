@@ -1,0 +1,43 @@
+{
+  // Knip configuration for normco.re — a Deno/Lume static site.
+  // Reference: https://knip.dev/reference/configuration
+  //
+  // Run: deno task knip
+  // Note: Knip requires Node.js. The task uses `npx --yes knip` to avoid
+  // a permanent npm dependency. Ensure Node.js ≥ 18 and npm ≥ 7 are available.
+
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+
+  // Entry points — files that are imported directly by Lume or the build system.
+  "entry": [
+    "_config.ts",
+    "src/_data.ts",
+    "src/_data/**/*.ts",
+    "src/_includes/**/*.ts",
+    "src/_components/**/*.ts",
+    "src/**/*.page.ts",
+    "scripts/**/*.ts"
+  ],
+
+  // Project files to analyse.
+  "project": ["**/*.ts", "**/*.tsx"],
+
+  // Exclude generated output, git internals, and Deno cache.
+  "ignore": [
+    "_site/**",
+    ".git/**",
+    "deno.lock"
+  ],
+
+  // Knip does not understand Deno's import maps; silence false positives for
+  // bare specifiers that resolve through deno.json.
+  "ignoreDependencies": [
+    "lume",
+    "lume/*",
+    "jsr/*",
+    "npm/*"
+  ],
+
+  // Do not report unused exports inside test files.
+  "ignoreExportsUsedInFile": true
+}
