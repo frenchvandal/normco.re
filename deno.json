@@ -10,7 +10,7 @@
     "lume": {
       "read": true,
       "write": ["./"],
-            "import": [
+      "import": [
         "cdn.jsdelivr.net:443",
         "cdn.sheetjs.com:443",
         "jsr.io:443",
@@ -54,8 +54,8 @@
       "command": "deno check **/*.ts **/*.tsx"
     },
     "lint:doc": {
-      "description": "Lint documentation comments",
-      "command": "deno doc --lint **/*.ts **/*.tsx"
+      "description": "Lint documentation comments (src and scripts only; root config files are excluded — they reference private Lume types by framework requirement)",
+      "command": "deno doc --lint src/**/*.ts src/**/*.tsx scripts/**/*.ts"
     },
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",

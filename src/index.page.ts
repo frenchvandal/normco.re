@@ -1,8 +1,6 @@
 /** Home page — hero + five most recent posts. */
 
 export const url = "/";
-/** Lume layout template. */
-export const layout = "layouts/base.ts";
 /** Page title. */
 export const title = "normco.re";
 /** Page meta description. */

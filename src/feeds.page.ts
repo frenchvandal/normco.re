@@ -1,8 +1,6 @@
 /** Feeds hub page — lists all syndication and discovery endpoints. */
 
 export const url = "/feeds/";
-/** Lume layout template. */
-export const layout = "layouts/base.ts";
 /** Page title. */
 export const title = "Feeds";
 /** Page meta description. */

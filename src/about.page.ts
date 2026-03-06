@@ -1,8 +1,6 @@
 /** About page — prose introduction. */
 
 export const url = "/about/";
-/** Lume layout template. */
-export const layout = "layouts/base.ts";
 /** Page title. */
 export const title = "About";
 /** Page meta description. */
