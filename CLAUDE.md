@@ -22,7 +22,8 @@
 
 ## 2. Mandatory workflow
 
-Before finalizing a change (opening a PR or merging), run the following commands **in order**:
+Before finalizing a change (opening a PR or merging), run the following commands
+**in order**:
 
 1. `deno fmt`
 1. `deno lint` — fix reported errors when technically possible.
@@ -83,9 +84,9 @@ first argument to validate an arbitrary file.
 ### Don’t
 
 - **For AI agents:** never create new documentation files (`*.md`) or READMEs
-  unless explicitly requested, and do not modify or delete existing documentation
-  files without explicit instruction. Human contributors are free to evolve
-  documentation as needed, following the project's tone and structure.
+  unless explicitly requested, and do not modify or delete existing
+  documentation files without explicit instruction. Human contributors are free
+  to evolve documentation as needed, following the project's tone and structure.
 - Always prefer ESM + TypeScript for everything: pages, layouts, data files, and
   components. Another engine (Vento, Nunjucks, JSX, etc.) may be used only as a
   fallback when ESM + TypeScript cannot achieve the goal (e.g., a plugin that
@@ -199,16 +200,16 @@ using file = openFile("template.vto"); // auto-disposed at scope exit
 
 ### 5.4. Patterns to avoid
 
-| Deprecated pattern          | Replacement                            | Rationale                                               |
-| --------------------------- | -------------------------------------- | ------------------------------------------------------- |
+| Deprecated pattern          | Replacement                            | Rationale                                                                                                                                |
+| --------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | `enum`                      | `as const` object + derived union type | Non-erasable syntax; `erasableSyntaxOnly` blocks it. Strongly discouraged — use only in exceptional cases with a comment explaining why. |
-| `namespace`                 | ES modules (`import`/`export`)         | Non-erasable; replaced by module system                 |
-| `any`                       | `unknown` + narrowing                  | Disables type checking entirely                         |
-| `@ts-ignore`                | `@ts-expect-error`                     | Catches stale suppressions                              |
-| Default exports             | Named exports (Lume exception: see §9) | Better IDE support, auto-import, discoverability        |
-| `interface IFoo` (I-prefix) | `interface Foo`                        | Hungarian notation — universally discouraged            |
-| `deps.ts` (Deno v1 pattern) | Import maps in `deno.json`             | Superseded by import maps standard                      |
-| Barrel files (`index.ts`)   | Direct imports                         | Breaks tree-shaking, causes circular deps, slows builds |
+| `namespace`                 | ES modules (`import`/`export`)         | Non-erasable; replaced by module system                                                                                                  |
+| `any`                       | `unknown` + narrowing                  | Disables type checking entirely                                                                                                          |
+| `@ts-ignore`                | `@ts-expect-error`                     | Catches stale suppressions                                                                                                               |
+| Default exports             | Named exports (Lume exception: see §9) | Better IDE support, auto-import, discoverability                                                                                         |
+| `interface IFoo` (I-prefix) | `interface Foo`                        | Hungarian notation — universally discouraged                                                                                             |
+| `deps.ts` (Deno v1 pattern) | Import maps in `deno.json`             | Superseded by import maps standard                                                                                                       |
+| Barrel files (`index.ts`)   | Direct imports                         | Breaks tree-shaking, causes circular deps, slows builds                                                                                  |
 
 The `as const` object pattern that replaces enums:
 
@@ -1034,7 +1035,8 @@ before merging.
 - [ ] Functions are small, readable, and single-responsibility.
 - [ ] Function signatures follow the 1–2 positional + options object rule
       (§5.7).
-- [ ] Top-level functions prefer the `function` keyword over arrow syntax (§5.7).
+- [ ] Top-level functions prefer the `function` keyword over arrow syntax
+      (§5.7).
 - [ ] Named exports only; `export default` used only in Lume render files
       (`*.page.ts`, layouts, components) as required by the framework (§9). No
       barrel files; `mod.ts` allowed only for narrow public APIs (§8).
