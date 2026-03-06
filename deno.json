@@ -2,7 +2,9 @@
   "imports": {
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
-    "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/"
+    "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",
+    "jsr/assert": "jsr:@std/assert@^1.0.0",
+    "jsr/testing-bdd": "jsr:@std/testing@^1.0.0/bdd"
   },
   "permissions": {
     "lume": {
@@ -54,7 +56,13 @@
       "lume/types.ts"
     ],
     "jsx": "react-jsx",
-    "jsxImportSource": "lume"
+    "jsxImportSource": "lume",
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "verbatimModuleSyntax": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true
   },
   "unstable": [
     "temporal",

@@ -7,18 +7,26 @@ type H = {
   attr: (attrs: Record<string, unknown>) => string;
 };
 
+/** Typed component functions used in this layout. */
+type Comp = {
+  Header: (props: { readonly currentUrl: string }) => Promise<string>;
+  Footer: (props: Record<never, never>) => Promise<string>;
+};
+
 export default async function (
   { title, description, content, url, comp }: Lume.Data,
   helpers: Lume.Helpers,
 ): Promise<string> {
   const { attr } = helpers as unknown as H;
+  // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 — library boundary).
+  const { Header, Footer } = comp as unknown as Comp;
 
   const pageTitle = title ? `${title} — normco.re` : "normco.re";
   const metaDescription = description ??
     "Personal blog by Phiphi, based in Chengdu, China.";
 
-  const header = await comp.Header({ currentUrl: url ?? "/" });
-  const footer = await comp.Footer({});
+  const header = await Header({ currentUrl: url ?? "/" });
+  const footer = await Footer({});
 
   return `<!doctype html>
 <html lang="en">
