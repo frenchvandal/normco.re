@@ -21,10 +21,10 @@ type LayoutData = Lume.Data & {
 };
 
 /** Renders the full HTML document shell. */
-export default async function (
+export default async (
   { title, description, content, url, comp, build }: LayoutData,
   helpers: Lume.Helpers,
-): Promise<string> {
+): Promise<string> => {
   const { attr } = helpers as unknown as H;
   // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 — library boundary).
   const { Header, Footer } = comp as unknown as Comp;

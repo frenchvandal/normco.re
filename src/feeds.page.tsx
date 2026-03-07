@@ -40,7 +40,7 @@ const FEEDS = [
 ] as const satisfies ReadonlyArray<FeedEntry>;
 
 /** Renders the feeds hub page body. */
-export default function (): string {
+export default (): string => {
   const items = FEEDS.map(
     ({ label, href, type, description }) =>
       `<li class="feeds-item">
@@ -61,4 +61,4 @@ export default function (): string {
     ${items}
   </ul>
 </section>`;
-}
+};

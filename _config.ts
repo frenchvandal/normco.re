@@ -22,6 +22,9 @@ import type { Page } from "lume/core/file.ts";
 import { readConsoleDebugPolicy } from "./plugins/console_debug.ts";
 import otelPlugin from "./plugins/otel.ts";
 
+/** Console debug policy, read once at module init from `LUME_LOGS`. */
+const consoleDebugPolicy = readConsoleDebugPolicy((name) => Deno.env.get(name));
+
 type BuildData = {
   assetVersion: string;
   repositoryUrl?: string;
@@ -65,9 +68,6 @@ function getBuildData(): BuildData {
   const assetVersion = commitHash ?? crypto.randomUUID();
   const repositoryUrl = normalizeRepositoryUrl(
     runGitCommand(["config", "--get", "remote.origin.url"]),
-  );
-  const consoleDebugPolicy = readConsoleDebugPolicy((name) =>
-    Deno.env.get(name)
   );
   const isServeTask = Deno.env.get("DENO_TASK_NAME") === "serve";
   const swDebugLevel = isServeTask ? consoleDebugPolicy.level : "off";
@@ -284,13 +284,17 @@ site.use(
     output: (reports) => {
       seoIssues.length = 0;
 
+      const logEnabled = consoleDebugPolicy.level !== "off";
+
       if (reports.size === 0) {
-        console.log("No SEO errors found");
+        if (logEnabled) console.info("No SEO errors found");
         updateSeoDebugCollection(site);
         return;
       }
 
-      console.log(`${reports.size} pages found with SEO errors`);
+      if (logEnabled) {
+        console.info(`${reports.size} pages found with SEO errors`);
+      }
 
       for (const [pagePath, messages] of reports.entries()) {
         const normalizedMessages = messages.map(normalizeSeoMessage);
@@ -299,11 +303,13 @@ site.use(
           messages: normalizedMessages,
         });
 
-        console.group(`SEO errors for ${pagePath}`);
-        for (const message of normalizedMessages) {
-          console.log(`- ${message}`);
+        if (logEnabled) {
+          console.group(`SEO errors for ${pagePath}`);
+          for (const message of normalizedMessages) {
+            console.info(`- ${message}`);
+          }
+          console.groupEnd();
         }
-        console.groupEnd();
       }
 
       updateSeoDebugCollection(site);

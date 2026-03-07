@@ -1,6 +1,6 @@
 /** Site footer with copyright and feed links. */
 
-export default function (_props: Record<string, unknown>): string {
+export default (_props: Record<string, unknown>): string => {
   const year = new Date().getFullYear();
   return `<footer class="site-footer">
   <div class="site-footer-inner">
@@ -11,4 +11,4 @@ export default function (_props: Record<string, unknown>): string {
     </nav>
   </div>
 </footer>`;
-}
+};

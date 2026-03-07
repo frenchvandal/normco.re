@@ -10,8 +10,8 @@ export const description =
 export const tags = ["life", "essay"];
 
 /** Renders the post body. */
-export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
-  return `<p>
+export default (_data: Lume.Data, _helpers: Lume.Helpers): string =>
+  `<p>
   Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
   cubilia curae. The Latin word <em>vestibulum</em> — a forecourt, an entrance
   hall, the space before the door — carries more weight than its English
@@ -74,4 +74,3 @@ export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
   paragraph. It is the space that prepares the reader for what follows. Write
   it with care.
 </p>`;
-}

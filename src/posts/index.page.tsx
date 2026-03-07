@@ -19,18 +19,19 @@ type H = {
 };
 
 /** Renders the posts archive page body. */
-export default function (data: Lume.Data, helpers: Lume.Helpers): string {
+export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   // Lume.Helpers is loosely typed; cast to the minimal interface declared above
   // to get type-safe access to the `date` helper (§5.4 — library boundary).
   const { date: dateFormat } = helpers as unknown as H;
   const posts = data.search.pages("type=post", "date=desc") as Lume.Data[];
 
   // Group posts by year.
+  const currentYear = new Date().getFullYear();
   const byYear = new Map<number, Lume.Data[]>();
   for (const post of posts) {
     const year = post.date instanceof Date
       ? post.date.getFullYear()
-      : new Date().getFullYear();
+      : currentYear;
     const existing = byYear.get(year) ?? [];
     existing.push(post);
     byYear.set(year, existing);
@@ -68,4 +69,4 @@ export default function (data: Lume.Data, helpers: Lume.Helpers): string {
 
   return `<h1 class="archive-page-title">Writing</h1>
 ${sections}`;
-}
+};

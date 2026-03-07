@@ -8,8 +8,8 @@ export const description =
   "A quick guide to setting up the Simple Blog theme for Lume.";
 
 /** Renders the post body. */
-export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
-  return `<p><strong>Simple blog</strong> is a clean and minimal blog theme for Lume, with support for
+export default (_data: Lume.Data, _helpers: Lume.Helpers): string =>
+  `<p><strong>Simple blog</strong> is a clean and minimal blog theme for Lume, with support for
 tags and authors. It allows you to build your own blog <strong>in seconds</strong>, and
 provides Atom and JSON feeds for your subscribers.</p>
 
@@ -49,4 +49,3 @@ file to your blog root folder and edit it with your data.</p>
 
 <p>You can use <a href="https://lume.land/cms">lumeCMS</a> to customize the blog and add
 content easily.</p>`;
-}

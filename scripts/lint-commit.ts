@@ -94,7 +94,7 @@ function parseHeader(header: string): ParsedHeader | undefined {
 // ── Rules ──────────────────────────────────────────────────────────────────
 
 /** Validates the commit message and returns a lint report. */
-function lintCommit(input: string): LintReport {
+export function lintCommit(input: string): LintReport {
   const issues: LintIssue[] = [];
 
   // Strip trailing newline (common in COMMIT_EDITMSG files) and comment lines.

@@ -10,10 +10,9 @@ export const description =
 export const unlisted = true;
 
 /** Renders the offline fallback body. */
-export default function (): string {
-  return `<section class="offline-page" aria-label="Offline fallback">
+export default (): string =>
+  `<section class="offline-page" aria-label="Offline fallback">
   <h1 class="offline-page-title">You are offline.</h1>
   <p class="offline-page-lead">The latest page could not be loaded right now.</p>
   <p class="offline-page-action"><a href="/">Back to home</a></p>
 </section>`;
-}

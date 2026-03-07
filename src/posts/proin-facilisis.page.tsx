@@ -10,8 +10,8 @@ export const description =
 export const tags = ["software", "design"];
 
 /** Renders the post body. */
-export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
-  return `<p>
+export default (_data: Lume.Data, _helpers: Lume.Helpers): string =>
+  `<p>
   <em>Proin facilisis</em> — Latin for "promoting ease." It appears in old
   botanical texts to describe a plant that aids digestion, smooths a passage,
   clears an obstruction. As a philosophy for building software, it translates
@@ -89,4 +89,3 @@ function getUser(id: string): User {
   tincidunt tempus. The name of this principle — <em>nulla facilisi</em>, "no
   easy thing" — is a reminder that ease, properly understood, is never accidental.
 </p>`;
-}

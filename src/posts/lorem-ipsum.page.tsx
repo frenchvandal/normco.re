@@ -10,8 +10,8 @@ export const description =
 export const tags = ["design", "writing"];
 
 /** Renders the post body. */
-export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
-  return `<p>
+export default (_data: Lume.Data, _helpers: Lume.Helpers): string =>
+  `<p>
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
   incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
   nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -81,4 +81,3 @@ function lorem(words: number): string {
   that reflects structure stripped of meaning, form without content. That is
   precisely why it endures.
 </p>`;
-}
