@@ -50,7 +50,12 @@ export default async function (
       </main>
       ${footer}
     </div>
+    <div id="sw-update-toast" class="sw-update-toast" role="status" aria-live="polite" hidden>
+      <p class="sw-update-toast-text">A new version is available.</p>
+      <button type="button" id="sw-update-button" class="sw-update-toast-button">Refresh</button>
+    </div>
     <script src="/theme-toggle.js"></script>
+    <script src="/sw-register.js"></script>
   </body>
 </html>`;
 }

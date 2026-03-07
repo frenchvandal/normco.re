@@ -1,0 +1,257 @@
+const SW_VERSION = "v1";
+const STATIC_CACHE = `static-${SW_VERSION}`;
+const PAGE_CACHE = `pages-${SW_VERSION}`;
+const FEED_CACHE = `feeds-${SW_VERSION}`;
+
+const OFFLINE_URL = "/offline/";
+const OFFLINE_FALLBACK_HTML = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Offline — normco.re</title>
+  </head>
+  <body>
+    <main>
+      <h1>Offline</h1>
+      <p>The site is temporarily unavailable. Please retry when a connection is restored.</p>
+      <p><a href="/">Back to home</a></p>
+    </main>
+  </body>
+</html>`;
+
+const STATIC_ASSETS = [
+  "/",
+  "/style.css",
+  "/theme-toggle.js",
+  "/anti-flash.js",
+  "/feed.xml",
+  "/feed.json",
+  OFFLINE_URL,
+];
+
+const FEED_TTL_MS = 30 * 60 * 1000;
+
+const KNOWN_BOT_PATTERN =
+  /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
+
+self.addEventListener("install", (event) => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(STATIC_CACHE);
+    await cache.addAll(STATIC_ASSETS);
+    await self.skipWaiting();
+  })());
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(
+      keys
+        .filter((key) => ![STATIC_CACHE, PAGE_CACHE, FEED_CACHE].includes(key))
+        .map((key) => caches.delete(key)),
+    );
+    await self.clients.claim();
+  })());
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+/**
+ * Returns true when the current request should bypass Service Worker caching.
+ *
+ * @param {Request} request
+ * @returns {boolean}
+ */
+function shouldBypassRequest(request) {
+  const userAgent = request.headers.get("user-agent") ?? "";
+
+  if (KNOWN_BOT_PATTERN.test(userAgent)) {
+    return true;
+  }
+
+  if (request.method !== "GET") {
+    return true;
+  }
+
+  const url = new URL(request.url);
+
+  if (url.origin !== self.location.origin) {
+    return true;
+  }
+
+  const ignoredSearchParams = [
+    /^utm_/,
+    /^fbclid$/,
+    /^gclid$/,
+    /^mc_eid$/,
+    /^mc_cid$/,
+  ];
+
+  for (const [key] of url.searchParams.entries()) {
+    if (ignoredSearchParams.some((pattern) => pattern.test(key))) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Uses cache-first for static immutable assets.
+ *
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
+async function cacheFirst(request) {
+  const cache = await caches.open(STATIC_CACHE);
+  const cached = await cache.match(request);
+
+  if (cached !== undefined) {
+    return cached;
+  }
+
+  const response = await fetch(request);
+
+  if (response.ok) {
+    await cache.put(request, response.clone());
+  }
+
+  return response;
+}
+
+/**
+ * Uses network-first for HTML navigation with offline fallback.
+ *
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
+async function networkFirstPage(request) {
+  const cache = await caches.open(PAGE_CACHE);
+
+  try {
+    const response = await fetch(request);
+
+    if (response.ok) {
+      await cache.put(request, response.clone());
+    }
+
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const staticCache = await caches.open(STATIC_CACHE);
+    const offlinePage = await staticCache.match(OFFLINE_URL);
+
+    if (offlinePage !== undefined) {
+      return offlinePage;
+    }
+
+    return new Response(OFFLINE_FALLBACK_HTML, {
+      headers: { "content-type": "text/html; charset=utf-8" },
+      status: 503,
+      statusText: "Service Unavailable",
+    });
+  }
+}
+
+/**
+ * Uses stale-while-revalidate for feeds with a soft TTL.
+ *
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
+async function staleWhileRevalidateFeed(request) {
+  const cache = await caches.open(FEED_CACHE);
+  const cached = await cache.match(request);
+
+  const refreshPromise = fetch(request)
+    .then(async (networkResponse) => {
+      if (networkResponse.ok) {
+        const headers = new Headers(networkResponse.headers);
+        headers.set("x-sw-cached-at", Date.now().toString());
+
+        const body = await networkResponse.clone().blob();
+        await cache.put(
+          request,
+          new Response(body, {
+            status: networkResponse.status,
+            statusText: networkResponse.statusText,
+            headers,
+          }),
+        );
+      }
+
+      return networkResponse;
+    })
+    .catch(() => undefined);
+
+  if (cached !== undefined) {
+    const cachedAt = Number(cached.headers.get("x-sw-cached-at") ?? "0");
+    const isFresh = Date.now() - cachedAt < FEED_TTL_MS;
+
+    if (!isFresh) {
+      await refreshPromise;
+    } else {
+      void refreshPromise;
+    }
+
+    return cached;
+  }
+
+  const networkResponse = await refreshPromise;
+
+  if (networkResponse !== undefined) {
+    return networkResponse;
+  }
+
+  return new Response("Feed unavailable while offline.", {
+    status: 503,
+    statusText: "Service Unavailable",
+    headers: { "content-type": "text/plain; charset=utf-8" },
+  });
+}
+
+self.addEventListener("fetch", (event) => {
+  const { request } = event;
+
+  if (shouldBypassRequest(request)) {
+    return;
+  }
+
+  const url = new URL(request.url);
+  const isStaticAsset = url.pathname.endsWith(".css") ||
+    url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".woff2") ||
+    url.pathname.endsWith(".png") ||
+    url.pathname.endsWith(".svg") ||
+    url.pathname.endsWith(".webp") ||
+    url.pathname.endsWith(".avif") ||
+    url.pathname.endsWith(".jpg") ||
+    url.pathname.endsWith(".jpeg");
+
+  const isFeedRoute = url.pathname === "/feed.xml" ||
+    url.pathname === "/feed.json";
+
+  if (request.mode === "navigate") {
+    event.respondWith(networkFirstPage(request));
+    return;
+  }
+
+  if (isFeedRoute) {
+    event.respondWith(staleWhileRevalidateFeed(request));
+    return;
+  }
+
+  if (isStaticAsset) {
+    event.respondWith(cacheFirst(request));
+  }
+});

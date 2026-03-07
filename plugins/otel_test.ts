@@ -1,7 +1,9 @@
 import { describe, it } from "jsr/testing-bdd";
 import { assertEquals } from "jsr/assert";
 
-import otelPlugin, { type PluginSite } from "./otel.ts";
+import type Site from "lume/core/site.ts";
+
+import otelPlugin from "./otel.ts";
 
 describe("otelPlugin()", () => {
   it("returns a site plugin function", () => {
@@ -17,14 +19,14 @@ describe("otelPlugin()", () => {
   it("plugin does not throw when called with a stub site", () => {
     const events: Map<string, (event?: { files?: Set<string> }) => void> =
       new Map();
-    const stubSite: PluginSite = {
+    const stubSite = {
       addEventListener(
         type: string,
         fn: (event?: { files?: Set<string> }) => void,
       ): void {
         events.set(type, fn);
       },
-    };
+    } as unknown as Site;
     const plugin = otelPlugin();
     plugin(stubSite);
     assertEquals(events.has("beforeBuild"), true);

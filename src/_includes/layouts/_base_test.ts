@@ -85,6 +85,8 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, '<script src="/anti-flash.js"></script>');
       assertStringIncludes(html, 'href="/feed.xml"');
       assertStringIncludes(html, 'href="/feed.json"');
+      assertStringIncludes(html, '<script src="/sw-register.js"></script>');
+      assertStringIncludes(html, 'id="sw-update-toast"');
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");
     });

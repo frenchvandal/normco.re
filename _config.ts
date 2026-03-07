@@ -25,6 +25,8 @@ const site: Site = lume({
 site.add("/style.css");
 site.add("/scripts/theme-toggle.js", "/theme-toggle.js");
 site.add("/scripts/anti-flash.js", "/anti-flash.js");
+site.add("/scripts/sw-register.js", "/sw-register.js");
+site.add("/sw.js");
 
 // Copy XSLT stylesheets to the output as static assets.
 site.add("/feed.xsl");
@@ -79,7 +81,31 @@ site.use(nav());
 // - jsonLd: renders <script type="application/ld+json"> from page data
 // - seo: reports common issues in Lume debug bar (titles, descriptions, image alts, etc.)
 site.use(jsonLd());
-site.use(seo());
+site.use(
+  seo({
+    output: (reports) => {
+      if (reports.size === 0) {
+        console.log("No SEO errors found");
+        return;
+      }
+
+      console.log(`${reports.size} pages found with SEO errors`);
+
+      for (const [pagePath, messages] of reports.entries()) {
+        console.group(`SEO errors for ${pagePath}`);
+        for (const message of messages) {
+          if (typeof message === "string") {
+            console.log(`- ${message}`);
+            continue;
+          }
+
+          console.log("-", JSON.stringify(message, null, 2));
+        }
+        console.groupEnd();
+      }
+    },
+  }),
+);
 
 // Prism is preferred over highlight.js for its autoloadLanguages feature,
 // which detects and loads language grammars on demand — no manual imports needed.
@@ -126,6 +152,6 @@ site.process([".xml"], (pages: Page[]) => {
 // OpenTelemetry build observability — no-op without OTEL_DENO=true.
 // Configure exporters via OTEL_* env vars (for local JSON inspection, use
 // OTEL_EXPORTER_OTLP_PROTOCOL=http/json).
-site.use(otelPlugin());
+site.use(otelPlugin() as unknown as (site: Site) => void);
 
 export default site;
