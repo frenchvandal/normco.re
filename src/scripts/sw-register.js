@@ -22,6 +22,7 @@
     : "dev";
 
   let waitingWorkerRef = null;
+  let hasTriggeredRefresh = false;
 
   function showUpdateToast(waitingWorker) {
     const toast = globalThis.document.getElementById(UPDATE_TOAST_ID);
@@ -40,14 +41,27 @@
 
     toast.dataset.bound = "true";
 
-    button.addEventListener("click", () => {
-      if (waitingWorkerRef === null) {
+    button.addEventListener("click", async () => {
+      if (hasTriggeredRefresh) {
         return;
       }
 
-      waitingWorkerRef.postMessage({ type: "SKIP_WAITING" });
+      hasTriggeredRefresh = true;
+
+      const registration = await globalThis.navigator.serviceWorker
+        .getRegistration();
+      const waitingWorker = registration?.waiting ?? waitingWorkerRef;
+
+      if (waitingWorker !== null) {
+        waitingWorker.postMessage({ type: "SKIP_WAITING" });
+      }
+
       button.setAttribute("disabled", "true");
       button.textContent = "Updating…";
+
+      globalThis.setTimeout(() => {
+        globalThis.location.reload();
+      }, 1500);
     });
   }
 
