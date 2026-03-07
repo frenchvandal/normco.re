@@ -2,13 +2,10 @@ import { metrics, type Span, trace } from "npm/opentelemetry-api";
 
 import { readConsoleDebugPolicy } from "./console_debug.ts";
 
-/** Minimal structural interface for the subset of the Lume Site API used by this plugin. */
-export interface PluginSite {
-  /** Registers a listener for a named build lifecycle event. */
-  addEventListener(
-    type: string,
-    fn: (event?: unknown) => void,
-  ): unknown;
+/** Minimal site interface used by the OpenTelemetry plugin. */
+export interface OTelPluginSite {
+  /** Registers lifecycle listeners consumed by this plugin. */
+  addEventListener(type: string, fn: (event?: unknown) => void): unknown;
 }
 
 interface BuildConsoleRecord {
@@ -48,8 +45,8 @@ interface BuildConsoleRecord {
  * site.use(otelPlugin());
  * ```
  */
-export default function otelPlugin(): (site: PluginSite) => void {
-  return (site: PluginSite): void => {
+export default function otelPlugin(): (site: OTelPluginSite) => void {
+  return (site: OTelPluginSite): void => {
     const readEnv = (name: string): string | undefined => {
       try {
         return Deno.env.get(name);
