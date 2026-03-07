@@ -59,8 +59,12 @@
       "command": "deno check **/*.ts **/*.tsx"
     },
     "lint:doc": {
-      "description": "Lint documentation comments (src, scripts, and plugins; root config files are excluded \u2014 they reference private Lume types by framework requirement)",
+      "description": "Lint documentation comments (src, scripts, and plugins; root config files are excluded — they reference private Lume types by framework requirement)",
       "command": "deno doc --lint src/**/*.ts src/**/*.tsx scripts/**/*.ts plugins/**/*.ts"
+    },
+    "test:doc": {
+      "description": "Run documentation tests from inline JSDoc examples in source files",
+      "command": "deno test --doc src/**/*.ts src/**/*.tsx plugins/**/*.ts"
     },
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
