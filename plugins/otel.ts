@@ -1,12 +1,14 @@
 import { metrics, type Span, trace } from "npm/opentelemetry-api";
 
+import { readConsoleDebugPolicy } from "./console_debug.ts";
+
 /** Minimal structural interface for the subset of the Lume Site API used by this plugin. */
 export interface PluginSite {
   /** Registers a listener for a named build lifecycle event. */
   addEventListener(
     type: string,
-    fn: (event?: { files?: Set<string> }) => void,
-  ): void;
+    fn: (event?: unknown) => void,
+  ): unknown;
 }
 
 interface BuildConsoleRecord {
@@ -32,9 +34,9 @@ interface BuildConsoleRecord {
  * - A `lume.build.duration` histogram recording lifecycle time in milliseconds
  * - A `lume.build.count` counter incremented on every completed lifecycle
  *
- * If `OTEL_EXPORTER_OTLP_PROTOCOL=http/json`, the plugin also prints a
- * structured build record to the console (`console.table` + raw JSON), useful
- * for local development inspection without a full LGTM stack.
+ * If `OTEL_EXPORTER_OTLP_PROTOCOL=http/json`, the plugin can print structured
+ * console diagnostics (`console.table`) controlled by `DEBUG_CONSOLE_LEVEL`
+ * (`summary` by default, `verbose` for deeper inspection, `off` to silence).
  *
  * Without `OTEL_DENO=true`, all OTel calls are no-ops with negligible
  * overhead — the plugin is safe to register unconditionally.
@@ -66,6 +68,7 @@ export default function otelPlugin(): (site: PluginSite) => void {
     const protocol = readEnv("OTEL_EXPORTER_OTLP_PROTOCOL") ??
       "http/json";
     const consoleOutputEnabled = otelEnabled && protocol === "http/json";
+    const debugPolicy = readConsoleDebugPolicy(readEnv);
     const serviceName = readEnv("OTEL_SERVICE_NAME") ?? "lume build";
 
     const buildDuration = meter.createHistogram("lume.build.duration", {
@@ -89,6 +92,10 @@ export default function otelPlugin(): (site: PluginSite) => void {
       buildStartEpochMs = Date.now();
       changedFiles = files ?? new Set();
       buildSpan = tracer.startSpan("lume.build");
+
+      if (consoleOutputEnabled && debugPolicy.level === "verbose") {
+        console.count("otel:lifecycle");
+      }
     };
 
     const finishLifecycle = (trigger: "build" | "update"): void => {
@@ -100,7 +107,7 @@ export default function otelPlugin(): (site: PluginSite) => void {
       buildCount.add(1);
       buildCounter += 1;
 
-      if (consoleOutputEnabled && buildSpan) {
+      if (consoleOutputEnabled && buildSpan && debugPolicy.level !== "off") {
         const spanContext = buildSpan.spanContext();
         const buildRecord: BuildConsoleRecord = {
           buildCount: buildCounter,
@@ -116,9 +123,32 @@ export default function otelPlugin(): (site: PluginSite) => void {
           traceId: spanContext.traceId,
         };
 
-        console.log("\nOpenTelemetry local record (OTLP http/json):");
-        console.table([buildRecord]);
-        console.log(JSON.stringify(buildRecord, null, 2));
+        console.groupCollapsed(
+          `OpenTelemetry local record (${trigger}) #${buildCounter}`,
+        );
+        console.table([buildRecord], [
+          "buildCount",
+          "trigger",
+          "durationMs",
+          "changedFiles",
+          "serviceName",
+          "traceId",
+        ]);
+
+        if (debugPolicy.level === "verbose") {
+          if (changedFiles.size > 0) {
+            console.table(
+              Array.from(changedFiles).map((filePath) => ({ filePath })),
+              ["filePath"],
+            );
+          }
+          console.dir(buildRecord);
+
+          if (debugPolicy.includeTrace) {
+            console.trace("OpenTelemetry lifecycle stack trace");
+          }
+        }
+        console.groupEnd();
       }
 
       buildSpan?.end();
@@ -135,7 +165,8 @@ export default function otelPlugin(): (site: PluginSite) => void {
     });
 
     site.addEventListener("beforeUpdate", (event) => {
-      startLifecycle(event?.files);
+      const eventValue = event as { files?: Set<string> } | undefined;
+      startLifecycle(eventValue?.files);
     });
 
     site.addEventListener("afterUpdate", () => {
