@@ -47,9 +47,9 @@ export default function otelPlugin(): (site: PluginSite) => void {
     const meter = metrics.getMeter("normcore", "1.0.0");
     const otelEnabled = Deno.env.get("OTEL_DENO") === "true";
     const protocol = Deno.env.get("OTEL_EXPORTER_OTLP_PROTOCOL") ??
-      "http/protobuf";
+      "http/json";
     const consoleOutputEnabled = otelEnabled && protocol === "http/json";
-    const serviceName = Deno.env.get("OTEL_SERVICE_NAME") ?? "normcore";
+    const serviceName = Deno.env.get("OTEL_SERVICE_NAME") ?? "lume build";
 
     const buildDuration = meter.createHistogram("lume.build.duration", {
       description: "Lume site build duration",
