@@ -52,7 +52,7 @@
         .getRegistration();
       const waitingWorker = registration?.waiting ?? waitingWorkerRef;
 
-      if (waitingWorker !== null) {
+      if (waitingWorker instanceof ServiceWorker) {
         waitingWorker.postMessage({ type: "SKIP_WAITING" });
       }
 
