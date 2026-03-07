@@ -39,16 +39,16 @@ written in modern CSS rather than a framework, and the only runtime is Deno.
 
 ## Tech Stack
 
-| Layer      | Technology                                                           |
-| ---------- | -------------------------------------------------------------------- |
-| Runtime    | [Deno](https://deno.com/) 2.7.4 (version pinned in `.tool-versions`) |
-| SSG        | [Lume](https://lume.land/) 3.2.1                                     |
-| Templating | TSX + TypeScript (`*.page.tsx`, `*.tsx` layouts and components)      |
-| Styling    | Modern CSS (`style.css`, processed by Lightning CSS)                 |
-| Feeds      | RSS 2.0 and JSON Feed 1.1                                            |
-| Testing    | Deno's built-in test runner with `@std/testing/bdd`                  |
-| Git hooks  | [Lefthook](https://github.com/evilmartians/lefthook)                 |
-| Deployment | GitHub Pages (via GitHub Actions)                                    |
+| Layer      | Technology                                                            |
+| ---------- | --------------------------------------------------------------------- |
+| Runtime    | [Deno](https://deno.com/) 2.7.4 (version pinned in `.tool-versions`)  |
+| SSG        | [Lume](https://lume.land/) 3.2.1                                      |
+| Templating | TSX + TypeScript (`*.page.tsx`, `*.tsx` layouts and components)       |
+| Styling    | Modern CSS (`src/style.css` entrypoint + `src/styles/*.css` partials) |
+| Feeds      | RSS 2.0 and JSON Feed 1.1                                             |
+| Testing    | Deno's built-in test runner with `@std/testing/bdd`                   |
+| Git hooks  | [Lefthook](https://github.com/evilmartians/lefthook)                  |
+| Deployment | GitHub Pages (via GitHub Actions)                                     |
 
 ---
 
@@ -139,7 +139,8 @@ automatically on file changes.
 │   │   ├── anti-flash.js    # Pre-paint theme bootstrap (/anti-flash.js)
 │   │   ├── sw-register.js    # Service-worker registration (/sw-register.js)
 │   │   └── theme-toggle.js  # Theme toggle behavior (/theme-toggle.js)
-│   └── style.css             # Main stylesheet (~1,000 lines, modern CSS)
+│   ├── style.css             # CSS entrypoint (imports layered partials)
+│   └── styles/               # Layered partials (reset/base/layout/components/utilities)
 ├── plugins/
 │   ├── console_debug.ts      # Shared LUME_LOGS-driven console debug policy
 │   └── otel.ts               # Lume plugin for OpenTelemetry build observability
@@ -275,17 +276,19 @@ The central Lume configuration file. Key settings:
 
 **Active plugins:**
 
-| Plugin          | Purpose                                                |
-| --------------- | ------------------------------------------------------ |
-| `lightningcss`  | Minifies CSS; targets modern browsers                  |
-| `sourceMaps`    | Generates source maps for the minified stylesheet      |
-| `attributes`    | HTML attribute helpers in templates                    |
-| `date`          | Date formatting (e.g., `"SHORT"` → `"MMM d"`)          |
-| `sitemap`       | Generates `/sitemap.xml` and `/robots.txt`             |
-| `nav`           | Navigation tree for previous/next post links           |
-| `codeHighlight` | Syntax highlighting for fenced code blocks             |
-| `feed`          | Generates RSS 2.0 and JSON Feed 1.1                    |
-| `jsx`           | Enables TSX/JSX rendering for pages/layouts/components |
+| Plugin          | Purpose                                                  |
+| --------------- | -------------------------------------------------------- |
+| `postcss`       | Resolves CSS partial imports (`@import`) into one bundle |
+| `purgecss`      | Removes unused selectors based on rendered pages         |
+| `lightningcss`  | The single CSS minifier (plus modern browser targets)    |
+| `sourceMaps`    | Generates source maps for processed CSS and JS assets    |
+| `attributes`    | HTML attribute helpers in templates                      |
+| `date`          | Date formatting (e.g., `"SHORT"` → `"MMM d"`)            |
+| `sitemap`       | Generates `/sitemap.xml` and `/robots.txt`               |
+| `nav`           | Navigation tree for previous/next post links             |
+| `codeHighlight` | Syntax highlighting for fenced code blocks               |
+| `feed`          | Generates RSS 2.0 and JSON Feed 1.1                      |
+| `jsx`           | Enables TSX/JSX rendering for pages/layouts/components   |
 
 ### Client-side JavaScript assets
 
@@ -321,9 +324,12 @@ editing. Not required for local development.
 
 ## Styling
 
-All styles live in `src/style.css` (~1,000 lines of modern CSS). No CSS
-preprocessor is used; Lightning CSS handles minification and vendor prefixes at
-build time.
+Styles are organized with a CUBE CSS/ITCSS-inspired structure: one entrypoint
+(`src/style.css`) plus layered partials in `src/styles/` (`reset`, `base`,
+`layout`, `components`, `utilities`).
+
+The build pipeline uses `postcss` (imports), `purgecss` (dead selector removal),
+and `lightningcss` as the **single CSS minifier** and target-aware optimizer.
 
 ### Cascade layers
 

@@ -33,6 +33,13 @@ const STATIC_ASSETS = [
 ];
 
 const FEED_TTL_MS = 30 * 60 * 1000;
+const MAX_PREDICTED_ROUTES = 3;
+const MIN_TRANSITION_HITS = 2;
+const MAX_TRACKED_ROUTES = 60;
+const MAX_TRANSITIONS_PER_ROUTE = 12;
+
+/** @type {Map<string, Map<string, number>>} */
+const navigationTransitions = new Map();
 
 const KNOWN_BOT_PATTERN =
   /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
@@ -51,6 +58,135 @@ function logSw(event, details = {}) {
     debug: SW_DEBUG_LEVEL,
     ...details,
   });
+}
+
+/**
+ * Normalizes the route key used by the predictive preloading model.
+ *
+ * @param {URL} url
+ * @returns {string}
+ */
+function getRouteKey(url) {
+  return `${url.pathname}${url.search}`;
+}
+
+/**
+ * Prunes transition history to keep memory usage bounded.
+ *
+ * @param {string} fromRoute
+ * @param {Map<string, number>} transitionsFromRoute
+ * @returns {void}
+ */
+function pruneTransitionHistory(fromRoute, transitionsFromRoute) {
+  if (transitionsFromRoute.size > MAX_TRANSITIONS_PER_ROUTE) {
+    const sortedTransitions = Array.from(transitionsFromRoute.entries())
+      .sort(([, leftHits], [, rightHits]) => rightHits - leftHits)
+      .slice(0, MAX_TRANSITIONS_PER_ROUTE);
+
+    navigationTransitions.set(fromRoute, new Map(sortedTransitions));
+  }
+
+  if (navigationTransitions.size > MAX_TRACKED_ROUTES) {
+    const trackedRoutes = Array.from(navigationTransitions.entries());
+
+    for (
+      const [staleRoute] of trackedRoutes.slice(
+        0,
+        trackedRoutes.length - MAX_TRACKED_ROUTES,
+      )
+    ) {
+      navigationTransitions.delete(staleRoute);
+    }
+  }
+}
+
+/**
+ * Stores the observed navigation transition from one route to another.
+ *
+ * @param {string} fromRoute
+ * @param {string} toRoute
+ * @returns {void}
+ */
+function recordNavigationTransition(fromRoute, toRoute) {
+  const transitionsFromRoute = navigationTransitions.get(fromRoute) ??
+    new Map();
+  const currentHitCount = transitionsFromRoute.get(toRoute) ?? 0;
+
+  transitionsFromRoute.set(toRoute, currentHitCount + 1);
+  navigationTransitions.set(fromRoute, transitionsFromRoute);
+  pruneTransitionHistory(fromRoute, transitionsFromRoute);
+}
+
+/**
+ * Returns the most likely next routes for a given route.
+ *
+ * @param {string} route
+ * @returns {ReadonlyArray<string>}
+ */
+function getPredictedRoutes(route) {
+  const transitionsFromRoute = navigationTransitions.get(route);
+
+  if (transitionsFromRoute === undefined) {
+    return [];
+  }
+
+  const rankedRoutes = Array.from(transitionsFromRoute.entries())
+    .filter(([, hits]) => hits >= MIN_TRANSITION_HITS)
+    .sort(([, leftHits], [, rightHits]) => rightHits - leftHits)
+    .slice(0, MAX_PREDICTED_ROUTES)
+    .map(([nextRoute]) => nextRoute);
+
+  return rankedRoutes;
+}
+
+/**
+ * Preloads predicted pages using the page cache.
+ *
+ * @param {URL} currentUrl
+ * @returns {Promise<void>}
+ */
+async function preloadPredictedPages(currentUrl) {
+  const currentRoute = getRouteKey(currentUrl);
+  const predictedRoutes = getPredictedRoutes(currentRoute);
+
+  if (predictedRoutes.length === 0) {
+    return;
+  }
+
+  const pageCache = await caches.open(PAGE_CACHE);
+
+  await Promise.all(predictedRoutes.map(async (predictedRoute) => {
+    if (predictedRoute === currentRoute) {
+      return;
+    }
+
+    const predictedUrl = new URL(predictedRoute, self.location.origin);
+    const predictedRequest = new Request(predictedUrl.toString(), {
+      method: "GET",
+      mode: "same-origin",
+      credentials: "same-origin",
+      headers: { accept: "text/html" },
+    });
+
+    const cachedResponse = await pageCache.match(predictedRequest);
+
+    if (cachedResponse !== undefined) {
+      return;
+    }
+
+    try {
+      const networkResponse = await fetch(predictedRequest);
+
+      if (networkResponse.ok) {
+        await pageCache.put(predictedRequest, networkResponse.clone());
+        logSw("predictive-preload: cached", { route: predictedRoute });
+      }
+    } catch {
+      logSw("predictive-preload: skipped (network failure)", {
+        route: predictedRoute,
+      });
+    }
+  }));
 }
 
 self.addEventListener("install", (event) => {
@@ -162,12 +298,26 @@ async function cacheFirst(request) {
  */
 async function networkFirstPage(request) {
   const cache = await caches.open(PAGE_CACHE);
+  const requestUrl = new URL(request.url);
+  const refererHeader = request.headers.get("referer");
+
+  if (refererHeader !== null && URL.canParse(refererHeader)) {
+    const refererUrl = new URL(refererHeader);
+
+    if (refererUrl.origin === requestUrl.origin) {
+      recordNavigationTransition(
+        getRouteKey(refererUrl),
+        getRouteKey(requestUrl),
+      );
+    }
+  }
 
   try {
     const response = await fetch(request);
 
     if (response.ok) {
       await cache.put(request, response.clone());
+      void preloadPredictedPages(requestUrl);
     }
 
     return response;
