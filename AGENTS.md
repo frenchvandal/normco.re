@@ -360,6 +360,14 @@ only for features that still require a preprocessor (maps, loops, complex
 mixins). When SCSS is used, organize partials clearly (`_*.scss`) and prefer
 runtime CSS custom properties over SCSS variables.
 
+For this repository, keep `src/style.css` as the CSS entrypoint and split rules
+into layered partials under `src/styles/` (CUBE CSS/ITCSS-inspired
+organization).
+
+When combining CSS processors, enforce a single minifier: `postcss` for
+imports/composition, `purgecss` for selector pruning, and `lightningcss` for
+minification and browser targets.
+
 **CSS-in-JS is prohibited.** Libraries such as Emotion, styled-components, or
 any runtime style injection add significant performance overhead (forced style
 recalculations, hydration costs, bloated JS bundles) and are incompatible with
