@@ -82,4 +82,4 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     ${nextNav}
   </nav>
 </article>`;
-}
+};

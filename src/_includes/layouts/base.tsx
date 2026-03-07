@@ -65,4 +65,4 @@ export default async (
     <script src="/scripts/sw-register.js?v=${assetVersion}" data-asset-version="${assetVersion}" data-sw-debug-level="${swDebugLevel}"></script>
   </body>
 </html>`;
-}
+};

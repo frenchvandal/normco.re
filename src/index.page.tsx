@@ -62,4 +62,4 @@ export default async (
   </div>
   <a href="/posts/" class="home-all-posts">All posts →</a>
 </section>`;
-}
+};

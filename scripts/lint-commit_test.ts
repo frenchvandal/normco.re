@@ -31,7 +31,10 @@ describe("lintCommit()", () => {
     it("produces only a warning (not an error) for uppercase subject start", () => {
       const report = lintCommit("fix: Correct typo");
       assertEquals(report.errors.length, 0);
-      assertEquals(report.warnings.some((w) => w.rule === "subject-case"), true);
+      assertEquals(
+        report.warnings.some((w) => w.rule === "subject-case"),
+        true,
+      );
     });
   });
 
@@ -113,7 +116,8 @@ describe("lintCommit()", () => {
 
   describe("rule: subject-empty", () => {
     it("rejects an empty subject", () => {
-      const report = lintCommit("feat:  ");
+      // Use a body so trimEnd() doesn't strip the trailing spaces from the header.
+      const report = lintCommit("feat:  \n\nbody line");
       const rule = report.errors.find((e) => e.rule === "subject-empty");
       assertEquals(rule?.severity, "error");
     });
@@ -159,7 +163,9 @@ describe("lintCommit()", () => {
     });
 
     it("does not warn when a blank line separates header and body", () => {
-      const report = lintCommit("fix: typo\n\nThis body is correctly separated");
+      const report = lintCommit(
+        "fix: typo\n\nThis body is correctly separated",
+      );
       assertEquals(
         report.warnings.some((w) => w.rule === "body-leading-blank"),
         false,

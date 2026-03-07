@@ -20,7 +20,8 @@ const contrastIcon =
 /** Renders the site header with logo, navigation, and theme toggle. */
 export default (
   { currentUrl }: { readonly currentUrl: string },
-): string => `<header class="site-header">
+): string =>
+  `<header class="site-header">
   <div class="site-header-inner">
     <a href="/" class="site-name"${ariaCurrent("/", currentUrl)}>normco.re</a>
     <div class="site-header-end">
