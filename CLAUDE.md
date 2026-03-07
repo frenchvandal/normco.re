@@ -18,6 +18,12 @@
 - **References:** Lume docs (<https://lume.land/>), Deno docs
   (<https://docs.deno.com/runtime/>).
 
+- **OpenTelemetry (local):** keep the `plugins/otel.ts` plugin enabled, and
+  activate telemetry only via environment variables. Prefer
+  `OTEL_EXPORTER_OTLP_PROTOCOL=http/json` for local development to inspect
+  structured records directly in the terminal (`console.table` + JSON). Do not
+  introduce dedicated `build:otel` / `serve:otel` tasks.
+
 ---
 
 ## 2. Mandatory workflow
@@ -360,8 +366,12 @@ inheritance leakage to inner components:
 
 ```css
 @scope (.card) to (.card *[data-scope]) {
-  h2 { font-size: 1.25rem; }
-  p  { color: var(--color-text-muted); }
+  h2 {
+    font-size: 1.25rem;
+  }
+  p {
+    color: var(--color-text-muted);
+  }
 }
 ```
 
@@ -375,11 +385,11 @@ properties following the **W3C Design Token Community Group (DTCG) 2025.10**
 naming standard. Use a strict three-level hierarchical convention:
 `category-property-modifier`.
 
-| Level    | Purpose                                 | Example                    |
-| -------- | --------------------------------------- | -------------------------- |
-| Category | Token domain (`color`, `space`, `font`) | `color`                    |
-| Property | Semantic role (`background`, `text`)    | `color-background`         |
-| Modifier | State or variant (`default`, `hover`)   | `color-background-hover`   |
+| Level    | Purpose                                 | Example                  |
+| -------- | --------------------------------------- | ------------------------ |
+| Category | Token domain (`color`, `space`, `font`) | `color`                  |
+| Property | Semantic role (`background`, `text`)    | `color-background`       |
+| Modifier | State or variant (`default`, `hover`)   | `color-background-hover` |
 
 Use `oklch()` for all color tokens — perceptually uniform, wide-gamut, and
 trivially adjustable for lightness, chroma, and hue in a single edit:
@@ -388,18 +398,18 @@ trivially adjustable for lightness, chroma, and hue in a single edit:
 :root {
   /* Colors — W3C DTCG category-property-modifier naming */
   --color-background-default: oklch(97% 0.005 264);
-  --color-background-hover:   oklch(93% 0.008 264);
-  --color-text-default:       oklch(15% 0.010 264);
-  --color-text-muted:         oklch(45% 0.010 264);
-  --color-accent-default:     oklch(55% 0.130 264);
-  --color-accent-hover:       oklch(50% 0.130 264);
-  --color-border-default:     oklch(80% 0.005 264);
+  --color-background-hover: oklch(93% 0.008 264);
+  --color-text-default: oklch(15% 0.010 264);
+  --color-text-muted: oklch(45% 0.010 264);
+  --color-accent-default: oklch(55% 0.130 264);
+  --color-accent-hover: oklch(50% 0.130 264);
+  --color-border-default: oklch(80% 0.005 264);
 
   /* Spacing */
   --space-xs: 0.25rem;
-  --space-s:  0.5rem;
-  --space-m:  1rem;
-  --space-l:  2rem;
+  --space-s: 0.5rem;
+  --space-m: 1rem;
+  --space-l: 2rem;
   --space-xl: 4rem;
 
   color-scheme: light dark;
@@ -408,9 +418,9 @@ trivially adjustable for lightness, chroma, and hue in a single edit:
 @media (prefers-color-scheme: dark) {
   :root {
     --color-background-default: oklch(15% 0.010 264);
-    --color-text-default:       oklch(92% 0.005 264);
-    --color-text-muted:         oklch(60% 0.010 264);
-    --color-border-default:     oklch(30% 0.005 264);
+    --color-text-default: oklch(92% 0.005 264);
+    --color-text-muted: oklch(60% 0.010 264);
+    --color-border-default: oklch(30% 0.005 264);
   }
 }
 ```
