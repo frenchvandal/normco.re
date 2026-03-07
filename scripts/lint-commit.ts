@@ -100,7 +100,7 @@ function lintCommit(input: string): LintReport {
   // Strip trailing newline (common in COMMIT_EDITMSG files) and comment lines.
   const cleaned = input
     .split("\n")
-    .filter((line) => !line.startsWith("#"))
+    .filter((line) => !/^#\s/.test(line))
     .join("\n")
     .trimEnd();
 

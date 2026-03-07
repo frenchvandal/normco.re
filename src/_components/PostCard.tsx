@@ -5,6 +5,7 @@
  * passing them in, keeping this component free of date-formatting logic.
  */
 
+/** Renders one post card row. */
 export default function (
   { title, url, dateStr, dateIso, readingMinutes }: {
     readonly title: string;
