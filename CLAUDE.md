@@ -1009,6 +1009,35 @@ Use coverage ignore comments to exclude code from reports:
 - `// deno-coverage-ignore-start` / `// deno-coverage-ignore-stop` around a
   block.
 
+### When it is acceptable to skip tests or coverage
+
+Coverage is a quality signal, not an absolute goal. Prefer **meaningful tests**
+over artificially forcing 100%.
+
+It is acceptable to use `deno-coverage-ignore` directives (with a brief reason
+in a trailing comment) for:
+
+- **Defensive impossible paths** that are only reachable under runtime/security
+  constraints not reproducible in normal tests (e.g., permission/capability edge
+  paths).
+- **Environment-dependent branches** controlled by host runtime behavior
+  (`Deno.env` capability errors, process/signal/platform quirks) where test
+  setup would add more complexity than value.
+- **Observability-only code** (telemetry/log formatting/debug traces) that has
+  no business impact and is already covered by higher-level behavior checks.
+- **Hard-to-stabilize failure paths** from third-party boundaries when they are
+  not deterministic in CI and cannot be mocked cleanly.
+
+It is **not** acceptable to ignore code that implements core business rules,
+content rendering logic, URL/data transformations, or security-sensitive logic.
+Those paths must be covered by tests.
+
+When using coverage ignore comments:
+
+- Keep the ignored scope as small as possible (prefer line/block over file).
+- Add a short rationale next to the directive.
+- Revisit ignored blocks when code is refactored.
+
 ### Testing references
 
 - <https://docs.deno.com/runtime/fundamentals/testing/>

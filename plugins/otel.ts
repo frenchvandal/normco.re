@@ -8,6 +8,9 @@ export interface OTelPluginSite {
   addEventListener(type: string, fn: (event?: unknown) => void): unknown;
 }
 
+/** Reads an environment variable value used by the plugin runtime. */
+export type OTelReadEnv = (name: string) => string | undefined;
+
 interface BuildConsoleRecord {
   buildCount: number;
   changedFiles: string[];
@@ -45,19 +48,22 @@ interface BuildConsoleRecord {
  * site.use(otelPlugin());
  * ```
  */
-export default function otelPlugin(): (site: OTelPluginSite) => void {
+export default function otelPlugin(
+  readEnvArg?: OTelReadEnv,
+): (site: OTelPluginSite) => void {
   return (site: OTelPluginSite): void => {
-    const readEnv = (name: string): string | undefined => {
+    const readEnv = readEnvArg ?? ((name: string): string | undefined => {
       try {
         return Deno.env.get(name);
       } catch (error) {
+        // deno-coverage-ignore Defensive branch triggered only by runtime permission boundaries.
         if (error instanceof Deno.errors.NotCapable) {
           return undefined;
         }
 
         throw error;
       }
-    };
+    });
 
     const tracer = trace.getTracer("normcore", "1.0.0");
     const meter = metrics.getMeter("normcore", "1.0.0");
@@ -132,6 +138,7 @@ export default function otelPlugin(): (site: OTelPluginSite) => void {
           "traceId",
         ]);
 
+        // deno-coverage-ignore-start Debug-only diagnostics kept lightweight in tests.
         if (debugPolicy.level === "verbose") {
           if (changedFiles.size > 0) {
             console.table(
@@ -145,6 +152,7 @@ export default function otelPlugin(): (site: OTelPluginSite) => void {
             console.trace("OpenTelemetry lifecycle stack trace");
           }
         }
+        // deno-coverage-ignore-stop
         console.groupEnd();
       }
 
