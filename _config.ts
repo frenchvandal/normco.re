@@ -13,6 +13,7 @@ import terser from "lume/plugins/terser.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
 import nav from "lume/plugins/nav.ts";
+import robots from "lume/plugins/robots.ts";
 import jsx from "lume/plugins/jsx.ts";
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
@@ -217,6 +218,35 @@ site.use(readingInfo());
 // XML sitemap + robots.txt.
 // Unlisted pages (export const unlisted = true) are excluded automatically.
 site.use(sitemap());
+site.use(
+  robots({
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+      },
+      {
+        userAgent: "*",
+        disallow: "/404",
+      },
+      {
+        userAgent: "*",
+        disallow: "/404.html",
+      },
+      {
+        userAgent: "*",
+        disallow: "/offline",
+      },
+      {
+        userAgent: "*",
+        disallow: "/offline.html",
+      },
+      {
+        sitemap: "https://normco.re/sitemap.xml",
+      },
+    ],
+  }),
+);
 
 // Navigation tree: data.nav.menu(), data.nav.nextPage(), data.nav.previousPage()
 site.use(nav());
