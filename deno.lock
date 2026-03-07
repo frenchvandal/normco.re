@@ -1,6 +1,7 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@deno/loader@0.3.12": "0.3.12",
     "jsr:@std/assert@^1.0.17": "1.0.19",
     "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/cli@1.0.27": "1.0.27",
@@ -59,6 +60,9 @@
     "npm:schema-dts@1.1.5": "1.1.5"
   },
   "jsr": {
+    "@deno/loader@0.3.12": {
+      "integrity": "52d3b3be0a32192efe07b0a4f1b3047077d2f2bba0f693e32f47421507f9fdb6"
+    },
     "@std/assert@1.0.19": {
       "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
       "dependencies": [
@@ -650,6 +654,7 @@
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/deps/crypto.ts": "0939b1e974472d1db1d611b4160a5a51d796da1368289277d2e26803243959d5",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/deps/date.ts": "cbd4703210520fafd80daf364d9aa4180b322e88f6d01269f6002cfd10a33109",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/deps/debugbar.ts": "f5b87fc01d3c6b8861efa729b142de340f2ca3900b99c5d553434164b7e601d5",
+    "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/deps/deno_loader.ts": "36f4c6414840049a64bfe34721683b045e5ca2fa3a81584dd2732bc29747ec2a",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/deps/dom.ts": "08bdf42363093cae0e0a3f6efb3c500cfc8a7a6ab09d73fa69d212a6c907d547",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/deps/esbuild.ts": "e76395268c8b82856d0bf9452a56a2834d4f1b618e97bd8c628a65a45f5e3c62",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/deps/front_matter.ts": "f5e5780d4a0502d50cde1f42a4aa7830756dc9bd0251ba7448cecd1eaa60878f",
@@ -684,6 +689,7 @@
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/plugins/attributes.ts": "46f8270e7b3fc5acdd9647ec1556bfedcea34f07a6bf45d6cfc4718b152b62c6",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/plugins/code_highlight.ts": "065e0f48819cc74899b987069b16ac7d92ccd10195c5cda9463bd13d5dd7c5f0",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/plugins/date.ts": "60fe4cd136de62e6c3cc52947207adb72175843a92cebb148ea23b5122149200",
+    "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/plugins/esbuild.ts": "2214a060e8ceb70190eaa65908b0d2c3d62d58a4f5b5bcc78b94e2da72052dde",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/plugins/feed.ts": "21414e0e067598e59eddc378bd4d6e7c724b3123243575287fe8a38b5184f1f6",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/plugins/json.ts": "5c49499e56b919ec848d4118ec97dd4fe0a323a6cc4c648dc45ab55297614c12",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/plugins/json_ld.ts": "a9643f94dd658a851ab664f712161899e2037fce39f30c167034016cf2142603",
