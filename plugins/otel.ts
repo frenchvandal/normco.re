@@ -3,29 +3,34 @@ import { metrics, type Span, trace } from "npm/opentelemetry-api";
 /** Minimal structural interface for the subset of the Lume Site API used by this plugin. */
 export interface PluginSite {
   /** Registers a listener for a named build lifecycle event. */
-  addEventListener(type: string, fn: () => void): void;
+  addEventListener(
+    type: string,
+    fn: (event?: { files?: Set<string> }) => void,
+  ): void;
 }
 
 interface BuildConsoleRecord {
   buildCount: number;
+  changedFiles: string[];
   durationMs: number;
   endTimeIso: string;
   protocol: string;
   serviceName: string;
   spanId: string;
   spanName: string;
+  trigger: "build" | "update";
   startTimeIso: string;
   traceId: string;
 }
 
 /**
- * Lume plugin that instruments the build pipeline with OpenTelemetry.
+ * Lume plugin that instruments build and watch updates with OpenTelemetry.
  *
  * When `OTEL_DENO=true` is set, the plugin exports:
  *
- * - A `lume.build` trace span covering the full build lifecycle
- * - A `lume.build.duration` histogram recording build time in milliseconds
- * - A `lume.build.count` counter incremented on every completed build
+ * - A `lume.build` trace span covering each build/update lifecycle
+ * - A `lume.build.duration` histogram recording lifecycle time in milliseconds
+ * - A `lume.build.count` counter incremented on every completed lifecycle
  *
  * If `OTEL_EXPORTER_OTLP_PROTOCOL=http/json`, the plugin also prints a
  * structured build record to the console (`console.table` + raw JSON), useful
@@ -64,15 +69,17 @@ export default function otelPlugin(): (site: PluginSite) => void {
     let buildCounter = 0;
     let buildStartPerformanceMs = 0;
     let buildStartEpochMs = 0;
+    let changedFiles: Set<string> = new Set();
     let buildSpan: Span | undefined;
 
-    site.addEventListener("beforeBuild", () => {
+    const startLifecycle = (files?: Set<string>): void => {
       buildStartPerformanceMs = performance.now();
       buildStartEpochMs = Date.now();
+      changedFiles = files ?? new Set();
       buildSpan = tracer.startSpan("lume.build");
-    });
+    };
 
-    site.addEventListener("afterBuild", () => {
+    const finishLifecycle = (trigger: "build" | "update"): void => {
       const durationMs = Math.round(
         performance.now() - buildStartPerformanceMs,
       );
@@ -85,12 +92,14 @@ export default function otelPlugin(): (site: PluginSite) => void {
         const spanContext = buildSpan.spanContext();
         const buildRecord: BuildConsoleRecord = {
           buildCount: buildCounter,
+          changedFiles: Array.from(changedFiles),
           durationMs,
           endTimeIso: new Date(endEpochMs).toISOString(),
           protocol,
           serviceName,
           spanId: spanContext.spanId,
           spanName: "lume.build",
+          trigger,
           startTimeIso: new Date(buildStartEpochMs).toISOString(),
           traceId: spanContext.traceId,
         };
@@ -102,6 +111,23 @@ export default function otelPlugin(): (site: PluginSite) => void {
 
       buildSpan?.end();
       buildSpan = undefined;
+      changedFiles = new Set();
+    };
+
+    site.addEventListener("beforeBuild", () => {
+      startLifecycle();
+    });
+
+    site.addEventListener("afterBuild", () => {
+      finishLifecycle("build");
+    });
+
+    site.addEventListener("beforeUpdate", (event) => {
+      startLifecycle(event?.files);
+    });
+
+    site.addEventListener("afterUpdate", () => {
+      finishLifecycle("update");
     });
   };
 }

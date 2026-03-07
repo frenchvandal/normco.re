@@ -15,9 +15,13 @@ describe("otelPlugin()", () => {
   });
 
   it("plugin does not throw when called with a stub site", () => {
-    const events: Map<string, () => void> = new Map();
+    const events: Map<string, (event?: { files?: Set<string> }) => void> =
+      new Map();
     const stubSite: PluginSite = {
-      addEventListener(type: string, fn: () => void): void {
+      addEventListener(
+        type: string,
+        fn: (event?: { files?: Set<string> }) => void,
+      ): void {
         events.set(type, fn);
       },
     };
@@ -25,5 +29,12 @@ describe("otelPlugin()", () => {
     plugin(stubSite);
     assertEquals(events.has("beforeBuild"), true);
     assertEquals(events.has("afterBuild"), true);
+    assertEquals(events.has("beforeUpdate"), true);
+    assertEquals(events.has("afterUpdate"), true);
+
+    events.get("beforeBuild")?.();
+    events.get("afterBuild")?.();
+    events.get("beforeUpdate")?.({ files: new Set(["/index.page.ts"]) });
+    events.get("afterUpdate")?.();
   });
 });
