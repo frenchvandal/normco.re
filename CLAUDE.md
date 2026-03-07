@@ -22,6 +22,7 @@
   activate telemetry only via environment variables. Use
   `OTEL_EXPORTER_OTLP_PROTOCOL=http/json` for local development to inspect
   structured records directly in the terminal (`console.table` + JSON).
+
 ---
 
 ## 2. Mandatory workflow
