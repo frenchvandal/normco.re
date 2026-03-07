@@ -7,6 +7,7 @@ import seo from "lume/plugins/seo.ts";
 import prism from "lume/plugins/prism.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
+import esbuild from "lume/plugins/esbuild.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
 import nav from "lume/plugins/nav.ts";
@@ -139,14 +140,23 @@ site.addEventListener("beforeSave", () => {
 
 // Register assets so Lume discovers them before processors/plugins run.
 site.add("/style.css");
-site.add("/scripts/theme-toggle.js", "/theme-toggle.js");
-site.add("/scripts/anti-flash.js", "/anti-flash.js");
-site.add("/scripts/sw-register.js", "/sw-register.js");
-site.add("/sw.js");
+site.add("/scripts/theme-toggle.js");
+site.add("/scripts/anti-flash.js");
+site.add("/scripts/sw-register.js");
+site.add("/scripts/sw.js", "/sw.js");
 
 // Copy XSLT stylesheets to the output as static assets.
 site.add("/feed.xsl");
 site.add("/sitemap.xsl");
+
+// Minify client-side JavaScript with esbuild while preserving source maps.
+site.use(
+  esbuild({
+    options: {
+      minify: true,
+    },
+  }),
+);
 
 // lightningcss minifies the stylesheet and prepares source-map metadata.
 // Targets modern browsers that natively support oklch(), light-dark(),
@@ -164,7 +174,7 @@ site.use(
   }),
 );
 
-// Generate a separate .css.map sidecar file for the minified stylesheet.
+// Generate source-map sidecar files for processed CSS and JavaScript assets.
 site.use(sourceMaps());
 
 // HTML attribute helpers: helpers.attr(), helpers.class()

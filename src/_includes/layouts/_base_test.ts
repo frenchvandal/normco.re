@@ -88,13 +88,13 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, 'href="/style.css?v=dev"');
       assertStringIncludes(
         html,
-        '<script src="/anti-flash.js?v=dev"></script>',
+        '<script src="/scripts/anti-flash.js?v=dev"></script>',
       );
       assertStringIncludes(html, 'href="/feed.xml"');
       assertStringIncludes(html, 'href="/feed.json"');
       assertStringIncludes(
         html,
-        '<script src="/sw-register.js?v=dev" data-asset-version="dev" data-sw-debug-level="off"></script>',
+        '<script src="/scripts/sw-register.js?v=dev" data-asset-version="dev" data-sw-debug-level="off"></script>',
       );
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");
@@ -109,7 +109,7 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
-        '<script src="/sw-register.js?v=abc123" data-asset-version="abc123" data-sw-debug-level="verbose"></script>',
+        '<script src="/scripts/sw-register.js?v=abc123" data-asset-version="abc123" data-sw-debug-level="verbose"></script>',
       );
     });
 

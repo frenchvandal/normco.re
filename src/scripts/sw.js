@@ -25,8 +25,8 @@ const OFFLINE_FALLBACK_HTML = `<!doctype html>
 const STATIC_ASSETS = [
   "/",
   `/style.css?v=${SW_VERSION}`,
-  `/theme-toggle.js?v=${SW_VERSION}`,
-  `/anti-flash.js?v=${SW_VERSION}`,
+  `/scripts/theme-toggle.js?v=${SW_VERSION}`,
+  `/scripts/anti-flash.js?v=${SW_VERSION}`,
   "/feed.xml",
   "/feed.json",
   OFFLINE_URL,
