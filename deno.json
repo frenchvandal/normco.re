@@ -65,10 +65,6 @@
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"
-    },
-    "study:tsx": {
-      "description": "Run an exhaustive migration study from ESM TypeScript templates to TSX",
-      "command": "deno run --allow-read scripts/study-tsx-migration.ts"
     }
   },
   "compilerOptions": {
