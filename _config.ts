@@ -15,10 +15,116 @@ import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
 import otelPlugin from "./plugins/otel.ts";
 
+type BuildData = {
+  assetVersion: string;
+  repositoryUrl?: string;
+};
+
+function runGitCommand(args: string[]): string | undefined {
+  try {
+    const command = new Deno.Command("git", { args });
+    const output = command.outputSync();
+
+    if (!output.success) {
+      return undefined;
+    }
+
+    return new TextDecoder().decode(output.stdout).trim();
+  } catch {
+    return undefined;
+  }
+}
+
+function normalizeRepositoryUrl(url: string | undefined): string | undefined {
+  if (!url) {
+    return undefined;
+  }
+
+  if (url.startsWith("git@")) {
+    const sshMatch = /^git@([^:]+):(.+?)(?:\.git)?$/.exec(url);
+
+    if (sshMatch) {
+      const [, host, repoPath] = sshMatch;
+      return `https://${host}/${repoPath}`;
+    }
+  }
+
+  return url.replace(/\.git$/, "");
+}
+
+function getBuildData(): BuildData {
+  const commitHash = runGitCommand(["rev-parse", "--short", "HEAD"]);
+  const repositoryUrl = normalizeRepositoryUrl(
+    runGitCommand(["config", "--get", "remote.origin.url"]),
+  );
+
+  return repositoryUrl
+    ? {
+      assetVersion: commitHash ?? "dev",
+      repositoryUrl,
+    }
+    : {
+      assetVersion: commitHash ?? "dev",
+    };
+}
+
 /** Lume site instance — entry point for the build pipeline. */
 const site: Site = lume({
   src: "./src",
   location: new URL("https://normco.re"),
+  server: {
+    debugBar: true,
+  },
+});
+
+const buildData = getBuildData();
+site.data("build", buildData);
+
+type SeoIssue = {
+  pagePath: string;
+  messages: string[];
+};
+
+const seoIssues: SeoIssue[] = [];
+
+function normalizeSeoMessage(message: unknown): string {
+  if (typeof message === "string") {
+    return message;
+  }
+
+  return JSON.stringify(message, null, 2);
+}
+
+function updateSeoDebugCollection(site: Site): void {
+  const collection = site.debugBar?.collection("SEO output errors");
+
+  if (!collection) {
+    return;
+  }
+
+  collection.icon = "search";
+  collection.items = seoIssues.map(({ pagePath, messages }) => ({
+    title: pagePath,
+    description: messages.join("\n"),
+    actions: [
+      {
+        text: "Open page",
+        href: pagePath,
+      },
+      ...(buildData.repositoryUrl
+        ? [
+          {
+            text: "Open repository",
+            href: buildData.repositoryUrl,
+          },
+        ]
+        : []),
+    ],
+  }));
+}
+
+site.addEventListener("beforeSave", () => {
+  updateSeoDebugCollection(site);
 });
 
 // Register assets so Lume discovers them before processors/plugins run.
@@ -84,25 +190,31 @@ site.use(jsonLd());
 site.use(
   seo({
     output: (reports) => {
+      seoIssues.length = 0;
+
       if (reports.size === 0) {
         console.log("No SEO errors found");
+        updateSeoDebugCollection(site);
         return;
       }
 
       console.log(`${reports.size} pages found with SEO errors`);
 
       for (const [pagePath, messages] of reports.entries()) {
-        console.group(`SEO errors for ${pagePath}`);
-        for (const message of messages) {
-          if (typeof message === "string") {
-            console.log(`- ${message}`);
-            continue;
-          }
+        const normalizedMessages = messages.map(normalizeSeoMessage);
+        seoIssues.push({
+          pagePath,
+          messages: normalizedMessages,
+        });
 
-          console.log("-", JSON.stringify(message, null, 2));
+        console.group(`SEO errors for ${pagePath}`);
+        for (const message of normalizedMessages) {
+          console.log(`- ${message}`);
         }
         console.groupEnd();
       }
+
+      updateSeoDebugCollection(site);
     },
   }),
 );

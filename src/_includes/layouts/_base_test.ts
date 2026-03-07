@@ -81,11 +81,17 @@ describe("base.tsx layout", () => {
 
     it("includes core head and accessibility links", async () => {
       const html = await baseLayout(makeData({}), MOCK_HELPERS);
-      assertStringIncludes(html, 'href="/style.css"');
-      assertStringIncludes(html, '<script src="/anti-flash.js"></script>');
+      assertStringIncludes(html, 'href="/style.css?v=dev"');
+      assertStringIncludes(
+        html,
+        '<script src="/anti-flash.js?v=dev"></script>',
+      );
       assertStringIncludes(html, 'href="/feed.xml"');
       assertStringIncludes(html, 'href="/feed.json"');
-      assertStringIncludes(html, '<script src="/sw-register.js"></script>');
+      assertStringIncludes(
+        html,
+        '<script src="/sw-register.js?v=dev" data-asset-version="dev"></script>',
+      );
       assertStringIncludes(html, 'id="sw-update-toast"');
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");

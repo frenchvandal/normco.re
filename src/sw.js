@@ -1,4 +1,4 @@
-const SW_VERSION = "v1";
+const SW_VERSION = new URL(self.location.href).searchParams.get("v") ?? "dev";
 const STATIC_CACHE = `static-${SW_VERSION}`;
 const PAGE_CACHE = `pages-${SW_VERSION}`;
 const FEED_CACHE = `feeds-${SW_VERSION}`;
@@ -22,9 +22,9 @@ const OFFLINE_FALLBACK_HTML = `<!doctype html>
 
 const STATIC_ASSETS = [
   "/",
-  "/style.css",
-  "/theme-toggle.js",
-  "/anti-flash.js",
+  `/style.css?v=${SW_VERSION}`,
+  `/theme-toggle.js?v=${SW_VERSION}`,
+  `/anti-flash.js?v=${SW_VERSION}`,
   "/feed.xml",
   "/feed.json",
   OFFLINE_URL,

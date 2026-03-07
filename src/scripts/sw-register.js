@@ -16,6 +16,13 @@
   const UPDATE_TOAST_ID = "sw-update-toast";
   const UPDATE_BUTTON_ID = "sw-update-button";
 
+  const currentScript = globalThis.document.currentScript;
+  const assetVersion = currentScript instanceof HTMLScriptElement
+    ? currentScript.dataset.assetVersion ?? "dev"
+    : "dev";
+
+  let waitingWorkerRef = null;
+
   function showUpdateToast(waitingWorker) {
     const toast = globalThis.document.getElementById(UPDATE_TOAST_ID);
     const button = globalThis.document.getElementById(UPDATE_BUTTON_ID);
@@ -24,16 +31,21 @@
       return;
     }
 
+    waitingWorkerRef = waitingWorker;
+    toast.hidden = false;
+
     if (toast.dataset.bound === "true") {
-      toast.hidden = false;
       return;
     }
 
     toast.dataset.bound = "true";
-    toast.hidden = false;
 
     button.addEventListener("click", () => {
-      waitingWorker.postMessage({ type: "SKIP_WAITING" });
+      if (waitingWorkerRef === null) {
+        return;
+      }
+
+      waitingWorkerRef.postMessage({ type: "SKIP_WAITING" });
       button.setAttribute("disabled", "true");
       button.textContent = "Updating…";
     });
@@ -65,7 +77,7 @@
   );
 
   globalThis.navigator.serviceWorker
-    .register("/sw.js", { scope: "/" })
+    .register(`/sw.js?v=${assetVersion}`, { scope: "/" })
     .then((registration) => {
       if (registration.waiting !== null) {
         showUpdateToast(registration.waiting);
