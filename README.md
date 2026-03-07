@@ -73,9 +73,9 @@ written in modern CSS rather than a framework, and the only runtime is Deno.
   Alternatively: `brew install lefthook` (macOS) or
   `go install github.com/evilmartians/lefthook@latest`.
 
-> **Important:** Set the environment variable `DENO_TLS_CA_STORE=system` before
-> every Deno CLI command, especially in corporate or proxy environments. All
-> tasks below assume this variable is set.
+> **Note:** If you encounter TLS/certificate issues (for example behind a
+> corporate proxy), prefix Deno commands with `DENO_TLS_CA_STORE=system`. On
+> most personal setups, this is not required.
 
 ---
 
@@ -132,11 +132,14 @@ automatically on file changes.
 │   ├── feed.xsl              # XSLT stylesheet for RSS/Atom feeds
 │   ├── feeds.page.tsx        # Syndication hub (/feeds/)
 │   ├── index.page.tsx        # Home page (/)
+│   ├── offline.page.tsx      # Offline fallback page (/offline/)
 │   ├── sitemap.xsl           # XSLT stylesheet for the sitemap
+│   ├── sw.js                 # Service worker source
 │   ├── scripts/
 │   │   ├── anti-flash.js    # Pre-paint theme bootstrap (/anti-flash.js)
+│   │   ├── sw-register.js    # Service-worker registration (/sw-register.js)
 │   │   └── theme-toggle.js  # Theme toggle behavior (/theme-toggle.js)
-│   └── style.css             # Main stylesheet (~870 lines, modern CSS)
+│   └── style.css             # Main stylesheet (~1,000 lines, modern CSS)
 ├── plugins/
 │   ├── console_debug.ts      # Shared LUME_LOGS-driven console debug policy
 │   └── otel.ts               # Lume plugin for OpenTelemetry build observability
@@ -318,7 +321,7 @@ editing. Not required for local development.
 
 ## Styling
 
-All styles live in `src/style.css` (~870 lines of modern CSS). No CSS
+All styles live in `src/style.css` (~1,000 lines of modern CSS). No CSS
 preprocessor is used; Lightning CSS handles minification and vendor prefixes at
 build time.
 
