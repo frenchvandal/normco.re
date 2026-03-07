@@ -56,6 +56,7 @@ function normalizeRepositoryUrl(url: string | undefined): string | undefined {
 
 function getBuildData(): BuildData {
   const commitHash = runGitCommand(["rev-parse", "--short", "HEAD"]);
+  const assetVersion = commitHash ?? crypto.randomUUID();
   const repositoryUrl = normalizeRepositoryUrl(
     runGitCommand(["config", "--get", "remote.origin.url"]),
   );
@@ -67,12 +68,12 @@ function getBuildData(): BuildData {
 
   return repositoryUrl
     ? {
-      assetVersion: commitHash ?? "dev",
+      assetVersion,
       repositoryUrl,
       swDebugLevel,
     }
     : {
-      assetVersion: commitHash ?? "dev",
+      assetVersion,
       swDebugLevel,
     };
 }
