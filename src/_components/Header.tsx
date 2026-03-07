@@ -18,10 +18,10 @@ const contrastIcon =
   `<svg class="theme-icon" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 2.5A7.5 7.5 0 0 1 10 17.5Z" fill="currentColor"/></svg>`;
 
 /** Renders the site header with logo, navigation, and theme toggle. */
-export default function (
+export default (
   { currentUrl }: { readonly currentUrl: string },
-): string {
-  return `<header class="site-header">
+): string =>
+  `<header class="site-header">
   <div class="site-header-inner">
     <a href="/" class="site-name"${ariaCurrent("/", currentUrl)}>normco.re</a>
     <div class="site-header-end">
@@ -33,4 +33,3 @@ export default function (
     </div>
   </div>
 </header>`;
-}

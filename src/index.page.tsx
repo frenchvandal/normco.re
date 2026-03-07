@@ -23,10 +23,10 @@ type Comp = {
 };
 
 /** Renders the home page body. */
-export default async function (
+export default async (
   data: Lume.Data,
   helpers: Lume.Helpers,
-): Promise<string> {
+): Promise<string> => {
   // Lume.Helpers and Lume.comp are loosely typed; cast to minimal interfaces above
   // (§5.4 — library boundary).
   const { date: dateFormat } = helpers as unknown as H;
@@ -62,4 +62,4 @@ export default async function (
   </div>
   <a href="/posts/" class="home-all-posts">All posts →</a>
 </section>`;
-}
+};

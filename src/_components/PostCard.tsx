@@ -6,7 +6,7 @@
  */
 
 /** Renders one post card row. */
-export default function (
+export default (
   { title, url, dateStr, dateIso, readingMinutes }: {
     readonly title: string;
     readonly url: string;
@@ -16,7 +16,7 @@ export default function (
     readonly dateIso: string;
     readonly readingMinutes?: number;
   },
-): string {
+): string => {
   const meta = readingMinutes !== undefined
     ? `<span class="post-card-meta">${readingMinutes} min read</span>`
     : "";
@@ -26,4 +26,4 @@ export default function (
   <h3 class="post-card-title"><a href="${url}">${title}</a></h3>
   ${meta}
 </article>`;
-}
+};

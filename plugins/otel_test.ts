@@ -1,19 +1,17 @@
 import { describe, it } from "jsr/testing-bdd";
 import { assertEquals } from "jsr/assert";
 
-import type Site from "lume/core/site.ts";
-
-import otelPlugin from "./otel.ts";
+import otelPlugin, { type OTelPluginSite } from "./otel.ts";
 
 type OTelEvent = { files?: Set<string> };
 
 function withStubSite() {
   const events: Map<string, (event?: OTelEvent) => void> = new Map();
-  const stubSite = {
+  const stubSite: OTelPluginSite = {
     addEventListener(type: string, fn: (event?: OTelEvent) => void): void {
       events.set(type, fn);
     },
-  } as unknown as Site;
+  };
 
   return { events, stubSite };
 }

@@ -21,15 +21,18 @@
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
-type Severity = "error" | "warning";
+/** Severity level of a lint issue. */
+export type Severity = "error" | "warning";
 
-type LintIssue = {
+/** A single validation issue produced by the commit linter. */
+export type LintIssue = {
   readonly rule: string;
   readonly severity: Severity;
   readonly message: string;
 };
 
-type LintReport = {
+/** Full validation report returned by `lintCommit`. */
+export type LintReport = {
   readonly input: string;
   readonly valid: boolean;
   readonly errors: ReadonlyArray<LintIssue>;
@@ -94,7 +97,7 @@ function parseHeader(header: string): ParsedHeader | undefined {
 // ── Rules ──────────────────────────────────────────────────────────────────
 
 /** Validates the commit message and returns a lint report. */
-function lintCommit(input: string): LintReport {
+export function lintCommit(input: string): LintReport {
   const issues: LintIssue[] = [];
 
   // Strip trailing newline (common in COMMIT_EDITMSG files) and comment lines.
@@ -127,7 +130,7 @@ function lintCommit(input: string): LintReport {
   }
 
   // ── Parse the header ───────────────────────────────────────────────────
-  const parsed = parseHeader(header.trim());
+  const parsed = parseHeader(header);
 
   if (parsed === undefined) {
     issues.push({
@@ -325,4 +328,4 @@ async function main(): Promise<void> {
   if (!report.valid) Deno.exit(1);
 }
 
-await main();
+if (import.meta.main) await main();

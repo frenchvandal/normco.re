@@ -1,4 +1,4 @@
-import { assertNotMatch, assertStringIncludes } from "jsr/assert";
+import { assert, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
 import postLayout from "./post.tsx";
@@ -97,7 +97,7 @@ describe("post.tsx layout", () => {
       const html = postLayout(makeData({}), MOCK_HELPERS);
       // Two placeholder divs: one for prev, one for next.
       const count = (html.match(/<div><\/div>/g) ?? []).length;
-      assertStringIncludes(String(count >= 2), "true");
+      assert(count >= 2, `Expected at least 2 placeholder divs, got ${count}`);
     });
   });
 

@@ -8,8 +8,8 @@ export const description =
   "About Phiphi — a software person writing from Chengdu, China.";
 
 /** Renders the About page body. */
-export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
-  return `<h1 class="about-title">About</h1>
+export default (_data: Lume.Data, _helpers: Lume.Helpers): string =>
+  `<h1 class="about-title">About</h1>
 <div class="about-content">
   <p>
     Hi, I'm Phiphi. I'm a software person living in Chengdu, China — a city
@@ -25,4 +25,3 @@ export default function (_data: Lume.Data, _helpers: Lume.Helpers): string {
     <a href="/feed.json">JSON Feed</a>.
   </p>
 </div>`;
-}
