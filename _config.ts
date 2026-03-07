@@ -13,11 +13,13 @@ import nav from "lume/plugins/nav.ts";
 import jsx from "lume/plugins/jsx.ts";
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
+import { readConsoleDebugPolicy } from "./plugins/console_debug.ts";
 import otelPlugin from "./plugins/otel.ts";
 
 type BuildData = {
   assetVersion: string;
   repositoryUrl?: string;
+  swDebugLevel: "off" | "summary" | "verbose";
 };
 
 function runGitCommand(args: string[]): string | undefined {
@@ -57,14 +59,21 @@ function getBuildData(): BuildData {
   const repositoryUrl = normalizeRepositoryUrl(
     runGitCommand(["config", "--get", "remote.origin.url"]),
   );
+  const consoleDebugPolicy = readConsoleDebugPolicy((name) =>
+    Deno.env.get(name)
+  );
+  const isServeTask = Deno.env.get("DENO_TASK_NAME") === "serve";
+  const swDebugLevel = isServeTask ? consoleDebugPolicy.level : "off";
 
   return repositoryUrl
     ? {
       assetVersion: commitHash ?? "dev",
       repositoryUrl,
+      swDebugLevel,
     }
     : {
       assetVersion: commitHash ?? "dev",
+      swDebugLevel,
     };
 }
 

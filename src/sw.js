@@ -1,4 +1,6 @@
-const SW_VERSION = new URL(self.location.href).searchParams.get("v") ?? "dev";
+const SW_QUERY = new URL(self.location.href).searchParams;
+const SW_VERSION = SW_QUERY.get("v") ?? "dev";
+const SW_DEBUG_LEVEL = SW_QUERY.get("debug") ?? "off";
 const STATIC_CACHE = `static-${SW_VERSION}`;
 const PAGE_CACHE = `pages-${SW_VERSION}`;
 const FEED_CACHE = `feeds-${SW_VERSION}`;
@@ -35,7 +37,24 @@ const FEED_TTL_MS = 30 * 60 * 1000;
 const KNOWN_BOT_PATTERN =
   /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
 
+function isSwDebugEnabled() {
+  return SW_DEBUG_LEVEL === "summary" || SW_DEBUG_LEVEL === "verbose";
+}
+
+function logSw(event, details = {}) {
+  if (!isSwDebugEnabled()) {
+    return;
+  }
+
+  console.info("[SW]", event, {
+    version: SW_VERSION,
+    debug: SW_DEBUG_LEVEL,
+    ...details,
+  });
+}
+
 self.addEventListener("install", (event) => {
+  logSw("install", { staticCache: STATIC_CACHE, assets: STATIC_ASSETS.length });
   event.waitUntil((async () => {
     const cache = await caches.open(STATIC_CACHE);
     await cache.addAll(STATIC_ASSETS);
@@ -44,19 +63,30 @@ self.addEventListener("install", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
+  logSw("activate", {
+    staticCache: STATIC_CACHE,
+    pageCache: PAGE_CACHE,
+    feedCache: FEED_CACHE,
+  });
   event.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(
-      keys
-        .filter((key) => ![STATIC_CACHE, PAGE_CACHE, FEED_CACHE].includes(key))
-        .map((key) => caches.delete(key)),
+    const staleKeys = keys.filter((key) =>
+      ![STATIC_CACHE, PAGE_CACHE, FEED_CACHE].includes(key)
     );
+
+    logSw("activate: pruning stale caches", {
+      staleKeys,
+      cacheCountBefore: keys.length,
+    });
+
+    await Promise.all(staleKeys.map((key) => caches.delete(key)));
     await self.clients.claim();
   })());
 });
 
 self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") {
+    logSw("message: SKIP_WAITING");
     self.skipWaiting();
   }
 });
@@ -222,6 +252,15 @@ async function staleWhileRevalidateFeed(request) {
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
+
+  if (SW_DEBUG_LEVEL === "verbose") {
+    logSw("fetch", {
+      method: request.method,
+      destination: request.destination,
+      mode: request.mode,
+      url: request.url,
+    });
+  }
 
   if (shouldBypassRequest(request)) {
     return;

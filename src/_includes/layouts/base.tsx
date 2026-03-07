@@ -13,6 +13,7 @@ type Comp = {
 
 type BuildData = {
   assetVersion?: string;
+  swDebugLevel?: "off" | "summary" | "verbose";
 };
 
 type LayoutData = Lume.Data & {
@@ -35,6 +36,7 @@ export default async function (
   const header = await Header({ currentUrl: url ?? "/" });
   const footer = await Footer({});
   const assetVersion = build?.assetVersion ?? "dev";
+  const swDebugLevel = build?.swDebugLevel ?? "off";
 
   return `<!doctype html>
 <html lang="en">
@@ -59,12 +61,8 @@ export default async function (
       </main>
       ${footer}
     </div>
-    <div id="sw-update-toast" class="sw-update-toast" role="status" aria-live="polite" hidden>
-      <p class="sw-update-toast-text">A new version is available.</p>
-      <button type="button" id="sw-update-button" class="sw-update-toast-button">Refresh</button>
-    </div>
     <script src="/theme-toggle.js?v=${assetVersion}"></script>
-    <script src="/sw-register.js?v=${assetVersion}" data-asset-version="${assetVersion}"></script>
+    <script src="/sw-register.js?v=${assetVersion}" data-asset-version="${assetVersion}" data-sw-debug-level="${swDebugLevel}"></script>
   </body>
 </html>`;
 }

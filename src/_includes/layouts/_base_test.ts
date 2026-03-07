@@ -22,6 +22,10 @@ function makeData(
     description?: string;
     content?: string;
     url?: string;
+    build?: {
+      assetVersion?: string;
+      swDebugLevel?: "off" | "summary" | "verbose";
+    };
   },
 ): Lume.Data {
   return {
@@ -90,11 +94,23 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, 'href="/feed.json"');
       assertStringIncludes(
         html,
-        '<script src="/sw-register.js?v=dev" data-asset-version="dev"></script>',
+        '<script src="/sw-register.js?v=dev" data-asset-version="dev" data-sw-debug-level="off"></script>',
       );
-      assertStringIncludes(html, 'id="sw-update-toast"');
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");
+    });
+
+    it("passes service-worker debug level to the register script", async () => {
+      const html = await baseLayout(
+        makeData({
+          build: { assetVersion: "abc123", swDebugLevel: "verbose" },
+        }),
+        MOCK_HELPERS,
+      );
+      assertStringIncludes(
+        html,
+        '<script src="/sw-register.js?v=abc123" data-asset-version="abc123" data-sw-debug-level="verbose"></script>',
+      );
     });
 
     it("injects the page content into <main>", async () => {
