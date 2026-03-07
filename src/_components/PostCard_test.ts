@@ -1,7 +1,7 @@
 import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import PostCard from "./PostCard.ts";
+import PostCard from "./PostCard.tsx";
 
 /** Shared base props used across all PostCard tests. */
 const BASE = {

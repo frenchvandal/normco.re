@@ -4,7 +4,7 @@
 export const lang = "en";
 
 /** Default layout applied to every page. Posts override this via `src/posts/_data.ts`. */
-export const layout = "layouts/base.ts";
+export const layout = "layouts/base.tsx";
 
 /** Site metadata used for meta tags and feeds. */
 export const metas = {

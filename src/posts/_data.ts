@@ -4,4 +4,4 @@
 export const type = "post";
 
 /** Default layout for all posts. */
-export const layout = "layouts/post.ts";
+export const layout = "layouts/post.tsx";

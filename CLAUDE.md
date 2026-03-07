@@ -92,12 +92,13 @@ first argument to validate an arbitrary file.
   unless explicitly requested, and do not modify or delete existing
   documentation files without explicit instruction. Human contributors are free
   to evolve documentation as needed, following the project's tone and structure.
-- Always prefer ESM + TypeScript for everything: pages, layouts, data files, and
-  components. Another engine (Vento, Nunjucks, JSX, etc.) may be used only as a
-  fallback when ESM + TypeScript cannot achieve the goal (e.g., a plugin that
-  requires a specific template engine). Document the reason in a code comment.
+- Always prefer TSX + TypeScript for rendering templates (pages, layouts,
+  components), with TypeScript modules for data/config files. Another engine
+  (Vento, Nunjucks, etc.) may be used only as a fallback when TSX + TypeScript
+  cannot achieve the goal (e.g., a plugin that requires a specific template
+  engine). Document the reason in a code comment.
 - Do not use Markdown (`.md`) for new content. All new posts and pages must be
-  TypeScript (`*.page.ts`).
+  TSX (`*.page.tsx`).
 - Do not modify generated artifacts or build outputs.
 - Do not over-engineer solutions.
 
@@ -113,14 +114,14 @@ If a command cannot be run, state which command would be needed and why.
 
 ### Stack summary
 
-| Layer      | Technology                                                        |
-| ---------- | ----------------------------------------------------------------- |
-| Runtime    | Deno (version in `.tool-versions`)                                |
-| SSG        | Lume (official plugins only)                                      |
-| Templating | ESM + TypeScript (all pages, layouts, data, components)           |
-| Styling    | Modern CSS (SCSS only when native CSS cannot achieve the goal)    |
-| Content    | TypeScript (`*.page.ts`) for all posts and pages                  |
-| Fallback   | Other template engines only when ESM+TS is technically impossible |
+| Layer      | Technology                                                         |
+| ---------- | ------------------------------------------------------------------ |
+| Runtime    | Deno (version in `.tool-versions`)                                 |
+| SSG        | Lume (official plugins only)                                       |
+| Templating | TSX + TypeScript (pages/layouts/components) + TS data/config files |
+| Styling    | Modern CSS (SCSS only when native CSS cannot achieve the goal)     |
+| Content    | TSX (`*.page.tsx`) for all posts and pages                         |
+| Fallback   | Other template engines only when TSX+TS is technically impossible  |
 
 ---
 
@@ -258,7 +259,7 @@ type HttpStatus = (typeof HttpStatus)[keyof typeof HttpStatus]; // 200 | 404 | 5
 
 - **Functional core, imperative shell:** keep business logic (data transforms,
   formatting, sorting) as pure functions without side effects.
-- **Separation of concerns:** `*.page.ts` and `_component.ts` files contain
+- **Separation of concerns:** `*.page.tsx` and `_components/*.tsx` files contain
   rendering logic only; extract complex data manipulation into pure utility
   functions.
 - **Composition over inheritance:** build complex HTML by composing smaller,
@@ -270,9 +271,9 @@ type HttpStatus = (typeof HttpStatus)[keyof typeof HttpStatus]; // 200 | 404 | 5
 
 - **Prefer `function` for top-level functions**, and reserve arrow functions for
   closures and inline callbacks. **Exception (and requirement) for Lume render
-  files:** pages (`*.page.ts`), layouts, and components use `export default`
-  with an arrow function as the render entry point — this is a hard framework
-  requirement, not a style choice (see §9 for examples).
+  files:** pages (`*.page.tsx`), layouts (`*.tsx`), and components (`*.tsx`) use
+  `export default` with an arrow function as the render entry point — this is a
+  hard framework requirement, not a style choice (see §9 for examples).
 - **1–2 params → positional; 3+ → destructured options object.** Multiple
   boolean params always use an options object regardless of count.
 - **Prefer union types over function overloads** unless the return type changes
@@ -631,10 +632,10 @@ whitespace, and content quality — not by decorative elements.
 
 | Kind                | Convention                  | Example                 |
 | ------------------- | --------------------------- | ----------------------- |
-| Component / Class   | `PascalCase.ts`             | `PostCard.ts`           |
+| Component / Class   | `PascalCase.tsx`            | `PostCard.tsx`          |
 | Utility / module    | `kebab-case.ts`             | `date-helpers.ts`       |
 | Styles              | `kebab-case.css` or `.scss` | `_post-card.css`        |
-| Page                | `kebab-case`                | `about.page.ts`         |
+| Page                | `kebab-case`                | `about.page.tsx`        |
 | Directory           | `kebab-case`                | `blog-posts/`           |
 | Default entry point | `mod.ts`                    | `utils/mod.ts`          |
 | Internal module     | `_kebab-case.ts`            | `_parse-frontmatter.ts` |
@@ -679,26 +680,26 @@ acronyms**:
 
 ### Content model: TypeScript everywhere
 
-All content — posts, pages, layouts, data, and components — is authored in ESM
+All content — posts, pages, layouts, data, and components — is authored in TSX +
 TypeScript. Markdown is not used for new content.
 
-| File type     | Extension                  | Example                     |
-| ------------- | -------------------------- | --------------------------- |
-| Post / Page   | `*.page.ts`                | `posts/my-article.page.ts`  |
-| Layout        | `*.ts` in `_includes/`     | `_includes/layouts/main.ts` |
-| Data (shared) | `_data.ts` or `_data/*.ts` | `_data/site.ts`             |
-| Component     | `*.ts` in `_components/`   | `_components/PostCard.ts`   |
-| Config        | `_config.ts`               | `_config.ts`                |
+| File type     | Extension                  | Example                      |
+| ------------- | -------------------------- | ---------------------------- |
+| Post / Page   | `*.page.tsx`               | `posts/my-article.page.tsx`  |
+| Layout        | `*.tsx` in `_includes/`    | `_includes/layouts/main.tsx` |
+| Data (shared) | `_data.ts` or `_data/*.ts` | `_data/site.ts`              |
+| Component     | `*.tsx` in `_components/`  | `_components/PostCard.tsx`   |
+| Config        | `_config.ts`               | `_config.ts`                 |
 
 ### Page structure
 
-A `*.page.ts` file exports named variables for metadata and a default export for
-the content (string or render function):
+A `*.page.tsx` file exports named variables for metadata and a default export
+for the content (string or render function):
 
 ```ts
 export const title = "My Article";
 export const date = new Date("2026-01-15");
-export const layout = "layouts/post.ts";
+export const layout = "layouts/post.tsx";
 export const tags = ["essay", "literature"];
 
 export default (data: Lume.Data, helpers: Lume.Helpers) =>
@@ -710,8 +711,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) =>
 
 ### Layout structure
 
-Layouts are TypeScript functions in `_includes/` that receive page data and
-helpers:
+Layouts are TSX functions in `_includes/` that receive page data and helpers.
+Ensure the JSX plugin is enabled in `_config.ts` with `site.use(jsx())`, and use
+`children` (not `content`) in TSX layouts to avoid escaping issues:
 
 ```ts
 export default ({ title, content }: Lume.Data, helpers: Lume.Helpers) =>
@@ -729,9 +731,9 @@ Components live in `_components/` and are consumed via the `comp` variable
 restarting the process):
 
 ```ts
-// _components/Button.ts
+// _components/Button.tsx
 export default function ({ content }: { readonly content: string }) {
-  return `<button class="btn">${content}</button>`;
+  return <button class="btn">{content}</button>;
 }
 
 // In a page or layout — use comp, not import:
@@ -740,7 +742,8 @@ export default function ({ content }: { readonly content: string }) {
 
 ### Guidelines
 
-- All rendering logic uses TypeScript template literals.
+- All rendering logic uses TSX by default (`*.page.tsx`, layouts/components
+  `*.tsx`).
 - Keep layouts simple and composable; extract shared HTML fragments into
   components.
 - Data files (`_data.ts`) export typed constants — prefer `as const satisfies`
@@ -764,18 +767,33 @@ expected to pass** (see §2).
 
 ### Strategy by code type
 
-- **Pure utilities:** BDD-style `describe`/`it`; cover edge cases and real-world
-  examples.
-- **Components:** BDD-style; validate structure, accessibility, variants, and
-  edge cases using `tests/fixtures/dom.ts`.
-- **Client-side JS:** BDD-style describing user-visible behavior; use
-  “given/when/then” comments for complex flows.
-- **Pages and data:** BDD-style; validate rendered output and data shape.
+- **Pure utilities first:** test helper modules (`.ts`) heavily. Keep sorting,
+  grouping, URL construction, fallback rules, and formatting logic out of TSX
+  when possible, then test that logic with small deterministic unit tests.
+- **TSX rendering tests:** for pages/layouts/components, test the rendered HTML
+  contract (structure, critical text, attributes, accessibility, SEO metadata,
+  and conditional branches), not every character of markup.
+- **Integration tests (targeted):** keep a small number of lightweight
+  integration tests for critical paths (main layout, article page, archive page,
+  `<head>` metadata, active navigation).
+- **Client-side JS:** test client modules separately from template tests; keep
+  template tests focused on emitted HTML/CSS/JS hooks.
 - **JSDoc examples:** keep them minimal, realistic, and runnable as
   documentation tests (`deno test --doc`).
 - **Type-level assertions:** use `assertType` with `IsExact`, `IsNever`, etc.
-  from `@std/testing/types` to verify type correctness at compile time when
-  strict typing is critical.
+  from `@std/testing/types` when strict typing contracts are critical.
+
+### TSX test prioritization rubric
+
+A TSX file deserves direct tests when one or more of these is true:
+
+1. It contains conditional rendering logic.
+2. It emits critical SEO/accessibility/navigation markup.
+3. It is reused across many pages.
+4. Visual regressions would be costly to detect manually.
+
+Trivial wrappers with no branching can be left untested when covered by higher-
+level integration tests.
 
 ### Writing tests
 
@@ -909,19 +927,23 @@ For tests with many mocks, `mockSession()` and `restore(id?)` from
 
 ### Snapshot testing
 
-- Use `assertSnapshot` from `@std/testing/snapshot` for HTML output to reduce
-  brittle assertions.
-- Use `assertInlineSnapshot` from `@std/testing/unstable-snapshot` for small,
-  self-contained snapshots that live directly in the test file.
-- Use `createAssertSnapshot({ dir, serializer, ... })` to define project-wide
-  snapshot defaults (custom output directory, custom serializer, etc.).
-- Keep snapshots focused, deterministic (fixed dates, IDs, ordering), and stored
-  in `__snapshots__/` alongside tests.
-- Update:
+- Do **not** rely on large full-page snapshots as the default strategy.
+- Prefer targeted assertions on invariant contracts (critical elements,
+  attributes, semantics, and conditional blocks).
+- Use `assertSnapshot` / `assertInlineSnapshot` only for **small, stable**
+  fragments where strict output locking is valuable.
+- Keep snapshots deterministic (fixed dates, IDs, ordering) and intentionally
+  scoped; avoid snapshot churn from formatting-only changes.
+- Update snapshots only when behavior changes intentionally:
   `DENO_TLS_CA_STORE=system deno test --allow-read --allow-write -- --update`
-  (short flag: `-u`). For inline snapshots, add `--no-format` to skip
-  auto-formatting.
-- Verify: `DENO_TLS_CA_STORE=system deno test --allow-read`
+  (short flag: `-u`). Verify with a regular `deno test` run afterward.
+
+### HTML assertions in template tests
+
+When validating TSX output, avoid overusing raw `includes()` checks. Prefer
+parsing HTML and asserting DOM-level contracts (element presence, attribute
+values, semantic structure). String assertions remain acceptable for very small
+invariants.
 
 ### Test style conventions
 
@@ -1162,8 +1184,9 @@ before merging.
 - [ ] Top-level functions prefer the `function` keyword over arrow syntax
       (§5.7).
 - [ ] Named exports only; `export default` used only in Lume render files
-      (`*.page.ts`, layouts, components) as required by the framework (§9). No
-      barrel files; `mod.ts` allowed only for narrow public APIs (§8).
+      (`*.page.tsx`, layouts `.tsx`, components `.tsx`) as required by the
+      framework (§9). No barrel files; `mod.ts` allowed only for narrow public
+      APIs (§8).
 - [ ] JSDoc is present on all exported symbols, following §5.9 conventions.
 - [ ] Imports are grouped and ordered per §5.10; `import type` for type-only; no
       circular imports.
@@ -1197,7 +1220,7 @@ before merging.
 
 ### Deliverables
 
-- [ ] All new content uses `*.page.ts`; no new Markdown files.
+- [ ] All new content uses `*.page.tsx`; no new Markdown files.
 - [ ] Components use `comp` variable, not direct `import`.
 - [ ] File and directory names follow the conventions in §8.
 - [ ] Commit messages follow Conventional Commits.

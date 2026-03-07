@@ -1,7 +1,7 @@
 import { assertEquals, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import postsIndexPage from "./index.page.ts";
+import postsIndexPage from "./index.page.tsx";
 
 // ---------------------------------------------------------------------------
 // Mock helpers
@@ -34,7 +34,7 @@ function makeData(
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("posts/index.page.ts", () => {
+describe("posts/index.page.tsx", () => {
   describe("page title", () => {
     it('renders the "Writing" heading', () => {
       const html = postsIndexPage(makeData([]), MOCK_HELPERS);

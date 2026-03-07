@@ -7,6 +7,7 @@ import lightningcss from "lume/plugins/lightningcss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
 import nav from "lume/plugins/nav.ts";
+import jsx from "lume/plugins/jsx.ts";
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
 import otelPlugin from "./plugins/otel.ts";
@@ -20,7 +21,7 @@ const site: Site = lume({
 // Reading time — computed from the plain-text length of each post's content.
 // Average adult reading speed: 238 words per minute (source: Brysbaert et al., 2019).
 const WORDS_PER_MINUTE = 238;
-site.preprocess([".ts"], (pages: Page[]) => {
+site.preprocess([".ts", ".tsx"], (pages: Page[]) => {
   for (const page of pages) {
     const raw = String(page.data.content ?? "");
     // Strip HTML tags to count only visible words.
@@ -63,6 +64,9 @@ site.use(sourceMaps());
 
 // HTML attribute helpers: helpers.attr(), helpers.class()
 site.use(attributes());
+
+// Enable TSX/JSX templates for pages, layouts, and components.
+site.use(jsx());
 
 // Date formatting: helpers.date(value, "HUMAN_DATE"), helpers.date(value, "SHORT"), …
 site.use(

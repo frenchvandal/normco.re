@@ -1,12 +1,12 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import instructionsPage from "./instructions.page.ts";
+import instructionsPage from "./instructions.page.tsx";
 
 const MOCK_DATA = {} as unknown as Lume.Data;
 const MOCK_HELPERS = {} as unknown as Lume.Helpers;
 
-describe("posts/instructions.page.ts", () => {
+describe("posts/instructions.page.tsx", () => {
   it("returns an HTML string", () => {
     const html = instructionsPage(MOCK_DATA, MOCK_HELPERS);
     assertStringIncludes(html, "<p>");

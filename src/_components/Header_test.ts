@@ -1,7 +1,7 @@
 import { assertMatch, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import Header from "./Header.ts";
+import Header from "./Header.tsx";
 
 describe("Header()", () => {
   describe("ariaCurrent — home link '/'", () => {
