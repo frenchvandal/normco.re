@@ -41,8 +41,9 @@ export default function (data: Lume.Data, helpers: Lume.Helpers): string {
   const prev = n.previousPage(currentUrl, "/posts/", "type=post", "date=asc");
   const next = n.nextPage(currentUrl, "/posts/", "type=post", "date=asc");
 
-  const minutes = typeof data.readingTime === "number"
-    ? Math.ceil(data.readingTime)
+  const readingInfo = data.readingInfo as { minutes?: number } | undefined;
+  const minutes = typeof readingInfo?.minutes === "number"
+    ? Math.ceil(readingInfo.minutes)
     : undefined;
   const readingTimePart = minutes !== undefined
     ? `<span class="post-meta-separator" aria-hidden="true">·</span>

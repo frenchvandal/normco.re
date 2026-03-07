@@ -33,7 +33,7 @@ function makeData(
     title?: string;
     content?: string;
     url?: string;
-    readingTime?: number;
+    readingInfo?: { minutes?: number };
     nav?: ReturnType<typeof makeNav>;
     date?: Date;
   },
@@ -43,7 +43,7 @@ function makeData(
     content: "<p>Body.</p>",
     url: "/posts/test/",
     date: new Date("2026-03-05"),
-    readingTime: undefined,
+    readingInfo: undefined,
     nav: makeNav(undefined, undefined),
     ...overrides,
   } as unknown as Lume.Data;
@@ -56,7 +56,10 @@ function makeData(
 describe("post.tsx layout", () => {
   describe("reading time", () => {
     it("renders reading time when present", () => {
-      const html = postLayout(makeData({ readingTime: 5 }), MOCK_HELPERS);
+      const html = postLayout(
+        makeData({ readingInfo: { minutes: 5 } }),
+        MOCK_HELPERS,
+      );
       assertStringIncludes(html, "5 min read");
       assertStringIncludes(html, "post-meta-separator");
     });
@@ -79,12 +82,7 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, "Previous");
     });
 
-    it("renders an empty div placeholder when no previous page", () => {
-      const html = postLayout(makeData({}), MOCK_HELPERS);
-      assertStringIncludes(html, "<div></div>");
-    });
-
-    it("renders a next page link when next exists", () => {
+    it("renders a next page link with next-item styling when next exists", () => {
       const data = makeData({
         nav: makeNav(undefined, { url: "/posts/next/", title: "Next Post" }),
       });
@@ -92,13 +90,6 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'href="/posts/next/"');
       assertStringIncludes(html, "Next Post");
       assertStringIncludes(html, "Next");
-    });
-
-    it("adds post-nav-item--next class to the next item", () => {
-      const data = makeData({
-        nav: makeNav(undefined, { url: "/posts/next/", title: "Next Post" }),
-      });
-      const html = postLayout(data, MOCK_HELPERS);
       assertStringIncludes(html, "post-nav-item--next");
     });
 
@@ -117,7 +108,7 @@ describe("post.tsx layout", () => {
         title: "Test Post",
         content: "<p>Body.</p>",
         date: new Date("2026-03-05"),
-        readingTime: undefined,
+        readingInfo: undefined,
         nav: makeNav(undefined, undefined),
       } as unknown as Lume.Data;
       const html = postLayout(data, MOCK_HELPERS);

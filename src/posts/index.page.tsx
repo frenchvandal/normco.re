@@ -41,8 +41,9 @@ export default function (data: Lume.Data, helpers: Lume.Helpers): string {
   const sections = years.map((year) => {
     const yearPosts = byYear.get(year) ?? [];
     const items = yearPosts.map((post) => {
-      const minutes = typeof post.readingTime === "number"
-        ? Math.ceil(post.readingTime)
+      const readingInfo = post.readingInfo as { minutes?: number } | undefined;
+      const minutes = typeof readingInfo?.minutes === "number"
+        ? Math.ceil(readingInfo.minutes)
         : undefined;
       const readingTimePart = minutes !== undefined
         ? `<span class="archive-reading-time">${minutes} min</span>`

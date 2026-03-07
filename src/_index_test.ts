@@ -20,7 +20,7 @@ function makeData(
     title: string;
     url: string;
     date: Date;
-    readingTime?: number;
+    readingInfo?: { minutes?: number };
   }>,
 ): Lume.Data {
   return {
@@ -69,13 +69,13 @@ describe("index.page.tsx", () => {
           title: "First Post",
           url: "/posts/first/",
           date: new Date("2026-01-01"),
-          readingTime: 2,
+          readingInfo: { minutes: 2 },
         },
         {
           title: "Second Post",
           url: "/posts/second/",
           date: new Date("2026-02-01"),
-          readingTime: 3,
+          readingInfo: { minutes: 3 },
         },
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
@@ -83,7 +83,7 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, "Second Post");
     });
 
-    it("handles posts that lack a readingTime", async () => {
+    it("handles posts that lack reading info", async () => {
       const posts = [
         {
           title: "No Time",
