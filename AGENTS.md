@@ -41,6 +41,7 @@ Before finalizing a change (opening a PR or merging), run the following commands
 1. `deno test` — tests **should pass** before merge. Known flaky or pre-existing
    failures may be treated as non-blocking, but must be documented in the PR
    description (current status and proposed fix).
+1. `deno task test:doc` — run inline JSDoc documentation tests.
 1. `deno task build` — run when changes affect rendering or structure.
 
 ### Commit message validation
@@ -1233,6 +1234,7 @@ before merging.
       documented).
 - [ ] `deno task check` passes — no type errors.
 - [ ] `deno task lint:doc` passes — JSDoc comments are valid.
+- [ ] `deno task test:doc` passes — inline JSDoc documentation tests are valid.
 - [ ] `deno task build` succeeds when rendering or structure is affected.
 - [ ] `deno task lint-commit` validates the commit message (Conventional
       Commits, run automatically by Lefthook `commit-msg` hook).
