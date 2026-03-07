@@ -13,95 +13,87 @@
     return;
   }
 
-  const UPDATE_TOAST_ID = "sw-update-toast";
-  const UPDATE_BUTTON_ID = "sw-update-button";
-
   const currentScript = globalThis.document.currentScript;
   const assetVersion = currentScript instanceof HTMLScriptElement
     ? currentScript.dataset.assetVersion ?? "dev"
     : "dev";
+  const swDebugLevel = currentScript instanceof HTMLScriptElement
+    ? currentScript.dataset.swDebugLevel ?? "off"
+    : "off";
 
-  let waitingWorkerRef = null;
-  let hasTriggeredRefresh = false;
-
-  function showUpdateToast(waitingWorker) {
-    const toast = globalThis.document.getElementById(UPDATE_TOAST_ID);
-    const button = globalThis.document.getElementById(UPDATE_BUTTON_ID);
-
-    if (!(toast instanceof HTMLElement) || !(button instanceof HTMLElement)) {
-      return;
-    }
-
-    waitingWorkerRef = waitingWorker;
-    toast.hidden = false;
-
-    if (toast.dataset.bound === "true") {
-      return;
-    }
-
-    toast.dataset.bound = "true";
-
-    button.addEventListener("click", async () => {
-      if (hasTriggeredRefresh) {
-        return;
-      }
-
-      hasTriggeredRefresh = true;
-
-      const registration = await globalThis.navigator.serviceWorker
-        .getRegistration();
-      const waitingWorker = registration?.waiting ?? waitingWorkerRef;
-
-      if (waitingWorker instanceof ServiceWorker) {
-        waitingWorker.postMessage({ type: "SKIP_WAITING" });
-      }
-
-      button.setAttribute("disabled", "true");
-      button.textContent = "Updating…";
-
-      globalThis.setTimeout(() => {
-        globalThis.location.reload();
-      }, 1500);
-    });
+  function isDebugEnabled() {
+    return swDebugLevel === "summary" || swDebugLevel === "verbose";
   }
 
-  function trackInstallingWorker(registration) {
-    const installingWorker = registration.installing;
-
-    if (installingWorker === null) {
+  function log(event, details = {}) {
+    if (!isDebugEnabled()) {
       return;
     }
 
-    installingWorker.addEventListener("statechange", () => {
-      if (
-        installingWorker.state === "installed" &&
-        registration.waiting !== null &&
-        globalThis.navigator.serviceWorker.controller !== null
-      ) {
-        showUpdateToast(registration.waiting);
-      }
+    console.info("[SW register]", event, {
+      assetVersion,
+      swDebugLevel,
+      ...details,
     });
   }
 
   globalThis.navigator.serviceWorker.addEventListener(
     "controllerchange",
     () => {
+      log("controllerchange -> reloading page");
       globalThis.location.reload();
     },
   );
 
   globalThis.navigator.serviceWorker
-    .register(`/sw.js?v=${assetVersion}`, { scope: "/" })
+    .register(`/sw.js?v=${assetVersion}&debug=${swDebugLevel}`, { scope: "/" })
     .then((registration) => {
+      log("registered", {
+        active: registration.active?.state ?? "none",
+        installing: registration.installing?.state ?? "none",
+        waiting: registration.waiting?.state ?? "none",
+      });
+
       if (registration.waiting !== null) {
-        showUpdateToast(registration.waiting);
+        log("waiting worker detected -> skip waiting", {
+          waitingState: registration.waiting.state,
+        });
+        registration.waiting.postMessage({ type: "SKIP_WAITING" });
       }
 
       registration.addEventListener("updatefound", () => {
-        trackInstallingWorker(registration);
+        const installingWorker = registration.installing;
+
+        log("updatefound", {
+          installingState: installingWorker?.state ?? "none",
+        });
+
+        if (installingWorker === null) {
+          return;
+        }
+
+        installingWorker.addEventListener("statechange", () => {
+          log("installing statechange", {
+            state: installingWorker.state,
+            hasController:
+              globalThis.navigator.serviceWorker.controller !== null,
+          });
+
+          if (
+            installingWorker.state === "installed" &&
+            globalThis.navigator.serviceWorker.controller !== null
+          ) {
+            log("new version installed -> skip waiting", {
+              waitingState: registration.waiting?.state ?? "none",
+            });
+            registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+          }
+        });
       });
     })
-    .catch(() => {
-      // Intentionally silent: if SW registration fails we keep the site usable.
+    .catch((error) => {
+      log("registration failed", {
+        error: error instanceof Error ? error.message : String(error),
+      });
     });
 })();
