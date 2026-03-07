@@ -12,21 +12,20 @@ const BASE = {
 } as const;
 
 describe("PostCard()", () => {
-  describe("with readingTime", () => {
+  describe("with readingMinutes", () => {
     it("renders reading time in .post-card-meta", () => {
-      const html = PostCard({ ...BASE, readingTime: 3 });
+      const html = PostCard({ ...BASE, readingMinutes: 3 });
       assertStringIncludes(html, "3 min read");
       assertStringIncludes(html, 'class="post-card-meta"');
     });
 
-    it("uses Math.ceil for fractional reading times", () => {
-      // readingTime is already ceil'd upstream; component renders the value as-is.
-      const html = PostCard({ ...BASE, readingTime: 7 });
+    it("renders the provided reading minutes value", () => {
+      const html = PostCard({ ...BASE, readingMinutes: 7 });
       assertStringIncludes(html, "7 min read");
     });
   });
 
-  describe("without readingTime", () => {
+  describe("without readingMinutes", () => {
     it("renders no .post-card-meta element", () => {
       const html = PostCard({ ...BASE });
       assertNotMatch(html, /post-card-meta/);

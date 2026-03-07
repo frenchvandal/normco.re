@@ -2,7 +2,10 @@ import lume from "lume/mod.ts";
 import date from "lume/plugins/date.ts";
 import sitemap from "lume/plugins/sitemap.ts";
 import feed from "lume/plugins/feed.ts";
+import jsonLd from "lume/plugins/json_ld.ts";
+import seo from "lume/plugins/seo.ts";
 import prism from "lume/plugins/prism.ts";
+import readingInfo from "lume/plugins/reading_info.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
@@ -16,22 +19,6 @@ import otelPlugin from "./plugins/otel.ts";
 const site: Site = lume({
   src: "./src",
   location: new URL("https://normco.re"),
-});
-
-// Reading time — computed from the plain-text length of each post's content.
-// Average adult reading speed: 238 words per minute (source: Brysbaert et al., 2019).
-const WORDS_PER_MINUTE = 238;
-site.preprocess([".ts", ".tsx"], (pages: Page[]) => {
-  for (const page of pages) {
-    const raw = String(page.data.content ?? "");
-    // Strip HTML tags to count only visible words.
-    const text = raw.replace(/<[^>]+>/g, " ");
-    const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
-    page.data.readingTime = Math.max(
-      1,
-      Math.ceil(wordCount / WORDS_PER_MINUTE),
-    );
-  }
 });
 
 // Register assets so Lume discovers them before processors/plugins run.
@@ -78,12 +65,21 @@ site.use(
   }),
 );
 
+// Reading metrics (word count, minutes, pages) powered by Intl.Segmenter.
+site.use(readingInfo());
+
 // XML sitemap + robots.txt.
 // Unlisted pages (export const unlisted = true) are excluded automatically.
 site.use(sitemap());
 
 // Navigation tree: data.nav.menu(), data.nav.nextPage(), data.nav.previousPage()
 site.use(nav());
+
+// Structured data + SEO diagnostics.
+// - jsonLd: renders <script type="application/ld+json"> from page data
+// - seo: reports common issues in Lume debug bar (titles, descriptions, image alts, etc.)
+site.use(jsonLd());
+site.use(seo());
 
 // Prism is preferred over highlight.js for its autoloadLanguages feature,
 // which detects and loads language grammars on demand — no manual imports needed.

@@ -6,18 +6,18 @@
  */
 
 export default function (
-  { title, url, dateStr, dateIso, readingTime }: {
+  { title, url, dateStr, dateIso, readingMinutes }: {
     readonly title: string;
     readonly url: string;
     /** Display string produced by `helpers.date(date, "SHORT")`. */
     readonly dateStr: string;
     /** ISO 8601 string for the `datetime` attribute, e.g. from `helpers.date(date, "ATOM")`. */
     readonly dateIso: string;
-    readonly readingTime?: number;
+    readonly readingMinutes?: number;
   },
 ): string {
-  const meta = readingTime !== undefined
-    ? `<span class="post-card-meta">${readingTime} min read</span>`
+  const meta = readingMinutes !== undefined
+    ? `<span class="post-card-meta">${readingMinutes} min read</span>`
     : "";
 
   return `<article class="post-card">

@@ -20,7 +20,7 @@ function makeData(
     title: string;
     url: string;
     date: unknown;
-    readingTime?: number;
+    readingInfo?: { minutes?: number };
   }>,
 ): Lume.Data {
   return {
@@ -56,13 +56,13 @@ describe("posts/index.page.tsx", () => {
           title: "Post A",
           url: "/posts/a/",
           date: new Date("2026-01-01"),
-          readingTime: 1,
+          readingInfo: { minutes: 1 },
         },
         {
           title: "Post B",
           url: "/posts/b/",
           date: new Date("2025-06-01"),
-          readingTime: 2,
+          readingInfo: { minutes: 2 },
         },
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
@@ -78,13 +78,13 @@ describe("posts/index.page.tsx", () => {
           title: "Old",
           url: "/posts/old/",
           date: new Date("2024-01-01"),
-          readingTime: 1,
+          readingInfo: { minutes: 1 },
         },
         {
           title: "New",
           url: "/posts/new/",
           date: new Date("2026-01-01"),
-          readingTime: 1,
+          readingInfo: { minutes: 1 },
         },
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
@@ -104,20 +104,20 @@ describe("posts/index.page.tsx", () => {
   });
 
   describe("reading time", () => {
-    it("renders reading time when present", () => {
+    it("renders reading time when reading info is present", () => {
       const posts = [
         {
           title: "Post",
           url: "/posts/p/",
           date: new Date("2026-01-01"),
-          readingTime: 4,
+          readingInfo: { minutes: 4 },
         },
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, "4 min");
     });
 
-    it("renders an empty span when reading time is absent", () => {
+    it("renders the reading-time placeholder when minutes are absent", () => {
       const posts = [
         { title: "Post", url: "/posts/p/", date: new Date("2026-01-01") },
       ];
@@ -133,7 +133,7 @@ describe("posts/index.page.tsx", () => {
           title: "Post",
           url: "/posts/p/",
           date: new Date("2026-01-01"),
-          readingTime: 1,
+          readingInfo: { minutes: 1 },
         },
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
@@ -146,7 +146,7 @@ describe("posts/index.page.tsx", () => {
           title: "Post",
           url: "/posts/p/",
           date: new Date("2026-01-01"),
-          readingTime: 1,
+          readingInfo: { minutes: 1 },
         },
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);

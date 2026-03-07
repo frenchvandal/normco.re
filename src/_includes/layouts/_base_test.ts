@@ -79,26 +79,14 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, '<html lang="en">');
     });
 
-    it("includes the main stylesheet", async () => {
+    it("includes core head and accessibility links", async () => {
       const html = await baseLayout(makeData({}), MOCK_HELPERS);
       assertStringIncludes(html, 'href="/style.css"');
-    });
-
-    it("includes the skip-link for keyboard navigation", async () => {
-      const html = await baseLayout(makeData({}), MOCK_HELPERS);
-      assertStringIncludes(html, "skip-link");
-      assertStringIncludes(html, "#main-content");
-    });
-
-    it("includes RSS and JSON Feed alternate links", async () => {
-      const html = await baseLayout(makeData({}), MOCK_HELPERS);
+      assertStringIncludes(html, '<script src="/anti-flash.js"></script>');
       assertStringIncludes(html, 'href="/feed.xml"');
       assertStringIncludes(html, 'href="/feed.json"');
-    });
-
-    it("loads the anti-flash script asset from <head>", async () => {
-      const html = await baseLayout(makeData({}), MOCK_HELPERS);
-      assertStringIncludes(html, '<script src="/anti-flash.js"></script>');
+      assertStringIncludes(html, 'class="skip-link"');
+      assertStringIncludes(html, "#main-content");
     });
 
     it("injects the page content into <main>", async () => {

@@ -12,3 +12,17 @@ export const metas = {
   description: "Personal blog by Phiphi, based in Chengdu, China.",
   lang: "en",
 } as const satisfies Record<string, string>;
+
+/** Default structured data for pages, rendered by the official Lume jsonLd plugin. */
+export const jsonLd: Lume.Data["jsonLd"] = {
+  "@type": "WebSite",
+  url: "/",
+  name: "normco.re",
+  headline: "=title || normco.re",
+  description: "=description || =metas.description",
+  inLanguage: "=lang",
+  author: {
+    "@type": "Person",
+    name: "Phiphi",
+  },
+};

@@ -18,7 +18,7 @@ type Comp = {
     readonly url: string;
     readonly dateStr: string;
     readonly dateIso: string;
-    readonly readingTime?: number;
+    readonly readingMinutes?: number;
   }) => Promise<string>;
 };
 
@@ -35,17 +35,18 @@ export default async function (
   const recent = data.search.pages("type=post", "date=desc", 5) as Lume.Data[];
 
   const postItems = (await Promise.all(recent.map((post) => {
-    const minutes = typeof post.readingTime === "number"
-      ? Math.ceil(post.readingTime)
+    const reading = post.readingInfo as { minutes?: number } | undefined;
+    const minutes = typeof reading?.minutes === "number"
+      ? Math.ceil(reading.minutes)
       : undefined;
 
-    // exactOptionalPropertyTypes: only include readingTime when it has a value.
+    // exactOptionalPropertyTypes: only include readingMinutes when it has a value.
     return PostCard({
       title: post.title as string,
       url: post.url as string,
       dateStr: dateFormat(post.date, "SHORT"),
       dateIso: dateFormat(post.date, "ATOM"),
-      ...(minutes !== undefined ? { readingTime: minutes } : {}),
+      ...(minutes !== undefined ? { readingMinutes: minutes } : {}),
     });
   }))).join("\n");
 
