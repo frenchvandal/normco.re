@@ -138,6 +138,7 @@ automatically on file changes.
 │   ├── style.css             # Main stylesheet (~870 lines, modern CSS)
 │   └── theme-toggle.page.ts  # Client-side theme toggle script (/theme-toggle.js)
 ├── plugins/
+│   ├── console_debug.ts      # Shared LUME_LOGS-driven console debug policy
 │   └── otel.ts               # Lume plugin for OpenTelemetry build observability
 ├── .cms.ts                   # Lume CMS configuration
 ├── .gitignore
@@ -464,11 +465,17 @@ To run with telemetry enabled, keep using the standard tasks (`build` or
 For local development, set `OTEL_EXPORTER_OTLP_PROTOCOL=http/json`. When this
 protocol is active, the plugin prints one structured build record per build in
 the terminal (`console.table` + raw JSON), so you can inspect trace IDs, span
-IDs, duration, and timestamps directly.
+IDs, duration, and timestamps directly. Console verbosity is controlled by
+Lume's native `LUME_LOGS` environment variable via `plugins/console_debug.ts`:
+
+- `LUME_LOGS=debug` -> verbose table + raw record + stack trace
+- `LUME_LOGS=info|warning|error` -> summary table
+- `LUME_LOGS=critical` -> disable local console build records
 
 ```sh
 OTEL_DENO=true OTEL_SERVICE_NAME=normcore \
 OTEL_EXPORTER_OTLP_PROTOCOL=http/json \
+LUME_LOGS=debug \
 DENO_TLS_CA_STORE=system deno task serve
 ```
 

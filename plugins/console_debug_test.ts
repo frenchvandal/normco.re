@@ -4,36 +4,44 @@ import { assertEquals } from "jsr/assert";
 import { readConsoleDebugPolicy } from "./console_debug.ts";
 
 describe("readConsoleDebugPolicy()", () => {
-  it("defaults to summary with trace disabled", () => {
+  it("defaults to info and summary verbosity", () => {
     const policy = readConsoleDebugPolicy(() => undefined);
-    assertEquals(policy, { includeTrace: false, level: "summary" });
-  });
-
-  it("supports explicit off and verbose levels", () => {
-    const offPolicy = readConsoleDebugPolicy((name) =>
-      name === "DEBUG_CONSOLE_LEVEL" ? "off" : undefined
-    );
-    const verbosePolicy = readConsoleDebugPolicy((name) => {
-      if (name === "DEBUG_CONSOLE_LEVEL") {
-        return "verbose";
-      }
-
-      if (name === "DEBUG_CONSOLE_TRACE") {
-        return "true";
-      }
-
-      return undefined;
+    assertEquals(policy, {
+      includeTrace: false,
+      level: "summary",
+      lumeLogs: "info",
     });
-
-    assertEquals(offPolicy, { includeTrace: false, level: "off" });
-    assertEquals(verbosePolicy, { includeTrace: true, level: "verbose" });
   });
 
-  it("falls back to summary for unknown level values", () => {
-    const policy = readConsoleDebugPolicy((name) =>
-      name === "DEBUG_CONSOLE_LEVEL" ? "chatty" : undefined
+  it("maps LUME_LOGS levels to generic console policies", () => {
+    const debugPolicy = readConsoleDebugPolicy((name) =>
+      name === "LUME_LOGS" ? "debug" : undefined
+    );
+    const criticalPolicy = readConsoleDebugPolicy((name) =>
+      name === "LUME_LOGS" ? "critical" : undefined
     );
 
-    assertEquals(policy.level, "summary");
+    assertEquals(debugPolicy, {
+      includeTrace: true,
+      level: "verbose",
+      lumeLogs: "debug",
+    });
+    assertEquals(criticalPolicy, {
+      includeTrace: false,
+      level: "off",
+      lumeLogs: "critical",
+    });
+  });
+
+  it("falls back to info policy for unknown values", () => {
+    const policy = readConsoleDebugPolicy((name) =>
+      name === "LUME_LOGS" ? "chatty" : undefined
+    );
+
+    assertEquals(policy, {
+      includeTrace: false,
+      level: "summary",
+      lumeLogs: "info",
+    });
   });
 });
