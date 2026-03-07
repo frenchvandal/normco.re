@@ -21,7 +21,10 @@
 - **OpenTelemetry (local):** keep the `plugins/otel.ts` plugin enabled, and
   activate telemetry only via environment variables. Use
   `OTEL_EXPORTER_OTLP_PROTOCOL=http/json` for local development to inspect
-  structured records directly in the terminal (`console.table` + JSON).
+  structured records directly in the terminal (`console.table` + JSON). Console
+  verbosity for local diagnostics must use Lume's native `LUME_LOGS` entry point
+  (`debug`, `info`, `warning`, `error`, `critical`) through
+  `plugins/console_debug.ts`; do not introduce feature-specific debug env vars.
 
 ---
 

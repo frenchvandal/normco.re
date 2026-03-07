@@ -35,8 +35,8 @@ interface BuildConsoleRecord {
  * - A `lume.build.count` counter incremented on every completed lifecycle
  *
  * If `OTEL_EXPORTER_OTLP_PROTOCOL=http/json`, the plugin can print structured
- * console diagnostics (`console.table`) controlled by `DEBUG_CONSOLE_LEVEL`
- * (`summary` by default, `verbose` for deeper inspection, `off` to silence).
+ * console diagnostics (`console.table`) controlled by `LUME_LOGS` through the
+ * shared console debug policy (`debug` -> verbose, `critical` -> off).
  *
  * Without `OTEL_DENO=true`, all OTel calls are no-ops with negligible
  * overhead — the plugin is safe to register unconditionally.
@@ -124,7 +124,7 @@ export default function otelPlugin(): (site: PluginSite) => void {
         };
 
         console.groupCollapsed(
-          `OpenTelemetry local record (${trigger}) #${buildCounter}`,
+          `OpenTelemetry local record (${trigger}) #${buildCounter} [LUME_LOGS=${debugPolicy.lumeLogs}]`,
         );
         console.table([buildRecord], [
           "buildCount",
