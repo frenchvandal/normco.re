@@ -15,6 +15,8 @@ import attributes from "lume/plugins/attributes.ts";
 import nav from "lume/plugins/nav.ts";
 import robots from "lume/plugins/robots.ts";
 import jsx from "lume/plugins/jsx.ts";
+import checkUrls from "lume/plugins/check_urls.ts";
+import validateHtml from "lume/plugins/validate_html.ts";
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
 import { readConsoleDebugPolicy } from "./plugins/console_debug.ts";
@@ -250,6 +252,28 @@ site.use(
 
 // Navigation tree: data.nav.menu(), data.nav.nextPage(), data.nav.previousPage()
 site.use(nav());
+
+// Validate generated HTML against html-validate recommended/document presets.
+// Keep strict error reporting for common production issues while allowing
+// framework-required patterns (quotes and doctype style) handled by defaults.
+site.use(
+  validateHtml({
+    rules: {
+      "require-sri": "off",
+      "heading-level": "off",
+    },
+  }),
+);
+
+// Detect broken internal links, including hash anchors, and fail the build
+// when invalid URLs are detected.
+site.use(
+  checkUrls({
+    anchors: true,
+    throw: true,
+    ignore: ["/feed.xml", "/feed.json", "/sitemap.xml"],
+  }),
+);
 
 // Structured data + SEO diagnostics.
 // - jsonLd: renders <script type="application/ld+json"> from page data

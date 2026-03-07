@@ -5,6 +5,19 @@ import type Site from "lume/core/site.ts";
 
 import otelPlugin from "./otel.ts";
 
+type OTelEvent = { files?: Set<string> };
+
+function withStubSite() {
+  const events: Map<string, (event?: OTelEvent) => void> = new Map();
+  const stubSite = {
+    addEventListener(type: string, fn: (event?: OTelEvent) => void): void {
+      events.set(type, fn);
+    },
+  } as unknown as Site;
+
+  return { events, stubSite };
+}
+
 describe("otelPlugin()", () => {
   it("returns a site plugin function", () => {
     const plugin = otelPlugin();
@@ -16,19 +29,11 @@ describe("otelPlugin()", () => {
     assertEquals(plugin.length, 1);
   });
 
-  it("plugin does not throw when called with a stub site", () => {
-    const events: Map<string, (event?: { files?: Set<string> }) => void> =
-      new Map();
-    const stubSite = {
-      addEventListener(
-        type: string,
-        fn: (event?: { files?: Set<string> }) => void,
-      ): void {
-        events.set(type, fn);
-      },
-    } as unknown as Site;
+  it("registers lifecycle listeners and runs without throwing", () => {
+    const { events, stubSite } = withStubSite();
     const plugin = otelPlugin();
     plugin(stubSite);
+
     assertEquals(events.has("beforeBuild"), true);
     assertEquals(events.has("afterBuild"), true);
     assertEquals(events.has("beforeUpdate"), true);
