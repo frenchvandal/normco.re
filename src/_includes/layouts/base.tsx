@@ -11,9 +11,17 @@ type Comp = {
   Footer: (props: Record<never, never>) => Promise<string>;
 };
 
+type BuildData = {
+  assetVersion?: string;
+};
+
+type LayoutData = Lume.Data & {
+  build?: BuildData;
+};
+
 /** Renders the full HTML document shell. */
 export default async function (
-  { title, description, content, url, comp }: Lume.Data,
+  { title, description, content, url, comp, build }: LayoutData,
   helpers: Lume.Helpers,
 ): Promise<string> {
   const { attr } = helpers as unknown as H;
@@ -26,6 +34,7 @@ export default async function (
 
   const header = await Header({ currentUrl: url ?? "/" });
   const footer = await Footer({});
+  const assetVersion = build?.assetVersion ?? "dev";
 
   return `<!doctype html>
 <html lang="en">
@@ -36,8 +45,8 @@ export default async function (
   }>
     <title>${pageTitle}</title>
     <meta ${attr({ name: "description", content: metaDescription })}>
-    <script src="/anti-flash.js"></script>
-    <link rel="stylesheet" href="/style.css">
+    <script src="/anti-flash.js?v=${assetVersion}"></script>
+    <link rel="stylesheet" href="/style.css?v=${assetVersion}">
     <link rel="alternate" type="application/rss+xml" title="normco.re" href="/feed.xml">
     <link rel="alternate" type="application/json" title="normco.re JSON feed" href="/feed.json">
   </head>
@@ -54,8 +63,8 @@ export default async function (
       <p class="sw-update-toast-text">A new version is available.</p>
       <button type="button" id="sw-update-button" class="sw-update-toast-button">Refresh</button>
     </div>
-    <script src="/theme-toggle.js"></script>
-    <script src="/sw-register.js"></script>
+    <script src="/theme-toggle.js?v=${assetVersion}"></script>
+    <script src="/sw-register.js?v=${assetVersion}" data-asset-version="${assetVersion}"></script>
   </body>
 </html>`;
 }
