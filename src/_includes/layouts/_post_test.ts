@@ -1,7 +1,7 @@
 import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import postLayout from "./post.ts";
+import postLayout from "./post.tsx";
 
 // ---------------------------------------------------------------------------
 // Minimal mock helpers satisfying the `H` interface used inside post.ts.
@@ -53,7 +53,7 @@ function makeData(
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("post.ts layout", () => {
+describe("post.tsx layout", () => {
   describe("reading time", () => {
     it("renders reading time when present", () => {
       const html = postLayout(makeData({ readingTime: 5 }), MOCK_HELPERS);

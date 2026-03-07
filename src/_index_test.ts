@@ -1,7 +1,7 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import indexPage from "./index.page.ts";
+import indexPage from "./index.page.tsx";
 
 // ---------------------------------------------------------------------------
 // Mock helpers
@@ -44,7 +44,7 @@ function makeData(
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("index.page.ts", () => {
+describe("index.page.tsx", () => {
   describe("hero section", () => {
     it("renders the hero section", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);

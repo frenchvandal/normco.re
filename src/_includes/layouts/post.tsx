@@ -1,7 +1,7 @@
 /** Individual post layout — chains into the base layout. */
 
 /** This layout is itself wrapped by the base layout. */
-export const layout = "layouts/base.ts";
+export const layout = "layouts/base.tsx";
 
 /** Typed helpers used in this layout. */
 type H = {

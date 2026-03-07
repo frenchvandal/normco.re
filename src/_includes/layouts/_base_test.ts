@@ -1,7 +1,7 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import baseLayout from "./base.ts";
+import baseLayout from "./base.tsx";
 
 // ---------------------------------------------------------------------------
 // Minimal mock helpers satisfying the `H` interface used inside base.ts.
@@ -41,7 +41,7 @@ function makeData(
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("base.ts layout", () => {
+describe("base.tsx layout", () => {
   describe("page title", () => {
     it('renders "normco.re" when no title is provided', async () => {
       const html = await baseLayout(makeData({}), MOCK_HELPERS);

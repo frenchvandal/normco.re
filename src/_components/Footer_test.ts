@@ -1,7 +1,7 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import Footer from "./Footer.ts";
+import Footer from "./Footer.tsx";
 
 describe("Footer()", () => {
   it("renders a site-footer element", () => {

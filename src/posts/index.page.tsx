@@ -2,7 +2,7 @@
 
 export const url = "/posts/";
 /** Lume layout template. */
-export const layout = "layouts/base.ts";
+export const layout = "layouts/base.tsx";
 /** Page title. */
 export const title = "Writing";
 /** Page meta description. */

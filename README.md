@@ -43,7 +43,7 @@ written in modern CSS rather than a framework, and the only runtime is Deno.
 | ---------- | -------------------------------------------------------------------- |
 | Runtime    | [Deno](https://deno.com/) 2.7.4 (version pinned in `.tool-versions`) |
 | SSG        | [Lume](https://lume.land/) 3.2.1                                     |
-| Templating | ESM + TypeScript (`*.page.ts`, `*.ts` layouts and components)        |
+| Templating | TSX + TypeScript (`*.page.tsx`, `*.tsx` layouts and components)      |
 | Styling    | Modern CSS (`style.css`, processed by Lightning CSS)                 |
 | Feeds      | RSS 2.0 and JSON Feed 1.1                                            |
 | Testing    | Deno's built-in test runner with `@std/testing/bdd`                  |
@@ -110,28 +110,28 @@ automatically on file changes.
 │   └── lint-commit.ts        # Conventional Commits validator
 ├── src/
 │   ├── _components/          # Reusable UI components (used via comp.*, never direct import)
-│   │   ├── Footer.ts
+│   │   ├── Footer.tsx
 │   │   ├── Footer_test.ts
-│   │   ├── Header.ts
+│   │   ├── Header.tsx
 │   │   ├── Header_test.ts
-│   │   ├── PostCard.ts
+│   │   ├── PostCard.tsx
 │   │   └── PostCard_test.ts
 │   ├── _data.ts              # Site-wide shared data (lang, metas)
 │   ├── _includes/
 │   │   └── layouts/
 │   │       ├── _base_test.ts
 │   │       ├── _post_test.ts
-│   │       ├── base.ts               # Root HTML shell layout
-│   │       └── post.ts               # Individual post layout
+│   │       ├── base.tsx              # Root HTML shell layout
+│   │       └── post.tsx              # Individual post layout
 │   ├── posts/
-│   │   ├── _data.ts          # Post-scoped defaults (type = "post", layout = "layouts/post.ts")
-│   │   ├── index.page.ts     # Archive page (/posts/)
-│   │   └── *.page.ts         # Individual posts
-│   ├── 404.page.ts
-│   ├── about.page.ts
+│   │   ├── _data.ts          # Post-scoped defaults (type = "post", layout = "layouts/post.tsx")
+│   │   ├── index.page.tsx    # Archive page (/posts/)
+│   │   └── *.page.tsx        # Individual posts
+│   ├── 404.page.tsx
+│   ├── about.page.tsx
 │   ├── feed.xsl              # XSLT stylesheet for RSS/Atom feeds
-│   ├── feeds.page.ts         # Syndication hub (/feeds/)
-│   ├── index.page.ts         # Home page (/)
+│   ├── feeds.page.tsx        # Syndication hub (/feeds/)
+│   ├── index.page.tsx        # Home page (/)
 │   ├── sitemap.xsl           # XSLT stylesheet for the sitemap
 │   ├── scripts/
 │   │   ├── anti-flash.js    # Pre-paint theme bootstrap (/anti-flash.js)
@@ -217,10 +217,10 @@ DENO_TLS_CA_STORE=system deno task lint-commit
 ### Writing a new post
 
 All posts are TypeScript files using Lume's page format. Create a new file in
-`src/posts/` with a `.page.ts` extension:
+`src/posts/` with a `.page.tsx` extension:
 
 ```ts
-// src/posts/my-new-post.page.ts
+// src/posts/my-new-post.page.tsx
 
 export const title = "My New Post";
 export const date = new Date("2026-03-06");
@@ -233,8 +233,11 @@ export default (_data: Lume.Data, _helpers: Lume.Helpers) =>
 The `layout` and `type` fields are inherited from `src/posts/_data.ts` and do
 not need to be redeclared.
 
-**Do not use Markdown** (`.md`) for new content. All posts and pages must be
-TypeScript (`*.page.ts`).
+TSX uses `children` in layouts (instead of `content`) and favors `comp.*`
+component resolution in templates for better live-reload behavior.
+
+**Do not use Markdown** (`.md`) for new content. All posts and pages must be TSX
+(`*.page.tsx`).
 
 ### Reading time
 
@@ -269,21 +272,22 @@ The central Lume configuration file. Key settings:
 
 **Active plugins:**
 
-| Plugin          | Purpose                                           |
-| --------------- | ------------------------------------------------- |
-| `lightningcss`  | Minifies CSS; targets modern browsers             |
-| `sourceMaps`    | Generates source maps for the minified stylesheet |
-| `attributes`    | HTML attribute helpers in templates               |
-| `date`          | Date formatting (e.g., `"SHORT"` → `"MMM d"`)     |
-| `sitemap`       | Generates `/sitemap.xml` and `/robots.txt`        |
-| `nav`           | Navigation tree for previous/next post links      |
-| `codeHighlight` | Syntax highlighting for fenced code blocks        |
-| `feed`          | Generates RSS 2.0 and JSON Feed 1.1               |
+| Plugin          | Purpose                                                |
+| --------------- | ------------------------------------------------------ |
+| `lightningcss`  | Minifies CSS; targets modern browsers                  |
+| `sourceMaps`    | Generates source maps for the minified stylesheet      |
+| `attributes`    | HTML attribute helpers in templates                    |
+| `date`          | Date formatting (e.g., `"SHORT"` → `"MMM d"`)          |
+| `sitemap`       | Generates `/sitemap.xml` and `/robots.txt`             |
+| `nav`           | Navigation tree for previous/next post links           |
+| `codeHighlight` | Syntax highlighting for fenced code blocks             |
+| `feed`          | Generates RSS 2.0 and JSON Feed 1.1                    |
+| `jsx`           | Enables TSX/JSX rendering for pages/layouts/components |
 
 ### Client-side JavaScript assets
 
 Client-side behavior is authored as standalone JavaScript assets in
-`src/scripts/` instead of inline string literals inside layouts or `*.page.ts`
+`src/scripts/` instead of inline string literals inside layouts or `*.page.tsx`
 files. Lume registers these files directly with `site.add(...)` and emits them
 as first-class assets during `deno task build` and `deno task serve` (for
 example: `src/scripts/theme-toggle.js` -> `/theme-toggle.js`).
@@ -378,18 +382,27 @@ DENO_TLS_CA_STORE=system deno test
 ### File placement
 
 Unit tests live alongside the source file they test, named with a `_test.ts`
-suffix (e.g., `Header.ts` → `Header_test.ts`). Integration tests and fixtures
+suffix (e.g., `Header.tsx` → `Header_test.ts`). Integration tests and fixtures
 belong in `tests/`.
 
 ### What is tested
 
-| Code type      | Strategy                                           |
-| -------------- | -------------------------------------------------- |
-| Components     | Structure, accessibility, variants, edge cases     |
-| Layouts        | Rendered HTML structure, data propagation          |
-| Pages          | Hero content, dynamic sections, fallback behavior  |
-| Utilities      | Edge cases with `describe`/`it` and `assertEquals` |
-| JSDoc examples | Run as documentation tests via `deno test --doc`   |
+| Code type      | Strategy                                                                      |
+| -------------- | ----------------------------------------------------------------------------- |
+| Utilities      | Highest priority: pure logic (sorting, grouping, URLs, formatting, fallbacks) |
+| Components     | Rendered HTML contracts: semantics, accessibility, variants, critical attrs   |
+| Layouts/Pages  | Targeted integration checks for critical routes and `<head>` metadata         |
+| Client JS      | Behavior tested separately from TSX template rendering                        |
+| JSDoc examples | Run as documentation tests via `deno test --doc`                              |
+
+### TSX testing policy (Lume)
+
+- Test **behavioral invariants**, not full HTML dumps.
+- Prefer DOM/structure assertions over brittle full-string comparisons.
+- Avoid massive snapshots; reserve small snapshots for stable critical
+  fragments.
+- Not every TSX file needs a dedicated test: prioritize files with conditional
+  logic, SEO/accessibility impact, broad reuse, or high regression risk.
 
 ### Coverage
 
@@ -550,10 +563,11 @@ Native CSS now covers cascade layers, custom properties, container queries, the
 `light-dark()` function, `oklch()` colors, view transitions, and scroll-driven
 animations. This project uses all of them; SCSS is not in use.
 
-### TypeScript everywhere
+### TSX + TypeScript everywhere
 
-All pages, layouts, data files, and components are TypeScript. Template engines
-(Nunjucks, Vento, JSX) are fallbacks of last resort and are not currently used.
+Pages, layouts, and components are authored in TSX + TypeScript; data/config
+files remain TypeScript. Alternative template engines (Nunjucks, Vento, etc.)
+are fallbacks of last resort.
 
 ### Zero `any`, no non-null assertions
 
