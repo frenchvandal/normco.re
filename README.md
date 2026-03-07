@@ -119,8 +119,6 @@ automatically on file changes.
 │   ├── _data.ts              # Site-wide shared data (lang, metas)
 │   ├── _includes/
 │   │   └── layouts/
-│   │       ├── _anti-flash.ts        # Inline script to prevent theme flash on load
-│   │       ├── _anti-flash_test.ts
 │   │       ├── _base_test.ts
 │   │       ├── _post_test.ts
 │   │       ├── base.ts               # Root HTML shell layout
@@ -135,8 +133,10 @@ automatically on file changes.
 │   ├── feeds.page.ts         # Syndication hub (/feeds/)
 │   ├── index.page.ts         # Home page (/)
 │   ├── sitemap.xsl           # XSLT stylesheet for the sitemap
-│   ├── style.css             # Main stylesheet (~870 lines, modern CSS)
-│   └── theme-toggle.page.ts  # Client-side theme toggle script (/theme-toggle.js)
+│   ├── scripts/
+│   │   ├── anti-flash.js    # Pre-paint theme bootstrap (/anti-flash.js)
+│   │   └── theme-toggle.js  # Theme toggle behavior (/theme-toggle.js)
+│   └── style.css             # Main stylesheet (~870 lines, modern CSS)
 ├── plugins/
 │   ├── console_debug.ts      # Shared LUME_LOGS-driven console debug policy
 │   └── otel.ts               # Lume plugin for OpenTelemetry build observability
@@ -280,6 +280,14 @@ The central Lume configuration file. Key settings:
 | `codeHighlight` | Syntax highlighting for fenced code blocks        |
 | `feed`          | Generates RSS 2.0 and JSON Feed 1.1               |
 
+### Client-side JavaScript assets
+
+Client-side behavior is authored as standalone JavaScript assets in
+`src/scripts/` instead of inline string literals inside layouts or `*.page.ts`
+files. Lume registers these files directly with `site.add(...)` and emits them
+as first-class assets during `deno task build` and `deno task serve` (for
+example: `src/scripts/theme-toggle.js` -> `/theme-toggle.js`).
+
 ### `deno.json` — Deno manifest
 
 Defines the import map, Deno tasks, and TypeScript compiler options. All
@@ -340,9 +348,10 @@ wide-gamut support:
 ### Theming
 
 Light and dark modes are implemented with the native `light-dark()` function and
-toggled via a `data-color-scheme` attribute on `<html>`. A small inline script
-(`_anti-flash.ts`) reads `localStorage` and applies the saved preference before
-first paint, eliminating the flash-of-incorrect-theme.
+toggled via a `data-color-scheme` attribute on `<html>`. A dedicated client-side
+bootstrap script (`src/scripts/anti-flash.js`) reads `localStorage` and applies
+the saved preference as early as possible, minimizing flash-of-incorrect-theme
+on page load.
 
 ### Accessibility in CSS
 

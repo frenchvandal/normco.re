@@ -1,7 +1,5 @@
 /** Base HTML layout. Every page and layout chains to this. */
 
-import { ANTI_FLASH_SCRIPT } from "./_anti-flash.ts";
-
 /** Typed helpers used in this layout. */
 type H = {
   attr: (attrs: Record<string, unknown>) => string;
@@ -38,7 +36,7 @@ export default async function (
   }>
     <title>${pageTitle}</title>
     <meta ${attr({ name: "description", content: metaDescription })}>
-    <script>${ANTI_FLASH_SCRIPT}</script>
+    <script src="/anti-flash.js"></script>
     <link rel="stylesheet" href="/style.css">
     <link rel="alternate" type="application/rss+xml" title="normco.re" href="/feed.xml">
     <link rel="alternate" type="application/json" title="normco.re JSON feed" href="/feed.json">

@@ -96,10 +96,9 @@ describe("base.ts layout", () => {
       assertStringIncludes(html, 'href="/feed.json"');
     });
 
-    it("inlines the anti-flash script in <head>", async () => {
+    it("loads the anti-flash script asset from <head>", async () => {
       const html = await baseLayout(makeData({}), MOCK_HELPERS);
-      // The ANTI_FLASH_SCRIPT contains localStorage; verify it's inlined.
-      assertStringIncludes(html, "localStorage");
+      assertStringIncludes(html, '<script src="/anti-flash.js"></script>');
     });
 
     it("injects the page content into <main>", async () => {
