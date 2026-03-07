@@ -48,13 +48,25 @@ interface BuildConsoleRecord {
  */
 export default function otelPlugin(): (site: PluginSite) => void {
   return (site: PluginSite): void => {
+    const readEnv = (name: string): string | undefined => {
+      try {
+        return Deno.env.get(name);
+      } catch (error) {
+        if (error instanceof Deno.errors.NotCapable) {
+          return undefined;
+        }
+
+        throw error;
+      }
+    };
+
     const tracer = trace.getTracer("normcore", "1.0.0");
     const meter = metrics.getMeter("normcore", "1.0.0");
-    const otelEnabled = Deno.env.get("OTEL_DENO") === "true";
-    const protocol = Deno.env.get("OTEL_EXPORTER_OTLP_PROTOCOL") ??
+    const otelEnabled = readEnv("OTEL_DENO") === "true";
+    const protocol = readEnv("OTEL_EXPORTER_OTLP_PROTOCOL") ??
       "http/json";
     const consoleOutputEnabled = otelEnabled && protocol === "http/json";
-    const serviceName = Deno.env.get("OTEL_SERVICE_NAME") ?? "lume build";
+    const serviceName = readEnv("OTEL_SERVICE_NAME") ?? "lume build";
 
     const buildDuration = meter.createHistogram("lume.build.duration", {
       description: "Lume site build duration",
