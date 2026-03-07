@@ -158,6 +158,9 @@ Deno enables `strict: true` by default. Add these “beyond strict” flags in
   Be explicit, even when it means more code.
 - **Prefer TypeScript** — all new code should be `.ts`.
 - **ESM only** — no CommonJS, no `require()`. Use `import`/`export` everywhere.
+- **Use `globalThis` for web globals** — in browser/client scripts, prefer
+  `globalThis.document`, `globalThis.localStorage`, `globalThis.matchMedia`,
+  etc., over implicit globals.
 
 ### 5.3. Modern TypeScript patterns
 

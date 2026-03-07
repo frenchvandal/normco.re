@@ -33,8 +33,10 @@ site.preprocess([".ts"], (pages: Page[]) => {
   }
 });
 
-// Register the stylesheet so Lume discovers it before lightningcss runs.
+// Register assets so Lume discovers them before processors/plugins run.
 site.add("/style.css");
+site.add("/scripts/theme-toggle.js", "/theme-toggle.js");
+site.add("/scripts/anti-flash.js", "/anti-flash.js");
 
 // Copy XSLT stylesheets to the output as static assets.
 site.add("/feed.xsl");
