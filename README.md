@@ -488,11 +488,10 @@ All configuration is done through standard OpenTelemetry environment variables:
 
 | Variable                      | Default          | Description                                              |
 | ----------------------------- | ---------------- | -------------------------------------------------------- |
-| `OTEL_DENO`                   | `false`          | Enable the integration                                   |
-| `OTEL_SERVICE_NAME`           | `normcore`       | Service name in all signals                              |
+| `OTEL_DENO`                   | `true`          | Enable the integration                                   |
+| `OTEL_SERVICE_NAME`           | `lume build`     | Service name in all signals                              |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `localhost:4318` | OTLP collector endpoint (optional for local JSON output) |
-| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf`  | Exporter protocol (`http/json` recommended for local DX) |
-| `OTEL_EXPORTER_OTLP_HEADERS`  | —                | Auth headers (e.g., for hosted collectors)               |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/json.`.    | Exporter protocol (`http/json` recommended for local DX) |
 | `OTEL_METRIC_EXPORT_INTERVAL` | `60000`          | Metric flush interval (ms)                               |
 
 ---

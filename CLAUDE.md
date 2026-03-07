@@ -19,11 +19,9 @@
   (<https://docs.deno.com/runtime/>).
 
 - **OpenTelemetry (local):** keep the `plugins/otel.ts` plugin enabled, and
-  activate telemetry only via environment variables. Prefer
+  activate telemetry only via environment variables. Use
   `OTEL_EXPORTER_OTLP_PROTOCOL=http/json` for local development to inspect
-  structured records directly in the terminal (`console.table` + JSON). Do not
-  introduce dedicated `build:otel` / `serve:otel` tasks.
-
+  structured records directly in the terminal (`console.table` + JSON).
 ---
 
 ## 2. Mandatory workflow
