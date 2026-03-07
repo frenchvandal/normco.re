@@ -10,7 +10,9 @@
   "permissions": {
     "lume": {
       "read": true,
-      "write": ["./"],
+      "write": [
+        "./"
+      ],
       "import": [
         "cdn.jsdelivr.net:443",
         "cdn.sheetjs.com:443",
@@ -57,24 +59,18 @@
       "command": "deno check **/*.ts **/*.tsx"
     },
     "lint:doc": {
-      "description": "Lint documentation comments (src, scripts, and plugins; root config files are excluded — they reference private Lume types by framework requirement)",
+      "description": "Lint documentation comments (src, scripts, and plugins; root config files are excluded \u2014 they reference private Lume types by framework requirement)",
       "command": "deno doc --lint src/**/*.ts src/**/*.tsx scripts/**/*.ts plugins/**/*.ts"
     },
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"
-    },
-    "build:otel": {
-      "description": "Build the site with OpenTelemetry enabled (exports to localhost:4318)",
-      "command": "OTEL_DENO=true OTEL_SERVICE_NAME=normcore deno task lume"
-    },
-    "serve:otel": {
-      "description": "Run the dev server with OpenTelemetry enabled (exports to localhost:4318)",
-      "command": "OTEL_DENO=true OTEL_SERVICE_NAME=normcore deno task lume -s"
     }
   },
   "compilerOptions": {
-    "types": ["lume/types.ts"],
+    "types": [
+      "lume/types.ts"
+    ],
     "jsx": "react-jsx",
     "jsxImportSource": "lume",
     "noUncheckedIndexedAccess": true,
@@ -84,11 +80,18 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true
   },
-  "unstable": ["temporal", "fmt-component"],
+  "unstable": [
+    "temporal",
+    "fmt-component"
+  ],
   "lint": {
-    "plugins": ["https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/lint.ts"],
+    "plugins": [
+      "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/lint.ts"
+    ],
     "rules": {
-      "exclude": ["no-import-prefix"]
+      "exclude": [
+        "no-import-prefix"
+      ]
     }
   }
 }
