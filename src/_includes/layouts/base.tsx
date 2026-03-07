@@ -47,7 +47,7 @@ export default async function (
   }>
     <title>${pageTitle}</title>
     <meta ${attr({ name: "description", content: metaDescription })}>
-    <script src="/anti-flash.js?v=${assetVersion}"></script>
+    <script src="/scripts/anti-flash.js?v=${assetVersion}"></script>
     <link rel="stylesheet" href="/style.css?v=${assetVersion}">
     <link rel="alternate" type="application/rss+xml" title="normco.re" href="/feed.xml">
     <link rel="alternate" type="application/json" title="normco.re JSON feed" href="/feed.json">
@@ -61,8 +61,8 @@ export default async function (
       </main>
       ${footer}
     </div>
-    <script src="/theme-toggle.js?v=${assetVersion}"></script>
-    <script src="/sw-register.js?v=${assetVersion}" data-asset-version="${assetVersion}" data-sw-debug-level="${swDebugLevel}"></script>
+    <script src="/scripts/theme-toggle.js?v=${assetVersion}"></script>
+    <script src="/scripts/sw-register.js?v=${assetVersion}" data-asset-version="${assetVersion}" data-sw-debug-level="${swDebugLevel}"></script>
   </body>
 </html>`;
 }

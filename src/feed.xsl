@@ -94,7 +94,7 @@
             </div>
           </footer>
         </div>
-        <script src="/theme-toggle.js"/>
+        <script src="/scripts/theme-toggle.js"/>
       </body>
     </html>
   </xsl:template>
