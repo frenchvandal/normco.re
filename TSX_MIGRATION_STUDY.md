@@ -189,3 +189,40 @@ configuré), mais **pas prêt côté pipeline Lume** tant que le plugin JSX n’
 pas activé dans `_config.ts`. La migration est réaliste, peu risquée si conduite
 par lots courts, et peut être finalisée rapidement avec une discipline stricte
 de validation.
+
+---
+
+## 11) Mise à jour documentaire à inclure (CLAUDE.md + README.md)
+
+Pour éviter un décalage entre l’implémentation réelle et les consignes projet,
+la migration TSX doit être accompagnée d’une mise à jour coordonnée de la
+documentation de référence.
+
+### 11.1 `CLAUDE.md`
+
+- Mettre à jour toutes les sections qui imposent explicitement “ESM + TypeScript
+  (`*.page.ts` / layouts `.ts` / composants `.ts`)” vers une formulation
+  **TSX-first** (`*.page.tsx`, layouts/composants `.tsx`) avec mention claire de
+  la stratégie incrémentale.
+- Conserver les règles Lume spécifiques rappelées dans cette étude : plugin
+  `jsx()`, usage de `children` en layout, et préférence pour `comp.*` côté
+  composants.
+- Mettre à jour les exemples de conventions (noms de fichiers, snippets,
+  checklist) pour refléter l’état post-migration.
+
+### 11.2 `README.md`
+
+- Mettre à jour la section “Tech Stack” pour annoncer explicitement TSX comme
+  moteur de rendu des pages/layouts/composants.
+- Adapter “Project Structure” et les exemples de fichiers (`*.page.tsx`,
+  layouts `.tsx`, composants `.tsx`).
+- Mettre à jour la section “Authoring Content” pour documenter le format de
+  création d’une page/post en TSX.
+- Ajouter une note courte sur les prérequis de rendu (plugin JSX activé dans
+  `_config.ts`) afin de faciliter l’onboarding.
+
+### 11.3 Critère d’acceptation documentaire
+
+La migration sera considérée **complète** uniquement lorsque le code, la
+configuration, et la documentation (`CLAUDE.md` + `README.md`) convergent vers
+les mêmes conventions TSX.
