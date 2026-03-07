@@ -192,13 +192,132 @@ de validation.
 
 ---
 
-## 11) Mise à jour documentaire à inclure (CLAUDE.md + README.md)
+## 11) Compléments retenus du rapport Gémini (mars 2026)
+
+Le rapport est très large ; cette section ne conserve que les éléments
+directement utiles à une migration Lume TSX dans ce repository.
+
+### 11.1 Principes TSX à ajouter à la baseline projet
+
+1. **TypeScript strict sans `any`**
+
+- Conserver `strict: true` et traiter `any` comme une exception documentée.
+- En ingestion de données externes/frontmatter, préférer `unknown` + _type
+  narrowing_ avant usage.
+
+2. **Ne pas utiliser `React.FC` dans les templates Lume**
+
+- Déclarer les composants TSX comme fonctions typées via `interface`/`type`.
+- Déclarer `children` explicitement uniquement quand nécessaire.
+
+3. **Rester aligné avec le runtime TSX de Lume (SSX build-time)**
+
+- Pas de logique d’événements DOM côté template (`onClick`, `onSubmit`, etc.)
+  tant qu’aucun pipeline JS client n’est défini.
+- Considérer TSX ici comme une syntaxe de composition HTML statique, pas comme
+  un runtime applicatif React en navigateur.
+
+### 11.2 Données et typage Lume : recommandations applicables
+
+1. **Typage explicite des collections issues de `search.pages()`**
+
+- Introduire des interfaces dédiées (ex. `BlogPostData`, `BlogPostPage`) pour
+  les pages de posts.
+- Utiliser des assertions/génériques contrôlés sur les résultats de recherche
+  pour éviter les accès implicites à des champs de frontmatter non garantis.
+
+2. **Limiter les régressions de rendu via contrats de données**
+
+- Toute propriété frontmatter consommée dans un composant/page TSX doit être
+  décrite dans un type centralisé.
+- Une erreur de nommage (`author` vs `authorName`) doit échouer au check
+  TypeScript, pas en production.
+
+### 11.3 Architecture des composants : arbitrages pragmatiques
+
+1. **Composition > héritage**
+
+- Préférer des composants imbriqués et des props explicites à des hiérarchies de
+  classes/composants dérivés.
+
+2. **Classification orientée usage (et non dogmatique)**
+
+- Organiser `_components` par intention fonctionnelle (display, navigation,
+  action, layout) si cela améliore la lisibilité.
+- Éviter un refactoring “taxonomique” coûteux sans bénéfice concret sur ce
+  projet.
+
+### 11.4 Temporal API : décision pour ce projet
+
+Le rapport recommande `Temporal` pour remplacer `Date`. Cette piste est
+pertinente pour la robustesse des dates, mais **n’est pas un prérequis de la
+migration TSX**.
+
+Décision recommandée :
+
+- Ne pas coupler la migration `.ts` → `.tsx` avec une refonte temporelle.
+- Ouvrir un chantier séparé “Date → Temporal” après migration, avec tests dédiés
+  sur le formatage des dates de posts et du feed.
+
+### 11.5 Architecture des îles : applicable mais hors périmètre immédiat
+
+Le rapport propose l’architecture des îles pour les zones interactives. C’est
+cohérent à moyen terme, mais hors scope du basculement de templates statiques.
+
+Décision recommandée :
+
+- Garder la migration actuelle centrée sur le rendu statique TSX.
+- Documenter un backlog optionnel pour une future hydratation ciblée (ex. toggle
+  de thème, recherche interactive), avec budget performance.
+
+### 11.6 Points explicitement écartés pour cette étude
+
+Les sujets suivants sont volontairement exclus car non déterminants pour la
+migration TSX de ce repository :
+
+- Intégration Tailwind CSS et ses patterns (`clsx`, `tailwind-merge`, `@apply`).
+- Refonte globale d’architecture UI non liée au moteur de templates.
+
+---
+
+## 12) Plan de migration mis à jour (version actionnable)
+
+Par rapport au plan initial, les garde-fous suivants deviennent explicites :
+
+1. **Avant migration de fichiers**
+
+- Activer `jsx()` dans `_config.ts`.
+- Étendre tous les hooks/process ciblant `".ts"` vers `".ts", ".tsx"`.
+
+2. **Pendant migration des layouts/composants/pages**
+
+- Vérifier systématiquement l’usage de `children` dans les layouts TSX.
+- Refuser l’introduction de `React.FC`.
+- Refuser l’introduction de `any` dans les props/données de rendu.
+
+3. **Après chaque lot**
+
+- Vérifier que les pages index/posts/feeds compilent sans accès à des champs non
+  typés.
+- Conserver `comp.*` pour les composants Lume afin de préserver le cycle de
+  développement.
+
+4. **Après migration complète**
+
+- Ouvrir des tickets séparés pour :
+  - typage renforcé des modèles de données (`search.pages()`),
+  - migration éventuelle Date → Temporal,
+  - éventuels îlots interactifs.
+
+---
+
+## 13) Mise à jour documentaire à inclure (CLAUDE.md + README.md)
 
 Pour éviter un décalage entre l’implémentation réelle et les consignes projet,
 la migration TSX doit être accompagnée d’une mise à jour coordonnée de la
 documentation de référence.
 
-### 11.1 `CLAUDE.md`
+### 13.1 `CLAUDE.md`
 
 - Mettre à jour toutes les sections qui imposent explicitement “ESM + TypeScript
   (`*.page.ts` / layouts `.ts` / composants `.ts`)” vers une formulation
@@ -210,18 +329,18 @@ documentation de référence.
 - Mettre à jour les exemples de conventions (noms de fichiers, snippets,
   checklist) pour refléter l’état post-migration.
 
-### 11.2 `README.md`
+### 13.2 `README.md`
 
 - Mettre à jour la section “Tech Stack” pour annoncer explicitement TSX comme
   moteur de rendu des pages/layouts/composants.
-- Adapter “Project Structure” et les exemples de fichiers (`*.page.tsx`,
-  layouts `.tsx`, composants `.tsx`).
+- Adapter “Project Structure” et les exemples de fichiers (`*.page.tsx`, layouts
+  `.tsx`, composants `.tsx`).
 - Mettre à jour la section “Authoring Content” pour documenter le format de
   création d’une page/post en TSX.
 - Ajouter une note courte sur les prérequis de rendu (plugin JSX activé dans
   `_config.ts`) afin de faciliter l’onboarding.
 
-### 11.3 Critère d’acceptation documentaire
+### 13.3 Critère d’acceptation documentaire
 
 La migration sera considérée **complète** uniquement lorsque le code, la
 configuration, et la documentation (`CLAUDE.md` + `README.md`) convergent vers
