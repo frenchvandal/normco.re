@@ -17,14 +17,19 @@ concurrency:
 
 jobs:
   deploy:
-    environment: development
+    environment:
+      name: ${{ 'development' }}
     runs-on: ubuntu-latest
     env:
-      OSS_BUCKET: ${{ vars.OSS_BUCKET }}
-      OSS_REGION: ${{ vars.OSS_REGION }}
-      OSS_DESTINATION_PREFIX: ${{ vars.OSS_DESTINATION_PREFIX }}
-      OSS_CDN_ACTIONS: ${{ vars.OSS_CDN_ACTIONS }}
-      OSS_CDN_BASE_URL: ${{ vars.OSS_CDN_BASE_URL }}
+      OSS_BUCKET: ${{ vars[format('{0}', 'OSS_BUCKET')] }}
+      OSS_REGION: ${{ vars[format('{0}', 'OSS_REGION')] }}
+      OSS_DESTINATION_PREFIX: ${{ vars[format('{0}', 'OSS_DESTINATION_PREFIX')] }}
+      OSS_CDN_ACTIONS: ${{ vars[format('{0}', 'OSS_CDN_ACTIONS')] }}
+      OSS_CDN_BASE_URL: ${{ vars[format('{0}', 'OSS_CDN_BASE_URL')] }}
+      ALIBABA_CLOUD_OIDC_PROVIDER_ARN: ${{ secrets[format('{0}', 'ALIBABA_CLOUD_OIDC_PROVIDER_ARN')] }}
+      ALIBABA_CLOUD_ROLE_ARN: ${{ secrets[format('{0}', 'ALIBABA_CLOUD_ROLE_ARN')] }}
+      GITHUB_SERVER_URL: ${{ github.server_url }}
+      GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -43,9 +48,11 @@ jobs:
         id: aliyun-creds
         uses: frenchvandal/configure-aliyun-credentials-action@4d1b8609e904545d4cb25822a6338d3e3ed83620
         with:
-          role-to-assume: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
-          oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
-          audience: sts.aliyuncs.com
+          audience: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY_OWNER }}
+          role-to-assume: ${{ env.ALIBABA_CLOUD_ROLE_ARN }}
+          oidc-provider-arn: ${{ env.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
+          role-session-name: github-action-session
+          role-session-expiration: 1800
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/deploy-oss@6dbceb3f5038341eada4cda21c06ae778d9f08e2
         with:
