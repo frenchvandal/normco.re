@@ -25,6 +25,8 @@ jobs:
       OSS_BUCKET: ${{ vars.OSS_BUCKET }}
       OSS_REGION: ${{ vars.OSS_REGION }}
       OSS_CDN_BASE_URL: ${{ vars.OSS_CDN_BASE_URL }}
+      LUME_LOGS: ${{ vars.LUME_LOGS }}
+      OTEL_DENO: ${{ vars.OTEL_DENO }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -46,7 +48,7 @@ jobs:
           role-to-assume: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
           oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
           role-session-name: ${{ github.run_id }}
-          role-session-expiration: 1800
+          role-session-expiration: 3600
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/deploy-oss@master
         with:
