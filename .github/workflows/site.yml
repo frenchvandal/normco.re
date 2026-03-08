@@ -4,7 +4,6 @@ name: Deploy static content to OSS
 on:
   push:
     branches: ["master"]
-
   workflow_dispatch:
 
 permissions:
@@ -18,16 +17,16 @@ concurrency:
 jobs:
   deploy:
     environment:
-      name: ${{ 'development' }}
+      name: development
     runs-on: ubuntu-latest
     env:
-      OSS_BUCKET: ${{ vars[format('{0}', 'OSS_BUCKET')] }}
-      OSS_REGION: ${{ vars[format('{0}', 'OSS_REGION')] }}
-      OSS_DESTINATION_PREFIX: ${{ vars[format('{0}', 'OSS_DESTINATION_PREFIX')] }}
-      OSS_CDN_ACTIONS: ${{ vars[format('{0}', 'OSS_CDN_ACTIONS')] }}
-      OSS_CDN_BASE_URL: ${{ vars[format('{0}', 'OSS_CDN_BASE_URL')] }}
-      ALIBABA_CLOUD_OIDC_PROVIDER_ARN: ${{ secrets[format('{0}', 'ALIBABA_CLOUD_OIDC_PROVIDER_ARN')] }}
-      ALIBABA_CLOUD_ROLE_ARN: ${{ secrets[format('{0}', 'ALIBABA_CLOUD_ROLE_ARN')] }}
+      OSS_BUCKET: ${{ vars.OSS_BUCKET }}
+      OSS_REGION: ${{ vars.OSS_REGION }}
+      OSS_DESTINATION_PREFIX: ${{ vars.OSS_DESTINATION_PREFIX }}
+      OSS_CDN_ACTIONS: ${{ vars.OSS_CDN_ACTIONS }}
+      OSS_CDN_BASE_URL: ${{ vars.OSS_CDN_BASE_URL }}
+      ALIBABA_CLOUD_OIDC_PROVIDER_ARN: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
+      ALIBABA_CLOUD_ROLE_ARN: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
       GITHUB_SERVER_URL: ${{ github.server_url }}
       GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
     steps:
@@ -49,8 +48,8 @@ jobs:
         uses: frenchvandal/configure-aliyun-credentials-action@master
         with:
           audience: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY_OWNER }}
-          role-to-assume: ${{ env.ALIBABA_CLOUD_ROLE_ARN }}
-          oidc-provider-arn: ${{ env.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
+          role-to-assume: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
+          oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
           role-session-name: github-action-session
           role-session-expiration: 1800
       - name: Deploy to Alibaba Cloud OSS
