@@ -22,6 +22,9 @@ jobs:
     env:
       GITHUB_SERVER_URL: ${{ github.server_url }}
       GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+      OSS_BUCKET: ${{ vars.OSS_BUCKET }}
+      OSS_REGION: ${{ vars.OSS_REGION }}
+      OSS_CDN_BASE_URL: ${{ vars.OSS_CDN_BASE_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
