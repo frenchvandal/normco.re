@@ -27,6 +27,9 @@ jobs:
       OSS_CDN_BASE_URL: ${{ vars.OSS_CDN_BASE_URL }}
       LUME_LOGS: ${{ vars.LUME_LOGS }}
       OTEL_DENO: ${{ vars.OTEL_DENO }}
+      OTEL_EXPORTER_OTLP_PROTOCOL: ${{ vars.OTEL_EXPORTER_OTLP_PROTOCOL }}
+      OTEL_LOG_LEVEL: ${{ vars.OTEL_LOG_LEVEL }}
+      OTEL_SERVICE_NAME: ${{ vars.OTEL_SERVICE_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
