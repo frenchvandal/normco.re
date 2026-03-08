@@ -56,39 +56,13 @@ jobs:
           role-session-name: ${{ github.run_id }}
           role-session-expiration: 3600
 
-      - name: Install aliyun cli
-        run: |
-          curl -fsSL https://aliyuncli.alicdn.com/aliyun-cli-linux-latest-amd64.tgz -o aliyun.tgz
-          sudo tar -xzf aliyun.tgz -C /usr/local/bin
-          aliyun version
-
-      - name: Configure aliyun cli with OIDC
-        run: |
-          # Le chemin est exporté par ton action:
-          #  - en output: steps.aliyun-creds.outputs['oidc-token-file']
-          #  - et en env:  OIDC_TOKEN_FILE
-          OIDC_FILE="${OIDC_TOKEN_FILE:-${{ steps.aliyun-creds.outputs['oidc-token-file'] }}}"
-
-          echo "Using OIDC token file: $OIDC_FILE"
-
-          aliyun configure set \
-            --profile github-oidc \
-            --mode OIDC \
-            --oidc-provider-arn "${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}" \
-            --oidc-token-file "$OIDC_FILE" \
-            --ram-role-arn "${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}" \
-            --role-session-name "${{ github.run_id }}" \
-            --region "${{ env.OSS_REGION }}"
-
-          aliyun cdn DescribeRefreshQuota --profile github-oidc
-
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/deploy-oss@master
         with:
           input-dir: _site
           bucket: ${{ env.OSS_BUCKET }}
           region: ${{ env.OSS_REGION }}
-          cdn-base-url: ${{ env.OSS_CDN_BASE_URL }}
+          cdn-enabled: false
           aliyun-access-key-id: ${{ steps.aliyun-creds.outputs.aliyun-access-key-id }}
           aliyun-access-key-secret: ${{ steps.aliyun-creds.outputs.aliyun-access-key-secret }}
           aliyun-security-token: ${{ steps.aliyun-creds.outputs.aliyun-security-token }}
