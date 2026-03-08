@@ -12,6 +12,12 @@ type BuildData = {
 
 type LayoutData = Lume.Data & {
   build?: BuildData;
+  /** Injected by `src/_data.ts` — canonical site name / domain. */
+  siteName?: string;
+  /** Injected by `src/_data.ts` — primary author name. */
+  author?: string;
+  /** Injected by `src/_data.ts` — site metadata for meta tags. */
+  metas?: { readonly site?: string; readonly description?: string };
 };
 
 /** Return type of an ssx JSX element, used to type Lume component functions. */
@@ -19,17 +25,24 @@ type SsxElement = ReturnType<typeof jsx>;
 
 /** Minimal typed interface for the components used in this layout. */
 type Comp = {
-  Header: (props: { readonly currentUrl: string }) => SsxElement;
-  Footer: (props: Record<never, never>) => SsxElement;
+  Header: (
+    props: { readonly currentUrl: string; readonly siteName: string },
+  ) => SsxElement;
+  Footer: (props: { readonly author: string }) => SsxElement;
 };
 
 /** Renders the full HTML document shell. */
 export default (
-  { title, description, url, children, comp, build }: LayoutData,
+  { title, description, url, children, comp, build, siteName, author, metas }:
+    LayoutData,
   _helpers: Lume.Helpers,
 ) => {
-  const pageTitle = title ? `${title} — normco.re` : "normco.re";
-  const metaDescription = description ??
+  // siteName and author are always provided by src/_data.ts; the fallbacks are
+  // a safety net for test environments that omit them.
+  const resolvedSiteName = siteName ?? "normco.re";
+  const resolvedAuthor = author ?? "Phiphi";
+  const pageTitle = title ? `${title} — ${resolvedSiteName}` : resolvedSiteName;
+  const metaDescription = description ?? metas?.description ??
     "Personal blog by Phiphi, based in Chengdu, China.";
   const assetVersion = build?.assetVersion ?? "dev";
   const swDebugLevel = build?.swDebugLevel ?? "off";
@@ -51,24 +64,24 @@ export default (
           <link
             rel="alternate"
             type="application/rss+xml"
-            title="normco.re"
+            title={resolvedSiteName}
             href="/feed.xml"
           />
           <link
             rel="alternate"
             type="application/json"
-            title="normco.re JSON feed"
+            title={`${resolvedSiteName} JSON feed`}
             href="/feed.json"
           />
         </head>
         <body>
           <a class="skip-link" href="#main-content">Skip to content</a>
           <div class="site-wrapper">
-            <Header currentUrl={url ?? "/"} />
+            <Header currentUrl={url ?? "/"} siteName={resolvedSiteName} />
             <main class="site-main" id="main-content">
               {children}
             </main>
-            <Footer />
+            <Footer author={resolvedAuthor} />
           </div>
           <script src={`/scripts/theme-toggle.js?v=${assetVersion}`}></script>
           <script

@@ -20,6 +20,9 @@ function makeData(
     description?: string;
     children?: { __html: string };
     url?: string;
+    siteName?: string;
+    author?: string;
+    metas?: { site?: string; description?: string };
     build?: {
       assetVersion?: string;
       swDebugLevel?: "off" | "summary" | "verbose";
@@ -31,6 +34,12 @@ function makeData(
     description: undefined,
     children: { __html: "<p>Page body.</p>" },
     url: "/",
+    siteName: "normco.re",
+    author: "Phiphi",
+    metas: {
+      site: "normco.re",
+      description: "Personal blog by Phiphi, based in Chengdu, China.",
+    },
     comp: {
       Header: (_props: unknown) => "<header>mock</header>",
       Footer: (_props: unknown) => "<footer>mock</footer>",

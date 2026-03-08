@@ -9,18 +9,23 @@ function ariaCurrent(
   currentUrl: string,
 ): { readonly "aria-current"?: "page" } {
   if (href === "/" && currentUrl === "/") return { "aria-current": "page" };
-  if (href !== "/" && currentUrl.startsWith(href)) return { "aria-current": "page" };
+  if (href !== "/" && currentUrl.startsWith(href)) {
+    return { "aria-current": "page" };
+  }
   return {};
 }
 
 /** Renders the site header with logo, navigation, and theme toggle. */
 export default (
-  { currentUrl }: { readonly currentUrl: string },
+  { currentUrl, siteName }: {
+    readonly currentUrl: string;
+    readonly siteName: string;
+  },
 ) => (
   <header class="site-header">
     <div class="site-header-inner">
       <a href="/" class="site-name" {...ariaCurrent("/", currentUrl)}>
-        normco.re
+        {siteName}
       </a>
       <div class="site-header-end">
         <nav class="site-nav" aria-label="Main navigation">
