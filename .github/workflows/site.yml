@@ -1,33 +1,30 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# Build and deploy static content to Alibaba Cloud OSS
+name: Deploy static content to OSS
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["master"]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
-  pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: "pages"
+  group: "oss-deploy"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    environment: development
     runs-on: ubuntu-latest
+    env:
+      OSS_BUCKET: ${{ vars.OSS_BUCKET }}
+      OSS_REGION: ${{ vars.OSS_REGION }}
+      OSS_DESTINATION_PREFIX: ${{ vars.OSS_DESTINATION_PREFIX }}
+      OSS_CDN_ACTIONS: ${{ vars.OSS_CDN_ACTIONS }}
+      OSS_CDN_BASE_URL: ${{ vars.OSS_CDN_BASE_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -42,14 +39,22 @@ jobs:
         shell: bash
         run: |
           DENO_TLS_CA_STORE=system deno task build
-      - name: Environment variables
-        run: printenv
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+      - name: Configure Alibaba Cloud credentials
+        id: aliyun-creds
+        uses: frenchvandal/configure-aliyun-credentials-action@4d1b8609e904545d4cb25822a6338d3e3ed83620
         with:
-          path: "_site"
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          role-to-assume: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
+          oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
+          audience: sts.aliyuncs.com
+      - name: Deploy to Alibaba Cloud OSS
+        uses: frenchvandal/deploy-oss@6dbceb3f5038341eada4cda21c06ae778d9f08e2
+        with:
+          input-dir: _site
+          bucket: ${{ env.OSS_BUCKET }}
+          region: ${{ env.OSS_REGION }}
+          destination-prefix: ${{ env.OSS_DESTINATION_PREFIX }}
+          cdn-actions: ${{ env.OSS_CDN_ACTIONS }}
+          cdn-base-url: ${{ env.OSS_CDN_BASE_URL }}
+          aliyun-access-key-id: ${{ steps.aliyun-creds.outputs.aliyun-access-key-id }}
+          aliyun-access-key-secret: ${{ steps.aliyun-creds.outputs.aliyun-access-key-secret }}
+          aliyun-security-token: ${{ steps.aliyun-creds.outputs.aliyun-security-token }}
