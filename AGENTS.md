@@ -93,9 +93,9 @@ first argument to validate an arbitrary file.
   unless explicitly requested, and do not modify or delete existing
   documentation files without explicit instruction. Human contributors are free
   to evolve documentation as needed, following the project's tone and structure.
-- Always prefer TSX + TypeScript for rendering templates (pages, layouts,
-  components), with TypeScript modules for data/config files. Another engine
-  (Vento, Nunjucks, etc.) may be used only as a fallback when TSX + TypeScript
+- Don't use non-TSX template engines (Vento, Nunjucks, etc.) for rendering —
+  prefer TSX + TypeScript for pages, layouts, and components, and TypeScript
+  modules for data/config files. Use another engine only when TSX + TypeScript
   cannot achieve the goal (e.g., a plugin that requires a specific template
   engine). Document the reason in a code comment.
 - Do not use Markdown (`.md`) for new content. All new posts and pages must be
@@ -702,20 +702,21 @@ TypeScript. Markdown is not used for new content.
 
 ### Page structure
 
-A `*.page.tsx` file exports named variables for metadata and a default export
-for the content (string or render function):
+A `*.page.tsx` file exports named variables for metadata and a JSX render
+function as the default export:
 
-```ts
+```tsx
 export const title = "My Article";
 export const date = new Date("2026-01-15");
 export const layout = "layouts/post.tsx";
 export const tags = ["essay", "literature"];
 
-export default (data: Lume.Data, helpers: Lume.Helpers) =>
-  `<article>
-    <h1>${data.title}</h1>
+export default (data: Lume.Data, _helpers: Lume.Helpers) => (
+  <article>
+    <h1>{data.title}</h1>
     <p>This is the article content.</p>
-  </article>`;
+  </article>
+);
 ```
 
 ### Layout structure
@@ -724,13 +725,17 @@ Layouts are TSX functions in `_includes/` that receive page data and helpers.
 Ensure the JSX plugin is enabled in `_config.ts` with `site.use(jsx())`, and use
 `children` (not `content`) in TSX layouts to avoid escaping issues:
 
-```ts
-export default ({ title, content }: Lume.Data, helpers: Lume.Helpers) =>
-  `<!doctype html>
+```tsx
+export default ({ title, children }: Lume.Data, _helpers: Lume.Helpers) => (
   <html lang="en">
-    <head><title>${title}</title></head>
-    <body><main>${content}</main></body>
-  </html>`;
+    <head>
+      <title>{title}</title>
+    </head>
+    <body>
+      <main>{children}</main>
+    </body>
+  </html>
+);
 ```
 
 ### Component rules
