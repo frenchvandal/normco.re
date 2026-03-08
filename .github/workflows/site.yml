@@ -20,13 +20,6 @@ jobs:
       name: development
     runs-on: ubuntu-latest
     env:
-      OSS_BUCKET: ${{ vars.OSS_BUCKET }}
-      OSS_REGION: ${{ vars.OSS_REGION }}
-      OSS_DESTINATION_PREFIX: ${{ vars.OSS_DESTINATION_PREFIX }}
-      OSS_CDN_ACTIONS: ${{ vars.OSS_CDN_ACTIONS }}
-      OSS_CDN_BASE_URL: ${{ vars.OSS_CDN_BASE_URL }}
-      ALIBABA_CLOUD_OIDC_PROVIDER_ARN: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
-      ALIBABA_CLOUD_ROLE_ARN: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
       GITHUB_SERVER_URL: ${{ github.server_url }}
       GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
     steps:
