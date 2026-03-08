@@ -62,7 +62,8 @@ jobs:
           input-dir: _site
           bucket: ${{ env.OSS_BUCKET }}
           region: ${{ env.OSS_REGION }}
-          cdn-enabled: false
+          cdn-enabled: true
+          cdn-base-url: ${{ env.OSS_CDN_BASE_URL }}
           aliyun-access-key-id: ${{ steps.aliyun-creds.outputs.aliyun-access-key-id }}
           aliyun-access-key-secret: ${{ steps.aliyun-creds.outputs.aliyun-access-key-secret }}
           aliyun-security-token: ${{ steps.aliyun-creds.outputs.aliyun-security-token }}
