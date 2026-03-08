@@ -1,35 +1,50 @@
 import { assertEquals, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
+import { faker } from "npm/faker-js";
 
 import { lintCommit } from "./lint-commit.ts";
 
 describe("lintCommit()", () => {
   describe("valid messages", () => {
     it("accepts a well-formed feat commit", () => {
-      const report = lintCommit("feat(auth): add OAuth2 support");
+      faker.seed(1001);
+      const scope = faker.lorem.word();
+      const subject = faker.lorem.words(3);
+      const report = lintCommit(`feat(${scope}): ${subject}`);
       assertEquals(report.valid, true);
       assertEquals(report.errors.length, 0);
     });
 
     it("accepts a commit without a scope", () => {
-      const report = lintCommit("fix: correct typo in README");
+      faker.seed(1002);
+      const subject = faker.lorem.words(3);
+      const report = lintCommit(`fix: ${subject}`);
       assertEquals(report.valid, true);
     });
 
     it("accepts a breaking change with '!'", () => {
-      const report = lintCommit("feat(api)!: remove deprecated endpoints");
+      faker.seed(1003);
+      const scope = faker.lorem.word();
+      const subject = faker.lorem.words(3);
+      const report = lintCommit(`feat(${scope})!: ${subject}`);
       assertEquals(report.valid, true);
     });
 
     it("ignores comment lines starting with '# '", () => {
+      faker.seed(1004);
+      const subject = faker.lorem.words(3);
+      const comment = faker.lorem.sentence();
       const report = lintCommit(
-        "fix: correct typo\n# This is a git comment\n# Another comment",
+        `fix: ${subject}\n# ${comment}\n# Another comment`,
       );
       assertEquals(report.valid, true);
     });
 
     it("produces only a warning (not an error) for uppercase subject start", () => {
-      const report = lintCommit("fix: Correct typo");
+      faker.seed(1005);
+      const subject = faker.lorem.words(3);
+      const capitalized = subject.charAt(0).toUpperCase() + subject.slice(1);
+      const report = lintCommit(`fix: ${capitalized}`);
       assertEquals(report.errors.length, 0);
       assertEquals(
         report.warnings.some((w) => w.rule === "subject-case"),
@@ -40,7 +55,8 @@ describe("lintCommit()", () => {
 
   describe("rule: header-max-length", () => {
     it("rejects a header exceeding 100 characters", () => {
-      const longSubject = "a".repeat(97);
+      faker.seed(1006);
+      const longSubject = faker.string.alpha(97);
       const report = lintCommit(`feat: ${longSubject}`);
       const rule = report.errors.find((e) => e.rule === "header-max-length");
       assertEquals(rule?.severity, "error");
@@ -59,7 +75,9 @@ describe("lintCommit()", () => {
 
   describe("rule: header-trim", () => {
     it("rejects a header with leading whitespace", () => {
-      const report = lintCommit(" feat: leading space");
+      faker.seed(1007);
+      const subject = faker.lorem.words(2);
+      const report = lintCommit(` feat: ${subject}`);
       const rule = report.errors.find((e) => e.rule === "header-trim");
       assertEquals(rule?.severity, "error");
     });
@@ -67,7 +85,9 @@ describe("lintCommit()", () => {
 
   describe("rule: header-pattern", () => {
     it("rejects a message that does not match the Conventional Commits format", () => {
-      const report = lintCommit("this is not conventional");
+      faker.seed(1008);
+      const words = faker.lorem.words(4);
+      const report = lintCommit(words);
       const rule = report.errors.find((e) => e.rule === "header-pattern");
       assertEquals(rule?.severity, "error");
     });
@@ -75,13 +95,17 @@ describe("lintCommit()", () => {
 
   describe("rule: type-enum", () => {
     it("rejects an unknown type", () => {
-      const report = lintCommit("wip: work in progress");
+      faker.seed(1009);
+      const subject = faker.lorem.words(3);
+      const report = lintCommit(`wip: ${subject}`);
       const rule = report.errors.find((e) => e.rule === "type-enum");
       assertEquals(rule?.severity, "error");
       assertStringIncludes(rule?.message ?? "", "wip");
     });
 
     it("accepts all allowed types", () => {
+      faker.seed(1010);
+      const subject = faker.lorem.words(2);
       const allowedTypes = [
         "build",
         "chore",
@@ -96,7 +120,7 @@ describe("lintCommit()", () => {
         "test",
       ];
       for (const type of allowedTypes) {
-        const report = lintCommit(`${type}: valid subject`);
+        const report = lintCommit(`${type}: ${subject}`);
         assertEquals(
           report.errors.some((e) => e.rule === "type-enum"),
           false,
@@ -108,7 +132,9 @@ describe("lintCommit()", () => {
 
   describe("rule: type-case", () => {
     it("rejects an uppercase type", () => {
-      const report = lintCommit("FEAT: something");
+      faker.seed(1011);
+      const subject = faker.lorem.words(2);
+      const report = lintCommit(`FEAT: ${subject}`);
       const rule = report.errors.find((e) => e.rule === "type-case");
       assertEquals(rule?.severity, "error");
     });
@@ -117,7 +143,9 @@ describe("lintCommit()", () => {
   describe("rule: subject-empty", () => {
     it("rejects an empty subject", () => {
       // Use a body so trimEnd() doesn't strip the trailing spaces from the header.
-      const report = lintCommit("feat:  \n\nbody line");
+      faker.seed(1012);
+      const body = faker.lorem.sentence();
+      const report = lintCommit(`feat:  \n\n${body}`);
       const rule = report.errors.find((e) => e.rule === "subject-empty");
       assertEquals(rule?.severity, "error");
     });
@@ -125,13 +153,17 @@ describe("lintCommit()", () => {
 
   describe("rule: subject-full-stop", () => {
     it("rejects a subject ending with '.'", () => {
-      const report = lintCommit("fix: correct typo.");
+      faker.seed(1013);
+      const subject = faker.lorem.words(3);
+      const report = lintCommit(`fix: ${subject}.`);
       const rule = report.errors.find((e) => e.rule === "subject-full-stop");
       assertEquals(rule?.severity, "error");
     });
 
     it("accepts a subject without a trailing period", () => {
-      const report = lintCommit("fix: correct typo");
+      faker.seed(1014);
+      const subject = faker.lorem.words(3);
+      const report = lintCommit(`fix: ${subject}`);
       assertEquals(
         report.errors.some((e) => e.rule === "subject-full-stop"),
         false,
@@ -141,13 +173,19 @@ describe("lintCommit()", () => {
 
   describe("rule: scope-case", () => {
     it("rejects an uppercase scope", () => {
-      const report = lintCommit("fix(API): correct typo");
+      faker.seed(1015);
+      const scope = faker.lorem.word().toUpperCase();
+      const subject = faker.lorem.words(2);
+      const report = lintCommit(`fix(${scope}): ${subject}`);
       const rule = report.errors.find((e) => e.rule === "scope-case");
       assertEquals(rule?.severity, "error");
     });
 
     it("accepts a lower-case scope", () => {
-      const report = lintCommit("fix(api): correct typo");
+      faker.seed(1016);
+      const scope = faker.lorem.word().toLowerCase();
+      const subject = faker.lorem.words(2);
+      const report = lintCommit(`fix(${scope}): ${subject}`);
       assertEquals(
         report.errors.some((e) => e.rule === "scope-case"),
         false,
@@ -157,15 +195,19 @@ describe("lintCommit()", () => {
 
   describe("rule: body-leading-blank", () => {
     it("warns when body is not separated from header by a blank line", () => {
-      const report = lintCommit("fix: typo\nThis body has no blank line");
+      faker.seed(1017);
+      const subject = faker.lorem.words(2);
+      const body = faker.lorem.sentence();
+      const report = lintCommit(`fix: ${subject}\n${body}`);
       const rule = report.warnings.find((w) => w.rule === "body-leading-blank");
       assertEquals(rule?.severity, "warning");
     });
 
     it("does not warn when a blank line separates header and body", () => {
-      const report = lintCommit(
-        "fix: typo\n\nThis body is correctly separated",
-      );
+      faker.seed(1018);
+      const subject = faker.lorem.words(2);
+      const body = faker.lorem.sentence();
+      const report = lintCommit(`fix: ${subject}\n\n${body}`);
       assertEquals(
         report.warnings.some((w) => w.rule === "body-leading-blank"),
         false,
@@ -175,8 +217,10 @@ describe("lintCommit()", () => {
 
   describe("rule: body-max-line-length", () => {
     it("rejects a body line exceeding 100 characters", () => {
-      const longLine = "b".repeat(101);
-      const report = lintCommit(`fix: typo\n\n${longLine}`);
+      faker.seed(1019);
+      const subject = faker.lorem.words(2);
+      const longLine = faker.string.alpha(101);
+      const report = lintCommit(`fix: ${subject}\n\n${longLine}`);
       const rule = report.errors.find((e) => e.rule === "body-max-line-length");
       assertEquals(rule?.severity, "error");
     });
@@ -184,20 +228,28 @@ describe("lintCommit()", () => {
 
   describe("report structure", () => {
     it("separates errors from warnings", () => {
+      faker.seed(1020);
+      const subject = faker.lorem.words(2);
+      const capitalized = subject.charAt(0).toUpperCase() + subject.slice(1);
       // type-case is an error; subject-case is a warning
-      const report = lintCommit("FIX: Something");
+      const report = lintCommit(`FIX: ${capitalized}`);
       assertEquals(report.errors.some((e) => e.rule === "type-case"), true);
       assertEquals(report.valid, false);
     });
 
     it("returns valid=false when any error is present", () => {
-      const report = lintCommit("bad message");
+      faker.seed(1021);
+      const words = faker.lorem.words(4);
+      const report = lintCommit(words);
       assertEquals(report.valid, false);
     });
 
     it("returns the cleaned input without comment lines", () => {
-      const report = lintCommit("feat: add feature\n# git comment");
-      assertEquals(report.input.includes("# git comment"), false);
+      faker.seed(1022);
+      const subject = faker.lorem.words(3);
+      const comment = faker.lorem.words(2);
+      const report = lintCommit(`feat: ${subject}\n# ${comment}`);
+      assertEquals(report.input.includes(`# ${comment}`), false);
     });
   });
 });

@@ -821,6 +821,82 @@ BDD-style grouping, use `describe`/`it` from `@std/testing/bdd` (preferred in
 this project). Both `@std/assert` (`assertEquals`, `assertThrows`, etc.) and
 `@std/expect` (`expect(x).toBe(y)`) are available.
 
+### Test data — faker.js
+
+Use **`@faker-js/faker`** (aliased as `npm/faker-js` in `deno.json`) to
+generate realistic, randomized test data instead of hard-coded strings. This
+practice increases confidence that code handles a variety of inputs correctly,
+not just a single hand-picked value.
+
+#### When to use faker.js
+
+- Any test data that is **incidental to the assertion** (names, titles, slugs,
+  sentences, dates, numbers) should be faker-generated rather than hard-coded.
+- Keep hard-coded values only when the **exact value matters** (e.g., testing
+  that a specific ISO date string is parsed correctly, or that a known-invalid
+  format triggers an error).
+
+#### Always seed faker for determinism
+
+Call `faker.seed(n)` with a unique integer before generating values. Seeded
+runs produce identical output on every execution, so tests remain deterministic
+while still exercising realistic data.
+
+Reserve seed numbers per file so ranges do not collide:
+
+| Seed range  | File                                     |
+| ----------- | ---------------------------------------- |
+| 101–199     | `src/_components/Footer_test.ts`         |
+| 201–299     | `src/_components/Header_test.ts`         |
+| 301–399     | `src/_components/PostCard_test.ts`       |
+| 401–499     | `src/_index_test.ts`                     |
+| 501–599     | `src/posts/_index_test.ts`               |
+| 601–699     | `src/_includes/layouts/_base_test.ts`    |
+| 701–799     | `src/_includes/layouts/_post_test.ts`    |
+| 801–899     | `src/posts/post-metadata_test.ts`        |
+| 901–999     | `scripts/md-to-tsx_test.ts`              |
+| 1001–1099   | `scripts/lint-commit_test.ts`            |
+
+New test files should claim the next available hundred-block and document it
+here.
+
+#### Factory helpers
+
+Extract repeated faker calls into a factory function at the top of each test
+file. Use `as const` on the returned object when all properties are read-only:
+
+```ts
+import { faker } from "npm/faker-js";
+
+function makePost(seed: number) {
+  faker.seed(seed);
+  return {
+    title: faker.lorem.sentence({ min: 3, max: 6 }),
+    url: `/posts/${faker.lorem.slug(3)}/`,
+    date: faker.date.past(),
+  } as const;
+}
+```
+
+#### Faker API cheat sheet (most used)
+
+| Category     | Method                                        | Output example                  |
+| ------------ | --------------------------------------------- | ------------------------------- |
+| Text         | `faker.lorem.word()`                          | `"qui"`                         |
+| Text         | `faker.lorem.words(n)`                        | `"dolor sit amet"`              |
+| Text         | `faker.lorem.sentence({ min, max })`          | `"Ut labore et dolore."`        |
+| Text         | `faker.lorem.slug(n)`                         | `"lorem-ipsum-dolor"`           |
+| Text         | `faker.lorem.paragraph()`                     | multi-sentence paragraph        |
+| Person       | `faker.person.fullName()`                     | `"Jane Doe"`                    |
+| Internet     | `faker.internet.domainName()`                 | `"example.com"`                 |
+| Date         | `faker.date.past()`                           | random past `Date`              |
+| Date         | `faker.date.anytime()`                        | any random `Date`               |
+| Date         | `faker.date.month()`                          | `"March"`                       |
+| Number       | `faker.number.int({ min, max })`              | integer in range                |
+| Number       | `faker.number.float({ min, max })`            | float in range                  |
+| Boolean      | `faker.datatype.boolean()`                    | `true` or `false`               |
+| String       | `faker.string.alpha(n)`                       | `n`-character alpha string      |
+
 ### Native test hooks
 
 Deno provides built-in hooks directly on `Deno.test`:
