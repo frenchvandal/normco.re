@@ -46,6 +46,7 @@
     "jsr:@std/toml@^1.0.3": "1.0.11",
     "jsr:@std/yaml@1.0.11": "1.0.11",
     "jsr:@std/yaml@^1.0.5": "1.0.11",
+    "npm:@faker-js/faker@^10.3.0": "10.3.0",
     "npm:@opentelemetry/api@^1.9.0": "1.9.0",
     "npm:autoprefixer@10.4.24": "10.4.24_postcss@8.5.6",
     "npm:date-fns@4.1.0": "4.1.0",
@@ -330,6 +331,9 @@
       "integrity": "sha512-4uJGhsxuptu3OcpVAzli+/gWusVGwZZHTlS63hh++ehExkVT8SgiEf7/uC/PclrPPkLhZqGgCTjd0VWLo6xMqA==",
       "os": ["win32"],
       "cpu": ["x64"]
+    },
+    "@faker-js/faker@10.3.0": {
+      "integrity": "sha512-It0Sne6P3szg7JIi6CgKbvTZoMjxBZhcv91ZrqrNuaZQfB5WoqYYbzCUOq89YR+VY8juY9M1vDWmDDa2TzfXCw=="
     },
     "@html-validate/stylish@4.3.0": {
       "integrity": "sha512-eUfvKpRJg5TvzSfTf2EovrQoTKjkRnPUOUnXVJ2cQ4GbC/bQw98oxN+DdSf+HxOBK00YOhsP52xWdJPV1o4n5w==",
@@ -1247,6 +1251,7 @@
     "dependencies": [
       "jsr:@std/assert@^1.0.19",
       "jsr:@std/testing@^1.0.17",
+      "npm:@faker-js/faker@^10.3.0",
       "npm:@opentelemetry/api@^1.9.0"
     ]
   }

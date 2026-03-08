@@ -5,6 +5,7 @@
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",
     "jsr/assert": "jsr:@std/assert@^1.0.19",
     "jsr/testing-bdd": "jsr:@std/testing@^1.0.17/bdd",
+    "npm/faker-js": "npm:@faker-js/faker@^10.3.0",
     "npm/opentelemetry-api": "npm:@opentelemetry/api@^1.9.0"
   },
   "permissions": {
