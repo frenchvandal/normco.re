@@ -1,3 +1,5 @@
+import { slugify } from "../utils/slugify.ts";
+
 /**
  * post — Lume archetype that scaffolds a new `.page.tsx` post.
  *
@@ -19,21 +21,9 @@
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Converts a title string into a URL-safe kebab-case slug. */
-function slugify(title: string): string {
-  return title
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-}
-
 /** Returns today's date as an ISO `YYYY-MM-DD` string. */
 function today(): string {
-  return new Date().toISOString().slice(0, 10);
+  return Temporal.Now.plainDateISO().toString();
 }
 
 /** Escapes double-quote characters for embedding in a TS string literal. */

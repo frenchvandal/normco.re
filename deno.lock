@@ -2,6 +2,7 @@
   "version": "5",
   "specifiers": {
     "jsr:@deno/loader@0.3.12": "0.3.12",
+    "jsr:@std/assert@*": "1.0.19",
     "jsr:@std/assert@^1.0.17": "1.0.19",
     "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/cli@1.0.27": "1.0.27",
@@ -46,6 +47,7 @@
     "jsr:@std/toml@^1.0.3": "1.0.11",
     "jsr:@std/yaml@1.0.11": "1.0.11",
     "jsr:@std/yaml@^1.0.5": "1.0.11",
+    "npm:@faker-js/faker@*": "10.3.0",
     "npm:@faker-js/faker@^10.3.0": "10.3.0",
     "npm:@opentelemetry/api@^1.9.0": "1.9.0",
     "npm:autoprefixer@10.4.24": "10.4.24_postcss@8.5.6",

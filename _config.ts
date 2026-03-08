@@ -362,6 +362,6 @@ site.process([".xml"], (pages: Page[]) => {
 // OpenTelemetry build observability — no-op without OTEL_DENO=true.
 // Configure exporters via OTEL_* env vars (for local JSON inspection, use
 // OTEL_EXPORTER_OTLP_PROTOCOL=http/json).
-site.use(otelPlugin() as unknown as (site: Site) => void);
+site.use(otelPlugin());
 
 export default site;

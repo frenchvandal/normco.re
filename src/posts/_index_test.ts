@@ -1,5 +1,6 @@
 import { assertEquals, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
+import { faker } from "npm/faker-js";
 
 import postsIndexPage from "./index.page.tsx";
 
@@ -15,19 +16,39 @@ const MOCK_HELPERS = {
 // ---------------------------------------------------------------------------
 
 /** Builds a Lume.Data mock for the posts archive page. */
+type MockPost = {
+  title: string;
+  url: string;
+  date: unknown;
+  readingInfo?: { minutes?: number };
+};
+
 function makeData(
-  posts: Array<{
-    title: string;
-    url: string;
-    date: unknown;
-    readingInfo?: { minutes?: number };
-  }>,
+  posts: MockPost[],
 ): Lume.Data {
   return {
     search: {
       pages: (_query: string, _sort: string) => posts,
     },
   } as unknown as Lume.Data;
+}
+
+function makePost(
+  seed: number,
+  overrides: Partial<MockPost> = {},
+): MockPost {
+  faker.seed(seed);
+  const includeReadingInfo = faker.datatype.boolean();
+  const basePost: MockPost = {
+    title: faker.lorem.sentence({ min: 2, max: 5 }),
+    url: `/posts/${faker.lorem.slug(3)}/`,
+    date: faker.date.past(),
+    ...(includeReadingInfo
+      ? { readingInfo: { minutes: faker.number.int({ min: 1, max: 12 }) } }
+      : {}),
+  };
+
+  return { ...basePost, ...overrides };
 }
 
 // ---------------------------------------------------------------------------
@@ -51,41 +72,35 @@ describe("posts/index.page.tsx", () => {
 
   describe("year grouping", () => {
     it("groups posts by year", () => {
+      const postA = makePost(501, {
+        date: new Date("2026-01-01"),
+        readingInfo: { minutes: 1 },
+      });
+      const postB = makePost(502, {
+        date: new Date("2025-06-01"),
+        readingInfo: { minutes: 2 },
+      });
       const posts = [
-        {
-          title: "Post A",
-          url: "/posts/a/",
-          date: new Date("2026-01-01"),
-          readingInfo: { minutes: 1 },
-        },
-        {
-          title: "Post B",
-          url: "/posts/b/",
-          date: new Date("2025-06-01"),
-          readingInfo: { minutes: 2 },
-        },
+        postA,
+        postB,
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, "2026");
       assertStringIncludes(html, "2025");
-      assertStringIncludes(html, "Post A");
-      assertStringIncludes(html, "Post B");
+      assertStringIncludes(html, postA.title);
+      assertStringIncludes(html, postB.title);
     });
 
     it("lists the most recent year first", () => {
       const posts = [
-        {
-          title: "Old",
-          url: "/posts/old/",
+        makePost(503, {
           date: new Date("2024-01-01"),
           readingInfo: { minutes: 1 },
-        },
-        {
-          title: "New",
-          url: "/posts/new/",
+        }),
+        makePost(504, {
           date: new Date("2026-01-01"),
           readingInfo: { minutes: 1 },
-        },
+        }),
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
       const idx2026 = html.indexOf("2026");
@@ -106,20 +121,20 @@ describe("posts/index.page.tsx", () => {
   describe("reading time", () => {
     it("renders reading time when reading info is present", () => {
       const posts = [
-        {
-          title: "Post",
-          url: "/posts/p/",
+        makePost(505, {
           date: new Date("2026-01-01"),
           readingInfo: { minutes: 4 },
-        },
+        }),
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, "4 min");
     });
 
     it("renders the reading-time placeholder when minutes are absent", () => {
+      const { readingInfo: _unusedReadingInfo, ...postWithoutReadingInfo } =
+        makePost(506, { date: new Date("2026-01-01") });
       const posts = [
-        { title: "Post", url: "/posts/p/", date: new Date("2026-01-01") },
+        postWithoutReadingInfo,
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, "<span></span>");
@@ -129,12 +144,10 @@ describe("posts/index.page.tsx", () => {
   describe("archive list structure", () => {
     it("wraps each post in an li.archive-item", () => {
       const posts = [
-        {
-          title: "Post",
-          url: "/posts/p/",
+        makePost(507, {
           date: new Date("2026-01-01"),
           readingInfo: { minutes: 1 },
-        },
+        }),
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, 'class="archive-item"');
@@ -142,12 +155,10 @@ describe("posts/index.page.tsx", () => {
 
     it("renders a time element with the ISO datetime attribute", () => {
       const posts = [
-        {
-          title: "Post",
-          url: "/posts/p/",
+        makePost(508, {
           date: new Date("2026-01-01"),
           readingInfo: { minutes: 1 },
-        },
+        }),
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, "<time");

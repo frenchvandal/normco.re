@@ -1,5 +1,10 @@
 /** Individual post layout — chains into the base layout. */
 
+import {
+  resolvePostDate,
+  resolveReadingMinutes,
+} from "../../posts/post-metadata.ts";
+
 /** This layout is itself wrapped by the base layout. */
 export const layout = "layouts/base.tsx";
 
@@ -39,19 +44,16 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const currentUrl = data.url ?? "/";
   const prev = n.previousPage(currentUrl, "/posts/", "type=post", "date=asc");
   const next = n.nextPage(currentUrl, "/posts/", "type=post", "date=asc");
-
-  const readingInfo = data.readingInfo as { minutes?: number } | undefined;
-  const minutes = typeof readingInfo?.minutes === "number"
-    ? Math.ceil(readingInfo.minutes)
-    : undefined;
+  const postDate = resolvePostDate(data.date);
+  const minutes = resolveReadingMinutes(data.readingInfo);
 
   return (
     <article class="post-article">
       <header class="post-header">
         <h1 class="post-title">{data.title ?? ""}</h1>
         <div class="post-meta">
-          <time datetime={dateFormat(data.date, "ATOM")}>
-            {dateFormat(data.date, "HUMAN_DATE")}
+          <time datetime={dateFormat(postDate, "ATOM")}>
+            {dateFormat(postDate, "HUMAN_DATE")}
           </time>
           {minutes !== undefined && (
             <>

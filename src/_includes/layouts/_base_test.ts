@@ -1,6 +1,7 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
+import { faker } from "npm/faker-js";
 
 import baseLayout from "./base.tsx";
 
@@ -8,6 +9,11 @@ import baseLayout from "./base.tsx";
 // No helpers are used by base.tsx after JSX migration.
 // ---------------------------------------------------------------------------
 const MOCK_HELPERS = {} as unknown as Lume.Helpers;
+
+function makeSentence(seed: number): string {
+  faker.seed(seed);
+  return faker.lorem.sentence({ min: 3, max: 7 });
+}
 
 // ---------------------------------------------------------------------------
 // Helper factory
@@ -62,10 +68,11 @@ describe("base.tsx layout", () => {
     });
 
     it('formats title as "<title> — normco.re"', async () => {
+      const randomTitle = makeSentence(601);
       const html = await renderComponent(
-        baseLayout(makeData({ title: "My Post" }), MOCK_HELPERS),
+        baseLayout(makeData({ title: randomTitle }), MOCK_HELPERS),
       );
-      assertStringIncludes(html, "<title>My Post — normco.re</title>");
+      assertStringIncludes(html, `<title>${randomTitle} — normco.re</title>`);
     });
   });
 
@@ -78,13 +85,14 @@ describe("base.tsx layout", () => {
     });
 
     it("uses the provided description", async () => {
+      const randomDescription = makeSentence(602);
       const html = await renderComponent(
         baseLayout(
-          makeData({ description: "A custom description." }),
+          makeData({ description: randomDescription }),
           MOCK_HELPERS,
         ),
       );
-      assertStringIncludes(html, "A custom description.");
+      assertStringIncludes(html, randomDescription);
     });
   });
 
@@ -132,13 +140,14 @@ describe("base.tsx layout", () => {
     });
 
     it("injects the page content into <main>", async () => {
+      const randomBody = makeSentence(603);
       const html = await renderComponent(
         baseLayout(
-          makeData({ children: { __html: "<p>Injected.</p>" } }),
+          makeData({ children: { __html: `<p>${randomBody}</p>` } }),
           MOCK_HELPERS,
         ),
       );
-      assertStringIncludes(html, "<p>Injected.</p>");
+      assertStringIncludes(html, `<p>${randomBody}</p>`);
     });
 
     it("renders the mocked Header and Footer", async () => {

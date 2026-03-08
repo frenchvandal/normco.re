@@ -1,6 +1,7 @@
 import { assert, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
+import { faker } from "npm/faker-js";
 
 import postLayout from "./post.tsx";
 
@@ -10,6 +11,16 @@ import postLayout from "./post.tsx";
 const MOCK_HELPERS = {
   date: (_value: unknown, _format: string): string => "2026-03-05",
 } as unknown as Lume.Helpers;
+
+function makeSentence(seed: number): string {
+  faker.seed(seed);
+  return faker.lorem.sentence({ min: 3, max: 6 });
+}
+
+function makePostUrl(seed: number): string {
+  faker.seed(seed);
+  return `/posts/${faker.lorem.slug(3)}/`;
+}
 
 // ---------------------------------------------------------------------------
 // Helper factories
@@ -37,10 +48,14 @@ function makeData(
     date?: Date;
   },
 ): Lume.Data {
+  const defaultTitle = makeSentence(701);
+  const defaultBody = makeSentence(702);
+  const defaultUrl = makePostUrl(703);
+
   return {
-    title: "Test Post",
-    children: { __html: "<p>Body.</p>" },
-    url: "/posts/test/",
+    title: defaultTitle,
+    children: { __html: `<p>${defaultBody}</p>` },
+    url: defaultUrl,
     date: new Date("2026-03-05"),
     readingInfo: undefined,
     nav: makeNav(undefined, undefined),
@@ -73,22 +88,26 @@ describe("post.tsx layout", () => {
 
   describe("previous/next navigation", () => {
     it("renders a previous page link when prev exists", async () => {
+      const prevTitle = makeSentence(704);
+      const prevUrl = makePostUrl(705);
       const data = makeData({
-        nav: makeNav({ url: "/posts/prev/", title: "Prev Post" }, undefined),
+        nav: makeNav({ url: prevUrl, title: prevTitle }, undefined),
       });
       const html = await renderComponent(postLayout(data, MOCK_HELPERS));
-      assertStringIncludes(html, 'href="/posts/prev/"');
-      assertStringIncludes(html, "Prev Post");
+      assertStringIncludes(html, `href="${prevUrl}"`);
+      assertStringIncludes(html, prevTitle);
       assertStringIncludes(html, "Previous");
     });
 
     it("renders a next page link with next-item styling when next exists", async () => {
+      const nextTitle = makeSentence(706);
+      const nextUrl = makePostUrl(707);
       const data = makeData({
-        nav: makeNav(undefined, { url: "/posts/next/", title: "Next Post" }),
+        nav: makeNav(undefined, { url: nextUrl, title: nextTitle }),
       });
       const html = await renderComponent(postLayout(data, MOCK_HELPERS));
-      assertStringIncludes(html, 'href="/posts/next/"');
-      assertStringIncludes(html, "Next Post");
+      assertStringIncludes(html, `href="${nextUrl}"`);
+      assertStringIncludes(html, nextTitle);
       assertStringIncludes(html, "Next");
       assertStringIncludes(html, "post-nav-item--next");
     });
@@ -127,21 +146,23 @@ describe("post.tsx layout", () => {
     });
 
     it("renders h1 with the post title", async () => {
+      const title = makeSentence(708);
       const html = await renderComponent(
-        postLayout(makeData({ title: "Hello World" }), MOCK_HELPERS),
+        postLayout(makeData({ title }), MOCK_HELPERS),
       );
       assertStringIncludes(html, "<h1");
-      assertStringIncludes(html, "Hello World");
+      assertStringIncludes(html, title);
     });
 
     it("renders the post body content", async () => {
+      const body = makeSentence(709);
       const html = await renderComponent(
         postLayout(
-          makeData({ children: { __html: "<p>Hello world</p>" } }),
+          makeData({ children: { __html: `<p>${body}</p>` } }),
           MOCK_HELPERS,
         ),
       );
-      assertStringIncludes(html, "<p>Hello world</p>");
+      assertStringIncludes(html, `<p>${body}</p>`);
     });
 
     it("wraps navigation in nav[aria-label='Post navigation']", async () => {

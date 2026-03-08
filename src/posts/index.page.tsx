@@ -1,5 +1,8 @@
 /** Posts archive — all posts grouped by year, newest first. */
 
+import { resolvePostDate, resolveReadingMinutes } from "./post-metadata.ts";
+
+/** Archive page URL. */
 export const url = "/posts/";
 /** Lume layout template. */
 export const layout = "layouts/base.tsx";
@@ -29,9 +32,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const currentYear = new Date().getFullYear();
   const byYear = new Map<number, Lume.Data[]>();
   for (const post of posts) {
-    const year = post.date instanceof Date
-      ? post.date.getFullYear()
-      : currentYear;
+    const postDate = resolvePostDate(post.date, new Date(currentYear, 0, 1));
+    const year = postDate.getFullYear();
     const existing = byYear.get(year) ?? [];
     existing.push(post);
     byYear.set(year, existing);
@@ -42,17 +44,15 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const sections = years.map((year) => {
     const yearPosts = byYear.get(year) ?? [];
     const items = yearPosts.map((post) => {
-      const readingInfo = post.readingInfo as { minutes?: number } | undefined;
-      const minutes = typeof readingInfo?.minutes === "number"
-        ? Math.ceil(readingInfo.minutes)
-        : undefined;
+      const postDate = resolvePostDate(post.date, new Date(year, 0, 1));
+      const minutes = resolveReadingMinutes(post.readingInfo);
       const readingTimePart = minutes !== undefined
         ? `<span class="archive-reading-time">${minutes} min</span>`
         : `<span></span>`;
 
       return `<li class="archive-item">
-  <time class="archive-date" datetime="${dateFormat(post.date, "ATOM")}">${
-        dateFormat(post.date, "SHORT")
+  <time class="archive-date" datetime="${dateFormat(postDate, "ATOM")}">${
+        dateFormat(postDate, "SHORT")
       }</time>
   <a href="${post.url}" class="archive-title">${post.title}</a>
   ${readingTimePart}

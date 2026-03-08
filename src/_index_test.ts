@@ -1,5 +1,6 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
+import { faker } from "npm/faker-js";
 
 import indexPage from "./index.page.tsx";
 
@@ -15,13 +16,15 @@ const MOCK_HELPERS = {
 // ---------------------------------------------------------------------------
 
 /** Builds a Lume.Data mock for the home page, with an optional post list. */
+type MockPost = {
+  title: string;
+  url: string;
+  date: Date;
+  readingInfo?: { minutes?: number };
+};
+
 function makeData(
-  posts: Array<{
-    title: string;
-    url: string;
-    date: Date;
-    readingInfo?: { minutes?: number };
-  }>,
+  posts: MockPost[],
 ): Lume.Data {
   return {
     search: {
@@ -38,6 +41,24 @@ function makeData(
         ),
     },
   } as unknown as Lume.Data;
+}
+
+function makePost(
+  seed: number,
+  overrides: Partial<MockPost> = {},
+): MockPost {
+  faker.seed(seed);
+  const includeReadingInfo = faker.datatype.boolean();
+  const basePost: MockPost = {
+    title: faker.lorem.sentence({ min: 3, max: 6 }),
+    url: `/posts/${faker.lorem.slug(3)}/`,
+    date: faker.date.past(),
+    ...(includeReadingInfo
+      ? { readingInfo: { minutes: faker.number.int({ min: 1, max: 12 }) } }
+      : {}),
+  };
+
+  return { ...basePost, ...overrides };
 }
 
 // ---------------------------------------------------------------------------
@@ -64,35 +85,25 @@ describe("index.page.tsx", () => {
     });
 
     it("renders each post via PostCard", async () => {
+      const firstPost = makePost(401, { readingInfo: { minutes: 2 } });
+      const secondPost = makePost(402, { readingInfo: { minutes: 3 } });
       const posts = [
-        {
-          title: "First Post",
-          url: "/posts/first/",
-          date: new Date("2026-01-01"),
-          readingInfo: { minutes: 2 },
-        },
-        {
-          title: "Second Post",
-          url: "/posts/second/",
-          date: new Date("2026-02-01"),
-          readingInfo: { minutes: 3 },
-        },
+        firstPost,
+        secondPost,
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
-      assertStringIncludes(html, "First Post");
-      assertStringIncludes(html, "Second Post");
+      assertStringIncludes(html, firstPost.title);
+      assertStringIncludes(html, secondPost.title);
     });
 
     it("handles posts that lack reading info", async () => {
+      const { readingInfo: _unusedReadingInfo, ...postWithoutReadingInfo } =
+        makePost(403);
       const posts = [
-        {
-          title: "No Time",
-          url: "/posts/no-time/",
-          date: new Date("2026-01-01"),
-        },
+        postWithoutReadingInfo,
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
-      assertStringIncludes(html, "No Time");
+      assertStringIncludes(html, postWithoutReadingInfo.title);
     });
 
     it("renders the home-posts container even when no posts exist", async () => {

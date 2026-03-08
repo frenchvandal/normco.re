@@ -1,6 +1,10 @@
 /** Home page — hero + five most recent posts. */
 
 import { metas, siteName } from "./_data.ts";
+import {
+  resolvePostDate,
+  resolveReadingMinutes,
+} from "./posts/post-metadata.ts";
 
 /** Page URL. */
 export const url = "/";
@@ -38,17 +42,15 @@ export default async (
   const recent = data.search.pages("type=post", "date=desc", 5) as Lume.Data[];
 
   const postItems = (await Promise.all(recent.map((post) => {
-    const reading = post.readingInfo as { minutes?: number } | undefined;
-    const minutes = typeof reading?.minutes === "number"
-      ? Math.ceil(reading.minutes)
-      : undefined;
+    const postDate = resolvePostDate(post.date);
+    const minutes = resolveReadingMinutes(post.readingInfo);
 
     // exactOptionalPropertyTypes: only include readingMinutes when it has a value.
     return PostCard({
       title: post.title as string,
       url: post.url as string,
-      dateStr: dateFormat(post.date, "SHORT"),
-      dateIso: dateFormat(post.date, "ATOM"),
+      dateStr: dateFormat(postDate, "SHORT"),
+      dateIso: dateFormat(postDate, "ATOM"),
       ...(minutes !== undefined ? { readingMinutes: minutes } : {}),
     });
   }))).join("\n");

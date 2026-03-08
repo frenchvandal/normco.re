@@ -49,6 +49,11 @@ function unquote(raw: string): string {
   return v;
 }
 
+/** Returns today's local calendar date as `YYYY-MM-DD`. */
+function todayIsoDate(): string {
+  return Temporal.Now.plainDateISO().toString();
+}
+
 /**
  * Parses a Markdown document with `---`-delimited YAML frontmatter.
  *
@@ -77,7 +82,7 @@ export function parseDocument(
     return {
       frontmatter: {
         title: "Untitled",
-        date: new Date().toISOString().slice(0, 10),
+        date: todayIsoDate(),
         description: undefined,
         tags: undefined,
       },
@@ -143,7 +148,7 @@ export function parseDocument(
   // Normalize ISO datetime strings and bare YAML dates to YYYY-MM-DD.
   const date = /^\d{4}-\d{2}-\d{2}/.test(rawDate)
     ? rawDate.slice(0, 10)
-    : new Date().toISOString().slice(0, 10);
+    : todayIsoDate();
 
   return {
     frontmatter: {

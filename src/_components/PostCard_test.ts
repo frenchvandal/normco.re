@@ -1,33 +1,43 @@
 import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
+import { faker } from "npm/faker-js";
 
 import PostCard from "./PostCard.tsx";
 
-/** Shared base props used across all PostCard tests. */
-const BASE = {
-  title: "My Test Post",
-  url: "/posts/my-test-post/",
-  dateStr: "Mar 5",
-  dateIso: "2026-03-05T00:00:00Z",
-} as const;
+/** Builds deterministic test props with realistic randomized values. */
+function makeBase(seed: number) {
+  faker.seed(seed);
+  const slug = faker.lorem.slug(3);
+  const postDate = faker.date.anytime();
+
+  return {
+    title: faker.lorem.sentence({ min: 3, max: 6 }),
+    url: `/posts/${slug}/`,
+    dateStr: faker.date.month(),
+    dateIso: postDate.toISOString(),
+  } as const;
+}
 
 describe("PostCard()", () => {
   describe("with readingMinutes", () => {
     it("renders reading time in .post-card-meta", () => {
-      const html = PostCard({ ...BASE, readingMinutes: 3 });
+      const base = makeBase(301);
+      const html = PostCard({ ...base, readingMinutes: 3 });
       assertStringIncludes(html, "3 min read");
       assertStringIncludes(html, 'class="post-card-meta"');
     });
 
     it("renders the provided reading minutes value", () => {
-      const html = PostCard({ ...BASE, readingMinutes: 7 });
+      const base = makeBase(302);
+      const html = PostCard({ ...base, readingMinutes: 7 });
       assertStringIncludes(html, "7 min read");
     });
   });
 
   describe("without readingMinutes", () => {
     it("renders no .post-card-meta element", () => {
-      const html = PostCard({ ...BASE });
+      const base = makeBase(303);
+      const html = PostCard({ ...base });
       assertNotMatch(html, /post-card-meta/);
       assertNotMatch(html, /min read/);
     });
@@ -35,21 +45,35 @@ describe("PostCard()", () => {
 
   describe("structure", () => {
     it("wraps content in article.post-card", () => {
-      const html = PostCard({ ...BASE });
+      const base = makeBase(304);
+      const html = PostCard({ ...base });
       assertStringIncludes(html, '<article class="post-card">');
     });
 
     it("renders a time element with the ISO datetime attribute", () => {
-      const html = PostCard({ ...BASE });
-      assertStringIncludes(html, `datetime="${BASE.dateIso}"`);
-      assertStringIncludes(html, BASE.dateStr);
+      const base = makeBase(305);
+      const html = PostCard({ ...base });
+      assertStringIncludes(html, `datetime="${base.dateIso}"`);
+      assertStringIncludes(html, base.dateStr);
     });
 
     it("renders the title in an h3 linked to url", () => {
-      const html = PostCard({ ...BASE });
-      assertStringIncludes(html, `href="${BASE.url}"`);
-      assertStringIncludes(html, BASE.title);
+      const base = makeBase(306);
+      const html = PostCard({ ...base });
+      assertStringIncludes(html, `href="${base.url}"`);
+      assertStringIncludes(html, base.title);
       assertStringIncludes(html, "<h3");
+    });
+
+    it("escapes title and URL values before interpolation", () => {
+      const html = PostCard({
+        title: `<hello "world">`,
+        url: `/posts/"unsafe"/`,
+        dateStr: "Mar 5",
+        dateIso: "2026-03-05T00:00:00Z",
+      });
+      assertStringIncludes(html, '&lt;hello "world"&gt;');
+      assertStringIncludes(html, 'href="/posts/&quot;unsafe&quot;/"');
     });
   });
 });

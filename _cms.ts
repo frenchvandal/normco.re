@@ -1,21 +1,5 @@
 import CMS from "lume/cms/mod.ts";
-
-/**
- * Slugifies user-provided values for stable file names.
- *
- * @param value Raw user-provided value.
- * @returns Normalized slug segment.
- */
-function slugify(value: string): string {
-  return value
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
-}
+import { slugify } from "./src/utils/slugify.ts";
 
 /** Lume CMS instance used by the CMS UI at `/admin`. */
 const cms: ReturnType<typeof CMS> = CMS({

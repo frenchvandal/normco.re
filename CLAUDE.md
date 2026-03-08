@@ -100,6 +100,11 @@ first argument to validate an arbitrary file.
   engine). Document the reason in a code comment.
 - Do not use Markdown (`.md`) for new content. All new posts and pages must be
   TSX (`*.page.tsx`).
+- **LumeCMS exception (project-approved):** LumeCMS currently stores editable
+  drafts as Markdown files in `src/posts/*.md`. This is an authoring-time
+  limitation of the tool, not a production content format. These Markdown files
+  are allowed temporarily during editing and must be converted to `*.page.tsx`
+  before opening a PR or merging by running: `deno task md-to-tsx`.
 - Do not modify generated artifacts or build outputs.
 - Do not over-engineer solutions.
 
