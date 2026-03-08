@@ -37,8 +37,7 @@ jobs:
           cache: true
       - name: Run build task
         shell: bash
-        run: |
-          DENO_TLS_CA_STORE=system deno task build
+        run: deno task build
       - name: Configure Alibaba Cloud credentials
         id: aliyun-creds
         uses: frenchvandal/configure-aliyun-credentials-action@master
@@ -46,7 +45,7 @@ jobs:
           audience: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY_OWNER }}
           role-to-assume: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
           oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
-          role-session-name: github-action-session
+          role-session-name: ${{ github.run_id }}
           role-session-expiration: 1800
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/deploy-oss@master
