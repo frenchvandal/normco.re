@@ -52,8 +52,6 @@ jobs:
           oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
           role-session-name: ${{ github.run_id }}
           role-session-expiration: 3600
-      - name: Describe refresh quotas
-        run: aliyun cdn DescribeRefreshQuota
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/deploy-oss@master
         with:
