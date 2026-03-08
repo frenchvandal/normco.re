@@ -1,15 +1,13 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
+import { renderComponent } from "lume/jsx-runtime";
 
 import baseLayout from "./base.tsx";
 
 // ---------------------------------------------------------------------------
-// Minimal mock helpers satisfying the `H` interface used inside base.ts.
+// No helpers are used by base.tsx after JSX migration.
 // ---------------------------------------------------------------------------
-const MOCK_HELPERS = {
-  attr: (attrs: Record<string, unknown>): string =>
-    Object.entries(attrs).map(([k, v]) => `${k}="${v}"`).join(" "),
-} as unknown as Lume.Helpers;
+const MOCK_HELPERS = {} as unknown as Lume.Helpers;
 
 // ---------------------------------------------------------------------------
 // Helper factory
@@ -20,8 +18,11 @@ function makeData(
   overrides: {
     title?: string;
     description?: string;
-    content?: string;
+    children?: { __html: string };
     url?: string;
+    siteName?: string;
+    author?: string;
+    metas?: { site?: string; description?: string };
     build?: {
       assetVersion?: string;
       swDebugLevel?: "off" | "summary" | "verbose";
@@ -31,11 +32,17 @@ function makeData(
   return {
     title: undefined,
     description: undefined,
-    content: "<p>Page body.</p>",
+    children: { __html: "<p>Page body.</p>" },
     url: "/",
+    siteName: "normco.re",
+    author: "Phiphi",
+    metas: {
+      site: "normco.re",
+      description: "Personal blog by Phiphi, based in Chengdu, China.",
+    },
     comp: {
-      Header: (_props: unknown) => Promise.resolve("<header>mock</header>"),
-      Footer: (_props: unknown) => Promise.resolve("<footer>mock</footer>"),
+      Header: (_props: unknown) => "<header>mock</header>",
+      Footer: (_props: unknown) => "<footer>mock</footer>",
     },
     ...overrides,
   } as unknown as Lume.Data;
@@ -48,14 +55,15 @@ function makeData(
 describe("base.tsx layout", () => {
   describe("page title", () => {
     it('renders "normco.re" when no title is provided', async () => {
-      const html = await baseLayout(makeData({}), MOCK_HELPERS);
+      const html = await renderComponent(
+        baseLayout(makeData({}), MOCK_HELPERS),
+      );
       assertStringIncludes(html, "<title>normco.re</title>");
     });
 
     it('formats title as "<title> — normco.re"', async () => {
-      const html = await baseLayout(
-        makeData({ title: "My Post" }),
-        MOCK_HELPERS,
+      const html = await renderComponent(
+        baseLayout(makeData({ title: "My Post" }), MOCK_HELPERS),
       );
       assertStringIncludes(html, "<title>My Post — normco.re</title>");
     });
@@ -63,14 +71,18 @@ describe("base.tsx layout", () => {
 
   describe("meta description", () => {
     it("uses the default description when none is provided", async () => {
-      const html = await baseLayout(makeData({}), MOCK_HELPERS);
+      const html = await renderComponent(
+        baseLayout(makeData({}), MOCK_HELPERS),
+      );
       assertStringIncludes(html, "Personal blog by Phiphi");
     });
 
     it("uses the provided description", async () => {
-      const html = await baseLayout(
-        makeData({ description: "A custom description." }),
-        MOCK_HELPERS,
+      const html = await renderComponent(
+        baseLayout(
+          makeData({ description: "A custom description." }),
+          MOCK_HELPERS,
+        ),
       );
       assertStringIncludes(html, "A custom description.");
     });
@@ -78,13 +90,17 @@ describe("base.tsx layout", () => {
 
   describe("structure", () => {
     it("renders a valid HTML5 document", async () => {
-      const html = await baseLayout(makeData({}), MOCK_HELPERS);
+      const html = await renderComponent(
+        baseLayout(makeData({}), MOCK_HELPERS),
+      );
       assertStringIncludes(html, "<!doctype html>");
       assertStringIncludes(html, '<html lang="en">');
     });
 
     it("includes core head and accessibility links", async () => {
-      const html = await baseLayout(makeData({}), MOCK_HELPERS);
+      const html = await renderComponent(
+        baseLayout(makeData({}), MOCK_HELPERS),
+      );
       assertStringIncludes(html, 'href="/style.css?v=dev"');
       assertStringIncludes(
         html,
@@ -94,35 +110,41 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, 'href="/feed.json"');
       assertStringIncludes(
         html,
-        '<script src="/scripts/sw-register.js?v=dev" data-asset-version="dev" data-sw-debug-level="off"></script>',
+        'src="/scripts/sw-register.js?v=dev" data-asset-version="dev" data-sw-debug-level="off"',
       );
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");
     });
 
     it("passes service-worker debug level to the register script", async () => {
-      const html = await baseLayout(
-        makeData({
-          build: { assetVersion: "abc123", swDebugLevel: "verbose" },
-        }),
-        MOCK_HELPERS,
+      const html = await renderComponent(
+        baseLayout(
+          makeData({
+            build: { assetVersion: "abc123", swDebugLevel: "verbose" },
+          }),
+          MOCK_HELPERS,
+        ),
       );
       assertStringIncludes(
         html,
-        '<script src="/scripts/sw-register.js?v=abc123" data-asset-version="abc123" data-sw-debug-level="verbose"></script>',
+        'src="/scripts/sw-register.js?v=abc123" data-asset-version="abc123" data-sw-debug-level="verbose"',
       );
     });
 
     it("injects the page content into <main>", async () => {
-      const html = await baseLayout(
-        makeData({ content: "<p>Injected.</p>" }),
-        MOCK_HELPERS,
+      const html = await renderComponent(
+        baseLayout(
+          makeData({ children: { __html: "<p>Injected.</p>" } }),
+          MOCK_HELPERS,
+        ),
       );
       assertStringIncludes(html, "<p>Injected.</p>");
     });
 
     it("renders the mocked Header and Footer", async () => {
-      const html = await baseLayout(makeData({}), MOCK_HELPERS);
+      const html = await renderComponent(
+        baseLayout(makeData({}), MOCK_HELPERS),
+      );
       assertStringIncludes(html, "<header>mock</header>");
       assertStringIncludes(html, "<footer>mock</footer>");
     });
@@ -132,18 +154,18 @@ describe("base.tsx layout", () => {
       const data = {
         title: undefined,
         description: undefined,
-        content: "",
+        children: { __html: "" },
         url: "/about/",
         comp: {
           Header: (props: Record<string, unknown>) => {
             receivedUrl = props["currentUrl"] as string;
-            return Promise.resolve("");
+            return "";
           },
-          Footer: (_props: unknown) => Promise.resolve(""),
+          Footer: (_props: unknown) => "",
         },
       } as unknown as Lume.Data;
 
-      await baseLayout(data, MOCK_HELPERS);
+      await renderComponent(baseLayout(data, MOCK_HELPERS));
       assertStringIncludes(receivedUrl, "/about/");
     });
 
@@ -153,17 +175,17 @@ describe("base.tsx layout", () => {
       const data = {
         title: undefined,
         description: undefined,
-        content: "",
+        children: { __html: "" },
         comp: {
           Header: (props: Record<string, unknown>) => {
             receivedUrl = props["currentUrl"] as string;
-            return Promise.resolve("");
+            return "";
           },
-          Footer: (_props: unknown) => Promise.resolve(""),
+          Footer: (_props: unknown) => "",
         },
       } as unknown as Lume.Data;
 
-      await baseLayout(data, MOCK_HELPERS);
+      await renderComponent(baseLayout(data, MOCK_HELPERS));
       assertStringIncludes(receivedUrl, "/");
     });
   });

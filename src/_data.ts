@@ -6,10 +6,16 @@ export const lang = "en";
 /** Default layout applied to every page. Posts override this via `src/posts/_data.ts`. */
 export const layout = "layouts/base.tsx";
 
+/** Canonical site name / domain used in titles, feeds, and metadata. */
+export const siteName = "normco.re" as const;
+
+/** Primary author name used in copyright notices and structured data. */
+export const author = "Phiphi" as const;
+
 /** Site metadata used for meta tags and feeds. */
 export const metas = {
-  site: "normco.re",
-  description: "Personal blog by Phiphi, based in Chengdu, China.",
+  site: siteName,
+  description: `Personal blog by ${author}, based in Chengdu, China.`,
   lang: "en",
 } as const satisfies Record<string, string>;
 
@@ -17,12 +23,12 @@ export const metas = {
 export const jsonLd: Lume.Data["jsonLd"] = {
   "@type": "WebSite",
   url: "/",
-  name: "normco.re",
-  headline: "=title || normco.re",
+  name: siteName,
+  headline: `=title || ${siteName}`,
   description: "=description || =metas.description",
   inLanguage: "=lang",
   author: {
     "@type": "Person",
-    name: "Phiphi",
+    name: author,
   },
 };

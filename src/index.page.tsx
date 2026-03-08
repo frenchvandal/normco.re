@@ -1,10 +1,13 @@
 /** Home page — hero + five most recent posts. */
 
+import { metas, siteName } from "./_data.ts";
+
+/** Page URL. */
 export const url = "/";
-/** Page title. */
-export const title = "normco.re";
-/** Page meta description. */
-export const description = "Personal blog by Phiphi, based in Chengdu, China.";
+/** Page title — same as the site name for the home page. */
+export const title: string = siteName;
+/** Page meta description — mirrors the site-wide default. */
+export const description: string = metas.description;
 
 /** Typed helpers used in this page. */
 type H = {
