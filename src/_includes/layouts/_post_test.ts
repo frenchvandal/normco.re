@@ -112,13 +112,15 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, "post-nav-item--next");
     });
 
-    it("renders two empty div placeholders when both prev and next are absent", async () => {
+    it("renders two nav placeholders when both prev and next are absent", async () => {
       const html = await renderComponent(
         postLayout(makeData({}), MOCK_HELPERS),
       );
-      // Two placeholder divs: one for prev, one for next.
-      const count = (html.match(/<div><\/div>/g) ?? []).length;
-      assert(count >= 2, `Expected at least 2 placeholder divs, got ${count}`);
+      const count = (html.match(/post-nav-placeholder/g) ?? []).length;
+      assert(
+        count >= 2,
+        `Expected at least 2 nav placeholders, got ${count}`,
+      );
     });
   });
 

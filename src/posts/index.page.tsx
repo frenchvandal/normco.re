@@ -59,14 +59,25 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 </li>`;
     }).join("\n");
 
-    return `<section class="archive-year">
-  <h2 class="archive-year-heading">${year}</h2>
+    return `<section class="archive-year" aria-labelledby="archive-year-${year}">
+  <h2 id="archive-year-${year}" class="archive-year-heading">${year}</h2>
   <ul class="archive-list">
     ${items}
   </ul>
 </section>`;
   }).join("\n");
 
-  return `<h1 class="archive-page-title">Writing</h1>
-${sections}`;
+  const archiveIntro =
+    `<section class="pagehead archive-pagehead" aria-labelledby="archive-title">
+  <p class="pagehead-eyebrow">Archive</p>
+  <h1 id="archive-title" class="archive-page-title">Writing</h1>
+  <p class="pagehead-lead">All posts grouped by year, newest first.</p>
+</section>`;
+
+  const archiveBody = sections.length > 0
+    ? sections
+    : `<p class="blankslate">No posts published yet.</p>`;
+
+  return `${archiveIntro}
+${archiveBody}`;
 };

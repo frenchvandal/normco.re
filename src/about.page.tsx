@@ -9,7 +9,11 @@ export const description =
 
 /** Renders the About page body. */
 export default (_data: Lume.Data, _helpers: Lume.Helpers): string =>
-  `<h1 class="about-title">About</h1>
+  `<section class="pagehead about-pagehead" aria-labelledby="about-title">
+  <p class="pagehead-eyebrow">Profile</p>
+  <h1 id="about-title" class="about-title">About</h1>
+  <p class="pagehead-lead">Notes on who I am and why this blog exists.</p>
+</section>
 <div class="about-content">
   <p>
     Hi, I'm Phiphi. I'm a software person living in Chengdu, China — a city

@@ -49,7 +49,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
 
   return (
     <article class="post-article">
-      <header class="post-header">
+      <header class="post-header pagehead post-pagehead">
         <h1 class="post-title">{data.title ?? ""}</h1>
         <div class="post-meta">
           <time datetime={dateFormat(postDate, "ATOM")}>
@@ -76,7 +76,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               </a>
             </div>
           )
-          : <div></div>}
+          : <div class="post-nav-placeholder" aria-hidden="true"></div>}
         {next
           ? (
             <div class="post-nav-item post-nav-item--next">
@@ -86,7 +86,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               </a>
             </div>
           )
-          : <div></div>}
+          : <div class="post-nav-placeholder" aria-hidden="true"></div>}
       </nav>
     </article>
   );

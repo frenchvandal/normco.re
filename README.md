@@ -140,7 +140,10 @@ automatically on file changes.
 │   │   ├── sw-register.js    # Service-worker registration (/sw-register.js)
 │   │   └── theme-toggle.js  # Theme toggle behavior (/theme-toggle.js)
 │   ├── style.css             # CSS entrypoint (imports layered partials)
-│   └── styles/               # Layered partials (reset/base/layout/components/utilities)
+│   ├── styles/               # Layered partials (reset/base/layout/components/utilities)
+│   └── utils/
+│       ├── octicon.ts        # Full local Octicons catalog (inline SVG data)
+│       └── slugify.ts
 ├── plugins/
 │   ├── console_debug.ts      # Shared LUME_LOGS-driven console debug policy
 │   └── otel.ts               # Lume plugin for OpenTelemetry build observability
@@ -192,7 +195,10 @@ DENO_TLS_CA_STORE=system deno task lint:doc
 # 5. Run the test suite
 DENO_TLS_CA_STORE=system deno test
 
-# 6. Build the site (when rendering or structure is affected)
+# 6. Run JSDoc documentation tests
+DENO_TLS_CA_STORE=system deno task test:doc
+
+# 7. Build the site (when rendering or structure is affected)
 DENO_TLS_CA_STORE=system deno task build
 ```
 
@@ -211,6 +217,7 @@ DENO_TLS_CA_STORE=system deno task lint-commit
 | `serve`       | `deno task serve`       | Dev server at `localhost:3000` (live reload) |
 | `check`       | `deno task check`       | Type-check all `.ts`/`.tsx` files            |
 | `lint:doc`    | `deno task lint:doc`    | Lint JSDoc comments                          |
+| `test:doc`    | `deno task test:doc`    | Run inline JSDoc documentation tests         |
 | `lint-commit` | `deno task lint-commit` | Validate the last commit message             |
 | `update-deps` | `deno task update-deps` | Update Lume and regenerate `deno.lock`       |
 
@@ -331,6 +338,10 @@ Styles are organized with a CUBE CSS/ITCSS-inspired structure: one entrypoint
 The build pipeline uses `postcss` (imports), `purgecss` (dead selector removal),
 and `lightningcss` as the **single CSS minifier** and target-aware optimizer.
 
+The current visual system is **Primer-inspired**, implemented locally through
+project tokens and components. The site does not import `@primer/css` globally
+or use `@primer/react` at runtime.
+
 ### Cascade layers
 
 Styles are organized into five explicit cascade layers, in ascending
@@ -360,11 +371,16 @@ wide-gamut support:
 
 ### Theming
 
-Light and dark modes are implemented with the native `light-dark()` function and
-toggled via a `data-color-scheme` attribute on `<html>`. A dedicated client-side
-bootstrap script (`src/scripts/anti-flash.js`) reads `localStorage` and applies
-the saved preference as early as possible, minimizing flash-of-incorrect-theme
-on page load.
+Light and dark modes use Primer-compatible HTML attributes: `data-color-mode`,
+`data-light-theme`, and `data-dark-theme` on `<html>`. For backward
+compatibility, `data-color-scheme` is also set. The bootstrap script
+(`src/scripts/anti-flash.js`) reads `localStorage` (`color-mode`, with legacy
+fallback to `color-scheme`) and applies the resolved mode before first paint.
+
+### Octicons
+
+The UI uses the full local Octicons catalog from `src/utils/octicon.ts`,
+rendered as inline SVG (`fill: currentColor`) in templates and components.
 
 ### Accessibility in CSS
 

@@ -54,9 +54,12 @@ export default (): string => {
   </li>`,
   ).join("\n  ");
 
-  return `<section class="feeds-page">
-  <h1 class="feeds-page-title">Feeds</h1>
+  return `<section class="pagehead feeds-pagehead" aria-labelledby="feeds-title">
+  <p class="pagehead-eyebrow">Syndication</p>
+  <h1 id="feeds-title" class="feeds-page-title">Feeds</h1>
   <p class="feeds-page-lead">Subscribe to normco.re or integrate its content programmatically.</p>
+</section>
+<section class="feeds-page">
   <ul class="feeds-list">
     ${items}
   </ul>

@@ -74,6 +74,10 @@
     "md-to-tsx": {
       "description": "Convert LumeCMS-generated Markdown posts (src/posts/*.md) to .page.tsx format",
       "command": "deno run --allow-read --allow-write --allow-run=deno scripts/md-to-tsx.ts"
+    },
+    "sync:octicons": {
+      "description": "Sync the local full Octicons catalog from @primer/octicons",
+      "command": "deno run --allow-net --allow-write scripts/sync-octicons.ts"
     }
   },
   "compilerOptions": {

@@ -43,7 +43,7 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/posts/", siteName: siteName }),
       );
-      assertStringIncludes(html, 'href="/posts/" aria-current="page"');
+      assertMatch(html, /href="\/posts\/"[^>]*aria-current="page"/);
     });
 
     it("marks /posts/ as current for a child URL /posts/my-post/", async () => {
@@ -51,7 +51,7 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/posts/my-post/", siteName: siteName }),
       );
-      assertStringIncludes(html, 'href="/posts/" aria-current="page"');
+      assertMatch(html, /href="\/posts\/"[^>]*aria-current="page"/);
     });
 
     it('does not mark /posts/ as current on "/"', async () => {
@@ -59,7 +59,7 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", siteName: siteName }),
       );
-      assertNotMatch(html, /href="\/posts\/" aria-current="page"/);
+      assertNotMatch(html, /href="\/posts\/"[^>]*aria-current="page"/);
     });
   });
 
@@ -69,7 +69,7 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/about/", siteName: siteName }),
       );
-      assertStringIncludes(html, 'href="/about/" aria-current="page"');
+      assertMatch(html, /href="\/about\/"[^>]*aria-current="page"/);
     });
 
     it('does not mark /about/ as current on "/"', async () => {
@@ -77,7 +77,7 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", siteName: siteName }),
       );
-      assertNotMatch(html, /href="\/about\/" aria-current="page"/);
+      assertNotMatch(html, /href="\/about\/"[^>]*aria-current="page"/);
     });
   });
 
@@ -131,7 +131,7 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", siteName: siteName }),
       );
-      assertStringIncludes(html, 'class="theme-icon"');
+      assertMatch(html, /class="theme-icon[^"]*"/);
     });
   });
 });

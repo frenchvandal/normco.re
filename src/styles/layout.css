@@ -18,8 +18,9 @@
 
   /* Header */
   .site-header {
-    padding-block: var(--space-l);
+    padding-block: var(--space-s);
     border-block-end: 1px solid var(--color-border);
+    background: var(--bgColor-default);
   }
 
   .site-header-inner {
@@ -39,37 +40,55 @@
 
   /* Navigation */
   .site-nav {
+    align-self: stretch;
     display: flex;
-    gap: var(--space-m);
   }
 
-  .site-nav a {
+  .site-nav-list {
+    display: flex;
+    align-items: stretch;
+    gap: var(--space-s);
+    list-style: none;
+  }
+
+  .site-nav-item {
+    display: flex;
+  }
+
+  .site-nav-link {
+    display: inline-flex;
+    align-items: center;
     color: var(--color-meta);
     text-decoration: none;
     font-size: var(--text-sm);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: color 0.15s ease;
+    font-weight: 500;
+    padding-inline: var(--space-s);
+    border-block-end: 2px solid transparent;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
   }
 
-  .site-nav a:hover,
-  .site-nav a[aria-current="page"] {
+  .site-nav-link:hover {
+    border-color: var(--borderColor-default);
     color: var(--color-text);
   }
 
-  .site-nav a:focus-visible {
-    color: var(--color-accent);
+  .site-nav-link[aria-current="page"] {
+    border-color: var(--fgColor-accent);
+    color: var(--color-text);
   }
 
   /* Main */
   .site-main {
-    padding-block: var(--space-xl);
+    padding-block: var(--space-l);
     container-type: inline-size;
   }
 
   /* Footer */
   .site-footer {
-    padding-block: var(--space-l);
+    padding-block: var(--space-m);
     border-block-start: 1px solid var(--color-border);
     color: var(--color-meta);
     font-size: var(--text-sm);
@@ -90,5 +109,20 @@
 
   .site-footer-nav a {
     color: var(--color-meta);
+    text-decoration: none;
+  }
+
+  .site-footer-nav a:hover {
+    color: var(--color-text);
+  }
+
+  .feed-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .feed-link-icon {
+    opacity: 0.9;
   }
 }

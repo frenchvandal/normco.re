@@ -127,6 +127,10 @@ If a command cannot be run, state which command would be needed and why.
 - Personal, minimalist blog maintained by Phiphi (FR), based in Chengdu, China.
 - Production: <https://normco.re>
 - GitHub: <https://github.com/frenchvandal/normco.re>
+- Visual language: **Primer-like** (implemented locally in project CSS, no UI
+  framework runtime).
+- Icons: local **full Octicons catalog** (`src/utils/octicon.ts`) rendered as
+  inline SVG.
 
 ### Stack summary
 
@@ -379,6 +383,12 @@ runtime CSS custom properties over SCSS variables.
 For this repository, keep `src/style.css` as the CSS entrypoint and split rules
 into layered partials under `src/styles/` (CUBE CSS/ITCSS-inspired
 organization).
+
+Primer alignment rule for this repository: replicate Primer design patterns
+through local tokens/components (`src/styles/base.css`, `src/styles/layout.css`,
+`src/styles/components.css`) rather than importing `@primer/css` globally. Use
+upstream Primer packages/docs as references, not as mandatory runtime
+dependencies.
 
 When combining CSS processors, enforce a single minifier: `postcss` for
 imports/composition, `purgecss` for selector pruning, and `lightningcss` for

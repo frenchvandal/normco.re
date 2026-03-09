@@ -102,7 +102,10 @@ describe("base.tsx layout", () => {
         baseLayout(makeData({}), MOCK_HELPERS),
       );
       assertStringIncludes(html, "<!doctype html>");
-      assertStringIncludes(html, '<html lang="en">');
+      assertStringIncludes(
+        html,
+        '<html lang="en" data-color-mode="light" data-light-theme="light" data-dark-theme="dark">',
+      );
     });
 
     it("includes core head and accessibility links", async () => {

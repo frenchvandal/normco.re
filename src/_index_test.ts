@@ -1,4 +1,4 @@
-import { assertStringIncludes } from "jsr/assert";
+import { assertMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { faker } from "npm/faker-js";
 
@@ -69,7 +69,7 @@ describe("index.page.tsx", () => {
   describe("hero section", () => {
     it("renders the hero section", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="hero"');
+      assertMatch(html, /class="[^"]*\bhero\b[^"]*"/);
     });
 
     it("renders an h1 in the hero", async () => {

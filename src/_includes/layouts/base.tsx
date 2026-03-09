@@ -53,7 +53,12 @@ export default (
   return (
     <>
       {DOCTYPE}
-      <html lang="en">
+      <html
+        lang="en"
+        data-color-mode="light"
+        data-light-theme="light"
+        data-dark-theme="dark"
+      >
         <head>
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -74,7 +79,7 @@ export default (
             href="/feed.json"
           />
         </head>
-        <body>
+        <body data-a11y-link-underlines="true">
           <a class="skip-link" href="#main-content">Skip to content</a>
           <div class="site-wrapper">
             <Header currentUrl={url ?? "/"} siteName={resolvedSiteName} />
