@@ -11,6 +11,8 @@
 - All repository-facing artifacts must be written in English: source code,
   comments, commit messages, PR titles and descriptions, issue content, and
   generated review notes.
+- Written English must be natural, fluent, and aligned with the Chicago Manual
+  of Style.
 - Conversations between the maintainer and AI assistants remain in French by
   default, unless a task explicitly requests another language.
 - When translating user intent into repository changes, keep semantics intact
