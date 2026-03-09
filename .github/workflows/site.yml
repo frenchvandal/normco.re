@@ -56,3 +56,4 @@ jobs:
           region: ${{ env.OSS_REGION }}
           cdn-enabled: true
           cdn-base-url: ${{ env.OSS_CDN_BASE_URL }}
+          cdn-actions: refresh,preload
