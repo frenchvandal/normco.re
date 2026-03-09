@@ -1,88 +1,23 @@
 import { merge } from "lume/core/utils/object.ts";
+import type Site from "lume/core/site.ts";
+import type { Middleware } from "lume/core/server.ts";
+import type {
+  Collection as DebugBarCollection,
+  Item as DebugBarItem,
+} from "lume/deps/debugbar.ts";
 
 import { metrics, SpanStatusCode, trace } from "npm/opentelemetry-api";
 import type { Span } from "npm/opentelemetry-api";
 
 // ---------------------------------------------------------------------------
-// Types — self-contained, no dependency on lume/core/server.ts so this file
-// can be extracted as a standalone ESM module later.
+// Types
+//
+// Reuse Lume core types where possible. Keep request records local so this
+// module remains easy to extract later as a standalone plugin.
 // ---------------------------------------------------------------------------
-
-type RequestHandler = (req: Request) => Promise<Response>;
-type Middleware = (
-  req: Request,
-  next: RequestHandler,
-  info: Deno.ServeHandlerInfo,
-) => Promise<Response>;
-/** Event callback signature accepted by this plugin lifecycle hooks. */
-export type OTelSiteEventHandler = (event?: unknown) => void;
 
 type OTelReadEnv = (name: string) => string | undefined;
 type DebugBarRefreshKind = "build" | "request";
-
-/** Debug bar item model used by the plugin collections. */
-export interface OTelDebugBarItem {
-  /** Human-readable item title shown in the debug bar. */
-  title: string;
-  /** Optional numeric or textual detail shown at the right side. */
-  details?: string | number;
-  /** Optional visual context key mapped to collection contexts. */
-  context?: string;
-  /** Optional long-form text details. */
-  text?: string;
-  /** Optional nested items for grouped details. */
-  items?: OTelDebugBarItem[];
-}
-
-/** Debug bar collection model used by the plugin collections. */
-export interface OTelDebugBarCollection {
-  /** Optional icon name displayed by the debug bar UI. */
-  icon?: string;
-  /** Empty-state message shown when `items` is empty. */
-  empty?: string;
-  /** Named UI contexts used by item `context` values. */
-  contexts?: Record<string, { background?: string }>;
-  /** Collection items rendered in the debug bar. */
-  items: OTelDebugBarItem[];
-}
-
-/** Debug bar contract expected by the plugin in development mode. */
-export interface OTelDebugBar {
-  /** Returns (or creates) a collection by name. */
-  collection(name: string): OTelDebugBarCollection;
-  /** Appends a status item to the Build collection. */
-  buildItem(title?: string, context?: string): OTelDebugBarItem;
-}
-
-/** Server contract expected by the plugin to register middleware. */
-export interface OTelServer {
-  /** Registers a one-time start hook used to install OTEL middleware first. */
-  addEventListener(
-    type: "start",
-    listener: () => void,
-    options?: { once?: boolean },
-  ): void;
-  /** Prepends one or more middleware functions to the request pipeline. */
-  useFirst(
-    ...middleware: Array<
-      (
-        req: Request,
-        next: (req: Request) => Promise<Response>,
-        info: Deno.ServeHandlerInfo,
-      ) => Promise<Response>
-    >
-  ): void;
-}
-
-/** Minimal Site contract required by this OpenTelemetry plugin. */
-export interface OTelSite {
-  /** Registers a plugin lifecycle listener (`beforeBuild`, `afterBuild`, and others). */
-  addEventListener(type: string, fn: OTelSiteEventHandler): unknown;
-  /** Returns the Lume server instance used to install request middleware. */
-  getServer(): OTelServer;
-  /** Optional debug bar API available in development mode. */
-  debugBar?: OTelDebugBar;
-}
 
 function createEnvReader(): OTelReadEnv {
   return (name: string): string | undefined => {
@@ -264,12 +199,94 @@ function getUpdateEventFiles(event: unknown): Set<string> | undefined {
 // ---------------------------------------------------------------------------
 
 interface RequestRecord {
+  traceId?: string;
+  spanId?: string;
+  sampled?: boolean;
   method: string;
+  path: string;
+  protocol: string;
   route: string;
   status: number;
   durationMs: number;
+  latencyClass?: "slow" | "very slow";
+  requestBytes?: number;
+  responseBytes?: number;
+  userAgent?: string;
   error?: string;
   timestamp: number;
+}
+
+function readContentLength(headers: Headers): number | undefined {
+  const value = headers.get("content-length");
+
+  if (!value) {
+    return undefined;
+  }
+
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
+}
+
+function classifyLatency(durationMs: number): RequestRecord["latencyClass"] {
+  if (durationMs >= 1000) {
+    return "very slow";
+  }
+
+  if (durationMs >= 250) {
+    return "slow";
+  }
+
+  return undefined;
+}
+
+function normalizeUserAgent(value: string | null): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  return value.length > 120 ? `${value.slice(0, 117)}...` : value;
+}
+
+function toRequestDebugItem(record: RequestRecord): DebugBarItem {
+  const context = record.status >= 500
+    ? "error"
+    : record.status >= 400
+    ? "warn"
+    : undefined;
+
+  const latencySuffix = record.latencyClass ? ` · ${record.latencyClass}` : "";
+  const responseBytes = record.responseBytes !== undefined
+    ? ` · ${record.responseBytes}B`
+    : "";
+
+  const detailsItems: DebugBarItem[] = [
+    { title: "Path", details: record.path },
+    { title: "Protocol", details: record.protocol },
+    ...(record.traceId ? [{ title: "Trace ID", details: record.traceId }] : []),
+    ...(record.spanId ? [{ title: "Span ID", details: record.spanId }] : []),
+    ...(record.sampled !== undefined
+      ? [{ title: "Sampled", details: record.sampled ? "yes" : "no" }]
+      : []),
+    ...(record.userAgent
+      ? [{ title: "User-Agent", details: record.userAgent }]
+      : []),
+    ...(record.requestBytes !== undefined
+      ? [{ title: "Request bytes", details: record.requestBytes }]
+      : []),
+    ...(record.responseBytes !== undefined
+      ? [{ title: "Response bytes", details: record.responseBytes }]
+      : []),
+  ];
+
+  return {
+    title: `${record.method} ${record.route}`,
+    details: `${record.status} · ${
+      Math.round(record.durationMs)
+    }ms${responseBytes}${latencySuffix}`,
+    items: detailsItems,
+    ...(context ? { context } : {}),
+    ...(record.error ? { text: record.error } : {}),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -303,6 +320,8 @@ function createMiddleware(
     const url = new URL(request.url);
     const method = request.method;
     const start = performance.now();
+    const requestBytes = readContentLength(request.headers);
+    const userAgent = normalizeUserAgent(request.headers.get("user-agent"));
 
     // Skip tracing for requests matching ignore patterns (e.g. static assets).
     if (ignorePatterns.some((re) => re.test(url.pathname))) {
@@ -316,6 +335,17 @@ function createMiddleware(
     // Deno creates a span per request automatically, but does not add an
     // `http.route` attribute or set the span name to include the route.
     const span = trace.getActiveSpan();
+    const spanContext = span?.spanContext();
+    const traceId = spanContext?.traceId;
+    const spanId = spanContext?.spanId;
+    const sampled = spanContext
+      ? (spanContext.traceFlags & 0x01) === 0x01
+      : undefined;
+    const spanMetadata = {
+      ...(traceId ? { traceId } : {}),
+      ...(spanId ? { spanId } : {}),
+      ...(sampled !== undefined ? { sampled } : {}),
+    };
 
     if (span) {
       span.setAttribute("http.route", route);
@@ -341,12 +371,21 @@ function createMiddleware(
         span.recordException(typedError);
         span.setStatus({ code: SpanStatusCode.ERROR, message });
       }
+      const durationMs = performance.now() - start;
+      const latencyClass = classifyLatency(durationMs);
+
       const record: RequestRecord = {
         method,
+        path: url.pathname,
+        protocol: url.protocol.replace(":", ""),
+        ...spanMetadata,
         route,
         status: 500,
-        durationMs: performance.now() - start,
+        durationMs,
+        ...(latencyClass ? { latencyClass } : {}),
+        ...(requestBytes !== undefined ? { requestBytes } : {}),
         error: message,
+        ...(userAgent ? { userAgent } : {}),
         timestamp: Date.now(),
       };
       if (devMode && options.logRequests) {
@@ -368,6 +407,8 @@ function createMiddleware(
 
     const { status } = response;
     const durationMs = performance.now() - start;
+    const responseBytes = readContentLength(response.headers);
+    const latencyClass = classifyLatency(durationMs);
 
     // Deno does not set an error status on the span for 5xx responses.
     if (status >= 500 && span) {
@@ -391,9 +432,16 @@ function createMiddleware(
 
     const record: RequestRecord = {
       method,
+      path: url.pathname,
+      protocol: url.protocol.replace(":", ""),
+      ...spanMetadata,
       route,
       status,
       durationMs,
+      ...(latencyClass ? { latencyClass } : {}),
+      ...(requestBytes !== undefined ? { requestBytes } : {}),
+      ...(responseBytes !== undefined ? { responseBytes } : {}),
+      ...(userAgent ? { userAgent } : {}),
       timestamp: Date.now(),
     };
 
@@ -426,7 +474,7 @@ function matchRoute(url: URL, routes?: URLPattern[]): string {
 // ---------------------------------------------------------------------------
 
 function refreshDebugBar(
-  site: OTelSite,
+  site: Site,
   mode: "development" | "production",
   options: Options,
   recentRequests: RequestRecord[],
@@ -456,7 +504,7 @@ function refreshDebugBar(
 
   // --- "OpenTelemetry" collection: config summary --------------------------
 
-  const cfg = bar.collection("OpenTelemetry");
+  const cfg: DebugBarCollection = bar.collection("OpenTelemetry");
   cfg.icon = "activity";
   cfg.empty = "No OpenTelemetry configuration";
   cfg.items = [];
@@ -509,7 +557,7 @@ function refreshDebugBar(
 
   if (mode !== "development") return;
 
-  const req = bar.collection("Requests");
+  const req: DebugBarCollection = bar.collection("Requests");
   req.icon = "arrows-clockwise";
   req.empty = "No requests yet";
   req.contexts = {
@@ -522,20 +570,7 @@ function refreshDebugBar(
     req.items.push({
       title: "Recent requests",
       details: recentRequests.length,
-      items: [...recentRequests].reverse().map((r) => {
-        const context = r.status >= 500
-          ? "error"
-          : r.status >= 400
-          ? "warn"
-          : undefined;
-
-        return {
-          title: `${r.method} ${r.route}`,
-          details: `${r.status} · ${Math.round(r.durationMs)}ms`,
-          ...(context ? { context } : {}),
-          ...(r.error ? { text: r.error } : {}),
-        };
-      }),
+      items: [...recentRequests].reverse().map(toRequestDebugItem),
     });
   }
 
@@ -625,7 +660,7 @@ function refreshDebugBar(
  * export default site;
  * ```
  */
-export function otel(userOptions?: Partial<Options>): (site: OTelSite) => void {
+export function otel(userOptions?: Partial<Options>): (site: object) => void {
   const options: Options = merge(defaults, userOptions ?? {});
   const readEnv = createEnvReader();
 
@@ -633,13 +668,15 @@ export function otel(userOptions?: Partial<Options>): (site: OTelSite) => void {
   const recentRequests: RequestRecord[] = [];
   const counters = new Map<string, number>();
 
-  return (site: OTelSite) => {
+  return (site: object) => {
+    const typedSite = site as Site;
+
     // Resolve mode once, at plugin setup time.
     const mode: "development" | "production" = options.mode === "development"
       ? "development"
       : options.mode === "production"
       ? "production"
-      : site.debugBar
+      : typedSite.debugBar
       ? "development"
       : "production";
 
@@ -712,13 +749,13 @@ export function otel(userOptions?: Partial<Options>): (site: OTelSite) => void {
       changedFiles = [];
     }
 
-    site.addEventListener("beforeBuild", () => startBuild());
-    site.addEventListener("afterBuild", () => finishBuild("build"));
-    site.addEventListener("beforeUpdate", (event: unknown) => {
+    typedSite.addEventListener("beforeBuild", () => startBuild());
+    typedSite.addEventListener("afterBuild", () => finishBuild("build"));
+    typedSite.addEventListener("beforeUpdate", (event: unknown) => {
       const files = getUpdateEventFiles(event);
       startBuild(files);
     });
-    site.addEventListener("afterUpdate", () => finishBuild("update"));
+    typedSite.addEventListener("afterUpdate", () => finishBuild("update"));
 
     // -------------------------------------------------------------------------
     // HTTP middleware
@@ -735,7 +772,7 @@ export function otel(userOptions?: Partial<Options>): (site: OTelSite) => void {
         const key = `${record.method}\x00${record.route}\x00${record.status}`;
         counters.set(key, (counters.get(key) ?? 0) + 1);
         refreshDebugBar(
-          site,
+          typedSite,
           mode,
           options,
           recentRequests,
@@ -746,7 +783,7 @@ export function otel(userOptions?: Partial<Options>): (site: OTelSite) => void {
       }
       : undefined;
 
-    const server = site.getServer();
+    const server = typedSite.getServer();
     server.addEventListener("start", () => {
       server.useFirst(createMiddleware(options, isDev, onRequest));
     }, { once: true });
@@ -757,7 +794,7 @@ export function otel(userOptions?: Partial<Options>): (site: OTelSite) => void {
 
     function onBuildEvent() {
       refreshDebugBar(
-        site,
+        typedSite,
         mode,
         options,
         recentRequests,
@@ -767,8 +804,8 @@ export function otel(userOptions?: Partial<Options>): (site: OTelSite) => void {
       );
     }
 
-    site.addEventListener("beforeBuild", onBuildEvent);
-    site.addEventListener("beforeUpdate", onBuildEvent);
+    typedSite.addEventListener("beforeBuild", onBuildEvent);
+    typedSite.addEventListener("beforeUpdate", onBuildEvent);
   };
 }
 

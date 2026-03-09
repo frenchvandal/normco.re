@@ -1,7 +1,9 @@
 import { describe, it } from "jsr/testing-bdd";
 import { assertEquals } from "jsr/assert";
 
-import otel, { type OTelSite } from "./otel.ts";
+import type Site from "lume/core/site.ts";
+
+import otel from "./otel.ts";
 
 type SiteEventHandler = (event?: unknown) => void;
 type RequestHandler = (req: Request) => Promise<Response>;
@@ -42,7 +44,11 @@ interface StubServer {
   useFirst(...middleware: Middleware[]): void;
 }
 
-type StubSite = OTelSite;
+interface StubSite {
+  addEventListener(type: string, fn: SiteEventHandler): void;
+  debugBar?: StubDebugBar;
+  getServer(): StubServer;
+}
 
 function createStubDebugBar() {
   const collections = new Map<string, DebugCollection>();
@@ -151,7 +157,7 @@ describe("otel()", () => {
   it("registers lifecycle listeners and middleware hook without throwing", () => {
     const env = createStubSite();
     const plugin = otel({ logRequests: false });
-    plugin(env.site);
+    plugin(env.site as unknown as Site);
 
     assertEquals((env.siteListeners.get("beforeBuild")?.length ?? 0) > 0, true);
     assertEquals((env.siteListeners.get("afterBuild")?.length ?? 0) > 0, true);
@@ -176,7 +182,7 @@ describe("otel()", () => {
   it("refreshes the development debug bar on build events", () => {
     const env = createStubSite();
     const plugin = otel({ logRequests: false, mode: "development" });
-    plugin(env.site);
+    plugin(env.site as unknown as Site);
 
     env.triggerSiteEvent("beforeBuild");
 
@@ -205,7 +211,7 @@ describe("otel()", () => {
       logRequests: false,
       mode: "development",
     });
-    plugin(env.site);
+    plugin(env.site as unknown as Site);
     env.triggerServerStart();
 
     const middleware = env.middlewares[0];
