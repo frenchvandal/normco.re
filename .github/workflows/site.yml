@@ -20,8 +20,6 @@ jobs:
       name: development
     runs-on: ubuntu-latest
     env:
-      GITHUB_SERVER_URL: ${{ github.server_url }}
-      GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
       OSS_BUCKET: ${{ vars.OSS_BUCKET }}
       OSS_REGION: ${{ vars.OSS_REGION }}
       OSS_CDN_BASE_URL: ${{ vars.OSS_CDN_BASE_URL }}
@@ -46,24 +44,15 @@ jobs:
         shell: bash
         run: deno task build
 
-      - name: Configure Alibaba Cloud credentials
-        id: aliyun-creds
-        uses: frenchvandal/configure-aliyun-credentials-action@master
-        with:
-          audience: ${{ env.GITHUB_SERVER_URL }}/${{ env.GITHUB_REPOSITORY_OWNER }}
-          role-to-assume: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
-          oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
-          role-session-name: ${{ github.run_id }}
-          role-session-expiration: 3600
-
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/deploy-oss@master
         with:
+          role-oidc-arn: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
+          oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
+          role-session-name: ${{ github.run_id }}
+          role-session-expiration: 3600
           input-dir: _site
           bucket: ${{ env.OSS_BUCKET }}
           region: ${{ env.OSS_REGION }}
           cdn-enabled: true
           cdn-base-url: ${{ env.OSS_CDN_BASE_URL }}
-          aliyun-access-key-id: ${{ steps.aliyun-creds.outputs.aliyun-access-key-id }}
-          aliyun-access-key-secret: ${{ steps.aliyun-creds.outputs.aliyun-access-key-secret }}
-          aliyun-security-token: ${{ steps.aliyun-creds.outputs.aliyun-security-token }}
