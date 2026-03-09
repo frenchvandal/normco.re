@@ -2,16 +2,42 @@ import { metrics, type Span, trace } from "npm/opentelemetry-api";
 
 import { readConsoleDebugPolicy } from "./console_debug.ts";
 
+const MAX_DEBUG_BAR_RECORDS = 20;
+
+interface OTelDebugBarAction {
+  text: string;
+  href: string;
+}
+
+interface OTelDebugBarItem {
+  title: string;
+  description?: string;
+  actions?: OTelDebugBarAction[];
+}
+
+interface OTelDebugBarCollection {
+  icon?: string;
+  items?: OTelDebugBarItem[];
+}
+
+interface OTelDebugBar {
+  collection(name: string): OTelDebugBarCollection | undefined;
+}
+
 /** Minimal site interface used by the OpenTelemetry plugin. */
 export interface OTelPluginSite {
   /** Registers lifecycle listeners consumed by this plugin. */
   addEventListener(type: string, fn: (event?: unknown) => void): unknown;
+  /** Optional Lume debug bar API available in development mode. */
+  debugBar?: OTelDebugBar;
 }
 
 /** Reads an environment variable value used by the plugin runtime. */
 export type OTelReadEnv = (name: string) => string | undefined;
 
-interface BuildConsoleRecord {
+type OTelLifecycleTrigger = "build" | "update";
+
+interface BuildRecord {
   buildCount: number;
   changedFiles: string[];
   durationMs: number;
@@ -20,9 +46,32 @@ interface BuildConsoleRecord {
   serviceName: string;
   spanId: string;
   spanName: string;
-  trigger: "build" | "update";
+  trigger: OTelLifecycleTrigger;
   startTimeIso: string;
   traceId: string;
+}
+
+function buildDebugBarDescription(record: BuildRecord): string {
+  const changedFiles = record.changedFiles.length === 0
+    ? "none"
+    : `\n${record.changedFiles.map((filePath) => `- ${filePath}`).join("\n")}`;
+
+  return [
+    `Service: ${record.serviceName}`,
+    `Protocol: ${record.protocol}`,
+    `Span: ${record.spanName}`,
+    `Trace ID: ${record.traceId}`,
+    `Span ID: ${record.spanId}`,
+    `Window: ${record.startTimeIso} → ${record.endTimeIso}`,
+    `Changed files (${record.changedFiles.length}): ${changedFiles}`,
+  ].join("\n");
+}
+
+function toDebugBarItem(record: BuildRecord): OTelDebugBarItem {
+  return {
+    title: `#${record.buildCount} ${record.trigger} • ${record.durationMs} ms`,
+    description: buildDebugBarDescription(record),
+  };
 }
 
 /**
@@ -88,12 +137,51 @@ export default function otelPlugin(
     let buildStartPerformanceMs = 0;
     let buildStartEpochMs = 0;
     let changedFiles: Set<string> = new Set();
+    const buildRecords: BuildRecord[] = [];
     let buildSpan: Span | undefined;
+
+    const updateOtelDebugCollection = (): void => {
+      const collection = site.debugBar?.collection("OpenTelemetry");
+
+      if (!collection) {
+        return;
+      }
+
+      collection.icon = "activity";
+
+      if (!otelEnabled) {
+        collection.items = [{
+          title: "OpenTelemetry disabled",
+          description:
+            "Set OTEL_DENO=true to collect and display local build lifecycle records",
+        }];
+        return;
+      }
+
+      if (buildRecords.length === 0) {
+        collection.items = [{
+          title: "No lifecycle record yet",
+          description:
+            "Run a build or edit a watched file to populate OpenTelemetry records",
+        }];
+        return;
+      }
+
+      collection.items = Array.from(buildRecords).reverse().map(toDebugBarItem);
+    };
+
+    const rememberBuildRecord = (record: BuildRecord): void => {
+      buildRecords.push(record);
+
+      if (buildRecords.length > MAX_DEBUG_BAR_RECORDS) {
+        buildRecords.shift();
+      }
+    };
 
     const startLifecycle = (files?: Set<string>): void => {
       buildStartPerformanceMs = performance.now();
       buildStartEpochMs = Date.now();
-      changedFiles = files ?? new Set();
+      changedFiles = files ? new Set(files) : new Set();
       buildSpan = tracer.startSpan("lume.build");
 
       if (consoleOutputEnabled && debugPolicy.level === "verbose") {
@@ -101,7 +189,7 @@ export default function otelPlugin(
       }
     };
 
-    const finishLifecycle = (trigger: "build" | "update"): void => {
+    const finishLifecycle = (trigger: OTelLifecycleTrigger): void => {
       const durationMs = Math.round(
         performance.now() - buildStartPerformanceMs,
       );
@@ -110,9 +198,9 @@ export default function otelPlugin(
       buildCount.add(1);
       buildCounter += 1;
 
-      if (consoleOutputEnabled && buildSpan && debugPolicy.level !== "off") {
+      if (buildSpan) {
         const spanContext = buildSpan.spanContext();
-        const buildRecord: BuildConsoleRecord = {
+        const buildRecord: BuildRecord = {
           buildCount: buildCounter,
           changedFiles: Array.from(changedFiles),
           durationMs,
@@ -126,36 +214,41 @@ export default function otelPlugin(
           traceId: spanContext.traceId,
         };
 
-        console.groupCollapsed(
-          `OpenTelemetry local record (${trigger}) #${buildCounter} [LUME_LOGS=${debugPolicy.lumeLogs}]`,
-        );
-        console.table([buildRecord], [
-          "buildCount",
-          "trigger",
-          "durationMs",
-          "changedFiles",
-          "serviceName",
-          "traceId",
-        ]);
+        rememberBuildRecord(buildRecord);
 
-        // deno-coverage-ignore-start Debug-only diagnostics kept lightweight in tests.
-        if (debugPolicy.level === "verbose") {
-          if (changedFiles.size > 0) {
-            console.table(
-              Array.from(changedFiles).map((filePath) => ({ filePath })),
-              ["filePath"],
-            );
-          }
-          console.dir(buildRecord);
+        if (consoleOutputEnabled && debugPolicy.level !== "off") {
+          console.groupCollapsed(
+            `OpenTelemetry local record (${trigger}) #${buildCounter} [LUME_LOGS=${debugPolicy.lumeLogs}]`,
+          );
+          console.table([buildRecord], [
+            "buildCount",
+            "trigger",
+            "durationMs",
+            "changedFiles",
+            "serviceName",
+            "traceId",
+          ]);
 
-          if (debugPolicy.includeTrace) {
-            console.trace("OpenTelemetry lifecycle stack trace");
+          // deno-coverage-ignore-start Debug-only diagnostics kept lightweight in tests.
+          if (debugPolicy.level === "verbose") {
+            if (buildRecord.changedFiles.length > 0) {
+              console.table(
+                buildRecord.changedFiles.map((filePath) => ({ filePath })),
+                ["filePath"],
+              );
+            }
+            console.dir(buildRecord);
+
+            if (debugPolicy.includeTrace) {
+              console.trace("OpenTelemetry lifecycle stack trace");
+            }
           }
+          // deno-coverage-ignore-stop
+          console.groupEnd();
         }
-        // deno-coverage-ignore-stop
-        console.groupEnd();
       }
 
+      updateOtelDebugCollection();
       buildSpan?.end();
       buildSpan = undefined;
       changedFiles = new Set();
@@ -176,6 +269,10 @@ export default function otelPlugin(
 
     site.addEventListener("afterUpdate", () => {
       finishLifecycle("update");
+    });
+
+    site.addEventListener("beforeSave", () => {
+      updateOtelDebugCollection();
     });
   };
 }

@@ -1,6 +1,6 @@
 /** "How to install this theme" — migrated from posts/instructions.md. */
 
-export const title = "How to install this theme";
+export const title = "How to install this theme?";
 /** Publication date. */
 export const date = new Date("2022-06-12");
 /** Post meta description. */
