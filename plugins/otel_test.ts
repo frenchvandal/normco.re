@@ -1,92 +1,237 @@
 import { describe, it } from "jsr/testing-bdd";
 import { assertEquals } from "jsr/assert";
 
-import otelPlugin, { type OTelPluginSite } from "./otel.ts";
+import otel, { type OTelSite } from "./otel.ts";
 
-type OTelEvent = { files?: Set<string> };
-type OTelDebugBarItem = { title: string; description?: string };
-type OTelDebugBarCollection = { icon?: string; items?: OTelDebugBarItem[] };
+type SiteEventHandler = (event?: unknown) => void;
+type RequestHandler = (req: Request) => Promise<Response>;
+type Middleware = (
+  req: Request,
+  next: RequestHandler,
+  info: Deno.ServeHandlerInfo,
+) => Promise<Response>;
 
-function withStubSite() {
-  const events: Map<string, (event?: OTelEvent) => void> = new Map();
-  const collection: OTelDebugBarCollection = {};
+interface DebugCollectionItem {
+  title: string;
+  details?: string | number;
+  context?: string;
+  text?: string;
+  items?: DebugCollectionItem[];
+}
 
-  const stubSite: OTelPluginSite = {
-    addEventListener(type: string, fn: (event?: OTelEvent) => void): void {
-      events.set(type, fn);
+interface DebugCollection {
+  name: string;
+  icon?: string;
+  empty?: string;
+  contexts?: Record<string, { background: string }>;
+  items: DebugCollectionItem[];
+}
+
+interface StubDebugBar {
+  buildItems: DebugCollectionItem[];
+  collection(name: string): DebugCollection;
+  buildItem(title?: string, context?: string): DebugCollectionItem;
+}
+
+interface StubServer {
+  addEventListener(
+    type: "start",
+    listener: () => void,
+    options?: { once?: boolean },
+  ): void;
+  useFirst(...middleware: Middleware[]): void;
+}
+
+type StubSite = OTelSite;
+
+function createStubDebugBar() {
+  const collections = new Map<string, DebugCollection>();
+  const buildItems: DebugCollectionItem[] = [];
+
+  const debugBar: StubDebugBar = {
+    buildItems,
+    collection(name: string): DebugCollection {
+      const existing = collections.get(name);
+
+      if (existing) {
+        return existing;
+      }
+
+      const created: DebugCollection = {
+        name,
+        items: [],
+      };
+      collections.set(name, created);
+      return created;
     },
-    debugBar: {
-      collection(_name: string): OTelDebugBarCollection {
-        return collection;
-      },
+    buildItem(title = "Untitled", context = "info"): DebugCollectionItem {
+      const item: DebugCollectionItem = { context, title };
+      buildItems.push(item);
+      return item;
     },
   };
 
-  return { collection, events, stubSite };
+  return { buildItems, collections, debugBar };
 }
 
-describe("otelPlugin()", () => {
+function createStubSite(withDebugBar = true) {
+  const siteListeners = new Map<string, SiteEventHandler[]>();
+  const startListeners: Array<{ listener: () => void; once: boolean }> = [];
+  const middlewares: Middleware[] = [];
+  const debugData = createStubDebugBar();
+
+  const server: StubServer = {
+    addEventListener(
+      _type: "start",
+      listener: () => void,
+      options?: { once?: boolean },
+    ): void {
+      startListeners.push({ listener, once: options?.once ?? false });
+    },
+    useFirst(...middleware: Middleware[]): void {
+      middlewares.unshift(...middleware);
+    },
+  };
+
+  const site: StubSite = {
+    addEventListener(type: string, fn: SiteEventHandler): void {
+      const listeners = siteListeners.get(type) ?? [];
+      listeners.push(fn);
+      siteListeners.set(type, listeners);
+    },
+    ...(withDebugBar ? { debugBar: debugData.debugBar } : {}),
+    getServer(): StubServer {
+      return server;
+    },
+  };
+
+  function triggerSiteEvent(type: string, event?: unknown): void {
+    const listeners = siteListeners.get(type) ?? [];
+
+    for (const listener of listeners) {
+      listener(event);
+    }
+  }
+
+  function triggerServerStart(): void {
+    for (const item of [...startListeners]) {
+      item.listener();
+    }
+
+    for (let index = startListeners.length - 1; index >= 0; index -= 1) {
+      if (startListeners[index]?.once) {
+        startListeners.splice(index, 1);
+      }
+    }
+  }
+
+  return {
+    buildItems: debugData.buildItems,
+    collections: debugData.collections,
+    middlewares,
+    site,
+    siteListeners,
+    startListeners,
+    triggerServerStart,
+    triggerSiteEvent,
+  };
+}
+
+describe("otel()", () => {
   it("returns a site plugin function", () => {
-    const plugin = otelPlugin();
+    const plugin = otel();
     assertEquals(typeof plugin, "function");
   });
 
   it("plugin function accepts one argument (site)", () => {
-    const plugin = otelPlugin();
+    const plugin = otel();
     assertEquals(plugin.length, 1);
   });
 
-  it("registers lifecycle listeners and runs without throwing", () => {
-    const { events, stubSite } = withStubSite();
-    const plugin = otelPlugin();
-    plugin(stubSite);
+  it("registers lifecycle listeners and middleware hook without throwing", () => {
+    const env = createStubSite();
+    const plugin = otel({ logRequests: false });
+    plugin(env.site);
 
-    assertEquals(events.has("beforeBuild"), true);
-    assertEquals(events.has("afterBuild"), true);
-    assertEquals(events.has("beforeUpdate"), true);
-    assertEquals(events.has("afterUpdate"), true);
-    assertEquals(events.has("beforeSave"), true);
-
-    events.get("beforeBuild")?.();
-    events.get("afterBuild")?.();
-    events.get("beforeUpdate")?.({ files: new Set(["/index.page.ts"]) });
-    events.get("afterUpdate")?.();
-    events.get("beforeSave")?.();
-  });
-
-  it("renders an OTEL disabled state in the debug bar", () => {
-    const { collection, events, stubSite } = withStubSite();
-    const plugin = otelPlugin();
-    plugin(stubSite);
-
-    events.get("beforeSave")?.();
-
-    assertEquals(collection.icon, "activity");
-    assertEquals(collection.items?.[0]?.title, "OpenTelemetry disabled");
-  });
-
-  it("adds lifecycle records to the debug bar collection", () => {
-    const { collection, events, stubSite } = withStubSite();
-    const plugin = otelPlugin((name) => {
-      if (name === "OTEL_DENO") return "true";
-      if (name === "OTEL_EXPORTER_OTLP_PROTOCOL") return "http/json";
-      if (name === "OTEL_SERVICE_NAME") return "test service";
-      if (name === "LUME_LOGS") return "critical";
-      return undefined;
-    });
-
-    plugin(stubSite);
-
-    events.get("beforeBuild")?.();
-    events.get("afterBuild")?.();
-    events.get("beforeSave")?.();
-
-    assertEquals(collection.icon, "activity");
-    assertEquals((collection.items?.length ?? 0) > 0, true);
-    assertEquals(collection.items?.[0]?.title.includes("#1 build"), true);
+    assertEquals((env.siteListeners.get("beforeBuild")?.length ?? 0) > 0, true);
+    assertEquals((env.siteListeners.get("afterBuild")?.length ?? 0) > 0, true);
     assertEquals(
-      collection.items?.[0]?.description?.includes("Service: test service"),
+      (env.siteListeners.get("beforeUpdate")?.length ?? 0) > 0,
       true,
+    );
+    assertEquals((env.siteListeners.get("afterUpdate")?.length ?? 0) > 0, true);
+    assertEquals(env.startListeners.length, 1);
+
+    env.triggerSiteEvent("beforeBuild");
+    env.triggerSiteEvent("afterBuild");
+    env.triggerSiteEvent("beforeUpdate", {
+      files: new Set(["/index.page.tsx"]),
+    });
+    env.triggerSiteEvent("afterUpdate");
+
+    env.triggerServerStart();
+    assertEquals(env.middlewares.length, 1);
+  });
+
+  it("refreshes the development debug bar on build events", () => {
+    const env = createStubSite();
+    const plugin = otel({ logRequests: false, mode: "development" });
+    plugin(env.site);
+
+    env.triggerSiteEvent("beforeBuild");
+
+    assertEquals(
+      env.collections.get("OpenTelemetry")?.icon,
+      "activity",
+    );
+    assertEquals(
+      env.collections.get("OpenTelemetry")?.items?.[0]?.title,
+      "Mode",
+    );
+    assertEquals(
+      env.collections.get("OpenTelemetry")?.items?.[0]?.details,
+      "development",
+    );
+    assertEquals(
+      env.buildItems[0]?.title.includes("OpenTelemetry"),
+      true,
+    );
+  });
+
+  it("tracks requests and exposes them in the Requests debug collection", async () => {
+    const env = createStubSite();
+    const plugin = otel({
+      ignore: [],
+      logRequests: false,
+      mode: "development",
+    });
+    plugin(env.site);
+    env.triggerServerStart();
+
+    const middleware = env.middlewares[0];
+
+    if (!middleware) {
+      throw new Error("Expected middleware to be registered");
+    }
+
+    await middleware(
+      new Request("https://example.test/posts/hello"),
+      () => Promise.resolve(new Response("ok", { status: 200 })),
+      {} as Deno.ServeHandlerInfo,
+    );
+
+    assertEquals(env.collections.get("Requests")?.icon, "arrows-clockwise");
+    assertEquals(
+      env.collections.get("Requests")?.items?.[0]?.title,
+      "Recent requests",
+    );
+    assertEquals(
+      env.collections.get("Requests")?.items?.[1]?.title,
+      "Route counters",
+    );
+    assertEquals(
+      env.collections.get("Requests")?.items?.[0]?.items?.[0]?.title,
+      "GET /posts/hello",
     );
   });
 });
