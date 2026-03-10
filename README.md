@@ -35,20 +35,25 @@ favors simplicity, type safety, and long-term maintainability over feature
 breadth. Content is written in TypeScript rather than Markdown, styles are
 written in modern CSS rather than a framework, and the only runtime is Deno.
 
+The site is fully multilingual: posts and pages are available in English,
+French, Simplified Chinese, and Traditional Chinese, each with dedicated feeds
+and localized routes.
+
 ---
 
 ## Tech Stack
 
-| Layer      | Technology                                                            |
-| ---------- | --------------------------------------------------------------------- |
-| Runtime    | [Deno](https://deno.com/) 2.7.4 (version pinned in `.tool-versions`)  |
-| SSG        | [Lume](https://lume.land/) 3.2.1                                      |
-| Templating | TSX + TypeScript (`*.page.tsx`, `*.tsx` layouts and components)       |
-| Styling    | Modern CSS (`src/style.css` entrypoint + `src/styles/*.css` partials) |
-| Feeds      | RSS 2.0 and JSON Feed 1.1                                             |
-| Testing    | Deno's built-in test runner with `@std/testing/bdd`                   |
-| Git hooks  | [Lefthook](https://github.com/evilmartians/lefthook)                  |
-| Deployment | GitHub Pages (via GitHub Actions)                                     |
+| Layer         | Technology                                                            |
+| ------------- | --------------------------------------------------------------------- |
+| Runtime       | [Deno](https://deno.com/) 2.7.4 (version pinned in `.tool-versions`)  |
+| SSG           | [Lume](https://lume.land/) 3.2.1                                      |
+| Templating    | TSX + TypeScript (`*.page.tsx`, `*.tsx` layouts and components)       |
+| Styling       | Modern CSS (`src/style.css` entrypoint + `src/styles/*.css` partials) |
+| Feeds         | RSS 2.0 and JSON Feed 1.1 (per language: en, fr, zh-hans, zh-hant)   |
+| i18n          | Lume `multilanguage` plugin (4 languages)                             |
+| Testing       | Deno's built-in test runner with `@std/testing/bdd`                   |
+| Git hooks     | [Lefthook](https://github.com/evilmartians/lefthook)                  |
+| Deployment    | GitHub Pages (via GitHub Actions)                                     |
 
 ---
 
@@ -70,8 +75,14 @@ written in modern CSS rather than a framework, and the only runtime is Deno.
   lefthook install
   ```
 
-  Alternatively: `brew install lefthook` (macOS) or
-  `go install github.com/evilmartians/lefthook@latest`.
+  Alternatively, install via Deno task (no global install required):
+
+  ```sh
+  deno task lefthook:install
+  ```
+
+  Or via Homebrew (`brew install lefthook`) or Go
+  (`go install github.com/evilmartians/lefthook@latest`).
 
 > **Note:** If you encounter TLS/certificate issues (for example behind a
 > corporate proxy), prefix Deno commands with `DENO_TLS_CA_STORE=system`. On
@@ -87,8 +98,7 @@ git clone https://github.com/frenchvandal/normco.re.git
 cd normco.re
 
 # (Optional) Install Lefthook for Git hooks
-deno install --global --allow-all --name lefthook npm:lefthook
-lefthook install
+deno task lefthook:install
 
 # Start the development server
 DENO_TLS_CA_STORE=system deno task serve
@@ -107,8 +117,11 @@ automatically on file changes.
 │   └── workflows/
 │       └── site.yml          # GitHub Actions: build and deploy to GitHub Pages
 ├── scripts/
-│   └── lint-commit.ts        # Conventional Commits validator
+│   ├── lint-commit.ts        # Conventional Commits validator
+│   └── md-to-tsx.ts          # Converts LumeCMS Markdown drafts to .page.tsx
 ├── src/
+│   ├── _archetypes/
+│   │   └── post.ts           # Post archetype for LumeCMS
 │   ├── _components/          # Reusable UI components (used via comp.*, never direct import)
 │   │   ├── Footer.tsx
 │   │   ├── Footer_test.ts
@@ -125,29 +138,32 @@ automatically on file changes.
 │   │       └── post.tsx              # Individual post layout
 │   ├── posts/
 │   │   ├── _data.ts          # Post-scoped defaults (type = "post", layout = "layouts/post.tsx")
+│   │   ├── post-metadata.ts  # Shared post metadata helpers
 │   │   ├── index.page.tsx    # Archive page (/posts/)
 │   │   └── *.page.tsx        # Individual posts
 │   ├── 404.page.tsx
 │   ├── about.page.tsx
 │   ├── feed.xsl              # XSLT stylesheet for RSS/Atom feeds
-│   ├── feeds.page.tsx        # Syndication hub (/feeds/)
 │   ├── index.page.tsx        # Home page (/)
 │   ├── offline.page.tsx      # Offline fallback page (/offline/)
 │   ├── sitemap.xsl           # XSLT stylesheet for the sitemap
-│   ├── sw.js                 # Service worker source
 │   ├── scripts/
-│   │   ├── anti-flash.js    # Pre-paint theme bootstrap (/anti-flash.js)
-│   │   ├── sw-register.js    # Service-worker registration (/sw-register.js)
-│   │   └── theme-toggle.js  # Theme toggle behavior (/theme-toggle.js)
+│   │   ├── anti-flash.js         # Pre-paint theme bootstrap
+│   │   ├── feed-copy.js          # Feed URL copy helper
+│   │   ├── language-preference.js # Language preference selector
+│   │   ├── sw-register.js        # Service-worker registration
+│   │   ├── sw.js                 # Service worker source (emitted as /sw.js)
+│   │   └── theme-toggle.js       # Theme toggle behavior
 │   ├── style.css             # CSS entrypoint (imports layered partials)
 │   ├── styles/               # Layered partials (reset/base/layout/components/utilities)
 │   └── utils/
-│       ├── octicon.ts        # Full local Octicons catalog (inline SVG data)
-│       └── slugify.ts
+│       ├── i18n.ts           # Language tag and locale helpers
+│       ├── slugify.ts        # Slug normalization utility
+│       └── xml-stylesheet.ts # Maps XML output URLs to their XSLT stylesheets
 ├── plugins/
 │   ├── console_debug.ts      # Shared LUME_LOGS-driven console debug policy
 │   └── otel.ts               # Lume plugin for OpenTelemetry build observability
-├── .cms.ts                   # Lume CMS configuration
+├── _cms.ts                   # Lume CMS configuration
 ├── .gitignore
 ├── .tool-versions            # Pins Deno version (used by asdf)
 ├── CLAUDE.md                 # Project guidelines and conventions (source of truth)
@@ -211,15 +227,17 @@ DENO_TLS_CA_STORE=system deno task lint-commit
 
 ### Available tasks
 
-| Task          | Command                 | Description                                  |
-| ------------- | ----------------------- | -------------------------------------------- |
-| `build`       | `deno task build`       | Production build into `_site/`               |
-| `serve`       | `deno task serve`       | Dev server at `localhost:3000` (live reload) |
-| `check`       | `deno task check`       | Type-check all `.ts`/`.tsx` files            |
-| `lint:doc`    | `deno task lint:doc`    | Lint JSDoc comments                          |
-| `test:doc`    | `deno task test:doc`    | Run inline JSDoc documentation tests         |
-| `lint-commit` | `deno task lint-commit` | Validate the last commit message             |
-| `update-deps` | `deno task update-deps` | Update Lume and regenerate `deno.lock`       |
+| Task                | Command                       | Description                                    |
+| ------------------- | ----------------------------- | ---------------------------------------------- |
+| `build`             | `deno task build`             | Production build into `_site/`                 |
+| `serve`             | `deno task serve`             | Dev server at `localhost:3000` (live reload)   |
+| `check`             | `deno task check`             | Type-check all `.ts`/`.tsx` files              |
+| `lint:doc`          | `deno task lint:doc`          | Lint JSDoc comments                            |
+| `test:doc`          | `deno task test:doc`          | Run inline JSDoc documentation tests           |
+| `lint-commit`       | `deno task lint-commit`       | Validate the last commit message               |
+| `md-to-tsx`         | `deno task md-to-tsx`         | Convert LumeCMS Markdown drafts to `.page.tsx` |
+| `lefthook:install`  | `deno task lefthook:install`  | Install Lefthook Git hooks via `deno x`        |
+| `update-deps`       | `deno task update-deps`       | Update Lume and regenerate `deno.lock`         |
 
 ---
 
@@ -255,15 +273,35 @@ component resolution in templates for better live-reload behavior.
 The post layout computes and displays reading time automatically, based on 238
 words per minute (Brysbaert et al., 2019). No manual configuration is required.
 
+### Multilingual content
+
+The site supports four languages: **English** (`en`), **French** (`fr`),
+**Simplified Chinese** (`zh-hans`), and **Traditional Chinese** (`zh-hant`).
+Language variants are managed by the Lume `multilanguage` plugin. Each post can
+export per-language overrides using the language code as the export key (or the
+camelCase alias `zhHans`/`zhHant` for hyphenated codes):
+
+```ts
+export const title = "My Post";          // English (default)
+export const fr = { title: "Mon article" };
+export const zhHans = { title: "我的文章" };
+export const zhHant = { title: "我的文章" };
+```
+
+Localized routes follow the pattern `/{lang}/posts/{slug}/` for non-English
+languages.
+
 ### Feeds
 
-RSS and JSON feeds are generated automatically from posts tagged with
-`type = "post"` by the Lume `feed` plugin. The feeds are available at:
+RSS and JSON feeds are generated automatically from posts by the Lume `feed`
+plugin, one set per language:
 
-- RSS/Atom: `/feed.xml`
-- JSON Feed 1.1: `/feed.json`
-
-A syndication hub listing all feed endpoints is available at `/feeds/`.
+| Language            | RSS                    | JSON Feed                   |
+| ------------------- | ---------------------- | --------------------------- |
+| English             | `/feed.xml`            | `/feed.json`                |
+| French              | `/fr/feed.xml`         | `/fr/feed.json`             |
+| Simplified Chinese  | `/zh-hans/feed.xml`    | `/zh-hans/feed.json`        |
+| Traditional Chinese | `/zh-hant/feed.xml`    | `/zh-hant/feed.json`        |
 
 ---
 
@@ -283,27 +321,47 @@ The central Lume configuration file. Key settings:
 
 **Active plugins:**
 
-| Plugin          | Purpose                                                  |
-| --------------- | -------------------------------------------------------- |
-| `postcss`       | Resolves CSS partial imports (`@import`) into one bundle |
-| `purgecss`      | Removes unused selectors based on rendered pages         |
-| `lightningcss`  | The single CSS minifier (plus modern browser targets)    |
-| `sourceMaps`    | Generates source maps for processed CSS and JS assets    |
-| `attributes`    | HTML attribute helpers in templates                      |
-| `date`          | Date formatting (e.g., `"SHORT"` → `"MMM d"`)            |
-| `sitemap`       | Generates `/sitemap.xml` and `/robots.txt`               |
-| `nav`           | Navigation tree for previous/next post links             |
-| `codeHighlight` | Syntax highlighting for fenced code blocks               |
-| `feed`          | Generates RSS 2.0 and JSON Feed 1.1                      |
-| `jsx`           | Enables TSX/JSX rendering for pages/layouts/components   |
+| Plugin          | Purpose                                                                   |
+| --------------- | ------------------------------------------------------------------------- |
+| `jsx`           | Enables TSX/JSX rendering for pages, layouts, and components              |
+| `terser`        | Minifies client-side JavaScript                                           |
+| `postcss`       | Resolves CSS partial imports (`@import`) into one bundle                  |
+| `lightningcss`  | The single CSS minifier (plus modern browser targets)                     |
+| `purgecss`      | Removes unused selectors based on rendered pages                          |
+| `sourceMaps`    | Generates source maps for processed CSS and JS assets                     |
+| `attributes`    | HTML attribute helpers in templates                                       |
+| `icons`         | On-demand SVG icon fetching (Octicons + OpenMoji catalogs)                |
+| `inline`        | Replaces `<img inline>` tags with inline SVG                              |
+| `date`          | Date formatting (e.g., `"SHORT"` → `"MMM d"`) with locale support        |
+| `readingInfo`   | Computes word count and reading time via `Intl.Segmenter`                 |
+| `sitemap`       | Generates `/sitemap.xml`                                                  |
+| `robots`        | Generates `/robots.txt` with explicit disallow rules                      |
+| `multilanguage` | Per-language URL prefixes and data overrides (en, fr, zh-hans, zh-hant)  |
+| `nav`           | Navigation tree for previous/next post links                              |
+| `validateHtml`  | Validates generated HTML against html-validate recommended/document rules |
+| `checkUrls`     | Detects broken internal links and hash anchors; fails the build on errors |
+| `jsonLd`        | Renders `<script type="application/ld+json">` from page data              |
+| `seo`           | Reports common SEO issues in the Lume debug bar                           |
+| `prism`         | Syntax highlighting for fenced code blocks (autoloads language grammars)  |
+| `feed`          | Generates RSS 2.0 and JSON Feed 1.1 (one set per language)                |
 
 ### Client-side JavaScript assets
 
 Client-side behavior is authored as standalone JavaScript assets in
 `src/scripts/` instead of inline string literals inside layouts or `*.page.tsx`
 files. Lume registers these files directly with `site.add(...)` and emits them
-as first-class assets during `deno task build` and `deno task serve` (for
-example: `src/scripts/theme-toggle.js` -> `/theme-toggle.js`).
+as first-class assets during `deno task build` and `deno task serve`:
+
+| Source                          | Emitted path               | Purpose                       |
+| ------------------------------- | -------------------------- | ----------------------------- |
+| `src/scripts/theme-toggle.js`   | `/scripts/theme-toggle.js` | Light/dark theme toggle       |
+| `src/scripts/anti-flash.js`     | `/scripts/anti-flash.js`   | Pre-paint theme bootstrap     |
+| `src/scripts/language-preference.js` | `/scripts/language-preference.js` | Language selector  |
+| `src/scripts/feed-copy.js`      | `/scripts/feed-copy.js`    | Feed URL copy helper          |
+| `src/scripts/sw-register.js`    | `/scripts/sw-register.js`  | Service worker registration   |
+| `src/scripts/sw.js`             | `/sw.js`                   | Service worker                |
+
+All scripts are minified in production via the `terser` plugin.
 
 ### `deno.json` — Deno manifest
 
@@ -322,10 +380,15 @@ never used in source files.
 | `noImplicitOverride`         | Requires `override` keyword on overriding methods             |
 | `noImplicitReturns`          | Ensures all code paths return a value                         |
 
-### `.cms.ts` — Lume CMS
+### `_cms.ts` — Lume CMS
 
 Configures the optional [Lume CMS](https://lume.land/cms/) for visual content
-editing. Not required for local development.
+editing. Not required for local development. CMS-generated Markdown drafts must
+be converted to `.page.tsx` before opening a PR:
+
+```sh
+DENO_TLS_CA_STORE=system deno task md-to-tsx
+```
 
 ---
 
@@ -377,10 +440,13 @@ compatibility, `data-color-scheme` is also set. The bootstrap script
 (`src/scripts/anti-flash.js`) reads `localStorage` (`color-mode`, with legacy
 fallback to `color-scheme`) and applies the resolved mode before first paint.
 
-### Octicons
+### Icons
 
-The UI uses the full local Octicons catalog from `src/utils/octicon.ts`,
-rendered as inline SVG (`fill: currentColor`) in templates and components.
+The UI uses the Octicons catalog (via the Lume `icons` plugin) alongside
+OpenMoji for emoji-style icons. Icons are fetched on demand from jsDelivr CDN at
+build time and inlined as SVG through the `inline` plugin
+(`fill: currentColor`). The `icons()` helper is available in all templates via
+`helpers.icon("octicons", "name", "variant")`.
 
 ### Accessibility in CSS
 
@@ -440,6 +506,16 @@ DENO_TLS_CA_STORE=system deno coverage --html
 
 ## Tooling
 
+### Markdown-to-TSX conversion (`scripts/md-to-tsx.ts`)
+
+Converts LumeCMS-generated Markdown drafts in `src/posts/*.md` to the
+`.page.tsx` format required for production. Run this before opening a PR when
+content was drafted via the CMS:
+
+```sh
+DENO_TLS_CA_STORE=system deno task md-to-tsx
+```
+
 ### Commit-message linting (`scripts/lint-commit.ts`)
 
 A standalone script that validates commit messages against the
@@ -468,6 +544,22 @@ DENO_TLS_CA_STORE=system deno task lint-commit path/to/COMMIT_EDITMSG
 ```
 
 ### Git hooks — Lefthook (`lefthook.yml`)
+
+Install once after cloning (three equivalent options):
+
+```sh
+# Option A — via Deno task (no global install required)
+deno task lefthook:install
+
+# Option B — via Deno global install
+deno install --global --allow-all --name lefthook npm:lefthook
+lefthook install
+
+# Option C — via Homebrew or Go
+brew install lefthook          # macOS
+go install github.com/evilmartians/lefthook@latest
+lefthook install
+```
 
 | Hook         | Command                            | Scope                     |
 | ------------ | ---------------------------------- | ------------------------- |
