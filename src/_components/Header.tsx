@@ -47,6 +47,7 @@ export default (
   const homeIcon = helpers.icon("home", "octicons", "16");
   const writingIcon = helpers.icon("book", "octicons", "16");
   const aboutIcon = helpers.icon("info", "octicons", "16");
+  const searchIcon = helpers.icon("search", "octicons", "16");
   const globeIcon = helpers.icon("globe", "octicons", "16");
   const checkIcon = helpers.icon("check", "octicons", "16");
   const searchContainerId = "search";
@@ -55,13 +56,6 @@ export default (
     <header class="site-header">
       <div class="site-header-inner">
         <div class="site-header-start">
-          <a
-            href={homeUrl}
-            class="site-name"
-            {...ariaCurrent(homeUrl, currentUrl)}
-          >
-            {translations.navigation.home}
-          </a>
           <details class="site-menu">
             <summary
               class="site-menu-trigger"
@@ -155,12 +149,35 @@ export default (
           </details>
         </div>
         <div class="site-header-end">
-          <section
-            class="site-header-search"
-            aria-label={translations.site.searchLabel}
-          >
-            <div id={searchContainerId} class="site-search-root"></div>
-          </section>
+          <details class="site-search">
+            <summary
+              class="site-search-trigger"
+              aria-label={translations.site.searchLabel}
+              title={translations.site.searchLabel}
+            >
+              <img
+                inline
+                class="site-search-trigger-icon octicon-svg"
+                width="16"
+                height="16"
+                src={searchIcon}
+                alt=""
+                aria-hidden="true"
+                focusable="false"
+              />
+              <span class="sr-only">{translations.site.searchLabel}</span>
+            </summary>
+            <div
+              class="site-search-panel"
+              role="dialog"
+              aria-label={translations.site.searchLabel}
+            >
+              <p class="site-search-panel-title">
+                {translations.site.searchLabel}
+              </p>
+              <div id={searchContainerId} class="site-search-root"></div>
+            </div>
+          </details>
           <div class="language-switcher">
             <details class="language-menu">
               <summary

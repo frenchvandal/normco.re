@@ -58,9 +58,16 @@
                 </details>
               </div>
               <div class="site-header-end">
-                <section class="site-header-search" aria-label="Search">
-                  <div id="sitemap-search" class="site-search-root"></div>
-                </section>
+                <details class="site-search">
+                  <summary class="site-search-trigger" aria-label="Search" title="Search">
+                    <img class="site-search-trigger-icon octicon-svg" width="16" height="16" src="/icons/octicons/search-16.svg" alt="" aria-hidden="true" focusable="false"/>
+                    <span class="sr-only">Search</span>
+                  </summary>
+                  <div class="site-search-panel" role="dialog" aria-label="Search">
+                    <p class="site-search-panel-title">Search</p>
+                    <div id="sitemap-search" class="site-search-root"></div>
+                  </div>
+                </details>
                 <div class="language-switcher">
                   <details class="language-menu">
                     <summary class="language-menu-trigger" aria-label="Select language" title="Language">

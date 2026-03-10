@@ -5,26 +5,35 @@ import { renderComponent } from "lume/jsx-runtime";
 import Header from "./Header.tsx";
 
 describe("Header()", () => {
-  describe("ariaCurrent — home link '/'", () => {
+  describe("ariaCurrent — home menu link '/'", () => {
     it('marks "/" as current when currentUrl is "/"', async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertMatch(html, /href="\/" class="site-name" aria-current="page"/);
+      assertMatch(
+        html,
+        /href="\/" class="site-menu-link"[^>]*aria-current="page"/,
+      );
     });
 
     it('does not mark "/" as current on /posts/', async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/posts/", language: "en" }),
       );
-      assertNotMatch(html, /href="\/" class="site-name" aria-current="page"/);
+      assertNotMatch(
+        html,
+        /href="\/" class="site-menu-link"[^>]*aria-current="page"/,
+      );
     });
 
     it('does not mark "/" as current on /about/', async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/about/", language: "en" }),
       );
-      assertNotMatch(html, /href="\/" class="site-name" aria-current="page"/);
+      assertNotMatch(
+        html,
+        /href="\/" class="site-menu-link"[^>]*aria-current="page"/,
+      );
     });
   });
 
@@ -78,12 +87,11 @@ describe("Header()", () => {
       assertStringIncludes(html, 'class="site-header"');
     });
 
-    it("contains the site-name link pointing to /", async () => {
+    it("does not render the left-side site-name link anymore", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/about/", language: "en" }),
       );
-      assertStringIncludes(html, 'href="/"');
-      assertStringIncludes(html, 'class="site-name"');
+      assertNotMatch(html, /class="site-name"/);
     });
 
     it("contains a Writing nav link", async () => {
@@ -112,7 +120,7 @@ describe("Header()", () => {
       assertStringIncludes(html, "About");
     });
 
-    it("renders a hamburger menu trigger and a header search container", async () => {
+    it("renders a hamburger trigger and a modal-style search trigger", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
@@ -120,7 +128,11 @@ describe("Header()", () => {
         html,
         /class="site-menu-trigger-icon octicon-svg"[^>]*src="\/icons\/octicons\/three-bars-16\.svg"/,
       );
-      assertStringIncludes(html, 'class="site-header-search"');
+      assertMatch(
+        html,
+        /class="site-search-trigger-icon octicon-svg"[^>]*src="\/icons\/octicons\/search-16\.svg"/,
+      );
+      assertStringIncludes(html, 'class="site-search-panel"');
       assertStringIncludes(html, 'id="search"');
     });
 
