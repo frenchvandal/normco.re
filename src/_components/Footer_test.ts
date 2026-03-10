@@ -1,4 +1,4 @@
-import { assertNotMatch, assertStringIncludes } from "jsr/assert";
+import { assert, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker } from "npm/faker-js";
@@ -44,6 +44,17 @@ describe("Footer()", () => {
     assertStringIncludes(html, 'rel="noopener noreferrer"');
     assertStringIncludes(html, 'aria-label="Open GitHub repository"');
     assertNotMatch(html, /<span>GitHub<\/span>/);
+  });
+
+  it("renders the GitHub link before feed links", async () => {
+    const author = makeAuthor(107);
+    const html = await renderComponent(Footer({ author: author }));
+    const githubIndex = html.indexOf('aria-label="Open GitHub repository"');
+    const rssIndex = html.indexOf('aria-label="Open RSS feed"');
+    const jsonIndex = html.indexOf('aria-label="Open JSON Feed"');
+    assert(githubIndex > -1 && rssIndex > -1 && jsonIndex > -1);
+    assert(githubIndex < rssIndex);
+    assert(githubIndex < jsonIndex);
   });
 
   it("contains the current year in the copyright notice", async () => {

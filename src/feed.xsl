@@ -49,22 +49,33 @@
 
           <main class="site-main" id="main-content">
             <section class="feed-page">
-              <header class="feed-page-header">
+              <header class="pagehead feed-page-header">
+                <p class="pagehead-eyebrow">Syndication</p>
                 <h1 class="feed-page-title">
                   <xsl:value-of select="/rss/channel/title"/>
                 </h1>
                 <p class="feed-page-description">
                   <xsl:value-of select="/rss/channel/description"/>
                 </p>
-                <p class="feed-page-hint">
-                  This is an RSS feed. Subscribe by copying this URL into your feed reader.
+                <div class="feed-page-meta">
+                  <p class="feed-page-hint">
+                    This is an RSS feed. Subscribe by copying this URL into your feed reader.
+                  </p>
+                  <nav class="feed-page-actions" aria-label="Feed formats">
+                    <a href="/feed.xml" class="feed-page-button feed-page-button--primary">RSS XML</a>
+                    <a href="/feed.json" class="feed-page-button">JSON Feed</a>
+                  </nav>
+                </div>
+                <p class="feed-page-count">
+                  <xsl:value-of select="count(/rss/channel/item)"/>
+                  <xsl:text> articles published</xsl:text>
                 </p>
               </header>
 
               <ol class="feed-entry-list">
                 <xsl:for-each select="/rss/channel/item">
                   <li class="feed-entry">
-                    <article>
+                    <article class="feed-entry-card">
                       <h2 class="feed-entry-title">
                         <a class="feed-entry-link">
                           <xsl:attribute name="href">
@@ -74,6 +85,7 @@
                         </a>
                       </h2>
                       <p class="feed-entry-meta">
+                        <span class="feed-entry-meta-label">Published</span>
                         <time>
                           <xsl:attribute name="datetime">
                             <xsl:value-of select="pubDate"/>
