@@ -1,3 +1,6 @@
+// @ts-check
+/// <reference lib="webworker" />
+
 const SW_QUERY = new URL(self.location.href).searchParams;
 const SW_VERSION = SW_QUERY.get("v") ?? "dev";
 const SW_DEBUG_LEVEL = SW_QUERY.get("debug") ?? "off";
@@ -57,6 +60,11 @@ const MAX_TRANSITIONS_PER_ROUTE = 12;
 /** @type {Map<string, Map<string, number>>} */
 const navigationTransitions = new Map();
 
+// Secondary UA-based safeguard. Most search engine crawlers (including
+// Googlebot) bypass service workers entirely at the browser level, so this
+// check is belt-and-suspenders rather than the primary defense. Do not rely
+// on this alone for cache isolation — HTTPS is the real guard against
+// in-transit modification.
 const KNOWN_BOT_PATTERN =
   /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
 
@@ -386,6 +394,12 @@ async function networkFirstPage(request) {
 
 /**
  * Uses stale-while-revalidate for feeds with a soft TTL.
+ *
+ * Feed responses are cached with a custom `x-sw-cached-at` header and served
+ * until the TTL expires. No content-integrity verification is performed beyond
+ * what HTTPS provides — a compromised network could inject a malicious feed
+ * response that remains cached until eviction. The HTTPS transport is the
+ * primary guard against in-transit modification.
  *
  * @param {Request} request
  * @returns {Promise<Response>}

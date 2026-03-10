@@ -2,7 +2,10 @@
  * Resolves a post date value into a valid `Date` instance.
  *
  * @param value Raw date value from page data.
- * @param fallback Fallback date used when the value cannot be parsed.
+ * @param fallback Fallback date used when the value cannot be parsed. The
+ *   default expression `new Date()` is evaluated at each call site, not once
+ *   at module load. Pass an explicit `Date` for deterministic behavior (e.g.,
+ *   in tests or when two calls must agree on the same timestamp).
  */
 export function resolvePostDate(
   value: unknown,

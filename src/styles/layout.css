@@ -85,7 +85,7 @@
   }
 
   .site-nav-link[aria-current="page"] {
-    border-color: light-dark(#fd8c73, #f78166);
+    border-color: var(--borderColor-navActive);
     color: var(--color-text);
     font-weight: 600;
   }
