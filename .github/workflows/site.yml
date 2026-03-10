@@ -18,7 +18,7 @@ jobs:
   deploy:
     environment:
       name: development
-    runs-on: ubuntu-latest
+    runs-on: macos-26
     env:
       OSS_BUCKET: ${{ vars.OSS_BUCKET }}
       OSS_REGION: ${{ vars.OSS_REGION }}
