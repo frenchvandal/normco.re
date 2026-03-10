@@ -62,8 +62,30 @@
                     This is an RSS feed. Subscribe by copying this URL into your feed reader.
                   </p>
                   <nav class="feed-page-actions" aria-label="Feed formats">
-                    <a href="/feed.xml" class="feed-page-button feed-page-button--primary">RSS XML</a>
-                    <a href="/feed.json" class="feed-page-button">JSON Feed</a>
+                    <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="RSS XML">
+                      <a href="/feed.xml" class="feed-page-button feed-page-button--copy-link">RSS XML</a>
+                      <button type="button" class="feed-page-button feed-page-button--copy-trigger" data-copy-button="" data-copy-path="/feed.xml" aria-label="Copy RSS XML URL">
+                        <svg class="octicon-svg feed-copy-icon feed-copy-icon--copy" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                          <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
+                        </svg>
+                        <svg class="octicon-svg feed-copy-icon feed-copy-icon--success" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                          <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/>
+                        </svg>
+                      </button>
+                      <span class="sr-only" data-copy-status="" aria-live="polite"></span>
+                    </div>
+                    <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="JSON Feed">
+                      <a href="/feed.json" class="feed-page-button feed-page-button--copy-link">JSON Feed</a>
+                      <button type="button" class="feed-page-button feed-page-button--copy-trigger" data-copy-button="" data-copy-path="/feed.json" aria-label="Copy JSON Feed URL">
+                        <svg class="octicon-svg feed-copy-icon feed-copy-icon--copy" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                          <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
+                        </svg>
+                        <svg class="octicon-svg feed-copy-icon feed-copy-icon--success" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                          <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/>
+                        </svg>
+                      </button>
+                      <span class="sr-only" data-copy-status="" aria-live="polite"></span>
+                    </div>
                   </nav>
                 </div>
                 <p class="feed-page-count">
@@ -102,15 +124,29 @@
 
           <footer class="site-footer">
             <div class="site-footer-inner">
-              <span>&#169; normco.re</span>
-              <nav class="site-footer-nav" aria-label="Feeds">
-                <a href="/feed.xml" class="feed-link">RSS</a>
-                <a href="/feed.json" class="feed-link">JSON Feed</a>
+              <span>&#169; <script>document.write(new Date().getFullYear())</script> Phiphi</span>
+              <nav class="site-footer-nav" aria-label="Site links">
+                <a href="https://github.com/frenchvandal/normco.re" class="feed-link" target="_blank" rel="noopener noreferrer" aria-label="Open GitHub repository">
+                  <svg class="octicon-svg feed-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                    <path d="M6.766 11.695C4.703 11.437 3.25 9.904 3.25 7.92c0-.806.281-1.677.75-2.258-.203-.532-.172-1.662.062-2.129.626-.081 1.469.258 1.969.726.594-.194 1.219-.291 1.985-.291.765 0 1.39.097 1.953.274.484-.451 1.343-.79 1.969-.709.218.435.25 1.564.046 2.113.5.613.766 1.436.766 2.274 0 1.984-1.453 3.485-3.547 3.759.531.355.891 1.129.891 2.016v1.678c0 .484.39.758.859.564C13.781 14.824 16 11.905 16 8.291 16 3.726 12.406 0 7.984 0 3.562 0 0 3.726 0 8.291c0 3.581 2.203 6.55 5.172 7.663A.595.595 0 0 0 6 15.389v-1.291c-.219.097-.5.162-.75.162-1.031 0-1.641-.581-2.078-1.662-.172-.435-.36-.693-.719-.742-.187-.016-.25-.097-.25-.193 0-.194.313-.339.625-.339.453 0 .844.29 1.25.887.313.468.641.678 1.031.678.391 0 .641-.146 1-.516.266-.275.469-.517.657-.678Z"/>
+                  </svg>
+                </a>
+                <a href="/feed.xml" class="feed-link" aria-label="Open RSS feed">
+                  <svg class="octicon-svg feed-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                    <path d="M2.002 2.725a.75.75 0 0 1 .797-.699C8.79 2.42 13.58 7.21 13.974 13.201a.75.75 0 0 1-1.497.098 10.502 10.502 0 0 0-9.776-9.776.747.747 0 0 1-.7-.798ZM2.84 7.05h-.002a7.002 7.002 0 0 1 6.113 6.111.75.75 0 0 1-1.49.178 5.503 5.503 0 0 0-4.8-4.8.75.75 0 0 1 .179-1.489ZM2 13a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z"/>
+                  </svg>
+                </a>
+                <a href="/feed.json" class="feed-link" aria-label="Open JSON Feed">
+                  <svg class="octicon-svg feed-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                    <path d="M4 1.75C4 .784 4.784 0 5.75 0h5.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v8.586A1.75 1.75 0 0 1 14.25 15h-9a.75.75 0 0 1 0-1.5h9a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 10 4.25V1.5H5.75a.25.25 0 0 0-.25.25v2.5a.75.75 0 0 1-1.5 0Zm1.72 4.97a.75.75 0 0 1 1.06 0l2 2a.75.75 0 0 1 0 1.06l-2 2a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.47-1.47-1.47-1.47a.75.75 0 0 1 0-1.06ZM3.28 7.78 1.81 9.25l1.47 1.47a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-2-2a.75.75 0 0 1 0-1.06l2-2a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042Zm8.22-6.218V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"/>
+                  </svg>
+                </a>
               </nav>
             </div>
           </footer>
         </div>
         <script src="/scripts/theme-toggle.js"/>
+        <script src="/scripts/feed-copy.js"/>
       </body>
     </html>
   </xsl:template>

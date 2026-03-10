@@ -1205,6 +1205,7 @@
     "https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.37/dist/index.js": "49631995f63ec187fc2eee91abee8e651751adfa42d011ba4bda76da14ae1a92",
     "https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.js": "6c67db1a4c86269dc754b588d0ad3a0cdb295044fd466ea6f66bbf01dec306bd",
     "https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-typescript.js": "9a5181760da3863cb8d414bc756f48853320df224c16bf9f5af2541131bc9412",
+    "https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-yaml.js": "907706b6b1ca4790755c50ca60f82f0273da640f8dacee5666099ba0bf91b038",
     "https://deno.land/std@0.170.0/_util/asserts.ts": "d0844e9b62510f89ce1f9878b046f6a57bf88f208a10304aab50efcb48365272",
     "https://deno.land/std@0.170.0/_util/os.ts": "8a33345f74990e627b9dfe2de9b040004b08ea5146c7c9e8fe9a29070d193934",
     "https://deno.land/std@0.170.0/encoding/base64.ts": "8605e018e49211efc767686f6f687827d7f5fd5217163e981d8d693105640d7a",
