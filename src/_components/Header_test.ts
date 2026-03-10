@@ -121,6 +121,19 @@ describe("Header()", () => {
       assertStringIncludes(html, "About");
     });
 
+    it("renders the language flag with OpenMoji and an emoji fallback", async () => {
+      const siteName = makeSiteName(2121);
+      const html = await renderComponent(
+        Header({ currentUrl: "/", siteName: siteName, language: "fr" }),
+      );
+      assertMatch(
+        html,
+        /class="language-switcher-flag-icon"[^>]*src="\/icons\/openmoji\/1F1EB-1F1F7\.svg"/,
+      );
+      assertStringIncludes(html, 'class="language-switcher-flag-emoji"');
+      assertStringIncludes(html, "🇫🇷");
+    });
+
     it("contains the theme-toggle button", async () => {
       const siteName = makeSiteName(213);
       const html = await renderComponent(

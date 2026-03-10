@@ -47,6 +47,22 @@
 
   .language-switcher-flag-icon {
     display: block;
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+
+  .language-switcher-flag-emoji {
+    display: none;
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .language-switcher[data-flag-fallback="emoji"] .language-switcher-flag-icon {
+    display: none;
+  }
+
+  .language-switcher[data-flag-fallback="emoji"] .language-switcher-flag-emoji {
+    display: block;
   }
 
   .language-select {
