@@ -15,7 +15,7 @@ export default ({ author }: { readonly author: string }) => {
       <div class="site-footer-inner">
         <span>© {year} {author}</span>
         <nav class="site-footer-nav" aria-label="Site links">
-          <a href="/feed.xml" class="feed-link">
+          <a href="/feed.xml" class="feed-link" aria-label="Open RSS feed">
             <svg
               class="octicon-svg feed-link-icon"
               width="16"
@@ -27,9 +27,8 @@ export default ({ author }: { readonly author: string }) => {
             >
               <path d={rssIcon.path}></path>
             </svg>
-            <span>RSS</span>
           </a>
-          <a href="/feed.json" class="feed-link">
+          <a href="/feed.json" class="feed-link" aria-label="Open JSON Feed">
             <svg
               class="octicon-svg feed-link-icon"
               width="16"
@@ -41,9 +40,14 @@ export default ({ author }: { readonly author: string }) => {
             >
               <path d={fileCodeIcon.path}></path>
             </svg>
-            <span>JSON Feed</span>
           </a>
-          <a href={repositoryUrl} class="feed-link">
+          <a
+            href={repositoryUrl}
+            class="feed-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open GitHub repository"
+          >
             <svg
               class="octicon-svg feed-link-icon"
               width="16"
@@ -55,7 +59,6 @@ export default ({ author }: { readonly author: string }) => {
             >
               <path d={githubIcon.path}></path>
             </svg>
-            <span>GitHub</span>
           </a>
         </nav>
       </div>
