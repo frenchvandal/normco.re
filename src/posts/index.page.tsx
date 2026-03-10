@@ -74,12 +74,11 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 </section>`;
   }).join("\n");
 
-  const yearNavItems = years.map((year, index) => {
+  const yearNavItems = years.map((year) => {
     const postCount = (byYear.get(year) ?? []).length;
-    const currentAttr = index === 0 ? ' aria-current="true"' : "";
 
     return `<li class="archive-year-nav-item">
-  <a href="#archive-year-${year}" class="archive-year-nav-link"${currentAttr}>
+  <a href="#archive-year-${year}" class="archive-year-nav-link">
     <span class="archive-year-nav-label">${year}</span>
     <span class="archive-year-nav-count">${postCount}</span>
   </a>
@@ -106,6 +105,83 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 </section>`
     : `<p class="blankslate">No posts published yet.</p>`;
 
+  const archiveYearNavScript = sections.length > 0
+    ? `<script>
+(() => {
+  const links = Array.from(
+    globalThis.document.querySelectorAll(".archive-year-nav-link"),
+  ).filter((candidate) => candidate instanceof HTMLAnchorElement);
+
+  if (links.length === 0) {
+    return;
+  }
+
+  const idByLink = new Map();
+
+  for (const link of links) {
+    const href = link.getAttribute("href");
+
+    if (href === null || !href.startsWith("#")) {
+      continue;
+    }
+
+    const id = href.slice(1);
+
+    if (id.length === 0) {
+      continue;
+    }
+
+    idByLink.set(link, id);
+  }
+
+  if (idByLink.size === 0) {
+    return;
+  }
+
+  function setCurrentLink(activeId) {
+    for (const [link, id] of idByLink) {
+      if (id === activeId) {
+        link.setAttribute("aria-current", "true");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    }
+  }
+
+  function getActiveIdFromHash() {
+    const rawHash = globalThis.location.hash;
+
+    if (rawHash.startsWith("#") && rawHash.length > 1) {
+      const hashId = decodeURIComponent(rawHash.slice(1));
+
+      for (const id of idByLink.values()) {
+        if (id === hashId) {
+          return id;
+        }
+      }
+    }
+
+    const firstId = idByLink.values().next().value;
+    return typeof firstId === "string" ? firstId : null;
+  }
+
+  function syncCurrentLink() {
+    const activeId = getActiveIdFromHash();
+
+    if (activeId === null) {
+      return;
+    }
+
+    setCurrentLink(activeId);
+  }
+
+  globalThis.addEventListener("hashchange", syncCurrentLink);
+  syncCurrentLink();
+})();
+</script>`
+    : "";
+
   return `${archiveIntro}
-${archiveBody}`;
+${archiveBody}
+${archiveYearNavScript}`;
 };
