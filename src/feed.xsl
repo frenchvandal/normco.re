@@ -22,20 +22,69 @@
         </title>
         <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{v=localStorage.getItem("color-mode")??localStorage.getItem("color-scheme")}catch{v=null}const t=v==="light"||v==="dark"?v:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-color-scheme",t)})()</script>
         <link rel="stylesheet" href="/style.css"/>
+        <link rel="stylesheet" href="/pagefind/pagefind-ui.css"/>
       </head>
       <body>
         <div class="site-wrapper">
           <header class="site-header">
             <div class="site-header-inner">
-              <a href="/" class="site-name">normco.re</a>
+              <div class="site-header-start">
+                <a href="/" class="site-name">normco.re</a>
+                <details class="site-menu">
+                  <summary class="site-menu-trigger" aria-label="Open navigation menu" title="Open navigation menu">
+                    <img class="site-menu-trigger-icon octicon-svg" width="16" height="16" src="/icons/octicons/three-bars-16.svg" alt="" aria-hidden="true" focusable="false"/>
+                    <span class="sr-only">Open navigation menu</span>
+                  </summary>
+                  <div class="site-menu-panel">
+                    <nav class="site-menu-nav" aria-label="Main navigation">
+                      <ul class="site-menu-nav-list">
+                        <li class="site-menu-nav-item"><a href="/posts/" class="site-menu-link">Writing</a></li>
+                        <li class="site-menu-nav-item"><a href="/about/" class="site-menu-link">About</a></li>
+                      </ul>
+                    </nav>
+                    <section class="site-menu-search" aria-label="Search">
+                      <p class="site-menu-search-title">Search</p>
+                      <div id="feed-search" class="site-search-root"></div>
+                    </section>
+                  </div>
+                </details>
+              </div>
               <div class="site-header-end">
-                <nav class="site-nav" aria-label="Main navigation">
-                  <ul class="site-nav-list">
-                    <li class="site-nav-item"><a href="/posts/" class="site-nav-link">Writing</a></li>
-                    <li class="site-nav-item"><a href="/about/" class="site-nav-link">About</a></li>
-                  </ul>
-                </nav>
-                <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme" aria-pressed="false">
+                <div class="language-switcher">
+                  <details class="language-menu">
+                    <summary class="language-menu-trigger" aria-label="Select language" title="Language">
+                      <img class="language-menu-trigger-icon octicon-svg" width="16" height="16" src="/icons/octicons/globe-16.svg" alt="" aria-hidden="true" focusable="false"/>
+                      <span class="sr-only">Language</span>
+                    </summary>
+                    <ul class="language-menu-list" aria-label="Language">
+                      <li class="language-menu-item-wrapper">
+                        <a href="/" class="language-menu-item">
+                          <span class="language-menu-check-icon" aria-hidden="true"></span>
+                          <span>English</span>
+                        </a>
+                      </li>
+                      <li class="language-menu-item-wrapper">
+                        <a href="/fr/" class="language-menu-item">
+                          <span class="language-menu-check-icon" aria-hidden="true"></span>
+                          <span>Français</span>
+                        </a>
+                      </li>
+                      <li class="language-menu-item-wrapper">
+                        <a href="/zh-hans/" class="language-menu-item">
+                          <span class="language-menu-check-icon" aria-hidden="true"></span>
+                          <span>简体中文</span>
+                        </a>
+                      </li>
+                      <li class="language-menu-item-wrapper">
+                        <a href="/zh-hant/" class="language-menu-item">
+                          <span class="language-menu-check-icon" aria-hidden="true"></span>
+                          <span>繁體中文</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </details>
+                </div>
+                <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme" aria-pressed="false" data-label-switch-light="Switch to light theme" data-label-switch-dark="Switch to dark theme">
                   <svg class="theme-icon theme-icon--sun octicon-svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061ZM2.343 2.343a.75.75 0 0 1 1.061 0l1.06 1.061a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-1.06-1.06a.75.75 0 0 1 0-1.06Z"/>
                   </svg>
@@ -151,6 +200,8 @@
             </div>
           </footer>
         </div>
+        <script src="/pagefind/pagefind-ui.js"/>
+        <script>globalThis.addEventListener("DOMContentLoaded",()=>{if(typeof PagefindUI==="function"){new PagefindUI({element:"#feed-search",showImages:false,showSubResults:false,resetStyles:false});}})</script>
         <script src="/scripts/theme-toggle.js"/>
         <script src="/scripts/feed-copy.js"/>
       </body>

@@ -43,45 +43,79 @@ export default (
   const homeUrl = getLocalizedUrl("/", language);
   const postsUrl = getLocalizedUrl("/posts/", language);
   const aboutUrl = getLocalizedUrl("/about/", language);
+  const menuIcon = helpers.icon("three-bars", "octicons", "16");
   const globeIcon = helpers.icon("globe", "octicons", "16");
   const checkIcon = helpers.icon("check", "octicons", "16");
+  const searchContainerId = "search";
 
   return (
     <header class="site-header">
       <div class="site-header-inner">
-        <a
-          href={homeUrl}
-          class="site-name"
-          {...ariaCurrent(homeUrl, currentUrl)}
-        >
-          {translations.navigation.home}
-        </a>
-        <div class="site-header-end">
-          <nav
-            class="site-nav"
-            aria-label={translations.site.mainNavigationAriaLabel}
+        <div class="site-header-start">
+          <a
+            href={homeUrl}
+            class="site-name"
+            {...ariaCurrent(homeUrl, currentUrl)}
           >
-            <ul class="site-nav-list">
-              <li class="site-nav-item">
-                <a
-                  href={postsUrl}
-                  class="site-nav-link"
-                  {...ariaCurrent(postsUrl, currentUrl)}
-                >
-                  {translations.navigation.writing}
-                </a>
-              </li>
-              <li class="site-nav-item">
-                <a
-                  href={aboutUrl}
-                  class="site-nav-link"
-                  {...ariaCurrent(aboutUrl, currentUrl)}
-                >
-                  {translations.navigation.about}
-                </a>
-              </li>
-            </ul>
-          </nav>
+            {translations.navigation.home}
+          </a>
+          <details class="site-menu">
+            <summary
+              class="site-menu-trigger"
+              aria-label={translations.site.menuToggleLabel}
+              title={translations.site.menuToggleLabel}
+            >
+              <img
+                inline
+                class="site-menu-trigger-icon octicon-svg"
+                width="16"
+                height="16"
+                src={menuIcon}
+                alt=""
+                aria-hidden="true"
+                focusable="false"
+              />
+              <span class="sr-only">{translations.site.menuToggleLabel}</span>
+            </summary>
+            <div class="site-menu-panel">
+              <nav
+                class="site-menu-nav"
+                aria-label={translations.site.mainNavigationAriaLabel}
+              >
+                <ul class="site-menu-nav-list">
+                  <li class="site-menu-nav-item">
+                    <a
+                      href={postsUrl}
+                      class="site-menu-link"
+                      {...ariaCurrent(postsUrl, currentUrl)}
+                    >
+                      {translations.navigation.writing}
+                    </a>
+                  </li>
+                  <li class="site-menu-nav-item">
+                    <a
+                      href={aboutUrl}
+                      class="site-menu-link"
+                      {...ariaCurrent(aboutUrl, currentUrl)}
+                    >
+                      {translations.navigation.about}
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+              <section
+                class="site-menu-search"
+                aria-label={translations.site.searchLabel}
+              >
+                <p class="site-menu-search-title">
+                  {translations.site.searchLabel}
+                </p>
+                <div id={searchContainerId} class="site-search-root"></div>
+              </section>
+            </div>
+          </details>
+        </div>
+        <div class="site-header-end">
           <div class="language-switcher">
             <details class="language-menu">
               <summary

@@ -17,6 +17,7 @@ import attributes from "lume/plugins/attributes.ts";
 import nav from "lume/plugins/nav.ts";
 import multilanguage from "lume/plugins/multilanguage.ts";
 import robots from "lume/plugins/robots.ts";
+import pagefind from "lume/plugins/pagefind.ts";
 import jsx from "lume/plugins/jsx.ts";
 import checkUrls from "lume/plugins/check_urls.ts";
 import validateHtml from "lume/plugins/validate_html.ts";
@@ -220,7 +221,7 @@ site.use(
     options: {
       keyframes: true,
       variables: true,
-      safelist: [/^feed-/, /^sr-only$/],
+      safelist: [/^feed-/, /^sr-only$/, /^pagefind-ui/],
     },
   }),
 );
@@ -360,6 +361,16 @@ site.use(
   }),
 );
 site.use(nav());
+site.use(
+  pagefind({
+    ui: {
+      containerId: "search",
+      showImages: false,
+      showSubResults: false,
+      resetStyles: false,
+    },
+  }),
+);
 
 // Validate generated HTML against html-validate recommended/document presets.
 // Keep strict error reporting for common production issues while allowing

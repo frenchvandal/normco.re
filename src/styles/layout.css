@@ -31,6 +31,12 @@
     flex-wrap: wrap;
   }
 
+  .site-header-start {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+  }
+
   /* Groups nav links + theme toggle on the trailing side of the header. */
   .site-header-end {
     display: flex;

@@ -102,6 +102,17 @@ describe("Header()", () => {
       assertStringIncludes(html, "About");
     });
 
+    it("renders a hamburger menu trigger and a search container", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertMatch(
+        html,
+        /class="site-menu-trigger-icon octicon-svg"[^>]*src="\/icons\/octicons\/three-bars-16\.svg"/,
+      );
+      assertStringIncludes(html, 'id="search"');
+    });
+
     it("renders a globe trigger and localized language menu options", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "fr" }),

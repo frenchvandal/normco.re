@@ -76,6 +76,8 @@ export type SiteTranslations = {
     readonly skipToContent: string;
     readonly mainNavigationAriaLabel: string;
     readonly siteLinksAriaLabel: string;
+    readonly menuToggleLabel: string;
+    readonly searchLabel: string;
     readonly languageSelectLabel: string;
     readonly languageSelectAriaLabel: string;
     readonly themeToggleLabel: string;
@@ -139,6 +141,8 @@ const SITE_TRANSLATIONS = {
       skipToContent: "Skip to content",
       mainNavigationAriaLabel: "Main navigation",
       siteLinksAriaLabel: "Site links",
+      menuToggleLabel: "Open navigation menu",
+      searchLabel: "Search",
       languageSelectLabel: "Language",
       languageSelectAriaLabel: "Select language",
       themeToggleLabel: "Toggle color theme",
@@ -208,6 +212,8 @@ const SITE_TRANSLATIONS = {
       skipToContent: "Aller au contenu",
       mainNavigationAriaLabel: "Navigation principale",
       siteLinksAriaLabel: "Liens du site",
+      menuToggleLabel: "Ouvrir le menu de navigation",
+      searchLabel: "Recherche",
       languageSelectLabel: "Langue",
       languageSelectAriaLabel: "Choisir la langue",
       themeToggleLabel: "Basculer le thème de couleur",
@@ -278,6 +284,8 @@ const SITE_TRANSLATIONS = {
       skipToContent: "跳转到内容",
       mainNavigationAriaLabel: "主导航",
       siteLinksAriaLabel: "站点链接",
+      menuToggleLabel: "打开导航菜单",
+      searchLabel: "搜索",
       languageSelectLabel: "语言",
       languageSelectAriaLabel: "选择语言",
       themeToggleLabel: "切换颜色主题",
@@ -346,6 +354,8 @@ const SITE_TRANSLATIONS = {
       skipToContent: "跳至內容",
       mainNavigationAriaLabel: "主導覽",
       siteLinksAriaLabel: "網站連結",
+      menuToggleLabel: "開啟導覽選單",
+      searchLabel: "搜尋",
       languageSelectLabel: "語言",
       languageSelectAriaLabel: "選擇語言",
       themeToggleLabel: "切換色彩主題",
