@@ -38,6 +38,7 @@
     justify-content: flex-end;
     gap: var(--space-m);
     flex-wrap: wrap;
+    margin-inline-start: auto;
   }
 
   /* Navigation */
