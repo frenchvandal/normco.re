@@ -1,10 +1,9 @@
 # Code Audit Report — normco.re
 
-> Audit date: 2026-03-10
-> Auditor: Claude (claude-sonnet-4-6)
-> Scope: Full codebase — architecture, TypeScript quality, CSS, client-side JS,
-> build pipeline, i18n, accessibility, security, testing, and custom plugins.
-> Branch: `claude/code-audit-report-EKic4`
+> Audit date: 2026-03-10 Auditor: Claude (claude-sonnet-4-6) Scope: Full
+> codebase — architecture, TypeScript quality, CSS, client-side JS, build
+> pipeline, i18n, accessibility, security, testing, and custom plugins. Branch:
+> `claude/code-audit-report-EKic4`
 
 ---
 
@@ -23,11 +22,11 @@ justifications for each finding.
 
 **Severity scale**
 
-| Level | Meaning |
-|-------|---------|
-| 🔴 High | Behavioral bug, data loss risk, or significant accessibility regression |
-| 🟡 Medium | Inconsistency with stated conventions, maintenance risk, or latent bug |
-| 🟢 Low | Style divergence, missed optimization, or polish opportunity |
+| Level     | Meaning                                                                 |
+| --------- | ----------------------------------------------------------------------- |
+| 🔴 High   | Behavioral bug, data loss risk, or significant accessibility regression |
+| 🟡 Medium | Inconsistency with stated conventions, maintenance risk, or latent bug  |
+| 🟢 Low    | Style divergence, missed optimization, or polish opportunity            |
 
 ---
 
@@ -40,14 +39,15 @@ justifications for each finding.
 The codebase uses two parallel conventions for Chinese language codes:
 
 - TypeScript internal keys: `zhHans`, `zhHant` (camelCase, valid identifiers)
-- URL and data codes: `zh-hans`, `zh-hant` (kebab-case, matching HTML `lang` values)
+- URL and data codes: `zh-hans`, `zh-hant` (kebab-case, matching HTML `lang`
+  values)
 
 The mapping is handled via `LANGUAGE_DATA_CODE`, `LANGUAGE_ALIASES`, and the
 `MULTILANGUAGE_DATA_ALIASES` preprocess hook in `_config.ts`. The implementation
 is correct and well-commented, but it means a developer must mentally track two
 key spaces. Introducing a third or fourth script tag for Chinese (e.g., `zh-MO`)
-would require updates in at least four places: `i18n.ts`, `_config.ts`,
-`sw.js`, and `_data.ts`.
+would require updates in at least four places: `i18n.ts`, `_config.ts`, `sw.js`,
+and `_data.ts`.
 
 **Recommendation:** Document the two-key design explicitly in `i18n.ts` (a
 top-level JSDoc block explaining the internal/external key split) so that future
@@ -113,12 +113,13 @@ behavior is not silently broken by a future Lume upgrade.
 
 ### 2.1 Strong overall compliance
 
-The codebase correctly applies all "beyond strict" flags: `noUncheckedIndexedAccess`,
-`exactOptionalPropertyTypes`, `verbatimModuleSyntax`, `noFallthroughCasesInSwitch`,
-`noImplicitOverride`, and `noImplicitReturns`. There is no `any`, no
-`@ts-ignore`, and non-null assertions (`!`) are absent from application code.
-The `as const satisfies Record<…>` pattern is used consistently for config
-objects (`LANGUAGE_TAG`, `LANGUAGE_DATA_CODE`, `LANGUAGE_PREFIX`, `SITE_TRANSLATIONS`).
+The codebase correctly applies all "beyond strict" flags:
+`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`,
+`verbatimModuleSyntax`, `noFallthroughCasesInSwitch`, `noImplicitOverride`, and
+`noImplicitReturns`. There is no `any`, no `@ts-ignore`, and non-null assertions
+(`!`) are absent from application code. The `as const satisfies Record<…>`
+pattern is used consistently for config objects (`LANGUAGE_TAG`,
+`LANGUAGE_DATA_CODE`, `LANGUAGE_PREFIX`, `SITE_TRANSLATIONS`).
 
 This is the strongest aspect of the project's TypeScript hygiene.
 
@@ -140,18 +141,18 @@ export function resolvePostDate(
 In JavaScript/TypeScript, a default parameter expression is evaluated at each
 call site, not once at module load. Here, `new Date()` is called afresh every
 time `resolvePostDate` is invoked without a fallback. This is not a mutable
-shared-state bug (unlike `= []` or `= {}`), but it does mean that two calls
-to `resolvePostDate(undefined)` with no second argument will return different
+shared-state bug (unlike `= []` or `= {}`), but it does mean that two calls to
+`resolvePostDate(undefined)` with no second argument will return different
 `Date` instances, one millisecond apart. This can make snapshot tests
 non-deterministic.
 
 The existing test file `post-metadata_test.ts` presumably uses faker or a fixed
 date to avoid this, but the function signature silently invites non-determinism.
 
-**Recommendation:** Either document the intent explicitly in JSDoc ("The fallback
-date is computed at call time; pass an explicit `Date` for deterministic
-behavior") or change the signature to `fallback?: Date` and compute `new Date()`
-inside the body, making the evaluation site unambiguous.
+**Recommendation:** Either document the intent explicitly in JSDoc ("The
+fallback date is computed at call time; pass an explicit `Date` for
+deterministic behavior") or change the signature to `fallback?: Date` and
+compute `new Date()` inside the body, making the evaluation site unambiguous.
 
 ---
 
@@ -166,15 +167,16 @@ and a navigation transition model. Running it without types means that type
 errors in arguments (e.g., passing a `string` where a `URL` is expected) are
 only caught at runtime.
 
-The omission is understandable: Deno's service worker type support (`lib.webworker.d.ts`)
-requires a specific compiler configuration that conflicts with the rest of the
-project's `lib` settings. This is a documented Deno limitation.
+The omission is understandable: Deno's service worker type support
+(`lib.webworker.d.ts`) requires a specific compiler configuration that conflicts
+with the rest of the project's `lib` settings. This is a documented Deno
+limitation.
 
 **Recommendation:** Add a `// @ts-check` comment at the top of the file and
 declare `/// <reference lib="webworker" />` to get at least basic JSDoc-based
 type checking without a full TypeScript migration. Update JSDoc `@param` and
-`@returns` annotations to use TypeScript-style types (already partially done)
-so that VS Code can surface errors at authoring time.
+`@returns` annotations to use TypeScript-style types (already partially done) so
+that VS Code can surface errors at authoring time.
 
 ---
 
@@ -188,16 +190,20 @@ In `plugins/otel.ts`:
 const key = `${record.method}\x00${record.route}\x00${record.status}`;
 ```
 
-Using null bytes as separators is an unusual but technically valid way to prevent
-key collisions (route names cannot contain null bytes). However, this pattern is
-not immediately readable and could confuse a future contributor who encounters
-the raw key in a debugger or serialized output.
+Using null bytes as separators is an unusual but technically valid way to
+prevent key collisions (route names cannot contain null bytes). However, this
+pattern is not immediately readable and could confuse a future contributor who
+encounters the raw key in a debugger or serialized output.
 
 **Recommendation:** Use a helper function or a structured key type to make the
 intent explicit:
 
 ```ts
-function buildCounterKey(method: string, route: string, status: number): string {
+function buildCounterKey(
+  method: string,
+  route: string,
+  status: number,
+): string {
   return `${method}\x00${route}\x00${status}`;
 }
 ```
@@ -217,7 +223,7 @@ eliminate the string-encoding concern entirely.
 
 ```css
 :root {
-  color-scheme: light;  /* ← only light */
+  color-scheme: light; /* ← only light */
 }
 ```
 
@@ -254,12 +260,14 @@ Two locations use hardcoded hex values instead of the token system defined in
 `base.css`:
 
 **`src/styles/layout.css` line 87:**
+
 ```css
 .site-nav-link[aria-current="page"] {
   border-color: light-dark(#fd8c73, #f78166);
 ```
 
 **`src/styles/components.css` lines 758–760:**
+
 ```css
 .feed-copy-control--copied .feed-copy-trigger {
   color: light-dark(#1a7f37, #3fb950);
@@ -270,7 +278,7 @@ Two locations use hardcoded hex values instead of the token system defined in
 The rest of the CSS uses `var(--bgColor-…)` and `var(--fgColor-…)` tokens
 consistently. These two exceptions are invisible in a normal audit but become
 significant when changing the accent color or adding a high-contrast variant:
-the changes must be made in the token definitions *and* in these hardcoded
+the changes must be made in the token definitions _and_ in these hardcoded
 values, which are easy to forget.
 
 The active-nav border color (`#fd8c73` / `#f78166`) is Primer's coral/salmon
@@ -280,7 +288,7 @@ accent — a deliberate visual choice. The success-state color (`#1a7f37` /
 **Recommendation:** Add semantic tokens to `base.css`:
 
 ```css
---fgColor-success: oklch(38% 0.14 145);    /* light */
+--fgColor-success: oklch(38% 0.14 145); /* light */
 --borderColor-navActive: oklch(72% 0.18 30); /* light */
 ```
 
@@ -304,8 +312,9 @@ The current CSS uses BEM-adjacent flat class naming (`.post-card`,
 and is readable, but it does not match the stated convention and does not
 provide the specificity isolation benefits of `@scope`.
 
-**Recommendation:** Where components have clearly bounded subtrees (`.post-card`,
-`.archive-item`, `.pagehead`), consider wrapping their styles in `@scope`:
+**Recommendation:** Where components have clearly bounded subtrees
+(`.post-card`, `.archive-item`, `.pagehead`), consider wrapping their styles in
+`@scope`:
 
 ```css
 @scope (.post-card) {
@@ -352,8 +361,8 @@ dependent styling. The archive page features a sticky year-navigation sidebar:
 ```
 
 This works correctly, but the sidebar has no visual elevation change when it
-becomes sticky. Adding a `scroll-state(stuck: top)` shadow would communicate
-the sticky state to the user without JavaScript. This is purely a polish
+becomes sticky. Adding a `scroll-state(stuck: top)` shadow would communicate the
+sticky state to the user without JavaScript. This is purely a polish
 opportunity.
 
 ---
@@ -397,8 +406,8 @@ serves French-speaking readers, this is the most impactful issue in the audit.
 
 **Severity: 🟡 Medium**
 
-`src/_includes/layouts/base.tsx` loads `language-preference.js` as a
-synchronous inline script in `<head>`:
+`src/_includes/layouts/base.tsx` loads `language-preference.js` as a synchronous
+inline script in `<head>`:
 
 ```html
 <script
@@ -414,9 +423,9 @@ perform a potential `location.replace()` redirect before the browser begins
 rendering the page body.
 
 However, the script can issue a `location.replace()` that navigates away from
-the page after the browser has already begun downloading and processing the HTML.
-On slow connections, this results in a visible flash of the wrong-language page
-before the redirect fires.
+the page after the browser has already begun downloading and processing the
+HTML. On slow connections, this results in a visible flash of the wrong-language
+page before the redirect fires.
 
 An alternative approach that avoids both the render-blocking issue and the
 language flash is to emit a small inline `<script>` (not a separate file) that
@@ -474,9 +483,9 @@ const KNOWN_BOT_PATTERN =
 
 This is a allowlist-style pattern — only named bots are detected. It correctly
 skips caching for those crawlers, preventing service worker cache poisoning for
-indexed pages. However, bot detection via User-Agent is inherently fragile:
-bots frequently rotate or modify their UA strings. More importantly, the
-Service Worker typically cannot intercept Googlebot's requests at all (Chrome's
+indexed pages. However, bot detection via User-Agent is inherently fragile: bots
+frequently rotate or modify their UA strings. More importantly, the Service
+Worker typically cannot intercept Googlebot's requests at all (Chrome's
 implementation prevents SWs from intercepting search engine crawlers at the
 browser level). The check is therefore belt-and-suspenders rather than the
 primary defense.
@@ -504,8 +513,8 @@ it.
 
 The `--latest` flag bypasses semver range constraints and updates all
 dependencies to their absolute latest version, including potentially
-semver-major breaking changes. Running this task on a Deno 2.x project could
-pin a breaking 3.x dependency before the project is ready.
+semver-major breaking changes. Running this task on a Deno 2.x project could pin
+a breaking 3.x dependency before the project is ready.
 
 **Recommendation:** Remove `--latest` and rely on semver ranges. Reserve
 `--latest` for deliberate upgrade sessions by running it manually with explicit
@@ -585,10 +594,13 @@ is unnecessary and can be removed.
 `src/utils/i18n.ts`:
 
 ```ts
-export function formatReadingTime(minutes: number, language: SiteLanguage): string {
-  if (language === "fr") { return `${minutes}\u00a0min de lecture`; }
-  if (language === "zhHans") { return `${minutes} 分钟阅读`; }
-  if (language === "zhHant") { return `${minutes} 分鐘閱讀`; }
+export function formatReadingTime(
+  minutes: number,
+  language: SiteLanguage,
+): string {
+  if (language === "fr") return `${minutes}\u00a0min de lecture`;
+  if (language === "zhHans") return `${minutes} 分钟阅读`;
+  if (language === "zhHant") return `${minutes} 分鐘閱讀`;
   return `${minutes} min read`;
 }
 ```
@@ -597,7 +609,7 @@ With four languages, this is readable. However, the pattern is inconsistent with
 the rest of the i18n module, which uses typed lookup tables (`LANGUAGE_TAG`,
 `LANGUAGE_DATA_CODE`, `SITE_TRANSLATIONS`). The English language is handled by
 fallthrough (`return` at the end), which means adding a fifth language requires
-a developer to know to insert a new `if` branch *before* the final return — a
+a developer to know to insert a new `if` branch _before_ the final return — a
 pattern error waiting to happen.
 
 **Recommendation:** Refactor into a typed lookup table similar to the other
@@ -641,13 +653,14 @@ and that cross-language content reuse is intentional.
 
 ### 7.1 `language-preference.js` may cause a redirect on first visit
 
-**Severity: 🟡 Medium** *(overlaps with §4.2)*
+**Severity: 🟡 Medium** _(overlaps with §4.2)_
 
-On a user's first visit from a Chinese browser (`navigator.language === "zh-CN"`),
-the script detects no stored preference, falls back to the browser locale,
-resolves `zh-hans`, and calls `location.replace("/zh-hans/")`. This redirect
-happens after the browser has already downloaded and begun parsing the English
-HTML, wasting one full round trip.
+On a user's first visit from a Chinese browser
+(`navigator.language === "zh-CN"`), the script detects no stored preference,
+falls back to the browser locale, resolves `zh-hans`, and calls
+`location.replace("/zh-hans/")`. This redirect happens after the browser has
+already downloaded and begun parsing the English HTML, wasting one full round
+trip.
 
 For users behind a high-latency connection (e.g., international connections from
 China), this is a measurable LCP regression on the first visit.
@@ -655,7 +668,8 @@ China), this is a measurable LCP regression on the first visit.
 **Recommendation:** Implement the redirect as a small inline `<script>` block
 injected at the very top of `<head>`, before any external resources. The inline
 script reads `localStorage` and issues a synchronous redirect. The `<select>`
-initialization portion remains in the external file but does not block rendering.
+initialization portion remains in the external file but does not block
+rendering.
 
 ---
 
@@ -692,8 +706,8 @@ initial render performance on content-heavy pages.
 >
 ```
 
-The button's `aria-pressed` state is statically rendered as `"false"` in the
-SSG output. `theme-toggle.js` updates this attribute dynamically once the script
+The button's `aria-pressed` state is statically rendered as `"false"` in the SSG
+output. `theme-toggle.js` updates this attribute dynamically once the script
 runs, but between the browser's first parse of the HTML and the JS execution,
 screen readers will announce the button as "not pressed" regardless of the
 actual stored theme preference.
@@ -729,18 +743,20 @@ so the state is correct before the heavier `theme-toggle.js` script initializes.
 ```
 
 Both a visible-but-visually-hidden `<label>` (linked via `for`) and an
-`aria-label` attribute are present on the `<select>`. When both exist, `aria-label`
-takes precedence over the `<label>` element's text. The `<label>` element is
-therefore redundant for assistive technology, though it has no negative effect.
+`aria-label` attribute are present on the `<select>`. When both exist,
+`aria-label` takes precedence over the `<label>` element's text. The `<label>`
+element is therefore redundant for assistive technology, though it has no
+negative effect.
 
 The accessible name of the select is determined by `aria-label` (higher
 specificity). The `<label>` exists only to satisfy HTML validation (which
 requires form controls to have an associated label).
 
-**Recommendation:** Remove the `aria-label` from `<select>` and let the `<label
-for="language-select">` provide the accessible name — this is the semantically
-correct approach. The `<label>` is already visually hidden via `.sr-only`, so
-there is no visual change.
+**Recommendation:** Remove the `aria-label` from `<select>` and let the
+`<label
+for="language-select">` provide the accessible name — this is the
+semantically correct approach. The `<label>` is already visually hidden via
+`.sr-only`, so there is no visual change.
 
 ---
 
@@ -767,8 +783,8 @@ layer (e.g., via Deno Deploy's response headers or Cloudflare headers).
 
 **Recommendation:** Define a strict CSP at the CDN/proxy layer:
 `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;
-object-src 'none'; base-uri 'self';`. The `data:` allowance is needed for
-inline SVG fallbacks.
+object-src 'none'; base-uri 'self';`.
+The `data:` allowance is needed for inline SVG fallbacks.
 
 ---
 
@@ -797,8 +813,8 @@ HTTPS dependency. No code change required unless the threat model changes.
 **Severity: 🟢 Low**
 
 CLAUDE.md §10 documents reserved faker seed ranges per test file. This table
-must be maintained manually. If a new test file is created and the author forgets
-to claim a range, two test files could collide on seed values, causing
+must be maintained manually. If a new test file is created and the author
+forgets to claim a range, two test files could collide on seed values, causing
 non-deterministic cross-file interactions.
 
 The seed reservation is a convention enforced only by human discipline, not by
@@ -838,21 +854,22 @@ It correctly:
   overflow.
 - Enriches Deno's auto-generated spans rather than creating redundant child
   spans.
-- Handles build lifecycle via `beforeBuild`/`afterBuild`/`beforeUpdate`/`afterUpdate`
-  events symmetrically.
+- Handles build lifecycle via
+  `beforeBuild`/`afterBuild`/`beforeUpdate`/`afterUpdate` events symmetrically.
 - Uses `performance.now()` for sub-millisecond timing accuracy.
 
 **One minor observation:**
 
 The `server.addEventListener("start", …, { once: true })` pattern registers the
-middleware lazily on server start. This is correct but means that if `getServer()`
-is called before the server is created, the middleware would not be registered.
-Lume's plugin lifecycle guarantees that `getServer()` is called after site
-initialization, making this safe in practice.
+middleware lazily on server start. This is correct but means that if
+`getServer()` is called before the server is created, the middleware would not
+be registered. Lume's plugin lifecycle guarantees that `getServer()` is called
+after site initialization, making this safe in practice.
 
 **Recommendation:** Document the lazy registration behavior with a comment
 explaining that the `{ once: true }` event listener is used instead of
-`server.use()` to allow the middleware to be registered before the server starts.
+`server.use()` to allow the middleware to be registered before the server
+starts.
 
 ---
 
@@ -879,8 +896,8 @@ throughout `i18n.ts` for all lookup tables, providing both compile-time
 exhaustiveness checking and literal type inference.
 
 **`ariaCurrent()` helper in `Header.tsx`:** Returns an empty object `{}` for
-non-active links and `{ "aria-current": "page" }` for active ones, enabling
-safe spread (`{...ariaCurrent(…)}`) without conditionally rendering attributes.
+non-active links and `{ "aria-current": "page" }` for active ones, enabling safe
+spread (`{...ariaCurrent(…)}`) without conditionally rendering attributes.
 
 **`createEnvReader()` in `otel.ts`:** Isolates the `Deno.env.get()` call behind
 a function that catches `NotCapable` errors, making the plugin safe in
@@ -895,34 +912,34 @@ duplicating the full normalization logic.
 
 ## Summary Table
 
-| # | Location | Severity | Issue |
-|---|----------|----------|-------|
-| 4.1 | `src/_data.ts`, `_config.ts` | 🔴 | French description missing accented characters |
-| 3.1 | `src/styles/base.css` | 🟡 | `color-scheme: light` diverges from CLAUDE.md |
-| 3.2 | `layout.css`, `components.css` | 🟡 | Hardcoded hex colors bypass token system |
-| 7.1 | `base.tsx`, `language-preference.js` | 🟡 | Language redirect blocks LCP on first visit |
-| 8.1 | `Header.tsx`, `anti-flash.js` | 🟡 | `aria-pressed` initially incorrect |
-| 2.2 | `post-metadata.ts` | 🟡 | Mutable default parameter |
-| 5.1 | `deno.json` | 🟡 | `update-deps` unconditionally uses `--latest` |
-| 5.2 | `deno.json` | 🟡 | CDN dependency on jsDelivr for Lume itself |
-| 9.1 | Build pipeline | 🟡 | No Content Security Policy defined |
-| 1.2 | `_config.ts` | 🟢 | `robots.txt` rules not derived from `LANGUAGE_PREFIX` |
-| 1.3 | `_config.ts` | 🟢 | Language alias preprocess lacks regression test |
-| 2.3 | `src/scripts/sw.js` | 🟢 | Service worker is plain JS, no `@ts-check` |
-| 2.4 | `plugins/otel.ts` | 🟢 | `\x00` separator is valid but unusual |
-| 3.3 | `src/styles/` | 🟢 | `@scope` not used for component encapsulation |
-| 3.4 | `src/styles/base.css` | 🟢 | `prefers-reduced-transparency` not handled |
-| 3.5 | `src/styles/` | 🟢 | Archive sticky sidebar lacks `scroll-state` |
-| 4.3 | `anti-flash.js` | 🟢 | Legacy `data-color-scheme` attribute may be removable |
-| 4.4 | `sw.js` | 🟢 | Bot detection via UA is partially redundant |
-| 5.3 | `_config.ts` | 🟢 | `sr-only` safelist may be unnecessary |
-| 6.1 | `i18n.ts` | 🟢 | `formatReadingTime`/`formatPostCount` use if/else chains |
-| 6.2 | `src/posts/` | 🟢 | Posts claim 4 languages but ship English-only content |
-| 8.2 | `Header.tsx` | 🟢 | `<label>` and `aria-label` both present on `<select>` |
-| 9.2 | `sw.js` | 🟢 | Feed cache has no integrity verification |
-| 10.1 | `CLAUDE.md` | 🟢 | Seed range table could fall out of sync |
-| 10.2 | CI | 🟢 | No coverage threshold in CI |
+| #    | Location                             | Severity | Issue                                                    |
+| ---- | ------------------------------------ | -------- | -------------------------------------------------------- |
+| 4.1  | `src/_data.ts`, `_config.ts`         | 🔴       | French description missing accented characters           |
+| 3.1  | `src/styles/base.css`                | 🟡       | `color-scheme: light` diverges from CLAUDE.md            |
+| 3.2  | `layout.css`, `components.css`       | 🟡       | Hardcoded hex colors bypass token system                 |
+| 7.1  | `base.tsx`, `language-preference.js` | 🟡       | Language redirect blocks LCP on first visit              |
+| 8.1  | `Header.tsx`, `anti-flash.js`        | 🟡       | `aria-pressed` initially incorrect                       |
+| 2.2  | `post-metadata.ts`                   | 🟡       | Mutable default parameter                                |
+| 5.1  | `deno.json`                          | 🟡       | `update-deps` unconditionally uses `--latest`            |
+| 5.2  | `deno.json`                          | 🟡       | CDN dependency on jsDelivr for Lume itself               |
+| 9.1  | Build pipeline                       | 🟡       | No Content Security Policy defined                       |
+| 1.2  | `_config.ts`                         | 🟢       | `robots.txt` rules not derived from `LANGUAGE_PREFIX`    |
+| 1.3  | `_config.ts`                         | 🟢       | Language alias preprocess lacks regression test          |
+| 2.3  | `src/scripts/sw.js`                  | 🟢       | Service worker is plain JS, no `@ts-check`               |
+| 2.4  | `plugins/otel.ts`                    | 🟢       | `\x00` separator is valid but unusual                    |
+| 3.3  | `src/styles/`                        | 🟢       | `@scope` not used for component encapsulation            |
+| 3.4  | `src/styles/base.css`                | 🟢       | `prefers-reduced-transparency` not handled               |
+| 3.5  | `src/styles/`                        | 🟢       | Archive sticky sidebar lacks `scroll-state`              |
+| 4.3  | `anti-flash.js`                      | 🟢       | Legacy `data-color-scheme` attribute may be removable    |
+| 4.4  | `sw.js`                              | 🟢       | Bot detection via UA is partially redundant              |
+| 5.3  | `_config.ts`                         | 🟢       | `sr-only` safelist may be unnecessary                    |
+| 6.1  | `i18n.ts`                            | 🟢       | `formatReadingTime`/`formatPostCount` use if/else chains |
+| 6.2  | `src/posts/`                         | 🟢       | Posts claim 4 languages but ship English-only content    |
+| 8.2  | `Header.tsx`                         | 🟢       | `<label>` and `aria-label` both present on `<select>`    |
+| 9.2  | `sw.js`                              | 🟢       | Feed cache has no integrity verification                 |
+| 10.1 | `CLAUDE.md`                          | 🟢       | Seed range table could fall out of sync                  |
+| 10.2 | CI                                   | 🟢       | No coverage threshold in CI                              |
 
 ---
 
-*End of audit report.*
+_End of audit report._
