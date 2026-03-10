@@ -45,7 +45,6 @@ type SsxElement = ReturnType<typeof jsx>;
 type Comp = {
   Header: (props: {
     readonly currentUrl: string;
-    readonly siteName: string;
     readonly language: SiteLanguage;
   }) => SsxElement;
   Footer: (props: {
@@ -164,7 +163,6 @@ export default (
           <div class="site-wrapper">
             <Header
               currentUrl={currentUrl}
-              siteName={resolvedSiteName}
               language={language}
             />
             <main class="site-main" id="main-content">
