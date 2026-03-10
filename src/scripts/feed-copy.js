@@ -19,6 +19,10 @@
     return copyButton instanceof HTMLButtonElement ? copyButton : null;
   }
 
+  function getCopyTitle(copyButton) {
+    return copyButton.dataset.copyTitle ?? "Copy raw file";
+  }
+
   function getCopyLabel(control) {
     return control.dataset.copyLabel ?? "Feed";
   }
@@ -47,6 +51,10 @@
       copyButton.setAttribute(
         "aria-label",
         isCopied ? `${copyLabel} URL copied` : `Copy ${copyLabel} URL`,
+      );
+      copyButton.setAttribute(
+        "title",
+        isCopied ? "Copied" : getCopyTitle(copyButton),
       );
     }
   }
