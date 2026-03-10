@@ -1,24 +1,30 @@
 # Code Audit Report — normco.re
 
-> Audit date: 2026-03-10 Auditor: Claude (claude-sonnet-4-6) Scope: Full
-> codebase — architecture, TypeScript quality, CSS, client-side JS, build
+> Audit date: 2026-03-11 Auditor: Codex (GPT-5) Scope: Full codebase —
+> architecture, TypeScript quality, CSS/UX, client-side JavaScript, build
 > pipeline, i18n, accessibility, security, testing, and custom plugins. Branch:
-> `claude/code-audit-report-EKic4`
+> `master`
 
 ---
 
 ## Executive Summary
 
-The normco.re codebase is overall of high quality. It applies a coherent
-architecture — Deno + Lume + TSX — consistently, enforces the strictest
-TypeScript compiler flags, maintains a well-structured CSS layer system, and
-ships a non-trivial service worker with predictive preloading. The project is
-meaningfully tested (19 test files), enforces Conventional Commits via Lefthook,
-and includes a production-grade OpenTelemetry plugin.
+The codebase remains technically strong overall. The Deno + Lume + TSX stack is
+applied consistently, strict TypeScript settings are enabled, and the quality
+workflow commands pass cleanly (`deno fmt`, `deno lint`, `deno task check`,
+`deno task lint:doc`, `deno test`, `deno task test:doc`, `deno task build`).
 
-The issues identified are minor to medium in severity. None blocks shipping.
-They are grouped below by theme, with severity ratings and concrete
-justifications for each finding.
+The highest-value improvements are now concentrated in three areas:
+
+1. Better separation between render templates and client behavior (notably
+   inline script generation in `src/posts/index.page.tsx`).
+2. Stricter typing and test coverage for browser scripts (only `sw.js` currently
+   uses `@ts-check`).
+3. Closer alignment of CSS architecture with the repository standard (DTCG-style
+   tokens, `oklch()`, native select styling, and scoped component styling).
+
+No release-blocking runtime defects were identified. The majority of findings
+are medium/low severity maintenance and quality risks.
 
 **Severity scale**
 
@@ -32,913 +38,606 @@ justifications for each finding.
 
 ## 1. Architecture
 
-### 1.1 Language code duality (internal vs. URL keys)
+### 1.1 Archive page mixes rendering and behavior via inline script string
 
-**Severity: 🟢 Low**
+**Severity: 🟡 Medium**
 
-The codebase uses two parallel conventions for Chinese language codes:
+`src/posts/index.page.tsx` builds a long `<script>...</script>` block as a
+string (`archiveYearNavScript`, lines 148–222) and concatenates it into the
+rendered HTML.
 
-- TypeScript internal keys: `zhHans`, `zhHant` (camelCase, valid identifiers)
-- URL and data codes: `zh-hans`, `zh-hant` (kebab-case, matching HTML `lang`
-  values)
+This works, but it creates architectural coupling:
 
-The mapping is handled via `LANGUAGE_DATA_CODE`, `LANGUAGE_ALIASES`, and the
-`MULTILANGUAGE_DATA_ALIASES` preprocess hook in `_config.ts`. The implementation
-is correct and well-commented, but it means a developer must mentally track two
-key spaces. Introducing a third or fourth script tag for Chinese (e.g., `zh-MO`)
-would require updates in at least four places: `i18n.ts`, `_config.ts`, `sw.js`,
-and `_data.ts`.
+- The archive template now carries DOM logic, event wiring, and hash-state
+  management.
+- The code is harder to lint/test in isolation than a dedicated asset under
+  `src/scripts/`.
+- It increases CSP friction (inline script requires hash/nonce allowances).
 
-**Recommendation:** Document the two-key design explicitly in `i18n.ts` (a
-top-level JSDoc block explaining the internal/external key split) so that future
-contributors understand the invariant immediately.
-
----
-
-### 1.2 `robots.txt` configuration is not DRY
-
-**Severity: 🟢 Low**
-
-In `_config.ts`, the `robots()` plugin lists all offline and 404 page variants
-explicitly:
-
-```ts
-{ userAgent: "*", disallow: "/offline" },
-{ userAgent: "*", disallow: "/offline.html" },
-{ userAgent: "*", disallow: "/fr/offline" },
-{ userAgent: "*", disallow: "/fr/offline/" },
-{ userAgent: "*", disallow: "/zh-hans/offline" },
-// …
-```
-
-This is a manual enumeration of every language-prefixed path. Adding a fifth
-language would require a developer to remember this location and update it,
-without any compile-time or test-time reminder. The `OFFLINE_URL_BY_LANGUAGE`
-object in `sw.js` already captures this mapping; there is no shared source of
-truth between the two files.
-
-**Recommendation:** Derive the disallow entries from `LANGUAGE_PREFIX` (or
-equivalent) programmatically, so adding a language propagates automatically.
+**Recommendation:** Move this logic to a dedicated client script (for example
+`src/scripts/archive-year-nav.js`) and load it from the base layout only on
+archive pages.
 
 ---
 
-### 1.3 `_config.ts` preprocess hook for language aliases
+### 1.2 `i18n.ts` is becoming a high-churn monolith
 
 **Severity: 🟢 Low**
 
-The multilanguage plugin cannot handle hyphenated keys directly (Lume resolves
-`zh-hans` as `zh` then `hans`), so `_config.ts` includes a preprocess hook that
-copies `pageData.zhHans → pageData["zh-hans"]` at build time:
+`src/utils/i18n.ts` combines:
 
-```ts
-site.preprocess([".html"], (pages: Page[]) => {
-  for (const page of pages) {
-    const pageData = page.data as Record<string, unknown>;
-    // ...
-  }
-});
-```
+- language contracts and key normalization,
+- URL/data tag mapping,
+- all translation dictionaries for four locales,
+- formatting helpers.
 
-The `as Record<string, unknown>` cast is the only deliberate type escape in the
-build config. It is justified by the Lume framework boundary (§5.4 of CLAUDE.md)
-and is clearly commented. The logic is correct.
+The file is now large and central to most pages/components. This is not
+incorrect, but it increases merge pressure and the blast radius of unrelated
+edits (copy updates and logic updates in the same module).
 
-**Recommendation:** Add a test assertion (or at least a comment) verifying that
-a post with `zhHans` data receives a correctly aliased `zh-hans` key, so the
-behavior is not silently broken by a future Lume upgrade.
+**Recommendation:** Split the module into `i18n-types.ts`, `i18n-routing.ts`,
+and `i18n-translations.ts` (or equivalent) while keeping `i18n.ts` as a narrow
+public API.
+
+---
+
+### 1.3 Language mapping still requires manual synchronization in multiple files
+
+**Severity: 🟢 Low**
+
+The internal/external language key model is well documented, but key updates
+still require coordinated edits across:
+
+- `src/utils/i18n.ts` (`LANGUAGE_DATA_CODE`, `LANGUAGE_PREFIX`),
+- `_config.ts` (`MULTILANGUAGE_DATA_ALIASES`, robots rules),
+- `src/scripts/sw.js` (`OFFLINE_URL_BY_LANGUAGE`, pathname language resolver).
+
+This is manageable with four languages but remains an easy place for drift.
+
+**Recommendation:** Derive service-worker and robots language path maps from a
+generated artifact (or one shared source module consumed at build time).
 
 ---
 
 ## 2. TypeScript Quality
 
-### 2.1 Strong overall compliance
+### 2.1 Strict TypeScript baseline is strong and stable
 
-The codebase correctly applies all "beyond strict" flags:
-`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`,
-`verbatimModuleSyntax`, `noFallthroughCasesInSwitch`, `noImplicitOverride`, and
-`noImplicitReturns`. There is no `any`, no `@ts-ignore`, and non-null assertions
-(`!`) are absent from application code. The `as const satisfies Record<…>`
-pattern is used consistently for config objects (`LANGUAGE_TAG`,
-`LANGUAGE_DATA_CODE`, `LANGUAGE_PREFIX`, `SITE_TRANSLATIONS`).
+The repository keeps a strong TS baseline:
 
-This is the strongest aspect of the project's TypeScript hygiene.
+- strict compiler options plus additional hardening flags are enabled.
+- `deno lint` and `deno task check` pass cleanly.
+- Modern patterns (`as const satisfies`, explicit boundary casts at framework
+  edges) are used consistently.
+
+This remains one of the strongest areas of the project.
 
 ---
 
-### 2.2 `resolvePostDate` mutable default parameter
+### 2.2 Most browser scripts are still untyped JavaScript
 
 **Severity: 🟡 Medium**
 
-`src/posts/post-metadata.ts`:
+Only `src/scripts/sw.js` has `@ts-check`. The rest of the client scripts
+(`anti-flash.js`, `disclosure-controls.js`, `feed-copy.js`,
+`language-preference.js`, `sw-register.js`, `theme-toggle.js`) run without
+static type checking.
 
-```ts
-export function resolvePostDate(
-  value: unknown,
-  fallback: Date = new Date(),  // ← evaluated at call time, not definition time
-): Date {
-```
+Given current complexity (DOM state orchestration, URL routing logic,
+service-worker lifecycle interactions), this leaves avoidable room for
+runtime-only defects.
 
-In JavaScript/TypeScript, a default parameter expression is evaluated at each
-call site, not once at module load. Here, `new Date()` is called afresh every
-time `resolvePostDate` is invoked without a fallback. This is not a mutable
-shared-state bug (unlike `= []` or `= {}`), but it does mean that two calls to
-`resolvePostDate(undefined)` with no second argument will return different
-`Date` instances, one millisecond apart. This can make snapshot tests
-non-deterministic.
-
-The existing test file `post-metadata_test.ts` presumably uses faker or a fixed
-date to avoid this, but the function signature silently invites non-determinism.
-
-**Recommendation:** Either document the intent explicitly in JSDoc ("The
-fallback date is computed at call time; pass an explicit `Date` for
-deterministic behavior") or change the signature to `fallback?: Date` and
-compute `new Date()` inside the body, making the evaluation site unambiguous.
+**Recommendation:** Add `// @ts-check` incrementally to each script and annotate
+non-obvious APIs with JSDoc types. Migrate hot paths to `.ts` where practical.
 
 ---
 
-### 2.3 Service worker is plain JavaScript, not TypeScript
+### 2.3 Theme mode compatibility path duplicates state and selectors
 
 **Severity: 🟢 Low**
 
-`src/scripts/sw.js` is authored in JavaScript without type annotations. This is
-the most complex client-side file in the project (488 lines), implementing three
-caching strategies, predictive preloading with memory bounding, bot detection,
-and a navigation transition model. Running it without types means that type
-errors in arguments (e.g., passing a `string` where a `URL` is expected) are
-only caught at runtime.
+`theme-toggle.js` writes both `data-color-mode` and legacy `data-color-scheme`,
+and CSS still includes paired selectors for both forms.
 
-The omission is understandable: Deno's service worker type support
-(`lib.webworker.d.ts`) requires a specific compiler configuration that conflicts
-with the rest of the project's `lib` settings. This is a documented Deno
-limitation.
+The compatibility strategy is valid, but maintaining dual state paths increases
+surface area for subtle divergences.
 
-**Recommendation:** Add a `// @ts-check` comment at the top of the file and
-declare `/// <reference lib="webworker" />` to get at least basic JSDoc-based
-type checking without a full TypeScript migration. Update JSDoc `@param` and
-`@returns` annotations to use TypeScript-style types (already partially done) so
-that VS Code can surface errors at authoring time.
-
----
-
-### 2.4 `otel.ts` uses a `\x00` separator in counter keys
-
-**Severity: 🟢 Low**
-
-In `plugins/otel.ts`:
-
-```ts
-const key = `${record.method}\x00${record.route}\x00${record.status}`;
-```
-
-Using null bytes as separators is an unusual but technically valid way to
-prevent key collisions (route names cannot contain null bytes). However, this
-pattern is not immediately readable and could confuse a future contributor who
-encounters the raw key in a debugger or serialized output.
-
-**Recommendation:** Use a helper function or a structured key type to make the
-intent explicit:
-
-```ts
-function buildCounterKey(
-  method: string,
-  route: string,
-  status: number,
-): string {
-  return `${method}\x00${route}\x00${status}`;
-}
-```
-
-Or use a nested `Map<string, Map<string, Map<number, number>>>` structure to
-eliminate the string-encoding concern entirely.
+**Recommendation:** Plan a controlled deprecation of `data-color-scheme` once
+all selectors and scripts are confirmed to rely on `data-color-mode` only.
 
 ---
 
 ## 3. CSS Architecture
 
-### 3.1 Root `color-scheme` property diverges from CLAUDE.md
+### 3.1 Token taxonomy and color format diverge from the project standard
 
 **Severity: 🟡 Medium**
 
-`src/styles/base.css`:
+`src/styles/base.css` uses Primer-style token names (`--bgColor-*`,
+`--fgColor-*`, `--borderColor-*`) and many hex/rgb values. The repository
+standard asks for DTCG-style semantic naming and `oklch()` color tokens.
 
-```css
-:root {
-  color-scheme: light; /* ← only light */
-}
-```
+The current system is coherent internally, but it does not align with the
+documented token policy.
 
-CLAUDE.md §6.2 states: "Declare `color-scheme: light dark;` on `:root` to inform
-the browser." The current value `light` tells the browser (and the OS) that the
-page only supports a light theme. This has two concrete consequences:
-
-1. **Native browser chrome** (scrollbars, form controls, browser-provided UI)
-   does not adopt a dark appearance even when the user has a system dark mode
-   active, because the browser trusts the `color-scheme: light` declaration.
-2. **`color-scheme: dark`** is only applied inside `[data-color-mode="dark"]`,
-   which is set by `anti-flash.js`. If JavaScript is disabled (or blocked by a
-   content policy), the dark mode CSS variables never apply, and the root
-   declares only `light`, so native controls remain light even if the OS is in
-   dark mode.
-
-The current design is intentional (JS-driven theming) but diverges from the
-project's own stated convention. A hybrid approach — `color-scheme: light dark`
-at `:root`, plus the attribute-driven variable overrides — would restore
-consistency between native controls and the page content.
-
-**Recommendation:** Change `:root { color-scheme: light; }` to
-`color-scheme: light dark;`. Keep the attribute-driven dark overrides as-is.
-This correctly handles both the JS-enabled path (explicit data attribute) and
-the JS-disabled path (media query fallback via `prefers-color-scheme`).
+**Recommendation:** Introduce a semantic DTCG token layer
+(`--color-background-default`, `--color-text-default`, etc.) in `oklch()`, then
+progressively alias or replace existing Primer-style tokens.
 
 ---
 
-### 3.2 Hardcoded hex colors instead of design tokens
+### 3.2 `@scope` is still not used for component encapsulation
+
+**Severity: 🟢 Low**
+
+No `@scope` usage was found across `src/styles/`. Component styling is
+centralized in a large global `components.css` file, which keeps specificity
+manageable today but increases risk of selector coupling over time.
+
+**Recommendation:** Apply `@scope` for high-churn components first (header
+controls, archive navigation, search panel).
+
+---
+
+### 3.3 Language selector implementation diverges from native `base-select` guideline
 
 **Severity: 🟡 Medium**
 
-Two locations use hardcoded hex values instead of the token system defined in
-`base.css`:
+The header uses a custom `<details>` + links language menu while the native
+`<select>` is visually hidden and marked with `aria-hidden="true"` /
+`tabindex="-1"`.
 
-**`src/styles/layout.css` line 87:**
+This diverges from the documented rule to style native selects
+(`appearance: base-select`) instead of replacing them with custom dropdown
+behavior.
 
-```css
-.site-nav-link[aria-current="page"] {
-  border-color: light-dark(#fd8c73, #f78166);
-```
+**Recommendation:** Either:
 
-**`src/styles/components.css` lines 758–760:**
-
-```css
-.feed-copy-control--copied .feed-copy-trigger {
-  color: light-dark(#1a7f37, #3fb950);
-  border-inline-start-color: light-dark(#1f883d, #3fb950);
-}
-```
-
-The rest of the CSS uses `var(--bgColor-…)` and `var(--fgColor-…)` tokens
-consistently. These two exceptions are invisible in a normal audit but become
-significant when changing the accent color or adding a high-contrast variant:
-the changes must be made in the token definitions _and_ in these hardcoded
-values, which are easy to forget.
-
-The active-nav border color (`#fd8c73` / `#f78166`) is Primer's coral/salmon
-accent — a deliberate visual choice. The success-state color (`#1a7f37` /
-`#3fb950`) is Primer's green. Both deserve named tokens.
-
-**Recommendation:** Add semantic tokens to `base.css`:
-
-```css
---fgColor-success: oklch(38% 0.14 145); /* light */
---borderColor-navActive: oklch(72% 0.18 30); /* light */
-```
-
-with dark mode overrides in the `[data-color-mode="dark"]` block. Replace the
-hardcoded values with their respective tokens.
+1. move to a fully native `<select>` control styled with
+   `appearance: base-select`, or
+2. document a project-level exception with explicit accessibility rationale and
+   keyboard/screen-reader behavior guarantees.
 
 ---
 
-### 3.3 `@scope` is not used for component encapsulation
+### 3.4 Sticky archive sidebar still lacks scroll-state container query behavior
 
 **Severity: 🟢 Low**
 
-CLAUDE.md §6.1 explicitly recommends the native `@scope` at-rule for component
-style boundaries:
+`src/styles/components.css` still carries a TODO for `scroll-state(stuck: top)`
+behavior on `.archive-year-nav`.
 
-> "Use the native `@scope` at-rule to restrict styles to a component's subtree
-> without resorting to verbose BEM-style class chains."
+This is non-blocking, but the gap is explicitly tracked in comments and remains
+unresolved.
 
-The current CSS uses BEM-adjacent flat class naming (`.post-card`,
-`.post-card-date`, `.post-card-title`, `.post-card-meta`). This approach works
-and is readable, but it does not match the stated convention and does not
-provide the specificity isolation benefits of `@scope`.
-
-**Recommendation:** Where components have clearly bounded subtrees
-(`.post-card`, `.archive-item`, `.pagehead`), consider wrapping their styles in
-`@scope`:
-
-```css
-@scope (.post-card) {
-  .post-card-date { … }
-  .post-card-title { … }
-}
-```
-
-This is a progressive improvement, not a critical fix.
+**Recommendation:** Implement once formatter/tooling support is acceptable, then
+remove the TODO.
 
 ---
 
-### 3.4 `prefers-reduced-transparency` is not handled
+### 3.5 Dead navigation selectors remain in `layout.css`
 
 **Severity: 🟢 Low**
 
-CLAUDE.md §6.7 lists `prefers-reduced-transparency` as a media query that "must
-be handled." The project handles `prefers-reduced-motion`, `prefers-contrast`,
-`prefers-color-scheme`, and `forced-colors`, but `prefers-reduced-transparency`
-is absent.
+`.site-nav`, `.site-nav-list`, `.site-nav-item`, and `.site-nav-link` are
+defined in `src/styles/layout.css` but not used in TSX templates.
 
-The CSS uses `rgb(9 105 218 / 20%)` for selection background and
-`rgb(56 139 253 / 18%)` for dark-mode accent backgrounds — both transparency
-effects. Users who have enabled `prefers-reduced-transparency` at the OS level
-(macOS "Reduce Transparency") would ideally receive fully opaque fallbacks.
+Unused selectors are low risk but increase maintenance overhead and cognitive
+load.
 
-**Recommendation:** Add a `@media (prefers-reduced-transparency: reduce)` block
-in `base.css` that replaces semi-transparent values with opaque equivalents.
-
----
-
-### 3.5 Sticky archive sidebar does not use `scroll-state` container queries
-
-**Severity: 🟢 Low**
-
-CLAUDE.md §6.4 recommends `container-type: scroll-state` for scroll-position-
-dependent styling. The archive page features a sticky year-navigation sidebar:
-
-```css
-.archive-year-nav {
-  position: sticky;
-  inset-block-start: calc(var(--space-l) + 0.25rem);
-}
-```
-
-This works correctly, but the sidebar has no visual elevation change when it
-becomes sticky. Adding a `scroll-state(stuck: top)` shadow would communicate the
-sticky state to the user without JavaScript. This is purely a polish
-opportunity.
+**Recommendation:** Remove or archive unused selectors after verifying there is
+no runtime-generated usage.
 
 ---
 
 ## 4. Client-side JavaScript
 
-### 4.1 French feed description missing accented characters
-
-**Severity: 🔴 High**
-
-`src/_data.ts` line 26:
-
-```ts
-export const fr = {
-  metas: {
-    description: `Blog personnel de ${author}, base a Chengdu, en Chine.`,
-```
-
-`_config.ts` line 455:
-
-```ts
-description: "Blog personnel de Phiphi, base a Chengdu, en Chine.",
-```
-
-Both use "base a" instead of "basé à". This is a typo: the accents on "é" and
-"à" are missing. The error appears in two places:
-
-1. The `<meta name="description">` for all French-language pages.
-2. The `<description>` element of the French RSS feed (`/fr/feed.xml`).
-
-Feed readers and search engines that index the French version of the site will
-display this malformed description. For a multilingual blog that explicitly
-serves French-speaking readers, this is the most impactful issue in the audit.
-
-**Recommendation:** Replace `"base a Chengdu, en Chine."` with
-`"basé à Chengdu, en Chine."` in both `_data.ts` and `_config.ts`.
-
----
-
-### 4.2 `language-preference.js` blocks the rendering critical path
+### 4.1 Language preference script is render-critical and may redirect after parse begins
 
 **Severity: 🟡 Medium**
 
-`src/_includes/layouts/base.tsx` loads `language-preference.js` as a synchronous
-inline script in `<head>`:
+`language-preference.js` runs synchronously in `<head>` and can call
+`location.replace()` when preferred language differs from current page language.
 
-```html
-<script
-  src={`/scripts/language-preference.js?v=${assetVersion}`}
-  data-supported-languages={…}
-  …
->
-```
+This is intentional for correctness, but it can still produce avoidable
+first-load overhead on mismatched locale visits.
 
-No `defer` or `async` attribute is present, which is correct: the script uses
-`document.currentScript` (available only during synchronous execution) and must
-perform a potential `location.replace()` redirect before the browser begins
-rendering the page body.
-
-However, the script can issue a `location.replace()` that navigates away from
-the page after the browser has already begun downloading and processing the
-HTML. On slow connections, this results in a visible flash of the wrong-language
-page before the redirect fires.
-
-An alternative approach that avoids both the render-blocking issue and the
-language flash is to emit a small inline `<script>` (not a separate file) that
-reads `localStorage` and calls `location.replace()` synchronously. This would
-execute before any external resources are fetched and would eliminate the
-redirect latency entirely for returning users.
-
-**Recommendation:** Evaluate converting the redirect logic to a small inline
-`<script>` block in `<head>`. The initialization of the `<select>` element
-(which requires the DOM) would remain in the external file.
+**Recommendation:** Keep only minimal redirect logic in an inline bootstrap
+snippet and defer non-critical control wiring (menu/select listeners) to a
+deferred script.
 
 ---
 
-### 4.3 `anti-flash.js` sets duplicate backward-compatibility attribute
+### 4.2 Archive navigation logic is not cacheable as a standalone asset
 
-**Severity: 🟢 Low**
+**Severity: 🟡 Medium**
 
-`src/scripts/anti-flash.js` lines 21–25:
+Because archive hash-navigation behavior is inlined from template strings, it
+cannot be shared/cached as a normal static script and is harder to validate
+independently.
 
-```js
-root.setAttribute("data-color-mode", resolvedMode);
-// Keep backward compatibility for selectors still using the old attribute.
-root.setAttribute("data-color-scheme", resolvedMode);
-```
+This overlaps with §1.1 but has direct runtime and delivery impact.
 
-The `data-color-scheme` attribute is the legacy key. The CSS in `base.css` and
-`components.css` uses both selectors:
-
-```css
-:root[data-color-mode="dark"],
-:root[data-color-scheme="dark"] { … }
-```
-
-If the migration to `data-color-mode` is complete, the `data-color-scheme`
-attribute and the redundant CSS selectors can be removed. If it is not complete
-(i.e., some selectors still rely on `data-color-scheme`), there is no single
-source of truth for which attribute is canonical.
-
-**Recommendation:** Audit all CSS selectors. If no selector uses only
-`data-color-scheme` (without also using `data-color-mode`), remove the legacy
-attribute and its CSS counterpart. If both are still needed, document why.
+**Recommendation:** Externalize into a versioned static script and load
+conditionally for archive pages.
 
 ---
 
-### 4.4 Bot detection in the service worker is incomplete
+### 4.3 `feed-copy.js` still uses `document.execCommand("copy")` fallback
 
 **Severity: 🟢 Low**
 
-`src/scripts/sw.js`:
+The fallback is there for compatibility, which is reasonable. Still,
+`execCommand` is legacy and may degrade over time.
 
-```js
-const KNOWN_BOT_PATTERN =
-  /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
-```
+**Recommendation:** Keep the fallback for now, but isolate it behind a utility
+and mark it for removal once target browser support no longer requires it.
 
-This is a allowlist-style pattern — only named bots are detected. It correctly
-skips caching for those crawlers, preventing service worker cache poisoning for
-indexed pages. However, bot detection via User-Agent is inherently fragile: bots
-frequently rotate or modify their UA strings. More importantly, the Service
-Worker typically cannot intercept Googlebot's requests at all (Chrome's
-implementation prevents SWs from intercepting search engine crawlers at the
-browser level). The check is therefore belt-and-suspenders rather than the
-primary defense.
+---
 
-**Recommendation:** Add a comment explaining that the UA check is a secondary
-safeguard and that most crawlers bypass the SW at the browser level. This
-prevents future developers from over-relying on this check or over-engineering
-it.
+### 4.4 Service-worker crawler bypass remains heuristic
+
+**Severity: 🟢 Low**
+
+`sw-register.js` and `sw.js` use a known-bot regex to bypass crawler behavior.
+This is a secondary safeguard, not a reliable canonical bot detection mechanism.
+
+**Recommendation:** Keep existing comments explicit that this is best-effort
+only, and avoid adding complexity around UA parsing.
 
 ---
 
 ## 5. Build Pipeline and Tooling
 
-### 5.1 `update-deps` task updates to `--latest` unconditionally
+### 5.1 Build currently succeeds despite a large HTML validation warning set
 
 **Severity: 🟡 Medium**
 
-`deno.json`:
+During this audit run (`2026-03-11`), `deno task build` completed but reported:
 
-```json
-"update-deps": {
-  "command": "deno outdated --update --latest"
-}
-```
+- `149 HTML error(s)` from `validate_html`.
+- `36 pages found with SEO errors`.
 
-The `--latest` flag bypasses semver range constraints and updates all
-dependencies to their absolute latest version, including potentially
-semver-major breaking changes. Running this task on a Deno 2.x project could pin
-a breaking 3.x dependency before the project is ready.
+The build remains green, which is practical for velocity but weakens quality
+gating.
 
-**Recommendation:** Remove `--latest` and rely on semver ranges. Reserve
-`--latest` for deliberate upgrade sessions by running it manually with explicit
-review. Alternatively, document in a comment that `--latest` is intentional and
-that post-upgrade testing is mandatory.
+**Recommendation:** Add a ratchet strategy (for example, fail when count exceeds
+current baseline, then reduce over time) instead of allowing unconstrained
+warning growth.
 
 ---
 
-### 5.2 CDN dependency on `cdn.jsdelivr.net` for Lume itself
+### 5.2 GitHub Actions does not enforce lint/type/test gates
 
 **Severity: 🟡 Medium**
 
-`deno.json`:
+`.github/workflows/site.yml` currently runs checkout, Deno setup, and
+`deno task build`, then deploys. It does not run the full quality workflow
+mandated in project instructions.
 
-```json
-"lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/"
-```
-
-Lume is loaded directly from jsDelivr CDN at build time. This creates a hard
-dependency on CDN availability:
-
-- Any build in a network-restricted CI environment (corporate proxy, air-gapped
-  runner) fails silently.
-- jsDelivr serves GitHub tarballs through a CDN layer that is occasionally
-  unavailable in China (the site's maintainer is based in Chengdu), requiring
-  `DENO_TLS_CA_STORE=system` workarounds.
-- The `deno.lock` file pins the content hash, so accidental mutation of the CDN
-  content is detected. But a CDN outage still blocks the build.
-
-The standard alternative is `jsr:@lume/lume` (if available) or vendor-locking
-via `deno cache` into the project. For a personal project with a single
-maintainer, this risk is acceptable, but it is worth noting.
-
-**Recommendation:** Document the CDN dependency in a comment in `deno.json` and
-note that `DENO_TLS_CA_STORE=system` may be required in China-based builds.
+**Recommendation:** Add CI steps for `deno fmt --check`, `deno lint`,
+`deno task check`, `deno task lint:doc`, `deno test`, and `deno task test:doc`
+before deployment.
 
 ---
 
-### 5.3 `purgecss` safelist for `.sr-only` suggests dynamic class usage
+### 5.3 `update-deps` uses `--latest` unconditionally
+
+**Severity: 🟡 Medium**
+
+`deno.json` task `update-deps` runs `deno outdated --update --latest`, which can
+pull semver-major updates in one step.
+
+**Recommendation:** Use range-respecting updates by default; reserve `--latest`
+for deliberate upgrade sessions.
+
+---
+
+### 5.4 Build remains CDN-dependent for core Lume imports
 
 **Severity: 🟢 Low**
 
-`_config.ts`:
+Core imports still depend on jsDelivr URLs (`lume/`, `lume/cms/`, lint plugin).
+Locking mitigates integrity drift but not availability/network issues.
 
-```ts
-purgecss({
-  options: {
-    safelist: [/^feed-/, /^sr-only$/],
-  },
-}),
-```
-
-The `sr-only` class is explicitly safelisted. PurgeCSS removes selectors it
-cannot statically trace in `.html`, `.js`, and `.xsl` files. A safelist entry
-means the class is either:
-
-1. Applied dynamically at runtime (not in static HTML), or
-2. Applied in a file type not included in `contentExtensions`.
-
-The class appears in the layout `base.tsx` for the skip link label (confirmed).
-Because TSX is compiled to `.html` at build time, PurgeCSS scans the generated
-HTML and should find `.sr-only` there. The safelist may be a leftover from an
-earlier build configuration.
-
-**Recommendation:** Verify by temporarily removing `sr-only` from the safelist
-and running a build. If the skip link styling is preserved, the safelist entry
-is unnecessary and can be removed.
+**Recommendation:** Document the risk explicitly and consider a fallback
+strategy for restricted-network environments.
 
 ---
 
 ## 6. Internationalization
 
-### 6.1 `formatReadingTime` and `formatPostCount` use if/else chains
+### 6.1 Dual key model is implemented correctly but remains operationally expensive
 
 **Severity: 🟢 Low**
 
-`src/utils/i18n.ts`:
+The internal camelCase vs external kebab-case language key split is now clearly
+documented and works correctly. The tradeoff remains maintenance complexity when
+adding locales.
 
-```ts
-export function formatReadingTime(
-  minutes: number,
-  language: SiteLanguage,
-): string {
-  if (language === "fr") return `${minutes}\u00a0min de lecture`;
-  if (language === "zhHans") return `${minutes} 分钟阅读`;
-  if (language === "zhHant") return `${minutes} 分鐘閱讀`;
-  return `${minutes} min read`;
-}
-```
-
-With four languages, this is readable. However, the pattern is inconsistent with
-the rest of the i18n module, which uses typed lookup tables (`LANGUAGE_TAG`,
-`LANGUAGE_DATA_CODE`, `SITE_TRANSLATIONS`). The English language is handled by
-fallthrough (`return` at the end), which means adding a fifth language requires
-a developer to know to insert a new `if` branch _before_ the final return — a
-pattern error waiting to happen.
-
-**Recommendation:** Refactor into a typed lookup table similar to the other
-constants, which would catch missing translations at compile time:
-
-```ts
-const READING_TIME_FORMAT = {
-  en: (m: number) => `${m} min read`,
-  fr: (m: number) => `${m}\u00a0min de lecture`,
-  zhHans: (m: number) => `${m} 分钟阅读`,
-  zhHant: (m: number) => `${m} 分鐘閱讀`,
-} as const satisfies Record<SiteLanguage, (m: number) => string>;
-```
+**Recommendation:** Add a single i18n consistency test that validates all
+mapping tables and alias hooks against one canonical language registry.
 
 ---
 
-### 6.2 No fallback for posts that exist in some languages but not others
+### 6.2 Several French metadata strings remain ASCII-transliterated
+
+**Severity: 🟡 Medium**
+
+Some French page metadata still uses unaccented transliterations (for example
+`A propos`, `regroupes`, `annee`, `base a`) in page-level exports.
+
+This is user-visible quality debt in localized metadata.
+
+**Recommendation:** Normalize French strings with proper diacritics in metadata
+exports (`index.page.tsx`, `about.page.tsx`, `posts/index.page.tsx`).
+
+---
+
+### 6.3 Multi-language URL generation can mask untranslated body content
 
 **Severity: 🟢 Low**
 
-All current posts export
-`export const lang = ["en", "fr", "zh-hans", "zh-hant"]`, meaning every post
-exists in all four languages. However, the content of some posts (e.g.,
-`lorem-ipsum.page.tsx`) uses a single language string (English) with no
-per-language overrides. The multilanguage plugin will generate four URLs
-pointing to the same English content.
+The multilingual pipeline generates per-language URLs reliably, but some posts
+share largely equivalent body text across languages. This is valid editorially,
+but it can make localization completeness hard to track.
 
-This is a content issue rather than a code issue, but it sets a precedent where
-the `lang` array is treated as a metadata declaration rather than a guarantee
-that localized content exists. Future posts that genuinely differ per language
-(as `instructions.page.tsx` demonstrates with inline language branches) are the
-correct model.
-
-**Recommendation:** Either ensure all four language variants have localized
-content, or document clearly that the `lang` array only controls URL generation
-and that cross-language content reuse is intentional.
+**Recommendation:** Add an editorial content check (or lint hint) flagging when
+a page declares four languages without language-specific content branches.
 
 ---
 
 ## 7. Performance
 
-### 7.1 `language-preference.js` may cause a redirect on first visit
+### 7.1 First-visit language redirection can add avoidable navigation work
 
-**Severity: 🟡 Medium** _(overlaps with §4.2)_
+**Severity: 🟡 Medium** _(overlaps with §4.1)_
 
-On a user's first visit from a Chinese browser
-(`navigator.language === "zh-CN"`), the script detects no stored preference,
-falls back to the browser locale, resolves `zh-hans`, and calls
-`location.replace("/zh-hans/")`. This redirect happens after the browser has
-already downloaded and begun parsing the English HTML, wasting one full round
-trip.
+Locale-based redirect logic may trigger an extra navigation for first-time
+visitors whose preferred locale differs from the served URL.
 
-For users behind a high-latency connection (e.g., international connections from
-China), this is a measurable LCP regression on the first visit.
-
-**Recommendation:** Implement the redirect as a small inline `<script>` block
-injected at the very top of `<head>`, before any external resources. The inline
-script reads `localStorage` and issues a synchronous redirect. The `<select>`
-initialization portion remains in the external file but does not block
-rendering.
+**Recommendation:** Reduce critical-path work in `language-preference.js` and
+isolate only strict redirect logic in the earliest possible bootstrap path.
 
 ---
 
-### 7.2 No `content-visibility: auto` on off-screen page sections
+### 7.2 Inline archive script prevents independent caching/compression strategy
+
+**Severity: 🟢 Low** _(overlaps with §1.1/§4.2)_
+
+Archive behavior code is embedded per-page rather than served as a static asset.
+
+**Recommendation:** Move to a static script asset to benefit from caching and
+simpler delivery analysis.
+
+---
+
+### 7.3 `content-visibility` adoption is present but narrow
 
 **Severity: 🟢 Low**
 
-CLAUDE.md §6.8 recommends `content-visibility: auto` on off-screen sections for
-rendering performance. The archive page can render many year-grouped post lists.
-Applying `content-visibility: auto` to each `.archive-year` section would allow
-the browser to skip layout and paint for sections below the fold, improving
-initial render performance on content-heavy pages.
+`content-visibility: auto` is already used for archive year sections, which is
+positive. Adoption is still limited to one surface.
 
-**Recommendation:** Apply `content-visibility: auto` and an explicit
-`contain-intrinsic-size` to `.archive-year` blocks.
+**Recommendation:** Evaluate additional long-content candidates after measuring
+real impact (avoid broad speculative application).
 
 ---
 
 ## 8. Accessibility
 
-### 8.1 `aria-pressed` initial value is hardcoded to `"false"`
+### 8.1 Language switcher semantics rely on custom menu while native select is hidden
 
 **Severity: 🟡 Medium**
 
-`src/_components/Header.tsx`:
+The interactive language control is primarily a custom menu (`<details>` +
+links). The native `<select>` is intentionally hidden from assistive
+interaction.
 
-```tsx
-<button
-  type="button"
-  id="theme-toggle"
-  aria-label={translations.site.themeToggleLabel}
-  aria-pressed="false"
-  …
->
-```
+Keyboard and screen-reader behavior may still be acceptable, but this departs
+from the documented “native select first” standard and increases semantic risk.
 
-The button's `aria-pressed` state is statically rendered as `"false"` in the SSG
-output. `theme-toggle.js` updates this attribute dynamically once the script
-runs, but between the browser's first parse of the HTML and the JS execution,
-screen readers will announce the button as "not pressed" regardless of the
-actual stored theme preference.
-
-For a user with a screen reader who prefers dark mode, the button announcement
-will initially be incorrect. The `anti-flash.js` script already reads the stored
-preference before render; the same value could be used to set `aria-pressed`
-correctly in the HTML response, but this would require passing the theme state
-through the Lume data layer, which is not currently done (and is complex for a
-static site).
-
-**Recommendation:** As a lighter-weight fix, update `anti-flash.js` to also set
-`aria-pressed` on `#theme-toggle` immediately after setting `data-color-mode`,
-so the state is correct before the heavier `theme-toggle.js` script initializes.
+**Recommendation:** Prefer a visible, native select control or formally
+validate/document the custom pattern with assistive-tech test results.
 
 ---
 
-### 8.2 Language selector `<label>` is `sr-only` but `aria-label` is also present
+### 8.2 Search panel dialog semantics are partial
+
+**Severity: 🟡 Medium**
+
+The search panel uses `role="dialog"`, but there is no explicit `aria-modal`,
+and focus trapping is not implemented as a modal contract.
+
+This can create ambiguous interaction expectations for assistive technologies.
+
+**Recommendation:** Either implement full modal dialog behavior (focus trap +
+`aria-modal`) or remove dialog semantics and treat it as a non-modal disclosure
+panel.
+
+---
+
+### 8.3 Theme toggle initial `aria-pressed` is corrected by JS, not markup truth
 
 **Severity: 🟢 Low**
 
-`src/_components/Header.tsx`:
+Markup starts with `aria-pressed="false"`; `anti-flash.js`/`theme-toggle.js`
+correct it after script execution.
 
-```tsx
-<label class="sr-only" for="language-select">
-  {translations.site.languageSelectLabel}
-</label>
-<select
-  id="language-select"
-  aria-label={translations.site.languageSelectAriaLabel}
-  …
->
-```
+This is mostly acceptable, but there is a short mismatch window in no-JS or
+delayed-JS scenarios.
 
-Both a visible-but-visually-hidden `<label>` (linked via `for`) and an
-`aria-label` attribute are present on the `<select>`. When both exist,
-`aria-label` takes precedence over the `<label>` element's text. The `<label>`
-element is therefore redundant for assistive technology, though it has no
-negative effect.
-
-The accessible name of the select is determined by `aria-label` (higher
-specificity). The `<label>` exists only to satisfy HTML validation (which
-requires form controls to have an associated label).
-
-**Recommendation:** Remove the `aria-label` from `<select>` and let the
-`<label
-for="language-select">` provide the accessible name — this is the
-semantically correct approach. The `<label>` is already visually hidden via
-`.sr-only`, so there is no visual change.
+**Recommendation:** Render the best-known initial pressed state server-side
+where possible, or keep current behavior with explicit fallback documentation.
 
 ---
 
 ## 9. Security
 
-### 9.1 No Content Security Policy
+### 9.1 No Content Security Policy is defined
 
 **Severity: 🟡 Medium**
 
-The site serves scripts from the same origin (`/scripts/*.js`), inline SVG
-content, and JSON-LD structured data (`<script type="application/ld+json">`). No
-`Content-Security-Policy` (CSP) header or meta tag is configured.
+No CSP header/meta policy is configured, and inline script generation (archive
+page) complicates strict CSP rollout.
 
-For a fully static site without user-generated content, the absence of a CSP is
-less critical than for a dynamic application. However, a CSP would:
-
-1. Prevent exfiltration if a dependency (CDN-loaded icon, XSLT) is compromised.
-2. Explicitly declare that no external scripts are permitted.
-3. Enable `upgrade-insecure-requests` and `block-all-mixed-content`.
-
-The Lume build pipeline does not expose HTTP header configuration (it generates
-static HTML), so a CSP would need to be implemented at the reverse proxy or CDN
-layer (e.g., via Deno Deploy's response headers or Cloudflare headers).
-
-**Recommendation:** Define a strict CSP at the CDN/proxy layer:
-`default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;
-object-src 'none'; base-uri 'self';`.
-The `data:` allowance is needed for inline SVG fallbacks.
+**Recommendation:** Start with a report-only CSP and refactor inline scripts to
+external assets, then tighten progressively.
 
 ---
 
-### 9.2 Service worker caches feeds without integrity verification
+### 9.2 Feed caching relies on transport trust only
 
 **Severity: 🟢 Low**
 
-The `staleWhileRevalidateFeed` strategy in `sw.js` caches feed responses with a
-custom `x-sw-cached-at` header but does not verify the response integrity (e.g.,
-via Subresource Integrity or a content hash). A feed response from a compromised
-network could be cached and served to subsequent users until the TTL expires.
+Service-worker feed caching uses HTTPS transport guarantees and freshness TTLs
+but no application-layer integrity checks.
 
-For a static personal blog, this is a low-risk attack vector. The feeds are also
-served over HTTPS, which prevents in-transit modification under normal
-conditions.
+This is acceptable for a static blog, though worth documenting as an explicit
+tradeoff.
 
-**Recommendation:** Add a note in `sw.js` documenting this limitation and the
-HTTPS dependency. No code change required unless the threat model changes.
+**Recommendation:** Keep current model, but document threat boundaries and
+revisit only if threat model changes.
 
 ---
 
 ## 10. Testing
 
-### 10.1 Seed range table in CLAUDE.md could fall out of sync
+### 10.1 Test and doc-test execution status is healthy
 
-**Severity: 🟢 Low**
+All mandatory workflow commands passed during this audit:
 
-CLAUDE.md §10 documents reserved faker seed ranges per test file. This table
-must be maintained manually. If a new test file is created and the author
-forgets to claim a range, two test files could collide on seed values, causing
-non-deterministic cross-file interactions.
+1. `deno fmt`
+2. `deno lint`
+3. `deno task check`
+4. `deno task lint:doc`
+5. `deno test`
+6. `deno task test:doc`
+7. `deno task build`
 
-The seed reservation is a convention enforced only by human discipline, not by
-tooling. A `deno test` failure would only surface if two colliding files
-happened to use the same seeds in ways that interfere.
-
-**Recommendation:** Add a meta-test (e.g., `tests/seed-registry_test.ts`) that
-imports all test files' seed constants and asserts they do not overlap. This
-converts a human convention into a machine-checked invariant.
+`deno test` reported `23 passed` test modules and `0 failed`.
 
 ---
 
-### 10.2 No coverage threshold enforcement
+### 10.2 Core i18n runtime functions are not directly unit-tested
+
+**Severity: 🟡 Medium**
+
+`src/utils/i18n.ts` is central to URL resolution and locale behavior but
+currently has no dedicated `_test.ts` coverage.
+
+**Recommendation:** Add targeted tests for `tryResolveSiteLanguage`,
+`getLocalizedUrl`, and mapping invariants.
+
+---
+
+### 10.3 Client-side scripts have no direct automated tests
+
+**Severity: 🟡 Medium**
+
+Complex scripts (`language-preference.js`, `theme-toggle.js`,
+`disclosure-controls.js`, `sw-register.js`, `feed-copy.js`, and service-worker
+behavior) are not covered by script-level tests.
+
+**Recommendation:** Add lightweight DOM-level tests for critical behavior
+(language redirect, theme toggle ARIA updates, disclosure close rules).
+
+---
+
+### 10.4 No coverage threshold or CI enforcement currently exists
 
 **Severity: 🟢 Low**
 
-The project has 19 test files covering components, layouts, utilities, and
-scripts. However, there is no automated coverage threshold enforced in CI
-(`.github/workflows/site.yml`). Coverage is generated manually via
-`deno test --coverage` but is not a blocking check.
+A `coverage/` folder exists, but there is no threshold enforcement and no CI
+gate for minimum coverage or mandatory test execution.
 
-**Recommendation:** Add a coverage report step to the CI workflow and establish
-a minimum threshold (e.g., 80% line coverage for `src/utils/` and
-`src/posts/post-metadata.ts`). Keep the threshold realistic — the goal is to
-detect coverage regressions, not to chase 100%.
+**Recommendation:** Add a baseline coverage threshold (even modest) and enforce
+it in CI.
 
 ---
 
 ## 11. OpenTelemetry Plugin (`plugins/otel.ts`)
 
-The OTel plugin is the most architecturally sophisticated file in the project.
-It correctly:
+### 11.1 Plugin design and typing quality are strong
 
-- Resolves mode at setup time, not per-request (no repeated `if (isDev)` checks
-  in the hot path).
-- Bounds the in-memory request store via `maxRequests` with `shift()` on
-  overflow.
-- Enriches Deno's auto-generated spans rather than creating redundant child
-  spans.
-- Handles build lifecycle via
-  `beforeBuild`/`afterBuild`/`beforeUpdate`/`afterUpdate` events symmetrically.
-- Uses `performance.now()` for sub-millisecond timing accuracy.
+The plugin remains well-structured:
 
-**One minor observation:**
+- strong option typing and default handling,
+- clear boundary handling for Deno permissions,
+- practical development-mode debug integration,
+- bounded in-memory request tracking.
 
-The `server.addEventListener("start", …, { once: true })` pattern registers the
-middleware lazily on server start. This is correct but means that if
-`getServer()` is called before the server is created, the middleware would not
-be registered. Lume's plugin lifecycle guarantees that `getServer()` is called
-after site initialization, making this safe in practice.
+No critical issues were identified in the plugin architecture during this audit.
 
-**Recommendation:** Document the lazy registration behavior with a comment
-explaining that the `{ once: true }` event listener is used instead of
-`server.use()` to allow the middleware to be registered before the server
-starts.
+---
+
+### 11.2 Development logging can be verbose but is policy-controlled
+
+**Severity: 🟢 Low**
+
+Development logging is intentionally detailed and controlled through `LUME_LOGS`
+policy mapping (`plugins/console_debug.ts`). This is a good design, though it
+can produce high console volume when verbose mode is active.
+
+**Recommendation:** Keep the current policy model and document recommended
+levels for local debugging vs CI builds.
 
 ---
 
 ## 12. Positive Patterns Worth Noting
 
-The following practices are explicitly called out as exemplary for their
-correctness, adherence to conventions, and design quality:
+**Strict TS posture + modern typing idioms:** `as const satisfies`, strict
+compiler flags, and clean framework-boundary casts are consistently applied.
 
-**`MULTILANGUAGE_DATA_ALIASES` preprocessing (§1.3):** The Lume framework
-limitation is correctly isolated into a single preprocess hook in `_config.ts`,
-keeping all other files unaware of the aliasing workaround.
+**Component and layout testing discipline:** Header/footer/layout tests are
+granular and behavior-focused, with meaningful assertions on localization and
+structure.
 
-**`collectAlternateUrls` in `base.tsx`:** Builds the `<link rel="alternate">`
-map defensively, ensuring the current language is always represented even if
-alternates are missing from the data.
+**Service-worker architecture quality:** `sw.js` has bounded predictive
+preloading structures, explicit cache strategy separation, and versioned cache
+names.
 
-**`pruneTransitionHistory` in `sw.js`:** The predictive preloading model bounds
-both the per-route transition count (`MAX_TRANSITIONS_PER_ROUTE = 12`) and the
-total tracked routes (`MAX_TRACKED_ROUTES = 60`). This prevents unbounded memory
-growth in long sessions.
+**CSS layering structure is clear:**
+`@layer reset, base, layout, components, utilities` is cleanly organized and
+easy to navigate.
 
-**`as const satisfies Record<SiteLanguage, …>` pattern:** Used consistently
-throughout `i18n.ts` for all lookup tables, providing both compile-time
-exhaustiveness checking and literal type inference.
+**Accessibility basics are present:** skip link, focus-visible styling,
+reduced-motion handling, and forced-colors handling are all implemented.
 
-**`ariaCurrent()` helper in `Header.tsx`:** Returns an empty object `{}` for
-non-active links and `{ "aria-current": "page" }` for active ones, enabling safe
-spread (`{...ariaCurrent(…)}`) without conditionally rendering attributes.
-
-**`createEnvReader()` in `otel.ts`:** Isolates the `Deno.env.get()` call behind
-a function that catches `NotCapable` errors, making the plugin safe in
-permission-restricted environments.
-
-**`resolveLanguageByPathname()` in `sw.js`:** The service worker cannot import
-from `i18n.ts` (it runs in a different global context), so the language
-resolution is correctly reimplemented as a pure pathname prefix check, without
-duplicating the full normalization logic.
+**Build observability is practical:** SEO diagnostics and OTEL hooks provide
+useful build-time introspection without custom per-feature environment sprawl.
 
 ---
 
 ## Summary Table
 
-| #    | Location                             | Severity | Issue                                                    |
-| ---- | ------------------------------------ | -------- | -------------------------------------------------------- |
-| 4.1  | `src/_data.ts`, `_config.ts`         | 🔴       | French description missing accented characters           |
-| 3.1  | `src/styles/base.css`                | 🟡       | `color-scheme: light` diverges from CLAUDE.md            |
-| 3.2  | `layout.css`, `components.css`       | 🟡       | Hardcoded hex colors bypass token system                 |
-| 7.1  | `base.tsx`, `language-preference.js` | 🟡       | Language redirect blocks LCP on first visit              |
-| 8.1  | `Header.tsx`, `anti-flash.js`        | 🟡       | `aria-pressed` initially incorrect                       |
-| 2.2  | `post-metadata.ts`                   | 🟡       | Mutable default parameter                                |
-| 5.1  | `deno.json`                          | 🟡       | `update-deps` unconditionally uses `--latest`            |
-| 5.2  | `deno.json`                          | 🟡       | CDN dependency on jsDelivr for Lume itself               |
-| 9.1  | Build pipeline                       | 🟡       | No Content Security Policy defined                       |
-| 1.2  | `_config.ts`                         | 🟢       | `robots.txt` rules not derived from `LANGUAGE_PREFIX`    |
-| 1.3  | `_config.ts`                         | 🟢       | Language alias preprocess lacks regression test          |
-| 2.3  | `src/scripts/sw.js`                  | 🟢       | Service worker is plain JS, no `@ts-check`               |
-| 2.4  | `plugins/otel.ts`                    | 🟢       | `\x00` separator is valid but unusual                    |
-| 3.3  | `src/styles/`                        | 🟢       | `@scope` not used for component encapsulation            |
-| 3.4  | `src/styles/base.css`                | 🟢       | `prefers-reduced-transparency` not handled               |
-| 3.5  | `src/styles/`                        | 🟢       | Archive sticky sidebar lacks `scroll-state`              |
-| 4.3  | `anti-flash.js`                      | 🟢       | Legacy `data-color-scheme` attribute may be removable    |
-| 4.4  | `sw.js`                              | 🟢       | Bot detection via UA is partially redundant              |
-| 5.3  | `_config.ts`                         | 🟢       | `sr-only` safelist may be unnecessary                    |
-| 6.1  | `i18n.ts`                            | 🟢       | `formatReadingTime`/`formatPostCount` use if/else chains |
-| 6.2  | `src/posts/`                         | 🟢       | Posts claim 4 languages but ship English-only content    |
-| 8.2  | `Header.tsx`                         | 🟢       | `<label>` and `aria-label` both present on `<select>`    |
-| 9.2  | `sw.js`                              | 🟢       | Feed cache has no integrity verification                 |
-| 10.1 | `CLAUDE.md`                          | 🟢       | Seed range table could fall out of sync                  |
-| 10.2 | CI                                   | 🟢       | No coverage threshold in CI                              |
+| #    | Location                                                               | Severity | Issue                                                                           |
+| ---- | ---------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------- |
+| 1.1  | `src/posts/index.page.tsx`                                             | 🟡       | Archive page embeds a long inline script, mixing rendering and behavior         |
+| 1.2  | `src/utils/i18n.ts`                                                    | 🟢       | i18n module combines large translation corpus and runtime helpers               |
+| 1.3  | `src/utils/i18n.ts`, `_config.ts`, `src/scripts/sw.js`                 | 🟢       | Language mapping requires multi-file manual synchronization                     |
+| 2.2  | `src/scripts/*.js`                                                     | 🟡       | Most browser scripts are untyped JS without `@ts-check`                         |
+| 2.3  | `src/scripts/theme-toggle.js`, `src/styles/*.css`                      | 🟢       | Legacy `data-color-scheme` path duplicates theme state handling                 |
+| 3.1  | `src/styles/base.css`                                                  | 🟡       | Token names/colors diverge from DTCG + `oklch()` project guidance               |
+| 3.2  | `src/styles/`                                                          | 🟢       | `@scope` is not yet used for component encapsulation                            |
+| 3.3  | `src/_components/Header.tsx`, `src/styles/`                            | 🟡       | Language switcher diverges from native `base-select` pattern                    |
+| 3.4  | `src/styles/components.css`                                            | 🟢       | Sticky archive nav still lacks `scroll-state` container behavior                |
+| 3.5  | `src/styles/layout.css`                                                | 🟢       | Unused `.site-nav*` selectors remain                                            |
+| 4.1  | `src/scripts/language-preference.js`                                   | 🟡       | Render-critical locale script may redirect after parse starts                   |
+| 4.2  | `src/posts/index.page.tsx`                                             | 🟡       | Archive script cannot be cached/linted/tested as a standalone asset             |
+| 4.3  | `src/scripts/feed-copy.js`                                             | 🟢       | Clipboard fallback still relies on legacy `execCommand`                         |
+| 5.1  | `_config.ts`, build output                                             | 🟡       | Build reports many HTML/SEO warnings while remaining green                      |
+| 5.2  | `.github/workflows/site.yml`                                           | 🟡       | Deployment workflow skips lint/type/test/doc quality gates                      |
+| 5.3  | `deno.json`                                                            | 🟡       | `update-deps` task uses `--latest` unconditionally                              |
+| 5.4  | `deno.json`                                                            | 🟢       | Core imports depend on jsDelivr availability                                    |
+| 6.2  | `src/index.page.tsx`, `src/about.page.tsx`, `src/posts/index.page.tsx` | 🟡       | French metadata strings include ASCII transliterations                          |
+| 7.1  | `src/scripts/language-preference.js`                                   | 🟡       | First-visit locale redirect can add extra navigation work                       |
+| 8.1  | `src/_components/Header.tsx`                                           | 🟡       | Custom language menu semantics carry more accessibility risk than native select |
+| 8.2  | `src/_components/Header.tsx`, `src/scripts/disclosure-controls.js`     | 🟡       | Search dialog semantics are partial (non-modal behavior with dialog role)       |
+| 9.1  | Global delivery/security headers                                       | 🟡       | No CSP policy defined; inline script path raises rollout friction               |
+| 10.2 | `src/utils/i18n.ts`                                                    | 🟡       | No direct unit tests for core i18n resolver functions                           |
+| 10.3 | `src/scripts/*.js`, `src/scripts/sw.js`                                | 🟡       | Client scripts and SW behavior are largely untested directly                    |
+| 10.4 | CI / test tooling                                                      | 🟢       | No coverage threshold enforcement                                               |
 
 ---
 
