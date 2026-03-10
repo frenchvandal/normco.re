@@ -1,12 +1,15 @@
 # lefthook.yml — Git hook manager configuration.
 #
 # Installation via Deno (recommended — no Node.js required):
-#   deno install --global --allow-all --name lefthook npm:lefthook
-#   lefthook install
+#   deno task lefthook:install
+#
+# Under the hood this runs: DENO_NO_PROMPT=1 deno x lefthook install
+# DENO_NO_PROMPT=1 suppresses the interactive download confirmation so the
+# command works in CI pipelines and non-interactive shells alike.
 #
 # Alternative installation methods:
-#   brew install lefthook                    # macOS via Homebrew
-#   go install github.com/evilmartians/lefthook@latest  # via Go
+#   brew install lefthook && lefthook install   # macOS via Homebrew
+#   go install github.com/evilmartians/lefthook@latest && lefthook install  # via Go
 #
 # Reference: https://github.com/evilmartians/lefthook
 

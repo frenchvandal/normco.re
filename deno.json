@@ -78,6 +78,10 @@
     "sync:octicons": {
       "description": "Sync the local full Octicons catalog from @primer/octicons",
       "command": "deno run --allow-net --allow-write scripts/sync-octicons.ts"
+    },
+    "lefthook:install": {
+      "description": "Install Lefthook git hooks non-interactively via deno x (no global install or Node.js required)",
+      "command": "DENO_NO_PROMPT=1 deno x lefthook install"
     }
   },
   "compilerOptions": {
@@ -94,8 +98,7 @@
     "noImplicitReturns": true
   },
   "unstable": [
-    "temporal",
-    "fmt-component"
+    "temporal"
   ],
   "lint": {
     "plugins": [
