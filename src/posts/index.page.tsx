@@ -43,6 +43,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 
   const sections = years.map((year) => {
     const yearPosts = byYear.get(year) ?? [];
+    const postCount = yearPosts.length;
+    const yearSummary = postCount === 1
+      ? "1 post published"
+      : `${postCount} posts published`;
     const items = yearPosts.map((post) => {
       const postDate = resolvePostDate(post.date, new Date(year, 0, 1));
       const minutes = resolveReadingMinutes(post.readingInfo);
@@ -59,12 +63,27 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 </li>`;
     }).join("\n");
 
-    return `<section class="archive-year" aria-labelledby="archive-year-${year}">
-  <h2 id="archive-year-${year}" class="archive-year-heading">${year}</h2>
+    return `<section class="archive-year" id="archive-year-${year}" aria-labelledby="archive-year-heading-${year}">
+  <header class="archive-year-header">
+    <h2 id="archive-year-heading-${year}" class="archive-year-heading">${year}</h2>
+    <p class="archive-year-summary">${yearSummary}</p>
+  </header>
   <ul class="archive-list">
     ${items}
   </ul>
 </section>`;
+  }).join("\n");
+
+  const yearNavItems = years.map((year, index) => {
+    const postCount = (byYear.get(year) ?? []).length;
+    const currentAttr = index === 0 ? ' aria-current="true"' : "";
+
+    return `<li class="archive-year-nav-item">
+  <a href="#archive-year-${year}" class="archive-year-nav-link"${currentAttr}>
+    <span class="archive-year-nav-label">${year}</span>
+    <span class="archive-year-nav-count">${postCount}</span>
+  </a>
+</li>`;
   }).join("\n");
 
   const archiveIntro =
@@ -75,7 +94,16 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 </section>`;
 
   const archiveBody = sections.length > 0
-    ? sections
+    ? `<section class="archive-activity" aria-label="Writing activity">
+  <div class="archive-activity-main">
+    ${sections}
+  </div>
+  <aside class="archive-year-nav" aria-label="Archive years">
+    <ol class="archive-year-nav-list">
+      ${yearNavItems}
+    </ol>
+  </aside>
+</section>`
     : `<p class="blankslate">No posts published yet.</p>`;
 
   return `${archiveIntro}

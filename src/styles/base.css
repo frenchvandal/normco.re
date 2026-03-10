@@ -134,10 +134,14 @@
 
   a {
     color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  }
+
+  body[data-a11y-link-underlines="true"] a {
     text-decoration-line: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.15em;
-    transition: color 0.15s ease, text-decoration-color 0.15s ease;
   }
 
   body[data-a11y-link-underlines="false"] a {
@@ -145,7 +149,9 @@
   }
 
   a:hover {
-    text-decoration-thickness: 2px;
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
   }
 
   a:focus-visible {

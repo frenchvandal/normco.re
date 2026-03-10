@@ -20,7 +20,7 @@
   }
 
   function getCopyTitle(copyButton) {
-    return copyButton.dataset.copyTitle ?? "Copy raw file";
+    return copyButton.dataset.copyTitle ?? "Copy URL";
   }
 
   function getCopyLabel(control) {

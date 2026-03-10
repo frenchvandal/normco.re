@@ -47,7 +47,7 @@
   .site-nav-list {
     display: flex;
     align-items: stretch;
-    gap: var(--space-s);
+    gap: var(--space-xs);
     list-style: none;
   }
 
@@ -58,11 +58,16 @@
   .site-nav-link {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    min-block-size: 2rem;
     color: var(--color-meta);
     text-decoration: none;
     font-size: var(--text-sm);
     font-weight: 500;
-    padding-inline: var(--space-s);
+    line-height: 1;
+    padding-inline: 0.75rem;
+    border-start-start-radius: var(--borderRadius-medium);
+    border-start-end-radius: var(--borderRadius-medium);
     border-block-end: 2px solid transparent;
     transition:
       background-color 0.15s ease,
@@ -71,13 +76,15 @@
   }
 
   .site-nav-link:hover {
-    border-color: var(--borderColor-default);
+    background-color: var(--bgColor-muted);
+    border-color: var(--borderColor-muted);
     color: var(--color-text);
   }
 
   .site-nav-link[aria-current="page"] {
-    border-color: var(--fgColor-accent);
+    border-color: light-dark(#fd8c73, #f78166);
     color: var(--color-text);
+    font-weight: 600;
   }
 
   /* Main */
