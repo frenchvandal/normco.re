@@ -38,16 +38,6 @@ const OCTICON_CATALOGS = [
     variants: ["16", "24", "12", "48", "96"],
   },
 ] as const satisfies Catalog[];
-const OPENMOJI_CATALOGS = [
-  {
-    id: "openmoji",
-    src: "https://cdn.jsdelivr.net/npm/openmoji@16.0.0/color/svg/{name}.svg",
-  },
-] as const satisfies Catalog[];
-const ICON_CATALOGS = [
-  ...OCTICON_CATALOGS,
-  ...OPENMOJI_CATALOGS,
-] as const satisfies Catalog[];
 
 type BuildData = {
   assetVersion: string;
@@ -247,7 +237,7 @@ site.use(jsx());
 // Download only Octicons on demand and expose `helpers.icon()`.
 site.use(
   icons({
-    catalogs: ICON_CATALOGS,
+    catalogs: OCTICON_CATALOGS,
   }),
 );
 

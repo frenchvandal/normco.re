@@ -31,44 +31,40 @@
   }
 
   .language-switcher {
-    position: relative;
     display: inline-flex;
     align-items: center;
+    gap: 0.375rem;
   }
 
-  .language-switcher::before {
-    content: attr(data-active-flag);
-    position: absolute;
-    inset-inline-start: 0.625rem;
-    inset-block-start: 50%;
-    transform: translateY(-50%);
-    font-size: 1rem;
-    line-height: 1;
-    pointer-events: none;
+  .language-switcher-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1rem;
+    block-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .language-switcher-globe {
+    display: block;
+    inline-size: 1rem;
+    block-size: 1rem;
   }
 
   .language-select {
     appearance: base-select;
-    inline-size: 2.875rem;
     min-block-size: 2rem;
-    padding-inline: 0.625rem 1.25rem;
+    padding-inline: 0.625rem;
     border: 1px solid var(--control-borderColor-rest);
     border-radius: var(--borderRadius-medium);
     background: var(--control-bgColor-rest);
-    color: transparent;
+    color: var(--control-fgColor-rest);
     font-size: var(--text-sm);
     line-height: 1;
-    text-overflow: clip;
-    white-space: nowrap;
-    overflow: hidden;
   }
 
   .language-select:hover {
     background: var(--control-bgColor-hover);
-  }
-
-  .language-select option {
-    color: var(--control-fgColor-rest);
   }
 
   .language-select::picker(select) {

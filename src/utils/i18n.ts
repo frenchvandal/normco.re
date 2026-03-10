@@ -70,14 +70,6 @@ const LANGUAGE_ALIASES: Readonly<Record<string, SiteLanguage>> = {
   "zh_hant": "zhHant",
 };
 
-/** Flag emoji labels displayed in the native language selector options. */
-export const LANGUAGE_FLAG_EMOJI = {
-  en: "🇬🇧",
-  fr: "🇫🇷",
-  zhHans: "🇨🇳",
-  zhHant: "🇹🇼",
-} as const satisfies Record<SiteLanguage, string>;
-
 /** Translation contract used by shared UI components and pages. */
 export type SiteTranslations = {
   readonly site: {
