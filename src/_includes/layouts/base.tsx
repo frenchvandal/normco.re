@@ -45,7 +45,6 @@ type SsxElement = ReturnType<typeof jsx>;
 type Comp = {
   Header: (props: {
     readonly currentUrl: string;
-    readonly siteName: string;
     readonly language: SiteLanguage;
   }) => SsxElement;
   Footer: (props: {
