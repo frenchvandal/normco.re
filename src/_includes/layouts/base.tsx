@@ -7,10 +7,10 @@ import {
   getLanguageTag,
   getLocalizedUrl,
   getSiteTranslations,
-  isSiteLanguage,
   resolveSiteLanguage,
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
+  tryResolveSiteLanguage,
 } from "../../utils/i18n.ts";
 
 /** `<!doctype html>` prepended to the document before the `<html>` root. */
@@ -64,11 +64,11 @@ function collectAlternateUrls(
   const urls: Partial<Record<SiteLanguage, string>> = {};
 
   for (const alternate of alternates ?? []) {
-    if (!isSiteLanguage(alternate.lang)) {
+    const language = tryResolveSiteLanguage(alternate.lang);
+
+    if (language === undefined) {
       continue;
     }
-
-    const language = alternate.lang;
     const alternateUrl = typeof alternate.url === "string" ? alternate.url : "";
 
     if (alternateUrl.length > 0) {

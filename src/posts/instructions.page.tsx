@@ -2,7 +2,7 @@
 
 export const id = "instructions";
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
+export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 
 /** English post title. */
 export const title = "How to install this theme?";
@@ -78,7 +78,7 @@ export default site;</code></pre>
 le blog et ajouter du contenu facilement.</p>`;
   }
 
-  if (data.lang === "zhHans") {
+  if (data.lang === "zh-hans") {
     return `<p><strong>Simple blog</strong> 是一个为 Lume 准备的简洁极简博客主题，支持标签和作者。
   你可以<strong>在几秒内</strong>搭建自己的博客，并为读者提供 Atom 与 JSON 订阅源。</p>
 
@@ -118,7 +118,7 @@ export default site;</code></pre>
 <p>你也可以使用 <a href="https://lume.land/cms">lumeCMS</a> 来定制博客并更轻松地发布内容。</p>`;
   }
 
-  if (data.lang === "zhHant") {
+  if (data.lang === "zh-hant") {
     return `<p><strong>Simple blog</strong> 是一個為 Lume 準備的簡潔極簡部落格主題，支援標籤與作者。
   你可以<strong>在幾秒內</strong>建立自己的部落格，並為讀者提供 Atom 與 JSON 訂閱來源。</p>
 

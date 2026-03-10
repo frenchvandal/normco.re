@@ -3,6 +3,7 @@
 import { metas, siteName } from "./_data.ts";
 import {
   formatReadingTime,
+  getLanguageDataCode,
   getLocalizedUrl,
   getSiteTranslations,
   resolveSiteLanguage,
@@ -13,7 +14,7 @@ import {
 } from "./posts/post-metadata.ts";
 
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
+export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Page URL. */
 export const url = "/";
 /** Page title - same as the site name for the home page. */
@@ -61,6 +62,7 @@ export default async (
   const { PostCard } = data.comp as unknown as Comp;
   const { date: dateFormat } = helpers as unknown as H;
   const language = resolveSiteLanguage(data.lang);
+  const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
   const shortDatePattern = language === "fr"
     ? "d MMM"
@@ -69,7 +71,7 @@ export default async (
     : "SHORT";
   const archiveUrl = getLocalizedUrl("/posts/", language);
   const recent = data.search.pages(
-    `type=post lang=${language}`,
+    `type=post lang=${languageDataCode}`,
     "date=desc",
     5,
   ) as Lume.Data[];

@@ -2,7 +2,7 @@
 
 export const id = "vestibulum-ante";
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
+export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 
 /** English post title. */
 export const title = "Vestibulum Ante: On Thresholds and New Beginnings";
@@ -104,7 +104,7 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
 </p>`;
   }
 
-  if (data.lang === "zhHans") {
+  if (data.lang === "zh-hans") {
     return `<p>
   Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
   cubilia curae. 拉丁词 <em>vestibulum</em> 指前庭、入口、门前空间，
@@ -165,7 +165,7 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
 </p>`;
   }
 
-  if (data.lang === "zhHant") {
+  if (data.lang === "zh-hant") {
     return `<p>
   Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
   cubilia curae. 拉丁詞 <em>vestibulum</em> 指前庭、入口、門前空間，

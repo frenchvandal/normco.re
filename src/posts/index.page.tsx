@@ -3,6 +3,7 @@
 import {
   formatPostCount,
   formatReadingTime,
+  getLanguageDataCode,
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../utils/i18n.ts";
@@ -14,7 +15,7 @@ type H = {
 };
 
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
+export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Archive page URL. */
 export const url = "/posts/";
 /** Lume layout template. */
@@ -51,6 +52,7 @@ export const type = "archive";
 export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const { date: dateFormat } = helpers as unknown as H;
   const language = resolveSiteLanguage(data.lang);
+  const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
   const shortDatePattern = language === "fr"
     ? "d MMM"
@@ -58,7 +60,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     ? "M月d日"
     : "SHORT";
   const posts = data.search.pages(
-    `type=post lang=${language}`,
+    `type=post lang=${languageDataCode}`,
     "date=desc",
   ) as Lume.Data[];
 

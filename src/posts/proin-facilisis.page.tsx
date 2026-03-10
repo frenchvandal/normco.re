@@ -2,7 +2,7 @@
 
 export const id = "proin-facilisis";
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
+export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 
 /** English post title. */
 export const title = "Proin Facilisis: Making Things Easier";
@@ -116,7 +116,7 @@ function getUser(id: string): User {
 </p>`;
   }
 
-  if (data.lang === "zhHans") {
+  if (data.lang === "zh-hans") {
     return `<p>
   <em>Proin facilisis</em> 在拉丁语里可以理解为“促进顺畅”。它曾出现在古老植物学文本中，
   形容一种能帮助消化、疏通阻滞的植物。作为软件设计哲学，这个词意外地贴切。
@@ -188,7 +188,7 @@ function getUser(id: string): User {
 </p>`;
   }
 
-  if (data.lang === "zhHant") {
+  if (data.lang === "zh-hant") {
     return `<p>
   <em>Proin facilisis</em> 在拉丁語裡可理解為「促進順暢」。它曾出現在古老植物學文本中，
   形容一種能幫助消化、疏通阻滯的植物。作為軟體設計哲學，這個詞意外地貼切。

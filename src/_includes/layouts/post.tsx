@@ -2,6 +2,7 @@
 
 import {
   formatReadingTime,
+  getLanguageDataCode,
   getLocalizedUrl,
   getSiteTranslations,
   resolveSiteLanguage,
@@ -72,8 +73,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   // interface declared above (§5.4 - library boundary).
   const n = data.nav as unknown as NavHelper;
   const language = resolveSiteLanguage(data.lang);
+  const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
-  const postQuery = `type=post lang=${language}`;
+  const postQuery = `type=post lang=${languageDataCode}`;
   const currentUrl = data.url ?? "/";
   const postsBaseUrl = getLocalizedUrl("/posts/", language);
   const search = data.search as Partial<SearchHelper> | undefined;

@@ -7,7 +7,7 @@ import {
 } from "./utils/i18n.ts";
 
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
+export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Page URL. */
 export const url = "/offline/";
 /** Page title. */

@@ -54,6 +54,11 @@ type BuildData = {
   swDebugLevel: "off" | "summary" | "verbose";
 };
 
+const MULTILANGUAGE_DATA_ALIASES = {
+  "zh-hans": "zhHans",
+  "zh-hant": "zhHant",
+} as const;
+
 function runGitCommand(args: string[]): string | undefined {
   try {
     const command = new Deno.Command("git", { args });
@@ -321,10 +326,34 @@ site.use(
   }),
 );
 
+// Multilanguage plugin resolves per-language overrides from keys matching the
+// language code. For hyphenated codes, expose alias keys from camelCase exports.
+site.preprocess([".html"], (pages: Page[]) => {
+  for (const page of pages) {
+    const pageData = page.data as Record<string, unknown>;
+
+    for (
+      const [languageCode, exportKey] of Object.entries(
+        MULTILANGUAGE_DATA_ALIASES,
+      )
+    ) {
+      if (pageData[languageCode] !== undefined) {
+        continue;
+      }
+
+      const aliasData = pageData[exportKey];
+
+      if (aliasData !== undefined) {
+        pageData[languageCode] = aliasData;
+      }
+    }
+  }
+});
+
 // Navigation tree: data.nav.menu(), data.nav.nextPage(), data.nav.previousPage()
 site.use(
   multilanguage({
-    languages: ["en", "fr", "zhHans", "zhHant"],
+    languages: ["en", "fr", "zh-hans", "zh-hant"],
     defaultLanguage: "en",
   }),
 );
@@ -437,7 +466,7 @@ site.use(
 site.use(
   feed({
     output: ["/zh-hans/feed.xml", "/zh-hans/feed.json"],
-    query: "type=post lang=zhHans",
+    query: "type=post lang=zh-hans",
     info: {
       title: "normco.re (简体中文)",
       description: "Phiphi 的个人博客，写于中国成都。",
@@ -455,7 +484,7 @@ site.use(
 site.use(
   feed({
     output: ["/zh-hant/feed.xml", "/zh-hant/feed.json"],
-    query: "type=post lang=zhHant",
+    query: "type=post lang=zh-hant",
     info: {
       title: "normco.re (繁體中文)",
       description: "Phiphi 的個人部落格，寫於中國成都。",

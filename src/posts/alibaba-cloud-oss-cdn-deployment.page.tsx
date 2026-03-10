@@ -2,7 +2,7 @@
 
 export const id = "alibaba-cloud-oss-cdn-deployment";
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
+export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 
 /** English post title. */
 export const title = "How This Blog Deploys to Alibaba Cloud OSS and CDN";
@@ -183,7 +183,7 @@ jobs:
 </p>`;
   }
 
-  if (data.lang === "zhHans") {
+  if (data.lang === "zh-hans") {
     return `<p>
   这个站点使用 Lume 构建，并部署到阿里云 OSS，再由阿里云 CDN 对外分发。
   整条部署流水线刻意保持简洁：一个 GitHub Workflow、一个构建步骤、
@@ -319,7 +319,7 @@ jobs:
 </p>`;
   }
 
-  if (data.lang === "zhHant") {
+  if (data.lang === "zh-hant") {
     return `<p>
   這個站點使用 Lume 建置，並部署到阿里雲 OSS，再由阿里雲 CDN 對外分發。
   整條部署流水線刻意保持精簡：一個 GitHub Workflow、一個建置步驟，

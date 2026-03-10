@@ -24,6 +24,14 @@ export const LANGUAGE_TAG = {
   zhHant: "zh-Hant",
 } as const satisfies Record<SiteLanguage, string>;
 
+/** Canonical language values stored in page data (`data.lang`). */
+export const LANGUAGE_DATA_CODE = {
+  en: "en",
+  fr: "fr",
+  zhHans: "zh-hans",
+  zhHant: "zh-hant",
+} as const satisfies Record<SiteLanguage, string>;
+
 /** URL prefixes used by the multilanguage plugin for each language. */
 export const LANGUAGE_PREFIX = {
   en: "",
@@ -31,6 +39,13 @@ export const LANGUAGE_PREFIX = {
   zhHans: "/zh-hans",
   zhHant: "/zh-hant",
 } as const satisfies Record<SiteLanguage, string>;
+
+const LANGUAGE_ALIASES: Readonly<Record<string, SiteLanguage>> = {
+  "zh-hans": "zhHans",
+  "zh_hans": "zhHans",
+  "zh-hant": "zhHant",
+  "zh_hant": "zhHant",
+};
 
 /** Flag emoji labels displayed in the native language selector options. */
 export const LANGUAGE_FLAG_EMOJI = {
@@ -389,14 +404,35 @@ export function isSiteLanguage(value: unknown): value is SiteLanguage {
   return typeof value === "string" && SUPPORTED_LANGUAGE_SET.has(value);
 }
 
+/** Tries to resolve a language-like value to a supported site language. */
+export function tryResolveSiteLanguage(
+  value: unknown,
+): SiteLanguage | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  if (isSiteLanguage(value)) {
+    return value;
+  }
+
+  const normalized = value.trim().toLowerCase();
+  return LANGUAGE_ALIASES[normalized];
+}
+
 /** Resolves a language value to a supported code, with English fallback. */
 export function resolveSiteLanguage(value: unknown): SiteLanguage {
-  return isSiteLanguage(value) ? value : DEFAULT_LANGUAGE;
+  return tryResolveSiteLanguage(value) ?? DEFAULT_LANGUAGE;
 }
 
 /** Returns the language tag used in HTML and feed metadata. */
 export function getLanguageTag(language: SiteLanguage): string {
   return LANGUAGE_TAG[language];
+}
+
+/** Returns the canonical value used in page metadata and search queries. */
+export function getLanguageDataCode(language: SiteLanguage): string {
+  return LANGUAGE_DATA_CODE[language];
 }
 
 /** Returns the path prefix for a language (`""` for default). */

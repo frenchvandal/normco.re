@@ -9,7 +9,7 @@ import {
 /** Page URL. */
 export const url = "/404.html";
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
+export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Page title. */
 export const title = "Page not found";
 /** Page meta description. */

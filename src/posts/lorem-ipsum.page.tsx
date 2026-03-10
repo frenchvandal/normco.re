@@ -2,7 +2,7 @@
 
 export const id = "lorem-ipsum";
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
+export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 
 /** English post title. */
 export const title = "Lorem Ipsum and the Art of Placeholder Text";
@@ -108,7 +108,7 @@ function lorem(words: number): string {
 </p>`;
   }
 
-  if (data.lang === "zhHans") {
+  if (data.lang === "zh-hans") {
     return `<p>
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
   incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
@@ -175,7 +175,7 @@ function lorem(words: number): string {
 </p>`;
   }
 
-  if (data.lang === "zhHant") {
+  if (data.lang === "zh-hant") {
     return `<p>
   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
   incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
