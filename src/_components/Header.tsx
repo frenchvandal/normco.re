@@ -35,9 +35,8 @@ const DEFAULT_ICON_HELPERS: IconHelpers = {
 
 /** Renders the site header with logo, navigation, and user controls. */
 export default (
-  { currentUrl, siteName, language }: {
+  { currentUrl, language }: {
     readonly currentUrl: string;
-    readonly siteName: string;
     readonly language: SiteLanguage;
   },
   helpers: IconHelpers = DEFAULT_ICON_HELPERS,
@@ -57,7 +56,7 @@ export default (
           class="site-name"
           {...ariaCurrent(homeUrl, currentUrl)}
         >
-          {siteName}
+          {translations.navigation.home}
         </a>
         <div class="site-header-end">
           <nav

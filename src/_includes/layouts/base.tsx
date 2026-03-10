@@ -164,7 +164,6 @@ export default (
           <div class="site-wrapper">
             <Header
               currentUrl={currentUrl}
-              siteName={resolvedSiteName}
               language={language}
             />
             <main class="site-main" id="main-content">

@@ -78,6 +78,7 @@ export type SiteTranslations = {
     readonly rssLinkAriaLabel: string;
   };
   readonly navigation: {
+    readonly home: string;
     readonly writing: string;
     readonly about: string;
   };
@@ -140,6 +141,7 @@ const SITE_TRANSLATIONS = {
       rssLinkAriaLabel: "Open RSS feed",
     },
     navigation: {
+      home: "Home",
       writing: "Writing",
       about: "About",
     },
@@ -208,6 +210,7 @@ const SITE_TRANSLATIONS = {
       rssLinkAriaLabel: "Ouvrir le flux RSS",
     },
     navigation: {
+      home: "Accueil",
       writing: "Articles",
       about: "À propos",
     },
@@ -277,6 +280,7 @@ const SITE_TRANSLATIONS = {
       rssLinkAriaLabel: "打开 RSS 订阅",
     },
     navigation: {
+      home: "首页",
       writing: "文章",
       about: "关于",
     },
@@ -344,6 +348,7 @@ const SITE_TRANSLATIONS = {
       rssLinkAriaLabel: "開啟 RSS 訂閱",
     },
     navigation: {
+      home: "首頁",
       writing: "文章",
       about: "關於",
     },
