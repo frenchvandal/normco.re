@@ -7,7 +7,7 @@ import {
 } from "./utils/i18n.ts";
 
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr"] as const;
+export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
 /** Page URL. */
 export const url = "/about/";
 /** Page title. */
@@ -22,13 +22,29 @@ export const fr = {
   description: "A propos de Phiphi - une personne qui ecrit depuis Chengdu.",
 } as const;
 
+/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHans = {
+  title: "关于",
+  description: "关于 Phiphi：一位在成都写作的软件从业者。",
+} as const;
+
+/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHant = {
+  title: "關於",
+  description: "關於 Phiphi：一位在成都寫作的軟體工作者。",
+} as const;
+
 /** Renders the About page body. */
 export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
   const language = resolveSiteLanguage(data.lang);
   const translations = getSiteTranslations(language);
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
-  const conjunction = language === "fr" ? "ou" : "or";
+  const conjunction = language === "fr"
+    ? "ou"
+    : language === "zhHans" || language === "zhHant"
+    ? "或"
+    : "or";
 
   return `<section class="pagehead about-pagehead" aria-labelledby="about-title">
   <p class="pagehead-eyebrow">${translations.about.eyebrow}</p>

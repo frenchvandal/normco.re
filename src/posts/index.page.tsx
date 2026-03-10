@@ -14,7 +14,7 @@ type H = {
 };
 
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr"] as const;
+export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
 /** Archive page URL. */
 export const url = "/posts/";
 /** Lume layout template. */
@@ -30,6 +30,18 @@ export const fr = {
   description: "Tous les articles, regroupes par annee.",
 } as const;
 
+/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHans = {
+  title: "文章",
+  description: "所有文章，按年份分组。",
+} as const;
+
+/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHant = {
+  title: "文章",
+  description: "所有文章，依年份分組。",
+} as const;
+
 // Override the `type = "post"` inherited from _data.ts so this page
 // is not matched by `search.pages("type=post")` or nav plugin queries.
 /** Page type - overrides the inherited `"post"` to exclude this page from post queries. */
@@ -40,7 +52,11 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const { date: dateFormat } = helpers as unknown as H;
   const language = resolveSiteLanguage(data.lang);
   const translations = getSiteTranslations(language);
-  const shortDatePattern = language === "fr" ? "d MMM" : "SHORT";
+  const shortDatePattern = language === "fr"
+    ? "d MMM"
+    : language === "zhHans" || language === "zhHant"
+    ? "M月d日"
+    : "SHORT";
   const posts = data.search.pages(
     `type=post lang=${language}`,
     "date=desc",

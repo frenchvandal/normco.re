@@ -8,10 +8,30 @@ import {
 
 /** Page URL. */
 export const url = "/404.html";
+/** Available language versions generated from this page. */
+export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
 /** Page title. */
 export const title = "Page not found";
 /** Page meta description. */
 export const description = "The page you requested does not exist.";
+
+/** French-only metadata overrides used by the multilanguage plugin. */
+export const fr = {
+  title: "Page introuvable",
+  description: "La page demandée n'existe pas.",
+} as const;
+
+/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHans = {
+  title: "页面不存在",
+  description: "你请求的页面不存在。",
+} as const;
+
+/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHant = {
+  title: "找不到頁面",
+  description: "你要求的頁面不存在。",
+} as const;
 
 // Exclude this page from the sitemap and search results.
 /** Excludes this page from the sitemap and search results. */

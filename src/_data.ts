@@ -28,6 +28,24 @@ export const fr = {
   },
 } as const;
 
+/** Simplified Chinese global data overrides merged by the multilanguage plugin. */
+export const zhHans = {
+  metas: {
+    site: siteName,
+    description: `${author} 的个人博客，写于中国成都。`,
+    lang: "zh-Hans",
+  },
+} as const;
+
+/** Traditional Chinese global data overrides merged by the multilanguage plugin. */
+export const zhHant = {
+  metas: {
+    site: siteName,
+    description: `${author} 的個人部落格，寫於中國成都。`,
+    lang: "zh-Hant",
+  },
+} as const;
+
 /** Default structured data for pages, rendered by the official Lume jsonLd plugin. */
 export const jsonLd: Lume.Data["jsonLd"] = {
   "@type": "WebSite",
@@ -35,7 +53,7 @@ export const jsonLd: Lume.Data["jsonLd"] = {
   name: siteName,
   headline: `=title || ${siteName}`,
   description: "=description || =metas.description",
-  inLanguage: "=lang",
+  inLanguage: "=metas.lang || =lang",
   author: {
     "@type": "Person",
     name: author,

@@ -7,7 +7,7 @@ import {
 } from "./utils/i18n.ts";
 
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr"] as const;
+export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
 /** Page URL. */
 export const url = "/offline/";
 /** Page title. */
@@ -23,6 +23,18 @@ export const fr = {
   title: "Hors ligne",
   description:
     "Page de secours hors ligne lorsque la connexion est indisponible.",
+} as const;
+
+/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHans = {
+  title: "离线",
+  description: "当网络连接不可用时的离线后备页面。",
+} as const;
+
+/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHant = {
+  title: "離線",
+  description: "當網路連線不可用時的離線備援頁面。",
 } as const;
 
 /** Renders the offline fallback body. */

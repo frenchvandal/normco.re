@@ -2,6 +2,7 @@
 
 import {
   formatReadingTime,
+  getLocalizedUrl,
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../../utils/i18n.ts";
@@ -74,7 +75,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const translations = getSiteTranslations(language);
   const postQuery = `type=post lang=${language}`;
   const currentUrl = data.url ?? "/";
-  const postsBaseUrl = language === "fr" ? "/fr/posts/" : "/posts/";
+  const postsBaseUrl = getLocalizedUrl("/posts/", language);
   const search = data.search as Partial<SearchHelper> | undefined;
   let prev: Lume.Data | undefined;
   let next: Lume.Data | undefined;

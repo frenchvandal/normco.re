@@ -13,7 +13,7 @@ import {
 } from "./posts/post-metadata.ts";
 
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr"] as const;
+export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
 /** Page URL. */
 export const url = "/";
 /** Page title - same as the site name for the home page. */
@@ -24,6 +24,16 @@ export const description: string = metas.description;
 /** French-only metadata overrides used by the multilanguage plugin. */
 export const fr = {
   description: "Blog personnel de Phiphi, base a Chengdu, en Chine.",
+} as const;
+
+/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHans = {
+  description: "Phiphi 的个人博客，写于中国成都。",
+} as const;
+
+/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHant = {
+  description: "Phiphi 的個人部落格，寫於中國成都。",
 } as const;
 
 /** Typed component functions used on this page. */
@@ -52,7 +62,11 @@ export default async (
   const { date: dateFormat } = helpers as unknown as H;
   const language = resolveSiteLanguage(data.lang);
   const translations = getSiteTranslations(language);
-  const shortDatePattern = language === "fr" ? "d MMM" : "SHORT";
+  const shortDatePattern = language === "fr"
+    ? "d MMM"
+    : language === "zhHans" || language === "zhHant"
+    ? "M月d日"
+    : "SHORT";
   const archiveUrl = getLocalizedUrl("/posts/", language);
   const recent = data.search.pages(
     `type=post lang=${language}`,

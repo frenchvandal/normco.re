@@ -2,7 +2,7 @@
 
 export const id = "instructions";
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr"] as const;
+export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
 
 /** English post title. */
 export const title = "How to install this theme?";
@@ -17,6 +17,18 @@ export const fr = {
   title: "Comment installer ce thème\u00a0?",
   description:
     "Un guide rapide pour configurer le thème Simple Blog avec Lume.",
+} as const;
+
+/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHans = {
+  title: "如何安装这个主题？",
+  description: "一份快速指南，帮助你为 Lume 配置 Simple Blog 主题。",
+} as const;
+
+/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHant = {
+  title: "如何安裝這個主題？",
+  description: "一份快速指南，協助你為 Lume 設定 Simple Blog 主題。",
 } as const;
 
 /** Renders the post body. */
@@ -64,6 +76,86 @@ export default site;</code></pre>
 
 <p>Vous pouvez utiliser <a href="https://lume.land/cms">lumeCMS</a> pour personnaliser
 le blog et ajouter du contenu facilement.</p>`;
+  }
+
+  if (data.lang === "zhHans") {
+    return `<p><strong>Simple blog</strong> 是一个为 Lume 准备的简洁极简博客主题，支持标签和作者。
+  你可以<strong>在几秒内</strong>搭建自己的博客，并为读者提供 Atom 与 JSON 订阅源。</p>
+
+<p>配置这个主题<strong>最快最简单</strong>的方法是使用
+<a href="https://deno.land/x/lume_init">Lume init 命令</a>，
+你也可以直接从 <a href="https://lume.land/theme/simple-blog/">Simple Blog 主题页面</a>复制。
+运行：</p>
+
+<pre><code class="language-bash">deno run -A https://lume.land/init.ts --theme=simple-blog</code></pre>
+
+<p>即可创建一个已经配置好 Simple Blog 的新项目。然后编辑博客根目录下的
+<code>_data.yml</code> 文件，自定义站点标题、描述和元数据。</p>
+
+<p>文章需要保存在 <code>posts</code> 目录中，例如：
+<code>posts/my-first-post.md</code>。</p>
+
+<h2>作为远程主题安装</h2>
+
+<p>如果要把这个主题接入一个已有的 Lume 项目，可以在 <code>_config.ts</code>
+中以远程模块方式导入。后续更新时，只需调整导入 URL 里的版本号：</p>
+
+<pre><code class="language-ts">import lume from "lume/mod.ts";
+import blog from "https://deno.land/x/lume_theme_simple_blog@v0.15.6/mod.ts";
+
+const site = lume();
+
+site.use(blog());
+
+export default site;</code></pre>
+
+<p>然后把
+<a href="https://github.com/lumeland/theme-simple-blog/blob/main/src/_data.yml"><code>_data.yml</code></a>
+复制到博客根目录，并填入你的信息。</p>
+
+<h2>个性化</h2>
+
+<p>你也可以使用 <a href="https://lume.land/cms">lumeCMS</a> 来定制博客并更轻松地发布内容。</p>`;
+  }
+
+  if (data.lang === "zhHant") {
+    return `<p><strong>Simple blog</strong> 是一個為 Lume 準備的簡潔極簡部落格主題，支援標籤與作者。
+  你可以<strong>在幾秒內</strong>建立自己的部落格，並為讀者提供 Atom 與 JSON 訂閱來源。</p>
+
+<p>設定這個主題<strong>最快最簡單</strong>的方法是使用
+<a href="https://deno.land/x/lume_init">Lume init 指令</a>，
+你也可以直接從 <a href="https://lume.land/theme/simple-blog/">Simple Blog 主題頁面</a>複製。
+執行：</p>
+
+<pre><code class="language-bash">deno run -A https://lume.land/init.ts --theme=simple-blog</code></pre>
+
+<p>即可建立一個已設定好 Simple Blog 的新專案。接著編輯部落格根目錄下的
+<code>_data.yml</code> 檔案，自訂站點標題、描述與中繼資料。</p>
+
+<p>文章需要儲存在 <code>posts</code> 目錄中，例如：
+<code>posts/my-first-post.md</code>。</p>
+
+<h2>以遠端主題安裝</h2>
+
+<p>若要將這個主題接入既有的 Lume 專案，可在 <code>_config.ts</code>
+中以遠端模組方式匯入。後續更新時，只要調整匯入 URL 裡的版本號：</p>
+
+<pre><code class="language-ts">import lume from "lume/mod.ts";
+import blog from "https://deno.land/x/lume_theme_simple_blog@v0.15.6/mod.ts";
+
+const site = lume();
+
+site.use(blog());
+
+export default site;</code></pre>
+
+<p>然後把
+<a href="https://github.com/lumeland/theme-simple-blog/blob/main/src/_data.yml"><code>_data.yml</code></a>
+複製到部落格根目錄，並填入你的資訊。</p>
+
+<h2>客製化</h2>
+
+<p>你也可以使用 <a href="https://lume.land/cms">lumeCMS</a> 來客製部落格並更輕鬆地發佈內容。</p>`;
   }
 
   return `<p><strong>Simple blog</strong> is a clean and minimal blog theme for Lume, with support for

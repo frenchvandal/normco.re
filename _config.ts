@@ -22,9 +22,10 @@ import checkUrls from "lume/plugins/check_urls.ts";
 import validateHtml from "lume/plugins/validate_html.ts";
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
-import { enUS, fr as frLocale } from "npm/date-fns-locale";
+import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns-locale";
 import { readConsoleDebugPolicy } from "./plugins/console_debug.ts";
 import otelPlugin from "./plugins/otel.ts";
+import { getLanguageTag } from "./src/utils/i18n.ts";
 
 /** Console debug policy, read once at module init from `LUME_LOGS`. */
 const consoleDebugPolicy = readConsoleDebugPolicy((name) => Deno.env.get(name));
@@ -250,6 +251,8 @@ site.use(
     locales: {
       en: enUS,
       fr: frLocale,
+      zhHans: zhCN,
+      zhHant: zhTW,
     },
     formats: {
       // "Mar 5" — compact date for post cards and archive rows.
@@ -296,6 +299,22 @@ site.use(
         disallow: "/fr/offline/",
       },
       {
+        userAgent: "*",
+        disallow: "/zh-hans/offline",
+      },
+      {
+        userAgent: "*",
+        disallow: "/zh-hans/offline/",
+      },
+      {
+        userAgent: "*",
+        disallow: "/zh-hant/offline",
+      },
+      {
+        userAgent: "*",
+        disallow: "/zh-hant/offline/",
+      },
+      {
         sitemap: "https://normco.re/sitemap.xml",
       },
     ],
@@ -305,7 +324,7 @@ site.use(
 // Navigation tree: data.nav.menu(), data.nav.nextPage(), data.nav.previousPage()
 site.use(
   multilanguage({
-    languages: ["en", "fr"],
+    languages: ["en", "fr", "zhHans", "zhHant"],
     defaultLanguage: "en",
   }),
 );
@@ -386,7 +405,7 @@ site.use(
     info: {
       title: "normco.re",
       description: "Personal blog by Phiphi, based in Chengdu, China.",
-      lang: "en",
+      lang: getLanguageTag("en"),
       generator: false,
     },
     items: {
@@ -404,7 +423,43 @@ site.use(
     info: {
       title: "normco.re (fr)",
       description: "Blog personnel de Phiphi, base a Chengdu, en Chine.",
-      lang: "fr",
+      lang: getLanguageTag("fr"),
+      generator: false,
+    },
+    items: {
+      title: "=title",
+      description: "=description",
+      published: "=date",
+      content: "=content",
+    },
+  }),
+);
+site.use(
+  feed({
+    output: ["/zh-hans/feed.xml", "/zh-hans/feed.json"],
+    query: "type=post lang=zhHans",
+    info: {
+      title: "normco.re (简体中文)",
+      description: "Phiphi 的个人博客，写于中国成都。",
+      lang: getLanguageTag("zhHans"),
+      generator: false,
+    },
+    items: {
+      title: "=title",
+      description: "=description",
+      published: "=date",
+      content: "=content",
+    },
+  }),
+);
+site.use(
+  feed({
+    output: ["/zh-hant/feed.xml", "/zh-hant/feed.json"],
+    query: "type=post lang=zhHant",
+    info: {
+      title: "normco.re (繁體中文)",
+      description: "Phiphi 的個人部落格，寫於中國成都。",
+      lang: getLanguageTag("zhHant"),
       generator: false,
     },
     items: {

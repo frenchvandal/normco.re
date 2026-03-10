@@ -4,6 +4,7 @@ import type { jsx } from "lume/jsx-runtime";
 
 import {
   DEFAULT_LANGUAGE,
+  getLanguageTag,
   getLocalizedUrl,
   getSiteTranslations,
   isSiteLanguage,
@@ -108,7 +109,7 @@ export default (
   const translations = getSiteTranslations(language);
   const metaDescription = description ?? metas?.description ??
     "Personal blog by Phiphi, based in Chengdu, China.";
-  const documentLanguage = language;
+  const documentLanguage = getLanguageTag(language);
   const currentUrl = typeof url === "string" && url.length > 0 ? url : "/";
   const assetVersion = build?.assetVersion ?? "dev";
   const swDebugLevel = build?.swDebugLevel ?? "off";

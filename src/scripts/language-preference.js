@@ -7,21 +7,81 @@
 
   const STORAGE_KEY = "preferred-language";
   const rawSupportedLanguages = scriptElement.dataset.supportedLanguages ??
-    "en,fr";
+    "en,fr,zhHans,zhHant";
   const supportedLanguages = rawSupportedLanguages
     .split(",")
-    .map((language) => language.trim().toLowerCase())
+    .map((language) => language.trim())
     .filter((language) => language.length > 0);
 
   if (supportedLanguages.length === 0) {
     return;
   }
 
-  const defaultLanguageCandidate =
-    scriptElement.dataset.defaultLanguage?.toLowerCase() ?? "en";
-  const defaultLanguage = supportedLanguages.includes(defaultLanguageCandidate)
-    ? defaultLanguageCandidate
-    : supportedLanguages[0];
+  const supportedByKey = new Map(
+    supportedLanguages.flatMap((language) => {
+      const lowered = language.toLowerCase();
+      const collapsed = lowered.replace(/[-_]/gu, "");
+      return collapsed === lowered
+        ? [[lowered, language]]
+        : [[lowered, language], [collapsed, language]];
+    }),
+  );
+
+  function normalizeLanguage(value) {
+    if (typeof value !== "string") {
+      return null;
+    }
+
+    const normalizedValue = value.trim().toLowerCase();
+
+    if (normalizedValue.length === 0) {
+      return null;
+    }
+
+    const collapsedValue = normalizedValue.replace(/[-_]/gu, "");
+    const directLanguage = supportedByKey.get(normalizedValue) ??
+      supportedByKey.get(collapsedValue);
+
+    if (directLanguage !== undefined) {
+      return directLanguage;
+    }
+
+    const localeParts = normalizedValue.split(/[-_]/u).filter((part) =>
+      part.length > 0
+    );
+    const base = localeParts[0];
+
+    if (base === undefined) {
+      return null;
+    }
+
+    if (base === "en" || base === "fr") {
+      return supportedByKey.get(base) ?? null;
+    }
+
+    if (base !== "zh") {
+      return null;
+    }
+
+    const script = localeParts.find((part) =>
+      part === "hans" || part === "hant"
+    );
+    const region = localeParts.find((part) =>
+      part === "cn" || part === "sg" || part === "tw" || part === "hk" ||
+      part === "mo"
+    );
+    const preferredChineseCode = script === "hant" || region === "tw" ||
+        region === "hk" ||
+        region === "mo"
+      ? "zhhant"
+      : "zhhans";
+
+    return supportedByKey.get(preferredChineseCode) ?? null;
+  }
+
+  const defaultLanguage = normalizeLanguage(
+    scriptElement.dataset.defaultLanguage ?? "en",
+  ) ?? supportedLanguages[0];
 
   if (defaultLanguage === undefined) {
     return;
@@ -29,20 +89,6 @@
 
   const currentLanguageCandidate = scriptElement.dataset.currentLanguage ??
     globalThis.document.documentElement.lang;
-
-  function normalizeLanguage(value) {
-    if (typeof value !== "string") {
-      return null;
-    }
-
-    const [language] = value.trim().toLowerCase().split(/[-_]/u);
-
-    if (language === undefined || !supportedLanguages.includes(language)) {
-      return null;
-    }
-
-    return language;
-  }
 
   function parseAlternateUrls() {
     const rawAlternates = scriptElement.dataset.languageAlternates;
@@ -61,12 +107,14 @@
       const alternates = {};
 
       for (const [language, path] of Object.entries(parsed)) {
+        const normalizedLanguage = normalizeLanguage(language);
+
         if (
-          supportedLanguages.includes(language) &&
+          normalizedLanguage !== null &&
           typeof path === "string" &&
           path.length > 0
         ) {
-          alternates[language] = path;
+          alternates[normalizedLanguage] = path;
         }
       }
 

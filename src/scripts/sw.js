@@ -8,6 +8,8 @@ const FEED_CACHE = `feeds-${SW_VERSION}`;
 const OFFLINE_URL_BY_LANGUAGE = {
   en: "/offline/",
   fr: "/fr/offline/",
+  zhHans: "/zh-hans/offline/",
+  zhHant: "/zh-hant/offline/",
 };
 const OFFLINE_FALLBACK_HTML = `<!doctype html>
 <html lang="en">
@@ -36,8 +38,14 @@ const STATIC_ASSETS = [
   "/feed.json",
   "/fr/feed.xml",
   "/fr/feed.json",
+  "/zh-hans/feed.xml",
+  "/zh-hans/feed.json",
+  "/zh-hant/feed.xml",
+  "/zh-hant/feed.json",
   OFFLINE_URL_BY_LANGUAGE.en,
   OFFLINE_URL_BY_LANGUAGE.fr,
+  OFFLINE_URL_BY_LANGUAGE.zhHans,
+  OFFLINE_URL_BY_LANGUAGE.zhHant,
 ];
 
 const FEED_TTL_MS = 30 * 60 * 1000;
@@ -276,6 +284,28 @@ function shouldBypassRequest(request) {
 }
 
 /**
+ * Resolves language by pathname prefix.
+ *
+ * @param {string} pathname
+ * @returns {"en" | "fr" | "zhHans" | "zhHant"}
+ */
+function resolveLanguageByPathname(pathname) {
+  if (pathname.startsWith("/fr/")) {
+    return "fr";
+  }
+
+  if (pathname.startsWith("/zh-hans/")) {
+    return "zhHans";
+  }
+
+  if (pathname.startsWith("/zh-hant/")) {
+    return "zhHant";
+  }
+
+  return "en";
+}
+
+/**
  * Uses cache-first for static immutable assets.
  *
  * @param {Request} request
@@ -337,9 +367,7 @@ async function networkFirstPage(request) {
     }
 
     const staticCache = await caches.open(STATIC_CACHE);
-    const fallbackLanguage = requestUrl.pathname.startsWith("/fr/")
-      ? "fr"
-      : "en";
+    const fallbackLanguage = resolveLanguageByPathname(requestUrl.pathname);
     const offlinePath = OFFLINE_URL_BY_LANGUAGE[fallbackLanguage] ??
       OFFLINE_URL_BY_LANGUAGE.en;
     const offlinePage = await staticCache.match(offlinePath);
@@ -440,8 +468,8 @@ self.addEventListener("fetch", (event) => {
     url.pathname.endsWith(".jpg") ||
     url.pathname.endsWith(".jpeg");
 
-  const isFeedRoute = url.pathname === "/feed.xml" ||
-    url.pathname === "/feed.json";
+  const isFeedRoute = url.pathname.endsWith("/feed.xml") ||
+    url.pathname.endsWith("/feed.json");
 
   if (request.mode === "navigate") {
     event.respondWith(networkFirstPage(request));

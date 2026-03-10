@@ -2,7 +2,7 @@
 
 export const id = "alibaba-cloud-oss-cdn-deployment";
 /** Available language versions generated from this page. */
-export const lang = ["en", "fr"] as const;
+export const lang = ["en", "fr", "zhHans", "zhHant"] as const;
 
 /** English post title. */
 export const title = "How This Blog Deploys to Alibaba Cloud OSS and CDN";
@@ -19,6 +19,20 @@ export const fr = {
   title: "Comment ce blog est déployé sur Alibaba Cloud OSS et CDN",
   description:
     "Présentation pratique de ma pipeline GitHub Actions : build Lume, assume de rôle OIDC, synchronisation OSS, refresh/preload CDN et nettoyage automatique.",
+} as const;
+
+/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHans = {
+  title: "这个博客如何部署到阿里云 OSS 与 CDN",
+  description:
+    "一份实践向说明：我的 GitHub Actions 流水线如何完成 Lume 构建、OIDC 角色临时授权、OSS 同步、CDN 刷新与预热，以及自动清理。",
+} as const;
+
+/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
+export const zhHant = {
+  title: "這個部落格如何部署到阿里雲 OSS 與 CDN",
+  description:
+    "一份實作導向說明：我的 GitHub Actions 流水線如何完成 Lume 建置、OIDC 角色臨時授權、OSS 同步、CDN 刷新與預熱，以及自動清理。",
 } as const;
 
 /** Renders the post body. */
@@ -166,6 +180,278 @@ jobs:
 <p>
   Pour moi, le résultat clé est simple&nbsp;: les déploiements restent sans surprise.
   Build, sync, refresh, cleanup, terminé.
+</p>`;
+  }
+
+  if (data.lang === "zhHans") {
+    return `<p>
+  这个站点使用 Lume 构建，并部署到阿里云 OSS，再由阿里云 CDN 对外分发。
+  整条部署流水线刻意保持简洁：一个 GitHub Workflow、一个构建步骤、
+  再加一个自定义 Action：
+  <a href="https://github.com/frenchvandal/aliyun-oss-cdn-sync-action"><code>frenchvandal/aliyun-oss-cdn-sync-action</code></a>。
+</p>
+
+<p>
+  我希望同时满足三件事：短时凭证、可预测上传、自动缓存一致性。
+  这套配置同时做到三者，而且不需要在每个仓库里额外维护脚本。
+</p>
+
+<h2>流水线总览</h2>
+
+<p>
+  这个仓库里的 GitHub Workflow 做了四件事：
+</p>
+
+<ol>
+  <li>检出仓库代码。</li>
+  <li>按 <code>.tool-versions</code> 安装固定版本的 Deno。</li>
+  <li>执行 <code>deno task build</code>，将站点构建到 <code>_site</code>。</li>
+  <li>调用 OSS/CDN 同步 Action，完成上传与缓存刷新。</li>
+</ol>
+
+<pre><code class="language-yaml">name: Deploy static content to OSS
+
+on:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version-file: .tool-versions
+      - run: deno task build
+      - uses: frenchvandal/aliyun-oss-cdn-sync-action@v1
+        with:
+          role-oidc-arn: \${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
+          oidc-provider-arn: \${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
+          role-session-name: \${{ github.run_id }}
+          role-session-expiration: 3600
+          input-dir: _site
+          bucket: \${{ secrets.OSS_BUCKET }}
+          region: \${{ secrets.OSS_REGION }}
+          cdn-enabled: true
+          cdn-base-url: \${{ secrets.OSS_CDN_BASE_URL }}
+          cdn-actions: refresh,preload
+</code></pre>
+
+<h2>为什么选 OIDC，而不是长期 Access Key</h2>
+
+<p>
+  这个 Action 在运行时通过 GitHub OIDC 去扮演阿里云 RAM 角色。
+  仓库中不保存长期 Access Key。Workflow 只需要
+  <code>id-token: write</code>，再加上角色和 OIDC Provider 的 ARN。
+</p>
+
+<p>
+  这意味着凭证是按需签发、受 RAM 策略约束、并且自然过期。
+  从运维风险角度看，这比长期把静态密钥放在 secrets 里要更稳健。
+</p>
+
+<h2>Action 内部是怎么执行的</h2>
+
+<p>
+  这个 Action 被拆成三个阶段：
+</p>
+
+<ul>
+  <li><strong>pre</strong>：通过 OIDC 扮演 RAM 角色，并把临时凭证写入 action state。</li>
+  <li><strong>main</strong>：上传本地文件到 OSS，并可选对上传路径执行 CDN 刷新/预热。</li>
+  <li><strong>post</strong>：比较目标前缀下的远端对象与本地文件，删除远端孤儿对象。</li>
+</ul>
+
+<p>
+  清理阶段通过 <code>post-if: always()</code> 执行，所以即使前面步骤失败也会运行。
+  清理和 CDN 调用都被设计为“非致命”：会记录警告，但不会因为 CDN API 的短暂抖动而阻塞部署。
+</p>
+
+<h2>上传、缓存与漂移控制</h2>
+
+<p>
+  下面这些实现细节对可靠性非常关键：
+</p>
+
+<ul>
+  <li>上传通过 <code>max-concurrency</code> 并行化。</li>
+  <li>全局 API 限速通过 <code>api-rps-limit</code> 控制。</li>
+  <li>每个文件上传失败后最多重试三次。</li>
+  <li>开启 CDN 时，同一批部署里 refresh 可以先于 preload 执行。</li>
+  <li>删除 OSS 对象时可触发对应 URL 的 CDN 刷新，减少旧缓存窗口。</li>
+</ul>
+
+<p>
+  最后一条很容易被低估：长期运行的静态站点仅有上传远远不够。
+  你还需要删除机制，避免对象漂移和不该再存在的过期资源。
+</p>
+
+<h2>最小化 RAM 权限</h2>
+
+<p>
+  权限上，这个 Action 需要目标 bucket 范围内的 OSS 权限（list、put、delete），
+  以及 CDN refresh/preload API 的调用权限。
+  此外，Trust Policy 必须允许 GitHub OIDC Provider 扮演部署角色。
+</p>
+
+<p>
+  我把它单独作为“部署角色”维护，不与更宽泛的运营权限混用。
+</p>
+
+<h2>在其他仓库复用这个 Action</h2>
+
+<p>
+  这个 Action 已发布，可直接复用：
+  <a href="https://github.com/frenchvandal/aliyun-oss-cdn-sync-action">github.com/frenchvandal/aliyun-oss-cdn-sync-action</a>。
+  如果你的输出目录是静态的（例如 <code>dist</code> 或 <code>_site</code>），
+  集成成本基本就是填配置。
+</p>
+
+<p>
+  对我来说，最关键的结果是：部署可以保持“无聊”。
+  build、sync、refresh、cleanup，结束。
+</p>`;
+  }
+
+  if (data.lang === "zhHant") {
+    return `<p>
+  這個站點使用 Lume 建置，並部署到阿里雲 OSS，再由阿里雲 CDN 對外分發。
+  整條部署流水線刻意保持精簡：一個 GitHub Workflow、一個建置步驟，
+  再加上一個自訂 Action：
+  <a href="https://github.com/frenchvandal/aliyun-oss-cdn-sync-action"><code>frenchvandal/aliyun-oss-cdn-sync-action</code></a>。
+</p>
+
+<p>
+  我希望同時滿足三件事：短時憑證、可預測上傳、自動快取一致性。
+  這套配置同時做到三者，而且不需要在每個倉庫裡額外維護腳本。
+</p>
+
+<h2>流水線總覽</h2>
+
+<p>
+  這個倉庫中的 GitHub Workflow 做了四件事：
+</p>
+
+<ol>
+  <li>檢出倉庫程式碼。</li>
+  <li>依 <code>.tool-versions</code> 安裝固定版本的 Deno。</li>
+  <li>執行 <code>deno task build</code>，將站點建置到 <code>_site</code>。</li>
+  <li>呼叫 OSS/CDN 同步 Action，完成上傳與快取刷新。</li>
+</ol>
+
+<pre><code class="language-yaml">name: Deploy static content to OSS
+
+on:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v6
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version-file: .tool-versions
+      - run: deno task build
+      - uses: frenchvandal/aliyun-oss-cdn-sync-action@v1
+        with:
+          role-oidc-arn: \${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
+          oidc-provider-arn: \${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
+          role-session-name: \${{ github.run_id }}
+          role-session-expiration: 3600
+          input-dir: _site
+          bucket: \${{ secrets.OSS_BUCKET }}
+          region: \${{ secrets.OSS_REGION }}
+          cdn-enabled: true
+          cdn-base-url: \${{ secrets.OSS_CDN_BASE_URL }}
+          cdn-actions: refresh,preload
+</code></pre>
+
+<h2>為什麼選 OIDC，而不是長期 Access Key</h2>
+
+<p>
+  這個 Action 在執行時透過 GitHub OIDC 去扮演阿里雲 RAM 角色。
+  倉庫中不保存長期 Access Key。Workflow 只需要
+  <code>id-token: write</code>，再加上角色與 OIDC Provider 的 ARN。
+</p>
+
+<p>
+  這代表憑證是按需簽發、受 RAM 策略限制、並且自然過期。
+  從維運風險角度來看，這比長期把靜態金鑰放在 secrets 裡更穩健。
+</p>
+
+<h2>Action 內部如何執行</h2>
+
+<p>
+  這個 Action 被拆成三個階段：
+</p>
+
+<ul>
+  <li><strong>pre</strong>：透過 OIDC 扮演 RAM 角色，並把臨時憑證寫入 action state。</li>
+  <li><strong>main</strong>：上傳本地檔案到 OSS，並可選對上傳路徑執行 CDN 刷新/預熱。</li>
+  <li><strong>post</strong>：比較目標前綴下的遠端物件與本地檔案，刪除遠端孤兒物件。</li>
+</ul>
+
+<p>
+  清理階段透過 <code>post-if: always()</code> 執行，所以即使前面步驟失敗也會執行。
+  清理與 CDN 呼叫都被設計成「非致命」：會記錄警告，但不會因 CDN API 的短暫波動阻塞部署。
+</p>
+
+<h2>上傳、快取與漂移控制</h2>
+
+<p>
+  以下實作細節對可靠性非常關鍵：
+</p>
+
+<ul>
+  <li>上傳透過 <code>max-concurrency</code> 平行化。</li>
+  <li>全域 API 限速由 <code>api-rps-limit</code> 控制。</li>
+  <li>每個檔案上傳失敗後最多重試三次。</li>
+  <li>啟用 CDN 時，同一批部署裡 refresh 可以先於 preload 執行。</li>
+  <li>刪除 OSS 物件時可觸發對應 URL 的 CDN 刷新，降低過期快取窗口。</li>
+</ul>
+
+<p>
+  最後一點很容易被低估：長期運行的靜態站點僅靠上傳遠遠不夠。
+  你還需要刪除機制，避免物件漂移與不應再存在的過期資源。
+</p>
+
+<h2>最小化 RAM 權限</h2>
+
+<p>
+  權限上，這個 Action 需要目標 bucket 範圍內的 OSS 權限（list、put、delete），
+  以及 CDN refresh/preload API 的呼叫權限。
+  此外，Trust Policy 必須允許 GitHub OIDC Provider 扮演部署角色。
+</p>
+
+<p>
+  我把它獨立作為「部署角色」維護，不與更寬泛的營運權限混用。
+</p>
+
+<h2>在其他倉庫重用這個 Action</h2>
+
+<p>
+  這個 Action 已發布，可直接重用：
+  <a href="https://github.com/frenchvandal/aliyun-oss-cdn-sync-action">github.com/frenchvandal/aliyun-oss-cdn-sync-action</a>。
+  如果你的輸出目錄是靜態的（例如 <code>dist</code> 或 <code>_site</code>），
+  整合成本基本就是填設定。
+</p>
+
+<p>
+  對我來說，最關鍵的結果是：部署可以維持「無聊」。
+  build、sync、refresh、cleanup，完成。
 </p>`;
   }
 
