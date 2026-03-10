@@ -36,7 +36,7 @@ jobs:
         run: deno task build
 
       - name: Deploy to Alibaba Cloud OSS
-        uses: frenchvandal/aliyun-oss-cdn-sync-action@v1
+        uses: frenchvandal/aliyun-oss-cdn-sync-action@master
         with:
           role-oidc-arn: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
           oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
