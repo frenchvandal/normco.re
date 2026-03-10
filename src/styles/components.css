@@ -588,21 +588,21 @@
   }
 
   .feed-subhead {
-    align-items: center;
     margin-block-end: var(--space-s);
   }
 
   .feed-page-actions {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-s);
-    justify-content: flex-end;
+    inline-size: 100%;
   }
 
   .feed-copy-control {
     display: grid;
-    grid-template-columns: minmax(10rem, 1fr) auto;
-    min-inline-size: min(100%, 18rem);
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-inline-size: 0;
+    inline-size: 100%;
     border: 1px solid var(--control-borderColor-rest);
     border-radius: var(--borderRadius-medium);
     background: var(--bgColor-default);
@@ -743,8 +743,7 @@
     }
 
     .feed-page-actions {
-      inline-size: 100%;
-      justify-content: stretch;
+      grid-template-columns: 1fr;
     }
 
     .feed-copy-control {

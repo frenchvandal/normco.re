@@ -59,14 +59,13 @@
                 </p>
 
                 <div class="subhead feed-subhead">
-                  <h2 class="subhead-heading">Formats</h2>
-                  <nav class="feed-page-actions" aria-label="Feed formats">
-                    <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="RSS XML">
-                      <a href="/feed.xml" class="feed-copy-link" aria-label="Open RSS XML feed URL">
-                        <span class="feed-copy-link-title">RSS XML</span>
-                        <span class="feed-copy-link-url">/feed.xml</span>
+                  <nav class="feed-page-actions" aria-label="Machine-readable URLs">
+                    <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="Feed XML">
+                      <a href="https://normco.re/feed.xml" class="feed-copy-link" aria-label="Open feed XML URL">
+                        <span class="feed-copy-link-title">Feed XML</span>
+                        <span class="feed-copy-link-url">https://normco.re/feed.xml</span>
                       </a>
-                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="/feed.xml" data-copy-title="Copy RSS XML URL" title="Copy RSS XML URL" aria-label="Copy RSS XML URL">
+                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="https://normco.re/feed.xml" data-copy-title="Copy feed XML URL" title="Copy feed XML URL" aria-label="Copy feed XML URL">
                         <svg class="octicon-svg feed-copy-icon feed-copy-icon--copy" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
                           <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
                           <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
@@ -78,11 +77,11 @@
                       <span class="sr-only" data-copy-status="" aria-live="polite"></span>
                     </div>
                     <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="JSON Feed">
-                      <a href="/feed.json" class="feed-copy-link" aria-label="Open JSON Feed URL">
+                      <a href="https://normco.re/feed.json" class="feed-copy-link" aria-label="Open JSON Feed URL">
                         <span class="feed-copy-link-title">JSON Feed</span>
-                        <span class="feed-copy-link-url">/feed.json</span>
+                        <span class="feed-copy-link-url">https://normco.re/feed.json</span>
                       </a>
-                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="/feed.json" data-copy-title="Copy JSON Feed URL" title="Copy JSON Feed URL" aria-label="Copy JSON Feed URL">
+                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="https://normco.re/feed.json" data-copy-title="Copy JSON Feed URL" title="Copy JSON Feed URL" aria-label="Copy JSON Feed URL">
                         <svg class="octicon-svg feed-copy-icon feed-copy-icon--copy" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
                           <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
                           <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
