@@ -25,14 +25,6 @@ describe("Footer()", () => {
     assertNotMatch(html, /<span>RSS<\/span>/);
   });
 
-  it("contains a JSON Feed link", async () => {
-    const author = makeAuthor(103);
-    const html = await renderComponent(Footer({ author: author }));
-    assertStringIncludes(html, 'href="/feed.json"');
-    assertStringIncludes(html, 'aria-label="Open JSON Feed"');
-    assertNotMatch(html, /<span>JSON Feed<\/span>/);
-  });
-
   it("contains a GitHub repository link", async () => {
     const author = makeAuthor(106);
     const html = await renderComponent(Footer({ author: author }));
@@ -51,10 +43,8 @@ describe("Footer()", () => {
     const html = await renderComponent(Footer({ author: author }));
     const githubIndex = html.indexOf('aria-label="Open GitHub repository"');
     const rssIndex = html.indexOf('aria-label="Open RSS feed"');
-    const jsonIndex = html.indexOf('aria-label="Open JSON Feed"');
-    assert(githubIndex > -1 && rssIndex > -1 && jsonIndex > -1);
+    assert(githubIndex > -1 && rssIndex > -1);
     assert(githubIndex < rssIndex);
-    assert(githubIndex < jsonIndex);
   });
 
   it("contains the current year in the copyright notice", async () => {

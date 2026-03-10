@@ -189,9 +189,11 @@ site.use(
 // Remove unused selectors after minification.
 site.use(
   purgecss({
+    contentExtensions: [".html", ".js", ".xsl"],
     options: {
       keyframes: true,
       variables: true,
+      safelist: [/^feed-/, /^sr-only$/],
     },
   }),
 );

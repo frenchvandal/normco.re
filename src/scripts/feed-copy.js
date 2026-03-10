@@ -42,6 +42,7 @@
     const isCopied = state === "copied";
 
     control.dataset.copyState = state;
+    control.classList.toggle("feed-copy-control--copied", isCopied);
     setStatusMessage(
       control,
       isCopied ? `${copyLabel} URL copied` : "",
