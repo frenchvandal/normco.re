@@ -1,4 +1,27 @@
-/** Shared internationalization primitives for the site UI. */
+/**
+ * Shared internationalization primitives for the site UI.
+ *
+ * ## Internal vs. external language key design
+ *
+ * This module uses two parallel conventions for language codes, each serving a
+ * distinct purpose:
+ *
+ * - **Internal TypeScript keys** (`SiteLanguage` type): `"en"`, `"fr"`,
+ *   `"zhHans"`, `"zhHant"`. These are valid JavaScript identifiers used as
+ *   object keys throughout the codebase (lookup tables, component props, page
+ *   data). The camelCase Chinese variants avoid the hyphen that would require
+ *   bracket notation everywhere.
+ *
+ * - **External codes** (URLs, HTML `lang`, feed metadata): `"zh-hans"`,
+ *   `"zh-hant"`. These follow BCP 47 / browser conventions and are used in URL
+ *   prefixes (`LANGUAGE_PREFIX`), HTML `lang` attributes (`LANGUAGE_TAG`), and
+ *   page data keys (`LANGUAGE_DATA_CODE`).
+ *
+ * The mapping between the two spaces is handled by `LANGUAGE_DATA_CODE`,
+ * `LANGUAGE_ALIASES`, and the `MULTILANGUAGE_DATA_ALIASES` preprocess hook in
+ * `_config.ts`. Adding a new Chinese script variant would require updates in
+ * all four locations.
+ */
 
 /** Supported language codes available in the site. */
 export const SUPPORTED_LANGUAGES = [
@@ -465,39 +488,29 @@ export function getSiteTranslations(language: SiteLanguage): SiteTranslations {
   return SITE_TRANSLATIONS[language];
 }
 
+const READING_TIME_FORMAT = {
+  en: (m: number) => `${m} min read`,
+  fr: (m: number) => `${m}\u00a0min de lecture`,
+  zhHans: (m: number) => `${m} 分钟阅读`,
+  zhHant: (m: number) => `${m} 分鐘閱讀`,
+} as const satisfies Record<SiteLanguage, (m: number) => string>;
+
+const POST_COUNT_FORMAT = {
+  en: (n: number) => (n === 1 ? "1 post published" : `${n} posts published`),
+  fr: (n: number) => n === 1 ? "1 article publié" : `${n} articles publiés`,
+  zhHans: (n: number) => `${n} 篇文章`,
+  zhHant: (n: number) => `${n} 篇文章`,
+} as const satisfies Record<SiteLanguage, (n: number) => string>;
+
 /** Formats a reading-time label localized to the target language. */
 export function formatReadingTime(
   minutes: number,
   language: SiteLanguage,
 ): string {
-  if (language === "fr") {
-    return `${minutes}\u00a0min de lecture`;
-  }
-
-  if (language === "zhHans") {
-    return `${minutes} 分钟阅读`;
-  }
-
-  if (language === "zhHant") {
-    return `${minutes} 分鐘閱讀`;
-  }
-
-  return `${minutes} min read`;
+  return READING_TIME_FORMAT[language](minutes);
 }
 
 /** Formats a yearly post-count summary localized to the target language. */
 export function formatPostCount(count: number, language: SiteLanguage): string {
-  if (language === "fr") {
-    return count === 1 ? "1 article publié" : `${count} articles publiés`;
-  }
-
-  if (language === "zhHans") {
-    return `${count} 篇文章`;
-  }
-
-  if (language === "zhHant") {
-    return `${count} 篇文章`;
-  }
-
-  return count === 1 ? "1 post published" : `${count} posts published`;
+  return POST_COUNT_FORMAT[language](count);
 }

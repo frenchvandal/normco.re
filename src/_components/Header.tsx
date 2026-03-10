@@ -107,7 +107,6 @@ export default (
               id="language-select"
               name="language"
               class="language-select"
-              aria-label={translations.site.languageSelectAriaLabel}
             >
               {SUPPORTED_LANGUAGES.map((optionLanguage) => (
                 <option

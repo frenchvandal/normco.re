@@ -247,6 +247,21 @@ function normalizeUserAgent(value: string | null): string | undefined {
   return value.length > 120 ? `${value.slice(0, 117)}...` : value;
 }
 
+/**
+ * Builds a composite counter key for the in-memory request counter `Map`.
+ *
+ * A null byte (`\x00`) is used as the separator because route strings cannot
+ * contain null bytes, making key collisions impossible without a more complex
+ * data structure.
+ */
+function buildCounterKey(
+  method: string,
+  route: string,
+  status: number,
+): string {
+  return `${method}\x00${route}\x00${status}`;
+}
+
 function toRequestDebugItem(record: RequestRecord): DebugBarItem {
   const context = record.status >= 500
     ? "error"
@@ -769,7 +784,7 @@ export function otel(userOptions?: Partial<Options>): (site: object) => void {
             recentRequests.shift();
           }
         }
-        const key = `${record.method}\x00${record.route}\x00${record.status}`;
+        const key = buildCounterKey(record.method, record.route, record.status);
         counters.set(key, (counters.get(key) ?? 0) + 1);
         refreshDebugBar(
           typedSite,
@@ -783,6 +798,11 @@ export function otel(userOptions?: Partial<Options>): (site: object) => void {
       }
       : undefined;
 
+    // The middleware is registered lazily on the "start" event rather than
+    // via `server.use()` directly. This allows getServer() to be called before
+    // the server instance is fully initialized. The { once: true } option
+    // ensures the listener fires exactly once and is automatically removed,
+    // preventing duplicate middleware registrations on hot reloads.
     const server = typedSite.getServer();
     server.addEventListener("start", () => {
       server.useFirst(createMiddleware(options, isDev, onRequest));

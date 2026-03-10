@@ -1,7 +1,7 @@
 /* Layer: base */
 @layer base {
   :root {
-    color-scheme: light;
+    color-scheme: light dark;
 
     /* Spacing tokens */
     --space-xs: 0.25rem;
@@ -26,6 +26,11 @@
 
     --borderColor-default: #d0d7de;
     --borderColor-muted: #d8dee4;
+
+    /* Semantic tokens for interactive and state colors */
+    --fgColor-success: #1a7f37;
+    --borderColor-success: #1f883d;
+    --borderColor-navActive: #fd8c73;
 
     --focus-outlineColor: #0969da;
     --selection-bgColor: rgb(9 105 218 / 20%);
@@ -78,13 +83,11 @@
     --font-mono: var(--fontStack-monospace);
   }
 
-  :root[data-color-mode="light"],
-  :root[data-color-scheme="light"] {
+  :root[data-color-mode="light"] {
     color-scheme: light;
   }
 
-  :root[data-color-mode="dark"],
-  :root[data-color-scheme="dark"] {
+  :root[data-color-mode="dark"] {
     color-scheme: dark;
 
     --bgColor-default: #0d1117;
@@ -101,6 +104,11 @@
 
     --borderColor-default: #3d444d;
     --borderColor-muted: #30363d;
+
+    /* Semantic tokens for interactive and state colors (dark) */
+    --fgColor-success: #3fb950;
+    --borderColor-success: #3fb950;
+    --borderColor-navActive: #f78166;
 
     --focus-outlineColor: #58a6ff;
     --selection-bgColor: rgb(31 111 235 / 50%);
@@ -267,8 +275,7 @@
       --focus-outlineColor: #005fcc;
     }
 
-    :root[data-color-mode="dark"],
-    :root[data-color-scheme="dark"] {
+    :root[data-color-mode="dark"] {
       --bgColor-default: #000000;
       --fgColor-default: #ffffff;
       --fgColor-accent: #79c0ff;
@@ -284,6 +291,18 @@
 
     a:focus-visible {
       outline-color: Highlight;
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    :root {
+      --selection-bgColor: #b3d4ff;
+      --bgColor-accent-muted: #cce5ff;
+    }
+
+    :root[data-color-mode="dark"] {
+      --selection-bgColor: #1c4a8a;
+      --bgColor-accent-muted: #1c3a6e;
     }
   }
 

@@ -21,6 +21,18 @@
   root.setAttribute("data-light-theme", "light");
   root.setAttribute("data-dark-theme", "dark");
   root.setAttribute("data-color-mode", resolvedMode);
-  // Keep backward compatibility for selectors still using the old attribute.
-  root.setAttribute("data-color-scheme", resolvedMode);
+
+  // Sync aria-pressed on the theme toggle once the DOM is ready so that screen
+  // readers get the correct state even when theme-toggle.js is delayed or
+  // unavailable. This acts as a belt-and-suspenders alongside theme-toggle.js,
+  // which sets the same attribute at the bottom of <body>.
+  globalThis.document.addEventListener("DOMContentLoaded", () => {
+    const themeToggle = globalThis.document.getElementById("theme-toggle");
+    if (themeToggle) {
+      themeToggle.setAttribute(
+        "aria-pressed",
+        resolvedMode === "dark" ? "true" : "false",
+      );
+    }
+  });
 })();

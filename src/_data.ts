@@ -23,7 +23,7 @@ export const metas = {
 export const fr = {
   metas: {
     site: siteName,
-    description: `Blog personnel de ${author}, base a Chengdu, en Chine.`,
+    description: `Blog personnel de ${author}, basé à Chengdu, en Chine.`,
     lang: "fr",
   },
 } as const;

@@ -95,13 +95,11 @@
     display: none;
   }
 
-  :root[data-color-mode="dark"] .theme-icon--sun,
-  :root[data-color-scheme="dark"] .theme-icon--sun {
+  :root[data-color-mode="dark"] .theme-icon--sun {
     display: none;
   }
 
-  :root[data-color-mode="dark"] .theme-icon--moon,
-  :root[data-color-scheme="dark"] .theme-icon--moon {
+  :root[data-color-mode="dark"] .theme-icon--moon {
     display: block;
   }
 
@@ -399,6 +397,8 @@
 
   .archive-year {
     position: relative;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 20rem;
   }
 
   .archive-year::before {
@@ -488,6 +488,9 @@
   .archive-year-nav {
     position: sticky;
     inset-block-start: calc(var(--space-l) + 0.25rem);
+    /* TODO(phiphi): Add container-type: scroll-state and a
+       @container scroll-state(stuck: top) shadow once Deno's CSS formatter
+       supports the scroll-state() query syntax. */
   }
 
   .archive-year-nav-list {
@@ -755,8 +758,8 @@
   }
 
   .feed-copy-control--copied .feed-copy-trigger {
-    color: light-dark(#1a7f37, #3fb950);
-    border-inline-start-color: light-dark(#1f883d, #3fb950);
+    color: var(--fgColor-success);
+    border-inline-start-color: var(--borderColor-success);
   }
 
   .feed-page-count {

@@ -55,6 +55,13 @@ type BuildData = {
   swDebugLevel: "off" | "summary" | "verbose";
 };
 
+// Maps hyphenated Lume data keys (URL-style) to their camelCase TypeScript
+// equivalents used throughout the codebase. The multilanguage plugin resolves
+// "zh-hans" as "zh" then "hans" (two separate segments), so page data exported
+// as `zhHans` must be copied to the "zh-hans" key at preprocess time.
+// Invariant: every entry here must have a matching key in LANGUAGE_PREFIX and
+// LANGUAGE_DATA_CODE (src/utils/i18n.ts). Adding a new Chinese variant requires
+// updates in both files.
 const MULTILANGUAGE_DATA_ALIASES = {
   "zh-hans": "zhHans",
   "zh-hant": "zhHant",
@@ -273,6 +280,10 @@ site.use(readingInfo());
 // XML sitemap + robots.txt.
 // Unlisted pages (export const unlisted = true) are excluded automatically.
 site.use(sitemap());
+// The disallow list below enumerates every language-prefixed offline and 404
+// path manually. This is intentional: the robots() plugin API expects static
+// string values and cannot derive paths from LANGUAGE_PREFIX at build time.
+// When adding a new language, also add the corresponding disallow entries here.
 site.use(
   robots({
     rules: [
@@ -452,7 +463,7 @@ site.use(
     query: "type=post lang=fr",
     info: {
       title: "normco.re (fr)",
-      description: "Blog personnel de Phiphi, base a Chengdu, en Chine.",
+      description: "Blog personnel de Phiphi, basé à Chengdu, en Chine.",
       lang: getLanguageTag("fr"),
       generator: false,
     },
