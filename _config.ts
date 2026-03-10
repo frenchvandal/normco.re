@@ -26,6 +26,7 @@ import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns-locale";
 import { readConsoleDebugPolicy } from "./plugins/console_debug.ts";
 import otelPlugin from "./plugins/otel.ts";
 import { getLanguageTag } from "./src/utils/i18n.ts";
+import { getXmlStylesheetHref } from "./src/utils/xml-stylesheet.ts";
 
 /** Console debug policy, read once at module init from `LUME_LOGS`. */
 const consoleDebugPolicy = readConsoleDebugPolicy((name) => Deno.env.get(name));
@@ -505,11 +506,13 @@ site.use(
 const XML_PI_PATTERN = /^(<\?xml[^?]*\?>)/;
 site.process([".xml"], (pages: Page[]) => {
   for (const page of pages) {
-    const pageUrl = page.data.url as string;
-    let xslHref: string | undefined;
+    const pageUrl = page.data.url;
 
-    if (pageUrl === "/feed.xml") xslHref = "/feed.xsl";
-    else if (pageUrl === "/sitemap.xml") xslHref = "/sitemap.xsl";
+    if (typeof pageUrl !== "string") {
+      continue;
+    }
+
+    const xslHref = getXmlStylesheetHref(pageUrl);
 
     if (xslHref === undefined) continue;
 
