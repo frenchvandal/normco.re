@@ -102,16 +102,20 @@ describe("Header()", () => {
       assertStringIncludes(html, "About");
     });
 
-    it("renders the language flag with OpenMoji and an emoji fallback", async () => {
+    it("renders a language select with a globe icon and text-only labels", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "fr" }),
       );
+      assertStringIncludes(html, 'class="language-switcher"');
       assertMatch(
         html,
-        /class="language-switcher-flag-icon"[^>]*src="\/icons\/openmoji\/1F1EB-1F1F7\.svg"/,
+        /class="language-switcher-globe[^"]*"[^>]*src="\/icons\/octicons\/globe-16\.svg"/,
       );
-      assertStringIncludes(html, 'class="language-switcher-flag-emoji"');
-      assertStringIncludes(html, "🇫🇷");
+      assertNotMatch(html, /🇬🇧|🇫🇷|🇨🇳|🇹🇼/);
+      assertStringIncludes(html, ">English<");
+      assertStringIncludes(html, ">Français<");
+      assertStringIncludes(html, ">简体中文<");
+      assertStringIncludes(html, ">繁體中文<");
     });
 
     it("contains the theme-toggle button", async () => {

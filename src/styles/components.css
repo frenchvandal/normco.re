@@ -36,7 +36,7 @@
     gap: 0.375rem;
   }
 
-  .language-switcher-flag {
+  .language-switcher-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -45,24 +45,10 @@
     flex-shrink: 0;
   }
 
-  .language-switcher-flag-icon {
+  .language-switcher-globe {
     display: block;
     inline-size: 1rem;
     block-size: 1rem;
-  }
-
-  .language-switcher-flag-emoji {
-    display: none;
-    font-size: 1rem;
-    line-height: 1;
-  }
-
-  .language-switcher[data-flag-fallback="emoji"] .language-switcher-flag-icon {
-    display: none;
-  }
-
-  .language-switcher[data-flag-fallback="emoji"] .language-switcher-flag-emoji {
-    display: block;
   }
 
   .language-select {

@@ -3,8 +3,6 @@
 import {
   getLocalizedUrl,
   getSiteTranslations,
-  LANGUAGE_FLAG_EMOJI,
-  LANGUAGE_FLAG_ICON,
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
 } from "../utils/i18n.ts";
@@ -45,8 +43,6 @@ export default (
   const homeUrl = getLocalizedUrl("/", language);
   const postsUrl = getLocalizedUrl("/posts/", language);
   const aboutUrl = getLocalizedUrl("/about/", language);
-  const activeFlagIcon = LANGUAGE_FLAG_ICON[language];
-  const activeFlagEmoji = LANGUAGE_FLAG_EMOJI[language];
 
   return (
     <header class="site-header">
@@ -84,24 +80,21 @@ export default (
               </li>
             </ul>
           </nav>
-          <div class="language-switcher" data-language-switcher="true">
+          <div class="language-switcher">
             <label class="sr-only" for="language-select">
               {translations.site.languageSelectLabel}
             </label>
-            <span class="language-switcher-flag" aria-hidden="true">
+            <span class="language-switcher-icon" aria-hidden="true">
               <img
-                class="language-switcher-flag-icon"
+                inline
+                class="language-switcher-globe octicon-svg"
                 width="16"
                 height="16"
-                src={helpers.icon(activeFlagIcon, "openmoji")}
+                src={helpers.icon("globe", "octicons", "16")}
                 alt=""
                 aria-hidden="true"
                 focusable="false"
-                onerror="this.closest('[data-language-switcher]')?.setAttribute('data-flag-fallback','emoji')"
               />
-              <span class="language-switcher-flag-emoji" aria-hidden="true">
-                {activeFlagEmoji}
-              </span>
             </span>
             <select
               id="language-select"

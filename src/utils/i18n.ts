@@ -70,22 +70,6 @@ const LANGUAGE_ALIASES: Readonly<Record<string, SiteLanguage>> = {
   "zh_hant": "zhHant",
 };
 
-/** Flag emoji labels displayed in the native language selector options. */
-export const LANGUAGE_FLAG_EMOJI = {
-  en: "🇬🇧",
-  fr: "🇫🇷",
-  zhHans: "🇨🇳",
-  zhHant: "🇹🇼",
-} as const satisfies Record<SiteLanguage, string>;
-
-/** OpenMoji icon names used to render the active language flag in the header. */
-export const LANGUAGE_FLAG_ICON = {
-  en: "1F1EC-1F1E7",
-  fr: "1F1EB-1F1F7",
-  zhHans: "1F1E8-1F1F3",
-  zhHant: "1F1F9-1F1FC",
-} as const satisfies Record<SiteLanguage, string>;
-
 /** Translation contract used by shared UI components and pages. */
 export type SiteTranslations = {
   readonly site: {
@@ -171,8 +155,8 @@ const SITE_TRANSLATIONS = {
     languageNames: {
       en: "English",
       fr: "Français",
-      zhHans: "Simplified Chinese",
-      zhHant: "Traditional Chinese",
+      zhHans: "简体中文",
+      zhHant: "繁體中文",
     },
     home: {
       eyebrow: "Personal blog",
@@ -240,8 +224,8 @@ const SITE_TRANSLATIONS = {
     languageNames: {
       en: "English",
       fr: "Français",
-      zhHans: "Chinois simplifié",
-      zhHant: "Chinois traditionnel",
+      zhHans: "简体中文",
+      zhHant: "繁體中文",
     },
     home: {
       eyebrow: "Blog personnel",
