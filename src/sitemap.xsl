@@ -45,9 +45,19 @@
 
           <main class="site-main" id="main-content">
             <section class="feed-page">
-              <header class="feed-page-header">
+              <header class="pagehead feed-page-header">
+                <p class="pagehead-eyebrow">Index</p>
                 <h1 class="feed-page-title">Sitemap</h1>
-                <p class="feed-page-hint">
+                <div class="feed-page-meta">
+                  <p class="feed-page-hint">
+                    Machine-readable URL index for crawlers and tooling.
+                  </p>
+                  <nav class="feed-page-actions" aria-label="Feed formats">
+                    <a href="/feed.xml" class="feed-page-button feed-page-button--primary">RSS XML</a>
+                    <a href="/feed.json" class="feed-page-button">JSON Feed</a>
+                  </nav>
+                </div>
+                <p class="feed-page-count">
                   <xsl:value-of select="count(/sm:urlset/sm:url)"/>
                   <xsl:text> URLs indexed on normco.re</xsl:text>
                 </p>
@@ -57,7 +67,7 @@
                 <xsl:for-each select="/sm:urlset/sm:url">
                   <xsl:sort select="sm:loc"/>
                   <li class="feed-entry">
-                    <article>
+                    <article class="feed-entry-card">
                       <h2 class="feed-entry-title">
                         <a class="feed-entry-link">
                           <xsl:attribute name="href">
@@ -68,7 +78,7 @@
                       </h2>
                       <xsl:if test="sm:lastmod">
                         <p class="feed-entry-meta">
-                          Last modified:
+                          <span class="feed-entry-meta-label">Last modified</span>
                           <time>
                             <xsl:attribute name="datetime">
                               <xsl:value-of select="sm:lastmod"/>
