@@ -31,4 +31,11 @@ describe("404.page.tsx", () => {
     const html = page404(MOCK_DATA, MOCK_HELPERS);
     assertStringIncludes(html, 'aria-hidden="true"');
   });
+
+  it("localizes message and home link for French data", () => {
+    const frenchData = { lang: "fr" } as unknown as Lume.Data;
+    const html = page404(frenchData, MOCK_HELPERS);
+    assertStringIncludes(html, "Page introuvable");
+    assertStringIncludes(html, 'href="/fr/"');
+  });
 });

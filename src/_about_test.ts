@@ -27,4 +27,11 @@ describe("about.page.tsx", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
     assertStringIncludes(html, 'href="/feed.json"');
   });
+
+  it("renders localized French content when `lang` is `fr`", () => {
+    const frenchData = { lang: "fr" } as unknown as Lume.Data;
+    const html = aboutPage(frenchData, MOCK_HELPERS);
+    assertStringIncludes(html, "À propos");
+    assertStringIncludes(html, 'href="/fr/feed.xml"');
+  });
 });

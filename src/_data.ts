@@ -19,6 +19,15 @@ export const metas = {
   lang: "en",
 } as const satisfies Record<string, string>;
 
+/** French-only global data overrides merged by the multilanguage plugin. */
+export const fr = {
+  metas: {
+    site: siteName,
+    description: `Blog personnel de ${author}, base a Chengdu, en Chine.`,
+    lang: "fr",
+  },
+} as const;
+
 /** Default structured data for pages, rendered by the official Lume jsonLd plugin. */
 export const jsonLd: Lume.Data["jsonLd"] = {
   "@type": "WebSite",

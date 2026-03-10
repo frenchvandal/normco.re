@@ -1,4 +1,7 @@
 /** Site footer with copyright and primary links. */
+
+import { getSiteTranslations, type SiteLanguage } from "../utils/i18n.ts";
+
 type IconHelpers = Pick<Lume.Helpers, "icon">;
 
 const DEFAULT_ICON_HELPERS: IconHelpers = {
@@ -12,21 +15,36 @@ const repositoryUrl = "https://github.com/frenchvandal/normco.re" as const;
 
 /** Renders the site footer with the repository and RSS links. */
 export default (
-  { author }: { readonly author: string },
+  {
+    author,
+    language,
+    feedXmlUrl,
+  }: {
+    readonly author: string;
+    readonly language: SiteLanguage;
+    readonly feedXmlUrl: string;
+  },
   helpers: IconHelpers = DEFAULT_ICON_HELPERS,
 ) => {
   const year = new Date().getFullYear();
+  const translations = getSiteTranslations(language);
+
   return (
     <footer class="site-footer">
       <div class="site-footer-inner">
-        <span>© {year} {author}</span>
-        <nav class="site-footer-nav" aria-label="Site links">
+        <span>
+          © {year} {author}
+        </span>
+        <nav
+          class="site-footer-nav"
+          aria-label={translations.site.siteLinksAriaLabel}
+        >
           <a
             href={repositoryUrl}
             class="feed-link"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Open GitHub repository"
+            aria-label={translations.site.repositoryLinkAriaLabel}
           >
             <img
               inline
@@ -39,7 +57,11 @@ export default (
               focusable="false"
             />
           </a>
-          <a href="/feed.xml" class="feed-link" aria-label="Open RSS feed">
+          <a
+            href={feedXmlUrl}
+            class="feed-link"
+            aria-label={translations.site.rssLinkAriaLabel}
+          >
             <img
               inline
               class="octicon-svg feed-link-icon"

@@ -35,7 +35,9 @@
   .site-header-end {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: var(--space-m);
+    flex-wrap: wrap;
   }
 
   /* Navigation */

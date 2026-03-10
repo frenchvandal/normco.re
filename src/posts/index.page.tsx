@@ -1,7 +1,20 @@
-/** Posts archive — all posts grouped by year, newest first. */
+/** Posts archive - all posts grouped by year, newest first. */
 
+import {
+  formatPostCount,
+  formatReadingTime,
+  getSiteTranslations,
+  resolveSiteLanguage,
+} from "../utils/i18n.ts";
 import { resolvePostDate, resolveReadingMinutes } from "./post-metadata.ts";
 
+/** Typed helpers used in this page. */
+type H = {
+  date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
+};
+
+/** Available language versions generated from this page. */
+export const lang = ["en", "fr"] as const;
 /** Archive page URL. */
 export const url = "/posts/";
 /** Lume layout template. */
@@ -11,22 +24,23 @@ export const title = "Writing";
 /** Page meta description. */
 export const description = "All posts, grouped by year.";
 
+/** French-only metadata overrides used by the multilanguage plugin. */
+export const fr = {
+  title: "Articles",
+  description: "Tous les articles, regroupes par annee.",
+} as const;
+
 // Override the `type = "post"` inherited from _data.ts so this page
 // is not matched by `search.pages("type=post")` or nav plugin queries.
-/** Page type — overrides the inherited `"post"` to exclude this page from post queries. */
+/** Page type - overrides the inherited `"post"` to exclude this page from post queries. */
 export const type = "archive";
-
-/** Typed helpers used in this page. */
-type H = {
-  date: (value: unknown, format: string) => string;
-};
 
 /** Renders the posts archive page body. */
 export default (data: Lume.Data, helpers: Lume.Helpers): string => {
-  // Lume.Helpers is loosely typed; cast to the minimal interface declared above
-  // to get type-safe access to the `date` helper (§5.4 — library boundary).
   const { date: dateFormat } = helpers as unknown as H;
-  const language = typeof data.lang === "string" ? data.lang : "en";
+  const language = resolveSiteLanguage(data.lang);
+  const translations = getSiteTranslations(language);
+  const shortDatePattern = language === "fr" ? "d MMM" : "SHORT";
   const posts = data.search.pages(
     `type=post lang=${language}`,
     "date=desc",
@@ -35,6 +49,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   // Group posts by year.
   const currentYear = new Date().getFullYear();
   const byYear = new Map<number, Lume.Data[]>();
+
   for (const post of posts) {
     const postDate = resolvePostDate(post.date, new Date(currentYear, 0, 1));
     const year = postDate.getFullYear();
@@ -48,19 +63,22 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const sections = years.map((year) => {
     const yearPosts = byYear.get(year) ?? [];
     const postCount = yearPosts.length;
-    const yearSummary = postCount === 1
-      ? "1 post published"
-      : `${postCount} posts published`;
+    const yearSummary = formatPostCount(postCount, language);
     const items = yearPosts.map((post) => {
       const postDate = resolvePostDate(post.date, new Date(year, 0, 1));
       const minutes = resolveReadingMinutes(post.readingInfo);
       const readingTimePart = minutes !== undefined
-        ? `<span class="archive-reading-time">${minutes} min</span>`
+        ? `<span class="archive-reading-time">${
+          formatReadingTime(minutes, language)
+        }</span>`
         : `<span></span>`;
 
       return `<li class="archive-item">
-  <time class="archive-date" datetime="${dateFormat(postDate, "ATOM")}">${
-        dateFormat(postDate, "SHORT")
+  <time class="archive-date" datetime="${
+        dateFormat(postDate, "ATOM", language) ?? postDate.toISOString()
+      }">${
+        dateFormat(postDate, shortDatePattern, language) ??
+          postDate.toISOString()
       }</time>
   <a href="${post.url}" class="archive-title">${post.title}</a>
   ${readingTimePart}
@@ -91,23 +109,23 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 
   const archiveIntro =
     `<section class="pagehead archive-pagehead" aria-labelledby="archive-title">
-  <p class="pagehead-eyebrow">Archive</p>
-  <h1 id="archive-title" class="archive-page-title">Writing</h1>
-  <p class="pagehead-lead">All posts grouped by year, newest first.</p>
+  <p class="pagehead-eyebrow">${translations.archive.eyebrow}</p>
+  <h1 id="archive-title" class="archive-page-title">${translations.archive.title}</h1>
+  <p class="pagehead-lead">${translations.archive.lead}</p>
 </section>`;
 
   const archiveBody = sections.length > 0
-    ? `<section class="archive-activity" aria-label="Writing activity">
+    ? `<section class="archive-activity" aria-label="${translations.archive.activityAriaLabel}">
   <div class="archive-activity-main">
     ${sections}
   </div>
-  <aside class="archive-year-nav" aria-label="Archive years">
+  <aside class="archive-year-nav" aria-label="${translations.archive.yearsAriaLabel}">
     <ol class="archive-year-nav-list">
       ${yearNavItems}
     </ol>
   </aside>
 </section>`
-    : `<p class="blankslate">No posts published yet.</p>`;
+    : `<p class="blankslate">${translations.archive.emptyState}</p>`;
 
   const archiveYearNavScript = sections.length > 0
     ? `<script>

@@ -22,6 +22,7 @@ import checkUrls from "lume/plugins/check_urls.ts";
 import validateHtml from "lume/plugins/validate_html.ts";
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
+import { enUS, fr as frLocale } from "npm/date-fns-locale";
 import { readConsoleDebugPolicy } from "./plugins/console_debug.ts";
 import otelPlugin from "./plugins/otel.ts";
 
@@ -34,6 +35,16 @@ const OCTICON_CATALOGS = [
       "https://cdn.jsdelivr.net/npm/@primer/octicons@19.22.0/build/svg/{name}-{variant}.svg",
     variants: ["16", "24", "12", "48", "96"],
   },
+] as const satisfies Catalog[];
+const OPENMOJI_CATALOGS = [
+  {
+    id: "openmoji",
+    src: "https://cdn.jsdelivr.net/npm/openmoji@16.0.0/color/svg/{name}.svg",
+  },
+] as const satisfies Catalog[];
+const ICON_CATALOGS = [
+  ...OCTICON_CATALOGS,
+  ...OPENMOJI_CATALOGS,
 ] as const satisfies Catalog[];
 
 type BuildData = {
@@ -158,6 +169,7 @@ site.addEventListener("beforeSave", () => {
 site.add("/style.css");
 site.add("/scripts/theme-toggle.js");
 site.add("/scripts/anti-flash.js");
+site.add("/scripts/language-preference.js");
 site.add("/scripts/feed-copy.js");
 site.add("/scripts/sw-register.js");
 site.add("/scripts/sw.js", "/sw.js");
@@ -221,7 +233,7 @@ site.use(jsx());
 // Download only Octicons on demand and expose `helpers.icon()`.
 site.use(
   icons({
-    catalogs: OCTICON_CATALOGS,
+    catalogs: ICON_CATALOGS,
   }),
 );
 
@@ -235,6 +247,10 @@ site.use(
 // Date formatting: helpers.date(value, "HUMAN_DATE"), helpers.date(value, "SHORT"), …
 site.use(
   date({
+    locales: {
+      en: enUS,
+      fr: frLocale,
+    },
     formats: {
       // "Mar 5" — compact date for post cards and archive rows.
       SHORT: "MMM d",
@@ -270,6 +286,14 @@ site.use(
       {
         userAgent: "*",
         disallow: "/offline.html",
+      },
+      {
+        userAgent: "*",
+        disallow: "/fr/offline",
+      },
+      {
+        userAgent: "*",
+        disallow: "/fr/offline/",
       },
       {
         sitemap: "https://normco.re/sitemap.xml",
@@ -363,6 +387,24 @@ site.use(
       title: "normco.re",
       description: "Personal blog by Phiphi, based in Chengdu, China.",
       lang: "en",
+      generator: false,
+    },
+    items: {
+      title: "=title",
+      description: "=description",
+      published: "=date",
+      content: "=content",
+    },
+  }),
+);
+site.use(
+  feed({
+    output: ["/fr/feed.xml", "/fr/feed.json"],
+    query: "type=post lang=fr",
+    info: {
+      title: "normco.re (fr)",
+      description: "Blog personnel de Phiphi, base a Chengdu, en Chine.",
+      lang: "fr",
       generator: false,
     },
     items: {

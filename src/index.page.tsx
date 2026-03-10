@@ -1,22 +1,30 @@
-/** Home page — hero + five most recent posts. */
+/** Home page - hero + five most recent posts. */
 
 import { metas, siteName } from "./_data.ts";
+import {
+  formatReadingTime,
+  getLocalizedUrl,
+  getSiteTranslations,
+  resolveSiteLanguage,
+} from "./utils/i18n.ts";
 import {
   resolvePostDate,
   resolveReadingMinutes,
 } from "./posts/post-metadata.ts";
 
+/** Available language versions generated from this page. */
+export const lang = ["en", "fr"] as const;
 /** Page URL. */
 export const url = "/";
-/** Page title — same as the site name for the home page. */
+/** Page title - same as the site name for the home page. */
 export const title: string = siteName;
-/** Page meta description — mirrors the site-wide default. */
+/** Page meta description - mirrors the site-wide default. */
 export const description: string = metas.description;
 
-/** Typed helpers used in this page. */
-type H = {
-  date: (value: unknown, format: string) => string;
-};
+/** French-only metadata overrides used by the multilanguage plugin. */
+export const fr = {
+  description: "Blog personnel de Phiphi, base a Chengdu, en Chine.",
+} as const;
 
 /** Typed component functions used on this page. */
 type Comp = {
@@ -25,8 +33,13 @@ type Comp = {
     readonly url: string;
     readonly dateStr: string;
     readonly dateIso: string;
-    readonly readingMinutes?: number;
+    readonly readingLabel?: string;
   }) => Promise<string>;
+};
+
+/** Typed helpers used in this page. */
+type H = {
+  date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
 };
 
 /** Renders the home page body. */
@@ -34,12 +47,13 @@ export default async (
   data: Lume.Data,
   helpers: Lume.Helpers,
 ): Promise<string> => {
-  // Lume.Helpers and Lume.comp are loosely typed; cast to minimal interfaces above
-  // (§5.4 — library boundary).
-  const { date: dateFormat } = helpers as unknown as H;
-  // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 — library boundary).
+  // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 - library boundary).
   const { PostCard } = data.comp as unknown as Comp;
-  const language = typeof data.lang === "string" ? data.lang : "en";
+  const { date: dateFormat } = helpers as unknown as H;
+  const language = resolveSiteLanguage(data.lang);
+  const translations = getSiteTranslations(language);
+  const shortDatePattern = language === "fr" ? "d MMM" : "SHORT";
+  const archiveUrl = getLocalizedUrl("/posts/", language);
   const recent = data.search.pages(
     `type=post lang=${language}`,
     "date=desc",
@@ -50,31 +64,35 @@ export default async (
     const postDate = resolvePostDate(post.date);
     const minutes = resolveReadingMinutes(post.readingInfo);
 
-    // exactOptionalPropertyTypes: only include readingMinutes when it has a value.
+    // exactOptionalPropertyTypes: only include readingLabel when it has a value.
     const card = await PostCard({
       title: post.title as string,
       url: post.url as string,
-      dateStr: dateFormat(postDate, "SHORT"),
-      dateIso: dateFormat(postDate, "ATOM"),
-      ...(minutes !== undefined ? { readingMinutes: minutes } : {}),
+      dateStr: dateFormat(postDate, shortDatePattern, language) ??
+        postDate.toISOString(),
+      dateIso: dateFormat(postDate, "ATOM", language) ?? postDate.toISOString(),
+      ...(minutes !== undefined
+        ? { readingLabel: formatReadingTime(minutes, language) }
+        : {}),
     });
+
     return `<li class="home-posts-item">${card}</li>`;
   }))).join("\n");
 
   const emptyState = `<li class="home-posts-item home-posts-item--empty">
-    <p class="blankslate">No posts published yet.</p>
+    <p class="blankslate">${translations.home.emptyState}</p>
   </li>`;
 
   return `<section class="pagehead hero home-pagehead" aria-labelledby="home-title">
-  <p class="pagehead-eyebrow">Personal blog</p>
-  <h1 id="home-title" class="hero-title">Writing about things that matter.</h1>
-  <p class="hero-lead">A personal blog by Phiphi — software, culture, and everyday life from Chengdu.</p>
+  <p class="pagehead-eyebrow">${translations.home.eyebrow}</p>
+  <h1 id="home-title" class="hero-title">${translations.home.title}</h1>
+  <p class="hero-lead">${translations.home.lead}</p>
 </section>
 
 <section class="home-recent" aria-labelledby="home-recent-title">
   <div class="subhead">
-    <h2 id="home-recent-title" class="subhead-heading">Recent writing</h2>
-    <a href="/posts/" class="home-all-posts">View archive</a>
+    <h2 id="home-recent-title" class="subhead-heading">${translations.home.recentHeading}</h2>
+    <a href="${archiveUrl}" class="home-all-posts">${translations.home.archiveLinkLabel}</a>
   </div>
   <ul class="home-posts">
     ${recent.length > 0 ? postItems : emptyState}

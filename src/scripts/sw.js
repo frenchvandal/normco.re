@@ -5,7 +5,10 @@ const STATIC_CACHE = `static-${SW_VERSION}`;
 const PAGE_CACHE = `pages-${SW_VERSION}`;
 const FEED_CACHE = `feeds-${SW_VERSION}`;
 
-const OFFLINE_URL = "/offline/";
+const OFFLINE_URL_BY_LANGUAGE = {
+  en: "/offline/",
+  fr: "/fr/offline/",
+};
 const OFFLINE_FALLBACK_HTML = `<!doctype html>
 <html lang="en">
   <head>
@@ -27,10 +30,14 @@ const STATIC_ASSETS = [
   `/style.css?v=${SW_VERSION}`,
   `/scripts/theme-toggle.js?v=${SW_VERSION}`,
   `/scripts/anti-flash.js?v=${SW_VERSION}`,
+  `/scripts/language-preference.js?v=${SW_VERSION}`,
   `/scripts/feed-copy.js?v=${SW_VERSION}`,
   "/feed.xml",
   "/feed.json",
-  OFFLINE_URL,
+  "/fr/feed.xml",
+  "/fr/feed.json",
+  OFFLINE_URL_BY_LANGUAGE.en,
+  OFFLINE_URL_BY_LANGUAGE.fr,
 ];
 
 const FEED_TTL_MS = 30 * 60 * 1000;
@@ -330,7 +337,12 @@ async function networkFirstPage(request) {
     }
 
     const staticCache = await caches.open(STATIC_CACHE);
-    const offlinePage = await staticCache.match(OFFLINE_URL);
+    const fallbackLanguage = requestUrl.pathname.startsWith("/fr/")
+      ? "fr"
+      : "en";
+    const offlinePath = OFFLINE_URL_BY_LANGUAGE[fallbackLanguage] ??
+      OFFLINE_URL_BY_LANGUAGE.en;
+    const offlinePage = await staticCache.match(offlinePath);
 
     if (offlinePage !== undefined) {
       return offlinePage;

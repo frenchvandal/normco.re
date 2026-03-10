@@ -1,7 +1,7 @@
 import { assert, assertEquals } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import { jsonLd, lang, layout, metas } from "./_data.ts";
+import { fr, jsonLd, lang, layout, metas } from "./_data.ts";
 
 describe("src/_data.ts", () => {
   it("exports global language and base layout", () => {
@@ -18,5 +18,6 @@ describe("src/_data.ts", () => {
 
   it("keeps metas aligned with the site identity", () => {
     assertEquals(metas.site, "normco.re");
+    assertEquals(fr.metas.lang, "fr");
   });
 });

@@ -30,6 +30,47 @@
     border-color: var(--borderColor-default);
   }
 
+  .language-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .language-switcher-flag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1rem;
+    block-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .language-switcher-flag-icon {
+    display: block;
+  }
+
+  .language-select {
+    appearance: base-select;
+    min-block-size: 2rem;
+    padding-inline: 0.625rem;
+    border: 1px solid var(--control-borderColor-rest);
+    border-radius: var(--borderRadius-medium);
+    background: var(--control-bgColor-rest);
+    color: var(--control-fgColor-rest);
+    font-size: var(--text-sm);
+    line-height: 1;
+  }
+
+  .language-select:hover {
+    background: var(--control-bgColor-hover);
+  }
+
+  .language-select::picker(select) {
+    border: 1px solid var(--control-borderColor-rest);
+    border-radius: var(--borderRadius-medium);
+    background: var(--bgColor-default);
+  }
+
   .theme-icon {
     display: block;
   }

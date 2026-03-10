@@ -13,13 +13,17 @@ function makeAuthor(seed: number): string {
 describe("Footer()", () => {
   it("renders a site-footer element", async () => {
     const author = makeAuthor(101);
-    const html = await renderComponent(Footer({ author: author }));
+    const html = await renderComponent(
+      Footer({ author: author, language: "en", feedXmlUrl: "/feed.xml" }),
+    );
     assertStringIncludes(html, 'class="site-footer"');
   });
 
   it("contains an RSS feed link", async () => {
     const author = makeAuthor(102);
-    const html = await renderComponent(Footer({ author: author }));
+    const html = await renderComponent(
+      Footer({ author: author, language: "en", feedXmlUrl: "/feed.xml" }),
+    );
     assertStringIncludes(html, 'href="/feed.xml"');
     assertStringIncludes(html, 'aria-label="Open RSS feed"');
     assertNotMatch(html, /<span>RSS<\/span>/);
@@ -27,7 +31,9 @@ describe("Footer()", () => {
 
   it("contains a GitHub repository link", async () => {
     const author = makeAuthor(106);
-    const html = await renderComponent(Footer({ author: author }));
+    const html = await renderComponent(
+      Footer({ author: author, language: "en", feedXmlUrl: "/feed.xml" }),
+    );
     assertStringIncludes(
       html,
       'href="https://github.com/frenchvandal/normco.re"',
@@ -40,7 +46,9 @@ describe("Footer()", () => {
 
   it("renders the GitHub link before feed links", async () => {
     const author = makeAuthor(107);
-    const html = await renderComponent(Footer({ author: author }));
+    const html = await renderComponent(
+      Footer({ author: author, language: "en", feedXmlUrl: "/feed.xml" }),
+    );
     const githubIndex = html.indexOf('aria-label="Open GitHub repository"');
     const rssIndex = html.indexOf('aria-label="Open RSS feed"');
     assert(githubIndex > -1 && rssIndex > -1);
@@ -49,14 +57,26 @@ describe("Footer()", () => {
 
   it("contains the current year in the copyright notice", async () => {
     const author = makeAuthor(104);
-    const html = await renderComponent(Footer({ author: author }));
+    const html = await renderComponent(
+      Footer({ author: author, language: "en", feedXmlUrl: "/feed.xml" }),
+    );
     const year = new Date().getFullYear().toString();
     assertStringIncludes(html, year);
   });
 
   it("contains the author name", async () => {
     const author = makeAuthor(105);
-    const html = await renderComponent(Footer({ author: author }));
+    const html = await renderComponent(
+      Footer({ author: author, language: "en", feedXmlUrl: "/feed.xml" }),
+    );
     assertStringIncludes(html, author);
+  });
+
+  it("uses localized feed URLs when rendered in French", async () => {
+    const author = makeAuthor(108);
+    const html = await renderComponent(
+      Footer({ author: author, language: "fr", feedXmlUrl: "/fr/feed.xml" }),
+    );
+    assertStringIncludes(html, 'href="/fr/feed.xml"');
   });
 });

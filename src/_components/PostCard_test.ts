@@ -19,22 +19,22 @@ function makeBase(seed: number) {
 }
 
 describe("PostCard()", () => {
-  describe("with readingMinutes", () => {
+  describe("with readingLabel", () => {
     it("renders reading time in .post-card-meta", () => {
       const base = makeBase(301);
-      const html = PostCard({ ...base, readingMinutes: 3 });
+      const html = PostCard({ ...base, readingLabel: "3 min read" });
       assertStringIncludes(html, "3 min read");
       assertStringIncludes(html, 'class="post-card-meta"');
     });
 
-    it("renders the provided reading minutes value", () => {
+    it("renders the provided reading label value", () => {
       const base = makeBase(302);
-      const html = PostCard({ ...base, readingMinutes: 7 });
+      const html = PostCard({ ...base, readingLabel: "7 min read" });
       assertStringIncludes(html, "7 min read");
     });
   });
 
-  describe("without readingMinutes", () => {
+  describe("without readingLabel", () => {
     it("renders no .post-card-meta element", () => {
       const base = makeBase(303);
       const html = PostCard({ ...base });

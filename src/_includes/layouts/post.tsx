@@ -1,5 +1,10 @@
-/** Individual post layout — chains into the base layout. */
+/** Individual post layout - chains into the base layout. */
 
+import {
+  formatReadingTime,
+  getSiteTranslations,
+  resolveSiteLanguage,
+} from "../../utils/i18n.ts";
 import {
   resolvePostDate,
   resolveReadingMinutes,
@@ -10,7 +15,7 @@ export const layout = "layouts/base.tsx";
 
 /** Typed helpers used in this layout. */
 type H = {
-  date: (value: unknown, format: string) => string;
+  date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
 };
 
 /**
@@ -60,15 +65,13 @@ function isPostCandidate(
 
 /** Renders the post page within the base layout. */
 export default (data: Lume.Data, helpers: Lume.Helpers) => {
-  // Lume.Helpers is loosely typed; cast to the minimal interface declared above
-  // to get type-safe access to the `date` helper (§5.4 — library boundary).
   const { date: dateFormat } = helpers as unknown as H;
 
   // data.nav is typed as `unknown` by Lume; cast to the minimal NavHelper
-  // interface declared above (§5.4 — library boundary).
+  // interface declared above (§5.4 - library boundary).
   const n = data.nav as unknown as NavHelper;
-  const language = data.lang === "fr" ? "fr" : "en";
-  const isFrench = language === "fr";
+  const language = resolveSiteLanguage(data.lang);
+  const translations = getSiteTranslations(language);
   const postQuery = `type=post lang=${language}`;
   const currentUrl = data.url ?? "/";
   const postsBaseUrl = language === "fr" ? "/fr/posts/" : "/posts/";
@@ -103,29 +106,26 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     const navNext = n.nextPage(currentUrl, postsBaseUrl, postQuery, "date=asc");
     next = isPostCandidate(navNext, postsBaseUrl) ? navNext : undefined;
   }
+
   const postDate = resolvePostDate(data.date);
   const minutes = resolveReadingMinutes(data.readingInfo);
-  const readingTimeLabel = isFrench
-    ? `${minutes ?? 0}\u00a0min de lecture`
-    : `${minutes ?? 0} min read`;
-  const navigationAriaLabel = isFrench
-    ? "Navigation entre articles"
-    : "Post navigation";
-  const previousLabel = isFrench ? "Précédent" : "Previous";
-  const nextLabel = isFrench ? "Suivant" : "Next";
 
   return (
     <article class="post-article">
       <header class="post-header pagehead post-pagehead">
         <h1 class="post-title">{data.title ?? ""}</h1>
         <div class="post-meta">
-          <time datetime={dateFormat(postDate, "ATOM")}>
-            {dateFormat(postDate, "HUMAN_DATE")}
+          <time
+            datetime={dateFormat(postDate, "ATOM", language) ??
+              postDate.toISOString()}
+          >
+            {dateFormat(postDate, "HUMAN_DATE", language) ??
+              postDate.toISOString()}
           </time>
           {minutes !== undefined && (
             <>
               <span class="post-meta-separator" aria-hidden="true">·</span>
-              <span>{readingTimeLabel}</span>
+              <span>{formatReadingTime(minutes, language)}</span>
             </>
           )}
         </div>
@@ -133,11 +133,13 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
       <div class="post-content">
         {data.children}
       </div>
-      <nav class="post-nav" aria-label={navigationAriaLabel}>
+      <nav class="post-nav" aria-label={translations.post.navigationAriaLabel}>
         {prev
           ? (
             <div class="post-nav-item">
-              <span class="post-nav-label">{previousLabel}</span>
+              <span class="post-nav-label">
+                {translations.post.previousLabel}
+              </span>
               <a href={prev.url ?? ""} class="post-nav-title">
                 {prev.title ?? ""}
               </a>
@@ -147,7 +149,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
         {next
           ? (
             <div class="post-nav-item post-nav-item--next">
-              <span class="post-nav-label">{nextLabel}</span>
+              <span class="post-nav-label">{translations.post.nextLabel}</span>
               <a href={next.url ?? ""} class="post-nav-title">
                 {next.title ?? ""}
               </a>

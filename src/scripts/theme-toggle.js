@@ -10,6 +10,10 @@
   }
 
   const themeToggleButton = button;
+  const switchToLightLabel = themeToggleButton.dataset.labelSwitchLight ??
+    "Switch to light theme";
+  const switchToDarkLabel = themeToggleButton.dataset.labelSwitchDark ??
+    "Switch to dark theme";
 
   function readStoredMode() {
     try {
@@ -51,7 +55,7 @@
   function updateToggleAccessibility(mode) {
     themeToggleButton.setAttribute(
       "aria-label",
-      mode === "dark" ? "Switch to light theme" : "Switch to dark theme",
+      mode === "dark" ? switchToLightLabel : switchToDarkLabel,
     );
     themeToggleButton.setAttribute("aria-pressed", String(mode === "dark"));
   }

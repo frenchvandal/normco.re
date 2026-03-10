@@ -1,8 +1,8 @@
 /**
  * Post card used on the home page and archive listings.
  *
- * Callers are responsible for formatting dates via `helpers.date()` before
- * passing them in, keeping this component free of date-formatting logic.
+ * Callers are responsible for formatting dates and reading labels before
+ * passing them in, keeping this component free of locale logic.
  */
 
 /** Escapes text content before interpolation into raw HTML strings. */
@@ -20,18 +20,16 @@ function escapeAttribute(value: string): string {
 
 /** Renders one post card row. */
 export default (
-  { title, url, dateStr, dateIso, readingMinutes }: {
+  { title, url, dateStr, dateIso, readingLabel }: {
     readonly title: string;
     readonly url: string;
-    /** Display string produced by `helpers.date(date, "SHORT")`. */
     readonly dateStr: string;
-    /** ISO 8601 string for the `datetime` attribute, e.g. from `helpers.date(date, "ATOM")`. */
     readonly dateIso: string;
-    readonly readingMinutes?: number;
+    readonly readingLabel?: string;
   },
 ): string => {
-  const meta = readingMinutes !== undefined
-    ? `<span class="post-card-meta">${readingMinutes} min read</span>`
+  const meta = readingLabel !== undefined
+    ? `<span class="post-card-meta">${escapeHtml(readingLabel)}</span>`
     : "";
   const safeTitle = escapeHtml(title);
   const safeUrl = escapeAttribute(url);

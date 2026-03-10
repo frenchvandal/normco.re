@@ -67,12 +67,12 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, "<title>normco.re</title>");
     });
 
-    it('formats title as "<title> — normco.re"', async () => {
+    it('formats title as "<title> - normco.re"', async () => {
       const randomTitle = makeSentence(601);
       const html = await renderComponent(
         baseLayout(makeData({ title: randomTitle }), MOCK_HELPERS),
       );
-      assertStringIncludes(html, `<title>${randomTitle} — normco.re</title>`);
+      assertStringIncludes(html, `<title>${randomTitle} - normco.re</title>`);
     });
   });
 
@@ -113,6 +113,10 @@ describe("base.tsx layout", () => {
         baseLayout(makeData({}), MOCK_HELPERS),
       );
       assertStringIncludes(html, 'href="/style.css?v=dev"');
+      assertStringIncludes(
+        html,
+        '<script src="/scripts/language-preference.js?v=dev"',
+      );
       assertStringIncludes(
         html,
         '<script src="/scripts/anti-flash.js?v=dev"></script>',

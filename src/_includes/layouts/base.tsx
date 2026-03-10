@@ -2,6 +2,16 @@
 
 import type { jsx } from "lume/jsx-runtime";
 
+import {
+  DEFAULT_LANGUAGE,
+  getLocalizedUrl,
+  getSiteTranslations,
+  isSiteLanguage,
+  resolveSiteLanguage,
+  type SiteLanguage,
+  SUPPORTED_LANGUAGES,
+} from "../../utils/i18n.ts";
+
 /** `<!doctype html>` prepended to the document before the `<html>` root. */
 const DOCTYPE = { __html: "<!doctype html>\n" } as const;
 
@@ -10,14 +20,20 @@ type BuildData = {
   swDebugLevel?: "off" | "summary" | "verbose";
 };
 
+type AlternateData = {
+  readonly lang?: unknown;
+  readonly url?: unknown;
+};
+
 type LayoutData = Lume.Data & {
   build?: BuildData;
   lang?: string;
-  /** Injected by `src/_data.ts` — canonical site name / domain. */
+  alternates?: ReadonlyArray<AlternateData>;
+  /** Injected by `src/_data.ts` - canonical site name / domain. */
   siteName?: string;
-  /** Injected by `src/_data.ts` — primary author name. */
+  /** Injected by `src/_data.ts` - primary author name. */
   author?: string;
-  /** Injected by `src/_data.ts` — site metadata for meta tags. */
+  /** Injected by `src/_data.ts` - site metadata for meta tags. */
   metas?: { readonly site?: string; readonly description?: string };
 };
 
@@ -26,11 +42,45 @@ type SsxElement = ReturnType<typeof jsx>;
 
 /** Minimal typed interface for the components used in this layout. */
 type Comp = {
-  Header: (
-    props: { readonly currentUrl: string; readonly siteName: string },
-  ) => SsxElement;
-  Footer: (props: { readonly author: string }) => SsxElement;
+  Header: (props: {
+    readonly currentUrl: string;
+    readonly siteName: string;
+    readonly language: SiteLanguage;
+  }) => SsxElement;
+  Footer: (props: {
+    readonly author: string;
+    readonly language: SiteLanguage;
+    readonly feedXmlUrl: string;
+  }) => SsxElement;
 };
+
+/** Returns alternate URLs keyed by language for the current page. */
+function collectAlternateUrls(
+  alternates: ReadonlyArray<AlternateData> | undefined,
+  currentLanguage: SiteLanguage,
+  currentUrl: string,
+): Partial<Record<SiteLanguage, string>> {
+  const urls: Partial<Record<SiteLanguage, string>> = {};
+
+  for (const alternate of alternates ?? []) {
+    if (!isSiteLanguage(alternate.lang)) {
+      continue;
+    }
+
+    const language = alternate.lang;
+    const alternateUrl = typeof alternate.url === "string" ? alternate.url : "";
+
+    if (alternateUrl.length > 0) {
+      urls[language] = alternateUrl;
+    }
+  }
+
+  if (urls[currentLanguage] === undefined) {
+    urls[currentLanguage] = currentUrl;
+  }
+
+  return urls;
+}
 
 /** Renders the full HTML document shell. */
 export default (
@@ -42,6 +92,7 @@ export default (
     comp,
     build,
     lang,
+    alternates,
     siteName,
     author,
     metas,
@@ -52,14 +103,20 @@ export default (
   // a safety net for test environments that omit them.
   const resolvedSiteName = siteName ?? "normco.re";
   const resolvedAuthor = author ?? "Phiphi";
-  const pageTitle = title ? `${title} — ${resolvedSiteName}` : resolvedSiteName;
+  const pageTitle = title ? `${title} - ${resolvedSiteName}` : resolvedSiteName;
+  const language = resolveSiteLanguage(lang);
+  const translations = getSiteTranslations(language);
   const metaDescription = description ?? metas?.description ??
     "Personal blog by Phiphi, based in Chengdu, China.";
-  const documentLanguage = lang ?? "en";
+  const documentLanguage = language;
+  const currentUrl = typeof url === "string" && url.length > 0 ? url : "/";
   const assetVersion = build?.assetVersion ?? "dev";
   const swDebugLevel = build?.swDebugLevel ?? "off";
+  const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
+  const feedJsonUrl = getLocalizedUrl("/feed.json", language);
+  const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
 
-  // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 — library boundary).
+  // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 - library boundary).
   const { Header, Footer } = comp as unknown as Comp;
 
   return (
@@ -76,29 +133,47 @@ export default (
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <title>{pageTitle}</title>
           <meta name="description" content={metaDescription} />
+          <script
+            src={`/scripts/language-preference.js?v=${assetVersion}`}
+            data-supported-languages={SUPPORTED_LANGUAGES.join(",")}
+            data-default-language={DEFAULT_LANGUAGE}
+            data-current-language={language}
+            data-language-alternates={JSON.stringify(alternateUrls)}
+          >
+          </script>
           <script src={`/scripts/anti-flash.js?v=${assetVersion}`}></script>
           <link rel="stylesheet" href={`/style.css?v=${assetVersion}`} />
           <link
             rel="alternate"
             type="application/rss+xml"
             title={resolvedSiteName}
-            href="/feed.xml"
+            href={feedXmlUrl}
           />
           <link
             rel="alternate"
             type="application/json"
             title={`${resolvedSiteName} JSON feed`}
-            href="/feed.json"
+            href={feedJsonUrl}
           />
         </head>
-        <body data-a11y-link-underlines="true">
-          <a class="skip-link" href="#main-content">Skip to content</a>
+        <body data-a11y-link-underlines="true" data-current-language={language}>
+          <a class="skip-link" href="#main-content">
+            {translations.site.skipToContent}
+          </a>
           <div class="site-wrapper">
-            <Header currentUrl={url ?? "/"} siteName={resolvedSiteName} />
+            <Header
+              currentUrl={currentUrl}
+              siteName={resolvedSiteName}
+              language={language}
+            />
             <main class="site-main" id="main-content">
               {children}
             </main>
-            <Footer author={resolvedAuthor} />
+            <Footer
+              author={resolvedAuthor}
+              language={language}
+              feedXmlUrl={feedXmlUrl}
+            />
           </div>
           <script src={`/scripts/theme-toggle.js?v=${assetVersion}`}></script>
           <script
