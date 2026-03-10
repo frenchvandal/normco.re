@@ -12,6 +12,7 @@ type BuildData = {
 
 type LayoutData = Lume.Data & {
   build?: BuildData;
+  lang?: string;
   /** Injected by `src/_data.ts` — canonical site name / domain. */
   siteName?: string;
   /** Injected by `src/_data.ts` — primary author name. */
@@ -33,8 +34,18 @@ type Comp = {
 
 /** Renders the full HTML document shell. */
 export default (
-  { title, description, url, children, comp, build, siteName, author, metas }:
-    LayoutData,
+  {
+    title,
+    description,
+    url,
+    children,
+    comp,
+    build,
+    lang,
+    siteName,
+    author,
+    metas,
+  }: LayoutData,
   _helpers: Lume.Helpers,
 ) => {
   // siteName and author are always provided by src/_data.ts; the fallbacks are
@@ -44,6 +55,7 @@ export default (
   const pageTitle = title ? `${title} — ${resolvedSiteName}` : resolvedSiteName;
   const metaDescription = description ?? metas?.description ??
     "Personal blog by Phiphi, based in Chengdu, China.";
+  const documentLanguage = lang ?? "en";
   const assetVersion = build?.assetVersion ?? "dev";
   const swDebugLevel = build?.swDebugLevel ?? "off";
 
@@ -54,7 +66,7 @@ export default (
     <>
       {DOCTYPE}
       <html
-        lang="en"
+        lang={documentLanguage}
         data-color-mode="light"
         data-light-theme="light"
         data-dark-theme="dark"

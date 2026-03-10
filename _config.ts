@@ -13,6 +13,7 @@ import terser from "lume/plugins/terser.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
 import nav from "lume/plugins/nav.ts";
+import multilanguage from "lume/plugins/multilanguage.ts";
 import robots from "lume/plugins/robots.ts";
 import jsx from "lume/plugins/jsx.ts";
 import checkUrls from "lume/plugins/check_urls.ts";
@@ -254,6 +255,12 @@ site.use(
 );
 
 // Navigation tree: data.nav.menu(), data.nav.nextPage(), data.nav.previousPage()
+site.use(
+  multilanguage({
+    languages: ["en", "fr"],
+    defaultLanguage: "en",
+  }),
+);
 site.use(nav());
 
 // Validate generated HTML against html-validate recommended/document presets.
@@ -327,7 +334,7 @@ site.use(prism({ autoloadLanguages: true }));
 site.use(
   feed({
     output: ["/feed.xml", "/feed.json"],
-    query: "type=post",
+    query: "type=post lang=en",
     info: {
       title: "normco.re",
       description: "Personal blog by Phiphi, based in Chengdu, China.",

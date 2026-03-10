@@ -26,7 +26,11 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   // Lume.Helpers is loosely typed; cast to the minimal interface declared above
   // to get type-safe access to the `date` helper (§5.4 — library boundary).
   const { date: dateFormat } = helpers as unknown as H;
-  const posts = data.search.pages("type=post", "date=desc") as Lume.Data[];
+  const language = typeof data.lang === "string" ? data.lang : "en";
+  const posts = data.search.pages(
+    `type=post lang=${language}`,
+    "date=desc",
+  ) as Lume.Data[];
 
   // Group posts by year.
   const currentYear = new Date().getFullYear();

@@ -39,7 +39,12 @@ export default async (
   const { date: dateFormat } = helpers as unknown as H;
   // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 — library boundary).
   const { PostCard } = data.comp as unknown as Comp;
-  const recent = data.search.pages("type=post", "date=desc", 5) as Lume.Data[];
+  const language = typeof data.lang === "string" ? data.lang : "en";
+  const recent = data.search.pages(
+    `type=post lang=${language}`,
+    "date=desc",
+    5,
+  ) as Lume.Data[];
 
   const postItems = (await Promise.all(recent.map(async (post) => {
     const postDate = resolvePostDate(post.date);
