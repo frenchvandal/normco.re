@@ -27,6 +27,7 @@ const STATIC_ASSETS = [
   `/style.css?v=${SW_VERSION}`,
   `/scripts/theme-toggle.js?v=${SW_VERSION}`,
   `/scripts/anti-flash.js?v=${SW_VERSION}`,
+  `/scripts/feed-copy.js?v=${SW_VERSION}`,
   "/feed.xml",
   "/feed.json",
   OFFLINE_URL,

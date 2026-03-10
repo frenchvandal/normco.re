@@ -500,10 +500,61 @@
       color 0.15s ease;
   }
 
+  .feed-copy-control {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .feed-copy-control .feed-page-button {
+    border-radius: 0;
+  }
+
+  .feed-copy-control .feed-page-button:first-child {
+    border-start-start-radius: var(--borderRadius-medium);
+    border-end-start-radius: var(--borderRadius-medium);
+  }
+
+  .feed-copy-control .feed-page-button:last-child {
+    border-start-end-radius: var(--borderRadius-medium);
+    border-end-end-radius: var(--borderRadius-medium);
+  }
+
+  .feed-page-button--copy-trigger {
+    inline-size: 2.125rem;
+    padding: 0;
+    border-inline-start: 0;
+    background: var(--bgColor-muted);
+    cursor: pointer;
+  }
+
   .feed-page-button:hover {
     background: var(--control-bgColor-hover);
     border-color: var(--borderColor-default);
     color: var(--control-fgColor-rest);
+  }
+
+  .feed-page-button--copy-trigger:hover {
+    background: var(--control-bgColor-hover);
+  }
+
+  .feed-page-button--copy-trigger:active {
+    background: var(--control-bgColor-active);
+  }
+
+  .feed-copy-icon--success {
+    display: none;
+  }
+
+  .feed-copy-control[data-copy-state="copied"] .feed-copy-icon--copy {
+    display: none;
+  }
+
+  .feed-copy-control[data-copy-state="copied"] .feed-copy-icon--success {
+    display: inline-block;
+  }
+
+  .feed-copy-control[data-copy-state="copied"] .feed-page-button--copy-trigger {
+    color: var(--fgColor-accent);
   }
 
   .feed-page-button--primary {

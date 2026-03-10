@@ -6,6 +6,11 @@ import instructionsPage, {
   description as instructionsDescription,
   title as instructionsTitle,
 } from "./instructions.page.tsx";
+import alibabaCloudOssCdnDeploymentPage, {
+  date as alibabaCloudOssCdnDeploymentDate,
+  description as alibabaCloudOssCdnDeploymentDescription,
+  title as alibabaCloudOssCdnDeploymentTitle,
+} from "./alibaba-cloud-oss-cdn-deployment.page.tsx";
 import loremIpsumPage, {
   date as loremIpsumDate,
   description as loremIpsumDescription,
@@ -33,6 +38,12 @@ type PostContractCase = {
 };
 
 const POST_CONTRACT_CASES: Record<string, PostContractCase> = {
+  "posts/alibaba-cloud-oss-cdn-deployment.page.tsx": {
+    date: alibabaCloudOssCdnDeploymentDate,
+    description: alibabaCloudOssCdnDeploymentDescription,
+    render: alibabaCloudOssCdnDeploymentPage,
+    title: alibabaCloudOssCdnDeploymentTitle,
+  },
   "posts/instructions.page.tsx": {
     date: instructionsDate,
     description: instructionsDescription,
