@@ -226,6 +226,7 @@
         </div>
         <script src="/pagefind/pagefind-ui.js"/>
         <script>globalThis.addEventListener("DOMContentLoaded",()=>{if(typeof PagefindUI==="function"){new PagefindUI({element:"#sitemap-search",showImages:false,showSubResults:false,resetStyles:false});}})</script>
+        <script src="/scripts/disclosure-controls.js"/>
         <script src="/scripts/theme-toggle.js"/>
         <script src="/scripts/feed-copy.js"/>
       </body>

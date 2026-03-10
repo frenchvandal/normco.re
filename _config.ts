@@ -173,6 +173,7 @@ site.addEventListener("beforeSave", () => {
 // Register assets so Lume discovers them before processors/plugins run.
 site.add("/style.css");
 site.add("/scripts/theme-toggle.js");
+site.add("/scripts/disclosure-controls.js");
 site.add("/scripts/anti-flash.js");
 site.add("/scripts/language-preference.js");
 site.add("/scripts/feed-copy.js");

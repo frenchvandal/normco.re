@@ -174,6 +174,10 @@ export default (
               feedXmlUrl={feedXmlUrl}
             />
           </div>
+          <script
+            src={`/scripts/disclosure-controls.js?v=${assetVersion}`}
+          >
+          </script>
           <script src={`/scripts/theme-toggle.js?v=${assetVersion}`}></script>
           <script
             src={`/scripts/sw-register.js?v=${assetVersion}`}
