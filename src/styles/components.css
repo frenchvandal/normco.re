@@ -116,6 +116,7 @@
   .site-menu-link {
     display: inline-flex;
     align-items: center;
+    gap: 0.5rem;
     min-block-size: 2rem;
     inline-size: 100%;
     padding-inline: 0.625rem;
@@ -123,6 +124,15 @@
     border-radius: var(--borderRadius-medium);
     font-size: var(--text-sm);
     text-decoration: none;
+  }
+
+  .site-menu-link-icon {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .site-menu-link-label {
+    line-height: 1.25;
   }
 
   body[data-a11y-link-underlines="true"] .site-menu-link {
@@ -138,6 +148,13 @@
     background: var(--bgColor-accent-muted);
     color: var(--fgColor-default);
     font-weight: 600;
+  }
+
+  .site-header-search {
+    flex: 1 1 clamp(11rem, 32vw, 22rem);
+    inline-size: clamp(11rem, 32vw, 22rem);
+    min-inline-size: 11rem;
+    max-inline-size: 22rem;
   }
 
   .site-menu-search {
@@ -157,18 +174,117 @@
 
   .site-search-root {
     min-block-size: 2rem;
+    --pagefind-ui-scale: 0.56;
+    --pagefind-ui-font: var(--font-sans);
+    --pagefind-ui-primary: var(--fgColor-default);
+    --pagefind-ui-text: var(--fgColor-default);
+    --pagefind-ui-background: var(--control-bgColor-rest);
+    --pagefind-ui-border: var(--control-borderColor-rest);
+    --pagefind-ui-tag: var(--bgColor-muted);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: var(--borderRadius-medium);
+  }
+
+  .site-search-root .pagefind-ui {
+    color: var(--fgColor-default);
   }
 
   .site-search-root .pagefind-ui__form {
     margin: 0;
   }
 
+  .site-search-root .pagefind-ui__form::before {
+    inset-block-start: 50%;
+    inset-inline-start: 0.625rem;
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+    opacity: 0.65;
+    transform: translateY(-50%);
+  }
+
   .site-search-root .pagefind-ui__search-input {
     border: 1px solid var(--control-borderColor-rest);
     border-radius: var(--borderRadius-medium);
     background: var(--control-bgColor-rest);
-    color: var(--control-fgColor-rest);
+    color: var(--fgColor-default);
     min-block-size: 2rem;
+    block-size: 2rem;
+    padding-inline: 1.875rem;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    caret-color: var(--fgColor-default);
+  }
+
+  .site-search-root .pagefind-ui__search-input::placeholder {
+    color: var(--fgColor-muted);
+    opacity: 1;
+  }
+
+  .site-search-root .pagefind-ui__search-clear {
+    min-block-size: 2rem;
+    inset-block-start: 1px;
+    inset-inline-end: 1px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: calc(2rem - 2px);
+    block-size: calc(2rem - 2px);
+    padding: 0;
+    border: 0;
+    border-radius: calc(var(--borderRadius-medium) - 1px);
+    color: var(--fgColor-muted);
+    background: transparent;
+    font-size: 0;
+    line-height: 0;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .site-search-root .pagefind-ui__search-clear::before {
+    content: "×";
+    font-size: 1rem;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  .site-search-root .pagefind-ui__search-clear:hover {
+    color: var(--fgColor-default);
+    background: var(--bgColor-muted);
+  }
+
+  .site-search-root .pagefind-ui__drawer {
+    gap: var(--space-s);
+    margin-block-start: 0.25rem;
+  }
+
+  .site-search-root .pagefind-ui__results-area {
+    margin-block-start: 0.25rem;
+  }
+
+  .site-search-root .pagefind-ui__message,
+  .site-search-root .pagefind-ui__result-title,
+  .site-search-root .pagefind-ui__result-link,
+  .site-search-root .pagefind-ui__result-excerpt {
+    color: var(--fgColor-default);
+  }
+
+  .site-search-root .pagefind-ui__result {
+    border-color: var(--borderColor-muted);
+  }
+
+  .site-search-root .pagefind-ui__result-link:hover {
+    color: var(--fgColor-accent);
+  }
+
+  .site-search-root .pagefind-ui__button {
+    color: var(--fgColor-default);
+    border-color: var(--control-borderColor-rest);
+    background: var(--control-bgColor-rest);
+  }
+
+  .site-search-root .pagefind-ui__button:hover {
+    border-color: var(--borderColor-default);
+    background: var(--control-bgColor-hover);
   }
 
   .site-search-root .pagefind-ui__search-input:focus-visible {

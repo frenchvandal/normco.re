@@ -44,6 +44,9 @@ export default (
   const postsUrl = getLocalizedUrl("/posts/", language);
   const aboutUrl = getLocalizedUrl("/about/", language);
   const menuIcon = helpers.icon("three-bars", "octicons", "16");
+  const homeIcon = helpers.icon("home", "octicons", "16");
+  const writingIcon = helpers.icon("book", "octicons", "16");
+  const aboutIcon = helpers.icon("info", "octicons", "16");
   const globeIcon = helpers.icon("globe", "octicons", "16");
   const checkIcon = helpers.icon("check", "octicons", "16");
   const searchContainerId = "search";
@@ -85,11 +88,44 @@ export default (
                 <ul class="site-menu-nav-list">
                   <li class="site-menu-nav-item">
                     <a
+                      href={homeUrl}
+                      class="site-menu-link"
+                      {...ariaCurrent(homeUrl, currentUrl)}
+                    >
+                      <img
+                        inline
+                        class="site-menu-link-icon octicon-svg"
+                        width="16"
+                        height="16"
+                        src={homeIcon}
+                        alt=""
+                        aria-hidden="true"
+                        focusable="false"
+                      />
+                      <span class="site-menu-link-label">
+                        {translations.navigation.home}
+                      </span>
+                    </a>
+                  </li>
+                  <li class="site-menu-nav-item">
+                    <a
                       href={postsUrl}
                       class="site-menu-link"
                       {...ariaCurrent(postsUrl, currentUrl)}
                     >
-                      {translations.navigation.writing}
+                      <img
+                        inline
+                        class="site-menu-link-icon octicon-svg"
+                        width="16"
+                        height="16"
+                        src={writingIcon}
+                        alt=""
+                        aria-hidden="true"
+                        focusable="false"
+                      />
+                      <span class="site-menu-link-label">
+                        {translations.navigation.writing}
+                      </span>
                     </a>
                   </li>
                   <li class="site-menu-nav-item">
@@ -98,24 +134,33 @@ export default (
                       class="site-menu-link"
                       {...ariaCurrent(aboutUrl, currentUrl)}
                     >
-                      {translations.navigation.about}
+                      <img
+                        inline
+                        class="site-menu-link-icon octicon-svg"
+                        width="16"
+                        height="16"
+                        src={aboutIcon}
+                        alt=""
+                        aria-hidden="true"
+                        focusable="false"
+                      />
+                      <span class="site-menu-link-label">
+                        {translations.navigation.about}
+                      </span>
                     </a>
                   </li>
                 </ul>
               </nav>
-              <section
-                class="site-menu-search"
-                aria-label={translations.site.searchLabel}
-              >
-                <p class="site-menu-search-title">
-                  {translations.site.searchLabel}
-                </p>
-                <div id={searchContainerId} class="site-search-root"></div>
-              </section>
             </div>
           </details>
         </div>
         <div class="site-header-end">
+          <section
+            class="site-header-search"
+            aria-label={translations.site.searchLabel}
+          >
+            <div id={searchContainerId} class="site-search-root"></div>
+          </section>
           <div class="language-switcher">
             <details class="language-menu">
               <summary

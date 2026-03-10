@@ -94,6 +94,16 @@ describe("Header()", () => {
       assertStringIncludes(html, "Writing");
     });
 
+    it("contains a Home nav link in the hamburger menu", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertMatch(
+        html,
+        /href="\/" class="site-menu-link"[\s\S]*\/icons\/octicons\/home-16\.svg/,
+      );
+    });
+
     it("contains an About nav link", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
@@ -102,7 +112,7 @@ describe("Header()", () => {
       assertStringIncludes(html, "About");
     });
 
-    it("renders a hamburger menu trigger and a search container", async () => {
+    it("renders a hamburger menu trigger and a header search container", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
@@ -110,7 +120,17 @@ describe("Header()", () => {
         html,
         /class="site-menu-trigger-icon octicon-svg"[^>]*src="\/icons\/octicons\/three-bars-16\.svg"/,
       );
+      assertStringIncludes(html, 'class="site-header-search"');
       assertStringIncludes(html, 'id="search"');
+    });
+
+    it("renders menu item icons for Home, Writing, and About", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertStringIncludes(html, "/icons/octicons/home-16.svg");
+      assertStringIncludes(html, "/icons/octicons/book-16.svg");
+      assertStringIncludes(html, "/icons/octicons/info-16.svg");
     });
 
     it("renders a globe trigger and localized language menu options", async () => {

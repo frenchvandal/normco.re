@@ -34,18 +34,33 @@
                   <div class="site-menu-panel">
                     <nav class="site-menu-nav" aria-label="Main navigation">
                       <ul class="site-menu-nav-list">
-                        <li class="site-menu-nav-item"><a href="/posts/" class="site-menu-link">Writing</a></li>
-                        <li class="site-menu-nav-item"><a href="/about/" class="site-menu-link">About</a></li>
+                        <li class="site-menu-nav-item">
+                          <a href="/" class="site-menu-link">
+                            <img class="site-menu-link-icon octicon-svg" width="16" height="16" src="/icons/octicons/home-16.svg" alt="" aria-hidden="true" focusable="false"/>
+                            <span class="site-menu-link-label">Home</span>
+                          </a>
+                        </li>
+                        <li class="site-menu-nav-item">
+                          <a href="/posts/" class="site-menu-link">
+                            <img class="site-menu-link-icon octicon-svg" width="16" height="16" src="/icons/octicons/book-16.svg" alt="" aria-hidden="true" focusable="false"/>
+                            <span class="site-menu-link-label">Writing</span>
+                          </a>
+                        </li>
+                        <li class="site-menu-nav-item">
+                          <a href="/about/" class="site-menu-link">
+                            <img class="site-menu-link-icon octicon-svg" width="16" height="16" src="/icons/octicons/info-16.svg" alt="" aria-hidden="true" focusable="false"/>
+                            <span class="site-menu-link-label">About</span>
+                          </a>
+                        </li>
                       </ul>
                     </nav>
-                    <section class="site-menu-search" aria-label="Search">
-                      <p class="site-menu-search-title">Search</p>
-                      <div id="sitemap-search" class="site-search-root"></div>
-                    </section>
                   </div>
                 </details>
               </div>
               <div class="site-header-end">
+                <section class="site-header-search" aria-label="Search">
+                  <div id="sitemap-search" class="site-search-root"></div>
+                </section>
                 <div class="language-switcher">
                   <details class="language-menu">
                     <summary class="language-menu-trigger" aria-label="Select language" title="Language">
