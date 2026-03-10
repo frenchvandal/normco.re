@@ -6,6 +6,8 @@ import type {
   Item as DebugBarItem,
 } from "lume/deps/debugbar.ts";
 
+import { sumOf } from "jsr/collections";
+import { bold, cyan, dim, green, red, yellow } from "jsr/fmt-colors";
 import { metrics, SpanStatusCode, trace } from "npm/opentelemetry-api";
 import type { Span } from "npm/opentelemetry-api";
 
@@ -18,6 +20,7 @@ import type { Span } from "npm/opentelemetry-api";
 
 type OTelReadEnv = (name: string) => string | undefined;
 type DebugBarRefreshKind = "build" | "request";
+const SUPPORTS_CONSOLE_COLORS = Deno.stdout.isTerminal();
 
 function createEnvReader(): OTelReadEnv {
   return (name: string): string | undefined => {
@@ -239,6 +242,54 @@ function classifyLatency(durationMs: number): RequestRecord["latencyClass"] {
   return undefined;
 }
 
+function colorizeConsoleText(
+  value: string,
+  formatter: (value: string) => string,
+): string {
+  return SUPPORTS_CONSOLE_COLORS ? formatter(value) : value;
+}
+
+function formatRequestStatus(status: number): string {
+  const value = String(status);
+
+  if (status >= 500) {
+    return colorizeConsoleText(value, (text) => bold(red(text)));
+  }
+
+  if (status >= 400) {
+    return colorizeConsoleText(value, yellow);
+  }
+
+  return colorizeConsoleText(value, green);
+}
+
+function formatRequestDuration(durationMs: number): string {
+  const rounded = Math.round(durationMs);
+  const value = String(rounded);
+
+  if (rounded >= 1000) {
+    return colorizeConsoleText(value, red);
+  }
+
+  if (rounded >= 250) {
+    return colorizeConsoleText(value, yellow);
+  }
+
+  return colorizeConsoleText(value, green);
+}
+
+function formatRequestMethod(method: string): string {
+  return colorizeConsoleText(method, (value) => bold(cyan(value)));
+}
+
+function formatRequestRoute(route: string): string {
+  return colorizeConsoleText(route, dim);
+}
+
+function formatRequestError(message: string): string {
+  return colorizeConsoleText(message, red);
+}
+
 function normalizeUserAgent(value: string | null): string | undefined {
   if (!value) {
     return undefined;
@@ -407,11 +458,11 @@ function createMiddleware(
         // Called inside the active span: OTEL links this log to the trace.
         console.table(
           [{
-            method,
-            route,
-            status: 500,
-            ms: Math.round(record.durationMs),
-            error: message,
+            method: formatRequestMethod(method),
+            route: formatRequestRoute(route),
+            status: formatRequestStatus(500),
+            ms: formatRequestDuration(record.durationMs),
+            error: formatRequestError(message),
           }],
           ["method", "route", "status", "ms", "error"],
         );
@@ -463,7 +514,12 @@ function createMiddleware(
     if (devMode && options.logRequests) {
       // Called inside the active span: OTEL links this log to the trace.
       console.table(
-        [{ method, route, status, ms: Math.round(durationMs) }],
+        [{
+          method: formatRequestMethod(method),
+          route: formatRequestRoute(route),
+          status: formatRequestStatus(status),
+          ms: formatRequestDuration(durationMs),
+        }],
         ["method", "route", "status", "ms"],
       );
     }
@@ -619,7 +675,7 @@ function refreshDebugBar(
       title: "Route counters",
       details: byRoute.size,
       items: Array.from(byRoute.entries()).map(([routeKey, statuses]) => {
-        const total = Array.from(statuses.values()).reduce((a, b) => a + b, 0);
+        const total = sumOf(statuses.values(), (count) => count);
         return {
           title: routeKey,
           details: `${total} req`,
@@ -737,14 +793,20 @@ export function otel(userOptions?: Partial<Options>): (site: object) => void {
 
       if (shouldLogRequests) {
         const ctx = buildSpan?.spanContext();
+        const otelLabel = colorizeConsoleText(
+          "[otel]",
+          (value) => bold(cyan(value)),
+        );
+        const triggerLabel = colorizeConsoleText(trigger, bold);
+        const durationLabel = formatRequestDuration(durationMs);
         // console.groupCollapsed keeps build logs readable without flooding the terminal.
         console.groupCollapsed(
-          `[otel] ${trigger} #${buildCounter} — ${durationMs}ms`,
+          `${otelLabel} ${triggerLabel} #${buildCounter} — ${durationLabel}ms`,
         );
         console.table(
           [{
-            trigger,
-            ms: durationMs,
+            trigger: triggerLabel,
+            ms: durationLabel,
             files: changedFiles.length,
             ...(ctx ? { traceId: ctx.traceId, spanId: ctx.spanId } : {}),
           }],
