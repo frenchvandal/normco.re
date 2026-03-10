@@ -203,6 +203,18 @@
     return `${absoluteTarget.pathname}${absoluteTarget.search}`;
   }
 
+  function navigateToLanguage(language) {
+    const targetUrl = resolveTargetUrl(language);
+
+    persistLanguage(language);
+
+    if (getCurrentPath() === getTargetPath(targetUrl)) {
+      return;
+    }
+
+    globalThis.location.assign(targetUrl);
+  }
+
   const currentLanguage = normalizeLanguage(currentLanguageCandidate) ??
     defaultLanguage;
   const preferredLanguage = resolvePreferredLanguage();
@@ -228,25 +240,86 @@
     selector.addEventListener("change", () => {
       const selectedLanguage = normalizeLanguage(selector.value) ??
         defaultLanguage;
-      const targetUrl = resolveTargetUrl(selectedLanguage);
+      navigateToLanguage(selectedLanguage);
+    });
+  }
 
-      persistLanguage(selectedLanguage);
+  function initializeLanguageMenuOptions() {
+    const menuOptions = globalThis.document.querySelectorAll(
+      "[data-language-option]",
+    );
 
-      if (getCurrentPath() === getTargetPath(targetUrl)) {
-        return;
+    for (const menuOption of menuOptions) {
+      if (
+        !(menuOption instanceof HTMLAnchorElement) &&
+        !(menuOption instanceof HTMLButtonElement)
+      ) {
+        continue;
       }
 
-      globalThis.location.assign(targetUrl);
-    });
+      const selectedLanguage = normalizeLanguage(
+        menuOption.dataset.languageOption,
+      );
+
+      if (selectedLanguage === null) {
+        continue;
+      }
+
+      menuOption.addEventListener("click", (event) => {
+        persistLanguage(selectedLanguage);
+
+        if (
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey
+        ) {
+          return;
+        }
+
+        const targetUrl = resolveTargetUrl(selectedLanguage);
+
+        if (menuOption instanceof HTMLAnchorElement) {
+          const fallbackPath = getTargetPath(menuOption.href);
+          const canonicalPath = getTargetPath(targetUrl);
+
+          if (fallbackPath === canonicalPath) {
+            if (getCurrentPath() === canonicalPath) {
+              event.preventDefault();
+            }
+            return;
+          }
+        }
+
+        event.preventDefault();
+
+        if (getCurrentPath() === getTargetPath(targetUrl)) {
+          const languageMenu = menuOption.closest("details");
+
+          if (languageMenu instanceof HTMLDetailsElement) {
+            languageMenu.removeAttribute("open");
+          }
+          return;
+        }
+
+        globalThis.location.assign(targetUrl);
+      });
+    }
+  }
+
+  function initializeLanguageControls() {
+    initializeLanguageSelector();
+    initializeLanguageMenuOptions();
   }
 
   if (globalThis.document.readyState === "loading") {
     globalThis.document.addEventListener(
       "DOMContentLoaded",
-      initializeLanguageSelector,
+      initializeLanguageControls,
       { once: true },
     );
   } else {
-    initializeLanguageSelector();
+    initializeLanguageControls();
   }
 })();

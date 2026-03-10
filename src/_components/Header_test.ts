@@ -102,20 +102,21 @@ describe("Header()", () => {
       assertStringIncludes(html, "About");
     });
 
-    it("renders a language select with a globe icon and text-only labels", async () => {
+    it("renders a globe trigger and localized language menu options", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "fr" }),
       );
       assertStringIncludes(html, 'class="language-switcher"');
       assertMatch(
         html,
-        /class="language-switcher-globe[^"]*"[^>]*src="\/icons\/octicons\/globe-16\.svg"/,
+        /class="language-menu-trigger-icon octicon-svg"[^>]*src="\/icons\/octicons\/globe-16\.svg"/,
       );
+      assertStringIncludes(html, 'data-language-option="en"');
+      assertStringIncludes(html, 'data-language-option="fr"');
+      assertStringIncludes(html, 'data-language-option="zhHans"');
+      assertStringIncludes(html, 'data-language-option="zhHant"');
+      assertStringIncludes(html, 'data-current-language="true"');
       assertNotMatch(html, /🇬🇧|🇫🇷|🇨🇳|🇹🇼/);
-      assertStringIncludes(html, ">English<");
-      assertStringIncludes(html, ">Français<");
-      assertStringIncludes(html, ">简体中文<");
-      assertStringIncludes(html, ">繁體中文<");
     });
 
     it("contains the theme-toggle button", async () => {

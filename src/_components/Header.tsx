@@ -43,6 +43,8 @@ export default (
   const homeUrl = getLocalizedUrl("/", language);
   const postsUrl = getLocalizedUrl("/posts/", language);
   const aboutUrl = getLocalizedUrl("/about/", language);
+  const globeIcon = helpers.icon("globe", "octicons", "16");
+  const checkIcon = helpers.icon("check", "octicons", "16");
 
   return (
     <header class="site-header">
@@ -81,25 +83,76 @@ export default (
             </ul>
           </nav>
           <div class="language-switcher">
+            <details class="language-menu">
+              <summary
+                class="language-menu-trigger"
+                aria-label={translations.site.languageSelectAriaLabel}
+                title={translations.site.languageSelectLabel}
+              >
+                <img
+                  inline
+                  class="language-menu-trigger-icon octicon-svg"
+                  width="16"
+                  height="16"
+                  src={globeIcon}
+                  alt=""
+                  aria-hidden="true"
+                  focusable="false"
+                />
+                <span class="sr-only">
+                  {translations.site.languageSelectLabel}
+                </span>
+              </summary>
+              <ul
+                class="language-menu-list"
+                aria-label={translations.site.languageSelectLabel}
+              >
+                {SUPPORTED_LANGUAGES.map((optionLanguage) => {
+                  const isCurrentLanguage = optionLanguage === language;
+                  const optionUrl = getLocalizedUrl("/", optionLanguage);
+
+                  return (
+                    <li class="language-menu-item-wrapper">
+                      <a
+                        href={optionUrl}
+                        class="language-menu-item"
+                        data-language-option={optionLanguage}
+                        {...(isCurrentLanguage
+                          ? {
+                            "data-current-language": "true",
+                            "aria-current": "true" as const,
+                          }
+                          : {})}
+                      >
+                        <img
+                          inline
+                          class="language-menu-check-icon octicon-svg"
+                          width="16"
+                          height="16"
+                          src={checkIcon}
+                          alt=""
+                          aria-hidden="true"
+                          focusable="false"
+                        />
+                        <span>
+                          {translations.languageNames[optionLanguage]}
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </details>
             <label class="sr-only" for="language-select">
               {translations.site.languageSelectLabel}
             </label>
-            <span class="language-switcher-icon" aria-hidden="true">
-              <img
-                inline
-                class="language-switcher-globe octicon-svg"
-                width="16"
-                height="16"
-                src={helpers.icon("globe", "octicons", "16")}
-                alt=""
-                aria-hidden="true"
-                focusable="false"
-              />
-            </span>
             <select
               id="language-select"
               name="language"
-              class="language-select"
+              class="sr-only"
+              aria-label={translations.site.languageSelectAriaLabel}
+              aria-hidden="true"
+              tabindex="-1"
             >
               {SUPPORTED_LANGUAGES.map((optionLanguage) => (
                 <option
