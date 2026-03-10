@@ -2,6 +2,8 @@ import lume from "lume/mod.ts";
 import date from "lume/plugins/date.ts";
 import sitemap from "lume/plugins/sitemap.ts";
 import feed from "lume/plugins/feed.ts";
+import icons, { type Catalog } from "lume/plugins/icons.ts";
+import inline from "lume/plugins/inline.ts";
 import jsonLd from "lume/plugins/json_ld.ts";
 import seo from "lume/plugins/seo.ts";
 import prism from "lume/plugins/prism.ts";
@@ -25,6 +27,14 @@ import otelPlugin from "./plugins/otel.ts";
 
 /** Console debug policy, read once at module init from `LUME_LOGS`. */
 const consoleDebugPolicy = readConsoleDebugPolicy((name) => Deno.env.get(name));
+const OCTICON_CATALOGS = [
+  {
+    id: "octicons",
+    src:
+      "https://cdn.jsdelivr.net/npm/@primer/octicons@19.22.0/build/svg/{name}-{variant}.svg",
+    variants: ["16", "24", "12", "48", "96"],
+  },
+] as const satisfies Catalog[];
 
 type BuildData = {
   assetVersion: string;
@@ -207,6 +217,20 @@ site.use(attributes());
 
 // Enable TSX/JSX templates for pages, layouts, and components.
 site.use(jsx());
+
+// Download only Octicons on demand and expose `helpers.icon()`.
+site.use(
+  icons({
+    catalogs: OCTICON_CATALOGS,
+  }),
+);
+
+// Replace `<img inline>` by inline SVG while preserving accessibility attributes.
+site.use(
+  inline({
+    copyAttributes: [/^data-/, /^aria-/, "focusable", "role"],
+  }),
+);
 
 // Date formatting: helpers.date(value, "HUMAN_DATE"), helpers.date(value, "SHORT"), …
 site.use(

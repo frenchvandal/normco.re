@@ -1,13 +1,20 @@
 /** Site footer with copyright and primary links. */
+type IconHelpers = Pick<Lume.Helpers, "icon">;
 
-import { getOcticonData } from "../utils/octicon.ts";
+const DEFAULT_ICON_HELPERS: IconHelpers = {
+  icon: (key, catalogId, variant) => {
+    const variantSuffix = variant ? `-${variant}` : "";
+    return `/icons/${catalogId}/${key}${variantSuffix}.svg`;
+  },
+};
 
-const rssIcon = getOcticonData("rss");
-const githubIcon = getOcticonData("mark-github");
 const repositoryUrl = "https://github.com/frenchvandal/normco.re" as const;
 
 /** Renders the site footer with the repository and RSS links. */
-export default ({ author }: { readonly author: string }) => {
+export default (
+  { author }: { readonly author: string },
+  helpers: IconHelpers = DEFAULT_ICON_HELPERS,
+) => {
   const year = new Date().getFullYear();
   return (
     <footer class="site-footer">
@@ -21,30 +28,28 @@ export default ({ author }: { readonly author: string }) => {
             rel="noopener noreferrer"
             aria-label="Open GitHub repository"
           >
-            <svg
+            <img
+              inline
               class="octicon-svg feed-link-icon"
               width="16"
               height="16"
-              viewBox={githubIcon.viewBox}
-              fill="currentColor"
+              src={helpers.icon("mark-github", "octicons", "16")}
+              alt=""
               aria-hidden="true"
               focusable="false"
-            >
-              <path d={githubIcon.path}></path>
-            </svg>
+            />
           </a>
           <a href="/feed.xml" class="feed-link" aria-label="Open RSS feed">
-            <svg
+            <img
+              inline
               class="octicon-svg feed-link-icon"
               width="16"
               height="16"
-              viewBox={rssIcon.viewBox}
-              fill="currentColor"
+              src={helpers.icon("rss", "octicons", "16")}
+              alt=""
               aria-hidden="true"
               focusable="false"
-            >
-              <path d={rssIcon.path}></path>
-            </svg>
+            />
           </a>
         </nav>
       </div>

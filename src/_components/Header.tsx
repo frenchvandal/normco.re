@@ -1,7 +1,5 @@
 /** Site header with logo, primary navigation, and theme toggle. */
 
-import { getOcticonData } from "../utils/octicon.ts";
-
 /**
  * Returns `{ "aria-current": "page" }` when the link matches the active URL,
  * otherwise an empty object, for safe spreading into JSX props.
@@ -17,8 +15,14 @@ function ariaCurrent(
   return {};
 }
 
-const sunIcon = getOcticonData("sun");
-const moonIcon = getOcticonData("moon");
+type IconHelpers = Pick<Lume.Helpers, "icon">;
+
+const DEFAULT_ICON_HELPERS: IconHelpers = {
+  icon: (key, catalogId, variant) => {
+    const variantSuffix = variant ? `-${variant}` : "";
+    return `/icons/${catalogId}/${key}${variantSuffix}.svg`;
+  },
+};
 
 /** Renders the site header with logo, navigation, and theme toggle. */
 export default (
@@ -26,6 +30,7 @@ export default (
     readonly currentUrl: string;
     readonly siteName: string;
   },
+  helpers: IconHelpers = DEFAULT_ICON_HELPERS,
 ) => (
   <header class="site-header">
     <div class="site-header-inner">
@@ -62,28 +67,26 @@ export default (
           aria-label="Toggle color theme"
           aria-pressed="false"
         >
-          <svg
+          <img
+            inline
             class="theme-icon theme-icon--sun octicon-svg"
             width="16"
             height="16"
-            viewBox={sunIcon.viewBox}
-            fill="currentColor"
+            src={helpers.icon("sun", "octicons", "16")}
+            alt=""
             aria-hidden="true"
             focusable="false"
-          >
-            <path d={sunIcon.path}></path>
-          </svg>
-          <svg
+          />
+          <img
+            inline
             class="theme-icon theme-icon--moon octicon-svg"
             width="16"
             height="16"
-            viewBox={moonIcon.viewBox}
-            fill="currentColor"
+            src={helpers.icon("moon", "octicons", "16")}
+            alt=""
             aria-hidden="true"
             focusable="false"
-          >
-            <path d={moonIcon.path}></path>
-          </svg>
+          />
         </button>
       </div>
     </div>
