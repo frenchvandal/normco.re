@@ -31,6 +31,16 @@ describe("Footer()", () => {
     assertStringIncludes(html, "JSON Feed");
   });
 
+  it("contains a GitHub repository link", async () => {
+    const author = makeAuthor(106);
+    const html = await renderComponent(Footer({ author: author }));
+    assertStringIncludes(
+      html,
+      'href="https://github.com/frenchvandal/normco.re"',
+    );
+    assertStringIncludes(html, "GitHub");
+  });
+
   it("contains the current year in the copyright notice", async () => {
     const author = makeAuthor(104);
     const html = await renderComponent(Footer({ author: author }));
