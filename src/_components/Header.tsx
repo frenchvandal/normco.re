@@ -3,7 +3,6 @@
 import {
   getLocalizedUrl,
   getSiteTranslations,
-  LANGUAGE_FLAG_EMOJI,
   LANGUAGE_FLAG_ICON,
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
@@ -111,9 +110,7 @@ export default (
                   value={optionLanguage}
                   selected={optionLanguage === language}
                 >
-                  {`${LANGUAGE_FLAG_EMOJI[optionLanguage]} ${
-                    translations.languageNames[optionLanguage]
-                  }`}
+                  {translations.languageNames[optionLanguage]}
                 </option>
               ))}
             </select>
