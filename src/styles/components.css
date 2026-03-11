@@ -216,6 +216,12 @@
     background: rgb(31 35 40 / 28%);
   }
 
+  @media (prefers-reduced-transparency: reduce) {
+    .site-search[open]::before {
+      backdrop-filter: none;
+    }
+  }
+
   .site-search-panel {
     position: fixed;
     inset-block-start: clamp(3.5rem, 8vh, 5rem);
