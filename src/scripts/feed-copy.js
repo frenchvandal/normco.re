@@ -1,3 +1,5 @@
+// @ts-check
+
 (() => {
   const copyControls = globalThis.document.querySelectorAll(
     "[data-copy-control]",

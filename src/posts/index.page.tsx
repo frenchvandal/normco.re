@@ -14,6 +14,11 @@ type H = {
   date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
 };
 
+/** Build metadata injected by the site configuration. */
+type BuildData = {
+  assetVersion?: string;
+};
+
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Archive page URL. */
@@ -28,7 +33,7 @@ export const description = "All posts, grouped by year.";
 /** French-only metadata overrides used by the multilanguage plugin. */
 export const fr = {
   title: "Articles",
-  description: "Tous les articles, regroupes par annee.",
+  description: "Tous les articles, regroupés par année.",
 } as const;
 
 /** Simplified Chinese metadata overrides used by the multilanguage plugin. */
@@ -51,6 +56,8 @@ export const type = "archive";
 /** Renders the posts archive page body. */
 export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const { date: dateFormat } = helpers as unknown as H;
+  const assetVersion = (data as Lume.Data & { build?: BuildData }).build
+    ?.assetVersion ?? "dev";
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
@@ -146,79 +153,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     : `<p class="blankslate">${translations.archive.emptyState}</p>`;
 
   const archiveYearNavScript = sections.length > 0
-    ? `<script>
-(() => {
-  const links = Array.from(
-    globalThis.document.querySelectorAll(".archive-year-nav-link"),
-  ).filter((candidate) => candidate instanceof HTMLAnchorElement);
-
-  if (links.length === 0) {
-    return;
-  }
-
-  const idByLink = new Map();
-
-  for (const link of links) {
-    const href = link.getAttribute("href");
-
-    if (href === null || !href.startsWith("#")) {
-      continue;
-    }
-
-    const id = href.slice(1);
-
-    if (id.length === 0) {
-      continue;
-    }
-
-    idByLink.set(link, id);
-  }
-
-  if (idByLink.size === 0) {
-    return;
-  }
-
-  function setCurrentLink(activeId) {
-    for (const [link, id] of idByLink) {
-      if (id === activeId) {
-        link.setAttribute("aria-current", "true");
-      } else {
-        link.removeAttribute("aria-current");
-      }
-    }
-  }
-
-  function getActiveIdFromHash() {
-    const rawHash = globalThis.location.hash;
-
-    if (rawHash.startsWith("#") && rawHash.length > 1) {
-      const hashId = decodeURIComponent(rawHash.slice(1));
-
-      for (const id of idByLink.values()) {
-        if (id === hashId) {
-          return id;
-        }
-      }
-    }
-
-    const firstId = idByLink.values().next().value;
-    return typeof firstId === "string" ? firstId : null;
-  }
-
-  function syncCurrentLink() {
-    const activeId = getActiveIdFromHash();
-
-    if (activeId === null) {
-      return;
-    }
-
-    setCurrentLink(activeId);
-  }
-
-  globalThis.addEventListener("hashchange", syncCurrentLink);
-  syncCurrentLink();
-})();
-</script>`
+    ? `<script src="/scripts/archive-year-nav.js?v=${assetVersion}"></script>`
     : "";
 
   return `${archiveIntro}

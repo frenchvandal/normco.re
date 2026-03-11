@@ -1,3 +1,5 @@
+// @ts-check
+
 (() => {
   const scriptElement = globalThis.document.currentScript;
 
