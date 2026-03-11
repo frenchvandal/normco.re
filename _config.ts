@@ -9,7 +9,6 @@ import seo from "lume/plugins/seo.ts";
 import prism from "lume/plugins/prism.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
 import postcss from "lume/plugins/postcss.ts";
-import purgecss from "lume/plugins/purgecss.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
 import terser from "lume/plugins/terser.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
@@ -212,18 +211,6 @@ site.use(
         firefox: 120 << 16,
         safari: (17 << 16) | (5 << 8),
       },
-    },
-  }),
-);
-
-// Remove unused selectors after minification.
-site.use(
-  purgecss({
-    contentExtensions: [".html", ".js", ".xsl"],
-    options: {
-      keyframes: true,
-      variables: true,
-      safelist: [/^feed-/, /^sr-only$/, /^pagefind-ui/],
     },
   }),
 );
