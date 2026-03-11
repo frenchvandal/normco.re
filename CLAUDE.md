@@ -55,6 +55,10 @@ Before finalizing a change (opening a PR or merging), run the following commands
    description (current status and proposed fix).
 1. `deno task test:doc` — run inline JSDoc documentation tests.
 1. `deno task build` — run when changes affect rendering or structure.
+1. Analyze `_html-issues.json` (generated at the repository root by the
+   `validate_html` plugin during build/update) and fix all reported HTML errors
+   before merge. If a false positive or external blocker remains, document it in
+   the PR with a concrete follow-up plan.
 
 ### Commit message validation
 

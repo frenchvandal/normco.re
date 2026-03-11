@@ -167,10 +167,7 @@ export default (
               />
               <span class="sr-only">{translations.site.searchLabel}</span>
             </summary>
-            <div
-              class="site-search-panel"
-              aria-label={translations.site.searchLabel}
-            >
+            <div class="site-search-panel">
               <p class="site-search-panel-title">
                 {translations.site.searchLabel}
               </p>
@@ -198,10 +195,7 @@ export default (
                   {translations.site.languageSelectLabel}
                 </span>
               </summary>
-              <ul
-                class="language-menu-list"
-                aria-label={translations.site.languageSelectLabel}
-              >
+              <ul class="language-menu-list">
                 {SUPPORTED_LANGUAGES.map((optionLanguage) => {
                   const isCurrentLanguage = optionLanguage === language;
                   const optionUrl = getLocalizedUrl("/", optionLanguage);

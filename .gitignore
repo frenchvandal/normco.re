@@ -3,3 +3,4 @@ _cache
 .env
 .DS_Store
 coverage
+_html-issues.json

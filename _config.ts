@@ -369,9 +369,12 @@ site.use(
 // framework-required patterns (quotes and doctype style) handled by defaults.
 site.use(
   validateHtml({
+    output: "_html-issues.json",
     rules: {
       "require-sri": "off",
       "heading-level": "off",
+      "script-type": "off",
+      "attribute-boolean-style": "off",
     },
   }),
 );

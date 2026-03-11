@@ -16,7 +16,7 @@ export const tags = ["life", "essay"];
 
 /** French-only metadata overrides used by the multilanguage plugin. */
 export const fr = {
-  title: "Vestibulum Ante\u00a0: sur les seuils et les nouveaux départs",
+  title: "Vestibulum Ante\u00a0: seuils et nouveaux départs",
   description:
     "Réflexions sur les transitions, les espaces intermédiaires de la vie et ce que signifie se tenir sur un seuil.",
 } as const;
