@@ -56,4 +56,4 @@ jobs:
           region: ${{ secrets.OSS_REGION }}
           cdn-enabled: true
           cdn-base-url: ${{ secrets.OSS_CDN_BASE_URL }}
-          cdn-actions: refresh,preload
+          cdn-actions: refresh
