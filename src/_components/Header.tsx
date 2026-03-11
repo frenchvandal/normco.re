@@ -169,7 +169,6 @@ export default (
             </summary>
             <div
               class="site-search-panel"
-              role="dialog"
               aria-label={translations.site.searchLabel}
             >
               <p class="site-search-panel-title">
