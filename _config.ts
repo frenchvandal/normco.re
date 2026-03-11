@@ -181,6 +181,7 @@ site.add("/scripts/language-preference.js");
 site.add("/scripts/feed-copy.js");
 site.add("/scripts/sw-register.js");
 site.add("/scripts/archive-year-nav.js");
+site.add("/scripts/pagefind-lazy-init.js");
 site.add("/scripts/sw.js", "/sw.js");
 
 // Copy XSLT stylesheets to the output as static assets.
@@ -353,16 +354,7 @@ site.use(
   }),
 );
 site.use(nav());
-site.use(
-  pagefind({
-    ui: {
-      containerId: "search",
-      showImages: false,
-      showSubResults: false,
-      resetStyles: false,
-    },
-  }),
-);
+site.use(pagefind());
 
 // Validate generated HTML against html-validate recommended/document presets.
 // Keep strict error reporting for common production issues while allowing
