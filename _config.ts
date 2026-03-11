@@ -23,6 +23,9 @@ import validateHtml from "lume/plugins/validate_html.ts";
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
 import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns-locale";
+import "npm/prism-bash";
+import "npm/prism-typescript";
+import "npm/prism-yaml";
 import { readConsoleDebugPolicy } from "./plugins/console_debug.ts";
 import otelPlugin from "./plugins/otel.ts";
 import { getLanguageTag } from "./src/utils/i18n.ts";
@@ -425,9 +428,10 @@ site.use(
   }),
 );
 
-// Prism is preferred over highlight.js for its autoloadLanguages feature,
-// which detects and loads language grammars on demand — no manual imports needed.
-site.use(prism({ autoloadLanguages: true }));
+// Prism grammars are preloaded with side-effect imports above.
+// Avoid `autoloadLanguages` here because it is async and may finish
+// after static HTML serialization, leaving unhighlighted code blocks.
+site.use(prism());
 
 site.use(
   feed({
