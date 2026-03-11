@@ -238,8 +238,10 @@
   const currentLanguage = normalizeLanguage(currentLanguageCandidate) ??
     defaultLanguage;
   const preferredLanguage = resolvePreferredLanguage();
+  const currentPathname = globalThis.location.pathname;
+  const isRootPath = currentPathname === "/";
 
-  if (preferredLanguage !== currentLanguage) {
+  if (preferredLanguage !== currentLanguage && isRootPath) {
     const targetUrl = resolveTargetUrl(preferredLanguage);
 
     if (getCurrentPath() !== getTargetPath(targetUrl)) {
