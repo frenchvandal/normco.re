@@ -18,8 +18,8 @@ export const description =
 
 /** French-only metadata overrides used by the multilanguage plugin. */
 export const fr = {
-  title: "A propos",
-  description: "A propos de Phiphi - une personne qui ecrit depuis Chengdu.",
+  title: "À propos",
+  description: "À propos de Phiphi — une personne qui écrit depuis Chengdu.",
 } as const;
 
 /** Simplified Chinese metadata overrides used by the multilanguage plugin. */
