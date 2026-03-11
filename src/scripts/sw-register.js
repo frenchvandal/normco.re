@@ -1,3 +1,4 @@
+// @ts-check
 (() => {
   const supportsServiceWorker = "serviceWorker" in globalThis.navigator;
 

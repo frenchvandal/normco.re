@@ -1,3 +1,4 @@
+// @ts-check
 (() => {
   const disclosures = Array.from(
     globalThis.document.querySelectorAll(

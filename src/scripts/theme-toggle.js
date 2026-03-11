@@ -1,3 +1,4 @@
+// @ts-check
 (() => {
   const root = globalThis.document.documentElement;
   const button = globalThis.document.getElementById("theme-toggle");

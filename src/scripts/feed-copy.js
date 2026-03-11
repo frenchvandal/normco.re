@@ -1,3 +1,4 @@
+// @ts-check
 (() => {
   const copyControls = globalThis.document.querySelectorAll(
     "[data-copy-control]",
@@ -91,6 +92,9 @@
     textArea.focus();
     textArea.select();
 
+    // TODO(phiphi): Remove execCommand fallback once browser support confirms it is no
+    // longer needed. execCommand is formally deprecated and may be removed without notice.
+    // Tracking: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
     let success = false;
     try {
       success = globalThis.document.execCommand("copy");

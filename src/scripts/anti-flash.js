@@ -1,3 +1,4 @@
+// @ts-check
 (() => {
   const root = globalThis.document.documentElement;
   const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
