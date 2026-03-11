@@ -176,13 +176,21 @@ export default (
           </div>
           <script
             src={`/scripts/disclosure-controls.js?v=${assetVersion}`}
+            defer
           >
           </script>
-          <script src={`/scripts/theme-toggle.js?v=${assetVersion}`}></script>
+          <script src={`/scripts/theme-toggle.js?v=${assetVersion}`} defer>
+          </script>
+          <script
+            src={`/scripts/pagefind-lazy-init.js?v=${assetVersion}`}
+            defer
+          >
+          </script>
           <script
             src={`/scripts/sw-register.js?v=${assetVersion}`}
             data-asset-version={assetVersion}
             data-sw-debug-level={swDebugLevel}
+            defer
           >
           </script>
         </body>
