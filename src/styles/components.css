@@ -219,6 +219,12 @@
   @media (prefers-reduced-transparency: reduce) {
     .site-search[open]::before {
       backdrop-filter: none;
+      background: rgb(1 4 9 / 80%);
+    }
+
+    :root[data-color-mode="light"] .site-search[open]::before,
+    :root[data-color-scheme="light"] .site-search[open]::before {
+      background: rgb(31 35 40 / 45%);
     }
   }
 

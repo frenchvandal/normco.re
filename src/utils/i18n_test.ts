@@ -35,7 +35,11 @@ describe("DEFAULT_LANGUAGE", () => {
 describe("isSiteLanguage()", () => {
   it("returns true for all supported language codes", () => {
     for (const language of SUPPORTED_LANGUAGES) {
-      assertEquals(isSiteLanguage(language), true, `expected true for "${language}"`);
+      assertEquals(
+        isSiteLanguage(language),
+        true,
+        `expected true for "${language}"`,
+      );
     }
   });
 
@@ -187,7 +191,10 @@ describe("getLocalizedUrl()", () => {
   it("prepends the language prefix to non-root paths", () => {
     assertStrictEquals(getLocalizedUrl("/posts/", "fr"), "/fr/posts/");
     assertStrictEquals(getLocalizedUrl("/about/", "zhHans"), "/zh-hans/about/");
-    assertStrictEquals(getLocalizedUrl("/feed.xml", "zhHant"), "/zh-hant/feed.xml");
+    assertStrictEquals(
+      getLocalizedUrl("/feed.xml", "zhHant"),
+      "/zh-hant/feed.xml",
+    );
   });
 
   it("normalizes paths that lack a leading slash", () => {

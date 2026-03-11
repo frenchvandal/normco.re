@@ -134,6 +134,7 @@ describe("Header()", () => {
       );
       assertStringIncludes(html, 'class="site-search-panel"');
       assertStringIncludes(html, 'id="search"');
+      assertNotMatch(html, /aria-modal="true"/);
     });
 
     it("renders menu item icons for Home, Writing, and About", async () => {
