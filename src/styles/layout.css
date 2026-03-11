@@ -86,10 +86,21 @@
   .feed-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.375rem;
+    justify-content: center;
+    inline-size: 2rem;
+    block-size: 2rem;
+    border-radius: var(--borderRadius-medium);
+    text-decoration: none;
+  }
+
+  .feed-link:hover {
+    text-decoration: none;
+    background: var(--bgColor-muted);
   }
 
   .feed-link-icon {
+    inline-size: 1rem;
+    block-size: 1rem;
     opacity: 0.9;
   }
 }
