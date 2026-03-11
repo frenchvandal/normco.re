@@ -10,6 +10,7 @@
     return;
   }
 
+  /** @type {WeakMap<HTMLDetailsElement, HTMLElement>} */
   const disclosureTriggerByElement = new WeakMap();
 
   for (const disclosure of disclosures) {
@@ -38,6 +39,11 @@
     });
   }
 
+  /**
+   * @param {HTMLDetailsElement} disclosure
+   * @param {boolean} [restoreFocus]
+   * @returns {boolean}
+   */
   function closeDisclosure(disclosure, restoreFocus = false) {
     if (!disclosure.open) {
       return false;
@@ -56,6 +62,10 @@
     return true;
   }
 
+  /**
+   * @param {HTMLDetailsElement} searchDisclosure
+   * @returns {void}
+   */
   function focusSearchInput(searchDisclosure) {
     if (!searchDisclosure.open) {
       return;
@@ -89,6 +99,10 @@
     }, 1500);
   }
 
+  /**
+   * @param {HTMLElement} searchRoot
+   * @returns {boolean}
+   */
   function tryFocusSearchInput(searchRoot) {
     const searchInput = searchRoot.querySelector(".pagefind-ui__search-input");
 
@@ -131,6 +145,10 @@
 
     for (let index = disclosures.length - 1; index >= 0; index -= 1) {
       const disclosure = disclosures[index];
+
+      if (disclosure === undefined) {
+        continue;
+      }
 
       if (closeDisclosure(disclosure, true)) {
         event.preventDefault();

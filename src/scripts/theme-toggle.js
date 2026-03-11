@@ -1,5 +1,6 @@
 // @ts-check
 (() => {
+  /** @typedef {"light" | "dark"} ColorMode */
   const root = globalThis.document.documentElement;
   const button = globalThis.document.getElementById("theme-toggle");
   const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
@@ -16,15 +17,21 @@
   const switchToDarkLabel = themeToggleButton.dataset.labelSwitchDark ??
     "Switch to dark theme";
 
+  /** @returns {ColorMode | null} */
   function readStoredMode() {
     try {
-      return globalThis.localStorage.getItem(STORAGE_KEY) ??
+      const storedMode = globalThis.localStorage.getItem(STORAGE_KEY) ??
         globalThis.localStorage.getItem(LEGACY_STORAGE_KEY);
+
+      return storedMode === "light" || storedMode === "dark"
+        ? storedMode
+        : null;
     } catch {
       return null;
     }
   }
 
+  /** @param {ColorMode} mode */
   function persistMode(mode) {
     try {
       globalThis.localStorage.setItem(STORAGE_KEY, mode);
@@ -34,6 +41,7 @@
     }
   }
 
+  /** @param {ColorMode} mode */
   function applyMode(mode) {
     root.setAttribute("data-light-theme", "light");
     root.setAttribute("data-dark-theme", "dark");
@@ -42,6 +50,7 @@
     root.setAttribute("data-color-scheme", mode);
   }
 
+  /** @returns {ColorMode} */
   function getEffectiveMode() {
     const value = root.getAttribute("data-color-mode") ??
       root.getAttribute("data-color-scheme") ?? readStoredMode();
@@ -53,6 +62,7 @@
     return mediaQuery.matches ? "dark" : "light";
   }
 
+  /** @param {ColorMode} mode */
   function updateToggleAccessibility(mode) {
     themeToggleButton.setAttribute(
       "aria-label",

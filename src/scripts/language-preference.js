@@ -1,10 +1,11 @@
 // @ts-check
 (() => {
-  const scriptElement = globalThis.document.currentScript;
+  const currentScript = globalThis.document.currentScript;
 
-  if (!(scriptElement instanceof HTMLScriptElement)) {
+  if (!(currentScript instanceof HTMLScriptElement)) {
     return;
   }
+  const scriptElement = currentScript;
 
   const STORAGE_KEY = "preferred-language";
   const rawSupportedLanguages = scriptElement.dataset.supportedLanguages ??
@@ -28,6 +29,10 @@
     }),
   );
 
+  /**
+   * @param {unknown} value
+   * @returns {string | null}
+   */
   function normalizeLanguage(value) {
     if (typeof value !== "string") {
       return null;
@@ -82,15 +87,12 @@
 
   const defaultLanguage = normalizeLanguage(
     scriptElement.dataset.defaultLanguage ?? "en",
-  ) ?? supportedLanguages[0];
-
-  if (defaultLanguage === undefined) {
-    return;
-  }
+  ) ?? supportedLanguages[0] ?? "en";
 
   const currentLanguageCandidate = scriptElement.dataset.currentLanguage ??
     globalThis.document.documentElement.lang;
 
+  /** @returns {Record<string, string>} */
   function parseAlternateUrls() {
     const rawAlternates = scriptElement.dataset.languageAlternates;
 
@@ -105,6 +107,7 @@
         return {};
       }
 
+      /** @type {Record<string, string>} */
       const alternates = {};
 
       for (const [language, path] of Object.entries(parsed)) {
@@ -127,6 +130,10 @@
 
   const alternateUrls = parseAlternateUrls();
 
+  /**
+   * @param {string} language
+   * @returns {string}
+   */
   function resolveTargetUrl(language) {
     const directMatch = alternateUrls[language];
 
@@ -152,6 +159,10 @@
     }
   }
 
+  /**
+   * @param {string} language
+   * @returns {void}
+   */
   function persistLanguage(language) {
     try {
       globalThis.localStorage.setItem(STORAGE_KEY, language);
@@ -199,11 +210,19 @@
     return `${globalThis.location.pathname}${globalThis.location.search}`;
   }
 
+  /**
+   * @param {string} targetUrl
+   * @returns {string}
+   */
   function getTargetPath(targetUrl) {
     const absoluteTarget = new URL(targetUrl, globalThis.location.origin);
     return `${absoluteTarget.pathname}${absoluteTarget.search}`;
   }
 
+  /**
+   * @param {string} language
+   * @returns {void}
+   */
   function navigateToLanguage(language) {
     const targetUrl = resolveTargetUrl(language);
 
@@ -266,46 +285,53 @@
         continue;
       }
 
-      menuOption.addEventListener("click", (event) => {
-        persistLanguage(selectedLanguage);
+      menuOption.addEventListener(
+        "click",
+        (event) => {
+          if (!(event instanceof MouseEvent)) {
+            return;
+          }
 
-        if (
-          event.button !== 0 ||
-          event.metaKey ||
-          event.ctrlKey ||
-          event.shiftKey ||
-          event.altKey
-        ) {
-          return;
-        }
+          persistLanguage(selectedLanguage);
 
-        const targetUrl = resolveTargetUrl(selectedLanguage);
+          if (
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey
+          ) {
+            return;
+          }
 
-        if (menuOption instanceof HTMLAnchorElement) {
-          const fallbackPath = getTargetPath(menuOption.href);
-          const canonicalPath = getTargetPath(targetUrl);
+          const targetUrl = resolveTargetUrl(selectedLanguage);
 
-          if (fallbackPath === canonicalPath) {
-            if (getCurrentPath() === canonicalPath) {
-              event.preventDefault();
+          if (menuOption instanceof HTMLAnchorElement) {
+            const fallbackPath = getTargetPath(menuOption.href);
+            const canonicalPath = getTargetPath(targetUrl);
+
+            if (fallbackPath === canonicalPath) {
+              if (getCurrentPath() === canonicalPath) {
+                event.preventDefault();
+              }
+              return;
+            }
+          }
+
+          event.preventDefault();
+
+          if (getCurrentPath() === getTargetPath(targetUrl)) {
+            const languageMenu = menuOption.closest("details");
+
+            if (languageMenu instanceof HTMLDetailsElement) {
+              languageMenu.removeAttribute("open");
             }
             return;
           }
-        }
 
-        event.preventDefault();
-
-        if (getCurrentPath() === getTargetPath(targetUrl)) {
-          const languageMenu = menuOption.closest("details");
-
-          if (languageMenu instanceof HTMLDetailsElement) {
-            languageMenu.removeAttribute("open");
-          }
-          return;
-        }
-
-        globalThis.location.assign(targetUrl);
-      });
+          globalThis.location.assign(targetUrl);
+        },
+      );
     }
   }
 

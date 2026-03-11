@@ -26,6 +26,11 @@
     return swDebugLevel === "summary" || swDebugLevel === "verbose";
   }
 
+  /**
+   * @param {string} event
+   * @param {Record<string, unknown>} [details]
+   * @returns {void}
+   */
   function log(event, details = {}) {
     if (!isDebugEnabled()) {
       return;

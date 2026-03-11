@@ -1,7 +1,12 @@
 // @ts-check
 /// <reference lib="webworker" />
 
-const SW_QUERY = new URL(self.location.href).searchParams;
+/** @type {ServiceWorkerGlobalScope} */
+const sw = /** @type {ServiceWorkerGlobalScope} */ (
+  /** @type {unknown} */ (self)
+);
+
+const SW_QUERY = new URL(sw.location.href).searchParams;
 const SW_VERSION = SW_QUERY.get("v") ?? "dev";
 const SW_DEBUG_LEVEL = SW_QUERY.get("debug") ?? "off";
 const STATIC_CACHE = `static-${SW_VERSION}`;
@@ -72,6 +77,11 @@ function isSwDebugEnabled() {
   return SW_DEBUG_LEVEL === "summary" || SW_DEBUG_LEVEL === "verbose";
 }
 
+/**
+ * @param {string} event
+ * @param {Record<string, unknown>} [details]
+ * @returns {void}
+ */
 function logSw(event, details = {}) {
   if (!isSwDebugEnabled()) {
     return;
@@ -184,7 +194,7 @@ async function preloadPredictedPages(currentUrl) {
       return;
     }
 
-    const predictedUrl = new URL(predictedRoute, self.location.origin);
+    const predictedUrl = new URL(predictedRoute, sw.location.origin);
     const predictedRequest = new Request(predictedUrl.toString(), {
       method: "GET",
       mode: "same-origin",
@@ -213,43 +223,55 @@ async function preloadPredictedPages(currentUrl) {
   }));
 }
 
-self.addEventListener("install", (event) => {
-  logSw("install", { staticCache: STATIC_CACHE, assets: STATIC_ASSETS.length });
-  event.waitUntil((async () => {
-    const cache = await caches.open(STATIC_CACHE);
-    await cache.addAll(STATIC_ASSETS);
-    await self.skipWaiting();
-  })());
-});
-
-self.addEventListener("activate", (event) => {
-  logSw("activate", {
-    staticCache: STATIC_CACHE,
-    pageCache: PAGE_CACHE,
-    feedCache: FEED_CACHE,
-  });
-  event.waitUntil((async () => {
-    const keys = await caches.keys();
-    const staleKeys = keys.filter((key) =>
-      ![STATIC_CACHE, PAGE_CACHE, FEED_CACHE].includes(key)
-    );
-
-    logSw("activate: pruning stale caches", {
-      staleKeys,
-      cacheCountBefore: keys.length,
+sw.addEventListener(
+  "install",
+  /** @param {ExtendableEvent} event */ (event) => {
+    logSw("install", {
+      staticCache: STATIC_CACHE,
+      assets: STATIC_ASSETS.length,
     });
+    event.waitUntil((async () => {
+      const cache = await caches.open(STATIC_CACHE);
+      await cache.addAll(STATIC_ASSETS);
+      await sw.skipWaiting();
+    })());
+  },
+);
 
-    await Promise.all(staleKeys.map((key) => caches.delete(key)));
-    await self.clients.claim();
-  })());
-});
+sw.addEventListener(
+  "activate",
+  /** @param {ExtendableEvent} event */ (event) => {
+    logSw("activate", {
+      staticCache: STATIC_CACHE,
+      pageCache: PAGE_CACHE,
+      feedCache: FEED_CACHE,
+    });
+    event.waitUntil((async () => {
+      const keys = await caches.keys();
+      const staleKeys = keys.filter((key) =>
+        ![STATIC_CACHE, PAGE_CACHE, FEED_CACHE].includes(key)
+      );
 
-self.addEventListener("message", (event) => {
-  if (event.data?.type === "SKIP_WAITING") {
-    logSw("message: SKIP_WAITING");
-    self.skipWaiting();
-  }
-});
+      logSw("activate: pruning stale caches", {
+        staleKeys,
+        cacheCountBefore: keys.length,
+      });
+
+      await Promise.all(staleKeys.map((key) => caches.delete(key)));
+      await sw.clients.claim();
+    })());
+  },
+);
+
+sw.addEventListener(
+  "message",
+  /** @param {ExtendableMessageEvent} event */ (event) => {
+    if (event.data?.type === "SKIP_WAITING") {
+      logSw("message: SKIP_WAITING");
+      void sw.skipWaiting();
+    }
+  },
+);
 
 /**
  * Returns true when the current request should bypass Service Worker caching.
@@ -270,7 +292,7 @@ function shouldBypassRequest(request) {
 
   const url = new URL(request.url);
 
-  if (url.origin !== self.location.origin) {
+  if (url.origin !== sw.location.origin) {
     return true;
   }
 
@@ -455,7 +477,7 @@ async function staleWhileRevalidateFeed(request) {
   });
 }
 
-self.addEventListener("fetch", (event) => {
+sw.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
   const { request } = event;
 
   if (SW_DEBUG_LEVEL === "verbose") {
