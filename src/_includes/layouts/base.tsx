@@ -142,7 +142,11 @@ export default (
           >
           </script>
           <script src={`/scripts/anti-flash.js?v=${assetVersion}`}></script>
-          <link rel="stylesheet" href={`/style.css?v=${assetVersion}`} />
+          <link
+            rel="stylesheet"
+            href={`/style.css?v=${assetVersion}`}
+            fetchpriority="high"
+          />
           <link
             rel="alternate"
             type="application/rss+xml"
@@ -176,13 +180,19 @@ export default (
           </div>
           <script
             src={`/scripts/disclosure-controls.js?v=${assetVersion}`}
+            fetchpriority="low"
             defer
           >
           </script>
-          <script src={`/scripts/theme-toggle.js?v=${assetVersion}`} defer>
+          <script
+            src={`/scripts/theme-toggle.js?v=${assetVersion}`}
+            fetchpriority="low"
+            defer
+          >
           </script>
           <script
             src={`/scripts/pagefind-lazy-init.js?v=${assetVersion}`}
+            fetchpriority="low"
             defer
           >
           </script>
@@ -190,6 +200,7 @@ export default (
             src={`/scripts/sw-register.js?v=${assetVersion}`}
             data-asset-version={assetVersion}
             data-sw-debug-level={swDebugLevel}
+            fetchpriority="low"
             defer
           >
           </script>
