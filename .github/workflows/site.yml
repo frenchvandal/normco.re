@@ -31,9 +31,15 @@ jobs:
           deno-version-file: .tool-versions
           cache: true
 
-      - name: Run build task
-        shell: bash
-        run: deno task build
+      - name: Check debug flags
+        run: |
+          echo "RUNNER_DEBUG=${RUNNER_DEBUG:-<unset>}"
+          if [ -n "${ACTIONS_STEP_DEBUG:-}" ]; then
+            echo "ACTIONS_STEP_DEBUG is set"
+          else
+            echo "ACTIONS_STEP_DEBUG is unset"
+          fi
+
 
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/aliyun-oss-cdn-sync-action@master
