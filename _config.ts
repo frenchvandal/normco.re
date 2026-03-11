@@ -533,5 +533,6 @@ site.process([".xml"], (pages: Page[]) => {
 // Configure exporters via OTEL_* env vars (for local JSON inspection, use
 // OTEL_EXPORTER_OTLP_PROTOCOL=http/json).
 site.use(otelPlugin());
+site.addEventListener("afterBuild", "deno fmt _site");
 
 export default site;
