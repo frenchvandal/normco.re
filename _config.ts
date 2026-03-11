@@ -178,6 +178,7 @@ site.add("/scripts/anti-flash.js");
 site.add("/scripts/language-preference.js");
 site.add("/scripts/feed-copy.js");
 site.add("/scripts/sw-register.js");
+site.add("/scripts/archive-year-nav.js");
 site.add("/scripts/sw.js", "/sw.js");
 
 // Copy XSLT stylesheets to the output as static assets.
