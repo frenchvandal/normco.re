@@ -115,7 +115,11 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, 'href="/style.css?v=dev"');
       assertStringIncludes(
         html,
-        '<script src="/scripts/language-preference.js?v=dev"',
+        '<meta name="color-scheme" content="light dark">',
+      );
+      assertStringIncludes(
+        html,
+        'src="/scripts/language-preference.js?v=dev"',
       );
       assertStringIncludes(
         html,

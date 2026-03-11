@@ -1,59 +1,66 @@
 // @ts-check
 (() => {
   const SEARCH_DISCLOSURE_SELECTOR = ".site-search";
-  const SEARCH_CONTAINER_SELECTOR = "#search";
+  const SEARCH_CONTAINER_SELECTOR = ".site-search-root";
   const PAGEFIND_SCRIPT_URL = "/pagefind/pagefind-ui.js";
   const PAGEFIND_STYLE_URL = "/pagefind/pagefind-ui.css";
 
-  /** @type {Promise<void> | undefined} */
-  let pagefindInitPromise;
+  const searchDisclosures = Array.from(
+    globalThis.document.querySelectorAll(SEARCH_DISCLOSURE_SELECTOR),
+  ).filter((candidate) => candidate instanceof HTMLDetailsElement);
 
-  const searchDisclosure = globalThis.document.querySelector(
-    SEARCH_DISCLOSURE_SELECTOR,
-  );
-
-  if (!(searchDisclosure instanceof HTMLDetailsElement)) {
+  if (searchDisclosures.length === 0) {
     return;
   }
 
-  searchDisclosure.addEventListener("toggle", () => {
-    if (!searchDisclosure.open) {
-      return;
-    }
+  /** @type {Promise<void> | undefined} */
+  let pagefindRuntimePromise;
+  /** @type {WeakMap<HTMLElement, Promise<void>>} */
+  const initPromiseByContainer = new WeakMap();
+  let generatedContainerId = 0;
 
-    if (pagefindInitPromise !== undefined) {
-      return;
-    }
+  for (const searchDisclosure of searchDisclosures) {
+    searchDisclosure.addEventListener("toggle", () => {
+      if (!searchDisclosure.open) {
+        return;
+      }
 
-    pagefindInitPromise = initializePagefind();
-  });
+      const container = searchDisclosure.querySelector(
+        SEARCH_CONTAINER_SELECTOR,
+      );
+
+      if (!(container instanceof HTMLElement)) {
+        return;
+      }
+
+      if (container.dataset.pagefindReady === "true") {
+        return;
+      }
+
+      if (initPromiseByContainer.has(container)) {
+        return;
+      }
+
+      const initPromise = initializePagefind(container);
+      initPromiseByContainer.set(container, initPromise);
+
+      void initPromise.catch(() => {
+        initPromiseByContainer.delete(container);
+      });
+    });
+  }
 
   /**
-   * Loads Pagefind assets and mounts the UI once per page view.
+   * Loads Pagefind assets and mounts the UI once per container.
+   * @param {HTMLElement} container
    * @returns {Promise<void>}
    */
-  async function initializePagefind() {
-    const container = globalThis.document.querySelector(
-      SEARCH_CONTAINER_SELECTOR,
-    );
-
-    if (!(container instanceof HTMLElement)) {
-      return;
-    }
-
-    if (
-      !globalThis.document.querySelector(`link[href="${PAGEFIND_STYLE_URL}"]`)
-    ) {
-      const stylesheet = globalThis.document.createElement("link");
-      stylesheet.rel = "stylesheet";
-      stylesheet.href = PAGEFIND_STYLE_URL;
-      globalThis.document.head.append(stylesheet);
-    }
-
+  async function initializePagefind(container) {
+    ensurePagefindStylesheet();
     await loadPagefindScript();
+    await yieldToMain();
 
     const pagefindUi = globalThis["PagefindUI"];
-
     if (typeof pagefindUi !== "function") {
       return;
     }
@@ -62,8 +69,9 @@
       return;
     }
 
+    const elementSelector = ensureElementSelector(container);
     new pagefindUi({
-      element: SEARCH_CONTAINER_SELECTOR,
+      element: elementSelector,
       showImages: false,
       showSubResults: false,
       resetStyles: false,
@@ -73,11 +81,47 @@
   }
 
   /**
+   * Ensures the Pagefind stylesheet is present only once.
+   * @returns {void}
+   */
+  function ensurePagefindStylesheet() {
+    if (
+      globalThis.document.querySelector(`link[href="${PAGEFIND_STYLE_URL}"]`)
+    ) {
+      return;
+    }
+
+    const stylesheet = globalThis.document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = PAGEFIND_STYLE_URL;
+    globalThis.document.head.append(stylesheet);
+  }
+
+  /**
+   * Returns a selector for the target container and guarantees a stable `id`.
+   * @param {HTMLElement} container
+   * @returns {string}
+   */
+  function ensureElementSelector(container) {
+    if (container.id.length === 0) {
+      generatedContainerId += 1;
+      container.id = `site-search-root-${generatedContainerId}`;
+    }
+
+    return `#${container.id}`;
+  }
+
+  /**
    * Injects the Pagefind UI runtime exactly once.
    * @returns {Promise<void>}
    */
   async function loadPagefindScript() {
     if (typeof globalThis["PagefindUI"] === "function") {
+      return;
+    }
+
+    if (pagefindRuntimePromise !== undefined) {
+      await pagefindRuntimePromise;
       return;
     }
 
@@ -90,17 +134,53 @@
         return;
       }
 
-      await waitForScriptLoad(existingScript);
+      pagefindRuntimePromise = waitForScriptLoad(existingScript)
+        .then(() => {
+          existingScript.dataset.loaded = "true";
+        })
+        .finally(() => {
+          pagefindRuntimePromise = undefined;
+        });
+
+      await pagefindRuntimePromise;
       return;
     }
 
     const script = globalThis.document.createElement("script");
     script.src = PAGEFIND_SCRIPT_URL;
-    script.defer = true;
+    script.async = true;
     globalThis.document.body.append(script);
 
-    await waitForScriptLoad(script);
-    script.dataset.loaded = "true";
+    pagefindRuntimePromise = waitForScriptLoad(script)
+      .then(() => {
+        script.dataset.loaded = "true";
+      })
+      .finally(() => {
+        pagefindRuntimePromise = undefined;
+      });
+
+    await pagefindRuntimePromise;
+  }
+
+  /**
+   * Yields to the browser so input/rendering can proceed before heavy init.
+   * @returns {Promise<void>}
+   */
+  async function yieldToMain() {
+    /** @type {{ yield?: () => Promise<void> } | undefined} */
+    const schedulerApi =
+      /** @type {{ yield?: () => Promise<void> } | undefined} */ (
+        /** @type {unknown} */ (globalThis["scheduler"])
+      );
+
+    if (typeof schedulerApi?.yield === "function") {
+      await schedulerApi.yield();
+      return;
+    }
+
+    await new Promise((resolve) => {
+      globalThis.setTimeout(resolve, 0);
+    });
   }
 
   /**

@@ -133,20 +133,22 @@ export default (
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <title>{pageTitle}</title>
           <meta name="description" content={metaDescription} />
+          <meta name="color-scheme" content="light dark" />
+          <link
+            rel="stylesheet"
+            href={`/style.css?v=${assetVersion}`}
+            fetchpriority="high"
+          />
+          <script src={`/scripts/anti-flash.js?v=${assetVersion}`}></script>
           <script
             src={`/scripts/language-preference.js?v=${assetVersion}`}
             data-supported-languages={SUPPORTED_LANGUAGES.join(",")}
             data-default-language={DEFAULT_LANGUAGE}
             data-current-language={language}
             data-language-alternates={JSON.stringify(alternateUrls)}
+            defer
           >
           </script>
-          <script src={`/scripts/anti-flash.js?v=${assetVersion}`}></script>
-          <link
-            rel="stylesheet"
-            href={`/style.css?v=${assetVersion}`}
-            fetchpriority="high"
-          />
           <link
             rel="alternate"
             type="application/rss+xml"

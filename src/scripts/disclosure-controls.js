@@ -136,7 +136,7 @@
 
       closeDisclosure(disclosure);
     }
-  });
+  }, { passive: true });
 
   globalThis.document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") {

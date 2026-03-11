@@ -15,10 +15,10 @@
       <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="color-scheme" content="light dark"/>
         <title>Sitemap — normco.re</title>
         <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{v=localStorage.getItem("color-mode")??localStorage.getItem("color-scheme")}catch{v=null}const t=v==="light"||v==="dark"?v:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-color-scheme",t)})()</script>
         <link rel="stylesheet" href="/style.css"/>
-        <link rel="stylesheet" href="/pagefind/pagefind-ui.css"/>
       </head>
       <body>
         <div class="site-wrapper">
@@ -224,10 +224,9 @@
             </div>
           </footer>
         </div>
-        <script src="/pagefind/pagefind-ui.js"/>
-        <script>globalThis.addEventListener("DOMContentLoaded",()=>{if(typeof PagefindUI==="function"){new PagefindUI({element:"#sitemap-search",showImages:false,showSubResults:false,resetStyles:false});}})</script>
         <script src="/scripts/disclosure-controls.js"/>
         <script src="/scripts/theme-toggle.js"/>
+        <script src="/scripts/pagefind-lazy-init.js"/>
         <script src="/scripts/feed-copy.js"/>
       </body>
     </html>

@@ -354,7 +354,14 @@ site.use(
   }),
 );
 site.use(nav());
-site.use(pagefind());
+// Keep the search index generation but disable Pagefind's auto UI injection.
+// The site uses a custom lazy initializer (`/scripts/pagefind-lazy-init.js`)
+// to avoid loading search UI assets on the critical rendering path.
+site.use(
+  pagefind({
+    ui: false,
+  }),
+);
 
 // Validate generated HTML against html-validate recommended/document presets.
 // Keep strict error reporting for common production issues while allowing

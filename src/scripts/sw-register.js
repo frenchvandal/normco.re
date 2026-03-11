@@ -43,63 +43,84 @@
     });
   }
 
-  globalThis.navigator.serviceWorker.addEventListener(
-    "controllerchange",
-    () => {
-      log("controllerchange -> reloading page");
-      globalThis.location.reload();
-    },
-  );
+  function registerServiceWorker() {
+    globalThis.navigator.serviceWorker.addEventListener(
+      "controllerchange",
+      () => {
+        log("controllerchange -> reloading page");
+        globalThis.location.reload();
+      },
+    );
 
-  globalThis.navigator.serviceWorker
-    .register(`/sw.js?v=${assetVersion}&debug=${swDebugLevel}`, { scope: "/" })
-    .then((registration) => {
-      log("registered", {
-        active: registration.active?.state ?? "none",
-        installing: registration.installing?.state ?? "none",
-        waiting: registration.waiting?.state ?? "none",
-      });
-
-      if (registration.waiting !== null) {
-        log("waiting worker detected -> skip waiting", {
-          waitingState: registration.waiting.state,
-        });
-        registration.waiting.postMessage({ type: "SKIP_WAITING" });
-      }
-
-      registration.addEventListener("updatefound", () => {
-        const installingWorker = registration.installing;
-
-        log("updatefound", {
-          installingState: installingWorker?.state ?? "none",
+    void globalThis.navigator.serviceWorker
+      .register(`/sw.js?v=${assetVersion}&debug=${swDebugLevel}`, {
+        scope: "/",
+      })
+      .then((registration) => {
+        log("registered", {
+          active: registration.active?.state ?? "none",
+          installing: registration.installing?.state ?? "none",
+          waiting: registration.waiting?.state ?? "none",
         });
 
-        if (installingWorker === null) {
-          return;
+        if (registration.waiting !== null) {
+          log("waiting worker detected -> skip waiting", {
+            waitingState: registration.waiting.state,
+          });
+          registration.waiting.postMessage({ type: "SKIP_WAITING" });
         }
 
-        installingWorker.addEventListener("statechange", () => {
-          log("installing statechange", {
-            state: installingWorker.state,
-            hasController:
-              globalThis.navigator.serviceWorker.controller !== null,
+        registration.addEventListener("updatefound", () => {
+          const installingWorker = registration.installing;
+
+          log("updatefound", {
+            installingState: installingWorker?.state ?? "none",
           });
 
-          if (
-            installingWorker.state === "installed" &&
-            globalThis.navigator.serviceWorker.controller !== null
-          ) {
-            log("new version installed -> skip waiting", {
-              waitingState: registration.waiting?.state ?? "none",
-            });
-            registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+          if (installingWorker === null) {
+            return;
           }
+
+          installingWorker.addEventListener("statechange", () => {
+            log("installing statechange", {
+              state: installingWorker.state,
+              hasController:
+                globalThis.navigator.serviceWorker.controller !== null,
+            });
+
+            if (
+              installingWorker.state === "installed" &&
+              globalThis.navigator.serviceWorker.controller !== null
+            ) {
+              log("new version installed -> skip waiting", {
+                waitingState: registration.waiting?.state ?? "none",
+              });
+              registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+            }
+          });
+        });
+      })
+      .catch((error) => {
+        log("registration failed", {
+          error: error instanceof Error ? error.message : String(error),
         });
       });
-    })
-    .catch((error) => {
-      log("registration failed", {
-        error: error instanceof Error ? error.message : String(error),
-      });
-    });
+  }
+
+  function scheduleServiceWorkerRegistration() {
+    const requestIdleCallback = globalThis["requestIdleCallback"];
+
+    if (typeof requestIdleCallback === "function") {
+      requestIdleCallback(() => {
+        registerServiceWorker();
+      }, { timeout: 3000 });
+      return;
+    }
+
+    globalThis.setTimeout(() => {
+      registerServiceWorker();
+    }, 0);
+  }
+
+  scheduleServiceWorkerRegistration();
 })();
