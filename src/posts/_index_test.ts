@@ -25,13 +25,11 @@ type MockPost = {
 
 function makeData(
   posts: MockPost[],
-  assetVersion?: string,
 ): Lume.Data {
   return {
     search: {
       pages: (_query: string, _sort: string) => posts,
     },
-    ...(assetVersion ? { build: { assetVersion } } : {}),
   } as unknown as Lume.Data;
 }
 
@@ -169,17 +167,17 @@ describe("posts/index.page.tsx", () => {
   });
 
   describe("archive year-nav script", () => {
-    it("loads the external year-nav script with asset version when posts exist", () => {
+    it("loads the external year-nav script when posts exist", () => {
       const posts = [
         makePost(509, {
           date: new Date("2026-01-01"),
           readingInfo: { minutes: 1 },
         }),
       ];
-      const html = postsIndexPage(makeData(posts, "abc123"), MOCK_HELPERS);
+      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(
         html,
-        '<script src="/scripts/archive-year-nav.js?v=abc123" defer></script>',
+        '<script src="/scripts/archive-year-nav.js" defer></script>',
       );
     });
 

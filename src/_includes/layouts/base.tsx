@@ -17,7 +17,6 @@ import {
 const DOCTYPE = { __html: "<!doctype html>\n" } as const;
 
 type BuildData = {
-  assetVersion?: string;
   swDebugLevel?: "off" | "summary" | "verbose";
 };
 
@@ -110,7 +109,6 @@ export default (
     "Personal blog by Phiphi, based in Chengdu, China.";
   const documentLanguage = getLanguageTag(language);
   const currentUrl = typeof url === "string" && url.length > 0 ? url : "/";
-  const assetVersion = build?.assetVersion ?? "dev";
   const swDebugLevel = build?.swDebugLevel ?? "off";
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
@@ -136,12 +134,12 @@ export default (
           <meta name="color-scheme" content="light dark" />
           <link
             rel="stylesheet"
-            href={`/style.css?v=${assetVersion}`}
+            href="/style.css"
             fetchpriority="high"
           />
-          <script src={`/scripts/anti-flash.js?v=${assetVersion}`}></script>
+          <script src="/scripts/anti-flash.js"></script>
           <script
-            src={`/scripts/language-preference.js?v=${assetVersion}`}
+            src="/scripts/language-preference.js"
             data-supported-languages={SUPPORTED_LANGUAGES.join(",")}
             data-default-language={DEFAULT_LANGUAGE}
             data-current-language={language}
@@ -181,26 +179,26 @@ export default (
             />
           </div>
           <script
-            src={`/scripts/disclosure-controls.js?v=${assetVersion}`}
+            src="/scripts/disclosure-controls.js"
             fetchpriority="low"
             defer
           >
           </script>
           <script
-            src={`/scripts/theme-toggle.js?v=${assetVersion}`}
+            src="/scripts/theme-toggle.js"
             fetchpriority="low"
             defer
           >
           </script>
           <script
-            src={`/scripts/pagefind-lazy-init.js?v=${assetVersion}`}
+            src="/scripts/pagefind-lazy-init.js"
             fetchpriority="low"
             defer
           >
           </script>
           <script
-            src={`/scripts/sw-register.js?v=${assetVersion}`}
-            data-asset-version={assetVersion}
+            src="/scripts/sw-register.js"
+            data-sw-url="/sw.js"
             data-sw-debug-level={swDebugLevel}
             fetchpriority="low"
             defer

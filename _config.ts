@@ -44,7 +44,6 @@ const OCTICON_CATALOGS = [
 ] as const satisfies Catalog[];
 
 type BuildData = {
-  assetVersion: string;
   repositoryUrl?: string;
   swDebugLevel: "off" | "summary" | "verbose";
 };
@@ -94,8 +93,6 @@ function normalizeRepositoryUrl(url: string | undefined): string | undefined {
 }
 
 function getBuildData(): BuildData {
-  const commitHash = runGitCommand(["rev-parse", "--short", "HEAD"]);
-  const assetVersion = commitHash ?? crypto.randomUUID();
   const repositoryUrl = normalizeRepositoryUrl(
     runGitCommand(["config", "--get", "remote.origin.url"]),
   );
@@ -104,12 +101,10 @@ function getBuildData(): BuildData {
 
   return repositoryUrl
     ? {
-      assetVersion,
       repositoryUrl,
       swDebugLevel,
     }
     : {
-      assetVersion,
       swDebugLevel,
     };
 }
@@ -546,6 +541,9 @@ site.process([".xml"], (pages: Page[]) => {
 // Configure exporters via OTEL_* env vars (for local JSON inspection, use
 // OTEL_EXPORTER_OTLP_PROTOCOL=http/json).
 site.use(otelPlugin());
-site.addEventListener("afterBuild", "deno fmt --ignore='**/*.xml' _site");
+site.addEventListener(
+  "afterBuild",
+  "deno fmt --ignore='**/*.xml' _site && deno run --allow-read --allow-write scripts/fingerprint-assets.ts _site",
+);
 
 export default site;

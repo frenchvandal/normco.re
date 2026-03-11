@@ -30,7 +30,6 @@ function makeData(
     author?: string;
     metas?: { site?: string; description?: string };
     build?: {
-      assetVersion?: string;
       swDebugLevel?: "off" | "summary" | "verbose";
     };
   },
@@ -112,24 +111,24 @@ describe("base.tsx layout", () => {
       const html = await renderComponent(
         baseLayout(makeData({}), MOCK_HELPERS),
       );
-      assertStringIncludes(html, 'href="/style.css?v=dev"');
+      assertStringIncludes(html, 'href="/style.css"');
       assertStringIncludes(
         html,
         '<meta name="color-scheme" content="light dark">',
       );
       assertStringIncludes(
         html,
-        'src="/scripts/language-preference.js?v=dev"',
+        'src="/scripts/language-preference.js"',
       );
       assertStringIncludes(
         html,
-        '<script src="/scripts/anti-flash.js?v=dev"></script>',
+        '<script src="/scripts/anti-flash.js"></script>',
       );
       assertStringIncludes(html, 'href="/feed.xml"');
       assertStringIncludes(html, 'href="/feed.json"');
       assertStringIncludes(
         html,
-        'src="/scripts/sw-register.js?v=dev" data-asset-version="dev" data-sw-debug-level="off"',
+        'src="/scripts/sw-register.js" data-sw-url="/sw.js" data-sw-debug-level="off"',
       );
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");
@@ -139,14 +138,14 @@ describe("base.tsx layout", () => {
       const html = await renderComponent(
         baseLayout(
           makeData({
-            build: { assetVersion: "abc123", swDebugLevel: "verbose" },
+            build: { swDebugLevel: "verbose" },
           }),
           MOCK_HELPERS,
         ),
       );
       assertStringIncludes(
         html,
-        'src="/scripts/sw-register.js?v=abc123" data-asset-version="abc123" data-sw-debug-level="verbose"',
+        'src="/scripts/sw-register.js" data-sw-url="/sw.js" data-sw-debug-level="verbose"',
       );
     });
 

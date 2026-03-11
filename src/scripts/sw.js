@@ -6,8 +6,9 @@ const sw = /** @type {ServiceWorkerGlobalScope} */ (
   /** @type {unknown} */ (self)
 );
 
-const SW_QUERY = new URL(sw.location.href).searchParams;
-const SW_VERSION = SW_QUERY.get("v") ?? "dev";
+const SW_URL = new URL(sw.location.href);
+const SW_QUERY = SW_URL.searchParams;
+const SW_VERSION = SW_QUERY.get("v") ?? "__SW_VERSION__";
 const SW_DEBUG_LEVEL = SW_QUERY.get("debug") ?? "off";
 const STATIC_CACHE = `static-${SW_VERSION}`;
 const PAGE_CACHE = `pages-${SW_VERSION}`;
@@ -37,11 +38,11 @@ const OFFLINE_FALLBACK_HTML = `<!doctype html>
 
 const STATIC_ASSETS = [
   "/",
-  `/style.css?v=${SW_VERSION}`,
-  `/scripts/theme-toggle.js?v=${SW_VERSION}`,
-  `/scripts/anti-flash.js?v=${SW_VERSION}`,
-  `/scripts/language-preference.js?v=${SW_VERSION}`,
-  `/scripts/feed-copy.js?v=${SW_VERSION}`,
+  "/style.css",
+  "/scripts/theme-toggle.js",
+  "/scripts/anti-flash.js",
+  "/scripts/language-preference.js",
+  "/scripts/feed-copy.js",
   "/feed.xml",
   "/feed.json",
   "/fr/feed.xml",

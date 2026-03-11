@@ -15,9 +15,9 @@
   }
 
   const currentScript = globalThis.document.currentScript;
-  const assetVersion = currentScript instanceof HTMLScriptElement
-    ? currentScript.dataset.assetVersion ?? "dev"
-    : "dev";
+  const swUrl = currentScript instanceof HTMLScriptElement
+    ? currentScript.dataset.swUrl ?? "/sw.js"
+    : "/sw.js";
   const swDebugLevel = currentScript instanceof HTMLScriptElement
     ? currentScript.dataset.swDebugLevel ?? "off"
     : "off";
@@ -37,7 +37,7 @@
     }
 
     console.info("[SW register]", event, {
-      assetVersion,
+      swUrl,
       swDebugLevel,
       ...details,
     });
@@ -53,7 +53,7 @@
     );
 
     void globalThis.navigator.serviceWorker
-      .register(`/sw.js?v=${assetVersion}&debug=${swDebugLevel}`, {
+      .register(`${swUrl}?debug=${swDebugLevel}`, {
         scope: "/",
       })
       .then((registration) => {

@@ -14,11 +14,6 @@ type H = {
   date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
 };
 
-/** Build metadata injected by the site configuration. */
-type BuildData = {
-  assetVersion?: string;
-};
-
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Archive page URL. */
@@ -56,8 +51,6 @@ export const type = "archive";
 /** Renders the posts archive page body. */
 export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const { date: dateFormat } = helpers as unknown as H;
-  const assetVersion = (data as Lume.Data & { build?: BuildData }).build
-    ?.assetVersion ?? "dev";
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
@@ -153,7 +146,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     : `<p class="blankslate">${translations.archive.emptyState}</p>`;
 
   const archiveYearNavScript = sections.length > 0
-    ? `<script src="/scripts/archive-year-nav.js?v=${assetVersion}" defer></script>`
+    ? '<script src="/scripts/archive-year-nav.js" defer></script>'
     : "";
 
   return `${archiveIntro}

@@ -1433,6 +1433,7 @@
       "jsr:@std/assert@^1.0.19",
       "jsr:@std/collections@^1.1.6",
       "jsr:@std/fmt@^1.0.9",
+      "jsr:@std/path@^1.1.4",
       "jsr:@std/testing@^1.0.17",
       "npm:@faker-js/faker@^10.3.0",
       "npm:@opentelemetry/api@^1.9.0",
