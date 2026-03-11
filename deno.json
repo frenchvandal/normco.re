@@ -56,7 +56,7 @@
     },
     "update-deps": {
       "description": "Update Lume and regenerate lock file",
-      "command": "deno outdated --update --latest"
+      "command": "deno outdated --update"
     },
     "check": {
       "description": "Type-check the entire project",

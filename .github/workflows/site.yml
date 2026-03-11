@@ -15,7 +15,46 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  quality:
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Deno environment
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version-file: .tool-versions
+          cache: true
+
+      - name: Check formatting
+        shell: bash
+        run: deno fmt --check
+
+      - name: Run linter
+        shell: bash
+        run: deno lint
+
+      - name: Type-check
+        shell: bash
+        run: deno task check
+
+      - name: Lint documentation comments
+        shell: bash
+        run: deno task lint:doc
+
+      - name: Run tests
+        shell: bash
+        run: deno test
+
+      - name: Run documentation tests
+        shell: bash
+        run: deno task test:doc
+
   deploy:
+    needs: quality
     environment:
       name: development
     runs-on: macos-26
