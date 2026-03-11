@@ -126,7 +126,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /class="site-menu-trigger-icon octicon-svg"[^>]*src="\/icons\/octicons\/three-bars-16\.svg"/,
+        /class="site-menu-trigger-icon octicon-svg"[^>]*src="\/icons\/octicons\/three-bars-24\.svg"/,
       );
       assertMatch(
         html,

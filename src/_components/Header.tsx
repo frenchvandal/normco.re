@@ -43,7 +43,7 @@ export default (
   const homeUrl = getLocalizedUrl("/", language);
   const postsUrl = getLocalizedUrl("/posts/", language);
   const aboutUrl = getLocalizedUrl("/about/", language);
-  const menuIcon = helpers.icon("three-bars", "octicons", "16");
+  const menuIcon = helpers.icon("three-bars", "octicons", "24");
   const homeIcon = helpers.icon("home", "octicons", "16");
   const writingIcon = helpers.icon("book", "octicons", "16");
   const aboutIcon = helpers.icon("info", "octicons", "16");
@@ -65,8 +65,8 @@ export default (
               <img
                 inline
                 class="site-menu-trigger-icon octicon-svg"
-                width="16"
-                height="16"
+                width="24"
+                height="24"
                 src={menuIcon}
                 alt=""
                 aria-hidden="true"
