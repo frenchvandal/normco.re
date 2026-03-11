@@ -153,9 +153,9 @@ architecture question (§1.1) is resolved.
 
 `theme-toggle.js` writes both `data-color-mode` and the legacy
 `data-color-scheme` attribute. `src/styles/components.css` still carries paired
-selectors for both attributes in three places (shadow rules for `.site-menu-panel`
-and `.language-menu-list`, and the search-overlay background for
-`.site-search[open]::before`).
+selectors for both attributes in three places (shadow rules for
+`.site-menu-panel` and `.language-menu-list`, and the search-overlay background
+for `.site-search[open]::before`).
 
 The strategy is valid as a compatibility bridge, but dual selector maintenance
 raises the surface area for subtle divergences as future style changes land.
@@ -219,8 +219,8 @@ interactive control. A native `<select>` is present in markup but is visually
 hidden and excluded from assistive interaction (`aria-hidden="true"`,
 `tabindex="-1"`).
 
-This arrangement diverges from the documented rule to style native controls
-with `appearance: base-select` instead of replacing them with custom disclosure
+This arrangement diverges from the documented rule to style native controls with
+`appearance: base-select` instead of replacing them with custom disclosure
 behavior.
 
 **Recommendation:** Either migrate to a visible native `<select>` styled with
@@ -312,8 +312,8 @@ setup (menu state, select synchronization) to a script loaded with `defer` or
 
 Because the archive hash-navigation behavior is embedded as a template string,
 it is generated fresh in each page response. It cannot be served as a static
-asset, benefits from no shared caching across page navigations, and is harder
-to validate or lint independently.
+asset, benefits from no shared caching across page navigations, and is harder to
+validate or lint independently.
 
 This is a direct delivery-side consequence of the architectural concern in §1.1.
 
@@ -413,8 +413,8 @@ drift, but CDN downtime or network restrictions (particularly relevant given the
 Chengdu deployment context) can block builds entirely.
 
 **Recommendation:** Document this dependency explicitly and consider a
-contingency strategy such as a local Deno cache warm-up step in CI or a
-mirrored artifact store.
+contingency strategy such as a local Deno cache warm-up step in CI or a mirrored
+artifact store.
 
 ---
 
@@ -539,10 +539,10 @@ management, and announcement behavior.
 
 **Severity: 🟡 Medium**
 
-The search panel carries `role="dialog"`, but there is no `aria-modal`
-attribute and focus is not trapped within the panel when it is open. This
-creates an ambiguous contract for assistive technologies: the panel announces
-itself as a modal dialog but does not enforce modal interaction boundaries.
+The search panel carries `role="dialog"`, but there is no `aria-modal` attribute
+and focus is not trapped within the panel when it is open. This creates an
+ambiguous contract for assistive technologies: the panel announces itself as a
+modal dialog but does not enforce modal interaction boundaries.
 
 **Recommendation:** Either implement full modal dialog behavior (focus trapping
 within the panel, `aria-modal="true"`, and a labeled dismiss action), or remove
@@ -562,8 +562,8 @@ most devices, but a no-JS or slow-JS scenario will present incorrect state to
 assistive technologies until scripts run.
 
 **Recommendation:** Document the fallback behavior explicitly, or explore
-rendering the initial `aria-pressed` value based on a cookie or `Accept-Language`
-hint to minimize the gap.
+rendering the initial `aria-pressed` value based on a cookie or
+`Accept-Language` hint to minimize the gap.
 
 ---
 
@@ -578,9 +578,10 @@ configured. The inline script generation on the archive page (§1.1) further
 complicates a strict CSP rollout, since any `script-src` directive excluding
 `'unsafe-inline'` would require either a per-deployment hash or a nonce.
 
-**Recommendation:** Start with a report-only CSP (`Content-Security-Policy-Report-Only`),
-instrument the violation stream, and refactor inline scripts to external assets
-(§1.1) before tightening to an enforced policy.
+**Recommendation:** Start with a report-only CSP
+(`Content-Security-Policy-Report-Only`), instrument the violation stream, and
+refactor inline scripts to external assets (§1.1) before tightening to an
+enforced policy.
 
 ---
 
@@ -590,8 +591,8 @@ instrument the violation stream, and refactor inline scripts to external assets
 
 The service worker caches feed responses using HTTPS transport guarantees and
 TTL-based freshness, but performs no application-level integrity verification
-(no `Content-Hash` or similar mechanism). For a static personal blog, this is
-an entirely reasonable tradeoff.
+(no `Content-Hash` or similar mechanism). For a static personal blog, this is an
+entirely reasonable tradeoff.
 
 **Recommendation:** Keep the current model. Document the threat boundary
 explicitly and revisit only if the threat model changes (for example, if the
@@ -716,13 +717,13 @@ color layer uses perceptually uniform, wide-gamut `oklch()` values paired with
 `light-dark()` for automatic theme switching. This is well-executed and serves
 as the model for the broader base token migration.
 
-**Component and layout testing discipline:** Header, footer, and layout tests are
-granular and behavior-focused, with meaningful assertions on localization,
+**Component and layout testing discipline:** Header, footer, and layout tests
+are granular and behavior-focused, with meaningful assertions on localization,
 heading structure, and critical accessibility attributes.
 
 **Service-worker architecture quality:** `sw.js` maintains bounded predictive
-preloading structures, explicit cache strategy separation, versioned cache names,
-and a well-commented crawler bypass heuristic.
+preloading structures, explicit cache strategy separation, versioned cache
+names, and a well-commented crawler bypass heuristic.
 
 **CSS cascade layering is clean and navigable:**
 `@layer reset, base, layout, components, utilities` is consistently organized,
@@ -742,41 +743,41 @@ environment variable sprawl, honoring the `LUME_LOGS` policy defined in
 
 ## Summary Table
 
-| #    | Location                                                               | Severity | Issue                                                                                |
-| ---- | ---------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------ |
-| 1.1  | `src/posts/index.page.tsx`                                             | 🟡       | Archive page embeds a long inline script, mixing rendering and behavior              |
-| 1.2  | `src/utils/i18n.ts`                                                    | 🟢       | i18n module combines a large translation corpus with runtime helpers                 |
-| 1.3  | `src/utils/i18n.ts`, `_config.ts`, `src/scripts/sw.js`                 | 🟢       | Language mapping requires coordinated edits across multiple files                    |
-| 2.2  | `src/scripts/*.js`                                                     | 🟡       | Most browser scripts are untyped JS without `@ts-check`                              |
-| 2.3  | `src/scripts/theme-toggle.js`, `src/styles/components.css`             | 🟢       | Legacy `data-color-scheme` compatibility selectors duplicate theme state handling    |
-| 3.1  | `src/styles/base.css`                                                  | 🟡       | Base token names and colors diverge from DTCG + `oklch()` project guidance           |
-| 3.2  | `src/styles/`                                                          | 🟢       | `@scope` is not yet used for component style encapsulation                           |
-| 3.3  | `src/_components/Header.tsx`, `src/styles/`                            | 🟡       | Language switcher diverges from the native `base-select` guideline                   |
-| 3.4  | `src/styles/components.css`                                            | 🟢       | Sticky archive nav still lacks `scroll-state` container query behavior               |
-| 3.5  | `src/styles/layout.css`                                                | 🟢       | Unused `.site-nav*` selectors remain in `layout.css`                                 |
-| 3.6  | `src/styles/components.css`                                            | 🟢       | Search overlay `backdrop-filter` not suppressed by `prefers-reduced-transparency`    |
-| 4.1  | `src/scripts/language-preference.js`                                   | 🟡       | Render-critical locale script may redirect after parse has begun                     |
-| 4.2  | `src/posts/index.page.tsx`                                             | 🟡       | Archive script cannot be cached, linted, or tested as a standalone asset             |
-| 4.3  | `src/scripts/feed-copy.js`                                             | 🟢       | Clipboard fallback still relies on deprecated `execCommand`                          |
-| 4.4  | `src/scripts/sw-register.js`, `src/scripts/sw.js`                      | 🟢       | Service-worker crawler bypass relies on a UA heuristic                               |
-| 5.1  | `_config.ts`, build output                                             | 🟡       | Build reports many HTML and SEO warnings while remaining green                       |
-| 5.2  | `.github/workflows/site.yml`                                           | 🟡       | Deployment workflow skips lint, type-check, and test quality gates                   |
-| 5.3  | `deno.json`                                                            | 🟡       | `update-deps` task uses `--latest` unconditionally, risking semver-major upgrades    |
-| 5.4  | `deno.json`                                                            | 🟢       | Core imports depend on jsDelivr CDN availability                                     |
-| 6.1  | `src/utils/i18n.ts`, `_config.ts`                                      | 🟢       | Dual internal/external key model is correct but operationally expensive to extend    |
-| 6.2  | `src/about.page.tsx`, `src/posts/index.page.tsx`                       | 🟡       | French metadata strings contain ASCII transliterations without diacritics            |
-| 6.3  | `src/posts/*.page.tsx`                                                 | 🟢       | Multi-language URL generation can mask pages with no per-locale content branches     |
-| 7.1  | `src/scripts/language-preference.js`                                   | 🟡       | First-visit locale redirect can add an avoidable full-page navigation                |
-| 7.2  | `src/posts/index.page.tsx`                                             | 🟢       | Inline archive script prevents independent caching and delivery optimization         |
-| 7.3  | `src/styles/components.css`                                            | 🟢       | `content-visibility: auto` adoption is present but limited to one surface            |
-| 8.1  | `src/_components/Header.tsx`                                           | 🟡       | Custom language menu carries more accessibility risk than a native select control    |
-| 8.2  | `src/_components/Header.tsx`, `src/scripts/disclosure-controls.js`     | 🟡       | Search dialog declares `role="dialog"` without `aria-modal` or focus trapping        |
-| 8.3  | `src/_includes/layouts/base.tsx`, `src/scripts/`                       | 🟢       | Theme toggle initial `aria-pressed` state is corrected by JS, not by markup          |
-| 9.1  | Global delivery / security headers                                     | 🟡       | No CSP policy defined; inline script path raises rollout friction                    |
-| 9.2  | `src/scripts/sw.js`                                                    | 🟢       | Feed caching relies on transport-layer trust with no application-layer integrity     |
-| 10.2 | `src/utils/i18n.ts`                                                    | 🟡       | No direct unit tests for core i18n resolver and URL translation functions            |
-| 10.3 | `src/scripts/*.js`, `src/scripts/sw.js`                                | 🟡       | Client scripts and service-worker behavior lack direct automated test coverage       |
-| 10.4 | CI / test tooling                                                      | 🟢       | No coverage threshold or CI enforcement for test execution                           |
+| #    | Location                                                           | Severity | Issue                                                                             |
+| ---- | ------------------------------------------------------------------ | -------- | --------------------------------------------------------------------------------- |
+| 1.1  | `src/posts/index.page.tsx`                                         | 🟡       | Archive page embeds a long inline script, mixing rendering and behavior           |
+| 1.2  | `src/utils/i18n.ts`                                                | 🟢       | i18n module combines a large translation corpus with runtime helpers              |
+| 1.3  | `src/utils/i18n.ts`, `_config.ts`, `src/scripts/sw.js`             | 🟢       | Language mapping requires coordinated edits across multiple files                 |
+| 2.2  | `src/scripts/*.js`                                                 | 🟡       | Most browser scripts are untyped JS without `@ts-check`                           |
+| 2.3  | `src/scripts/theme-toggle.js`, `src/styles/components.css`         | 🟢       | Legacy `data-color-scheme` compatibility selectors duplicate theme state handling |
+| 3.1  | `src/styles/base.css`                                              | 🟡       | Base token names and colors diverge from DTCG + `oklch()` project guidance        |
+| 3.2  | `src/styles/`                                                      | 🟢       | `@scope` is not yet used for component style encapsulation                        |
+| 3.3  | `src/_components/Header.tsx`, `src/styles/`                        | 🟡       | Language switcher diverges from the native `base-select` guideline                |
+| 3.4  | `src/styles/components.css`                                        | 🟢       | Sticky archive nav still lacks `scroll-state` container query behavior            |
+| 3.5  | `src/styles/layout.css`                                            | 🟢       | Unused `.site-nav*` selectors remain in `layout.css`                              |
+| 3.6  | `src/styles/components.css`                                        | 🟢       | Search overlay `backdrop-filter` not suppressed by `prefers-reduced-transparency` |
+| 4.1  | `src/scripts/language-preference.js`                               | 🟡       | Render-critical locale script may redirect after parse has begun                  |
+| 4.2  | `src/posts/index.page.tsx`                                         | 🟡       | Archive script cannot be cached, linted, or tested as a standalone asset          |
+| 4.3  | `src/scripts/feed-copy.js`                                         | 🟢       | Clipboard fallback still relies on deprecated `execCommand`                       |
+| 4.4  | `src/scripts/sw-register.js`, `src/scripts/sw.js`                  | 🟢       | Service-worker crawler bypass relies on a UA heuristic                            |
+| 5.1  | `_config.ts`, build output                                         | 🟡       | Build reports many HTML and SEO warnings while remaining green                    |
+| 5.2  | `.github/workflows/site.yml`                                       | 🟡       | Deployment workflow skips lint, type-check, and test quality gates                |
+| 5.3  | `deno.json`                                                        | 🟡       | `update-deps` task uses `--latest` unconditionally, risking semver-major upgrades |
+| 5.4  | `deno.json`                                                        | 🟢       | Core imports depend on jsDelivr CDN availability                                  |
+| 6.1  | `src/utils/i18n.ts`, `_config.ts`                                  | 🟢       | Dual internal/external key model is correct but operationally expensive to extend |
+| 6.2  | `src/about.page.tsx`, `src/posts/index.page.tsx`                   | 🟡       | French metadata strings contain ASCII transliterations without diacritics         |
+| 6.3  | `src/posts/*.page.tsx`                                             | 🟢       | Multi-language URL generation can mask pages with no per-locale content branches  |
+| 7.1  | `src/scripts/language-preference.js`                               | 🟡       | First-visit locale redirect can add an avoidable full-page navigation             |
+| 7.2  | `src/posts/index.page.tsx`                                         | 🟢       | Inline archive script prevents independent caching and delivery optimization      |
+| 7.3  | `src/styles/components.css`                                        | 🟢       | `content-visibility: auto` adoption is present but limited to one surface         |
+| 8.1  | `src/_components/Header.tsx`                                       | 🟡       | Custom language menu carries more accessibility risk than a native select control |
+| 8.2  | `src/_components/Header.tsx`, `src/scripts/disclosure-controls.js` | 🟡       | Search dialog declares `role="dialog"` without `aria-modal` or focus trapping     |
+| 8.3  | `src/_includes/layouts/base.tsx`, `src/scripts/`                   | 🟢       | Theme toggle initial `aria-pressed` state is corrected by JS, not by markup       |
+| 9.1  | Global delivery / security headers                                 | 🟡       | No CSP policy defined; inline script path raises rollout friction                 |
+| 9.2  | `src/scripts/sw.js`                                                | 🟢       | Feed caching relies on transport-layer trust with no application-layer integrity  |
+| 10.2 | `src/utils/i18n.ts`                                                | 🟡       | No direct unit tests for core i18n resolver and URL translation functions         |
+| 10.3 | `src/scripts/*.js`, `src/scripts/sw.js`                            | 🟡       | Client scripts and service-worker behavior lack direct automated test coverage    |
+| 10.4 | CI / test tooling                                                  | 🟢       | No coverage threshold or CI enforcement for test execution                        |
 
 ---
 
