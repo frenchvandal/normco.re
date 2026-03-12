@@ -50,6 +50,7 @@ export type PayloadReportMetadata = {
   schemaVersion: number;
   routeSetHash: string;
   routeCount: number;
+  policyMode?: "policy";
   policyVersion?: number;
   policyFingerprint?: string;
 };
@@ -266,6 +267,10 @@ function isPayloadReportMetadata(
     return false;
   }
 
+  if (candidate.policyMode !== undefined && candidate.policyMode !== "policy") {
+    return false;
+  }
+
   if (
     candidate.policyFingerprint !== undefined &&
     (typeof candidate.policyFingerprint !== "string" ||
@@ -280,6 +285,7 @@ function isPayloadReportMetadata(
 /** Creates deterministic metadata used to validate baseline/policy coherence. */
 export function createPayloadReportMetadata(
   routes: ReadonlyArray<string>,
+  policyMode?: "policy",
   policyVersion?: number,
   policyFingerprint?: string,
 ): PayloadReportMetadata {
@@ -289,6 +295,10 @@ export function createPayloadReportMetadata(
     routeSetHash: getRouteSetHash(canonicalRoutes),
     routeCount: canonicalRoutes.length,
   };
+
+  if (policyMode !== undefined) {
+    metadata.policyMode = policyMode;
+  }
 
   if (policyVersion !== undefined) {
     metadata.policyVersion = policyVersion;
@@ -652,6 +662,7 @@ async function collectRoutePayload(
 async function collectPayloadReport(
   rootDir: string,
   routes: ReadonlyArray<string>,
+  policyMode?: "policy",
   policyVersion?: number,
   policyFingerprint?: string,
 ): Promise<PayloadReport> {
@@ -660,6 +671,7 @@ async function collectPayloadReport(
   );
   const metadata = createPayloadReportMetadata(
     routeReports.map((routeReport) => routeReport.route),
+    policyMode,
     policyVersion,
     policyFingerprint,
   );
@@ -915,6 +927,28 @@ export function assertBaselineMetadataCoherence(
     return;
   }
 
+  if (currentMetadata.policyMode !== "policy") {
+    throw new Error(
+      [
+        "[payload-report] Current report policy mode marker missing",
+        `- Policy: ${options.policyPath}`,
+        "Regenerate the current report with the active policy (`deno task payload:policy --baseline=/path/to/baseline.json` or `deno task payload:baseline`).",
+      ].join("\n"),
+    );
+  }
+
+  if (baselineMetadata.policyMode !== "policy") {
+    throw new Error(
+      [
+        "[payload-report] Baseline policy compatibility marker missing",
+        `- Baseline: ${options.baselinePath ?? "unknown"}`,
+        `- Policy: ${options.policyPath}`,
+        "This baseline was not produced by a policy-compatible run and cannot be compared in policy mode.",
+        "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
+      ].join("\n"),
+    );
+  }
+
   if (options.policyVersion === undefined) {
     throw new Error(
       "[payload-report] Policy metadata validation failed: current run has no resolved policy version",
@@ -1163,6 +1197,10 @@ function renderMarkdownReport(
     lines.push(`- Report policy version: ${report.metadata.policyVersion}`);
   }
 
+  if (report.metadata.policyMode !== undefined) {
+    lines.push(`- Report policy mode: ${report.metadata.policyMode}`);
+  }
+
   if (report.metadata.policyFingerprint !== undefined) {
     lines.push(
       `- Report policy fingerprint: \`${report.metadata.policyFingerprint}\``,
@@ -1266,6 +1304,7 @@ async function main(): Promise<void> {
   const report = await collectPayloadReport(
     options.rootDir,
     options.routes,
+    options.policyPath !== undefined ? "policy" : undefined,
     options.policyVersion,
     options.policyFingerprint,
   );

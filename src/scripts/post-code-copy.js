@@ -1,7 +1,5 @@
 // @ts-check
 (() => {
-  const EXEC_COMMAND_FALLBACK_MODULE_URL =
-    "/scripts/post-code-copy-exec-command.js";
   const article = globalThis.document.querySelector(
     ".post-article[data-code-copy-label]",
   );
@@ -21,23 +19,16 @@
   const copyFailedFeedback = article.dataset.codeCopyFailedFeedback ??
     "Cannot copy code";
   const feedbackResetMs = 1800;
-  /** @type {Promise<((text: string) => boolean) | undefined> | undefined} */
   let execCommandWriterPromise;
 
-  /**
-   * Resolves the legacy execCommand writer only when clipboard API is unavailable.
-   * @returns {Promise<((text: string) => boolean) | undefined>}
-   */
   function getExecCommandWriter() {
     if (execCommandWriterPromise !== undefined) {
       return execCommandWriterPromise;
     }
 
     // TODO(phiphi): [Carbon-P3] Remove execCommand fallback after clipboard API support baseline for site visitors reaches full parity in analytics.
-    execCommandWriterPromise = import(EXEC_COMMAND_FALLBACK_MODULE_URL)
-      .then((module) => {
-        const writeWithExecCommand = module.writeWithExecCommand;
-
+    execCommandWriterPromise = import("/scripts/post-code-copy-exec-command.js")
+      .then(({ writeWithExecCommand }) => {
         return typeof writeWithExecCommand === "function"
           ? writeWithExecCommand
           : undefined;
@@ -47,10 +38,6 @@
     return execCommandWriterPromise;
   }
 
-  /**
-   * @param {string} text
-   * @returns {Promise<boolean>}
-   */
   async function copyText(text) {
     const clipboard = globalThis.navigator.clipboard;
 
@@ -64,19 +51,18 @@
     }
 
     const writeWithExecCommand = await getExecCommandWriter();
-    return typeof writeWithExecCommand === "function"
-      ? writeWithExecCommand(text)
-      : false;
+    return typeof writeWithExecCommand === "function" &&
+      writeWithExecCommand(text);
   }
 
-  for (const candidate of codeBlocks) {
-    const pre = candidate.parentElement;
+  for (const codeBlock of codeBlocks) {
+    const pre = codeBlock.parentElement;
 
     if (!(pre instanceof HTMLElement)) {
       continue;
     }
 
-    const codeText = candidate.textContent?.trim() ?? "";
+    const codeText = codeBlock.textContent?.trim() ?? "";
 
     if (codeText.length === 0) {
       continue;

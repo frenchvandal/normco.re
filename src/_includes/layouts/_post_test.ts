@@ -1,4 +1,9 @@
-import { assert, assertNotMatch, assertStringIncludes } from "jsr/assert";
+import {
+  assert,
+  assertEquals,
+  assertNotMatch,
+  assertStringIncludes,
+} from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker } from "npm/faker-js";
@@ -201,6 +206,25 @@ describe("post.tsx layout", () => {
         html,
         /src="\/scripts\/post-code-copy-exec-command\.js"/,
       );
+    });
+
+    it("emits a single code-copy script tag when multiple code blocks exist", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({
+            children: {
+              __html:
+                '<pre><code class="language-ts">const alpha = 1;</code></pre><pre><code class="language-ts">const beta = 2;</code></pre>',
+            },
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+      const scriptMatches =
+        html.match(/src="\/scripts\/post-code-copy\.js"/g) ??
+          [];
+
+      assertEquals(scriptMatches.length, 1);
     });
 
     it("skips the post code-copy enhancement script when code blocks are absent", async () => {

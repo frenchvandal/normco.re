@@ -21,6 +21,7 @@ type PayloadReportFixture = {
     schemaVersion: number;
     routeSetHash: string;
     routeCount: number;
+    policyMode?: "policy";
     policyVersion?: number;
     policyFingerprint?: string;
   };
@@ -46,6 +47,7 @@ function createReport(
   totalByRoute: ReadonlyArray<[string, number]>,
   policyVersion?: number,
   policyFingerprint?: string,
+  policyMode?: "policy",
 ): PayloadReportFixture {
   const routes = totalByRoute.map(([route, totalBytes]) => ({
     route,
@@ -64,6 +66,7 @@ function createReport(
     rootDir: "_site",
     metadata: createPayloadReportMetadata(
       totalByRoute.map(([route]) => route),
+      policyMode,
       policyVersion,
       policyFingerprint,
     ),
@@ -407,6 +410,7 @@ describe("payload baseline metadata coherence", () => {
       ],
       1,
       policyFingerprint,
+      "policy",
     );
     const current = createReport(
       [
@@ -415,6 +419,7 @@ describe("payload baseline metadata coherence", () => {
       ],
       1,
       policyFingerprint,
+      "policy",
     );
 
     assertBaselineMetadataCoherence(
@@ -438,6 +443,7 @@ describe("payload baseline metadata coherence", () => {
       ],
       1,
       policyFingerprint,
+      "policy",
     );
     const baselineWithoutMetadata = {
       ...createReport(
@@ -447,6 +453,7 @@ describe("payload baseline metadata coherence", () => {
         ],
         1,
         policyFingerprint,
+        "policy",
       ),
       metadata: undefined,
     };
@@ -479,6 +486,7 @@ describe("payload baseline metadata coherence", () => {
       ],
       1,
       policyFingerprint,
+      "policy",
     );
     const baseline = createReport(
       [
@@ -487,6 +495,7 @@ describe("payload baseline metadata coherence", () => {
       ],
       1,
       policyFingerprint,
+      "policy",
     );
     const baselineWithWrongHash = {
       ...baseline,
@@ -515,6 +524,45 @@ describe("payload baseline metadata coherence", () => {
     );
   });
 
+  it("fails when baseline policy compatibility marker is missing in policy mode", () => {
+    const policyFingerprint = "ff1ce00a";
+    const current = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      1,
+      policyFingerprint,
+      "policy",
+    );
+    const baselineWithoutPolicyMode = createReport(
+      [
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ],
+      1,
+      policyFingerprint,
+    );
+
+    assertThrows(
+      () =>
+        assertBaselineMetadataCoherence(
+          current as Parameters<typeof assertBaselineMetadataCoherence>[0],
+          baselineWithoutPolicyMode as Parameters<
+            typeof assertBaselineMetadataCoherence
+          >[1],
+          {
+            baselinePath: "/tmp/baseline.json",
+            policyPath: "scripts/payload-policy.json",
+            policyVersion: 1,
+            policyFingerprint,
+          },
+        ),
+      Error,
+      "Baseline policy compatibility marker missing",
+    );
+  });
+
   it("fails when baseline policy metadata is missing in policy mode", () => {
     const policyFingerprint = "ff1ce00a";
     const current = createReport(
@@ -524,11 +572,17 @@ describe("payload baseline metadata coherence", () => {
       ],
       1,
       policyFingerprint,
+      "policy",
     );
-    const baselineWithoutPolicyMetadata = createReport([
-      ["/index.html", 1000],
-      ["/posts/index.html", 1300],
-    ]);
+    const baselineWithoutPolicyMetadata = createReport(
+      [
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ],
+      undefined,
+      undefined,
+      "policy",
+    );
 
     assertThrows(
       () =>
@@ -558,11 +612,17 @@ describe("payload baseline metadata coherence", () => {
       ],
       1,
       policyFingerprint,
+      "policy",
     );
-    const baselineWithoutPolicyFingerprint = createReport([
-      ["/index.html", 1000],
-      ["/posts/index.html", 1300],
-    ], 1);
+    const baselineWithoutPolicyFingerprint = createReport(
+      [
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ],
+      1,
+      undefined,
+      "policy",
+    );
 
     assertThrows(
       () =>
@@ -592,6 +652,7 @@ describe("payload baseline metadata coherence", () => {
       ],
       1,
       policyFingerprint,
+      "policy",
     );
     const baselineWithDifferentPolicyVersion = createReport(
       [
@@ -600,6 +661,7 @@ describe("payload baseline metadata coherence", () => {
       ],
       2,
       policyFingerprint,
+      "policy",
     );
 
     assertThrows(
@@ -630,6 +692,7 @@ describe("payload baseline metadata coherence", () => {
       ],
       1,
       currentPolicyFingerprint,
+      "policy",
     );
     const baselineWithDifferentPolicyFingerprint = createReport(
       [
@@ -638,6 +701,7 @@ describe("payload baseline metadata coherence", () => {
       ],
       1,
       "deafbeef",
+      "policy",
     );
 
     assertThrows(
