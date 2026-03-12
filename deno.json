@@ -83,6 +83,10 @@
       "description": "Generate a PR-ready markdown payload diff with explicit baseline (`deno task payload:pr --baseline=/path/to/baseline.json`)",
       "command": "deno run --allow-read --allow-write scripts/payload-report.ts --require-baseline --output=/tmp/payload-current.json --markdown=/tmp/payload-report.md"
     },
+    "payload:guard": {
+      "description": "Fail on payload regressions beyond thresholds (`deno task payload:guard --baseline=/path/to/baseline.json [--max-total-delta=0 --max-route-delta=0]`)",
+      "command": "deno run --allow-read --allow-write scripts/payload-report.ts --require-baseline --max-total-delta=0 --max-route-delta=0 --output=/tmp/payload-current.json --markdown=/tmp/payload-report.md"
+    },
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"

@@ -15,70 +15,42 @@
     return;
   }
 
-  /** @type {Map<HTMLAnchorElement, string>} */
-  const idByLink = new Map();
+  /** @type {Array<{ link: HTMLAnchorElement; id: string }>} */
+  const entries = [];
 
   for (const link of links) {
-    const href = link.getAttribute("href");
-
-    if (href === null || !href.startsWith("#")) {
+    if (!link.hash.startsWith("#") || link.hash.length <= 1) {
       continue;
     }
 
-    const id = href.slice(1);
+    const id = decodeURIComponent(link.hash.slice(1));
 
     if (id.length === 0) {
       continue;
     }
 
-    idByLink.set(link, id);
+    entries.push({
+      link,
+      id,
+    });
   }
 
-  if (idByLink.size === 0) {
+  if (entries.length === 0) {
     return;
   }
 
-  /**
-   * @param {string} activeId
-   */
-  function setCurrentLink(activeId) {
-    for (const [link, id] of idByLink) {
-      if (id === activeId) {
-        link.setAttribute("aria-current", "true");
-      } else {
-        link.removeAttribute("aria-current");
-      }
-    }
-  }
-
-  /**
-   * @returns {string | null}
-   */
-  function getActiveIdFromHash() {
-    const rawHash = globalThis.location.hash;
-
-    if (rawHash.startsWith("#") && rawHash.length > 1) {
-      const hashId = decodeURIComponent(rawHash.slice(1));
-
-      for (const id of idByLink.values()) {
-        if (id === hashId) {
-          return id;
-        }
-      }
-    }
-
-    const firstId = idByLink.values().next().value;
-    return typeof firstId === "string" ? firstId : null;
-  }
-
   function syncCurrentLink() {
-    const activeId = getActiveIdFromHash();
+    const currentHash = globalThis.location.hash;
+    const requestedId = currentHash.startsWith("#") && currentHash.length > 1
+      ? decodeURIComponent(currentHash.slice(1))
+      : "";
+    const activeId = entries.some((entry) => entry.id === requestedId)
+      ? requestedId
+      : entries[0].id;
 
-    if (activeId === null) {
-      return;
+    for (const entry of entries) {
+      entry.link.toggleAttribute("aria-current", entry.id === activeId);
     }
-
-    setCurrentLink(activeId);
   }
 
   globalThis.addEventListener("hashchange", syncCurrentLink);

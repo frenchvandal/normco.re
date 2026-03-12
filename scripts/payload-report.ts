@@ -15,15 +15,18 @@ const ASSET_REFERENCE_PATTERNS = [
   /<link[^>]*\shref="([^"]+)"[^>]*>/g,
 ] as const;
 
-type RouteAssetKind = "js" | "css";
+/** Supported asset kinds included in payload accounting. */
+export type RouteAssetKind = "js" | "css";
 
-type RouteAsset = {
+/** Serialized payload entry for one JS or CSS asset file. */
+export type RouteAsset = {
   url: string;
   kind: RouteAssetKind;
   bytes: number;
 };
 
-type RoutePayload = {
+/** Aggregated payload metrics for one rendered route file. */
+export type RoutePayload = {
   route: string;
   jsBytes: number;
   cssBytes: number;
@@ -31,7 +34,8 @@ type RoutePayload = {
   assets: ReadonlyArray<RouteAsset>;
 };
 
-type PayloadReport = {
+/** Full payload report for a single build output snapshot. */
+export type PayloadReport = {
   generatedAt: string;
   rootDir: string;
   routes: ReadonlyArray<RoutePayload>;
@@ -42,6 +46,18 @@ type PayloadReport = {
   };
 };
 
+/** Delta summary for one route when compared with a baseline report. */
+export type PayloadDelta = {
+  route: string;
+  deltaBytes: number;
+};
+
+/** Optional regression thresholds enforced against payload deltas. */
+export type PayloadRegressionThresholds = {
+  maxTotalDeltaBytes?: number;
+  maxRouteDeltaBytes?: number;
+};
+
 type CliOptions = {
   rootDir: string;
   routes: ReadonlyArray<string>;
@@ -49,6 +65,8 @@ type CliOptions = {
   outputPath?: string;
   markdownPath?: string;
   requireBaseline: boolean;
+  maxTotalDeltaBytes?: number;
+  maxRouteDeltaBytes?: number;
 };
 
 function printUsage(): void {
@@ -63,8 +81,22 @@ function printUsage(): void {
       "  --output=<file>     Write the current JSON report to a file",
       "  --markdown=<file>   Write a reusable markdown report to a file",
       "  --require-baseline  Fail when --baseline is not provided",
+      "  --max-total-delta=<bytes>  Fail when total bytes delta exceeds this value",
+      "  --max-route-delta=<bytes>  Fail when any per-route delta exceeds this value",
     ].join("\n"),
   );
+}
+
+function parseByteThreshold(optionName: string, value: string): number {
+  const threshold = Number(value);
+
+  if (!Number.isInteger(threshold) || threshold < 0) {
+    throw new Error(
+      `Invalid value for ${optionName}: expected a non-negative integer, received "${value}"`,
+    );
+  }
+
+  return threshold;
 }
 
 function normalizeRoute(route: string): string {
@@ -130,6 +162,12 @@ function parseCliOptions(args: ReadonlyArray<string>): CliOptions {
         break;
       case "--markdown":
         options.markdownPath = value;
+        break;
+      case "--max-total-delta":
+        options.maxTotalDeltaBytes = parseByteThreshold(key, value);
+        break;
+      case "--max-route-delta":
+        options.maxRouteDeltaBytes = parseByteThreshold(key, value);
         break;
       default:
         throw new Error(`Unknown option: ${key}`);
@@ -268,6 +306,84 @@ function indexRoutesByPath(
   return new Map(report.routes.map((route) => [route.route, route]));
 }
 
+/** Returns route-level and total deltas between the current report and a baseline. */
+export function getPayloadDeltas(
+  report: PayloadReport,
+  baselineReport: PayloadReport,
+): {
+  routeDeltas: ReadonlyArray<PayloadDelta>;
+  totalDeltaBytes: number;
+} {
+  const baselineByRoute = indexRoutesByPath(baselineReport);
+  const routeDeltas = report.routes.map((routeReport) => {
+    const baselineRoute = baselineByRoute.get(routeReport.route);
+
+    if (!baselineRoute) {
+      throw new Error(
+        `Baseline report is missing route: ${routeReport.route}. Re-run with matching routes.`,
+      );
+    }
+
+    return {
+      route: routeReport.route,
+      deltaBytes: routeReport.totalBytes - baselineRoute.totalBytes,
+    };
+  });
+
+  return {
+    routeDeltas,
+    totalDeltaBytes: report.totals.totalBytes -
+      baselineReport.totals.totalBytes,
+  };
+}
+
+/** Throws when the payload delta exceeds configured thresholds. */
+export function assertPayloadRegressionThresholds(
+  deltas: {
+    routeDeltas: ReadonlyArray<PayloadDelta>;
+    totalDeltaBytes: number;
+  },
+  thresholds: PayloadRegressionThresholds,
+): void {
+  const violations: string[] = [];
+
+  if (
+    thresholds.maxTotalDeltaBytes !== undefined &&
+    deltas.totalDeltaBytes > thresholds.maxTotalDeltaBytes
+  ) {
+    violations.push(
+      `total delta ${
+        formatDelta(deltas.totalDeltaBytes)
+      } exceeds max-total-delta=${thresholds.maxTotalDeltaBytes}`,
+    );
+  }
+
+  if (thresholds.maxRouteDeltaBytes !== undefined) {
+    for (const routeDelta of deltas.routeDeltas) {
+      if (routeDelta.deltaBytes <= thresholds.maxRouteDeltaBytes) {
+        continue;
+      }
+
+      violations.push(
+        `${routeDelta.route}: delta ${
+          formatDelta(routeDelta.deltaBytes)
+        } exceeds max-route-delta=${thresholds.maxRouteDeltaBytes}`,
+      );
+    }
+  }
+
+  if (violations.length === 0) {
+    return;
+  }
+
+  throw new Error(
+    [
+      "[payload-regression] Regression guard failed",
+      ...violations.map((violation) => `- ${violation}`),
+    ].join("\n"),
+  );
+}
+
 function renderMarkdownTable(
   report: PayloadReport,
   baselineReport: PayloadReport | undefined,
@@ -318,11 +434,10 @@ function renderMarkdownTable(
     return lines.join("\n");
   }
 
-  const totalDelta = report.totals.totalBytes -
-    baselineReport.totals.totalBytes;
+  const { totalDeltaBytes } = getPayloadDeltas(report, baselineReport);
   lines.push(
     `| **Total** | **${report.totals.jsBytes}** | **${report.totals.cssBytes}** | **${report.totals.totalBytes}** | **${
-      formatDelta(totalDelta)
+      formatDelta(totalDeltaBytes)
     }** |`,
   );
 
@@ -357,6 +472,14 @@ function renderMarkdownReport(
     lines.push(`- Output Markdown: \`${options.markdownPath}\``);
   }
 
+  if (options.maxTotalDeltaBytes !== undefined) {
+    lines.push(`- Max total delta: ${options.maxTotalDeltaBytes} bytes`);
+  }
+
+  if (options.maxRouteDeltaBytes !== undefined) {
+    lines.push(`- Max route delta: ${options.maxRouteDeltaBytes} bytes`);
+  }
+
   lines.push("");
   lines.push(renderMarkdownTable(report, baselineReport));
 
@@ -365,10 +488,18 @@ function renderMarkdownReport(
 
 async function main(): Promise<void> {
   const options = parseCliOptions(Deno.args);
+  const usesRegressionGuard = options.maxTotalDeltaBytes !== undefined ||
+    options.maxRouteDeltaBytes !== undefined;
 
   if (options.requireBaseline && options.baselinePath === undefined) {
     throw new Error(
       "Missing required option: --baseline=<file> (enforced by --require-baseline)",
+    );
+  }
+
+  if (usesRegressionGuard && options.baselinePath === undefined) {
+    throw new Error(
+      "Missing required option: --baseline=<file> (needed for payload regression guard)",
     );
   }
 
@@ -390,7 +521,26 @@ async function main(): Promise<void> {
     await Deno.writeTextFile(options.markdownPath, `${markdownReport}\n`);
   }
 
+  if (baselineReport && usesRegressionGuard) {
+    const thresholds: PayloadRegressionThresholds = {};
+
+    if (options.maxTotalDeltaBytes !== undefined) {
+      thresholds.maxTotalDeltaBytes = options.maxTotalDeltaBytes;
+    }
+
+    if (options.maxRouteDeltaBytes !== undefined) {
+      thresholds.maxRouteDeltaBytes = options.maxRouteDeltaBytes;
+    }
+
+    assertPayloadRegressionThresholds(
+      getPayloadDeltas(report, baselineReport),
+      thresholds,
+    );
+  }
+
   console.info(markdownReport);
 }
 
-await main();
+if (import.meta.main) {
+  await main();
+}
