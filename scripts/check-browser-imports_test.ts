@@ -7,12 +7,25 @@ describe("analyzeImportSpecifiers()", () => {
   it("accepts browser-resolvable static and dynamic imports", () => {
     const source = `
       import "./local.js";
-      import "https://cdn.example.com/mod.js";
       const lazy = () => import("/scripts/runtime.js");
     `;
     const issues = analyzeImportSpecifiers(source, "_site/scripts/test.js");
 
     assertEquals(issues.length, 0);
+  });
+
+  it("rejects network import specifiers", () => {
+    const source = `
+      import "https://cdn.example.com/mod.js";
+      import("http://cdn.example.com/chunk.js");
+    `;
+    const issues = analyzeImportSpecifiers(source, "_site/scripts/test.js");
+
+    assertEquals(issues.length, 2);
+    assertEquals(issues.map((issue) => issue.kind), [
+      "network-specifier",
+      "network-specifier",
+    ]);
   });
 
   it("rejects forbidden import prefixes", () => {

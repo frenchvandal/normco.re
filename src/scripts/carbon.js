@@ -1,7 +1,6 @@
 // @ts-check
 
-export const CARBON_COMPONENTS_BASE_URL =
-  "https://unpkg.com/@carbon/web-components@2.50.0/es/components";
+export const CARBON_COMPONENTS_BASE_URL = "/scripts/carbon-vendor";
 
 /** @type {ReadonlyArray<{ readonly selector: string; readonly modulePath: string }>} */
 export const SELECTIVE_CARBON_COMPONENTS = [
@@ -51,7 +50,11 @@ export const SELECTIVE_CARBON_COMPONENTS = [
  * @returns {string}
  */
 export function getCarbonComponentUrl(componentPath) {
-  return `${CARBON_COMPONENTS_BASE_URL}/${componentPath}?module`;
+  if (componentPath.length === 0) {
+    throw new Error("Invalid path");
+  }
+
+  return `${CARBON_COMPONENTS_BASE_URL}/${componentPath}`;
 }
 
 (() => {

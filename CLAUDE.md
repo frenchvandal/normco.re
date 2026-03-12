@@ -37,6 +37,16 @@
   verbosity for local diagnostics must use Lume's native `LUME_LOGS` entry point
   (`debug`, `info`, `warning`, `error`, `critical`) through
   `plugins/console_debug.ts`; do not introduce feature-specific debug env vars.
+- **Bundling strategy (Deno):**
+  - Prefer `deno bundle` CLI for repository build hooks and CI tasks. It is the
+    default path because it is explicit, reproducible, and easy to run from
+    scripts.
+  - Use programmatic `Deno.bundle(...)` only when in-process output inspection
+    is required (for example, custom analysis of emitted files) and the runtime
+    supports it for the current command context.
+  - When `Deno.bundle(...)` is unavailable or requires unstable flags that are
+    not enabled in the current workflow, fall back to `deno bundle` CLI instead
+    of adding brittle workarounds.
 
 ---
 

@@ -1,18 +1,23 @@
 import { join } from "jsr/path";
 
-const FORBIDDEN_PREFIXES = ["npm/", "jsr:", "node:"] as const;
+const NETWORK_PREFIXES = ["http://", "https://"] as const;
+const FORBIDDEN_PREFIXES = [
+  ...NETWORK_PREFIXES,
+  "npm/",
+  "jsr:",
+  "node:",
+] as const;
 const ALLOWED_PREFIXES = [
   "./",
   "../",
   "/",
-  "http://",
-  "https://",
   "data:",
   "blob:",
 ] as const;
 
 /** Categories of non-browser-resolvable import expressions. */
 export type ImportIssueKind =
+  | "network-specifier"
   | "forbidden-prefix"
   | "bare-specifier"
   | "dynamic-non-literal";
@@ -35,6 +40,10 @@ export type AnalyzeOptions = {
 
 function isForbiddenPrefix(specifier: string): boolean {
   return FORBIDDEN_PREFIXES.some((prefix) => specifier.startsWith(prefix));
+}
+
+function isNetworkSpecifier(specifier: string): boolean {
+  return NETWORK_PREFIXES.some((prefix) => specifier.startsWith(prefix));
 }
 
 function isBrowserResolvable(specifier: string): boolean {
@@ -74,6 +83,15 @@ function createSpecifierIssue(
   matchIndex: number,
   specifier: string,
 ): ImportIssue | undefined {
+  if (isNetworkSpecifier(specifier)) {
+    return {
+      filePath,
+      kind: "network-specifier",
+      specifier,
+      line: getLineNumber(source, matchIndex),
+    };
+  }
+
   if (isForbiddenPrefix(specifier)) {
     return {
       filePath,
@@ -165,12 +183,23 @@ async function collectBrowserScriptFiles(rootDir: string): Promise<string[]> {
   const files: string[] = [];
   const scriptsDir = join(rootDir, "scripts");
 
-  try {
-    for await (const entry of Deno.readDir(scriptsDir)) {
+  async function collectScriptsRecursively(directory: string): Promise<void> {
+    for await (const entry of Deno.readDir(directory)) {
+      const entryPath = join(directory, entry.name);
+
+      if (entry.isDirectory) {
+        await collectScriptsRecursively(entryPath);
+        continue;
+      }
+
       if (entry.isFile && entry.name.endsWith(".js")) {
-        files.push(join(scriptsDir, entry.name));
+        files.push(entryPath);
       }
     }
+  }
+
+  try {
+    await collectScriptsRecursively(scriptsDir);
   } catch (error) {
     if (!(error instanceof Deno.errors.NotFound)) {
       throw error;
@@ -195,6 +224,8 @@ function formatIssue(issue: ImportIssue, rootDir: string): string {
     ? "Dynamic import must use a string-literal URL or path"
     : issue.kind === "bare-specifier"
     ? "Bare import specifier is not browser-resolvable in static output"
+    : issue.kind === "network-specifier"
+    ? "Network import specifiers are forbidden in shipped static scripts"
     : "Forbidden import prefix detected";
 
   return `- ${relativePath}:${issue.line} ${issueReason}: "${issue.specifier}"`;
@@ -230,7 +261,7 @@ async function main(): Promise<void> {
     [
       "Detected non-browser-resolvable import specifiers in shipped scripts",
       details,
-      "Fix imports to use relative paths or absolute HTTPS URLs and rebuild",
+      "Fix imports to use local relative or absolute local paths and rebuild",
     ].join("\n"),
   );
 }

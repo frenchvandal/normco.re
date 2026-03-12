@@ -1,4 +1,4 @@
-import { assert, assertEquals, assertMatch, assertNotMatch } from "jsr/assert";
+import { assert, assertEquals, assertNotMatch, assertThrows } from "jsr/assert";
 import {
   CARBON_COMPONENTS_BASE_URL,
   getCarbonComponentUrl,
@@ -6,29 +6,39 @@ import {
 } from "./carbon.js";
 
 Deno.test("carbon bootstrap uses browser-resolvable Carbon module URLs", () => {
-  assertMatch(
+  assertEquals(CARBON_COMPONENTS_BASE_URL, "/scripts/carbon-vendor");
+  assertNotMatch(
     CARBON_COMPONENTS_BASE_URL,
-    /https:\/\/unpkg\.com\/@carbon\/web-components@2\.50\.0\/es\/components/,
+    /(?:https?:\/\/|npm\/|jsr:|node:)/,
   );
-  assertNotMatch(CARBON_COMPONENTS_BASE_URL, /(?:npm\/|jsr:|node:)/);
   assertEquals(SELECTIVE_CARBON_COMPONENTS.length, 17);
+  const entryUrls = new Set<string>();
 
   for (const { modulePath } of SELECTIVE_CARBON_COMPONENTS) {
     const moduleUrl = getCarbonComponentUrl(modulePath);
+    entryUrls.add(moduleUrl);
 
     assert(
-      moduleUrl.startsWith("https://"),
-      `Expected HTTPS module URL for ${modulePath}`,
+      moduleUrl === `/scripts/carbon-vendor/${modulePath}`,
+      `Expected local self-hosted module URL for ${modulePath}`,
     );
     assert(
-      moduleUrl.endsWith("?module"),
-      `Expected ?module suffix for ${modulePath}`,
-    );
-    assert(
-      !moduleUrl.includes("npm/") &&
+      !moduleUrl.includes("http://") &&
+        !moduleUrl.includes("https://") &&
+        !moduleUrl.includes("npm/") &&
         !moduleUrl.includes("jsr:") &&
         !moduleUrl.includes("node:"),
       `Unexpected non-browser import prefix in URL for ${modulePath}`,
     );
   }
+
+  assertEquals(entryUrls.size, SELECTIVE_CARBON_COMPONENTS.length);
+});
+
+Deno.test("carbon bootstrap rejects invalid component module paths", () => {
+  assertThrows(
+    () => getCarbonComponentUrl(""),
+    Error,
+    "Invalid path",
+  );
 });
