@@ -1,9 +1,11 @@
-import { assertEquals, assertThrows } from "jsr/assert";
+import { assertEquals, assertRejects, assertThrows } from "jsr/assert";
+import { join } from "jsr/path";
 import { describe, it } from "jsr/testing-bdd";
 
 import {
   applyPayloadPolicy,
   assertPayloadRegressionThresholds,
+  assertRouteFilesExist,
   getPayloadDeltas,
   parsePayloadPolicy,
 } from "./payload-report.ts";
@@ -53,6 +55,24 @@ function createReport(
       cssBytes: 0,
       totalBytes,
     },
+  };
+}
+
+function createStatReader(
+  entries: ReadonlyMap<string, "file" | "other">,
+): (path: string) => Promise<Deno.FileInfo> {
+  return (path: string) => {
+    const entry = entries.get(path);
+
+    if (entry === undefined) {
+      return Promise.reject(new Deno.errors.NotFound(path));
+    }
+
+    if (entry === "file") {
+      return Promise.resolve({ isFile: true } as Deno.FileInfo);
+    }
+
+    return Promise.resolve({ isFile: false } as Deno.FileInfo);
   };
 }
 
@@ -226,5 +246,45 @@ describe("payload policy mode", () => {
     assertEquals(merged.outputPath, "/tmp/policy-output.json");
     assertEquals(merged.markdownPath, "/tmp/policy-markdown.md");
     assertEquals(merged.policyVersion, 1);
+  });
+});
+
+describe("payload route validation", () => {
+  it("passes when all configured routes exist in the build output", async () => {
+    const rootDir = "_site";
+    const readFileStat = createStatReader(
+      new Map<string, "file" | "other">([
+        [join(rootDir, "index.html"), "file"],
+        [join(rootDir, "posts", "index.html"), "file"],
+      ]),
+    );
+
+    await assertRouteFilesExist(
+      rootDir,
+      ["/index.html", "/posts/index.html"],
+      undefined,
+      readFileStat,
+    );
+  });
+
+  it("fails with actionable guidance when routes are missing", async () => {
+    const rootDir = "_site";
+    const readFileStat = createStatReader(
+      new Map<string, "file" | "other">([
+        [join(rootDir, "index.html"), "file"],
+      ]),
+    );
+
+    await assertRejects(
+      () =>
+        assertRouteFilesExist(
+          rootDir,
+          ["/index.html", "/posts/index.html"],
+          "scripts/payload-policy.json",
+          readFileStat,
+        ),
+      Error,
+      "Route validation failed",
+    );
   });
 });

@@ -9,47 +9,25 @@
 (() => {
   const links = Array.from(
     globalThis.document.querySelectorAll(".archive-year-nav-link"),
-  ).filter((candidate) => candidate instanceof HTMLAnchorElement);
+  ).filter((candidate) =>
+    candidate instanceof HTMLAnchorElement && candidate.hash.length > 1
+  );
 
   if (links.length === 0) {
     return;
   }
 
-  /** @type {Array<{ link: HTMLAnchorElement; id: string }>} */
-  const entries = [];
-
-  for (const link of links) {
-    if (!link.hash.startsWith("#") || link.hash.length <= 1) {
-      continue;
-    }
-
-    const id = decodeURIComponent(link.hash.slice(1));
-
-    if (id.length === 0) {
-      continue;
-    }
-
-    entries.push({
-      link,
-      id,
-    });
-  }
-
-  if (entries.length === 0) {
-    return;
-  }
-
   function syncCurrentLink() {
-    const currentHash = globalThis.location.hash;
-    const requestedId = currentHash.startsWith("#") && currentHash.length > 1
-      ? decodeURIComponent(currentHash.slice(1))
-      : "";
-    const activeId = entries.some((entry) => entry.id === requestedId)
-      ? requestedId
-      : entries[0].id;
+    const activeLink =
+      links.find((link) => link.hash === globalThis.location.hash) ??
+        links[0];
 
-    for (const entry of entries) {
-      entry.link.toggleAttribute("aria-current", entry.id === activeId);
+    for (const link of links) {
+      if (link === activeLink) {
+        link.setAttribute("aria-current", "location");
+      } else {
+        link.removeAttribute("aria-current");
+      }
     }
   }
 

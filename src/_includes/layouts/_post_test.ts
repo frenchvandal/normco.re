@@ -204,5 +204,20 @@ describe("post.tsx layout", () => {
       );
       assertNotMatch(html, /src="\/scripts\/post-code-copy\.js"/);
     });
+
+    it("does not load the code-copy script for inline code only", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({
+            children: {
+              __html:
+                "<p>Use <code>deno task build</code> before publishing.</p>",
+            },
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+      assertNotMatch(html, /src="\/scripts\/post-code-copy\.js"/);
+    });
   });
 });

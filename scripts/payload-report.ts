@@ -109,6 +109,15 @@ type ParsedCliOptions = {
   configuredFields: ReadonlySet<PolicyField>;
 };
 
+type RouteBuildIssue = {
+  route: string;
+  path: string;
+  reason: "missing" | "not-file";
+};
+
+/** Reads file stats for a given path, used by route validation. */
+export type FileStatReader = (path: string) => Promise<Deno.FileInfo>;
+
 function printUsage(): void {
   console.info(
     [
@@ -536,6 +545,73 @@ async function collectPayloadReport(
   };
 }
 
+async function getRouteBuildIssue(
+  rootDir: string,
+  route: string,
+  readFileStat: FileStatReader,
+): Promise<RouteBuildIssue | undefined> {
+  const routePath = toOutputPath(rootDir, route);
+
+  try {
+    const routeStat = await readFileStat(routePath);
+
+    if (routeStat.isFile) {
+      return undefined;
+    }
+
+    return {
+      route,
+      path: routePath,
+      reason: "not-file",
+    };
+  } catch (error) {
+    if (error instanceof Deno.errors.NotFound) {
+      return {
+        route,
+        path: routePath,
+        reason: "missing",
+      };
+    }
+
+    throw error;
+  }
+}
+
+/** Ensures every configured route resolves to a real file in the build output. */
+export async function assertRouteFilesExist(
+  rootDir: string,
+  routes: ReadonlyArray<string>,
+  policyPath?: string,
+  readFileStat: FileStatReader = Deno.stat,
+): Promise<void> {
+  const routeIssues = (
+    await Promise.all(
+      routes.map((route) => getRouteBuildIssue(rootDir, route, readFileStat)),
+    )
+  ).filter((issue) => issue !== undefined);
+
+  if (routeIssues.length === 0) {
+    return;
+  }
+
+  const issueDetails = routeIssues.map((issue) => {
+    const reason = issue.reason === "missing" ? "missing file" : "not a file";
+    return `- ${issue.route} -> ${issue.path} (${reason})`;
+  });
+  const commandHint = policyPath
+    ? `Update \`${policyPath}\` routes (or override with \`--routes\`) to match generated files.`
+    : "Update `--routes` to match generated files.";
+
+  throw new Error(
+    [
+      "[payload-report] Route validation failed: some configured routes are not present in the build output",
+      ...issueDetails,
+      "Run `deno task build` before generating payload reports.",
+      commandHint,
+    ].join("\n"),
+  );
+}
+
 function formatDelta(delta: number): string {
   if (delta > 0) {
     return `+${delta}`;
@@ -762,6 +838,12 @@ async function main(): Promise<void> {
       "Missing required option: --baseline=<file> (needed for payload regression guard)",
     );
   }
+
+  await assertRouteFilesExist(
+    options.rootDir,
+    options.routes,
+    options.policyPath,
+  );
 
   const report = await collectPayloadReport(options.rootDir, options.routes);
   const baselineReport = options.baselinePath

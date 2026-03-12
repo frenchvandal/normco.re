@@ -67,41 +67,10 @@
     }
   }
 
-  /**
-   * @returns {HTMLElement}
-   */
-  function createCopyButton() {
-    const copyButton = globalThis.document.createElement("cds-copy-button");
-    copyButton.classList.add("post-code-copy-button");
-    copyButton.setAttribute("feedback", copyFeedback);
-    copyButton.setAttribute("feedback-timeout", String(feedbackResetMs));
-    copyButton.textContent = copyLabel;
-    return copyButton;
-  }
-
-  /**
-   * @param {HTMLElement} copyButton
-   * @returns {void}
-   */
-  function applyFailureFeedback(copyButton) {
-    copyButton.setAttribute("feedback", copyFailedFeedback);
-    globalThis.setTimeout(() => {
-      copyButton.setAttribute("feedback", copyFeedback);
-    }, feedbackResetMs);
-  }
-
   for (const candidate of codeBlocks) {
-    if (!(candidate instanceof HTMLElement)) {
-      continue;
-    }
-
     const pre = candidate.parentElement;
 
     if (!(pre instanceof HTMLElement)) {
-      continue;
-    }
-
-    if (pre.parentElement?.classList.contains("post-code-block")) {
       continue;
     }
 
@@ -115,13 +84,22 @@
       continue;
     }
 
-    const copyButton = createCopyButton();
+    const copyButton = globalThis.document.createElement("cds-copy-button");
+    copyButton.className = "post-code-copy-button";
+    copyButton.setAttribute("feedback", copyFeedback);
+    copyButton.setAttribute("feedback-timeout", String(feedbackResetMs));
+    copyButton.textContent = copyLabel;
     wrapper.prepend(copyButton);
     copyButton.addEventListener("click", () => {
       void copyText(codeText).then((copied) => {
-        if (!copied) {
-          applyFailureFeedback(copyButton);
+        if (copied) {
+          return;
         }
+
+        copyButton.setAttribute("feedback", copyFailedFeedback);
+        globalThis.setTimeout(() => {
+          copyButton.setAttribute("feedback", copyFeedback);
+        }, feedbackResetMs);
       });
     });
   }
