@@ -82,6 +82,11 @@ function collectAlternateUrls(
   return urls;
 }
 
+/** Returns true when the current URL is an individual post route. */
+function isPostDetailUrl(currentUrl: string): boolean {
+  return /\/posts\/[^/]+\/$/.test(currentUrl);
+}
+
 /** Renders the full HTML document shell. */
 export default (
   {
@@ -111,6 +116,7 @@ export default (
     "Personal blog by Phiphi, based in Chengdu, China.";
   const documentLanguage = getLanguageTag(language);
   const currentUrl = typeof url === "string" && url.length > 0 ? url : "/";
+  const includeLinkPrefetch = !isPostDetailUrl(currentUrl);
   const swDebugLevel = build?.swDebugLevel ?? "off";
   const includePagefindBody = unlisted !== true;
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
@@ -209,12 +215,14 @@ export default (
             defer
           >
           </script>
-          <script
-            src="/scripts/link-prefetch-intent.js"
-            fetchpriority="low"
-            defer
-          >
-          </script>
+          {includeLinkPrefetch && (
+            <script
+              src="/scripts/link-prefetch-intent.js"
+              fetchpriority="low"
+              defer
+            >
+            </script>
+          )}
           <script
             src="/scripts/sw-register.js"
             data-sw-module-url="/sw.js"

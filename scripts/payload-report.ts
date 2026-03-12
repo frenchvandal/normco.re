@@ -47,6 +47,8 @@ type CliOptions = {
   routes: ReadonlyArray<string>;
   baselinePath?: string;
   outputPath?: string;
+  markdownPath?: string;
+  requireBaseline: boolean;
 };
 
 function printUsage(): void {
@@ -59,6 +61,8 @@ function printUsage(): void {
       "  --routes=<csv>      Comma-separated route files to inspect",
       "  --baseline=<file>   Compare against a previous JSON report",
       "  --output=<file>     Write the current JSON report to a file",
+      "  --markdown=<file>   Write a reusable markdown report to a file",
+      "  --require-baseline  Fail when --baseline is not provided",
     ].join("\n"),
   );
 }
@@ -87,12 +91,18 @@ function parseCliOptions(args: ReadonlyArray<string>): CliOptions {
   const options: CliOptions = {
     rootDir: "_site",
     routes: DEFAULT_ROUTES,
+    requireBaseline: false,
   };
 
   for (const arg of args) {
     if (arg === "--help" || arg === "-h") {
       printUsage();
       Deno.exit(0);
+    }
+
+    if (arg === "--require-baseline") {
+      options.requireBaseline = true;
+      continue;
     }
 
     if (!arg.startsWith("--")) {
@@ -117,6 +127,9 @@ function parseCliOptions(args: ReadonlyArray<string>): CliOptions {
         break;
       case "--output":
         options.outputPath = value;
+        break;
+      case "--markdown":
+        options.markdownPath = value;
         break;
       default:
         throw new Error(`Unknown option: ${key}`);
@@ -321,8 +334,44 @@ async function readBaselineReport(path: string): Promise<PayloadReport> {
   return JSON.parse(raw) as PayloadReport;
 }
 
+function renderMarkdownReport(
+  options: CliOptions,
+  report: PayloadReport,
+  baselineReport: PayloadReport | undefined,
+): string {
+  const lines = [
+    "# Payload Report",
+    `- Root: \`${report.rootDir}\``,
+    `- Routes: ${report.routes.length}`,
+  ];
+
+  if (options.baselinePath) {
+    lines.push(`- Baseline: \`${options.baselinePath}\``);
+  }
+
+  if (options.outputPath) {
+    lines.push(`- Output JSON: \`${options.outputPath}\``);
+  }
+
+  if (options.markdownPath) {
+    lines.push(`- Output Markdown: \`${options.markdownPath}\``);
+  }
+
+  lines.push("");
+  lines.push(renderMarkdownTable(report, baselineReport));
+
+  return lines.join("\n");
+}
+
 async function main(): Promise<void> {
   const options = parseCliOptions(Deno.args);
+
+  if (options.requireBaseline && options.baselinePath === undefined) {
+    throw new Error(
+      "Missing required option: --baseline=<file> (enforced by --require-baseline)",
+    );
+  }
+
   const report = await collectPayloadReport(options.rootDir, options.routes);
   const baselineReport = options.baselinePath
     ? await readBaselineReport(options.baselinePath)
@@ -335,20 +384,13 @@ async function main(): Promise<void> {
     );
   }
 
-  console.info(`# Payload Report`);
-  console.info(`Root: \`${report.rootDir}\``);
-  console.info(`Routes: ${report.routes.length}`);
+  const markdownReport = renderMarkdownReport(options, report, baselineReport);
 
-  if (options.baselinePath) {
-    console.info(`Baseline: \`${options.baselinePath}\``);
+  if (options.markdownPath) {
+    await Deno.writeTextFile(options.markdownPath, `${markdownReport}\n`);
   }
 
-  if (options.outputPath) {
-    console.info(`Output JSON: \`${options.outputPath}\``);
-  }
-
-  console.info("");
-  console.info(renderMarkdownTable(report, baselineReport));
+  console.info(markdownReport);
 }
 
 await main();

@@ -191,6 +191,18 @@ describe("base.tsx layout", () => {
       );
     });
 
+    it("skips link-prefetch script on post detail routes", async () => {
+      const html = await renderComponent(
+        baseLayout(
+          makeData({
+            url: "/posts/sample-post/",
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+      assertNotMatch(html, /src="\/scripts\/link-prefetch-intent\.js"/);
+    });
+
     it("injects the page content into <main>", async () => {
       const randomBody = makeSentence(603);
       const html = await renderComponent(

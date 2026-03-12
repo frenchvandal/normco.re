@@ -79,6 +79,10 @@
       "description": "Report route-level JS/CSS payload from generated output (`_site` by default)",
       "command": "deno run --allow-read --allow-write scripts/payload-report.ts"
     },
+    "payload:pr": {
+      "description": "Generate a PR-ready markdown payload diff with explicit baseline (`deno task payload:pr --baseline=/path/to/baseline.json`)",
+      "command": "deno run --allow-read --allow-write scripts/payload-report.ts --require-baseline --output=/tmp/payload-current.json --markdown=/tmp/payload-report.md"
+    },
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"

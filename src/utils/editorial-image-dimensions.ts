@@ -1,0 +1,76 @@
+const EDITORIAL_IMAGE_SELECTOR = "main[data-pagefind-body] img";
+
+/** Minimal DOM-like query root required by the editorial image dimension gate. */
+export type EditorialImageQueryRoot = {
+  querySelectorAll(
+    selectors: string,
+  ): Iterable<{ getAttribute(name: string): string | null }>;
+};
+
+/** Minimal snapshot needed to validate editorial image dimensions. */
+export type EditorialImagePageSnapshot = {
+  readonly pageUrl: string;
+  readonly document: EditorialImageQueryRoot;
+};
+
+/**
+ * Returns gate errors for editorial images missing explicit dimensions.
+ *
+ * Editorial scope is restricted to `main[data-pagefind-body]` to avoid
+ * false positives in navigation chrome, feed/sitemap views, and unlisted pages.
+ */
+export function collectEditorialImageDimensionIssues(
+  page: EditorialImagePageSnapshot,
+): ReadonlyArray<string> {
+  const issues: string[] = [];
+
+  for (
+    const image of page.document.querySelectorAll(EDITORIAL_IMAGE_SELECTOR)
+  ) {
+    const width = image.getAttribute("width");
+    const height = image.getAttribute("height");
+    const hasWidth = typeof width === "string" && width.trim().length > 0;
+    const hasHeight = typeof height === "string" && height.trim().length > 0;
+
+    if (hasWidth && hasHeight) {
+      continue;
+    }
+
+    const missingDimensions = [
+      ...(hasWidth ? [] : ["width"]),
+      ...(hasHeight ? [] : ["height"]),
+    ].join("+");
+    const src = image.getAttribute("src") ?? "(missing src)";
+    issues.push(
+      `${page.pageUrl}: <img src="${src}"> is missing ${missingDimensions}`,
+    );
+  }
+
+  return issues;
+}
+
+/** Builds the canonical error text thrown when the editorial image gate fails. */
+export function formatEditorialImageDimensionError(
+  issues: ReadonlyArray<string>,
+): string {
+  const issueSummary = [
+    `[editorial-image-dimensions] Found ${issues.length} editorial image(s) missing explicit dimensions`,
+    ...issues.map((issue) => `- ${issue}`),
+    "Add explicit width and height attributes or use a local image source so `image_size` can resolve intrinsic dimensions.",
+  ];
+
+  return issueSummary.join("\n");
+}
+
+/** Throws when at least one editorial image is missing `width` and/or `height`. */
+export function assertEditorialImageDimensions(
+  pages: ReadonlyArray<EditorialImagePageSnapshot>,
+): void {
+  const issues = pages.flatMap(collectEditorialImageDimensionIssues);
+
+  if (issues.length === 0) {
+    return;
+  }
+
+  throw new Error(formatEditorialImageDimensionError(issues));
+}
