@@ -271,6 +271,7 @@
     margin-block: 0;
   }
 
+  /* TODO(phiphi): [Carbon-P5] Remove footer utility-link token overrides after global Carbon link tokens preserve muted idle state and readable hover contrast on home, feed, and sitemap without local wrappers. */
   .site-footer-nav {
     --cds-link-text-color: var(--fgColor-muted);
     --cds-link-hover-text-color: var(--fgColor-default);
