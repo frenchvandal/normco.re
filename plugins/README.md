@@ -30,7 +30,8 @@ set `mode` explicitly if the default behavior does not suit your setup.
 
 ### Development (`lume -s`)
 
-Activated automatically whenever the Lume debug bar is available.
+Activated automatically when the debug bar is available **and** the runtime is
+not detected as Deno Deploy.
 
 **Terminal output.** Two kinds of structured logs are emitted, both linked to
 the active OTEL span when `OTEL_DENO=true`:
@@ -78,7 +79,11 @@ is not `http/json`.
 
 ### Production (Deno Deploy, standalone Deno server)
 
-Activated automatically whenever the debug bar is unavailable.
+Activated automatically when:
+
+- Deno Deploy runtime markers are present (`DENO_DEPLOY=true` or
+  `DENO_DEPLOYMENT_ID` is set), **or**
+- the debug bar is unavailable.
 
 On **Deno Deploy**, `OTEL_DENO` is enabled by the platform—no additional
 configuration is needed. Traces, metrics, and logs appear in the Deno Deploy
