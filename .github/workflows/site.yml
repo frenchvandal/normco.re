@@ -36,7 +36,7 @@ jobs:
         run: deno task build
 
       - name: Check env var
-        run: un: env | sort
+        run: env | sort
 
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/aliyun-oss-cdn-sync-action@master
