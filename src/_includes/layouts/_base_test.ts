@@ -203,6 +203,18 @@ describe("base.tsx layout", () => {
       assertNotMatch(html, /src="\/scripts\/link-prefetch-intent\.js"/);
     });
 
+    it("skips link-prefetch script on localized posts archive routes", async () => {
+      const html = await renderComponent(
+        baseLayout(
+          makeData({
+            url: "/fr/posts/",
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+      assertNotMatch(html, /src="\/scripts\/link-prefetch-intent\.js"/);
+    });
+
     it("injects the page content into <main>", async () => {
       const randomBody = makeSentence(603);
       const html = await renderComponent(

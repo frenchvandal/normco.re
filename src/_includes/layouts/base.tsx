@@ -87,6 +87,11 @@ function isPostDetailUrl(currentUrl: string): boolean {
   return /\/posts\/[^/]+\/$/.test(currentUrl);
 }
 
+/** Returns true when the current URL is a posts archive route (localized or default). */
+function isPostsArchiveUrl(currentUrl: string): boolean {
+  return /\/posts\/$/.test(currentUrl);
+}
+
 /** Renders the full HTML document shell. */
 export default (
   {
@@ -116,7 +121,8 @@ export default (
     "Personal blog by Phiphi, based in Chengdu, China.";
   const documentLanguage = getLanguageTag(language);
   const currentUrl = typeof url === "string" && url.length > 0 ? url : "/";
-  const includeLinkPrefetch = !isPostDetailUrl(currentUrl);
+  const includeLinkPrefetch = !isPostDetailUrl(currentUrl) &&
+    !isPostsArchiveUrl(currentUrl);
   const swDebugLevel = build?.swDebugLevel ?? "off";
   const includePagefindBody = unlisted !== true;
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);

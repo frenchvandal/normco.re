@@ -87,6 +87,10 @@
       "description": "Fail on payload regressions beyond thresholds (`deno task payload:guard --baseline=/path/to/baseline.json [--max-total-delta=0 --max-route-delta=0]`)",
       "command": "deno run --allow-read --allow-write scripts/payload-report.ts --require-baseline --max-total-delta=0 --max-route-delta=0 --output=/tmp/payload-current.json --markdown=/tmp/payload-report.md"
     },
+    "payload:ci": {
+      "description": "Run build + payload report + regression guard in one PR/CI flow (`deno task payload:ci --baseline=/path/to/baseline.json`)",
+      "command": "deno task build && deno task payload:guard"
+    },
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"
