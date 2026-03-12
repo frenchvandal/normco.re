@@ -221,7 +221,7 @@ function getMissingExpectedOtelEnv(
   mode: OTelMode,
   readEnv: OTelReadEnv,
 ): string[] {
-  if (readNonEmptyEnv(readEnv, "DENO_DEPLOYMENT_ID")) {
+  if (isDeployRuntime(readEnv)) {
     return [];
   }
 
@@ -232,6 +232,14 @@ function getMissingExpectedOtelEnv(
   return OTEL_EXPECTED_ENV_BY_MODE[mode].filter((name) =>
     readNonEmptyEnv(readEnv, name) === undefined
   );
+}
+
+function isDeployRuntime(readEnv: OTelReadEnv): boolean {
+  if (readNonEmptyEnv(readEnv, "DENO_DEPLOYMENT_ID")) {
+    return true;
+  }
+
+  return readNonEmptyEnv(readEnv, "DENO_DEPLOY") === "true";
 }
 
 // ---------------------------------------------------------------------------
@@ -802,9 +810,12 @@ export function otel(userOptions?: Partial<Options>): (site: object) => void {
     const typedSite = site as Site;
 
     // Resolve mode once, at plugin setup time.
+    const deployRuntime = isDeployRuntime(readEnv);
     const mode: OTelMode = options.mode === "development"
       ? "development"
       : options.mode === "production"
+      ? "production"
+      : deployRuntime
       ? "production"
       : typedSite.debugBar
       ? "development"

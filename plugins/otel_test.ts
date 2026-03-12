@@ -238,6 +238,41 @@ describe("otel()", () => {
     );
   });
 
+  it("uses production mode in Deploy runtime even when debug bar exists", async () => {
+    const env = createStubSite();
+    const plugin = otel({
+      ignore: [],
+      logRequests: false,
+    });
+
+    await withMockedEnv({
+      DENO_DEPLOY: "true",
+      DENO_DEPLOYMENT_ID: "abc123",
+    }, async () => {
+      plugin(env.site as unknown as Site);
+      env.triggerSiteEvent("beforeBuild");
+      env.triggerServerStart();
+
+      const middleware = env.middlewares[0];
+
+      if (!middleware) {
+        throw new Error("Expected middleware to be registered");
+      }
+
+      await middleware(
+        new Request("https://example.test/posts/hello"),
+        () => Promise.resolve(new Response("ok", { status: 200 })),
+        {} as Deno.ServeHandlerInfo,
+      );
+    });
+
+    assertEquals(
+      env.collections.get("OpenTelemetry")?.items?.[0]?.details,
+      "production",
+    );
+    assertEquals(env.collections.has("Requests"), false);
+  });
+
   it("tracks requests and exposes them in the Requests debug collection", async () => {
     const env = createStubSite();
     const plugin = otel({
