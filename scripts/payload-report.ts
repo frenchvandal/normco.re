@@ -9,6 +9,16 @@ const DEFAULT_ROUTES = [
   "/feed.xsl",
   "/sitemap.xsl",
 ] as const;
+const PAYLOAD_POLICY_VERSION = 1 as const;
+const POLICY_FIELDS = [
+  "rootDir",
+  "routes",
+  "requireBaseline",
+  "outputPath",
+  "markdownPath",
+  "maxTotalDeltaBytes",
+  "maxRouteDeltaBytes",
+] as const satisfies ReadonlyArray<PolicyField>;
 const SUPPORTED_ASSET_EXTENSIONS = new Set([".js", ".css"]);
 const ASSET_REFERENCE_PATTERNS = [
   /<script[^>]*\ssrc="([^"]+)"[^>]*>/g,
@@ -58,7 +68,20 @@ export type PayloadRegressionThresholds = {
   maxRouteDeltaBytes?: number;
 };
 
-type CliOptions = {
+/** Versioned payload policy for PR/CI thresholds and outputs. */
+export type PayloadPolicy = {
+  version: number;
+  rootDir?: string;
+  routes?: ReadonlyArray<string>;
+  requireBaseline?: boolean;
+  outputPath?: string;
+  markdownPath?: string;
+  maxTotalDeltaBytes?: number;
+  maxRouteDeltaBytes?: number;
+};
+
+/** Resolved execution options for payload report/guard runs. */
+export type CliOptions = {
   rootDir: string;
   routes: ReadonlyArray<string>;
   baselinePath?: string;
@@ -67,6 +90,23 @@ type CliOptions = {
   requireBaseline: boolean;
   maxTotalDeltaBytes?: number;
   maxRouteDeltaBytes?: number;
+  policyPath?: string;
+  policyVersion?: number;
+};
+
+/** Configurable option keys that can be sourced from a payload policy file. */
+export type PolicyField =
+  | "rootDir"
+  | "routes"
+  | "requireBaseline"
+  | "outputPath"
+  | "markdownPath"
+  | "maxTotalDeltaBytes"
+  | "maxRouteDeltaBytes";
+
+type ParsedCliOptions = {
+  options: CliOptions;
+  configuredFields: ReadonlySet<PolicyField>;
 };
 
 function printUsage(): void {
@@ -80,6 +120,7 @@ function printUsage(): void {
       "  --baseline=<file>   Compare against a previous JSON report",
       "  --output=<file>     Write the current JSON report to a file",
       "  --markdown=<file>   Write a reusable markdown report to a file",
+      "  --policy=<file>     Apply a versioned JSON policy (routes/thresholds/outputs)",
       "  --require-baseline  Fail when --baseline is not provided",
       "  --max-total-delta=<bytes>  Fail when total bytes delta exceeds this value",
       "  --max-route-delta=<bytes>  Fail when any per-route delta exceeds this value",
@@ -97,6 +138,29 @@ function parseByteThreshold(optionName: string, value: string): number {
   }
 
   return threshold;
+}
+
+function validateByteThreshold(optionName: string, value: unknown): number {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 0) {
+    throw new Error(
+      `Invalid value for ${optionName}: expected a non-negative integer`,
+    );
+  }
+
+  return value;
+}
+
+function assertPolicyString(
+  optionName: string,
+  value: unknown,
+): string {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new Error(
+      `Invalid value for ${optionName}: expected a non-empty string`,
+    );
+  }
+
+  return value;
 }
 
 function normalizeRoute(route: string): string {
@@ -119,12 +183,13 @@ function parseRoutes(value: string): ReadonlyArray<string> {
   return routes;
 }
 
-function parseCliOptions(args: ReadonlyArray<string>): CliOptions {
+function parseCliOptions(args: ReadonlyArray<string>): ParsedCliOptions {
   const options: CliOptions = {
     rootDir: "_site",
     routes: DEFAULT_ROUTES,
     requireBaseline: false,
   };
+  const configuredFields = new Set<PolicyField>();
 
   for (const arg of args) {
     if (arg === "--help" || arg === "-h") {
@@ -159,22 +224,201 @@ function parseCliOptions(args: ReadonlyArray<string>): CliOptions {
         break;
       case "--output":
         options.outputPath = value;
+        configuredFields.add("outputPath");
         break;
       case "--markdown":
         options.markdownPath = value;
+        configuredFields.add("markdownPath");
+        break;
+      case "--policy":
+        options.policyPath = value;
         break;
       case "--max-total-delta":
         options.maxTotalDeltaBytes = parseByteThreshold(key, value);
+        configuredFields.add("maxTotalDeltaBytes");
         break;
       case "--max-route-delta":
         options.maxRouteDeltaBytes = parseByteThreshold(key, value);
+        configuredFields.add("maxRouteDeltaBytes");
         break;
       default:
         throw new Error(`Unknown option: ${key}`);
     }
+
+    if (key === "--root") {
+      configuredFields.add("rootDir");
+    } else if (key === "--routes") {
+      configuredFields.add("routes");
+    }
   }
 
-  return options;
+  if (options.requireBaseline) {
+    configuredFields.add("requireBaseline");
+  }
+
+  return {
+    options,
+    configuredFields,
+  };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function parsePolicyRoutes(value: unknown): ReadonlyArray<string> {
+  if (!Array.isArray(value)) {
+    throw new Error(
+      "Invalid policy field `routes`: expected an array of strings",
+    );
+  }
+
+  return value.map((route, index) => {
+    if (typeof route !== "string") {
+      throw new Error(
+        `Invalid policy field \`routes\`: entry at index ${index} must be a string`,
+      );
+    }
+
+    return normalizeRoute(route);
+  });
+}
+
+/** Parses and validates a payload policy object. */
+export function parsePayloadPolicy(rawPolicy: unknown): PayloadPolicy {
+  if (!isRecord(rawPolicy)) {
+    throw new Error("Invalid payload policy: expected a JSON object");
+  }
+
+  const allowedKeys = new Set([
+    "version",
+    ...POLICY_FIELDS,
+  ]);
+
+  for (const key of Object.keys(rawPolicy)) {
+    if (!allowedKeys.has(key)) {
+      throw new Error(`Invalid payload policy field: ${key}`);
+    }
+  }
+
+  const version = rawPolicy["version"];
+  if (version !== PAYLOAD_POLICY_VERSION) {
+    throw new Error(
+      `Unsupported payload policy version: expected ${PAYLOAD_POLICY_VERSION}, received ${
+        String(version)
+      }`,
+    );
+  }
+
+  const policy: PayloadPolicy = {
+    version: PAYLOAD_POLICY_VERSION,
+  };
+
+  if (rawPolicy["rootDir"] !== undefined) {
+    policy.rootDir = assertPolicyString("rootDir", rawPolicy["rootDir"]);
+  }
+
+  if (rawPolicy["routes"] !== undefined) {
+    policy.routes = parsePolicyRoutes(rawPolicy["routes"]);
+  }
+
+  if (rawPolicy["requireBaseline"] !== undefined) {
+    if (typeof rawPolicy["requireBaseline"] !== "boolean") {
+      throw new Error(
+        "Invalid policy field `requireBaseline`: expected a boolean",
+      );
+    }
+    policy.requireBaseline = rawPolicy["requireBaseline"];
+  }
+
+  if (rawPolicy["outputPath"] !== undefined) {
+    policy.outputPath = assertPolicyString(
+      "outputPath",
+      rawPolicy["outputPath"],
+    );
+  }
+
+  if (rawPolicy["markdownPath"] !== undefined) {
+    policy.markdownPath = assertPolicyString(
+      "markdownPath",
+      rawPolicy["markdownPath"],
+    );
+  }
+
+  if (rawPolicy["maxTotalDeltaBytes"] !== undefined) {
+    policy.maxTotalDeltaBytes = validateByteThreshold(
+      "maxTotalDeltaBytes",
+      rawPolicy["maxTotalDeltaBytes"],
+    );
+  }
+
+  if (rawPolicy["maxRouteDeltaBytes"] !== undefined) {
+    policy.maxRouteDeltaBytes = validateByteThreshold(
+      "maxRouteDeltaBytes",
+      rawPolicy["maxRouteDeltaBytes"],
+    );
+  }
+
+  return policy;
+}
+
+async function readPayloadPolicy(path: string): Promise<PayloadPolicy> {
+  const raw = await Deno.readTextFile(path);
+  return parsePayloadPolicy(JSON.parse(raw));
+}
+
+/** Applies policy defaults while preserving explicitly configured CLI fields. */
+export function applyPayloadPolicy(
+  options: CliOptions,
+  policy: PayloadPolicy,
+  configuredFields: ReadonlySet<PolicyField>,
+): CliOptions {
+  const merged: CliOptions = {
+    ...options,
+    policyVersion: policy.version,
+  };
+
+  if (!configuredFields.has("rootDir") && policy.rootDir !== undefined) {
+    merged.rootDir = policy.rootDir;
+  }
+
+  if (!configuredFields.has("routes") && policy.routes !== undefined) {
+    merged.routes = policy.routes;
+  }
+
+  if (
+    !configuredFields.has("requireBaseline") &&
+    policy.requireBaseline !== undefined
+  ) {
+    merged.requireBaseline = policy.requireBaseline;
+  }
+
+  if (!configuredFields.has("outputPath") && policy.outputPath !== undefined) {
+    merged.outputPath = policy.outputPath;
+  }
+
+  if (
+    !configuredFields.has("markdownPath") &&
+    policy.markdownPath !== undefined
+  ) {
+    merged.markdownPath = policy.markdownPath;
+  }
+
+  if (
+    !configuredFields.has("maxTotalDeltaBytes") &&
+    policy.maxTotalDeltaBytes !== undefined
+  ) {
+    merged.maxTotalDeltaBytes = policy.maxTotalDeltaBytes;
+  }
+
+  if (
+    !configuredFields.has("maxRouteDeltaBytes") &&
+    policy.maxRouteDeltaBytes !== undefined
+  ) {
+    merged.maxRouteDeltaBytes = policy.maxRouteDeltaBytes;
+  }
+
+  return merged;
 }
 
 function stripQueryAndHash(url: string): string {
@@ -472,6 +716,11 @@ function renderMarkdownReport(
     lines.push(`- Output Markdown: \`${options.markdownPath}\``);
   }
 
+  if (options.policyPath) {
+    const policyVersion = options.policyVersion ?? "unknown";
+    lines.push(`- Policy: \`${options.policyPath}\` (v${policyVersion})`);
+  }
+
   if (options.maxTotalDeltaBytes !== undefined) {
     lines.push(`- Max total delta: ${options.maxTotalDeltaBytes} bytes`);
   }
@@ -487,7 +736,18 @@ function renderMarkdownReport(
 }
 
 async function main(): Promise<void> {
-  const options = parseCliOptions(Deno.args);
+  const parsedCliOptions = parseCliOptions(Deno.args);
+  let options = parsedCliOptions.options;
+
+  if (options.policyPath !== undefined) {
+    const policy = await readPayloadPolicy(options.policyPath);
+    options = applyPayloadPolicy(
+      options,
+      policy,
+      parsedCliOptions.configuredFields,
+    );
+  }
+
   const usesRegressionGuard = options.maxTotalDeltaBytes !== undefined ||
     options.maxRouteDeltaBytes !== undefined;
 

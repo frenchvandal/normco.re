@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "rootDir": "_site",
+  "routes": [
+    "/index.html",
+    "/about/index.html",
+    "/posts/index.html",
+    "/posts/vestibulum-ante/index.html",
+    "/posts/lorem-ipsum/index.html",
+    "/feed.xsl",
+    "/sitemap.xsl"
+  ],
+  "requireBaseline": true,
+  "maxTotalDeltaBytes": 0,
+  "maxRouteDeltaBytes": 0,
+  "outputPath": "/tmp/payload-current.json",
+  "markdownPath": "/tmp/payload-pr-comment.md"
+}

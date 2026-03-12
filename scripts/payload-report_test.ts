@@ -2,8 +2,10 @@ import { assertEquals, assertThrows } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
 import {
+  applyPayloadPolicy,
   assertPayloadRegressionThresholds,
   getPayloadDeltas,
+  parsePayloadPolicy,
 } from "./payload-report.ts";
 
 type PayloadReportFixture = {
@@ -151,5 +153,78 @@ describe("payload regression guard", () => {
       Error,
       "max-total-delta",
     );
+  });
+});
+
+describe("payload policy mode", () => {
+  it("parses a valid policy document", () => {
+    const policy = parsePayloadPolicy({
+      version: 1,
+      rootDir: "_site",
+      routes: ["/index.html", "/posts/index.html"],
+      requireBaseline: true,
+      maxTotalDeltaBytes: 10,
+      maxRouteDeltaBytes: 4,
+      outputPath: "/tmp/current.json",
+      markdownPath: "/tmp/comment.md",
+    });
+
+    assertEquals(policy, {
+      version: 1,
+      rootDir: "_site",
+      routes: ["/index.html", "/posts/index.html"],
+      requireBaseline: true,
+      maxTotalDeltaBytes: 10,
+      maxRouteDeltaBytes: 4,
+      outputPath: "/tmp/current.json",
+      markdownPath: "/tmp/comment.md",
+    });
+  });
+
+  it("rejects unsupported policy versions", () => {
+    assertThrows(
+      () =>
+        parsePayloadPolicy({
+          version: 2,
+        }),
+      Error,
+      "Unsupported payload policy version",
+    );
+  });
+
+  it("applies policy defaults without overriding explicit CLI fields", () => {
+    const policy = parsePayloadPolicy({
+      version: 1,
+      rootDir: "_site",
+      routes: ["/index.html", "/posts/index.html"],
+      requireBaseline: true,
+      maxTotalDeltaBytes: 0,
+      maxRouteDeltaBytes: 0,
+      outputPath: "/tmp/policy-output.json",
+      markdownPath: "/tmp/policy-markdown.md",
+    });
+    const merged = applyPayloadPolicy(
+      {
+        rootDir: "_site-preview",
+        routes: ["/custom.html"],
+        requireBaseline: false,
+        baselinePath: "/tmp/baseline.json",
+        policyPath: "scripts/payload-policy.json",
+      },
+      policy,
+      new Set([
+        "rootDir",
+        "routes",
+      ]),
+    );
+
+    assertEquals(merged.rootDir, "_site-preview");
+    assertEquals(merged.routes, ["/custom.html"]);
+    assertEquals(merged.requireBaseline, true);
+    assertEquals(merged.maxTotalDeltaBytes, 0);
+    assertEquals(merged.maxRouteDeltaBytes, 0);
+    assertEquals(merged.outputPath, "/tmp/policy-output.json");
+    assertEquals(merged.markdownPath, "/tmp/policy-markdown.md");
+    assertEquals(merged.policyVersion, 1);
   });
 });

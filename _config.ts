@@ -47,6 +47,7 @@ const OCTICON_CATALOGS = [
     variants: ["16", "24", "12", "48", "96"],
   },
 ] as const satisfies Catalog[];
+const isServeTask = Deno.env.get("DENO_TASK_NAME") === "serve";
 
 type BuildData = {
   repositoryUrl?: string;
@@ -102,7 +103,6 @@ function getBuildData(): BuildData {
   const repositoryUrl = normalizeRepositoryUrl(
     runGitCommand(["config", "--get", "remote.origin.url"]),
   );
-  const isServeTask = Deno.env.get("DENO_TASK_NAME") === "serve";
   const swDebugLevel = isServeTask ? consoleDebugPolicy.level : "off";
 
   return repositoryUrl
@@ -198,7 +198,7 @@ site.add("/scripts/sw.js", "/sw.js");
 site.add("/feed.xsl");
 site.add("/sitemap.xsl");
 
-// Minify client-side JavaScript with terser while preserving source maps.
+// Minify client-side JavaScript with terser.
 site.use(
   terser({
     options: {
@@ -241,8 +241,11 @@ site.use(
   }),
 );
 
-// Generate source-map sidecar files for processed CSS and JavaScript assets.
-site.use(sourceMaps());
+// Keep source maps in local `serve` sessions; skip them in build/CI output to
+// trim shipped JS/CSS bytes and avoid non-production sidecars.
+if (isServeTask) {
+  site.use(sourceMaps());
+}
 
 // HTML attribute helpers: helpers.attr(), helpers.class()
 site.use(attributes());
