@@ -289,12 +289,21 @@ Exit criteria:
 6. Evaluate replacing `npm/date-fns-locale` with native `Temporal` + `Intl` date
    formatting only if compatibility is preserved with the current Lume date
    formatting contract and multilingual output parity.
+7. Add a deferred contact channel page powered by Carbon form primitives that
+   posts to a Cloudflare Worker endpoint and relays validated submissions to
+   Telegram; keep this item explicitly scheduled for the end of migration after
+   core parity, payload, and governance goals are complete.
+8. Validate contact-flow quality gates before closing the migration:
+   accessibility semantics (labels, keyboard, focus-visible), clear success and
+   failure feedback, and no-flash/theme parity on mobile and desktop.
 
 Exit criteria:
 
 - Migration rules documented and enforceable.
 - Legacy migration scaffolding removed.
 - Custom-maintenance reduction thresholds are met or explicitly deferred.
+- Deferred contact channel is implemented and verified end-to-end (form ->
+  Worker -> Telegram) with documented operational and a11y checks.
 
 ## 7. Progress Tracking in the Repository
 
