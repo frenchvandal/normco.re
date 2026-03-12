@@ -266,16 +266,75 @@
     });
   }
 
+  /**
+   * @param {HTMLElement} menuOption
+   * @returns {string | null}
+   */
+  function getMenuOptionHref(menuOption) {
+    if (menuOption instanceof HTMLAnchorElement) {
+      return menuOption.href;
+    }
+
+    const rawHref = menuOption.getAttribute("href");
+
+    if (rawHref === null || rawHref.length === 0) {
+      return null;
+    }
+
+    try {
+      return new URL(rawHref, globalThis.location.origin).href;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * @param {HTMLElement} menuOption
+   * @returns {void}
+   */
+  function closeLanguageSurface(menuOption) {
+    const detailsMenu = menuOption.closest("details");
+
+    if (detailsMenu instanceof HTMLDetailsElement) {
+      detailsMenu.removeAttribute("open");
+    }
+
+    const languagePanel = menuOption.closest("[data-language-panel]");
+
+    if (!(languagePanel instanceof HTMLElement)) {
+      return;
+    }
+
+    languagePanel.removeAttribute("expanded");
+
+    const panelId = languagePanel.id;
+
+    if (panelId.length === 0) {
+      return;
+    }
+
+    for (
+      const action of globalThis.document.querySelectorAll(
+        "cds-header-global-action[panel-id]",
+      )
+    ) {
+      if (!(action instanceof HTMLElement)) {
+        continue;
+      }
+
+      if (action.getAttribute("panel-id") === panelId) {
+        action.removeAttribute("active");
+      }
+    }
+  }
+
   function initializeLanguageMenuOptions() {
     const menuOptions = globalThis.document.querySelectorAll(
       "[data-language-option]",
     );
 
     for (const menuOption of menuOptions) {
-      if (
-        !(menuOption instanceof HTMLAnchorElement) &&
-        !(menuOption instanceof HTMLButtonElement)
-      ) {
+      if (!(menuOption instanceof HTMLElement)) {
         continue;
       }
 
@@ -307,14 +366,16 @@
           }
 
           const targetUrl = resolveTargetUrl(selectedLanguage);
+          const menuOptionHref = getMenuOptionHref(menuOption);
 
-          if (menuOption instanceof HTMLAnchorElement) {
-            const fallbackPath = getTargetPath(menuOption.href);
+          if (typeof menuOptionHref === "string") {
+            const fallbackPath = getTargetPath(menuOptionHref);
             const canonicalPath = getTargetPath(targetUrl);
 
             if (fallbackPath === canonicalPath) {
               if (getCurrentPath() === canonicalPath) {
                 event.preventDefault();
+                closeLanguageSurface(menuOption);
               }
               return;
             }
@@ -323,11 +384,7 @@
           event.preventDefault();
 
           if (getCurrentPath() === getTargetPath(targetUrl)) {
-            const languageMenu = menuOption.closest("details");
-
-            if (languageMenu instanceof HTMLDetailsElement) {
-              languageMenu.removeAttribute("open");
-            }
+            closeLanguageSurface(menuOption);
             return;
           }
 

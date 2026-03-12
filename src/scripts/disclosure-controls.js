@@ -1,99 +1,111 @@
 // @ts-check
 (() => {
-  const disclosures = Array.from(
-    globalThis.document.querySelectorAll(".language-menu"),
-  ).filter((element) => element instanceof HTMLDetailsElement);
+  const controls = Array.from(
+    globalThis.document.querySelectorAll(
+      "cds-header-global-action, cds-header-menu-button",
+    ),
+  ).filter((element) => element instanceof HTMLElement);
 
-  if (disclosures.length === 0) {
+  if (controls.length === 0) {
     return;
   }
 
-  /** @type {WeakMap<HTMLDetailsElement, HTMLElement>} */
-  const triggerByDisclosure = new WeakMap();
-
-  for (const disclosure of disclosures) {
-    const trigger = disclosure.querySelector(":scope > summary");
-
-    if (trigger instanceof HTMLElement) {
-      triggerByDisclosure.set(disclosure, trigger);
+  /**
+   * @param {HTMLElement} control
+   * @returns {string | null}
+   */
+  function getLinkedPanelId(control) {
+    if (!control.matches("cds-header-global-action")) {
+      return null;
     }
 
-    disclosure.addEventListener("toggle", () => {
-      if (!disclosure.open) {
-        return;
-      }
-
-      closeDisclosures(disclosure);
-      closeCarbonChrome();
-    });
+    const panelId = control.getAttribute("panel-id");
+    return panelId === null || panelId.length === 0 ? null : panelId;
   }
 
-  /** @param {HTMLDetailsElement} disclosure */
-  function closeDisclosure(disclosure, restoreFocus = false) {
-    if (!disclosure.open) {
-      return false;
-    }
-
-    disclosure.open = false;
-
-    if (restoreFocus) {
-      triggerByDisclosure.get(disclosure)?.focus({ preventScroll: true });
-    }
-
-    return true;
-  }
-
-  /** @param {HTMLDetailsElement} [exceptDisclosure] */
-  function closeDisclosures(exceptDisclosure) {
-    for (const disclosure of disclosures) {
-      if (disclosure === exceptDisclosure) {
-        continue;
-      }
-
-      closeDisclosure(disclosure);
-    }
-  }
-
-  function closeCarbonChrome(restoreFocus = false) {
+  /**
+   * @param {{
+   *   readonly exceptControl?: HTMLElement | null;
+   *   readonly restoreFocus?: boolean;
+   * }} [options]
+   * @returns {boolean}
+   */
+  function closeCarbonChrome(options = {}) {
+    const exceptControl = options.exceptControl ?? null;
+    const restoreFocus = options.restoreFocus ?? false;
     let closed = false;
-
+    const preservedPanelId = exceptControl === null
+      ? null
+      : getLinkedPanelId(exceptControl);
+    const preserveSideNav = exceptControl !== null &&
+      exceptControl.matches("cds-header-menu-button") &&
+      exceptControl.hasAttribute("active");
     const focusTarget = restoreFocus
       ? globalThis.document.querySelector(
         "cds-header-global-action[active], cds-header-menu-button[active]",
       )
       : null;
 
+    for (const control of controls) {
+      if (control === exceptControl) {
+        continue;
+      }
+
+      if (control.hasAttribute("active")) {
+        control.removeAttribute("active");
+        closed = true;
+      }
+
+      const linkedPanelId = getLinkedPanelId(control);
+
+      if (linkedPanelId === null) {
+        continue;
+      }
+
+      const linkedPanel = globalThis.document.getElementById(linkedPanelId);
+
+      if (!(linkedPanel instanceof HTMLElement)) {
+        continue;
+      }
+
+      if (linkedPanel.hasAttribute("expanded")) {
+        linkedPanel.removeAttribute("expanded");
+        closed = true;
+      }
+    }
+
     for (
-      const element of globalThis.document.querySelectorAll(
-        "cds-header-menu-button[active], cds-side-nav[expanded], cds-header-panel[expanded], cds-header-global-action[active]",
+      const panel of globalThis.document.querySelectorAll(
+        "cds-header-panel[expanded]",
       )
     ) {
-      if (element.hasAttribute("active")) {
-        element.removeAttribute("active");
-        closed = true;
-      }
-
-      if (element.hasAttribute("expanded")) {
-        element.removeAttribute("expanded");
-        closed = true;
-      }
-
-      if (!(element instanceof HTMLElement)) {
+      if (!(panel instanceof HTMLElement)) {
         continue;
       }
 
-      if (!element.matches("cds-header-global-action")) {
+      if (preservedPanelId !== null && panel.id === preservedPanelId) {
         continue;
       }
 
-      const panelId = element.getAttribute("panel-id");
+      panel.removeAttribute("expanded");
+      closed = true;
+    }
 
-      if (panelId === null || panelId.length === 0) {
+    for (
+      const sideNav of globalThis.document.querySelectorAll(
+        "cds-side-nav[expanded]",
+      )
+    ) {
+      if (!(sideNav instanceof HTMLElement)) {
         continue;
       }
 
-      const linkedPanel = globalThis.document.getElementById(panelId);
-      linkedPanel?.removeAttribute("expanded");
+      if (preserveSideNav) {
+        continue;
+      }
+
+      sideNav.removeAttribute("expanded");
+      closed = true;
     }
 
     if (restoreFocus && focusTarget instanceof HTMLElement) {
@@ -103,79 +115,33 @@
     return closed;
   }
 
-  globalThis.document.addEventListener("pointerdown", (event) => {
-    if (!(event.target instanceof Node)) {
-      return;
-    }
-
-    for (const disclosure of disclosures) {
-      if (!disclosure.open || disclosure.contains(event.target)) {
-        continue;
-      }
-
-      closeDisclosure(disclosure);
-    }
-  }, { passive: true });
-
   globalThis.document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") {
       return;
     }
 
-    for (let index = disclosures.length - 1; index >= 0; index -= 1) {
-      const disclosure = disclosures[index];
-
-      if (disclosure !== undefined && closeDisclosure(disclosure, true)) {
-        event.preventDefault();
-        return;
-      }
-    }
-
-    if (closeCarbonChrome(true)) {
+    if (closeCarbonChrome({ restoreFocus: true })) {
       event.preventDefault();
     }
   });
 
-  globalThis.document.addEventListener(
-    "cds-header-menu-button-toggled",
-    (event) => {
-      if (!(event instanceof CustomEvent)) {
-        return;
-      }
-
-      const detail = event.detail;
-
+  const activeObserver = new MutationObserver((mutationList) => {
+    for (const mutation of mutationList) {
       if (
-        typeof detail !== "object" ||
-        detail === null ||
-        !("active" in detail) ||
-        detail.active !== true
+        mutation.type !== "attributes" ||
+        mutation.attributeName !== "active" ||
+        !(mutation.target instanceof HTMLElement) ||
+        !mutation.target.hasAttribute("active")
       ) {
-        return;
+        continue;
       }
 
-      closeDisclosures();
-    },
-  );
-
-  for (
-    const globalAction of globalThis.document.querySelectorAll(
-      "cds-header-global-action",
-    )
-  ) {
-    if (!(globalAction instanceof HTMLElement)) {
-      continue;
+      closeCarbonChrome({ exceptControl: mutation.target });
     }
+  });
 
-    const actionObserver = new MutationObserver(() => {
-      if (!globalAction.hasAttribute("active")) {
-        return;
-      }
-
-      closeDisclosures();
-    });
-
-    actionObserver.observe(globalAction, {
+  for (const control of controls) {
+    activeObserver.observe(control, {
       attributes: true,
       attributeFilter: ["active"],
     });

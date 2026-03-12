@@ -161,20 +161,25 @@ describe("Header()", () => {
       assertStringIncludes(html, "<cds-side-nav");
     });
 
-    it("renders a Watson Language Translator trigger and localized language menu options", async () => {
+    it("renders a Watson Language Translator Carbon panel and localized language options", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "fr" }),
       );
-      assertStringIncludes(html, 'class="language-switcher"');
+      assertStringIncludes(html, 'panel-id="site-language-panel"');
+      assertStringIncludes(html, 'id="site-language-panel"');
+      assertStringIncludes(html, 'class="site-language-panel"');
+      assertStringIncludes(html, 'data-language-panel=""');
+      assertStringIncludes(html, "<cds-switcher");
       assertMatch(
         html,
-        /class="language-menu-trigger-icon language-menu-trigger-icon--watson"/,
+        /class="site-language-action-icon site-language-action-icon--watson"/,
       );
       assertStringIncludes(html, 'data-language-option="en"');
       assertStringIncludes(html, 'data-language-option="fr"');
       assertStringIncludes(html, 'data-language-option="zhHans"');
       assertStringIncludes(html, 'data-language-option="zhHant"');
       assertStringIncludes(html, 'data-current-language="true"');
+      assertMatch(html, /<cds-switcher-item[^>]*selected=""[^>]*>Français/);
       assertNotMatch(html, /🇬🇧|🇫🇷|🇨🇳|🇹🇼/);
     });
 

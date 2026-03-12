@@ -184,7 +184,6 @@ export default (
             fetchpriority="low"
           >
           </script>
-          {/* TODO(phiphi): [Carbon-P2] Remove disclosure-controls.js once the language control no longer relies on `details/summary` after the language Carbon panel shell migration is complete. */}
           <script
             src="/scripts/disclosure-controls.js"
             fetchpriority="low"
