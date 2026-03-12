@@ -192,6 +192,25 @@ describe("posts/index.page.tsx", () => {
       );
     });
 
+    it("defers multi-year aria-current state to the runtime year-nav script", () => {
+      const posts = [
+        makePost(515, {
+          date: new Date("2026-01-01"),
+          readingInfo: { minutes: 1 },
+        }),
+        makePost(516, {
+          date: new Date("2025-01-01"),
+          readingInfo: { minutes: 2 },
+        }),
+      ];
+      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+      const linksWithAriaCurrent = [...html.matchAll(
+        /class="archive-year-nav-link"[^>]*aria-current=/g,
+      )];
+
+      assertEquals(linksWithAriaCurrent.length, 0);
+    });
+
     it("does not render the year-nav script when a single year is present", () => {
       const posts = [
         makePost(511, {

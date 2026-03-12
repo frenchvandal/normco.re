@@ -8,6 +8,7 @@ import {
   assertBaselineRouteParity,
   assertPayloadRegressionThresholds,
   assertRouteFilesExist,
+  createPayloadPolicyFingerprint,
   createPayloadReportMetadata,
   getPayloadDeltas,
   parsePayloadPolicy,
@@ -21,6 +22,7 @@ type PayloadReportFixture = {
     routeSetHash: string;
     routeCount: number;
     policyVersion?: number;
+    policyFingerprint?: string;
   };
   routes: ReadonlyArray<{
     route: string;
@@ -43,6 +45,7 @@ type PayloadReportFixture = {
 function createReport(
   totalByRoute: ReadonlyArray<[string, number]>,
   policyVersion?: number,
+  policyFingerprint?: string,
 ): PayloadReportFixture {
   const routes = totalByRoute.map(([route, totalBytes]) => ({
     route,
@@ -62,6 +65,7 @@ function createReport(
     metadata: createPayloadReportMetadata(
       totalByRoute.map(([route]) => route),
       policyVersion,
+      policyFingerprint,
     ),
     routes,
     totals: {
@@ -261,6 +265,34 @@ describe("payload policy mode", () => {
     assertEquals(merged.outputPath, "/tmp/policy-output.json");
     assertEquals(merged.markdownPath, "/tmp/policy-markdown.md");
     assertEquals(merged.policyVersion, 1);
+    assertEquals(
+      merged.policyFingerprint,
+      createPayloadPolicyFingerprint(policy),
+    );
+  });
+
+  it("creates a stable fingerprint for equivalent policy semantics", () => {
+    const firstPolicy = parsePayloadPolicy({
+      version: 1,
+      rootDir: "_site",
+      routes: ["/posts/index.html", "/index.html"],
+      requireBaseline: true,
+      maxTotalDeltaBytes: 0,
+      maxRouteDeltaBytes: 0,
+    });
+    const secondPolicy = parsePayloadPolicy({
+      version: 1,
+      rootDir: "_site",
+      routes: ["/index.html", "/posts/index.html"],
+      requireBaseline: true,
+      maxTotalDeltaBytes: 0,
+      maxRouteDeltaBytes: 0,
+    });
+
+    assertEquals(
+      createPayloadPolicyFingerprint(firstPolicy),
+      createPayloadPolicyFingerprint(secondPolicy),
+    );
   });
 });
 
@@ -367,14 +399,23 @@ describe("payload baseline route parity", () => {
 
 describe("payload baseline metadata coherence", () => {
   it("passes when schema/hash metadata matches the active policy context", () => {
-    const baseline = createReport([
-      ["/index.html", 1000],
-      ["/posts/index.html", 1300],
-    ], 1);
-    const current = createReport([
-      ["/index.html", 980],
-      ["/posts/index.html", 1250],
-    ], 1);
+    const policyFingerprint = "ff1ce00a";
+    const baseline = createReport(
+      [
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ],
+      1,
+      policyFingerprint,
+    );
+    const current = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      1,
+      policyFingerprint,
+    );
 
     assertBaselineMetadataCoherence(
       current as Parameters<typeof assertBaselineMetadataCoherence>[0],
@@ -383,20 +424,30 @@ describe("payload baseline metadata coherence", () => {
         baselinePath: "/tmp/baseline.json",
         policyPath: "scripts/payload-policy.json",
         policyVersion: 1,
+        policyFingerprint,
       },
     );
   });
 
   it("fails when baseline metadata is missing", () => {
-    const current = createReport([
-      ["/index.html", 980],
-      ["/posts/index.html", 1250],
-    ], 1);
+    const policyFingerprint = "ff1ce00a";
+    const current = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      1,
+      policyFingerprint,
+    );
     const baselineWithoutMetadata = {
-      ...createReport([
-        ["/index.html", 1000],
-        ["/posts/index.html", 1300],
-      ], 1),
+      ...createReport(
+        [
+          ["/index.html", 1000],
+          ["/posts/index.html", 1300],
+        ],
+        1,
+        policyFingerprint,
+      ),
       metadata: undefined,
     };
 
@@ -411,6 +462,7 @@ describe("payload baseline metadata coherence", () => {
             baselinePath: "/tmp/baseline.json",
             policyPath: "scripts/payload-policy.json",
             policyVersion: 1,
+            policyFingerprint,
           },
         ),
       Error,
@@ -419,14 +471,23 @@ describe("payload baseline metadata coherence", () => {
   });
 
   it("fails when baseline route hash metadata does not match current report", () => {
-    const current = createReport([
-      ["/index.html", 980],
-      ["/posts/index.html", 1250],
-    ], 1);
-    const baseline = createReport([
-      ["/index.html", 1000],
-      ["/posts/index.html", 1300],
-    ], 1);
+    const policyFingerprint = "ff1ce00a";
+    const current = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      1,
+      policyFingerprint,
+    );
+    const baseline = createReport(
+      [
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ],
+      1,
+      policyFingerprint,
+    );
     const baselineWithWrongHash = {
       ...baseline,
       metadata: {
@@ -446,6 +507,7 @@ describe("payload baseline metadata coherence", () => {
             baselinePath: "/tmp/baseline.json",
             policyPath: "scripts/payload-policy.json",
             policyVersion: 1,
+            policyFingerprint,
           },
         ),
       Error,
@@ -454,10 +516,15 @@ describe("payload baseline metadata coherence", () => {
   });
 
   it("fails when baseline policy metadata is missing in policy mode", () => {
-    const current = createReport([
-      ["/index.html", 980],
-      ["/posts/index.html", 1250],
-    ], 1);
+    const policyFingerprint = "ff1ce00a";
+    const current = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      1,
+      policyFingerprint,
+    );
     const baselineWithoutPolicyMetadata = createReport([
       ["/index.html", 1000],
       ["/posts/index.html", 1300],
@@ -474,6 +541,7 @@ describe("payload baseline metadata coherence", () => {
             baselinePath: "/tmp/baseline.json",
             policyPath: "scripts/payload-policy.json",
             policyVersion: 1,
+            policyFingerprint,
           },
         ),
       Error,
@@ -481,15 +549,58 @@ describe("payload baseline metadata coherence", () => {
     );
   });
 
-  it("fails when baseline policy version conflicts with the active policy", () => {
-    const current = createReport([
-      ["/index.html", 980],
-      ["/posts/index.html", 1250],
-    ], 1);
-    const baselineWithDifferentPolicyVersion = createReport([
+  it("fails when baseline policy fingerprint is missing in policy mode", () => {
+    const policyFingerprint = "ff1ce00a";
+    const current = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      1,
+      policyFingerprint,
+    );
+    const baselineWithoutPolicyFingerprint = createReport([
       ["/index.html", 1000],
       ["/posts/index.html", 1300],
-    ], 2);
+    ], 1);
+
+    assertThrows(
+      () =>
+        assertBaselineMetadataCoherence(
+          current as Parameters<typeof assertBaselineMetadataCoherence>[0],
+          baselineWithoutPolicyFingerprint as Parameters<
+            typeof assertBaselineMetadataCoherence
+          >[1],
+          {
+            baselinePath: "/tmp/baseline.json",
+            policyPath: "scripts/payload-policy.json",
+            policyVersion: 1,
+            policyFingerprint,
+          },
+        ),
+      Error,
+      "Baseline policy fingerprint missing",
+    );
+  });
+
+  it("fails when baseline policy version conflicts with the active policy", () => {
+    const policyFingerprint = "ff1ce00a";
+    const current = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      1,
+      policyFingerprint,
+    );
+    const baselineWithDifferentPolicyVersion = createReport(
+      [
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ],
+      2,
+      policyFingerprint,
+    );
 
     assertThrows(
       () =>
@@ -502,10 +613,49 @@ describe("payload baseline metadata coherence", () => {
             baselinePath: "/tmp/baseline.json",
             policyPath: "scripts/payload-policy.json",
             policyVersion: 1,
+            policyFingerprint,
           },
         ),
       Error,
       "Baseline policy version mismatch",
+    );
+  });
+
+  it("fails when baseline policy fingerprint conflicts with the active policy", () => {
+    const currentPolicyFingerprint = "ff1ce00a";
+    const current = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      1,
+      currentPolicyFingerprint,
+    );
+    const baselineWithDifferentPolicyFingerprint = createReport(
+      [
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ],
+      1,
+      "deafbeef",
+    );
+
+    assertThrows(
+      () =>
+        assertBaselineMetadataCoherence(
+          current as Parameters<typeof assertBaselineMetadataCoherence>[0],
+          baselineWithDifferentPolicyFingerprint as Parameters<
+            typeof assertBaselineMetadataCoherence
+          >[1],
+          {
+            baselinePath: "/tmp/baseline.json",
+            policyPath: "scripts/payload-policy.json",
+            policyVersion: 1,
+            policyFingerprint: currentPolicyFingerprint,
+          },
+        ),
+      Error,
+      "Baseline policy fingerprint mismatch",
     );
   });
 });

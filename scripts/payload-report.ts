@@ -51,6 +51,7 @@ export type PayloadReportMetadata = {
   routeSetHash: string;
   routeCount: number;
   policyVersion?: number;
+  policyFingerprint?: string;
 };
 
 /** Full payload report for a single build output snapshot. */
@@ -102,6 +103,7 @@ export type CliOptions = {
   maxRouteDeltaBytes?: number;
   policyPath?: string;
   policyVersion?: number;
+  policyFingerprint?: string;
   policyBaselineMode: boolean;
 };
 
@@ -264,6 +266,14 @@ function isPayloadReportMetadata(
     return false;
   }
 
+  if (
+    candidate.policyFingerprint !== undefined &&
+    (typeof candidate.policyFingerprint !== "string" ||
+      candidate.policyFingerprint.length === 0)
+  ) {
+    return false;
+  }
+
   return true;
 }
 
@@ -271,6 +281,7 @@ function isPayloadReportMetadata(
 export function createPayloadReportMetadata(
   routes: ReadonlyArray<string>,
   policyVersion?: number,
+  policyFingerprint?: string,
 ): PayloadReportMetadata {
   const canonicalRoutes = getSortedUniqueRoutes(routes);
   const metadata: PayloadReportMetadata = {
@@ -281,6 +292,10 @@ export function createPayloadReportMetadata(
 
   if (policyVersion !== undefined) {
     metadata.policyVersion = policyVersion;
+  }
+
+  if (policyFingerprint !== undefined) {
+    metadata.policyFingerprint = policyFingerprint;
   }
 
   return metadata;
@@ -471,6 +486,22 @@ export function parsePayloadPolicy(rawPolicy: unknown): PayloadPolicy {
   return policy;
 }
 
+/** Builds a stable hash from policy fields that affect report/guard semantics. */
+export function createPayloadPolicyFingerprint(policy: PayloadPolicy): string {
+  const canonicalPolicy = {
+    version: policy.version,
+    rootDir: policy.rootDir ?? null,
+    routes: policy.routes === undefined
+      ? null
+      : getSortedUniqueRoutes(policy.routes),
+    requireBaseline: policy.requireBaseline ?? null,
+    maxTotalDeltaBytes: policy.maxTotalDeltaBytes ?? null,
+    maxRouteDeltaBytes: policy.maxRouteDeltaBytes ?? null,
+  } as const;
+
+  return hashString(JSON.stringify(canonicalPolicy));
+}
+
 async function readPayloadPolicy(path: string): Promise<PayloadPolicy> {
   const raw = await Deno.readTextFile(path);
   return parsePayloadPolicy(JSON.parse(raw));
@@ -485,6 +516,7 @@ export function applyPayloadPolicy(
   const merged: CliOptions = {
     ...options,
     policyVersion: policy.version,
+    policyFingerprint: createPayloadPolicyFingerprint(policy),
   };
 
   if (!configuredFields.has("rootDir") && policy.rootDir !== undefined) {
@@ -621,6 +653,7 @@ async function collectPayloadReport(
   rootDir: string,
   routes: ReadonlyArray<string>,
   policyVersion?: number,
+  policyFingerprint?: string,
 ): Promise<PayloadReport> {
   const routeReports = await Promise.all(
     routes.map((route) => collectRoutePayload(rootDir, route)),
@@ -628,6 +661,7 @@ async function collectPayloadReport(
   const metadata = createPayloadReportMetadata(
     routeReports.map((routeReport) => routeReport.route),
     policyVersion,
+    policyFingerprint,
   );
   const totals = routeReports.reduce(
     (accumulator, routeReport) => ({
@@ -836,6 +870,7 @@ export function assertBaselineMetadataCoherence(
     baselinePath: string | undefined;
     policyPath: string | undefined;
     policyVersion: number | undefined;
+    policyFingerprint: string | undefined;
   },
 ): void {
   const currentMetadata = getReportMetadata(
@@ -886,6 +921,12 @@ export function assertBaselineMetadataCoherence(
     );
   }
 
+  if (options.policyFingerprint === undefined) {
+    throw new Error(
+      "[payload-report] Policy metadata validation failed: current run has no resolved policy fingerprint",
+    );
+  }
+
   if (currentMetadata.policyVersion !== options.policyVersion) {
     throw new Error(
       [
@@ -893,6 +934,19 @@ export function assertBaselineMetadataCoherence(
         `- Resolved policy version: ${options.policyVersion}`,
         `- Current report policy version: ${
           String(currentMetadata.policyVersion)
+        }`,
+        "Regenerate the current report with the active policy.",
+      ].join("\n"),
+    );
+  }
+
+  if (currentMetadata.policyFingerprint !== options.policyFingerprint) {
+    throw new Error(
+      [
+        "[payload-report] Current report policy fingerprint mismatch",
+        `- Active policy fingerprint: ${options.policyFingerprint}`,
+        `- Current report policy fingerprint: ${
+          String(currentMetadata.policyFingerprint)
         }`,
         "Regenerate the current report with the active policy.",
       ].join("\n"),
@@ -920,6 +974,30 @@ export function assertBaselineMetadataCoherence(
         `- Active policy version: ${options.policyVersion}`,
         `- Baseline policy version: ${baselineMetadata.policyVersion}`,
         "Regenerate the baseline with the active policy version before comparing.",
+      ].join("\n"),
+    );
+  }
+
+  if (baselineMetadata.policyFingerprint === undefined) {
+    throw new Error(
+      [
+        "[payload-report] Baseline policy fingerprint missing",
+        `- Active policy fingerprint: ${options.policyFingerprint}`,
+        `- Baseline: ${options.baselinePath ?? "unknown"}`,
+        "This baseline was generated without policy fingerprint metadata and cannot be compared in policy mode.",
+        "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
+      ].join("\n"),
+    );
+  }
+
+  if (baselineMetadata.policyFingerprint !== options.policyFingerprint) {
+    throw new Error(
+      [
+        "[payload-report] Baseline policy fingerprint mismatch",
+        `- Active policy fingerprint: ${options.policyFingerprint}`,
+        `- Baseline policy fingerprint: ${baselineMetadata.policyFingerprint}`,
+        `- Baseline: ${options.baselinePath ?? "unknown"}`,
+        "Regenerate the baseline with the active policy before comparing.",
       ].join("\n"),
     );
   }
@@ -1085,6 +1163,12 @@ function renderMarkdownReport(
     lines.push(`- Report policy version: ${report.metadata.policyVersion}`);
   }
 
+  if (report.metadata.policyFingerprint !== undefined) {
+    lines.push(
+      `- Report policy fingerprint: \`${report.metadata.policyFingerprint}\``,
+    );
+  }
+
   if (options.baselinePath) {
     lines.push(`- Baseline: \`${options.baselinePath}\``);
   }
@@ -1183,6 +1267,7 @@ async function main(): Promise<void> {
     options.rootDir,
     options.routes,
     options.policyVersion,
+    options.policyFingerprint,
   );
   const baselineReport = options.baselinePath
     ? await readBaselineReport(options.baselinePath)
@@ -1196,6 +1281,7 @@ async function main(): Promise<void> {
         baselinePath: options.baselinePath,
         policyPath: options.policyPath,
         policyVersion: options.policyVersion,
+        policyFingerprint: options.policyFingerprint,
       });
     }
   }
