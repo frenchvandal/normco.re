@@ -1,7 +1,7 @@
 // @ts-check
 (() => {
   const article = globalThis.document.querySelector(
-    ".post-article[data-code-copy-enabled]",
+    ".post-article",
   );
 
   if (!(article instanceof HTMLElement)) {

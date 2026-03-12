@@ -840,6 +840,38 @@ function getReportMetadata(
   return metadata;
 }
 
+function getMissingPolicyBaselineMetadataFields(
+  metadata: PayloadReportMetadata,
+): ReadonlyArray<string> {
+  const missingFields: string[] = [];
+
+  if (metadata.policyMode !== "policy") {
+    missingFields.push("policyMode");
+  }
+
+  if (metadata.baselineKind !== "policy-baseline") {
+    missingFields.push("baselineKind");
+  }
+
+  if (metadata.policyVersion === undefined) {
+    missingFields.push("policyVersion");
+  }
+
+  if (metadata.policyFingerprint === undefined) {
+    missingFields.push("policyFingerprint");
+  }
+
+  if (metadata.routeSetHash.length === 0) {
+    missingFields.push("routeSetHash");
+  }
+
+  if (!Number.isInteger(metadata.routeCount)) {
+    missingFields.push("routeCount");
+  }
+
+  return missingFields;
+}
+
 /** Ensures baseline and current reports expose exactly the same route set. */
 export function assertBaselineRouteParity(
   report: PayloadReport,
@@ -948,6 +980,23 @@ export function assertBaselineMetadataCoherence(
         "[payload-report] Current report policy mode marker missing",
         `- Policy: ${options.policyPath}`,
         "Regenerate the current report with the active policy (`deno task payload:policy --baseline=/path/to/baseline.json` or `deno task payload:baseline`).",
+      ].join("\n"),
+    );
+  }
+
+  const missingBaselinePolicyFields = getMissingPolicyBaselineMetadataFields(
+    baselineMetadata,
+  );
+  if (missingBaselinePolicyFields.length > 0) {
+    throw new Error(
+      [
+        "[payload-report] Policy baseline metadata completeness check failed",
+        `- Baseline: ${options.baselinePath ?? "unknown"}`,
+        `- Policy: ${options.policyPath}`,
+        "- Missing or incompatible fields:",
+        ...missingBaselinePolicyFields.map((field) => `  - ${field}`),
+        "This baseline is not fully policy-baseline compatible and cannot be compared in policy mode.",
+        "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
       ].join("\n"),
     );
   }

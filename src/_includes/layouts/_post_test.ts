@@ -202,7 +202,6 @@ describe("post.tsx layout", () => {
         ),
       );
       assertStringIncludes(html, 'src="/scripts/post-code-copy.js"');
-      assertStringIncludes(html, 'data-code-copy-enabled="true"');
       assertNotMatch(html, /data-code-copy-label=/);
       assertNotMatch(
         html,
@@ -223,7 +222,6 @@ describe("post.tsx layout", () => {
           MOCK_HELPERS,
         ),
       );
-      assertStringIncludes(html, 'data-code-copy-enabled="true"');
       assertStringIncludes(html, 'data-code-copy-label="Copier le code"');
       assertStringIncludes(html, 'data-code-copy-feedback="Code copié"');
       assertStringIncludes(
@@ -256,7 +254,6 @@ describe("post.tsx layout", () => {
         postLayout(makeData({}), MOCK_HELPERS),
       );
       assertNotMatch(html, /src="\/scripts\/post-code-copy\.js"/);
-      assertNotMatch(html, /data-code-copy-enabled=/);
       assertNotMatch(html, /data-code-copy-label=/);
       assertNotMatch(html, /data-code-copy-feedback=/);
       assertNotMatch(html, /data-code-copy-failed-feedback=/);

@@ -574,7 +574,7 @@ describe("payload baseline metadata coherence", () => {
           },
         ),
       Error,
-      "Baseline policy compatibility marker missing",
+      "policyMode",
     );
   });
 
@@ -614,7 +614,7 @@ describe("payload baseline metadata coherence", () => {
           },
         ),
       Error,
-      "Baseline policy provenance marker missing",
+      "baselineKind",
     );
   });
 
@@ -654,7 +654,7 @@ describe("payload baseline metadata coherence", () => {
           },
         ),
       Error,
-      "Baseline policy metadata missing",
+      "policyVersion",
     );
   });
 
@@ -694,7 +694,7 @@ describe("payload baseline metadata coherence", () => {
           },
         ),
       Error,
-      "Baseline policy fingerprint missing",
+      "policyFingerprint",
     );
   });
 

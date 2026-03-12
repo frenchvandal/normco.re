@@ -154,7 +154,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   return (
     <article
       class="post-article"
-      data-code-copy-enabled={includeCodeCopyScript ? "true" : undefined}
       data-code-copy-label={codeCopyLabelAttribute}
       data-code-copy-feedback={codeCopyFeedbackAttribute}
       data-code-copy-failed-feedback={codeCopyFailedFeedbackAttribute}
