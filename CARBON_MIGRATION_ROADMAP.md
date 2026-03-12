@@ -1,215 +1,287 @@
-# Carbon Web Components Migration Roadmap
+# IBM Carbon Migration Roadmap (Lume + Deno + TSX)
 
-## 1. Objective and Constraints
+## 1. Goal
 
-This roadmap defines a phased migration from Primer-like bespoke components to
-Carbon Web Components while preserving the blog's minimalist visual identity,
-performance profile, accessibility quality, and content-first experience.
+This roadmap defines how to rebuild the site UI on top of IBM Carbon while
+preserving the current editorial identity (minimalist, reading-first),
+multilingual behavior, and static-site performance, with one core operational
+goal: delegate as much design and component behavior as possible to Carbon to
+minimize long-term custom maintenance.
 
-### Primary objective
+The plan intentionally combines findings from:
 
-- Replace Primer-equivalent UI primitives with Carbon Web Components from
-  `@carbon/web-components`.
-- Import Carbon components on a case-by-case basis, matching each existing UI
-  responsibility to the closest Carbon equivalent.
-- Keep pages authored in TSX + TypeScript and avoid introducing non-Lume
-  rendering layers.
+- `/Users/normcore/Downloads/deep-research-report.md`
+- `/Users/normcore/Downloads/Systèmes de Design Open Source et Frameworks.md`
 
-### Non-negotiable constraints
+## 1.1 Migration Status Snapshot
 
-- Preserve the site's core visual spirit (typography, whitespace, minimalist
-  hierarchy).
-- Maintain existing feature set and IA (navigation, posts, search, feeds,
-  language switch, theme toggle).
-- Keep build quality gates intact (formatting, linting, type checking, doc
-  lint/tests, tests, build + HTML validation).
-- Avoid broad runtime JavaScript expansion by importing only components that are
-  actually used.
+- [ ] Phase 0 - Baseline and ADR framing
+- [ ] Phase 1 - Dependency and bootstrap plumbing
+- [ ] Phase 2 - Header shell migration
+- [ ] Phase 3 - Content surfaces migration
+- [ ] Phase 4 - Token harmonization and theming
+- [ ] Phase 5 - Search, media, and performance hardening
+- [ ] Phase 6 - Cleanup and governance updates
 
-## 2. Target Architecture
+## 2. Integrated Findings from the Two Reports
 
-## 2.1 Integration approach
+## 2.1 Reading-first UX findings (deep research report)
 
-- Add `@carbon/web-components` through npm specifier aliases in `deno.json`.
-- Create one dedicated client bootstrap file (for example
-  `src/scripts/carbon.ts`) that performs selective side-effect imports for the
-  exact custom elements required by each migrated view.
-- Register bootstrap in the base layout so custom elements are defined before
-  interactive usage.
-- Keep present TSX templates as the orchestration layer, replacing HTML
-  fragments class-by-class with semantic Carbon tags (`<cds-*>`).
+- Keep the main reading measure in the 50-75 character range, with a practical
+  target of 60-70ch for article content.
+- Preserve a strict content hierarchy: clear H1, compact metadata, stable
+  vertical rhythm, no visual clutter.
+- Keep inline links visibly identifiable in body copy (underlined by default) to
+  avoid color-only affordances.
+- Keep strong baseline accessibility: visible focus states, keyboard-first
+  navigation, and WCAG-compliant contrast.
+- Keep JS impact low and avoid avoidable layout shifts (reserve image space,
+  keep search and non-critical UI lazy where possible).
 
-## 2.2 Design token bridge
+## 2.2 Design-system strategy findings (comparative report)
 
-- Introduce a token bridge layer that maps current site tokens to
-  Carbon-compatible tokens.
-- Keep a local adapter section in CSS to preserve the current visual identity
-  while using Carbon internals.
-- Prefer semantic token mapping over one-off selector overrides.
+- Carbon is strategically strong for this migration because it has both an
+  official React implementation and an official Web Components implementation.
+- For a Lume + TSX static site, `@carbon/web-components` is the right target:
+  framework-agnostic, no React runtime lock-in, and long-term portability.
+- Bundle growth is a primary risk in any design-system migration, so selective
+  imports and strict scope control are non-negotiable.
+- Token-driven theming is preferred over ad hoc overrides, especially for
+  light/dark parity and accessibility consistency.
+- Large global CSS utility layers should not keep growing during migration; move
+  behavior and styling responsibility into Carbon primitives plus a small local
+  adaptation layer.
 
-## 2.3 Component boundary strategy
+## 2.3 Decision statement
 
-- Continue using local TSX components (`Header`, `Footer`, `PostCard`, layout
-  files) as composition shells.
-- Gradually swap internals to Carbon tags instead of rewriting page
-  architecture.
-- Keep project-specific behaviors (i18n routing, URL localization, reading-time
-  metadata) in local logic and pass values into Carbon components.
+- Carbon Web Components become the default UI primitive layer.
+- Local TSX components remain composition shells and keep business/i18n logic.
+- Carbon adoption is phased, with parity checkpoints after each slice.
+- Carbon defaults come first; custom CSS/JS is exception-only and must be
+  justified, temporary, and tracked.
 
-## 3. Migration Inventory and Mapping Matrix
+## 3. Target Architecture
 
-The table below should be validated against Storybook availability before
-implementation starts.
+## 3.1 Integration model
 
-| Existing responsibility                                                           | Current location                                                             | Carbon candidate(s)                                                                                                             | Migration notes                                                                                                                    |
-| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Header command area (menu trigger, search trigger, language switch, theme toggle) | `src/_components/Header.tsx`                                                 | `cds-header`, `cds-header-menu-button`, `cds-header-nav`, `cds-header-nav-item`, `cds-header-global-action`, `cds-header-panel` | Highest-risk integration because this area currently combines custom `details/summary`, overlays, and Pagefind container mounting. |
-| Navigation list and active state                                                  | `src/_components/Header.tsx`                                                 | `cds-header-nav` + `cds-header-nav-item`                                                                                        | Must preserve `aria-current="page"` and locale-aware links.                                                                        |
-| Search overlay container                                                          | `src/_components/Header.tsx`, pagefind styles in `src/styles/components.css` | `cds-modal` or `cds-header-panel` + Carbon text input/search                                                                    | Validate keyboard focus trapping and escape behavior against current implementation.                                               |
-| Theme and a11y controls                                                           | `src/_components/Header.tsx`                                                 | `cds-switch`, `cds-toggle`, or icon-only `cds-header-global-action` patterns                                                    | Might require custom hybrid handling if exact UX parity is not provided by Carbon primitives.                                      |
-| Post list card shell                                                              | `src/_components/PostCard.tsx`                                               | `cds-link`, `cds-tag` (optional metadata chips), layout primitives                                                              | Carbon does not require heavy card chrome; keep minimalist rendering and avoid unnecessary framing.                                |
-| Footer action links and feed links                                                | `src/_components/Footer.tsx`                                                 | `cds-link`, optional `cds-inline-notification` patterns only if needed                                                          | Keep footer lightweight; avoid decorative Carbon usage.                                                                            |
-| Form controls (search and future forms)                                           | Header search and potential pages                                            | `cds-search`, `cds-text-input`, `cds-select`                                                                                    | Import only controls that are actively used.                                                                                       |
-| Inline status/alerts (if any future content uses them)                            | Future-ready                                                                 | `cds-inline-notification`, `cds-toast-notification`                                                                             | Defer until needed to avoid scope creep.                                                                                           |
+- Add `@carbon/web-components` via `deno.json` npm alias.
+- Create a dedicated client bootstrap module (for example
+  `src/scripts/carbon.ts`) with selective side-effect imports only for used
+  custom elements.
+- Load this bootstrap from the base layout before Carbon elements are expected
+  to render interactively.
+- Keep page rendering in TSX + TypeScript. No template engine switch.
 
-## 4. Execution Plan (Phased)
+## 3.2 Component ownership model
 
-## Phase 0 — Discovery and baseline (1 sprint)
+- Keep `src/_components/*.tsx` as stable public composition boundaries.
+- Migrate internals from bespoke HTML/CSS primitives to `<cds-*>` elements.
+- Keep current data contracts untouched (language resolution, URL localization,
+  reading metadata, feed URLs).
 
-1. Audit all UI primitives and classify each as:
-   - direct Carbon replacement,
-   - replacement with adaptation,
-   - temporary local component to keep.
-2. Produce a Carbon availability matrix from Storybook and package exports.
-3. Capture visual baseline screenshots (home + posts list + post page + about +
-   search overlay).
-4. Record current Core Web Vitals and bundle-size baseline.
+## 3.3 Token and theme model
 
-**Deliverables**
+- Introduce a Carbon adaptation layer in CSS for token mapping.
+- Use Carbon semantic tokens first; use local overrides only when editorial tone
+  requires it.
+- Align with `prefers-color-scheme`, then layer user preference persistence on
+  top.
 
-- Audited inventory file.
-- Baseline image set.
-- Risk register with priority levels.
+## 3.4 Carbon-by-default maintenance policy
 
-## Phase 1 — Dependency and bootstrap plumbing (1 sprint)
+- Use Carbon components, tokens, spacing, and interaction patterns as-is by
+  default.
+- Allow custom styling only for editorial constraints that Carbon cannot express
+  directly (reading measure, prose rhythm, language-specific typography).
+- Forbid creation of new bespoke UI primitives in migrated areas when a Carbon
+  equivalent exists.
+- Every temporary override must have an explicit removal plan tracked with a
+  migration TODO comment.
+- Track custom-maintenance debt from Phase 0 onward with two indicators:
+  - Bespoke UI interaction scripts tied to migrated chrome.
+  - Custom CSS selector count tied to migrated components.
+- Success threshold by migration end:
+  - At least 50% reduction in bespoke UI interaction scripts for migrated areas.
+  - At least 60% reduction in custom CSS selectors for migrated areas.
 
-1. Add `@carbon/web-components` alias in `deno.json`.
-2. Update lockfile only if dependency declaration changes and run dependency
-   update workflow.
-3. Add selective Carbon registration script (`src/scripts/carbon.ts`).
-4. Wire script into `base.tsx` with controlled loading order.
-5. Confirm no hydration/runtime conflicts with existing scripts.
+## 4. Current Codebase Baseline and Migration Scope
 
-**Exit criteria**
+| Scope area              | Current implementation                                               | Carbon direction                                                                                                                                | Notes                                                                                                   |
+| ----------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Global shell and header | `src/_components/Header.tsx`, `src/scripts/disclosure-controls.js`   | `cds-header`, `cds-header-menu-button`, `cds-header-nav`, `cds-header-nav-item`, `cds-header-global-action`, `cds-header-panel`, `cds-side-nav` | Highest-risk slice due to menu/search/language/theme interactions currently built on `details/summary`. |
+| Skip navigation         | `src/_includes/layouts/base.tsx` (`.skip-link`)                      | Keep current skip link semantics or migrate to `cds-skip-to-content` pattern                                                                    | Must preserve first-tab keyboard behavior.                                                              |
+| Search UI shell         | Header + `src/scripts/pagefind-lazy-init.js` + Pagefind runtime      | Carbon search field and panel container; keep Pagefind index generation                                                                         | `pagefind({ ui: false })` is already configured in `_config.ts` and must stay.                          |
+| Language switch         | Header + `src/scripts/language-preference.js`                        | Carbon dropdown/overflow action pattern                                                                                                         | Preserve localized labels and existing alternate URL logic.                                             |
+| Theme toggle            | Header + `src/scripts/theme-toggle.js` + `src/scripts/anti-flash.js` | Carbon toggle/content switcher pattern                                                                                                          | Preserve persistence and no-flash behavior.                                                             |
+| Post list cards         | `src/_components/PostCard.tsx`                                       | Carbon links/tags where useful, keep minimalist shell                                                                                           | Do not introduce heavy card chrome.                                                                     |
+| Footer actions          | `src/_components/Footer.tsx`                                         | Carbon link primitives                                                                                                                          | Keep repo and feed affordances simple and compact.                                                      |
+| Post layout enrichments | `src/_includes/layouts/post.tsx` and post pages                      | Add Carbon breadcrumb and code-copy affordances where relevant                                                                                  | Breadcrumb should sit under header and above title when hierarchy depth warrants it.                    |
+| Feed view parity        | `src/feed.xsl`                                                       | Carbon-aligned visual and interaction parity                                                                                                    | Feed UI currently duplicates header patterns and must not drift from main shell.                        |
 
-- Build succeeds.
-- No runtime custom-element definition errors.
-- No visual regressions yet (only infrastructure).
+## 5. Carbon Mapping Matrix
 
-## Phase 2 — Header migration (2–3 sprints)
+| Existing responsibility   | Carbon candidate(s)                            | Migration rule                                                  |
+| ------------------------- | ---------------------------------------------- | --------------------------------------------------------------- |
+| Top navigation            | `cds-header-nav`, `cds-header-nav-item`        | Preserve `aria-current="page"` and localized URLs.              |
+| Mobile menu trigger/panel | `cds-header-menu-button`, `cds-side-nav`       | Keep one-open-at-a-time behavior and Escape close parity.       |
+| Global actions            | `cds-header-global-action`, `cds-header-panel` | Search, language, and theme remain secondary actions.           |
+| Search input              | `cds-search`                                   | Keep lazy Pagefind runtime loading and focus-on-open behavior.  |
+| Language selector         | `cds-dropdown` or overflow-menu composition    | Keep all supported languages and current language indicators.   |
+| Theme control             | `cds-toggle` or `cds-content-switcher`         | Keep persisted user preference and system fallback.             |
+| Inline tags/metadata      | `cds-tag` (read-only)                          | Use only when metadata clarity improves; avoid decorative tags. |
+| Content links             | `cds-link` and semantic `<a>`                  | Body links remain clearly underlined for readability and a11y.  |
+| Breadcrumb trail          | `cds-breadcrumb`, `cds-breadcrumb-item`        | Render only on deep pages, not on shallow routes.               |
+| Code copy affordance      | `cds-copy-button` and/or `cds-code-snippet`    | Keep code readability first; avoid visual noise.                |
 
-1. Replace header structure progressively:
-   - navigation primitives,
-   - global actions,
-   - search trigger/panel pattern,
-   - language and theme controls.
-2. Keep i18n URL logic untouched; only view layer changes.
-3. Re-test keyboard order, focus visibility, escape handling, and screen-reader
-   labels.
-4. Port relevant CSS from Primer-like control styles to Carbon token bridge.
+## 6. Phased Execution Plan
 
-**Exit criteria**
+## Phase 0 - Baseline and ADR framing (1 sprint)
 
-- Header functionality is parity-complete.
-- Search remains operational with Pagefind.
-- Accessibility checks pass for keyboard and landmarks.
+1. Freeze current screenshots for `/`, `/posts/`, one post page, `/about/`, and
+   feed view.
+2. Record baseline metrics (LCP, CLS, INP proxy, JS payload size).
+3. Create a migration ADR summarizing the Carbon Web Components decision and
+   selective import policy.
+4. Confirm component availability in Carbon Storybook/docs for each mapped area.
+5. Capture baseline custom-maintenance debt (script count + selector count) for
+   all in-scope components.
 
-## Phase 3 — Content components migration (1–2 sprints)
+Exit criteria:
 
-1. Migrate `PostCard` internals to Carbon-friendly primitives while preserving
-   minimalist rhythm.
-2. Migrate footer links and utility actions where meaningful.
-3. Remove obsolete Primer-like utility selectors from
-   `src/styles/components.css`.
+- Baseline screenshots archived.
+- Metrics snapshot stored.
+- ADR approved.
+- Baseline custom-maintenance debt recorded.
 
-**Exit criteria**
+## Phase 1 - Dependency and bootstrap plumbing (1 sprint)
 
-- Post lists and footer render correctly in all languages.
-- No unused legacy selector clusters remain for migrated parts.
+1. Add `@carbon/web-components` import alias in `deno.json`.
+2. Update lockfile only if dependency declarations changed.
+3. Add `src/scripts/carbon.ts` with selective registration imports.
+4. Wire Carbon bootstrap into `src/_includes/layouts/base.tsx`.
+5. Confirm no runtime custom-element registration errors.
+6. Add an explicit rule in code review checklist: no new bespoke primitives when
+   Carbon alternatives exist.
 
-## Phase 4 — Token harmonization and visual refinement (1 sprint)
+Exit criteria:
 
-1. Define Carbon-to-local token mapping for color, spacing, radius, and
-   typography.
-2. Tune dark/light mode for equivalence with current editorial tone.
-3. Add targeted overrides only where Carbon defaults conflict with project
-   identity.
-4. Re-run screenshot diff and accessibility contrast checks.
+- Build passes with Carbon bootstrap loaded.
+- No functional or visual regressions expected yet.
 
-**Exit criteria**
+## Phase 2 - Header shell migration (2-3 sprints)
 
-- Visual identity remains recognizably the same, now implemented through Carbon
-  components.
-- Contrast and focus states meet accessibility targets.
+1. Replace bespoke menu/search/language wrappers with Carbon UI shell
+   primitives.
+2. Migrate search trigger + panel to Carbon-compatible structure while keeping
+   Pagefind lazy behavior.
+3. Keep current language-routing data contract from
+   `src/scripts/language-preference.js`.
+4. Keep theme behavior parity from `theme-toggle.js` and `anti-flash.js`.
+5. Remove or reduce `disclosure-controls.js` responsibility as Carbon shell
+   behavior takes over.
+6. Remove superseded custom header selectors immediately after each migrated
+   sub-slice.
 
-## Phase 5 — Cleanup and hardening (1 sprint)
+Exit criteria:
 
-1. Remove dead Primer-style classes and helper code paths.
-2. Ensure only case-by-case Carbon imports remain (no blanket component bundle
-   imports).
-3. Verify no circular imports and no regressions in tests.
-4. Update contributor guidance files (`AGENTS.md` and `CLAUDE.md`) to encode the
-   Carbon-first policy for future work.
+- Header parity complete (desktop + mobile + keyboard).
+- Search open/close/focus behavior preserved.
+- Language and theme controls unchanged functionally.
+- Custom header interaction debt decreases from the Phase 0 baseline.
 
-**Exit criteria**
+## Phase 3 - Content surfaces migration (1-2 sprints)
 
-- Legacy Primer assumptions removed.
-- New contribution rules committed and consistent.
+1. Migrate `PostCard.tsx` internals toward Carbon primitives without adding
+   heavy container styling.
+2. Migrate footer links/actions to Carbon equivalents where useful.
+3. Introduce breadcrumb on post/detail pages where hierarchy depth requires it.
+4. Introduce Carbon copy affordance for code blocks where it improves UX.
 
-## 5. Required Policy Updates (AGENTS.md and CLAUDE.md)
+Exit criteria:
 
-The migration should include synchronized updates to both guidance files.
+- Home/archive/post/footer all render correctly in every language.
+- Reading-first visual rhythm preserved.
 
-### 5.1 Sections to update
+## Phase 4 - Token harmonization and theming (1 sprint)
 
-- Stack summary: replace Primer-like implementation guidance with Carbon Web
-  Components guidance.
-- CSS section: clarify how Carbon tokens and local overrides coexist.
-- Component conventions: define when to use `<cds-*>` directly versus local
-  wrapper TSX components.
-- Import policy: enforce selective component imports from
-  `@carbon/web-components`.
-- Accessibility section: define Carbon component accessibility validation
-  expectations.
+1. Add a Carbon token bridge section in styles (`src/styles/` layered files).
+2. Align light/dark surfaces, text, links, and focus colors via semantic tokens.
+3. Keep explicit link distinguishability in prose content.
+4. Validate contrast and focus states in both color modes.
+5. Remove temporary token overrides that are no longer needed after Carbon
+   defaults are proven sufficient.
 
-### 5.2 Proposed wording direction
+Exit criteria:
 
-- "Carbon Web Components are the default UI primitive layer."
-- "Prefer semantic Carbon components with local TSX composition."
-- "Import only components used by a given view or feature."
-- "Do not reintroduce Primer-specific utility classes for new UI work."
+- Carbon components match the site's editorial tone.
+- No accessibility regressions in color and focus behavior.
+- Override surface remains minimal and documented.
 
-## 6. Exception Requests (to validate before implementation)
+## Phase 5 - Search, media, and performance hardening (1 sprint)
 
-Because this migration intentionally departs from existing Primer-oriented
-guidance, the following temporary exceptions are proposed and must be explicitly
-approved before execution:
+1. Keep `pagefind({ ui: false })` and render Carbon-driven search shell only.
+2. Scope search indexing with `data-pagefind-body` to editorial content.
+3. Ensure image dimensions are always emitted (evaluate `image_size` plugin if
+   needed).
+4. Compare JS/CSS payload deltas against baseline after each merged slice.
 
-1. **Dependency exception**: allow adding `@carbon/web-components` and related
-   minimal utilities needed for integration.
-2. **Styling exception**: allow targeted overrides of Carbon internals through
-   supported theming hooks where strict local token naming may need
-   compatibility bridging.
-3. **Component exception**: allow use of Carbon custom elements (`<cds-*>`)
-   within TSX render files as first-class UI primitives.
-4. **Guideline transition exception**: allow interim coexistence of legacy
-   Primer-like selectors and Carbon selectors during phased rollout.
-5. **Testing exception (if needed)**: allow temporary snapshot churn and update
-   tests incrementally per phase rather than one massive rewrite.
+Exit criteria:
 
-## 7. Quality Gates per Phase
+- Search remains fast and predictable.
+- CLS protections validated.
+- Payload growth remains controlled.
 
-For each phase, execute and record:
+## Phase 6 - Cleanup and governance updates (1 sprint)
+
+1. Remove dead bespoke selectors and obsolete scripts after parity is proven.
+2. Eliminate leftover Primer-like assumptions in migrated areas.
+3. Update contributor guidance files (`AGENTS.md`, `CLAUDE.md`) with
+   Carbon-first conventions and selective import policy.
+4. Perform final full regression pass.
+5. Finalize maintenance debt audit against Phase 0 baseline.
+
+Exit criteria:
+
+- Migration rules documented and enforceable.
+- Legacy migration scaffolding removed.
+- Custom-maintenance reduction thresholds are met or explicitly deferred.
+
+## 7. Progress Tracking in the Repository
+
+Migration work must stay inspectable from the repository at any time.
+
+## 7.1 Roadmap-driven status board
+
+- This roadmap is the source of truth for migration status.
+- At PR open: mark one phase as in progress in this file.
+- At PR merge: update phase status and add a short progress note in section 7.3.
+- Do not move to the next phase until the current phase exit criteria are met or
+  explicitly deferred in writing.
+
+## 7.2 In-code TODO conventions for migration carryover
+
+Temporary compatibility code is allowed only when marked with explicit TODOs.
+
+- Every migration TODO must include owner or issue reference, following project
+  rules.
+- Required format:
+  - `// TODO(phiphi): [Carbon-P2] Remove details-based search fallback after Header shell parity is complete.`
+  - `// TODO(#123): [Carbon-P4] Replace temporary token override with semantic Carbon token mapping.`
+- Include a phase marker (`[Carbon-PX]`) and a concrete removal condition.
+- A phase cannot be closed while it still contains unresolved TODOs from an
+  earlier phase, unless each item is listed as an accepted carryover in section
+  7.3.
+
+## 7.3 Progress log (update on every merge to `main`)
+
+| Date | Phase | Status | PR/Commit | Summary | Remaining TODOs | Custom debt
+delta | | --- | --- | --- | --- | --- | --- | | YYYY-MM-DD | P0-P6 | Planned/In
+progress/Done/Deferred | Link or SHA | One-sentence delta | Count + references |
+Scripts/selectors |
+
+## 8. Quality Gates and Validation Protocol
+
+For every migration slice:
 
 1. `deno fmt`
 2. `deno lint`
@@ -218,49 +290,56 @@ For each phase, execute and record:
 5. `deno test`
 6. `deno task test:doc`
 7. `deno task build`
-8. Review `_html-issues.json` and resolve all reported HTML issues.
+8. Review `_html-issues.json` and resolve all HTML errors.
 
-Additionally for migration phases that affect rendering:
+For rendering-affecting slices:
 
-- Capture before/after screenshots for home, archive, post page, and search
-  interaction.
-- Verify keyboard-only navigation and focus ring visibility.
-- Run Lighthouse or equivalent performance checks and compare against baseline.
+- Capture before/after screenshots for core routes.
+- Validate keyboard-only navigation paths (header, search, language, theme,
+  pagination).
+- Validate focus visibility and contrast in light and dark modes.
+- Confirm body-link distinguishability is not color-only.
 
-## 8. Risk Register and Mitigations
+## 9. Risk Register and Mitigations
 
-| Risk                                                  | Impact | Likelihood | Mitigation                                                                            |
-| ----------------------------------------------------- | ------ | ---------- | ------------------------------------------------------------------------------------- |
-| Header behavior mismatch (search, menu, overlays)     | High   | High       | Migrate header in small sub-steps with feature flags or branch checkpoints.           |
-| Bundle size growth from naive imports                 | Medium | Medium     | Enforce selective imports and analyze generated output after each component addition. |
-| Visual drift from established identity                | Medium | High       | Maintain token bridge and screenshot diffs as merge criteria.                         |
-| Accessibility regressions during component swap       | High   | Medium     | Add explicit keyboard and screen-reader test checklist per PR.                        |
-| Style conflicts between local CSS and Carbon defaults | Medium | High       | Contain overrides in dedicated Carbon adaptation layer with strict scope.             |
+| Risk                                                | Impact | Likelihood | Mitigation                                                                             |
+| --------------------------------------------------- | ------ | ---------- | -------------------------------------------------------------------------------------- |
+| Header interaction regressions (menu/search/panels) | High   | High       | Slice migration by behavior, not by file; keep parity checklists and staged merges.    |
+| Bundle growth from broad component imports          | High   | Medium     | Enforce selective imports in `src/scripts/carbon.ts`; track payload deltas per PR.     |
+| Visual drift from minimalist editorial identity     | Medium | High       | Keep token bridge small, run screenshot diffs, and reject decorative overreach.        |
+| Accessibility regressions during shell swap         | High   | Medium     | Add explicit keyboard/focus/contrast validation checklist to each migration PR.        |
+| Feed shell divergence (`feed.xsl`) from main shell  | Medium | Medium     | Include feed view in baseline and parity checks for every header-related change.       |
+| Over-customization reintroduces maintenance burden  | High   | Medium     | Enforce Carbon-by-default policy and track custom debt delta in every migration merge. |
 
-## 9. Definition of Done for the Migration Program
+## 10. Definition of Done
 
-The migration is complete when all conditions below are met:
+Migration is complete when all of the following are true:
 
-- Primer-like component patterns are fully replaced by Carbon equivalents where
-  applicable.
-- No critical UX behavior regressed (navigation, search, language switch, theme
-  toggle, feeds).
-- `AGENTS.md` and `CLAUDE.md` are updated and aligned with Carbon-first
-  guidance.
-- Mandatory quality gates pass.
-- Visual and accessibility parity is documented with screenshots and checklist
-  evidence.
-- Remaining technical debt (if any) is explicitly tracked in follow-up issues.
+- Carbon primitives replace bespoke UI shells in all scoped areas.
+- No regressions in navigation, search, language switch, theme switch, or feeds.
+- Reading-first constraints remain intact (measure, hierarchy, link
+  distinguishability).
+- Accessibility and performance baselines are maintained or improved.
+- `AGENTS.md` and `CLAUDE.md` are updated to reflect Carbon-first guidance.
+- The status snapshot and progress log in this roadmap are up to date.
+- No undocumented migration TODO remains in code.
+- Carbon defaults are used by default in all migrated areas, with documented
+  exceptions only.
+- Custom-maintenance reduction thresholds are achieved, or remaining gaps are
+  formally tracked with dated follow-up items.
+- All quality gates pass and `_html-issues.json` is clean.
 
-## 10. Suggested Work Breakdown for the `carbon` Branch
+## 11. Suggested Commit Breakdown
 
-1. Commit A: baseline audit + this roadmap.
-2. Commit B: dependency/bootstrap plumbing.
-3. Commit C: header migration slice 1 (navigation/actions).
-4. Commit D: header migration slice 2 (search + controls).
-5. Commit E: post card/footer migration.
-6. Commit F: token harmonization and CSS cleanup.
-7. Commit G: AGENTS/CLAUDE policy update and final hardening.
+1. Commit A: baseline captures, metrics snapshot, ADR.
+2. Commit B: Carbon dependency alias + bootstrap wiring.
+3. Commit C: header shell slice 1 (nav/menu/actions).
+4. Commit D: header shell slice 2 (search/language/theme parity).
+5. Commit E: post card + footer migration.
+6. Commit F: breadcrumb + code copy enhancements.
+7. Commit G: token harmonization and dark/light validation.
+8. Commit H: cleanup of obsolete scripts/selectors.
+9. Commit I: AGENTS/CLAUDE policy alignment and final hardening.
 
-This sequencing keeps risk concentrated in the header first, then converges on
-visual consistency and governance updates.
+This sequencing concentrates risk where interaction complexity is highest, then
+converges on visual, accessibility, and governance stability.
