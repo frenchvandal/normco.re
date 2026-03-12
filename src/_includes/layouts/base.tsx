@@ -197,6 +197,12 @@ export default (
           >
           </script>
           <script
+            src="/scripts/link-prefetch-intent.js"
+            fetchpriority="low"
+            defer
+          >
+          </script>
+          <script
             src="/scripts/sw-register.js"
             data-sw-url="/sw.js"
             data-sw-debug-level={swDebugLevel}

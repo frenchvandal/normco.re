@@ -43,6 +43,7 @@ const STATIC_ASSETS = [
   "/scripts/anti-flash.js",
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
+  "/scripts/link-prefetch-intent.js",
   "/feed.xml",
   "/feed.json",
   "/fr/feed.xml",
@@ -62,6 +63,7 @@ const MAX_PREDICTED_ROUTES = 3;
 const MIN_TRANSITION_HITS = 2;
 const MAX_TRACKED_ROUTES = 60;
 const MAX_TRANSITIONS_PER_ROUTE = 12;
+const BLOCKED_EFFECTIVE_CONNECTION_TYPES = ["slow-2g", "2g"];
 
 /** @type {Map<string, Map<string, number>>} */
 const navigationTransitions = new Map();
@@ -175,12 +177,43 @@ function getPredictedRoutes(route) {
 }
 
 /**
+ * Returns true when network conditions allow predictive preloading.
+ *
+ * @returns {boolean}
+ */
+function shouldPreloadPredictedPages() {
+  const connection = sw.navigator.connection;
+
+  if (connection === undefined) {
+    return true;
+  }
+
+  if (connection.saveData) {
+    logSw("predictive-preload: disabled (Save-Data enabled)");
+    return false;
+  }
+
+  if (BLOCKED_EFFECTIVE_CONNECTION_TYPES.includes(connection.effectiveType)) {
+    logSw("predictive-preload: disabled (slow effectiveType)", {
+      effectiveType: connection.effectiveType,
+    });
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Preloads predicted pages using the page cache.
  *
  * @param {URL} currentUrl
  * @returns {Promise<void>}
  */
 async function preloadPredictedPages(currentUrl) {
+  if (!shouldPreloadPredictedPages()) {
+    return;
+  }
+
   const currentRoute = getRouteKey(currentUrl);
   const predictedRoutes = getPredictedRoutes(currentRoute);
 
