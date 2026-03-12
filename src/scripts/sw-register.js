@@ -105,6 +105,7 @@
       withDebugQuery(swClassicUrl),
       {
         scope: "/",
+        updateViaCache: "none",
       },
     );
   }
