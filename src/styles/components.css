@@ -271,32 +271,6 @@
     margin-block: 0;
   }
 
-  /* Carbon token bridge for migrated reading surfaces. */
-  /* TODO(phiphi): [Carbon-P4] Remove this scoped token bridge after global Carbon token parity is complete for content, search, and feed utility surfaces. */
-  :where(
-    .post-card,
-    .post-article,
-    .post-code-block,
-    .site-search-root,
-    .feeds-page,
-    .feed-page,
-    .feed-copy-control,
-    .site-footer
-  ) {
-    --cds-focus: var(--focus-outlineColor);
-    --cds-layer: var(--bgColor-muted);
-    --cds-layer-hover: var(--control-bgColor-hover);
-    --cds-layer-active: var(--control-bgColor-active);
-    --cds-layer-background: var(--bgColor-default);
-    --cds-text-primary: var(--fgColor-default);
-    --cds-text-secondary: var(--fgColor-muted);
-    --cds-border-subtle: var(--borderColor-muted);
-    --cds-border-strong: var(--borderColor-default);
-    --cds-link-primary: var(--fgColor-accent);
-    --cds-link-primary-hover: var(--bgColor-accent-emphasis);
-    --cds-link-focus-text-color: var(--focus-outlineColor);
-  }
-
   .site-footer-nav {
     --cds-link-text-color: var(--fgColor-muted);
     --cds-link-hover-text-color: var(--fgColor-default);

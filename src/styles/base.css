@@ -71,6 +71,20 @@
     --focus-ring-width: 2px;
     --focus-ring-offset: 2px;
 
+    /* Global Carbon semantic token mapping for migrated surfaces. */
+    --cds-focus: var(--focus-outlineColor);
+    --cds-layer: var(--bgColor-muted);
+    --cds-layer-hover: var(--control-bgColor-hover);
+    --cds-layer-active: var(--control-bgColor-active);
+    --cds-layer-background: var(--bgColor-default);
+    --cds-text-primary: var(--fgColor-default);
+    --cds-text-secondary: var(--fgColor-muted);
+    --cds-border-subtle: var(--borderColor-muted);
+    --cds-border-strong: var(--borderColor-default);
+    --cds-link-primary: var(--fgColor-accent);
+    --cds-link-primary-hover: var(--bgColor-accent-emphasis);
+    --cds-link-focus-text-color: var(--focus-outlineColor);
+
     /* Backward-compatible aliases used across component/layout files. */
     --color-bg: var(--bgColor-default);
     --color-text: var(--fgColor-default);
