@@ -53,7 +53,7 @@ and localized routes.
 | i18n       | Lume `multilanguage` plugin (4 languages)                             |
 | Testing    | Deno's built-in test runner with `@std/testing/bdd`                   |
 | Git hooks  | [Lefthook](https://github.com/evilmartians/lefthook)                  |
-| Deployment | GitHub Pages (via GitHub Actions)                                     |
+| Deployment | Alibaba Cloud OSS + CDN (via GitHub Actions OIDC workflow)            |
 
 ---
 
@@ -115,8 +115,9 @@ automatically on file changes.
 .
 ├── .github/
 │   └── workflows/
-│       └── site.yml          # GitHub Actions: build and deploy to GitHub Pages
+│       └── site.yml          # GitHub Actions: build and deploy to Alibaba Cloud OSS/CDN
 ├── scripts/
+│   ├── fingerprint-assets.ts # Post-build asset fingerprinting + service-worker graph version
 │   ├── lint-commit.ts        # Conventional Commits validator
 │   └── md-to-tsx.ts          # Converts LumeCMS Markdown drafts to .page.tsx
 ├── src/
@@ -166,7 +167,8 @@ automatically on file changes.
 ├── _cms.ts                   # Lume CMS configuration
 ├── .gitignore
 ├── .tool-versions            # Pins Deno version (used by asdf)
-├── CLAUDE.md                 # Project guidelines and conventions (source of truth)
+├── AGENTS.md                 # Project guidelines and conventions (source of truth)
+├── CLAUDE.md                 # Compatibility copy of project guidelines
 ├── LICENSE
 ├── _config.ts                # Lume site configuration (plugins, processing, feeds)
 ├── deno.json                 # Deno manifest: import map, tasks, compiler options
@@ -311,39 +313,39 @@ plugin, one set per language:
 
 The central Lume configuration file. Key settings:
 
-| Setting          | Value               | Notes                                    |
-| ---------------- | ------------------- | ---------------------------------------- |
-| Source directory | `./src`             |                                          |
-| Output directory | `./_site`           | Git-ignored; do not edit generated files |
-| Production URL   | `https://normco.re` |                                          |
-| Pretty URLs      | `true`              | `/about/` instead of `/about.html`       |
-| Reading speed    | 238 wpm             | Brysbaert et al., 2019                   |
+| Setting          | Value                | Notes                                    |
+| ---------------- | -------------------- | ---------------------------------------- |
+| Source directory | `./src`              |                                          |
+| Output directory | `./_site`            | Git-ignored; do not edit generated files |
+| Production URL   | `https://normco.re`  |                                          |
+| Pretty URLs      | `true`               | `/about/` instead of `/about.html`       |
+| Reading metrics  | `readingInfo` plugin | Word count, reading minutes, and pages   |
 
 **Active plugins:**
 
-| Plugin          | Purpose                                                                   |
-| --------------- | ------------------------------------------------------------------------- |
-| `jsx`           | Enables TSX/JSX rendering for pages, layouts, and components              |
-| `terser`        | Minifies client-side JavaScript                                           |
-| `postcss`       | Resolves CSS partial imports (`@import`) into one bundle                  |
-| `lightningcss`  | The single CSS minifier (plus modern browser targets)                     |
-| `purgecss`      | Removes unused selectors based on rendered pages                          |
-| `sourceMaps`    | Generates source maps for processed CSS and JS assets                     |
-| `attributes`    | HTML attribute helpers in templates                                       |
-| `icons`         | On-demand SVG icon fetching (Octicons + OpenMoji catalogs)                |
-| `inline`        | Replaces `<img inline>` tags with inline SVG                              |
-| `date`          | Date formatting (e.g., `"SHORT"` → `"MMM d"`) with locale support         |
-| `readingInfo`   | Computes word count and reading time via `Intl.Segmenter`                 |
-| `sitemap`       | Generates `/sitemap.xml`                                                  |
-| `robots`        | Generates `/robots.txt` with explicit disallow rules                      |
-| `multilanguage` | Per-language URL prefixes and data overrides (en, fr, zh-hans, zh-hant)   |
-| `nav`           | Navigation tree for previous/next post links                              |
-| `validateHtml`  | Validates generated HTML against html-validate recommended/document rules |
-| `checkUrls`     | Detects broken internal links and hash anchors; fails the build on errors |
-| `jsonLd`        | Renders `<script type="application/ld+json">` from page data              |
-| `seo`           | Reports common SEO issues in the Lume debug bar                           |
-| `prism`         | Syntax highlighting for fenced code blocks (autoloads language grammars)  |
-| `feed`          | Generates RSS 2.0 and JSON Feed 1.1 (one set per language)                |
+| Plugin          | Purpose                                                                    |
+| --------------- | -------------------------------------------------------------------------- |
+| `jsx`           | Enables TSX/JSX rendering for pages, layouts, and components               |
+| `terser`        | Minifies client-side JavaScript                                            |
+| `postcss`       | Resolves CSS partial imports (`@import`) into one bundle                   |
+| `lightningcss`  | The single CSS minifier (plus modern browser targets)                      |
+| `purgecss`      | Removes unused selectors based on rendered pages                           |
+| `sourceMaps`    | Generates source maps for processed CSS and JS assets                      |
+| `attributes`    | HTML attribute helpers in templates                                        |
+| `icons`         | On-demand SVG icon fetching (Octicons catalog)                             |
+| `inline`        | Replaces `<img inline>` tags with inline SVG                               |
+| `date`          | Date formatting (e.g., `"SHORT"` → `"MMM d"`) with locale support          |
+| `readingInfo`   | Computes word count and reading time via `Intl.Segmenter`                  |
+| `sitemap`       | Generates `/sitemap.xml`                                                   |
+| `robots`        | Generates `/robots.txt` with explicit disallow rules                       |
+| `multilanguage` | Per-language URL prefixes and data overrides (en, fr, zh-hans, zh-hant)    |
+| `nav`           | Navigation tree for previous/next post links                               |
+| `validateHtml`  | Validates generated HTML against html-validate recommended/document rules  |
+| `checkUrls`     | Detects broken internal links and hash anchors; fails the build on errors  |
+| `jsonLd`        | Renders `<script type="application/ld+json">` from page data               |
+| `seo`           | Reports common SEO issues in the Lume debug bar                            |
+| `prism`         | Syntax highlighting for fenced code blocks (grammars preloaded explicitly) |
+| `feed`          | Generates RSS 2.0 and JSON Feed 1.1 (one set per language)                 |
 
 ### Client-side JavaScript assets
 
@@ -352,14 +354,23 @@ Client-side behavior is authored as standalone JavaScript assets in
 files. Lume registers these files directly with `site.add(...)` and emits them
 as first-class assets during `deno task build` and `deno task serve`:
 
-| Source                               | Emitted path                      | Purpose                     |
-| ------------------------------------ | --------------------------------- | --------------------------- |
-| `src/scripts/theme-toggle.js`        | `/scripts/theme-toggle.js`        | Light/dark theme toggle     |
-| `src/scripts/anti-flash.js`          | `/scripts/anti-flash.js`          | Pre-paint theme bootstrap   |
-| `src/scripts/language-preference.js` | `/scripts/language-preference.js` | Language selector           |
-| `src/scripts/feed-copy.js`           | `/scripts/feed-copy.js`           | Feed URL copy helper        |
-| `src/scripts/sw-register.js`         | `/scripts/sw-register.js`         | Service worker registration |
-| `src/scripts/sw.js`                  | `/sw.js`                          | Service worker              |
+| Source                                | Emitted path                       | Purpose                               |
+| ------------------------------------- | ---------------------------------- | ------------------------------------- |
+| `src/scripts/theme-toggle.js`         | `/scripts/theme-toggle.js`         | Light/dark theme toggle               |
+| `src/scripts/anti-flash.js`           | `/scripts/anti-flash.js`           | Pre-paint theme bootstrap             |
+| `src/scripts/language-preference.js`  | `/scripts/language-preference.js`  | Language selector                     |
+| `src/scripts/feed-copy.js`            | `/scripts/feed-copy.js`            | Feed URL copy helper                  |
+| `src/scripts/disclosure-controls.js`  | `/scripts/disclosure-controls.js`  | Mobile menu, search, and modal state  |
+| `src/scripts/link-prefetch-intent.js` | `/scripts/link-prefetch-intent.js` | Intent-based link prefetch            |
+| `src/scripts/archive-year-nav.js`     | `/scripts/archive-year-nav.js`     | Archive year navigation controls      |
+| `src/scripts/pagefind-lazy-init.js`   | `/scripts/pagefind-lazy-init.js`   | Deferred Pagefind UI initialization   |
+| `src/scripts/sw-register.js`          | `/scripts/sw-register.js`          | Service-worker registration bootstrap |
+| `src/scripts/sw.js`                   | `/sw.js`                           | Service-worker module entrypoint      |
+| `src/scripts/sw-core.js`              | `/sw-core.js`                      | Service-worker cache/runtime core     |
+| `src/scripts/sw-lifecycle.js`         | `/sw-lifecycle.js`                 | Service-worker install/activate flow  |
+| `src/scripts/sw-routing.js`           | `/sw-routing.js`                   | Service-worker request routing        |
+| `src/scripts/sw-module.js`            | `/sw-module.js`                    | Service-worker module bundle helper   |
+| `src/scripts/sw-classic.js`           | `/sw-classic.js`                   | Classic fallback service worker       |
 
 All scripts are minified in production via the `terser` plugin.
 
@@ -442,11 +453,10 @@ fallback to `color-scheme`) and applies the resolved mode before first paint.
 
 ### Icons
 
-The UI uses the Octicons catalog (via the Lume `icons` plugin) alongside
-OpenMoji for emoji-style icons. Icons are fetched on demand from jsDelivr CDN at
-build time and inlined as SVG through the `inline` plugin
-(`fill: currentColor`). The `icons()` helper is available in all templates via
-`helpers.icon("octicons", "name", "variant")`.
+The UI uses the Octicons catalog (via the Lume `icons` plugin). Icons are
+fetched on demand from jsDelivr CDN at build time and inlined as SVG through the
+`inline` plugin (`fill: currentColor`). The `icons()` helper is available in all
+templates via `helpers.icon("octicons", "name", "variant")`.
 
 ### Accessibility in CSS
 
@@ -581,81 +591,84 @@ Do not add new dependencies unless explicitly required.
 
 ## Observability
 
-The project integrates with [OpenTelemetry](https://opentelemetry.io/) via
-Deno's built-in support. Observability is opt-in: set `OTEL_DENO=true` to
-activate it. Without that variable, all instrumentation is a no-op with
-negligible overhead.
+The project integrates with [OpenTelemetry](https://opentelemetry.io/) through
+Deno's runtime instrumentation plus the custom
+[`plugins/otel.ts`](./plugins/otel.ts) Lume plugin.
 
-### Build observability
+Outside Deno Deploy, runtime telemetry is opt-in and requires `OTEL_DENO=true`.
+On Deno Deploy, OpenTelemetry integration is enabled by the platform, and the
+plugin automatically runs in production mode (`mode: "auto"` resolves to
+`"production"` when Deploy runtime markers are present).
 
-The `plugins/otel.ts` Lume plugin instruments the static build pipeline:
+### Build observability (`plugins/otel.ts`)
 
-| Signal    | Name                  | Description                    |
-| --------- | --------------------- | ------------------------------ |
-| Trace     | `lume.build`          | Span covering the full build   |
-| Histogram | `lume.build.duration` | Build duration in milliseconds |
-| Counter   | `lume.build.count`    | Number of builds completed     |
+The plugin instruments build and update lifecycle events:
 
-To run with telemetry enabled, keep using the standard tasks (`build` or
-`serve`) and configure OpenTelemetry through environment variables.
+| Signal    | Name                  | Description                                 |
+| --------- | --------------------- | ------------------------------------------- |
+| Trace     | `lume.build`          | Span covering a full build/update lifecycle |
+| Histogram | `lume.build.duration` | Build/update duration in milliseconds       |
+| Counter   | `lume.build.count`    | Number of completed build/update operations |
 
-### Local JSON inspection (no LGTM stack required)
+In development mode, the plugin can also record recent requests and route
+counters in the Lume debug bar.
 
-For local development, set `OTEL_EXPORTER_OTLP_PROTOCOL=http/json`. When this
-protocol is active, the plugin prints one structured build record per build in
-the terminal (`console.table` + raw JSON), so you can inspect trace IDs, span
-IDs, duration, and timestamps directly. Console verbosity is controlled by
-Lume's native `LUME_LOGS` environment variable via `plugins/console_debug.ts`:
+### Local OTLP JSON inspection
 
-- `LUME_LOGS=debug` -> verbose table + raw record + stack trace
-- `LUME_LOGS=info|warning|error` -> summary table
-- `LUME_LOGS=critical` -> disable local console build records
+For local inspection without a full observability stack, use an OTLP HTTP JSON
+endpoint and run the standard `serve` task:
 
 ```sh
 OTEL_DENO=true OTEL_SERVICE_NAME=normcore \
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318 \
 OTEL_EXPORTER_OTLP_PROTOCOL=http/json \
-LUME_LOGS=debug \
 DENO_TLS_CA_STORE=system deno task serve
 ```
 
+When enabled, request/build diagnostics are emitted with `console.table()` and
+linked to active spans.
+
 ### Development server observability
 
-When running the dev server with `OTEL_DENO=true`, Deno automatically
-instruments the underlying `Deno.serve` instance:
+When telemetry is enabled, Deno automatically instruments `Deno.serve`:
 
-- **HTTP traces** — a span per request with method, URL, and status code
+- **HTTP traces** — one span per request
 - **`http.server.request.duration`** — request duration histogram
 - **`http.server.active_requests`** — in-flight request gauge
-- **Logs** — all `console.*` output is forwarded to the OTLP endpoint
+- **Request/response size metrics** — collected by runtime instrumentation
 
-### Configuration
+### Environment variables
 
-All configuration is done through standard OpenTelemetry environment variables:
+Common variables used in local/self-hosted environments:
 
-| Variable                      | Default      | Description                                  |
-| ----------------------------- | ------------ | -------------------------------------------- |
-| `OTEL_DENO`                   | `true`       | Enable the integration                       |
-| `OTEL_SERVICE_NAME`           | `lume build` | Service name in all signals                  |
-| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/json`  | Exporter protocol (`http/json` for local DX) |
-| `OTEL_METRIC_EXPORT_INTERVAL` | `60000`      | Metric flush interval (ms)                   |
+| Variable                      | Typical value           | Notes                                                   |
+| ----------------------------- | ----------------------- | ------------------------------------------------------- |
+| `OTEL_DENO`                   | `true`                  | Enables Deno OTEL runtime instrumentation               |
+| `OTEL_SERVICE_NAME`           | `normcore`              | Service/resource name for spans and metrics             |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:4318` | OTLP collector endpoint                                 |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/json`             | Recommended locally for readable payload inspection     |
+| `OTEL_METRIC_EXPORT_INTERVAL` | e.g. `60000`            | Optional runtime-controlled metric export interval (ms) |
+
+Deploy runtime markers (`DENO_DEPLOY`, `DENO_DEPLOYMENT_ID`) are set by Deno
+Deploy and are used by the plugin to auto-select production behavior.
 
 ---
 
 ## Deployment
 
-The site is deployed to [GitHub Pages](https://pages.github.com/) automatically
-on every push to `master`.
+The site is deployed to Alibaba Cloud OSS (with CDN refresh) on every push to
+`master`.
 
 **Pipeline (`.github/workflows/site.yml`):**
 
 1. Check out the repository (full history).
 2. Set up Deno from `.tool-versions`, with caching enabled.
 3. Run `deno task build` to produce `_site/`.
-4. Upload `_site/` as a GitHub Pages artifact.
-5. Deploy to GitHub Pages.
+4. Assume an Alibaba Cloud role through GitHub OIDC.
+5. Sync `_site/` to OSS and trigger CDN refresh.
 
-The site is served from `https://normco.re`. No server-side runtime is involved;
-the output is entirely static HTML, CSS, and JavaScript.
+The production site is served from `https://normco.re`. No server-side runtime
+is involved; the output is static HTML, CSS, JavaScript, and feed artifacts.
 
 ---
 
