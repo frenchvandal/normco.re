@@ -130,6 +130,10 @@ describe("base.tsx layout", () => {
         html,
         'src="/scripts/sw-register.js" data-sw-url="/sw.js" data-sw-debug-level="off"',
       );
+      assertStringIncludes(
+        html,
+        'src="/scripts/link-prefetch-intent.js"',
+      );
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");
     });
