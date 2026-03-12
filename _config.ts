@@ -179,6 +179,7 @@ site.add("/scripts/link-prefetch-intent.js");
 site.add("/scripts/sw-register.js");
 site.add("/scripts/archive-year-nav.js");
 site.add("/scripts/pagefind-lazy-init.js");
+site.add("/scripts/sw-module.js", "/sw-module.js");
 site.add("/scripts/sw.js", "/sw.js");
 
 // Copy XSLT stylesheets to the output as static assets.

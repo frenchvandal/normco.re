@@ -128,7 +128,23 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, 'href="/feed.json"');
       assertStringIncludes(
         html,
-        'src="/scripts/sw-register.js" data-sw-url="/sw.js" data-sw-debug-level="off"',
+        'src="/scripts/sw-register.js"',
+      );
+      assertStringIncludes(
+        html,
+        'data-sw-module-url="/sw-module.js"',
+      );
+      assertStringIncludes(
+        html,
+        'data-sw-classic-url="/sw.js"',
+      );
+      assertStringIncludes(
+        html,
+        'data-sw-url="/sw.js"',
+      );
+      assertStringIncludes(
+        html,
+        'data-sw-debug-level="off"',
       );
       assertStringIncludes(
         html,
@@ -149,7 +165,19 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
-        'src="/scripts/sw-register.js" data-sw-url="/sw.js" data-sw-debug-level="verbose"',
+        'src="/scripts/sw-register.js"',
+      );
+      assertStringIncludes(
+        html,
+        'data-sw-module-url="/sw-module.js"',
+      );
+      assertStringIncludes(
+        html,
+        'data-sw-classic-url="/sw.js"',
+      );
+      assertStringIncludes(
+        html,
+        'data-sw-debug-level="verbose"',
       );
     });
 

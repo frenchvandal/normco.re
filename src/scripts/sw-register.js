@@ -15,8 +15,14 @@
   }
 
   const currentScript = globalThis.document.currentScript;
-  const swUrl = currentScript instanceof HTMLScriptElement
-    ? currentScript.dataset.swUrl ?? "/sw.js"
+  const legacySwUrl = currentScript instanceof HTMLScriptElement
+    ? currentScript.dataset.swUrl
+    : undefined;
+  const swModuleUrl = currentScript instanceof HTMLScriptElement
+    ? currentScript.dataset.swModuleUrl ?? "/sw-module.js"
+    : "/sw-module.js";
+  const swClassicUrl = currentScript instanceof HTMLScriptElement
+    ? currentScript.dataset.swClassicUrl ?? legacySwUrl ?? "/sw.js"
     : "/sw.js";
   const swDebugLevel = currentScript instanceof HTMLScriptElement
     ? currentScript.dataset.swDebugLevel ?? "off"
@@ -37,10 +43,24 @@
     }
 
     console.info("[SW register]", event, {
-      swUrl,
+      swModuleUrl,
+      swClassicUrl,
       swDebugLevel,
       ...details,
     });
+  }
+
+  /**
+   * Builds a registration URL with the debug level encoded as a query string.
+   *
+   * @param {string} scriptUrl
+   * @returns {string}
+   */
+  function withDebugQuery(scriptUrl) {
+    const parsedUrl = new URL(scriptUrl, globalThis.location.origin);
+    parsedUrl.searchParams.set("debug", swDebugLevel);
+
+    return `${parsedUrl.pathname}${parsedUrl.search}`;
   }
 
   /**
@@ -80,7 +100,7 @@
   function registerWorker(mode) {
     if (mode === "module") {
       return globalThis.navigator.serviceWorker.register(
-        `${swUrl}?debug=${swDebugLevel}`,
+        withDebugQuery(swModuleUrl),
         {
           scope: "/",
           type: "module",
@@ -90,7 +110,7 @@
     }
 
     return globalThis.navigator.serviceWorker.register(
-      `${swUrl}?debug=${swDebugLevel}`,
+      withDebugQuery(swClassicUrl),
       {
         scope: "/",
       },
