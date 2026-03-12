@@ -22,17 +22,29 @@ function ariaCurrent(
   return {};
 }
 
-type IconHelpers = Pick<Lume.Helpers, "icon">;
-
-const DEFAULT_ICON_HELPERS: IconHelpers = {
-  icon: (key, catalogId, variant) => {
-    const variantSuffix = variant ? `-${variant}` : "";
-    return `/icons/${catalogId}/${key}${variantSuffix}.svg`;
-  },
-};
-
 const CARBON_SEARCH_ICON_PATH =
   "M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z";
+const CARBON_THEME_LIGHT_ICON_PATHS = [
+  { d: "M7.5 1H8.5V3.5H7.5z" },
+  { d: "M10.8 3.4H13.3V4.4H10.8z", transform: "rotate(-45 12.041 3.923)" },
+  { d: "M12.5 7.5H15V8.5H12.5z" },
+  { d: "M11.6 10.8H12.6V13.3H11.6z", transform: "rotate(-45 12.075 12.04)" },
+  { d: "M7.5 12.5H8.5V15H7.5z" },
+  { d: "M2.7 11.6H5.2V12.6H2.7z", transform: "rotate(-45 3.96 12.078)" },
+  { d: "M1 7.5H3.5V8.5H1z" },
+  { d: "M3.4 2.7H4.4V5.2H3.4z", transform: "rotate(-45 3.925 3.961)" },
+  {
+    d: "M8,6c1.1,0,2,0.9,2,2s-0.9,2-2,2S6,9.1,6,8S6.9,6,8,6 M8,5C6.3,5,5,6.3,5,8s1.3,3,3,3s3-1.3,3-3S9.7,5,8,5z",
+  },
+] as const;
+const CARBON_THEME_DARK_ICON_PATHS = [
+  {
+    d: "M7.2,2.3c-1,4.4,1.7,8.7,6.1,9.8c0.1,0,0.1,0,0.2,0c-1.1,1.2-2.7,1.8-4.3,1.8c-0.1,0-0.2,0-0.2,0C5.6,13.8,3,11,3.2,7.7 C3.2,5.3,4.8,3.1,7.2,2.3",
+  },
+  {
+    d: "M8,1L8,1C4.1,1.6,1.5,5.3,2.1,9.1c0.6,3.3,3.4,5.8,6.8,5.9c0.1,0,0.2,0,0.3,0c2.3,0,4.4-1.1,5.8-3 c0.2-0.2,0.1-0.6-0.1-0.7c-0.1-0.1-0.2-0.1-0.3-0.1c-3.9-0.3-6.7-3.8-6.4-7.6C8.3,3,8.4,2.4,8.6,1.8c0.1-0.3,0-0.6-0.3-0.7 C8.1,1,8.1,1,8,1z",
+  },
+] as const;
 
 /** Renders the site header with logo, navigation, and user controls. */
 export default (
@@ -40,7 +52,6 @@ export default (
     readonly currentUrl: string;
     readonly language: SiteLanguage;
   },
-  helpers: IconHelpers = DEFAULT_ICON_HELPERS,
 ) => {
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
@@ -227,36 +238,53 @@ export default (
               ))}
             </select>
           </div>
-          <button
-            type="button"
+          <cds-button
             id="theme-toggle"
-            class="theme-toggle"
+            class="site-theme-action"
+            kind="ghost"
+            size="lg"
+            tooltip-text={translations.site.themeToggleLabel}
             aria-label={translations.site.themeToggleLabel}
             aria-pressed="false"
             data-label-switch-light={translations.site.switchToLightThemeLabel}
             data-label-switch-dark={translations.site.switchToDarkThemeLabel}
           >
-            <img
-              inline
-              class="theme-icon theme-icon--sun octicon-svg"
+            <svg
+              slot="icon"
+              class="theme-icon theme-icon--sun"
               width="16"
               height="16"
-              src={helpers.icon("sun", "octicons", "16")}
-              alt=""
+              viewBox="0 0 16 16"
+              fill="currentColor"
               aria-hidden="true"
               focusable="false"
-            />
-            <img
-              inline
-              class="theme-icon theme-icon--moon octicon-svg"
+            >
+              {CARBON_THEME_LIGHT_ICON_PATHS.map((path) => (
+                <path
+                  key={path.d}
+                  d={path.d}
+                  {...("transform" in path
+                    ? { transform: path.transform }
+                    : {})}
+                >
+                </path>
+              ))}
+            </svg>
+            <svg
+              slot="icon"
+              class="theme-icon theme-icon--moon"
               width="16"
               height="16"
-              src={helpers.icon("moon", "octicons", "16")}
-              alt=""
+              viewBox="0 0 16 16"
+              fill="currentColor"
               aria-hidden="true"
               focusable="false"
-            />
-          </button>
+            >
+              {CARBON_THEME_DARK_ICON_PATHS.map(({ d }) => (
+                <path key={d} d={d}></path>
+              ))}
+            </svg>
+          </cds-button>
         </div>
       </div>
     </header>

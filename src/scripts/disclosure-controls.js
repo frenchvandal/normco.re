@@ -2,7 +2,7 @@
 (() => {
   const controls = Array.from(
     globalThis.document.querySelectorAll(
-      "cds-header-global-action, cds-header-menu-button",
+      "cds-header-global-action[panel-id], cds-header-menu-button",
     ),
   ).filter((element) => element instanceof HTMLElement);
 
@@ -15,12 +15,10 @@
    * @returns {string | null}
    */
   function getLinkedPanelId(control) {
-    if (!control.matches("cds-header-global-action")) {
+    if (!control.matches("cds-header-global-action[panel-id]")) {
       return null;
     }
-
-    const panelId = control.getAttribute("panel-id");
-    return panelId === null || panelId.length === 0 ? null : panelId;
+    return control.getAttribute("panel-id");
   }
 
   /**

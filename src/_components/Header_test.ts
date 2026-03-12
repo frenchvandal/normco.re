@@ -183,11 +183,16 @@ describe("Header()", () => {
       assertNotMatch(html, /🇬🇧|🇫🇷|🇨🇳|🇹🇼/);
     });
 
-    it("contains the theme-toggle button", async () => {
+    it("contains the Carbon theme toggle action", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
+      assertStringIncludes(html, "<cds-button");
       assertStringIncludes(html, 'id="theme-toggle"');
+      assertStringIncludes(html, 'class="site-theme-action"');
+      assertStringIncludes(html, 'kind="ghost"');
+      assertStringIncludes(html, 'size="lg"');
+      assertStringIncludes(html, 'tooltip-text="Toggle color theme"');
       assertStringIncludes(html, 'aria-label="Toggle color theme"');
     });
 
