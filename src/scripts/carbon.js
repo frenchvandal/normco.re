@@ -1,7 +1,7 @@
 // @ts-check
 
 export const CARBON_COMPONENTS_BASE_URL =
-  "https://cdn.jsdelivr.net/npm/@carbon/web-components@2.50.0/es/components";
+  "https://unpkg.com/@carbon/web-components@2.50.0/es/components";
 
 /** @type {ReadonlyArray<{ readonly selector: string; readonly modulePath: string }>} */
 export const SELECTIVE_CARBON_COMPONENTS = [
@@ -51,7 +51,7 @@ export const SELECTIVE_CARBON_COMPONENTS = [
  * @returns {string}
  */
 export function getCarbonComponentUrl(componentPath) {
-  return `${CARBON_COMPONENTS_BASE_URL}/${componentPath}`;
+  return `${CARBON_COMPONENTS_BASE_URL}/${componentPath}?module`;
 }
 
 (() => {

@@ -596,7 +596,7 @@ site.process([".xml"], (pages: Page[]) => {
 site.use(otelPlugin());
 site.addEventListener(
   "afterBuild",
-  "deno fmt _site && deno run --allow-read --allow-write scripts/fingerprint-assets.ts _site",
+  "deno fmt _site && deno run --allow-read --allow-write scripts/fingerprint-assets.ts _site && deno run --allow-read scripts/check-browser-imports.ts _site",
 );
 
 export default site;

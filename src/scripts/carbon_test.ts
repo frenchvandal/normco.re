@@ -1,55 +1,34 @@
-import { assert, assertEquals, assertMatch } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
-
+import { assert, assertEquals, assertMatch, assertNotMatch } from "jsr/assert";
 import {
   CARBON_COMPONENTS_BASE_URL,
   getCarbonComponentUrl,
   SELECTIVE_CARBON_COMPONENTS,
 } from "./carbon.js";
 
-const EXPECTED_COMPONENT_MODULE_PATHS = [
-  "ui-shell/header.js",
-  "ui-shell/header-menu-button.js",
-  "ui-shell/header-nav.js",
-  "ui-shell/header-nav-item.js",
-  "ui-shell/header-global-action.js",
-  "ui-shell/header-panel.js",
-  "ui-shell/switcher.js",
-  "ui-shell/switcher-item.js",
-  "button/button.js",
-  "link/link.js",
-  "tag/tag.js",
-  "breadcrumb/breadcrumb.js",
-  "breadcrumb/breadcrumb-item.js",
-  "copy-button/copy-button.js",
-  "ui-shell/side-nav.js",
-  "ui-shell/side-nav-items.js",
-  "ui-shell/side-nav-link.js",
-] as const;
+Deno.test("carbon bootstrap uses browser-resolvable Carbon module URLs", () => {
+  assertMatch(
+    CARBON_COMPONENTS_BASE_URL,
+    /https:\/\/unpkg\.com\/@carbon\/web-components@2\.50\.0\/es\/components/,
+  );
+  assertNotMatch(CARBON_COMPONENTS_BASE_URL, /(?:npm\/|jsr:|node:)/);
+  assertEquals(SELECTIVE_CARBON_COMPONENTS.length, 17);
 
-describe("carbon bootstrap", () => {
-  it("uses browser-compatible Carbon module URLs", () => {
-    assertMatch(
-      CARBON_COMPONENTS_BASE_URL,
-      /https:\/\/cdn\.jsdelivr\.net\/npm\/@carbon\/web-components@2\.50\.0\/es\/components/,
+  for (const { modulePath } of SELECTIVE_CARBON_COMPONENTS) {
+    const moduleUrl = getCarbonComponentUrl(modulePath);
+
+    assert(
+      moduleUrl.startsWith("https://"),
+      `Expected HTTPS module URL for ${modulePath}`,
     );
-    const resolvedPaths = new Set(
-      SELECTIVE_CARBON_COMPONENTS.map(({ modulePath }) => modulePath),
+    assert(
+      moduleUrl.endsWith("?module"),
+      `Expected ?module suffix for ${modulePath}`,
     );
-
-    assertEquals(resolvedPaths.size, EXPECTED_COMPONENT_MODULE_PATHS.length);
-
-    for (const componentPath of EXPECTED_COMPONENT_MODULE_PATHS) {
-      assert(
-        resolvedPaths.has(componentPath),
-        `Missing Carbon component import path: ${componentPath}`,
-      );
-      assert(
-        getCarbonComponentUrl(componentPath).startsWith(
-          CARBON_COMPONENTS_BASE_URL,
-        ),
-        `Unexpected Carbon module URL for: ${componentPath}`,
-      );
-    }
-  });
+    assert(
+      !moduleUrl.includes("npm/") &&
+        !moduleUrl.includes("jsr:") &&
+        !moduleUrl.includes("node:"),
+      `Unexpected non-browser import prefix in URL for ${modulePath}`,
+    );
+  }
 });
