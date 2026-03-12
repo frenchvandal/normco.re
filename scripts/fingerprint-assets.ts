@@ -167,16 +167,16 @@ async function rewriteUrlsInSiteOutput(
 }
 
 async function injectServiceWorkerVersion(rootDir: string): Promise<string> {
-  const swPath = toOutputPath(rootDir, "/sw.js");
-  const swCode = await Deno.readTextFile(swPath);
-  const swVersion = await hashContent(new TextEncoder().encode(swCode));
-  const versionedSwCode = swCode.replaceAll(
+  const swCorePath = toOutputPath(rootDir, "/sw-core.js");
+  const swCoreCode = await Deno.readTextFile(swCorePath);
+  const swVersion = await hashContent(new TextEncoder().encode(swCoreCode));
+  const versionedSwCoreCode = swCoreCode.replaceAll(
     SERVICE_WORKER_VERSION_PLACEHOLDER,
     swVersion,
   );
 
-  if (versionedSwCode !== swCode) {
-    await Deno.writeTextFile(swPath, versionedSwCode);
+  if (versionedSwCoreCode !== swCoreCode) {
+    await Deno.writeTextFile(swCorePath, versionedSwCoreCode);
   }
 
   return swVersion;
@@ -208,7 +208,7 @@ async function main(): Promise<void> {
   for (const [sourceUrl, fingerprintedUrl] of orderedRewrites) {
     console.info(`[fingerprint] ${sourceUrl} -> ${fingerprintedUrl}`);
   }
-  console.info(`[fingerprint] /sw.js version -> ${swVersion}`);
+  console.info(`[fingerprint] /sw-core.js version -> ${swVersion}`);
 }
 
 await main();

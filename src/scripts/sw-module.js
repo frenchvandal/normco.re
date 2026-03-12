@@ -1,2 +1,2 @@
 // @ts-check
-import "./sw.js";
+import "./sw-core.js";
