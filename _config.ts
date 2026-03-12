@@ -183,6 +183,7 @@ site.add("/scripts/sw-core.js", "/sw-core.js");
 site.add("/scripts/sw-lifecycle.js", "/sw-lifecycle.js");
 site.add("/scripts/sw-routing.js", "/sw-routing.js");
 site.add("/scripts/sw-module.js", "/sw-module.js");
+site.add("/scripts/sw-classic.js", "/sw-classic.js");
 site.add("/scripts/sw.js", "/sw.js");
 
 // Copy XSLT stylesheets to the output as static assets.

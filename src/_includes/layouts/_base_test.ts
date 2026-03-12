@@ -132,15 +132,15 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
-        'data-sw-module-url="/sw-module.js"',
+        'data-sw-module-url="/sw.js"',
       );
       assertStringIncludes(
         html,
-        'data-sw-classic-url="/sw.js"',
+        'data-sw-classic-url="/sw-classic.js"',
       );
       assertStringIncludes(
         html,
-        'data-sw-url="/sw.js"',
+        'data-sw-url="/sw-classic.js"',
       );
       assertStringIncludes(
         html,
@@ -169,11 +169,11 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
-        'data-sw-module-url="/sw-module.js"',
+        'data-sw-module-url="/sw.js"',
       );
       assertStringIncludes(
         html,
-        'data-sw-classic-url="/sw.js"',
+        'data-sw-classic-url="/sw-classic.js"',
       );
       assertStringIncludes(
         html,

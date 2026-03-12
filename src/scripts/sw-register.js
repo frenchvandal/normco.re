@@ -19,11 +19,11 @@
     ? currentScript.dataset.swUrl
     : undefined;
   const swModuleUrl = currentScript instanceof HTMLScriptElement
-    ? currentScript.dataset.swModuleUrl ?? "/sw-module.js"
-    : "/sw-module.js";
-  const swClassicUrl = currentScript instanceof HTMLScriptElement
-    ? currentScript.dataset.swClassicUrl ?? legacySwUrl ?? "/sw.js"
+    ? currentScript.dataset.swModuleUrl ?? "/sw.js"
     : "/sw.js";
+  const swClassicUrl = currentScript instanceof HTMLScriptElement
+    ? currentScript.dataset.swClassicUrl ?? legacySwUrl ?? "/sw-classic.js"
+    : "/sw-classic.js";
   const swDebugLevel = currentScript instanceof HTMLScriptElement
     ? currentScript.dataset.swDebugLevel ?? "off"
     : "off";
