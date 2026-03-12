@@ -183,6 +183,7 @@ site.add("/scripts/carbon.js");
 site.add("/scripts/language-preference.js");
 site.add("/scripts/feed-copy.js");
 site.add("/scripts/post-code-copy.js");
+site.add("/scripts/post-code-copy-exec-command.js");
 site.add("/scripts/link-prefetch-intent.js");
 site.add("/scripts/sw-register.js");
 site.add("/scripts/archive-year-nav.js");

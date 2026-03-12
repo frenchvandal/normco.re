@@ -4,6 +4,7 @@ import { describe, it } from "jsr/testing-bdd";
 
 import {
   applyPayloadPolicy,
+  assertBaselineRouteParity,
   assertPayloadRegressionThresholds,
   assertRouteFilesExist,
   getPayloadDeltas,
@@ -285,6 +286,67 @@ describe("payload route validation", () => {
         ),
       Error,
       "Route validation failed",
+    );
+  });
+});
+
+describe("payload baseline route parity", () => {
+  it("passes when baseline and current reports expose identical route sets", () => {
+    const baseline = createReport([
+      ["/index.html", 1000],
+      ["/posts/index.html", 1300],
+    ]);
+    const current = createReport([
+      ["/posts/index.html", 1250],
+      ["/index.html", 980],
+    ]);
+
+    assertBaselineRouteParity(
+      current as Parameters<typeof assertBaselineRouteParity>[0],
+      baseline as Parameters<typeof assertBaselineRouteParity>[1],
+      "/tmp/baseline.json",
+    );
+  });
+
+  it("fails when baseline is missing a route from the current report", () => {
+    const baseline = createReport([
+      ["/index.html", 1000],
+    ]);
+    const current = createReport([
+      ["/index.html", 980],
+      ["/posts/index.html", 1250],
+    ]);
+
+    assertThrows(
+      () =>
+        assertBaselineRouteParity(
+          current as Parameters<typeof assertBaselineRouteParity>[0],
+          baseline as Parameters<typeof assertBaselineRouteParity>[1],
+          "/tmp/baseline.json",
+        ),
+      Error,
+      "Routes missing from baseline",
+    );
+  });
+
+  it("fails when baseline contains a route missing from the current report", () => {
+    const baseline = createReport([
+      ["/index.html", 1000],
+      ["/about/index.html", 900],
+    ]);
+    const current = createReport([
+      ["/index.html", 980],
+    ]);
+
+    assertThrows(
+      () =>
+        assertBaselineRouteParity(
+          current as Parameters<typeof assertBaselineRouteParity>[0],
+          baseline as Parameters<typeof assertBaselineRouteParity>[1],
+          "/tmp/baseline.json",
+        ),
+      Error,
+      "Routes missing from current report",
     );
   });
 });

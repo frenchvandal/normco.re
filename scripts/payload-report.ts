@@ -626,6 +626,58 @@ function indexRoutesByPath(
   return new Map(report.routes.map((route) => [route.route, route]));
 }
 
+function getSortedRouteSet(report: PayloadReport): ReadonlyArray<string> {
+  return [...new Set(report.routes.map((route) => route.route))].sort((a, b) =>
+    a.localeCompare(b)
+  );
+}
+
+/** Ensures baseline and current reports expose exactly the same route set. */
+export function assertBaselineRouteParity(
+  report: PayloadReport,
+  baselineReport: PayloadReport,
+  baselinePath?: string,
+): void {
+  const reportRoutes = new Set(getSortedRouteSet(report));
+  const baselineRoutes = new Set(getSortedRouteSet(baselineReport));
+  const missingInBaseline = [...reportRoutes].filter((route) =>
+    !baselineRoutes.has(route)
+  );
+  const missingInCurrent = [...baselineRoutes].filter((route) =>
+    !reportRoutes.has(route)
+  );
+
+  if (missingInBaseline.length === 0 && missingInCurrent.length === 0) {
+    return;
+  }
+
+  const lines = [
+    "[payload-report] Baseline route set mismatch",
+  ];
+
+  if (missingInBaseline.length > 0) {
+    lines.push("- Routes missing from baseline:");
+    lines.push(...missingInBaseline.map((route) => `  - ${route}`));
+  }
+
+  if (missingInCurrent.length > 0) {
+    lines.push("- Routes missing from current report:");
+    lines.push(...missingInCurrent.map((route) => `  - ${route}`));
+  }
+
+  if (baselinePath !== undefined) {
+    lines.push(
+      `Rebuild and regenerate baseline \`${baselinePath}\` with the same --routes/policy before comparing.`,
+    );
+  } else {
+    lines.push(
+      "Rebuild and regenerate the baseline with the same --routes/policy before comparing.",
+    );
+  }
+
+  throw new Error(lines.join("\n"));
+}
+
 /** Returns route-level and total deltas between the current report and a baseline. */
 export function getPayloadDeltas(
   report: PayloadReport,
@@ -849,6 +901,10 @@ async function main(): Promise<void> {
   const baselineReport = options.baselinePath
     ? await readBaselineReport(options.baselinePath)
     : undefined;
+
+  if (baselineReport !== undefined) {
+    assertBaselineRouteParity(report, baselineReport, options.baselinePath);
+  }
 
   if (options.outputPath) {
     await Deno.writeTextFile(

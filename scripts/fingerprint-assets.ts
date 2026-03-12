@@ -9,6 +9,7 @@ const CANONICAL_ASSET_URLS = [
   "/scripts/anti-flash.js",
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
+  "/scripts/post-code-copy-exec-command.js",
   "/scripts/link-prefetch-intent.js",
   "/scripts/sw-register.js",
   "/scripts/archive-year-nav.js",

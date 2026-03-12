@@ -196,6 +196,10 @@ describe("post.tsx layout", () => {
         ),
       );
       assertStringIncludes(html, 'src="/scripts/post-code-copy.js"');
+      assertNotMatch(
+        html,
+        /src="\/scripts\/post-code-copy-exec-command\.js"/,
+      );
     });
 
     it("skips the post code-copy enhancement script when code blocks are absent", async () => {

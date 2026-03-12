@@ -1,5 +1,7 @@
 // @ts-check
 (() => {
+  const EXEC_COMMAND_FALLBACK_MODULE_URL =
+    "/scripts/post-code-copy-exec-command.js";
   const article = globalThis.document.querySelector(
     ".post-article[data-code-copy-label]",
   );
@@ -19,33 +21,30 @@
   const copyFailedFeedback = article.dataset.codeCopyFailedFeedback ??
     "Cannot copy code";
   const feedbackResetMs = 1800;
+  /** @type {Promise<((text: string) => boolean) | undefined> | undefined} */
+  let execCommandWriterPromise;
 
   /**
-   * @param {string} text
-   * @returns {boolean}
+   * Resolves the legacy execCommand writer only when clipboard API is unavailable.
+   * @returns {Promise<((text: string) => boolean) | undefined>}
    */
-  function writeWithExecCommand(text) {
-    const textArea = globalThis.document.createElement("textarea");
-    textArea.value = text;
-    textArea.setAttribute("readonly", "true");
-    textArea.style.position = "fixed";
-    textArea.style.top = "0";
-    textArea.style.left = "-9999px";
-
-    globalThis.document.body.append(textArea);
-    textArea.focus();
-    textArea.select();
-
-    // TODO(phiphi): [Carbon-P3] Remove execCommand fallback after clipboard API support baseline for site visitors reaches full parity in analytics.
-    let success = false;
-    try {
-      success = globalThis.document.execCommand("copy");
-    } catch {
-      success = false;
+  function getExecCommandWriter() {
+    if (execCommandWriterPromise !== undefined) {
+      return execCommandWriterPromise;
     }
 
-    textArea.remove();
-    return success;
+    // TODO(phiphi): [Carbon-P3] Remove execCommand fallback after clipboard API support baseline for site visitors reaches full parity in analytics.
+    execCommandWriterPromise = import(EXEC_COMMAND_FALLBACK_MODULE_URL)
+      .then((module) => {
+        const writeWithExecCommand = module.writeWithExecCommand;
+
+        return typeof writeWithExecCommand === "function"
+          ? writeWithExecCommand
+          : undefined;
+      })
+      .catch(() => undefined);
+
+    return execCommandWriterPromise;
   }
 
   /**
@@ -55,16 +54,19 @@
   async function copyText(text) {
     const clipboard = globalThis.navigator.clipboard;
 
-    if (clipboard === undefined || typeof clipboard.writeText !== "function") {
-      return writeWithExecCommand(text);
+    if (clipboard !== undefined && typeof clipboard.writeText === "function") {
+      try {
+        await clipboard.writeText(text);
+        return true;
+      } catch {
+        // Fall through to the lazy legacy fallback.
+      }
     }
 
-    try {
-      await clipboard.writeText(text);
-      return true;
-    } catch {
-      return writeWithExecCommand(text);
-    }
+    const writeWithExecCommand = await getExecCommandWriter();
+    return typeof writeWithExecCommand === "function"
+      ? writeWithExecCommand(text)
+      : false;
   }
 
   for (const candidate of codeBlocks) {
