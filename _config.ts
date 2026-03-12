@@ -180,6 +180,8 @@ site.add("/scripts/sw-register.js");
 site.add("/scripts/archive-year-nav.js");
 site.add("/scripts/pagefind-lazy-init.js");
 site.add("/scripts/sw-core.js", "/sw-core.js");
+site.add("/scripts/sw-lifecycle.js", "/sw-lifecycle.js");
+site.add("/scripts/sw-routing.js", "/sw-routing.js");
 site.add("/scripts/sw-module.js", "/sw-module.js");
 site.add("/scripts/sw.js", "/sw.js");
 

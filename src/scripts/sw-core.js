@@ -1,10 +1,11 @@
 // @ts-check
 /// <reference lib="webworker" />
 
-/** @type {ServiceWorkerGlobalScope} */
-const sw = /** @type {ServiceWorkerGlobalScope} */ (
-  /** @type {unknown} */ (self)
-);
+/** @type {ServiceWorkerGlobalScope & { __swRuntime?: Record<string, unknown> }} */
+const sw =
+  /** @type {ServiceWorkerGlobalScope & { __swRuntime?: Record<string, unknown> }} */ (
+    /** @type {unknown} */ (self)
+  );
 
 const SW_URL = new URL(sw.location.href);
 const SW_QUERY = SW_URL.searchParams;
@@ -68,11 +69,6 @@ const BLOCKED_EFFECTIVE_CONNECTION_TYPES = ["slow-2g", "2g"];
 /** @type {Map<string, Map<string, number>>} */
 const navigationTransitions = new Map();
 
-// Secondary UA-based safeguard. Most search engine crawlers (including
-// Googlebot) bypass service workers entirely at the browser level, so this
-// check is belt-and-suspenders rather than the primary defense. Do not rely
-// on this alone for cache isolation — HTTPS is the real guard against
-// in-transit modification.
 const KNOWN_BOT_PATTERN =
   /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
 
@@ -98,8 +94,6 @@ function logSw(event, details = {}) {
 }
 
 /**
- * Normalizes the route key used by the predictive preloading model.
- *
  * @param {URL} url
  * @returns {string}
  */
@@ -108,8 +102,6 @@ function getRouteKey(url) {
 }
 
 /**
- * Prunes transition history to keep memory usage bounded.
- *
  * @param {string} fromRoute
  * @param {Map<string, number>} transitionsFromRoute
  * @returns {void}
@@ -138,8 +130,6 @@ function pruneTransitionHistory(fromRoute, transitionsFromRoute) {
 }
 
 /**
- * Stores the observed navigation transition from one route to another.
- *
  * @param {string} fromRoute
  * @param {string} toRoute
  * @returns {void}
@@ -155,8 +145,6 @@ function recordNavigationTransition(fromRoute, toRoute) {
 }
 
 /**
- * Returns the most likely next routes for a given route.
- *
  * @param {string} route
  * @returns {ReadonlyArray<string>}
  */
@@ -167,18 +155,14 @@ function getPredictedRoutes(route) {
     return [];
   }
 
-  const rankedRoutes = Array.from(transitionsFromRoute.entries())
+  return Array.from(transitionsFromRoute.entries())
     .filter(([, hits]) => hits >= MIN_TRANSITION_HITS)
     .sort(([, leftHits], [, rightHits]) => rightHits - leftHits)
     .slice(0, MAX_PREDICTED_ROUTES)
     .map(([nextRoute]) => nextRoute);
-
-  return rankedRoutes;
 }
 
 /**
- * Returns true when network conditions allow predictive preloading.
- *
  * @returns {boolean}
  */
 function shouldPreloadPredictedPages() {
@@ -204,8 +188,6 @@ function shouldPreloadPredictedPages() {
 }
 
 /**
- * Preloads predicted pages using the page cache.
- *
  * @param {URL} currentUrl
  * @returns {Promise<void>}
  */
@@ -257,301 +239,20 @@ async function preloadPredictedPages(currentUrl) {
   }));
 }
 
-sw.addEventListener(
-  "install",
-  /** @param {ExtendableEvent} event */ (event) => {
-    logSw("install", {
-      staticCache: STATIC_CACHE,
-      assets: STATIC_ASSETS.length,
-    });
-    event.waitUntil((async () => {
-      const cache = await caches.open(STATIC_CACHE);
-      await cache.addAll(STATIC_ASSETS);
-      await sw.skipWaiting();
-    })());
-  },
-);
-
-sw.addEventListener(
-  "activate",
-  /** @param {ExtendableEvent} event */ (event) => {
-    logSw("activate", {
-      staticCache: STATIC_CACHE,
-      pageCache: PAGE_CACHE,
-      feedCache: FEED_CACHE,
-    });
-    event.waitUntil((async () => {
-      const keys = await caches.keys();
-      const staleKeys = keys.filter((key) =>
-        ![STATIC_CACHE, PAGE_CACHE, FEED_CACHE].includes(key)
-      );
-
-      logSw("activate: pruning stale caches", {
-        staleKeys,
-        cacheCountBefore: keys.length,
-      });
-
-      await Promise.all(staleKeys.map((key) => caches.delete(key)));
-      await sw.clients.claim();
-    })());
-  },
-);
-
-sw.addEventListener(
-  "message",
-  /** @param {ExtendableMessageEvent} event */ (event) => {
-    if (event.data?.type === "SKIP_WAITING") {
-      logSw("message: SKIP_WAITING");
-      void sw.skipWaiting();
-    }
-  },
-);
-
-/**
- * Returns true when the current request should bypass Service Worker caching.
- *
- * @param {Request} request
- * @returns {boolean}
- */
-function shouldBypassRequest(request) {
-  const userAgent = request.headers.get("user-agent") ?? "";
-
-  if (KNOWN_BOT_PATTERN.test(userAgent)) {
-    return true;
-  }
-
-  if (request.method !== "GET") {
-    return true;
-  }
-
-  const url = new URL(request.url);
-
-  if (url.origin !== sw.location.origin) {
-    return true;
-  }
-
-  const ignoredSearchParams = [
-    /^utm_/,
-    /^fbclid$/,
-    /^gclid$/,
-    /^mc_eid$/,
-    /^mc_cid$/,
-  ];
-
-  for (const [key] of url.searchParams.entries()) {
-    if (ignoredSearchParams.some((pattern) => pattern.test(key))) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-/**
- * Resolves language by pathname prefix.
- *
- * @param {string} pathname
- * @returns {"en" | "fr" | "zhHans" | "zhHant"}
- */
-function resolveLanguageByPathname(pathname) {
-  if (pathname.startsWith("/fr/")) {
-    return "fr";
-  }
-
-  if (pathname.startsWith("/zh-hans/")) {
-    return "zhHans";
-  }
-
-  if (pathname.startsWith("/zh-hant/")) {
-    return "zhHant";
-  }
-
-  return "en";
-}
-
-/**
- * Uses cache-first for static immutable assets.
- *
- * @param {Request} request
- * @returns {Promise<Response>}
- */
-async function cacheFirst(request) {
-  const cache = await caches.open(STATIC_CACHE);
-  const cached = await cache.match(request);
-
-  if (cached !== undefined) {
-    return cached;
-  }
-
-  const response = await fetch(request);
-
-  if (response.ok) {
-    await cache.put(request, response.clone());
-  }
-
-  return response;
-}
-
-/**
- * Uses network-first for HTML navigation with offline fallback.
- *
- * @param {Request} request
- * @returns {Promise<Response>}
- */
-async function networkFirstPage(request) {
-  const cache = await caches.open(PAGE_CACHE);
-  const requestUrl = new URL(request.url);
-  const refererHeader = request.headers.get("referer");
-
-  if (refererHeader !== null && URL.canParse(refererHeader)) {
-    const refererUrl = new URL(refererHeader);
-
-    if (refererUrl.origin === requestUrl.origin) {
-      recordNavigationTransition(
-        getRouteKey(refererUrl),
-        getRouteKey(requestUrl),
-      );
-    }
-  }
-
-  try {
-    const response = await fetch(request);
-
-    if (response.ok) {
-      await cache.put(request, response.clone());
-      void preloadPredictedPages(requestUrl);
-    }
-
-    return response;
-  } catch {
-    const cached = await cache.match(request);
-
-    if (cached !== undefined) {
-      return cached;
-    }
-
-    const staticCache = await caches.open(STATIC_CACHE);
-    const fallbackLanguage = resolveLanguageByPathname(requestUrl.pathname);
-    const offlinePath = OFFLINE_URL_BY_LANGUAGE[fallbackLanguage] ??
-      OFFLINE_URL_BY_LANGUAGE.en;
-    const offlinePage = await staticCache.match(offlinePath);
-
-    if (offlinePage !== undefined) {
-      return offlinePage;
-    }
-
-    return new Response(OFFLINE_FALLBACK_HTML, {
-      headers: { "content-type": "text/html; charset=utf-8" },
-      status: 503,
-      statusText: "Service Unavailable",
-    });
-  }
-}
-
-/**
- * Uses stale-while-revalidate for feeds with a soft TTL.
- *
- * Feed responses are cached with a custom `x-sw-cached-at` header and served
- * until the TTL expires. No content-integrity verification is performed beyond
- * what HTTPS provides — a compromised network could inject a malicious feed
- * response that remains cached until eviction. The HTTPS transport is the
- * primary guard against in-transit modification.
- *
- * @param {Request} request
- * @returns {Promise<Response>}
- */
-async function staleWhileRevalidateFeed(request) {
-  const cache = await caches.open(FEED_CACHE);
-  const cached = await cache.match(request);
-
-  const refreshPromise = fetch(request)
-    .then(async (networkResponse) => {
-      if (networkResponse.ok) {
-        const headers = new Headers(networkResponse.headers);
-        headers.set("x-sw-cached-at", Date.now().toString());
-
-        const body = await networkResponse.clone().blob();
-        await cache.put(
-          request,
-          new Response(body, {
-            status: networkResponse.status,
-            statusText: networkResponse.statusText,
-            headers,
-          }),
-        );
-      }
-
-      return networkResponse;
-    })
-    .catch(() => undefined);
-
-  if (cached !== undefined) {
-    const cachedAt = Number(cached.headers.get("x-sw-cached-at") ?? "0");
-    const isFresh = Date.now() - cachedAt < FEED_TTL_MS;
-
-    if (!isFresh) {
-      await refreshPromise;
-    } else {
-      void refreshPromise;
-    }
-
-    return cached;
-  }
-
-  const networkResponse = await refreshPromise;
-
-  if (networkResponse !== undefined) {
-    return networkResponse;
-  }
-
-  return new Response("Feed unavailable while offline.", {
-    status: 503,
-    statusText: "Service Unavailable",
-    headers: { "content-type": "text/plain; charset=utf-8" },
-  });
-}
-
-sw.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
-  const { request } = event;
-
-  if (SW_DEBUG_LEVEL === "verbose") {
-    logSw("fetch", {
-      method: request.method,
-      destination: request.destination,
-      mode: request.mode,
-      url: request.url,
-    });
-  }
-
-  if (shouldBypassRequest(request)) {
-    return;
-  }
-
-  const url = new URL(request.url);
-  const isStaticAsset = url.pathname.endsWith(".css") ||
-    url.pathname.endsWith(".js") ||
-    url.pathname.endsWith(".woff2") ||
-    url.pathname.endsWith(".png") ||
-    url.pathname.endsWith(".svg") ||
-    url.pathname.endsWith(".webp") ||
-    url.pathname.endsWith(".avif") ||
-    url.pathname.endsWith(".jpg") ||
-    url.pathname.endsWith(".jpeg");
-
-  const isFeedRoute = url.pathname.endsWith("/feed.xml") ||
-    url.pathname.endsWith("/feed.json");
-
-  if (request.mode === "navigate") {
-    event.respondWith(networkFirstPage(request));
-    return;
-  }
-
-  if (isFeedRoute) {
-    event.respondWith(staleWhileRevalidateFeed(request));
-    return;
-  }
-
-  if (isStaticAsset) {
-    event.respondWith(cacheFirst(request));
-  }
-});
+sw.__swRuntime = {
+  sw,
+  SW_VERSION,
+  SW_DEBUG_LEVEL,
+  STATIC_CACHE,
+  PAGE_CACHE,
+  FEED_CACHE,
+  OFFLINE_URL_BY_LANGUAGE,
+  OFFLINE_FALLBACK_HTML,
+  STATIC_ASSETS,
+  FEED_TTL_MS,
+  KNOWN_BOT_PATTERN,
+  logSw,
+  getRouteKey,
+  recordNavigationTransition,
+  preloadPredictedPages,
+};
