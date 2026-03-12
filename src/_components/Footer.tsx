@@ -2,15 +2,6 @@
 
 import { getSiteTranslations, type SiteLanguage } from "../utils/i18n.ts";
 
-type IconHelpers = Pick<Lume.Helpers, "icon">;
-
-const DEFAULT_ICON_HELPERS: IconHelpers = {
-  icon: (key, catalogId, variant) => {
-    const variantSuffix = variant ? `-${variant}` : "";
-    return `/icons/${catalogId}/${key}${variantSuffix}.svg`;
-  },
-};
-
 const repositoryUrl = "https://github.com/frenchvandal/normco.re" as const;
 
 /** Renders the site footer with the repository and RSS links. */
@@ -24,7 +15,6 @@ export default (
     readonly language: SiteLanguage;
     readonly feedXmlUrl: string;
   },
-  helpers: IconHelpers = DEFAULT_ICON_HELPERS,
 ) => {
   const year = new Date().getFullYear();
   const translations = getSiteTranslations(language);
@@ -39,40 +29,24 @@ export default (
           class="site-footer-nav"
           aria-label={translations.site.siteLinksAriaLabel}
         >
-          <a
+          <cds-link
             href={repositoryUrl}
-            class="feed-link"
+            class="site-footer-action-link"
+            size="sm"
             target="_blank"
             rel="noopener noreferrer"
             aria-label={translations.site.repositoryLinkAriaLabel}
           >
-            <img
-              inline
-              class="octicon-svg feed-link-icon"
-              width="16"
-              height="16"
-              src={helpers.icon("mark-github", "octicons", "16")}
-              alt=""
-              aria-hidden="true"
-              focusable="false"
-            />
-          </a>
-          <a
+            GitHub
+          </cds-link>
+          <cds-link
             href={feedXmlUrl}
-            class="feed-link"
+            class="site-footer-action-link"
+            size="sm"
             aria-label={translations.site.rssLinkAriaLabel}
           >
-            <img
-              inline
-              class="octicon-svg feed-link-icon"
-              width="16"
-              height="16"
-              src={helpers.icon("rss", "octicons", "16")}
-              alt=""
-              aria-hidden="true"
-              focusable="false"
-            />
-          </a>
+            RSS
+          </cds-link>
         </nav>
       </div>
     </footer>

@@ -117,9 +117,13 @@ export type SiteTranslations = {
     readonly feedsIntro: string;
   };
   readonly post: {
+    readonly breadcrumbAriaLabel: string;
     readonly navigationAriaLabel: string;
     readonly previousLabel: string;
     readonly nextLabel: string;
+    readonly copyCodeLabel: string;
+    readonly copyCodeFeedback: string;
+    readonly copyCodeFailedFeedback: string;
   };
   readonly offline: {
     readonly ariaLabel: string;
@@ -190,9 +194,13 @@ const SITE_TRANSLATIONS = {
       feedsIntro: "You can follow along via",
     },
     post: {
+      breadcrumbAriaLabel: "Post breadcrumb",
       navigationAriaLabel: "Post navigation",
       previousLabel: "Previous",
       nextLabel: "Next",
+      copyCodeLabel: "Copy code",
+      copyCodeFeedback: "Code copied",
+      copyCodeFailedFeedback: "Cannot copy code",
     },
     offline: {
       ariaLabel: "Offline fallback",
@@ -262,9 +270,13 @@ const SITE_TRANSLATIONS = {
       feedsIntro: "Tu peux suivre les publications via",
     },
     post: {
+      breadcrumbAriaLabel: "Fil d'Ariane de l'article",
       navigationAriaLabel: "Navigation entre articles",
       previousLabel: "Précédent",
       nextLabel: "Suivant",
+      copyCodeLabel: "Copier le code",
+      copyCodeFeedback: "Code copié",
+      copyCodeFailedFeedback: "Impossible de copier le code",
     },
     offline: {
       ariaLabel: "Page hors ligne",
@@ -332,9 +344,13 @@ const SITE_TRANSLATIONS = {
       feedsIntro: "你可以通过以下方式订阅",
     },
     post: {
+      breadcrumbAriaLabel: "文章面包屑导航",
       navigationAriaLabel: "文章导航",
       previousLabel: "上一篇",
       nextLabel: "下一篇",
+      copyCodeLabel: "复制代码",
+      copyCodeFeedback: "代码已复制",
+      copyCodeFailedFeedback: "无法复制代码",
     },
     offline: {
       ariaLabel: "离线后备页面",
@@ -402,9 +418,13 @@ const SITE_TRANSLATIONS = {
       feedsIntro: "你可以透過以下方式訂閱",
     },
     post: {
+      breadcrumbAriaLabel: "文章麵包屑導覽",
       navigationAriaLabel: "文章導覽",
       previousLabel: "上一篇",
       nextLabel: "下一篇",
+      copyCodeLabel: "複製程式碼",
+      copyCodeFeedback: "程式碼已複製",
+      copyCodeFailedFeedback: "無法複製程式碼",
     },
     offline: {
       ariaLabel: "離線備援頁面",

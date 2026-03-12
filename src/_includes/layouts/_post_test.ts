@@ -156,6 +156,15 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, title);
     });
 
+    it("renders a Carbon breadcrumb for post hierarchy", async () => {
+      const html = await renderComponent(
+        postLayout(makeData({}), MOCK_HELPERS),
+      );
+      assertStringIncludes(html, "<cds-breadcrumb");
+      assertStringIncludes(html, "Home");
+      assertStringIncludes(html, "Writing");
+    });
+
     it("renders the post body content", async () => {
       const body = makeSentence(709);
       const html = await renderComponent(
@@ -172,6 +181,13 @@ describe("post.tsx layout", () => {
         postLayout(makeData({}), MOCK_HELPERS),
       );
       assertStringIncludes(html, 'aria-label="Post navigation"');
+    });
+
+    it("loads the post code-copy enhancement script", async () => {
+      const html = await renderComponent(
+        postLayout(makeData({}), MOCK_HELPERS),
+      );
+      assertStringIncludes(html, 'src="/scripts/post-code-copy.js"');
     });
   });
 });

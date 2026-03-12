@@ -112,10 +112,39 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
 
   const postDate = resolvePostDate(data.date);
   const minutes = resolveReadingMinutes(data.readingInfo);
+  const homeUrl = getLocalizedUrl("/", language);
+  const currentTitle = typeof data.title === "string" ? data.title : "";
 
   return (
-    <article class="post-article">
+    <article
+      class="post-article"
+      data-code-copy-label={translations.post.copyCodeLabel}
+      data-code-copy-feedback={translations.post.copyCodeFeedback}
+      data-code-copy-failed-feedback={translations.post.copyCodeFailedFeedback}
+    >
       <header class="post-header pagehead post-pagehead">
+        <nav
+          class="post-breadcrumb-shell"
+          aria-label={translations.post.breadcrumbAriaLabel}
+        >
+          <cds-breadcrumb class="post-breadcrumb" size="sm" no-trailing-slash>
+            <cds-breadcrumb-item>
+              <cds-link href={homeUrl} size="sm">
+                {translations.navigation.home}
+              </cds-link>
+            </cds-breadcrumb-item>
+            <cds-breadcrumb-item>
+              <cds-link href={postsBaseUrl} size="sm">
+                {translations.navigation.writing}
+              </cds-link>
+            </cds-breadcrumb-item>
+            <cds-breadcrumb-item>
+              <span class="post-breadcrumb-current" aria-current="page">
+                {currentTitle}
+              </span>
+            </cds-breadcrumb-item>
+          </cds-breadcrumb>
+        </nav>
         <h1 class="post-title">{data.title ?? ""}</h1>
         <div class="post-meta">
           <time
@@ -160,6 +189,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           )
           : <div class="post-nav-placeholder" aria-hidden="true"></div>}
       </nav>
+      <script src="/scripts/post-code-copy.js" defer></script>
     </article>
   );
 };

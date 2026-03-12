@@ -71,36 +71,22 @@
 
   .site-footer-nav {
     display: flex;
-    gap: var(--space-m);
+    align-items: center;
+    gap: var(--space-s);
   }
 
-  .site-footer-nav a {
+  .site-footer-action-link::part(link) {
+    min-block-size: 2rem;
+    display: inline-flex;
+    align-items: center;
+    padding-inline: 0.35rem;
+    border-radius: var(--borderRadius-medium);
     color: var(--color-meta);
     text-decoration: none;
   }
 
-  .site-footer-nav a:hover {
+  .site-footer-action-link::part(link):hover {
     color: var(--color-text);
-  }
-
-  .feed-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 2rem;
-    block-size: 2rem;
-    border-radius: var(--borderRadius-medium);
-    text-decoration: none;
-  }
-
-  .feed-link:hover {
-    text-decoration: none;
     background: var(--bgColor-muted);
-  }
-
-  .feed-link-icon {
-    inline-size: 1rem;
-    block-size: 1rem;
-    opacity: 0.9;
   }
 }

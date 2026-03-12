@@ -1,4 +1,4 @@
-import { assert, assertNotMatch, assertStringIncludes } from "jsr/assert";
+import { assert, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker } from "npm/faker-js";
@@ -26,7 +26,8 @@ describe("Footer()", () => {
     );
     assertStringIncludes(html, 'href="/feed.xml"');
     assertStringIncludes(html, 'aria-label="Open RSS feed"');
-    assertNotMatch(html, /<span>RSS<\/span>/);
+    assertStringIncludes(html, "<cds-link");
+    assertStringIncludes(html, ">RSS<");
   });
 
   it("contains a GitHub repository link", async () => {
@@ -41,7 +42,8 @@ describe("Footer()", () => {
     assertStringIncludes(html, 'target="_blank"');
     assertStringIncludes(html, 'rel="noopener noreferrer"');
     assertStringIncludes(html, 'aria-label="Open GitHub repository"');
-    assertNotMatch(html, /<span>GitHub<\/span>/);
+    assertStringIncludes(html, "<cds-link");
+    assertStringIncludes(html, ">GitHub<");
   });
 
   it("renders the GitHub link before feed links", async () => {

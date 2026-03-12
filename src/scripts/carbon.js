@@ -81,6 +81,37 @@
         import("npm/carbon-web-components/es/components/button/button.js"),
     },
     {
+      selector: "cds-link",
+      register: () =>
+        import("npm/carbon-web-components/es/components/link/link.js"),
+    },
+    {
+      selector: "cds-tag",
+      register: () =>
+        import("npm/carbon-web-components/es/components/tag/tag.js"),
+    },
+    {
+      selector: "cds-breadcrumb",
+      register: () =>
+        import(
+          "npm/carbon-web-components/es/components/breadcrumb/breadcrumb.js"
+        ),
+    },
+    {
+      selector: "cds-breadcrumb-item",
+      register: () =>
+        import(
+          "npm/carbon-web-components/es/components/breadcrumb/breadcrumb-item.js"
+        ),
+    },
+    {
+      selector: "cds-copy-button",
+      register: () =>
+        import(
+          "npm/carbon-web-components/es/components/copy-button/copy-button.js"
+        ),
+    },
+    {
       selector: "cds-side-nav",
       register: () =>
         import("npm/carbon-web-components/es/components/ui-shell/side-nav.js"),

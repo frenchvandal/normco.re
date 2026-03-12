@@ -184,16 +184,8 @@
             <div class="site-footer-inner">
               <span>&#169; <script>document.write(new Date().getFullYear())</script> Phiphi</span>
               <nav class="site-footer-nav" aria-label="Site links">
-                <a href="https://github.com/frenchvandal/normco.re" class="feed-link" target="_blank" rel="noopener noreferrer" aria-label="Open GitHub repository">
-                  <svg class="octicon-svg feed-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-                    <path d="M6.766 11.695C4.703 11.437 3.25 9.904 3.25 7.92c0-.806.281-1.677.75-2.258-.203-.532-.172-1.662.062-2.129.626-.081 1.469.258 1.969.726.594-.194 1.219-.291 1.985-.291.765 0 1.39.097 1.953.274.484-.451 1.343-.79 1.969-.709.218.435.25 1.564.046 2.113.5.613.766 1.436.766 2.274 0 1.984-1.453 3.485-3.547 3.759.531.355.891 1.129.891 2.016v1.678c0 .484.39.758.859.564C13.781 14.824 16 11.905 16 8.291 16 3.726 12.406 0 7.984 0 3.562 0 0 3.726 0 8.291c0 3.581 2.203 6.55 5.172 7.663A.595.595 0 0 0 6 15.389v-1.291c-.219.097-.5.162-.75.162-1.031 0-1.641-.581-2.078-1.662-.172-.435-.36-.693-.719-.742-.187-.016-.25-.097-.25-.193 0-.194.313-.339.625-.339.453 0 .844.29 1.25.887.313.468.641.678 1.031.678.391 0 .641-.146 1-.516.266-.275.469-.517.657-.678Z"/>
-                  </svg>
-                </a>
-                <a href="/feed.xml" class="feed-link" aria-label="Open RSS feed">
-                  <svg class="octicon-svg feed-link-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-                    <path d="M2.002 2.725a.75.75 0 0 1 .797-.699C8.79 2.42 13.58 7.21 13.974 13.201a.75.75 0 0 1-1.497.098 10.502 10.502 0 0 0-9.776-9.776.747.747 0 0 1-.7-.798ZM2.84 7.05h-.002a7.002 7.002 0 0 1 6.113 6.111.75.75 0 0 1-1.49.178 5.503 5.503 0 0 0-4.8-4.8.75.75 0 0 1 .179-1.489ZM2 13a1 1 0 1 1 2 0 1 1 0 0 1-2 0Z"/>
-                  </svg>
-                </a>
+                <cds-link href="https://github.com/frenchvandal/normco.re" class="site-footer-action-link" size="sm" target="_blank" rel="noopener noreferrer" aria-label="Open GitHub repository">GitHub</cds-link>
+                <cds-link href="/feed.xml" class="site-footer-action-link" size="sm" aria-label="Open RSS feed">RSS</cds-link>
               </nav>
             </div>
           </footer>
