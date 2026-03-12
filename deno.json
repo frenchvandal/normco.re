@@ -75,6 +75,10 @@
       "description": "Run documentation tests from inline JSDoc examples in source files",
       "command": "deno test --doc src/**/*.ts src/**/*.tsx plugins/**/*.ts"
     },
+    "payload:report": {
+      "description": "Report route-level JS/CSS payload from generated output (`_site` by default)",
+      "command": "deno run --allow-read --allow-write scripts/payload-report.ts"
+    },
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"

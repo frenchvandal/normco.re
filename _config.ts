@@ -61,6 +61,7 @@ const MULTILANGUAGE_DATA_ALIASES = {
   "zh-hant": "zhHant",
 } as const;
 const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
+const EDITORIAL_IMAGE_SELECTOR = "main[data-pagefind-body] img";
 
 function runGitCommand(args: string[]): string | undefined {
   try {
@@ -282,6 +283,51 @@ site.process([".html"], (pages: Page[]) => {
 
 // Resolve width and height attributes from local image files at build time.
 site.use(imageSize());
+
+// Enforce explicit dimensions in editorial HTML to keep CLS safeguards active.
+site.process([".html"], (pages: Page[]) => {
+  const issues: string[] = [];
+
+  for (const page of pages) {
+    const pageUrl = typeof page.data.url === "string"
+      ? page.data.url
+      : page.outputPath;
+
+    for (
+      const image of page.document.querySelectorAll(EDITORIAL_IMAGE_SELECTOR)
+    ) {
+      const width = image.getAttribute("width");
+      const height = image.getAttribute("height");
+      const hasWidth = typeof width === "string" && width.trim().length > 0;
+      const hasHeight = typeof height === "string" && height.trim().length > 0;
+
+      if (hasWidth && hasHeight) {
+        continue;
+      }
+
+      const missingDimensions = [
+        ...(hasWidth ? [] : ["width"]),
+        ...(hasHeight ? [] : ["height"]),
+      ].join("+");
+      const src = image.getAttribute("src") ?? "(missing src)";
+      issues.push(
+        `${pageUrl}: <img src="${src}"> is missing ${missingDimensions}`,
+      );
+    }
+  }
+
+  if (issues.length === 0) {
+    return;
+  }
+
+  const issueSummary = [
+    `[editorial-image-dimensions] Found ${issues.length} editorial image(s) missing explicit dimensions`,
+    ...issues.map((issue) => `- ${issue}`),
+    "Add explicit width and height attributes or use a local image source so `image_size` can resolve intrinsic dimensions.",
+  ];
+
+  throw new Error(issueSummary.join("\n"));
+});
 
 // Date formatting: helpers.date(value, "HUMAN_DATE"), helpers.date(value, "SHORT"), …
 site.use(
