@@ -1,6 +1,7 @@
 // @ts-check
 (() => {
   const supportsIntersectionObserver = "IntersectionObserver" in globalThis &&
+    "IntersectionObserverEntry" in globalThis &&
     "isIntersecting" in globalThis.IntersectionObserverEntry.prototype;
 
   if (!supportsIntersectionObserver) {
@@ -24,6 +25,7 @@
   const PREFETCH_LIMIT = 6;
   const PREFETCH_TIMEOUT_MS = 2000;
   const HOVER_INTENT_DELAY_MS = 180;
+  const ALLOWED_DOCUMENT_EXTENSIONS = new Set([".html"]);
 
   /** @type {Set<string>} */
   const prefetchedUrls = new Set();
@@ -39,6 +41,38 @@
 
   function hasPrefetchBudget() {
     return prefetchedUrls.size < PREFETCH_LIMIT;
+  }
+
+  /**
+   * Returns the normalized URL used as the prefetch cache key.
+   *
+   * The URL fragment is dropped because it never changes the network
+   * response payload and should not consume additional prefetch budget.
+   *
+   * @param {HTMLAnchorElement} link
+   * @returns {string}
+   */
+  function toPrefetchUrl(link) {
+    const url = new URL(link.href);
+    url.hash = "";
+    return url.toString();
+  }
+
+  /**
+   * Returns true when the URL path likely points to an HTML document.
+   *
+   * @param {URL} url
+   * @returns {boolean}
+   */
+  function isDocumentPath(url) {
+    const lastSegment = url.pathname.split("/").at(-1) ?? "";
+    const extensionMatch = /\.[a-z0-9]+$/i.exec(lastSegment);
+
+    if (extensionMatch === null) {
+      return true;
+    }
+
+    return ALLOWED_DOCUMENT_EXTENSIONS.has(extensionMatch[0].toLowerCase());
   }
 
   /**
@@ -61,6 +95,10 @@
     }
 
     if (link.target === "_blank" || link.download.length > 0) {
+      return false;
+    }
+
+    if (!isDocumentPath(new URL(link.href))) {
       return false;
     }
 
@@ -110,9 +148,15 @@
         return;
       }
 
+      const url = toPrefetchUrl(link);
+
+      if (prefetchedUrls.has(url)) {
+        return;
+      }
+
       const timer = globalThis.setTimeout(() => {
         hoverTimers.delete(link);
-        void prefetchUrl(link.href);
+        void prefetchUrl(url);
       }, HOVER_INTENT_DELAY_MS);
 
       hoverTimers.set(link, timer);
@@ -149,7 +193,7 @@
         continue;
       }
 
-      void prefetchUrl(link.href);
+      void prefetchUrl(toPrefetchUrl(link));
       registerHoverIntent(link);
     }
   }, { threshold: 0.25 });
