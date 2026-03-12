@@ -397,7 +397,7 @@
     margin-block-start: var(--space-m);
   }
 
-  .post-content pre.post-code-copy-target {
+  .post-content .post-code-copy-button + pre {
     margin-block-start: var(--space-xs);
   }
 

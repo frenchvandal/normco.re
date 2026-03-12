@@ -840,17 +840,17 @@ function getReportMetadata(
   return metadata;
 }
 
-function getMissingPolicyBaselineMetadataFields(
+function getMissingPolicyMetadataFields(
   metadata: PayloadReportMetadata,
+  options?: {
+    requireBaselineKind?: boolean;
+  },
 ): ReadonlyArray<string> {
   const missingFields: string[] = [];
+  const requireBaselineKind = options?.requireBaselineKind ?? false;
 
   if (metadata.policyMode !== "policy") {
     missingFields.push("policyMode");
-  }
-
-  if (metadata.baselineKind !== "policy-baseline") {
-    missingFields.push("baselineKind");
   }
 
   if (metadata.policyVersion === undefined) {
@@ -867,6 +867,10 @@ function getMissingPolicyBaselineMetadataFields(
 
   if (!Number.isInteger(metadata.routeCount)) {
     missingFields.push("routeCount");
+  }
+
+  if (requireBaselineKind && metadata.baselineKind !== "policy-baseline") {
+    missingFields.push("baselineKind");
   }
 
   return missingFields;
@@ -974,18 +978,25 @@ export function assertBaselineMetadataCoherence(
     return;
   }
 
-  if (currentMetadata.policyMode !== "policy") {
+  const missingCurrentPolicyFields = getMissingPolicyMetadataFields(
+    currentMetadata,
+  );
+  if (missingCurrentPolicyFields.length > 0) {
     throw new Error(
       [
-        "[payload-report] Current report policy mode marker missing",
+        "[payload-report] Current policy report metadata completeness check failed",
         `- Policy: ${options.policyPath}`,
-        "Regenerate the current report with the active policy (`deno task payload:policy --baseline=/path/to/baseline.json` or `deno task payload:baseline`).",
+        "- Missing or incompatible fields:",
+        ...missingCurrentPolicyFields.map((field) => `  - ${field}`),
+        "This current report is not fully policy-compatible and cannot be compared in policy mode.",
+        "Regenerate the current policy report with `deno task payload:policy --baseline=/path/to/policy-baseline.json`, then rerun the comparison.",
       ].join("\n"),
     );
   }
 
-  const missingBaselinePolicyFields = getMissingPolicyBaselineMetadataFields(
+  const missingBaselinePolicyFields = getMissingPolicyMetadataFields(
     baselineMetadata,
+    { requireBaselineKind: true },
   );
   if (missingBaselinePolicyFields.length > 0) {
     throw new Error(
@@ -996,30 +1007,6 @@ export function assertBaselineMetadataCoherence(
         "- Missing or incompatible fields:",
         ...missingBaselinePolicyFields.map((field) => `  - ${field}`),
         "This baseline is not fully policy-baseline compatible and cannot be compared in policy mode.",
-        "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
-      ].join("\n"),
-    );
-  }
-
-  if (baselineMetadata.policyMode !== "policy") {
-    throw new Error(
-      [
-        "[payload-report] Baseline policy compatibility marker missing",
-        `- Baseline: ${options.baselinePath ?? "unknown"}`,
-        `- Policy: ${options.policyPath}`,
-        "This baseline was not produced by a policy-compatible run and cannot be compared in policy mode.",
-        "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
-      ].join("\n"),
-    );
-  }
-
-  if (baselineMetadata.baselineKind !== "policy-baseline") {
-    throw new Error(
-      [
-        "[payload-report] Baseline policy provenance marker missing",
-        `- Baseline: ${options.baselinePath ?? "unknown"}`,
-        `- Policy: ${options.policyPath}`,
-        "This baseline was not generated in policy baseline mode and cannot be compared in policy mode.",
         "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
       ].join("\n"),
     );
@@ -1063,18 +1050,6 @@ export function assertBaselineMetadataCoherence(
     );
   }
 
-  if (baselineMetadata.policyVersion === undefined) {
-    throw new Error(
-      [
-        "[payload-report] Baseline policy metadata missing",
-        `- Active policy version: ${options.policyVersion}`,
-        `- Baseline: ${options.baselinePath ?? "unknown"}`,
-        "This baseline was generated without policy metadata and cannot be compared in policy mode.",
-        "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
-      ].join("\n"),
-    );
-  }
-
   if (
     baselineMetadata.policyVersion !== options.policyVersion
   ) {
@@ -1084,18 +1059,6 @@ export function assertBaselineMetadataCoherence(
         `- Active policy version: ${options.policyVersion}`,
         `- Baseline policy version: ${baselineMetadata.policyVersion}`,
         "Regenerate the baseline with the active policy version before comparing.",
-      ].join("\n"),
-    );
-  }
-
-  if (baselineMetadata.policyFingerprint === undefined) {
-    throw new Error(
-      [
-        "[payload-report] Baseline policy fingerprint missing",
-        `- Active policy fingerprint: ${options.policyFingerprint}`,
-        `- Baseline: ${options.baselinePath ?? "unknown"}`,
-        "This baseline was generated without policy fingerprint metadata and cannot be compared in policy mode.",
-        "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
       ].join("\n"),
     );
   }

@@ -68,7 +68,6 @@
     copyButton.setAttribute("feedback", copyFeedback);
     copyButton.setAttribute("feedback-timeout", String(feedbackResetMs));
     copyButton.textContent = copyLabel;
-    pre.classList.add("post-code-copy-target");
     pre.before(copyButton);
     copyButton.addEventListener("click", async () => {
       if (await copyText(codeText)) {

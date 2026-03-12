@@ -539,6 +539,125 @@ describe("payload baseline metadata coherence", () => {
     );
   });
 
+  it("fails when current policy compatibility marker is missing in policy mode", () => {
+    const policyFingerprint = "ff1ce00a";
+    const currentWithoutPolicyMode = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      1,
+      policyFingerprint,
+    );
+    const baseline = asPolicyBaseline(createReport(
+      [
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ],
+      1,
+      policyFingerprint,
+      "policy",
+    ));
+
+    assertThrows(
+      () =>
+        assertBaselineMetadataCoherence(
+          currentWithoutPolicyMode as Parameters<
+            typeof assertBaselineMetadataCoherence
+          >[0],
+          baseline as Parameters<typeof assertBaselineMetadataCoherence>[1],
+          {
+            baselinePath: "/tmp/baseline.json",
+            policyPath: "scripts/payload-policy.json",
+            policyVersion: 1,
+            policyFingerprint,
+          },
+        ),
+      Error,
+      "policyMode",
+    );
+  });
+
+  it("fails when current policy metadata is missing in policy mode", () => {
+    const policyFingerprint = "ff1ce00a";
+    const currentWithoutPolicyMetadata = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      undefined,
+      undefined,
+      "policy",
+    );
+    const baseline = asPolicyBaseline(createReport(
+      [
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ],
+      1,
+      policyFingerprint,
+      "policy",
+    ));
+
+    assertThrows(
+      () =>
+        assertBaselineMetadataCoherence(
+          currentWithoutPolicyMetadata as Parameters<
+            typeof assertBaselineMetadataCoherence
+          >[0],
+          baseline as Parameters<typeof assertBaselineMetadataCoherence>[1],
+          {
+            baselinePath: "/tmp/baseline.json",
+            policyPath: "scripts/payload-policy.json",
+            policyVersion: 1,
+            policyFingerprint,
+          },
+        ),
+      Error,
+      "policyVersion",
+    );
+  });
+
+  it("fails when current policy fingerprint is missing in policy mode", () => {
+    const policyFingerprint = "ff1ce00a";
+    const currentWithoutPolicyFingerprint = createReport(
+      [
+        ["/index.html", 980],
+        ["/posts/index.html", 1250],
+      ],
+      1,
+      undefined,
+      "policy",
+    );
+    const baseline = asPolicyBaseline(createReport(
+      [
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ],
+      1,
+      policyFingerprint,
+      "policy",
+    ));
+
+    assertThrows(
+      () =>
+        assertBaselineMetadataCoherence(
+          currentWithoutPolicyFingerprint as Parameters<
+            typeof assertBaselineMetadataCoherence
+          >[0],
+          baseline as Parameters<typeof assertBaselineMetadataCoherence>[1],
+          {
+            baselinePath: "/tmp/baseline.json",
+            policyPath: "scripts/payload-policy.json",
+            policyVersion: 1,
+            policyFingerprint,
+          },
+        ),
+      Error,
+      "policyFingerprint",
+    );
+  });
+
   it("fails when baseline policy compatibility marker is missing in policy mode", () => {
     const policyFingerprint = "ff1ce00a";
     const current = createReport(

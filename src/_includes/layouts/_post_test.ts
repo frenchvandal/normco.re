@@ -202,6 +202,7 @@ describe("post.tsx layout", () => {
         ),
       );
       assertStringIncludes(html, 'src="/scripts/post-code-copy.js"');
+      assertNotMatch(html, /post-code-copy-target/);
       assertNotMatch(html, /data-code-copy-label=/);
       assertNotMatch(
         html,
