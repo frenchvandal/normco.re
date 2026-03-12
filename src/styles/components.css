@@ -391,17 +391,14 @@
     margin-block: var(--space-m);
   }
 
-  .post-code-block {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--space-xs);
-    margin-block: var(--space-m);
+  .post-code-copy-button {
+    display: block;
+    margin-inline-start: auto;
+    margin-block-start: var(--space-m);
   }
 
-  .post-code-block pre {
-    margin: 0;
-    inline-size: 100%;
+  .post-content pre.post-code-copy-target {
+    margin-block-start: var(--space-xs);
   }
 
   .post-content img {

@@ -9,6 +9,7 @@ const DEFAULT_ROUTES = [
   "/feed.xsl",
   "/sitemap.xsl",
 ] as const;
+const PAYLOAD_REPORT_SCHEMA_VERSION = 2 as const;
 const PAYLOAD_POLICY_VERSION = 1 as const;
 const POLICY_FIELDS = [
   "rootDir",
@@ -44,10 +45,19 @@ export type RoutePayload = {
   assets: ReadonlyArray<RouteAsset>;
 };
 
+/** Baseline/policy metadata used to ensure comparisons are unambiguous. */
+export type PayloadReportMetadata = {
+  schemaVersion: number;
+  routeSetHash: string;
+  routeCount: number;
+  policyVersion?: number;
+};
+
 /** Full payload report for a single build output snapshot. */
 export type PayloadReport = {
   generatedAt: string;
   rootDir: string;
+  metadata: PayloadReportMetadata;
   routes: ReadonlyArray<RoutePayload>;
   totals: {
     jsBytes: number;
@@ -190,6 +200,88 @@ function parseRoutes(value: string): ReadonlyArray<string> {
   }
 
   return routes;
+}
+
+function getSortedUniqueRoutes(
+  routes: ReadonlyArray<string>,
+): ReadonlyArray<string> {
+  return [...new Set(routes)].sort((left, right) => left.localeCompare(right));
+}
+
+function hashString(value: string): string {
+  let hash = 0x811c9dc5;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+
+  return (hash >>> 0).toString(16).padStart(8, "0");
+}
+
+function getRouteSetHash(routes: ReadonlyArray<string>): string {
+  return hashString(getSortedUniqueRoutes(routes).join("\n"));
+}
+
+function isPayloadReportMetadata(
+  value: unknown,
+): value is PayloadReportMetadata {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const candidate = value as Record<string, unknown>;
+
+  if (
+    typeof candidate.schemaVersion !== "number" ||
+    !Number.isInteger(candidate.schemaVersion)
+  ) {
+    return false;
+  }
+
+  if (
+    typeof candidate.routeSetHash !== "string" ||
+    candidate.routeSetHash.length === 0
+  ) {
+    return false;
+  }
+
+  if (
+    typeof candidate.routeCount !== "number" ||
+    !Number.isInteger(candidate.routeCount) ||
+    candidate.routeCount < 0
+  ) {
+    return false;
+  }
+
+  if (
+    candidate.policyVersion !== undefined &&
+    (typeof candidate.policyVersion !== "number" ||
+      !Number.isInteger(candidate.policyVersion))
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+/** Creates deterministic metadata used to validate baseline/policy coherence. */
+export function createPayloadReportMetadata(
+  routes: ReadonlyArray<string>,
+  policyVersion?: number,
+): PayloadReportMetadata {
+  const canonicalRoutes = getSortedUniqueRoutes(routes);
+  const metadata: PayloadReportMetadata = {
+    schemaVersion: PAYLOAD_REPORT_SCHEMA_VERSION,
+    routeSetHash: getRouteSetHash(canonicalRoutes),
+    routeCount: canonicalRoutes.length,
+  };
+
+  if (policyVersion !== undefined) {
+    metadata.policyVersion = policyVersion;
+  }
+
+  return metadata;
 }
 
 function parseCliOptions(args: ReadonlyArray<string>): ParsedCliOptions {
@@ -520,9 +612,14 @@ async function collectRoutePayload(
 async function collectPayloadReport(
   rootDir: string,
   routes: ReadonlyArray<string>,
+  policyVersion?: number,
 ): Promise<PayloadReport> {
   const routeReports = await Promise.all(
     routes.map((route) => collectRoutePayload(rootDir, route)),
+  );
+  const metadata = createPayloadReportMetadata(
+    routeReports.map((routeReport) => routeReport.route),
+    policyVersion,
   );
   const totals = routeReports.reduce(
     (accumulator, routeReport) => ({
@@ -540,6 +637,7 @@ async function collectPayloadReport(
   return {
     generatedAt: new Date().toISOString(),
     rootDir,
+    metadata,
     routes: routeReports,
     totals,
   };
@@ -627,9 +725,50 @@ function indexRoutesByPath(
 }
 
 function getSortedRouteSet(report: PayloadReport): ReadonlyArray<string> {
-  return [...new Set(report.routes.map((route) => route.route))].sort((a, b) =>
-    a.localeCompare(b)
-  );
+  return getSortedUniqueRoutes(report.routes.map((route) => route.route));
+}
+
+function getReportMetadata(
+  report: PayloadReport,
+  reportName: "current report" | "baseline report",
+  baselinePath?: string,
+): PayloadReportMetadata {
+  const metadata = (report as { metadata?: unknown }).metadata;
+
+  if (!isPayloadReportMetadata(metadata)) {
+    const lines = [
+      `[payload-report] ${reportName} metadata is missing or invalid`,
+      "Regenerate the report with this repository revision before comparing payload deltas.",
+    ];
+
+    if (reportName === "baseline report" && baselinePath !== undefined) {
+      lines.push(
+        `Regenerate baseline \`${baselinePath}\` with the same routes/policy used for the current report.`,
+      );
+    }
+
+    throw new Error(lines.join("\n"));
+  }
+
+  const routeSet = getSortedRouteSet(report);
+  const expectedRouteSetHash = getRouteSetHash(routeSet);
+  if (
+    metadata.routeSetHash !== expectedRouteSetHash ||
+    metadata.routeCount !== routeSet.length
+  ) {
+    throw new Error(
+      [
+        `[payload-report] ${reportName} metadata is out of sync with route payload entries`,
+        `- Expected route hash: ${expectedRouteSetHash}`,
+        `- Received route hash: ${metadata.routeSetHash}`,
+        `- Expected route count: ${routeSet.length}`,
+        `- Received route count: ${metadata.routeCount}`,
+        "Regenerate the report before comparing payload deltas.",
+      ].join("\n"),
+    );
+  }
+
+  return metadata;
 }
 
 /** Ensures baseline and current reports expose exactly the same route set. */
@@ -676,6 +815,95 @@ export function assertBaselineRouteParity(
   }
 
   throw new Error(lines.join("\n"));
+}
+
+/**
+ * Ensures baseline metadata aligns with the current report and active policy context.
+ * This prevents ambiguous comparisons when report schema or route metadata drift.
+ */
+export function assertBaselineMetadataCoherence(
+  report: PayloadReport,
+  baselineReport: PayloadReport,
+  options: {
+    baselinePath: string | undefined;
+    policyPath: string | undefined;
+    policyVersion: number | undefined;
+  },
+): void {
+  const currentMetadata = getReportMetadata(
+    report,
+    "current report",
+    options.baselinePath,
+  );
+  const baselineMetadata = getReportMetadata(
+    baselineReport,
+    "baseline report",
+    options.baselinePath,
+  );
+
+  if (baselineMetadata.schemaVersion !== currentMetadata.schemaVersion) {
+    throw new Error(
+      [
+        "[payload-report] Baseline schema version mismatch",
+        `- Current schema version: ${currentMetadata.schemaVersion}`,
+        `- Baseline schema version: ${baselineMetadata.schemaVersion}`,
+        "Regenerate the baseline with the same payload-report schema version before comparing.",
+      ].join("\n"),
+    );
+  }
+
+  if (
+    baselineMetadata.routeSetHash !== currentMetadata.routeSetHash ||
+    baselineMetadata.routeCount !== currentMetadata.routeCount
+  ) {
+    throw new Error(
+      [
+        "[payload-report] Baseline route metadata mismatch",
+        `- Current route hash: ${currentMetadata.routeSetHash}`,
+        `- Baseline route hash: ${baselineMetadata.routeSetHash}`,
+        `- Current route count: ${currentMetadata.routeCount}`,
+        `- Baseline route count: ${baselineMetadata.routeCount}`,
+        "Regenerate the baseline with the same routes/policy before comparing.",
+      ].join("\n"),
+    );
+  }
+
+  if (options.policyPath === undefined) {
+    return;
+  }
+
+  if (options.policyVersion === undefined) {
+    throw new Error(
+      "[payload-report] Policy metadata validation failed: current run has no resolved policy version",
+    );
+  }
+
+  if (currentMetadata.policyVersion !== options.policyVersion) {
+    throw new Error(
+      [
+        "[payload-report] Current report policy metadata mismatch",
+        `- Resolved policy version: ${options.policyVersion}`,
+        `- Current report policy version: ${
+          String(currentMetadata.policyVersion)
+        }`,
+        "Regenerate the current report with the active policy.",
+      ].join("\n"),
+    );
+  }
+
+  if (
+    baselineMetadata.policyVersion !== undefined &&
+    baselineMetadata.policyVersion !== options.policyVersion
+  ) {
+    throw new Error(
+      [
+        "[payload-report] Baseline policy version mismatch",
+        `- Active policy version: ${options.policyVersion}`,
+        `- Baseline policy version: ${baselineMetadata.policyVersion}`,
+        "Regenerate the baseline with the active policy version before comparing.",
+      ].join("\n"),
+    );
+  }
 }
 
 /** Returns route-level and total deltas between the current report and a baseline. */
@@ -830,7 +1058,13 @@ function renderMarkdownReport(
     "# Payload Report",
     `- Root: \`${report.rootDir}\``,
     `- Routes: ${report.routes.length}`,
+    `- Report schema: v${report.metadata.schemaVersion}`,
+    `- Route set hash: \`${report.metadata.routeSetHash}\``,
   ];
+
+  if (report.metadata.policyVersion !== undefined) {
+    lines.push(`- Report policy version: ${report.metadata.policyVersion}`);
+  }
 
   if (options.baselinePath) {
     lines.push(`- Baseline: \`${options.baselinePath}\``);
@@ -897,13 +1131,25 @@ async function main(): Promise<void> {
     options.policyPath,
   );
 
-  const report = await collectPayloadReport(options.rootDir, options.routes);
+  const report = await collectPayloadReport(
+    options.rootDir,
+    options.routes,
+    options.policyVersion,
+  );
   const baselineReport = options.baselinePath
     ? await readBaselineReport(options.baselinePath)
     : undefined;
 
   if (baselineReport !== undefined) {
     assertBaselineRouteParity(report, baselineReport, options.baselinePath);
+
+    if (options.policyPath !== undefined) {
+      assertBaselineMetadataCoherence(report, baselineReport, {
+        baselinePath: options.baselinePath,
+        policyPath: options.policyPath,
+        policyVersion: options.policyVersion,
+      });
+    }
   }
 
   if (options.outputPath) {

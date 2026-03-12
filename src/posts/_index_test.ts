@@ -167,11 +167,15 @@ describe("posts/index.page.tsx", () => {
   });
 
   describe("archive year-nav script", () => {
-    it("loads the external year-nav script when posts exist", () => {
+    it("loads the external year-nav script when multiple years are present", () => {
       const posts = [
         makePost(509, {
           date: new Date("2026-01-01"),
           readingInfo: { minutes: 1 },
+        }),
+        makePost(510, {
+          date: new Date("2025-01-01"),
+          readingInfo: { minutes: 2 },
         }),
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
@@ -179,6 +183,23 @@ describe("posts/index.page.tsx", () => {
         html,
         '<script src="/scripts/archive-year-nav.js" defer></script>',
       );
+    });
+
+    it("does not render the year-nav script when a single year is present", () => {
+      const posts = [
+        makePost(511, {
+          date: new Date("2026-01-01"),
+          readingInfo: { minutes: 1 },
+        }),
+        makePost(512, {
+          date: new Date("2026-03-05"),
+          readingInfo: { minutes: 3 },
+        }),
+      ];
+      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+
+      assertNotMatch(html, /archive-year-nav\.js/);
+      assertStringIncludes(html, 'aria-current="location"');
     });
 
     it("does not render the year-nav script when no posts are available", () => {

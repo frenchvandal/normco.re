@@ -4,9 +4,11 @@ import { describe, it } from "jsr/testing-bdd";
 
 import {
   applyPayloadPolicy,
+  assertBaselineMetadataCoherence,
   assertBaselineRouteParity,
   assertPayloadRegressionThresholds,
   assertRouteFilesExist,
+  createPayloadReportMetadata,
   getPayloadDeltas,
   parsePayloadPolicy,
 } from "./payload-report.ts";
@@ -14,6 +16,12 @@ import {
 type PayloadReportFixture = {
   generatedAt: string;
   rootDir: string;
+  metadata: {
+    schemaVersion: number;
+    routeSetHash: string;
+    routeCount: number;
+    policyVersion?: number;
+  };
   routes: ReadonlyArray<{
     route: string;
     jsBytes: number;
@@ -34,6 +42,7 @@ type PayloadReportFixture = {
 
 function createReport(
   totalByRoute: ReadonlyArray<[string, number]>,
+  policyVersion?: number,
 ): PayloadReportFixture {
   const routes = totalByRoute.map(([route, totalBytes]) => ({
     route,
@@ -50,6 +59,10 @@ function createReport(
   return {
     generatedAt: new Date("2026-03-12T00:00:00.000Z").toISOString(),
     rootDir: "_site",
+    metadata: createPayloadReportMetadata(
+      totalByRoute.map(([route]) => route),
+      policyVersion,
+    ),
     routes,
     totals: {
       jsBytes: totalBytes,
@@ -347,6 +360,123 @@ describe("payload baseline route parity", () => {
         ),
       Error,
       "Routes missing from current report",
+    );
+  });
+});
+
+describe("payload baseline metadata coherence", () => {
+  it("passes when schema/hash metadata matches the active policy context", () => {
+    const baseline = createReport([
+      ["/index.html", 1000],
+      ["/posts/index.html", 1300],
+    ], 1);
+    const current = createReport([
+      ["/index.html", 980],
+      ["/posts/index.html", 1250],
+    ], 1);
+
+    assertBaselineMetadataCoherence(
+      current as Parameters<typeof assertBaselineMetadataCoherence>[0],
+      baseline as Parameters<typeof assertBaselineMetadataCoherence>[1],
+      {
+        baselinePath: "/tmp/baseline.json",
+        policyPath: "scripts/payload-policy.json",
+        policyVersion: 1,
+      },
+    );
+  });
+
+  it("fails when baseline metadata is missing", () => {
+    const current = createReport([
+      ["/index.html", 980],
+      ["/posts/index.html", 1250],
+    ], 1);
+    const baselineWithoutMetadata = {
+      ...createReport([
+        ["/index.html", 1000],
+        ["/posts/index.html", 1300],
+      ], 1),
+      metadata: undefined,
+    };
+
+    assertThrows(
+      () =>
+        assertBaselineMetadataCoherence(
+          current as Parameters<typeof assertBaselineMetadataCoherence>[0],
+          baselineWithoutMetadata as unknown as Parameters<
+            typeof assertBaselineMetadataCoherence
+          >[1],
+          {
+            baselinePath: "/tmp/baseline.json",
+            policyPath: "scripts/payload-policy.json",
+            policyVersion: 1,
+          },
+        ),
+      Error,
+      "baseline report metadata is missing or invalid",
+    );
+  });
+
+  it("fails when baseline route hash metadata does not match current report", () => {
+    const current = createReport([
+      ["/index.html", 980],
+      ["/posts/index.html", 1250],
+    ], 1);
+    const baseline = createReport([
+      ["/index.html", 1000],
+      ["/posts/index.html", 1300],
+    ], 1);
+    const baselineWithWrongHash = {
+      ...baseline,
+      metadata: {
+        ...baseline.metadata,
+        routeSetHash: "deadbeef",
+      },
+    };
+
+    assertThrows(
+      () =>
+        assertBaselineMetadataCoherence(
+          current as Parameters<typeof assertBaselineMetadataCoherence>[0],
+          baselineWithWrongHash as Parameters<
+            typeof assertBaselineMetadataCoherence
+          >[1],
+          {
+            baselinePath: "/tmp/baseline.json",
+            policyPath: "scripts/payload-policy.json",
+            policyVersion: 1,
+          },
+        ),
+      Error,
+      "baseline report metadata is out of sync",
+    );
+  });
+
+  it("fails when baseline policy version conflicts with the active policy", () => {
+    const current = createReport([
+      ["/index.html", 980],
+      ["/posts/index.html", 1250],
+    ], 1);
+    const baselineWithDifferentPolicyVersion = createReport([
+      ["/index.html", 1000],
+      ["/posts/index.html", 1300],
+    ], 2);
+
+    assertThrows(
+      () =>
+        assertBaselineMetadataCoherence(
+          current as Parameters<typeof assertBaselineMetadataCoherence>[0],
+          baselineWithDifferentPolicyVersion as Parameters<
+            typeof assertBaselineMetadataCoherence
+          >[1],
+          {
+            baselinePath: "/tmp/baseline.json",
+            policyPath: "scripts/payload-policy.json",
+            policyVersion: 1,
+          },
+        ),
+      Error,
+      "Baseline policy version mismatch",
     );
   });
 });

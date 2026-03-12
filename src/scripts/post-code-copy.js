@@ -77,10 +77,6 @@
     }
 
     const codeText = candidate.textContent?.trim() ?? "";
-    const wrapper = globalThis.document.createElement("div");
-    wrapper.className = "post-code-block";
-    pre.replaceWith(wrapper);
-    wrapper.append(pre);
 
     if (codeText.length === 0) {
       continue;
@@ -91,7 +87,8 @@
     copyButton.setAttribute("feedback", copyFeedback);
     copyButton.setAttribute("feedback-timeout", String(feedbackResetMs));
     copyButton.textContent = copyLabel;
-    wrapper.prepend(copyButton);
+    pre.classList.add("post-code-copy-target");
+    pre.before(copyButton);
     copyButton.addEventListener("click", () => {
       void copyText(codeText).then((copied) => {
         if (copied) {

@@ -116,9 +116,12 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 
   const yearNavItems = years.map((year) => {
     const postCount = (byYear.get(year) ?? []).length;
+    const singleYearAriaCurrent = years.length === 1
+      ? ' aria-current="location"'
+      : "";
 
     return `<li class="archive-year-nav-item">
-  <a href="#archive-year-${year}" class="archive-year-nav-link">
+  <a href="#archive-year-${year}" class="archive-year-nav-link"${singleYearAriaCurrent}>
     <span class="archive-year-nav-label">${year}</span>
     <span class="archive-year-nav-count">${postCount}</span>
   </a>
@@ -145,7 +148,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 </section>`
     : `<p class="blankslate">${translations.archive.emptyState}</p>`;
 
-  const archiveYearNavScript = sections.length > 0
+  const archiveYearNavScript = years.length > 1
     ? '<script src="/scripts/archive-year-nav.js" defer></script>'
     : "";
 
