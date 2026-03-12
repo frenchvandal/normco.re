@@ -104,7 +104,7 @@
   "unstable": [
     "temporal"
   ],
-  "fmt": {"exclude": ["**/*.xml"]}
+  "fmt": {"exclude": ["**/*.xml"]},
   "lint": {
     "plugins": [
       "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/lint.ts"
