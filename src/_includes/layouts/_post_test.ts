@@ -48,6 +48,7 @@ function makeData(
     title?: string;
     children?: { __html: string };
     url?: string;
+    lang?: string;
     readingInfo?: { minutes?: number };
     nav?: ReturnType<typeof makeNav>;
     date?: Date;
@@ -201,10 +202,33 @@ describe("post.tsx layout", () => {
         ),
       );
       assertStringIncludes(html, 'src="/scripts/post-code-copy.js"');
-      assertStringIncludes(html, 'data-code-copy-label="Copy code"');
+      assertStringIncludes(html, 'data-code-copy-enabled="true"');
+      assertNotMatch(html, /data-code-copy-label=/);
       assertNotMatch(
         html,
         /src="\/scripts\/post-code-copy-exec-command\.js"/,
+      );
+    });
+
+    it("emits localized code-copy dataset values only when they differ from defaults", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({
+            lang: "fr",
+            children: {
+              __html:
+                '<pre><code class="language-ts">const valeur = "ok";</code></pre>',
+            },
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+      assertStringIncludes(html, 'data-code-copy-enabled="true"');
+      assertStringIncludes(html, 'data-code-copy-label="Copier le code"');
+      assertStringIncludes(html, 'data-code-copy-feedback="Code copié"');
+      assertStringIncludes(
+        html,
+        'data-code-copy-failed-feedback="Impossible de copier le code"',
       );
     });
 
@@ -232,6 +256,7 @@ describe("post.tsx layout", () => {
         postLayout(makeData({}), MOCK_HELPERS),
       );
       assertNotMatch(html, /src="\/scripts\/post-code-copy\.js"/);
+      assertNotMatch(html, /data-code-copy-enabled=/);
       assertNotMatch(html, /data-code-copy-label=/);
       assertNotMatch(html, /data-code-copy-feedback=/);
       assertNotMatch(html, /data-code-copy-failed-feedback=/);

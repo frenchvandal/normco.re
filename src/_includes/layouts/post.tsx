@@ -135,22 +135,29 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const homeUrl = getLocalizedUrl("/", language);
   const currentTitle = typeof data.title === "string" ? data.title : "";
   const includeCodeCopyScript = hasCodeBlocks(data.children);
-  const codeCopyLabel = includeCodeCopyScript
-    ? translations.post.copyCodeLabel
+  const codeCopyLabel = translations.post.copyCodeLabel;
+  const codeCopyFeedback = translations.post.copyCodeFeedback;
+  const codeCopyFailedFeedback = translations.post.copyCodeFailedFeedback;
+  const codeCopyLabelAttribute = includeCodeCopyScript &&
+      codeCopyLabel !== "Copy code"
+    ? codeCopyLabel
     : undefined;
-  const codeCopyFeedback = includeCodeCopyScript
-    ? translations.post.copyCodeFeedback
+  const codeCopyFeedbackAttribute = includeCodeCopyScript &&
+      codeCopyFeedback !== "Code copied"
+    ? codeCopyFeedback
     : undefined;
-  const codeCopyFailedFeedback = includeCodeCopyScript
-    ? translations.post.copyCodeFailedFeedback
+  const codeCopyFailedFeedbackAttribute = includeCodeCopyScript &&
+      codeCopyFailedFeedback !== "Cannot copy code"
+    ? codeCopyFailedFeedback
     : undefined;
 
   return (
     <article
       class="post-article"
-      data-code-copy-label={codeCopyLabel}
-      data-code-copy-feedback={codeCopyFeedback}
-      data-code-copy-failed-feedback={codeCopyFailedFeedback}
+      data-code-copy-enabled={includeCodeCopyScript ? "true" : undefined}
+      data-code-copy-label={codeCopyLabelAttribute}
+      data-code-copy-feedback={codeCopyFeedbackAttribute}
+      data-code-copy-failed-feedback={codeCopyFailedFeedbackAttribute}
     >
       <header class="post-header pagehead post-pagehead">
         <nav

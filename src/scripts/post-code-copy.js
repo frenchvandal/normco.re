@@ -1,7 +1,7 @@
 // @ts-check
 (() => {
   const article = globalThis.document.querySelector(
-    ".post-article[data-code-copy-label]",
+    ".post-article[data-code-copy-enabled]",
   );
 
   if (!(article instanceof HTMLElement)) {
@@ -22,31 +22,26 @@
   let execCommandWriterPromise;
 
   function getExecCommandWriter() {
-    if (execCommandWriterPromise !== undefined) {
-      return execCommandWriterPromise;
-    }
-
     // TODO(phiphi): [Carbon-P3] Remove execCommand fallback after clipboard API support baseline for site visitors reaches full parity in analytics.
-    execCommandWriterPromise = import("/scripts/post-code-copy-exec-command.js")
-      .then(({ writeWithExecCommand }) => {
-        return typeof writeWithExecCommand === "function"
+    return execCommandWriterPromise ??= import(
+      "/scripts/post-code-copy-exec-command.js"
+    )
+      .then(({ writeWithExecCommand }) =>
+        typeof writeWithExecCommand === "function"
           ? writeWithExecCommand
-          : undefined;
-      })
+          : undefined
+      )
       .catch(() => undefined);
-
-    return execCommandWriterPromise;
   }
 
   async function copyText(text) {
-    const clipboard = globalThis.navigator.clipboard;
-
-    if (clipboard !== undefined && typeof clipboard.writeText === "function") {
+    const writeText = globalThis.navigator.clipboard?.writeText;
+    if (typeof writeText === "function") {
       try {
-        await clipboard.writeText(text);
+        await writeText.call(globalThis.navigator.clipboard, text);
         return true;
       } catch {
-        // Fall through to the lazy legacy fallback.
+        // Fall through to lazy legacy fallback.
       }
     }
 
@@ -75,17 +70,15 @@
     copyButton.textContent = copyLabel;
     pre.classList.add("post-code-copy-target");
     pre.before(copyButton);
-    copyButton.addEventListener("click", () => {
-      void copyText(codeText).then((copied) => {
-        if (copied) {
-          return;
-        }
+    copyButton.addEventListener("click", async () => {
+      if (await copyText(codeText)) {
+        return;
+      }
 
-        copyButton.setAttribute("feedback", copyFailedFeedback);
-        globalThis.setTimeout(() => {
-          copyButton.setAttribute("feedback", copyFeedback);
-        }, feedbackResetMs);
-      });
+      copyButton.setAttribute("feedback", copyFailedFeedback);
+      globalThis.setTimeout(() => {
+        copyButton.setAttribute("feedback", copyFeedback);
+      }, feedbackResetMs);
     });
   }
 })();
