@@ -244,6 +244,7 @@ describe("payload policy mode", () => {
         requireBaseline: false,
         baselinePath: "/tmp/baseline.json",
         policyPath: "scripts/payload-policy.json",
+        policyBaselineMode: false,
       },
       policy,
       new Set([
@@ -449,6 +450,34 @@ describe("payload baseline metadata coherence", () => {
         ),
       Error,
       "baseline report metadata is out of sync",
+    );
+  });
+
+  it("fails when baseline policy metadata is missing in policy mode", () => {
+    const current = createReport([
+      ["/index.html", 980],
+      ["/posts/index.html", 1250],
+    ], 1);
+    const baselineWithoutPolicyMetadata = createReport([
+      ["/index.html", 1000],
+      ["/posts/index.html", 1300],
+    ]);
+
+    assertThrows(
+      () =>
+        assertBaselineMetadataCoherence(
+          current as Parameters<typeof assertBaselineMetadataCoherence>[0],
+          baselineWithoutPolicyMetadata as Parameters<
+            typeof assertBaselineMetadataCoherence
+          >[1],
+          {
+            baselinePath: "/tmp/baseline.json",
+            policyPath: "scripts/payload-policy.json",
+            policyVersion: 1,
+          },
+        ),
+      Error,
+      "Baseline policy metadata missing",
     );
   });
 

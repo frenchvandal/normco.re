@@ -196,6 +196,7 @@ describe("post.tsx layout", () => {
         ),
       );
       assertStringIncludes(html, 'src="/scripts/post-code-copy.js"');
+      assertStringIncludes(html, 'data-code-copy-label="Copy code"');
       assertNotMatch(
         html,
         /src="\/scripts\/post-code-copy-exec-command\.js"/,
@@ -207,6 +208,9 @@ describe("post.tsx layout", () => {
         postLayout(makeData({}), MOCK_HELPERS),
       );
       assertNotMatch(html, /src="\/scripts\/post-code-copy\.js"/);
+      assertNotMatch(html, /data-code-copy-label=/);
+      assertNotMatch(html, /data-code-copy-feedback=/);
+      assertNotMatch(html, /data-code-copy-failed-feedback=/);
     });
 
     it("does not load the code-copy script for inline code only", async () => {
@@ -222,6 +226,7 @@ describe("post.tsx layout", () => {
         ),
       );
       assertNotMatch(html, /src="\/scripts\/post-code-copy\.js"/);
+      assertNotMatch(html, /data-code-copy-label=/);
     });
   });
 });

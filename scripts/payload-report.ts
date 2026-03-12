@@ -102,6 +102,7 @@ export type CliOptions = {
   maxRouteDeltaBytes?: number;
   policyPath?: string;
   policyVersion?: number;
+  policyBaselineMode: boolean;
 };
 
 /** Configurable option keys that can be sourced from a payload policy file. */
@@ -140,6 +141,7 @@ function printUsage(): void {
       "  --output=<file>     Write the current JSON report to a file",
       "  --markdown=<file>   Write a reusable markdown report to a file",
       "  --policy=<file>     Apply a versioned JSON policy (routes/thresholds/outputs)",
+      "  --policy-baseline   Generate a policy-compatible baseline report (disables baseline/guard checks)",
       "  --require-baseline  Fail when --baseline is not provided",
       "  --max-total-delta=<bytes>  Fail when total bytes delta exceeds this value",
       "  --max-route-delta=<bytes>  Fail when any per-route delta exceeds this value",
@@ -289,6 +291,7 @@ function parseCliOptions(args: ReadonlyArray<string>): ParsedCliOptions {
     rootDir: "_site",
     routes: DEFAULT_ROUTES,
     requireBaseline: false,
+    policyBaselineMode: false,
   };
   const configuredFields = new Set<PolicyField>();
 
@@ -300,6 +303,11 @@ function parseCliOptions(args: ReadonlyArray<string>): ParsedCliOptions {
 
     if (arg === "--require-baseline") {
       options.requireBaseline = true;
+      continue;
+    }
+
+    if (arg === "--policy-baseline") {
+      options.policyBaselineMode = true;
       continue;
     }
 
@@ -891,8 +899,19 @@ export function assertBaselineMetadataCoherence(
     );
   }
 
+  if (baselineMetadata.policyVersion === undefined) {
+    throw new Error(
+      [
+        "[payload-report] Baseline policy metadata missing",
+        `- Active policy version: ${options.policyVersion}`,
+        `- Baseline: ${options.baselinePath ?? "unknown"}`,
+        "This baseline was generated without policy metadata and cannot be compared in policy mode.",
+        "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
+      ].join("\n"),
+    );
+  }
+
   if (
-    baselineMetadata.policyVersion !== undefined &&
     baselineMetadata.policyVersion !== options.policyVersion
   ) {
     throw new Error(
@@ -1083,6 +1102,10 @@ function renderMarkdownReport(
     lines.push(`- Policy: \`${options.policyPath}\` (v${policyVersion})`);
   }
 
+  if (options.policyBaselineMode) {
+    lines.push("- Policy baseline mode: enabled");
+  }
+
   if (options.maxTotalDeltaBytes !== undefined) {
     lines.push(`- Max total delta: ${options.maxTotalDeltaBytes} bytes`);
   }
@@ -1108,6 +1131,31 @@ async function main(): Promise<void> {
       policy,
       parsedCliOptions.configuredFields,
     );
+  }
+
+  if (options.policyBaselineMode && options.policyPath === undefined) {
+    throw new Error(
+      "Missing required option: --policy=<file> (required by --policy-baseline)",
+    );
+  }
+
+  if (options.policyBaselineMode && options.baselinePath !== undefined) {
+    throw new Error(
+      "Invalid option combination: --policy-baseline cannot be combined with --baseline=<file>",
+    );
+  }
+
+  if (options.policyBaselineMode) {
+    const {
+      baselinePath: _unusedBaselinePath,
+      maxTotalDeltaBytes: _unusedMaxTotalDeltaBytes,
+      maxRouteDeltaBytes: _unusedMaxRouteDeltaBytes,
+      ...policyBaselineOptions
+    } = options;
+    options = {
+      ...policyBaselineOptions,
+      requireBaseline: false,
+    };
   }
 
   const usesRegressionGuard = options.maxTotalDeltaBytes !== undefined ||

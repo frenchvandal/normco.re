@@ -135,13 +135,22 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const homeUrl = getLocalizedUrl("/", language);
   const currentTitle = typeof data.title === "string" ? data.title : "";
   const includeCodeCopyScript = hasCodeBlocks(data.children);
+  const codeCopyLabel = includeCodeCopyScript
+    ? translations.post.copyCodeLabel
+    : undefined;
+  const codeCopyFeedback = includeCodeCopyScript
+    ? translations.post.copyCodeFeedback
+    : undefined;
+  const codeCopyFailedFeedback = includeCodeCopyScript
+    ? translations.post.copyCodeFailedFeedback
+    : undefined;
 
   return (
     <article
       class="post-article"
-      data-code-copy-label={translations.post.copyCodeLabel}
-      data-code-copy-feedback={translations.post.copyCodeFeedback}
-      data-code-copy-failed-feedback={translations.post.copyCodeFailedFeedback}
+      data-code-copy-label={codeCopyLabel}
+      data-code-copy-feedback={codeCopyFeedback}
+      data-code-copy-failed-feedback={codeCopyFailedFeedback}
     >
       <header class="post-header pagehead post-pagehead">
         <nav

@@ -1,4 +1,10 @@
-import { assertEquals, assertNotMatch, assertStringIncludes } from "jsr/assert";
+import {
+  assert,
+  assertEquals,
+  assertMatch,
+  assertNotMatch,
+  assertStringIncludes,
+} from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { faker } from "npm/faker-js";
 
@@ -130,14 +136,15 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(html, "4 min");
     });
 
-    it("renders the reading-time placeholder when minutes are absent", () => {
+    it("omits the reading-time markup when minutes are absent", () => {
       const { readingInfo: _unusedReadingInfo, ...postWithoutReadingInfo } =
         makePost(506, { date: new Date("2026-01-01") });
       const posts = [
         postWithoutReadingInfo,
       ];
       const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
-      assertStringIncludes(html, "<span></span>");
+      assertNotMatch(html, /archive-reading-time/);
+      assertNotMatch(html, /<span><\/span>/);
     });
   });
 
@@ -205,6 +212,31 @@ describe("posts/index.page.tsx", () => {
     it("does not render the year-nav script when no posts are available", () => {
       const html = postsIndexPage(makeData([]), MOCK_HELPERS);
       assertNotMatch(html, /archive-year-nav\.js/);
+    });
+
+    it("renders year-nav links as hash anchors required by the runtime selector", () => {
+      const posts = [
+        makePost(513, {
+          date: new Date("2026-01-01"),
+          readingInfo: { minutes: 1 },
+        }),
+        makePost(514, {
+          date: new Date("2025-01-01"),
+          readingInfo: { minutes: 2 },
+        }),
+      ];
+      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+      const hrefMatches = [...html.matchAll(
+        /class="archive-year-nav-link"[\s\S]*?href="([^"]+)"/g,
+      )];
+
+      assert(hrefMatches.length > 0);
+
+      for (const match of hrefMatches) {
+        const href = match[1];
+        assert(href !== undefined);
+        assertMatch(href, /^#archive-year-\d{4}$/);
+      }
     });
   });
 });

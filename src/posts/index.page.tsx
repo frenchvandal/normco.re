@@ -89,7 +89,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
         ? `<span class="archive-reading-time">${
           formatReadingTime(minutes, language)
         }</span>`
-        : `<span></span>`;
+        : "";
 
       return `<li class="archive-item">
   <time class="archive-date" datetime="${
