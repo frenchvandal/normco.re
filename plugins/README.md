@@ -7,7 +7,7 @@ This document describes the in-repository plugin at `plugins/otel.ts`.
 
 ## Requirements
 
-- Deno 2.7.4 or later
+- Deno 2.7.5 or later
 - In production: `OTEL_DENO=true` and a configured OTLP exporter. On Deno Deploy
   neither is required—the platform enables them automatically.
 

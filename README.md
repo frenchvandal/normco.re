@@ -45,7 +45,7 @@ and localized routes.
 
 | Layer      | Technology                                                            |
 | ---------- | --------------------------------------------------------------------- |
-| Runtime    | [Deno](https://deno.com/) 2.7.4 (version pinned in `.tool-versions`)  |
+| Runtime    | [Deno](https://deno.com/) 2.7.5 (version pinned in `.tool-versions`)  |
 | SSG        | [Lume](https://lume.land/) 3.2.1                                      |
 | Templating | TSX + TypeScript (`*.page.tsx`, `*.tsx` layouts and components)       |
 | Styling    | Modern CSS (`src/style.css` entrypoint + `src/styles/*.css` partials) |
@@ -59,7 +59,7 @@ and localized routes.
 
 ## Prerequisites
 
-- **Deno** 2.7.4 — install via [asdf](https://asdf-vm.com/) with the
+- **Deno** 2.7.5 — install via [asdf](https://asdf-vm.com/) with the
   `.tool-versions` file, or follow the
   [official installation guide](https://docs.deno.com/runtime/getting_started/installation/).
 
