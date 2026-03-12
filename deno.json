@@ -8,6 +8,7 @@
     "jsr/fmt-colors": "jsr:@std/fmt@^1.0.9/colors",
     "jsr/path": "jsr:@std/path@^1.1.4",
     "jsr/testing-bdd": "jsr:@std/testing@^1.0.17/bdd",
+    "npm/carbon-web-components": "npm:@carbon/web-components@^2.50.0",
     "npm/faker-js": "npm:@faker-js/faker@^10.3.0",
     "npm/opentelemetry-api": "npm:@opentelemetry/api@^1.9.0",
     "npm/date-fns-locale": "npm:date-fns@4.1.0/locale",

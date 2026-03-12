@@ -15,13 +15,15 @@ The plan intentionally combines findings from:
 
 ## 1.1 Migration Status Snapshot
 
-- [ ] Phase 0 - Baseline and ADR framing
-- [ ] Phase 1 - Dependency and bootstrap plumbing
-- [ ] Phase 2 - Header shell migration
-- [ ] Phase 3 - Content surfaces migration
-- [ ] Phase 4 - Token harmonization and theming
-- [ ] Phase 5 - Search, media, and performance hardening
-- [ ] Phase 6 - Cleanup and governance updates
+| Phase                                              | Status      | Notes                                                                                                                           |
+| -------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Phase 0 - Baseline and ADR framing                 | In progress | Technical baseline and custom-maintenance debt baseline were captured on 2026-03-12; screenshots and ADR follow-up remain open. |
+| Phase 1 - Dependency and bootstrap plumbing        | In progress | Carbon dependency/bootstrap plumbing started on 2026-03-12 with selective, no-mass-migration wiring.                            |
+| Phase 2 - Header shell migration                   | Planned     | Not started.                                                                                                                    |
+| Phase 3 - Content surfaces migration               | Planned     | Not started.                                                                                                                    |
+| Phase 4 - Token harmonization and theming          | Planned     | Not started.                                                                                                                    |
+| Phase 5 - Search, media, and performance hardening | Planned     | Not started.                                                                                                                    |
+| Phase 6 - Cleanup and governance updates           | Planned     | Not started.                                                                                                                    |
 
 ## 2. Integrated Findings from the Two Reports
 
@@ -66,7 +68,7 @@ The plan intentionally combines findings from:
 
 - Add `@carbon/web-components` via `deno.json` npm alias.
 - Create a dedicated client bootstrap module (for example
-  `src/scripts/carbon.ts`) with selective side-effect imports only for used
+  `src/scripts/carbon.js`) with selective side-effect imports only for used
   custom elements.
 - Load this bootstrap from the base layout before Carbon elements are expected
   to render interactively.
@@ -153,11 +155,42 @@ Exit criteria:
 - ADR approved.
 - Baseline custom-maintenance debt recorded.
 
+### Phase 0 baseline snapshot (2026-03-12)
+
+Technical baseline (source-level):
+
+- Runtime/tooling baseline: Deno `2.7.5` (`.tool-versions`) and Lume `3.2.1`
+  (`deno.json` import alias).
+- Header shell baseline: 3 bespoke disclosure surfaces in
+  `src/_components/Header.tsx` (`site-menu`, `site-search`, `language-menu`),
+  currently built with `details/summary`.
+- Base layout baseline: 7 script tags in `src/_includes/layouts/base.tsx`,
+  including bespoke shell interaction scripts.
+- Carbon baseline before this slice: no `@carbon/web-components` alias wired in
+  `deno.json`.
+
+Custom-maintenance debt baseline (scope: header/search/language/theme/skip):
+
+- Bespoke interaction scripts tied to migrated chrome: 5 files, 860 LOC total.
+  - `src/scripts/disclosure-controls.js` (159 LOC)
+  - `src/scripts/pagefind-lazy-init.js` (213 LOC)
+  - `src/scripts/language-preference.js` (354 LOC)
+  - `src/scripts/theme-toggle.js` (95 LOC)
+  - `src/scripts/anti-flash.js` (39 LOC)
+- Custom CSS selectors tied to migrated components: 90 selector entries (89
+  unique) across `src/styles/layout.css`, `src/styles/components.css`, and
+  `src/styles/utilities.css`.
+  - Header/menu selectors: 24
+  - Search selectors: 37
+  - Language selectors: 20
+  - Theme selectors: 7
+  - Skip-link selectors: 2
+
 ## Phase 1 - Dependency and bootstrap plumbing (1 sprint)
 
 1. Add `@carbon/web-components` import alias in `deno.json`.
 2. Update lockfile only if dependency declarations changed.
-3. Add `src/scripts/carbon.ts` with selective registration imports.
+3. Add `src/scripts/carbon.js` with selective registration imports.
 4. Wire Carbon bootstrap into `src/_includes/layouts/base.tsx`.
 5. Confirm no runtime custom-element registration errors.
 6. Add an explicit rule in code review checklist: no new bespoke primitives when
@@ -274,10 +307,9 @@ Temporary compatibility code is allowed only when marked with explicit TODOs.
 
 ## 7.3 Progress log (update on every merge to `main`)
 
-| Date | Phase | Status | PR/Commit | Summary | Remaining TODOs | Custom debt
-delta | | --- | --- | --- | --- | --- | --- | | YYYY-MM-DD | P0-P6 | Planned/In
-progress/Done/Deferred | Link or SHA | One-sentence delta | Count + references |
-Scripts/selectors |
+| Date       | Phase   | Status      | PR/Commit    | Summary                                                                                                                                                     | Remaining TODOs                                                                                                         | Custom debt delta                                                                       |
+| ---------- | ------- | ----------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| 2026-03-12 | P0 + P1 | In progress | Working tree | Captured Phase 0 technical/debt baseline and started Phase 1 Carbon plumbing (dependency alias + selective bootstrap wiring) without mass visual migration. | 2 TODOs: `src/_includes/layouts/base.tsx` (P2 disclosure removal), `src/scripts/carbon.js` (P2 selective registrations) | Baseline set: 5 bespoke scripts, 90 selectors (89 unique); delta is 0 at snapshot time. |
 
 ## 8. Quality Gates and Validation Protocol
 
@@ -305,7 +337,7 @@ For rendering-affecting slices:
 | Risk                                                | Impact | Likelihood | Mitigation                                                                             |
 | --------------------------------------------------- | ------ | ---------- | -------------------------------------------------------------------------------------- |
 | Header interaction regressions (menu/search/panels) | High   | High       | Slice migration by behavior, not by file; keep parity checklists and staged merges.    |
-| Bundle growth from broad component imports          | High   | Medium     | Enforce selective imports in `src/scripts/carbon.ts`; track payload deltas per PR.     |
+| Bundle growth from broad component imports          | High   | Medium     | Enforce selective imports in `src/scripts/carbon.js`; track payload deltas per PR.     |
 | Visual drift from minimalist editorial identity     | Medium | High       | Keep token bridge small, run screenshot diffs, and reject decorative overreach.        |
 | Accessibility regressions during shell swap         | High   | Medium     | Add explicit keyboard/focus/contrast validation checklist to each migration PR.        |
 | Feed shell divergence (`feed.xsl`) from main shell  | Medium | Medium     | Include feed view in baseline and parity checks for every header-related change.       |

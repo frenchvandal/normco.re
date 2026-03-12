@@ -173,6 +173,7 @@ site.add("/style.css");
 site.add("/scripts/theme-toggle.js");
 site.add("/scripts/disclosure-controls.js");
 site.add("/scripts/anti-flash.js");
+site.add("/scripts/carbon.js");
 site.add("/scripts/language-preference.js");
 site.add("/scripts/feed-copy.js");
 site.add("/scripts/link-prefetch-intent.js");

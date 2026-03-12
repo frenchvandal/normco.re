@@ -179,6 +179,13 @@ export default (
             />
           </div>
           <script
+            src="/scripts/carbon.js"
+            type="module"
+            fetchpriority="low"
+          >
+          </script>
+          {/* TODO(phiphi): [Carbon-P2] Remove disclosure-controls.js once the header no longer relies on `details/summary` interactions after Carbon shell parity is complete. */}
+          <script
             src="/scripts/disclosure-controls.js"
             fetchpriority="low"
             defer

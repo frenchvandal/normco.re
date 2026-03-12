@@ -150,6 +150,14 @@ describe("base.tsx layout", () => {
         html,
         'src="/scripts/link-prefetch-intent.js"',
       );
+      assertStringIncludes(
+        html,
+        'src="/scripts/carbon.js"',
+      );
+      assertStringIncludes(
+        html,
+        'type="module"',
+      );
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");
     });
