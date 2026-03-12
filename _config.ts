@@ -4,6 +4,7 @@ import sitemap from "lume/plugins/sitemap.ts";
 import feed from "lume/plugins/feed.ts";
 import icons, { type Catalog } from "lume/plugins/icons.ts";
 import inline from "lume/plugins/inline.ts";
+import imageSize from "lume/plugins/image_size.ts";
 import jsonLd from "lume/plugins/json_ld.ts";
 import seo from "lume/plugins/seo.ts";
 import prism from "lume/plugins/prism.ts";
@@ -59,6 +60,7 @@ const MULTILANGUAGE_DATA_ALIASES = {
   "zh-hans": "zhHans",
   "zh-hant": "zhHant",
 } as const;
+const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
 
 function runGitCommand(args: string[]): string | undefined {
   try {
@@ -257,6 +259,29 @@ site.use(
     copyAttributes: [/^data-/, /^aria-/, "focusable", "role"],
   }),
 );
+
+// Add `image-size` to editorial images missing dimensions so the official
+// image_size plugin can emit explicit width/height attributes for CLS stability.
+site.process([".html"], (pages: Page[]) => {
+  for (const page of pages) {
+    for (
+      const image of page.document.querySelectorAll(
+        "main[data-pagefind-body] img:not([width]):not([height]):not([image-size])",
+      )
+    ) {
+      const src = image.getAttribute("src");
+
+      if (!src || REMOTE_IMAGE_SOURCE_PATTERN.test(src)) {
+        continue;
+      }
+
+      image.setAttribute("image-size", "");
+    }
+  }
+});
+
+// Resolve width and height attributes from local image files at build time.
+site.use(imageSize());
 
 // Date formatting: helpers.date(value, "HUMAN_DATE"), helpers.date(value, "SHORT"), …
 site.use(

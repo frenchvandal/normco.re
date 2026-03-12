@@ -183,11 +183,26 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'aria-label="Post navigation"');
     });
 
-    it("loads the post code-copy enhancement script", async () => {
+    it("loads the post code-copy enhancement script when code blocks exist", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({
+            children: {
+              __html:
+                '<pre><code class="language-ts">const value = "ok";</code></pre>',
+            },
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+      assertStringIncludes(html, 'src="/scripts/post-code-copy.js"');
+    });
+
+    it("skips the post code-copy enhancement script when code blocks are absent", async () => {
       const html = await renderComponent(
         postLayout(makeData({}), MOCK_HELPERS),
       );
-      assertStringIncludes(html, 'src="/scripts/post-code-copy.js"');
+      assertNotMatch(html, /src="\/scripts\/post-code-copy\.js"/);
     });
   });
 });

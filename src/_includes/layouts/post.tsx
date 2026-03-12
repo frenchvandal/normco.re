@@ -65,6 +65,26 @@ function isPostCandidate(
   return true;
 }
 
+/** Returns true when the post body contains at least one `<pre><code>` block. */
+function hasCodeBlocks(children: unknown): boolean {
+  const codeBlockPattern = /<pre>\s*<code\b/i;
+
+  if (typeof children === "string") {
+    return codeBlockPattern.test(children);
+  }
+
+  if (
+    typeof children === "object" &&
+    children !== null &&
+    "__html" in children
+  ) {
+    const html = (children as { readonly __html?: unknown }).__html;
+    return typeof html === "string" && codeBlockPattern.test(html);
+  }
+
+  return false;
+}
+
 /** Renders the post page within the base layout. */
 export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const { date: dateFormat } = helpers as unknown as H;
@@ -114,6 +134,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const minutes = resolveReadingMinutes(data.readingInfo);
   const homeUrl = getLocalizedUrl("/", language);
   const currentTitle = typeof data.title === "string" ? data.title : "";
+  const includeCodeCopyScript = hasCodeBlocks(data.children);
 
   return (
     <article
@@ -189,7 +210,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           )
           : <div class="post-nav-placeholder" aria-hidden="true"></div>}
       </nav>
-      <script src="/scripts/post-code-copy.js" defer></script>
+      {includeCodeCopyScript && (
+        <script src="/scripts/post-code-copy.js" defer></script>
+      )}
     </article>
   );
 };
