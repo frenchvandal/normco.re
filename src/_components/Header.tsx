@@ -156,7 +156,12 @@ export default (
             aria-label={translations.site.searchLabel}
             data-search-panel=""
           >
-            <div id={searchContainerId} class="site-search-root"></div>
+            <div
+              id={searchContainerId}
+              class="site-search-root"
+              data-search-root=""
+            >
+            </div>
           </cds-header-panel>
           <cds-header-global-action
             class="site-language-action"

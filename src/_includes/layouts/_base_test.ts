@@ -1,4 +1,4 @@
-import { assertStringIncludes } from "jsr/assert";
+import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker } from "npm/faker-js";
@@ -26,6 +26,7 @@ function makeData(
     description?: string;
     children?: { __html: string };
     url?: string;
+    unlisted?: boolean;
     siteName?: string;
     author?: string;
     metas?: { site?: string; description?: string };
@@ -39,6 +40,7 @@ function makeData(
     description: undefined,
     children: { __html: "<p>Page body.</p>" },
     url: "/",
+    unlisted: false,
     siteName: "normco.re",
     author: "Phiphi",
     metas: {
@@ -198,6 +200,17 @@ describe("base.tsx layout", () => {
         ),
       );
       assertStringIncludes(html, `<p>${randomBody}</p>`);
+      assertStringIncludes(html, 'id="main-content" data-pagefind-body=""');
+    });
+
+    it("omits `data-pagefind-body` on unlisted pages", async () => {
+      const html = await renderComponent(
+        baseLayout(
+          makeData({ unlisted: true }),
+          MOCK_HELPERS,
+        ),
+      );
+      assertNotMatch(html, /data-pagefind-body=""/);
     });
 
     it("renders the mocked Header and Footer", async () => {

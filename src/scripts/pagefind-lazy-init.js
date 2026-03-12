@@ -1,7 +1,7 @@
 // @ts-check
 (() => {
   const SEARCH_PANEL_SELECTOR = "[data-search-panel]";
-  const SEARCH_CONTAINER_SELECTOR = ".site-search-root";
+  const SEARCH_CONTAINER_SELECTOR = "[data-search-root]";
   const PAGEFIND_SCRIPT_URL = "/pagefind/pagefind-ui.js";
   const PAGEFIND_STYLE_URL = "/pagefind/pagefind-ui.css";
   /**

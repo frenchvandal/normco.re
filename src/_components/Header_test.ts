@@ -148,6 +148,7 @@ describe("Header()", () => {
       assertStringIncludes(html, "<cds-header-panel");
       assertStringIncludes(html, 'class="site-search-panel"');
       assertStringIncludes(html, 'data-search-panel=""');
+      assertStringIncludes(html, 'data-search-root=""');
       assertStringIncludes(html, 'id="search"');
       assertNotMatch(html, /search-16\.svg/);
     });

@@ -28,6 +28,7 @@ type AlternateData = {
 type LayoutData = Lume.Data & {
   build?: BuildData;
   lang?: string;
+  unlisted?: boolean;
   alternates?: ReadonlyArray<AlternateData>;
   /** Injected by `src/_data.ts` - canonical site name / domain. */
   siteName?: string;
@@ -91,6 +92,7 @@ export default (
     comp,
     build,
     lang,
+    unlisted,
     alternates,
     siteName,
     author,
@@ -110,6 +112,7 @@ export default (
   const documentLanguage = getLanguageTag(language);
   const currentUrl = typeof url === "string" && url.length > 0 ? url : "/";
   const swDebugLevel = build?.swDebugLevel ?? "off";
+  const includePagefindBody = unlisted !== true;
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
@@ -169,7 +172,11 @@ export default (
               currentUrl={currentUrl}
               language={language}
             />
-            <main class="site-main" id="main-content">
+            <main
+              class="site-main"
+              id="main-content"
+              {...(includePagefindBody ? { "data-pagefind-body": "" } : {})}
+            >
               {children}
             </main>
             <Footer

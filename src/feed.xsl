@@ -24,7 +24,7 @@
         <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{v=localStorage.getItem("color-mode")??localStorage.getItem("color-scheme")}catch{v=null}const t=v==="light"||v==="dark"?v:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-color-scheme",t)})()</script>
         <link rel="stylesheet" href="/style.css"/>
       </head>
-      <body>
+      <body data-a11y-link-underlines="true">
         <div class="site-wrapper">
           <header class="site-header">
             <div class="site-header-inner">
@@ -53,7 +53,7 @@
                   </svg>
                 </cds-header-global-action>
                 <cds-header-panel id="feed-search-panel" class="site-search-panel" aria-label="Search" data-search-panel="">
-                  <div id="feed-search" class="site-search-root"></div>
+                  <div id="feed-search" class="site-search-root" data-search-root=""></div>
                 </cds-header-panel>
                 <cds-header-global-action class="site-language-action" aria-label="Select language" button-label-active="Language" button-label-inactive="Language" panel-id="feed-language-panel">
                   <svg slot="icon" class="site-language-action-icon site-language-action-icon--watson" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
@@ -92,7 +92,7 @@
             </div>
           </header>
 
-          <main class="site-main" id="main-content">
+          <main class="site-main" id="main-content" data-pagefind-ignore="">
             <section class="feed-page" aria-labelledby="feed-title">
               <header class="pagehead feed-pagehead">
                 <p class="pagehead-eyebrow">Syndication</p>
