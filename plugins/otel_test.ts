@@ -50,6 +50,8 @@ interface StubSite {
   getServer(): StubServer;
 }
 
+type MockedEnv = Readonly<Record<string, string | undefined>>;
+
 function createStubDebugBar() {
   const collections = new Map<string, DebugCollection>();
   const buildItems: DebugCollectionItem[] = [];
@@ -141,6 +143,38 @@ function createStubSite(withDebugBar = true) {
     triggerServerStart,
     triggerSiteEvent,
   };
+}
+
+async function withMockedEnv(
+  env: MockedEnv,
+  callback: () => void | Promise<void>,
+): Promise<void> {
+  const originalGet = Deno.env.get;
+  Deno.env.get = (name: string): string | undefined => env[name];
+
+  try {
+    await callback();
+  } finally {
+    Deno.env.get = originalGet;
+  }
+}
+
+async function captureConsoleLogs(
+  callback: () => void | Promise<void>,
+): Promise<string[]> {
+  const originalLog = console.log;
+  const entries: string[] = [];
+  console.log = (...data: unknown[]): void => {
+    entries.push(data.map((value) => String(value)).join(" "));
+  };
+
+  try {
+    await callback();
+  } finally {
+    console.log = originalLog;
+  }
+
+  return entries;
 }
 
 describe("otel()", () => {
@@ -238,6 +272,69 @@ describe("otel()", () => {
     assertEquals(
       env.collections.get("Requests")?.items?.[0]?.items?.[0]?.title,
       "GET /posts/hello",
+    );
+  });
+
+  it("logs missing OTEL_DENO when instrumentation is not enabled", async () => {
+    const env = createStubSite();
+    const plugin = otel({ logRequests: false, mode: "development" });
+
+    const entries = await captureConsoleLogs(() =>
+      withMockedEnv({}, () => {
+        plugin(env.site as unknown as Site);
+      })
+    );
+
+    assertEquals(
+      entries.some((entry) =>
+        entry.includes(
+          "Missing expected OTEL environment variable: OTEL_DENO",
+        )
+      ),
+      true,
+    );
+  });
+
+  it("does not log env warnings when expected OTEL variables are set", async () => {
+    const env = createStubSite();
+    const plugin = otel({ logRequests: false, mode: "development" });
+
+    const entries = await captureConsoleLogs(() =>
+      withMockedEnv({
+        OTEL_DENO: "true",
+        OTEL_EXPORTER_OTLP_ENDPOINT: "http://localhost:4318",
+        OTEL_EXPORTER_OTLP_PROTOCOL: "http/json",
+        OTEL_SERVICE_NAME: "my-site",
+      }, () => {
+        plugin(env.site as unknown as Site);
+      })
+    );
+
+    assertEquals(entries.length, 0);
+  });
+
+  it("treats blank OTEL values as missing", async () => {
+    const env = createStubSite();
+    const plugin = otel({ logRequests: false, mode: "development" });
+
+    const entries = await captureConsoleLogs(() =>
+      withMockedEnv({
+        OTEL_DENO: "true",
+        OTEL_EXPORTER_OTLP_ENDPOINT: "http://localhost:4318",
+        OTEL_EXPORTER_OTLP_PROTOCOL: "http/json",
+        OTEL_SERVICE_NAME: "  ",
+      }, () => {
+        plugin(env.site as unknown as Site);
+      })
+    );
+
+    assertEquals(
+      entries.some((entry) =>
+        entry.includes(
+          "Missing expected OTEL environment variable: OTEL_SERVICE_NAME",
+        )
+      ),
+      true,
     );
   });
 });

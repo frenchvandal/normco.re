@@ -20,6 +20,7 @@ import type { Span } from "npm/opentelemetry-api";
 
 type OTelReadEnv = (name: string) => string | undefined;
 type DebugBarRefreshKind = "build" | "request";
+type OTelMode = "development" | "production";
 const SUPPORTS_CONSOLE_COLORS = Deno.stdout.isTerminal();
 
 function createEnvReader(): OTelReadEnv {
@@ -173,6 +174,17 @@ export const defaults: Options = {
 };
 
 const defaultIgnorePatterns = defaults.ignore ?? [];
+const OTEL_EXPECTED_ENV_BY_MODE = {
+  development: [
+    "OTEL_SERVICE_NAME",
+    "OTEL_EXPORTER_OTLP_PROTOCOL",
+    "OTEL_EXPORTER_OTLP_ENDPOINT",
+  ],
+  production: [
+    "OTEL_SERVICE_NAME",
+    "OTEL_EXPORTER_OTLP_ENDPOINT",
+  ],
+} as const satisfies Record<OTelMode, ReadonlyArray<string>>;
 
 function normalizeMaxRequests(value: number | undefined): number {
   const fallback = defaults.maxRequests ?? 50;
@@ -195,6 +207,31 @@ function getUpdateEventFiles(event: unknown): Set<string> | undefined {
   }
 
   return undefined;
+}
+
+function readNonEmptyEnv(
+  readEnv: OTelReadEnv,
+  name: string,
+): string | undefined {
+  const value = readEnv(name)?.trim();
+  return value ? value : undefined;
+}
+
+function getMissingExpectedOtelEnv(
+  mode: OTelMode,
+  readEnv: OTelReadEnv,
+): string[] {
+  if (readNonEmptyEnv(readEnv, "DENO_DEPLOYMENT_ID")) {
+    return [];
+  }
+
+  if (readNonEmptyEnv(readEnv, "OTEL_DENO") !== "true") {
+    return ["OTEL_DENO"];
+  }
+
+  return OTEL_EXPECTED_ENV_BY_MODE[mode].filter((name) =>
+    readNonEmptyEnv(readEnv, name) === undefined
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -247,6 +284,28 @@ function colorizeConsoleText(
   formatter: (value: string) => string,
 ): string {
   return SUPPORTS_CONSOLE_COLORS ? formatter(value) : value;
+}
+
+function logMissingExpectedOtelEnv(mode: OTelMode, readEnv: OTelReadEnv): void {
+  const missingEnv = getMissingExpectedOtelEnv(mode, readEnv);
+
+  if (missingEnv.length === 0) {
+    return;
+  }
+
+  const label = colorizeConsoleText("[otel]", (value) => bold(cyan(value)));
+  const noun = missingEnv.length === 1
+    ? "environment variable"
+    : "environment variables";
+  const hint = missingEnv.includes("OTEL_DENO")
+    ? "Set OTEL_DENO=true to enable Deno OpenTelemetry instrumentation."
+    : mode === "development"
+    ? "Set them before `deno task serve` to export telemetry locally."
+    : "Set them in the runtime environment to export telemetry data.";
+
+  console.log(
+    `${label} Missing expected OTEL ${noun}: ${missingEnv.join(", ")}. ${hint}`,
+  );
 }
 
 function formatRequestStatus(status: number): string {
@@ -546,7 +605,7 @@ function matchRoute(url: URL, routes?: URLPattern[]): string {
 
 function refreshDebugBar(
   site: Site,
-  mode: "development" | "production",
+  mode: OTelMode,
   options: Options,
   recentRequests: RequestRecord[],
   counters: Map<string, number>,
@@ -743,7 +802,7 @@ export function otel(userOptions?: Partial<Options>): (site: object) => void {
     const typedSite = site as Site;
 
     // Resolve mode once, at plugin setup time.
-    const mode: "development" | "production" = options.mode === "development"
+    const mode: OTelMode = options.mode === "development"
       ? "development"
       : options.mode === "production"
       ? "production"
@@ -752,6 +811,7 @@ export function otel(userOptions?: Partial<Options>): (site: object) => void {
       : "production";
 
     const isDev = mode === "development";
+    logMissingExpectedOtelEnv(mode, readEnv);
     const shouldLogRequests = isDev && options.logRequests;
     const maxRequests = normalizeMaxRequests(options.maxRequests);
 
