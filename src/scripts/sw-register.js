@@ -43,7 +43,114 @@
     });
   }
 
-  function registerServiceWorker() {
+  /**
+   * @param {unknown} error
+   * @returns {string}
+   */
+  function toErrorMessage(error) {
+    if (error instanceof Error) {
+      return error.message;
+    }
+
+    return String(error);
+  }
+
+  /**
+   * Returns true when module registration should fallback to classic mode.
+   *
+   * @param {unknown} error
+   * @returns {boolean}
+   */
+  function shouldFallbackToClassicRegistration(error) {
+    if (error instanceof TypeError) {
+      return true;
+    }
+
+    if (error instanceof DOMException) {
+      return error.name === "TypeError" || error.name === "NotSupportedError";
+    }
+
+    return false;
+  }
+
+  /**
+   * @param {"module" | "classic"} mode
+   * @returns {Promise<ServiceWorkerRegistration>}
+   */
+  function registerWorker(mode) {
+    if (mode === "module") {
+      return globalThis.navigator.serviceWorker.register(
+        `${swUrl}?debug=${swDebugLevel}`,
+        {
+          scope: "/",
+          type: "module",
+          updateViaCache: "none",
+        },
+      );
+    }
+
+    return globalThis.navigator.serviceWorker.register(
+      `${swUrl}?debug=${swDebugLevel}`,
+      {
+        scope: "/",
+      },
+    );
+  }
+
+  /**
+   * @param {ServiceWorkerRegistration} registration
+   * @param {"module" | "classic"} mode
+   * @returns {void}
+   */
+  function handleRegistration(registration, mode) {
+    log("registered", {
+      mode,
+      active: registration.active?.state ?? "none",
+      installing: registration.installing?.state ?? "none",
+      waiting: registration.waiting?.state ?? "none",
+    });
+
+    if (registration.waiting !== null) {
+      log("waiting worker detected -> skip waiting", {
+        waitingState: registration.waiting.state,
+      });
+      registration.waiting.postMessage({ type: "SKIP_WAITING" });
+    }
+
+    registration.addEventListener("updatefound", () => {
+      const installingWorker = registration.installing;
+
+      log("updatefound", {
+        mode,
+        installingState: installingWorker?.state ?? "none",
+      });
+
+      if (installingWorker === null) {
+        return;
+      }
+
+      installingWorker.addEventListener("statechange", () => {
+        log("installing statechange", {
+          mode,
+          state: installingWorker.state,
+          hasController: globalThis.navigator.serviceWorker.controller !== null,
+        });
+
+        if (
+          installingWorker.state === "installed" &&
+          globalThis.navigator.serviceWorker.controller !== null
+        ) {
+          log("new version installed -> skip waiting", {
+            mode,
+            waitingState: registration.waiting?.state ?? "none",
+          });
+          registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+        }
+      });
+    });
+  }
+
+  async function registerServiceWorker() {
     globalThis.navigator.serviceWorker.addEventListener(
       "controllerchange",
       () => {
@@ -52,59 +159,31 @@
       },
     );
 
-    void globalThis.navigator.serviceWorker
-      .register(`${swUrl}?debug=${swDebugLevel}`, {
-        scope: "/",
-      })
-      .then((registration) => {
-        log("registered", {
-          active: registration.active?.state ?? "none",
-          installing: registration.installing?.state ?? "none",
-          waiting: registration.waiting?.state ?? "none",
-        });
+    try {
+      const moduleRegistration = await registerWorker("module");
+      handleRegistration(moduleRegistration, "module");
+      return;
+    } catch (error) {
+      const shouldFallback = shouldFallbackToClassicRegistration(error);
 
-        if (registration.waiting !== null) {
-          log("waiting worker detected -> skip waiting", {
-            waitingState: registration.waiting.state,
-          });
-          registration.waiting.postMessage({ type: "SKIP_WAITING" });
-        }
-
-        registration.addEventListener("updatefound", () => {
-          const installingWorker = registration.installing;
-
-          log("updatefound", {
-            installingState: installingWorker?.state ?? "none",
-          });
-
-          if (installingWorker === null) {
-            return;
-          }
-
-          installingWorker.addEventListener("statechange", () => {
-            log("installing statechange", {
-              state: installingWorker.state,
-              hasController:
-                globalThis.navigator.serviceWorker.controller !== null,
-            });
-
-            if (
-              installingWorker.state === "installed" &&
-              globalThis.navigator.serviceWorker.controller !== null
-            ) {
-              log("new version installed -> skip waiting", {
-                waitingState: registration.waiting?.state ?? "none",
-              });
-              registration.waiting?.postMessage({ type: "SKIP_WAITING" });
-            }
-          });
-        });
-      })
-      .catch((error) => {
-        log("registration failed", {
-          error: error instanceof Error ? error.message : String(error),
-        });
+      log("module registration failed", {
+        error: toErrorMessage(error),
+        shouldFallback,
       });
+
+      if (!shouldFallback) {
+        return;
+      }
+    }
+
+    try {
+      const classicRegistration = await registerWorker("classic");
+      handleRegistration(classicRegistration, "classic");
+    } catch (error) {
+      log("classic fallback registration failed", {
+        error: toErrorMessage(error),
+      });
+    }
   }
 
   function scheduleServiceWorkerRegistration() {
@@ -112,13 +191,13 @@
 
     if (typeof requestIdleCallback === "function") {
       requestIdleCallback(() => {
-        registerServiceWorker();
+        void registerServiceWorker();
       }, { timeout: 3000 });
       return;
     }
 
     globalThis.setTimeout(() => {
-      registerServiceWorker();
+      void registerServiceWorker();
     }, 0);
   }
 
