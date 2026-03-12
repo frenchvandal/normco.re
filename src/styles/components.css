@@ -16,17 +16,17 @@
     min-block-size: 2.25rem;
     --pagefind-ui-scale: 0.7;
     --pagefind-ui-font: var(--font-sans);
-    --pagefind-ui-primary: var(--fgColor-default);
-    --pagefind-ui-text: var(--fgColor-default);
-    --pagefind-ui-background: var(--bgColor-default);
-    --pagefind-ui-border: var(--control-borderColor-rest);
-    --pagefind-ui-tag: var(--bgColor-muted);
+    --pagefind-ui-primary: var(--cds-link-primary);
+    --pagefind-ui-text: var(--cds-text-primary);
+    --pagefind-ui-background: var(--cds-layer-background);
+    --pagefind-ui-border: var(--cds-border-subtle);
+    --pagefind-ui-tag: var(--cds-layer);
     --pagefind-ui-border-width: 1px;
     --pagefind-ui-border-radius: var(--borderRadius-medium);
   }
 
   .site-search-root .pagefind-ui {
-    color: var(--fgColor-default);
+    color: var(--cds-text-primary);
   }
 
   .site-search-root .pagefind-ui__form {
@@ -43,20 +43,20 @@
   }
 
   .site-search-root .pagefind-ui__search-input {
-    border: 1px solid var(--control-borderColor-rest);
+    border: 1px solid var(--cds-border-subtle);
     border-radius: var(--borderRadius-medium);
-    background: var(--bgColor-default);
-    color: var(--fgColor-default);
+    background: var(--cds-layer-background);
+    color: var(--cds-text-primary);
     min-block-size: 2.25rem;
     block-size: 2.25rem;
     padding-inline: 2rem;
     font-size: var(--text-sm);
     font-weight: 500;
-    caret-color: var(--fgColor-default);
+    caret-color: var(--cds-text-primary);
   }
 
   .site-search-root .pagefind-ui__search-input::placeholder {
-    color: var(--fgColor-muted);
+    color: var(--cds-text-secondary);
     opacity: 1;
   }
 
@@ -72,7 +72,7 @@
     padding: 0;
     border: 0;
     border-radius: calc(var(--borderRadius-medium) - 1px);
-    color: var(--fgColor-muted);
+    color: var(--cds-text-secondary);
     background: transparent;
     font-size: 0;
     line-height: 0;
@@ -94,8 +94,8 @@
   }
 
   .site-search-root .pagefind-ui__search-clear:hover {
-    color: var(--fgColor-default);
-    background: var(--bgColor-muted);
+    color: var(--cds-text-primary);
+    background: var(--cds-layer);
   }
 
   .site-search-root .pagefind-ui__drawer {
@@ -109,32 +109,39 @@
 
   .site-search-root .pagefind-ui__message,
   .site-search-root .pagefind-ui__result-title,
-  .site-search-root .pagefind-ui__result-link,
   .site-search-root .pagefind-ui__result-excerpt {
-    color: var(--fgColor-default);
+    color: var(--cds-text-primary);
+  }
+
+  .site-search-root .pagefind-ui__result-link {
+    color: var(--cds-link-primary);
+    text-decoration-line: underline;
+    text-decoration-thickness: max(1px, 0.08em);
+    text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
   }
 
   .site-search-root .pagefind-ui__result {
-    border-color: var(--borderColor-muted);
+    border-color: var(--cds-border-subtle);
   }
 
   .site-search-root .pagefind-ui__result-link:hover {
-    color: var(--fgColor-accent);
+    color: var(--cds-link-primary-hover);
   }
 
   .site-search-root .pagefind-ui__button {
-    color: var(--fgColor-default);
-    border-color: var(--control-borderColor-rest);
-    background: var(--bgColor-default);
+    color: var(--cds-text-primary);
+    border-color: var(--cds-border-subtle);
+    background: var(--cds-layer-background);
   }
 
   .site-search-root .pagefind-ui__button:hover {
-    border-color: var(--borderColor-default);
-    background: var(--bgColor-muted);
+    border-color: var(--cds-border-strong);
+    background: var(--cds-layer);
   }
 
   .site-search-root .pagefind-ui__search-input:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-outlineColor);
+    outline: var(--focus-ring-width) solid var(--cds-focus);
     outline-offset: var(--focus-ring-offset);
   }
 
@@ -265,8 +272,17 @@
   }
 
   /* Carbon token bridge for migrated reading surfaces. */
-  /* TODO(phiphi): [Carbon-P4] Remove this scoped token bridge after global Carbon token parity is complete for content and feed surfaces. */
-  :where(.post-card, .post-article, .post-code-block, .site-footer) {
+  /* TODO(phiphi): [Carbon-P4] Remove this scoped token bridge after global Carbon token parity is complete for content, search, and feed utility surfaces. */
+  :where(
+    .post-card,
+    .post-article,
+    .post-code-block,
+    .site-search-root,
+    .feeds-page,
+    .feed-page,
+    .feed-copy-control,
+    .site-footer
+  ) {
     --cds-focus: var(--focus-outlineColor);
     --cds-layer: var(--bgColor-muted);
     --cds-layer-hover: var(--control-bgColor-hover);
@@ -725,13 +741,16 @@
   }
 
   .feeds-entry-link {
-    color: var(--color-text);
-    text-decoration: none;
-    transition: color 0.15s ease;
+    color: var(--cds-link-primary);
+    text-decoration-line: underline;
+    text-decoration-thickness: max(1px, 0.08em);
+    text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
   }
 
   .feeds-entry-link:hover {
-    color: var(--color-accent);
+    color: var(--cds-link-primary-hover);
   }
 
   .feeds-entry-type {
@@ -771,9 +790,9 @@
     grid-template-columns: minmax(0, 1fr) auto;
     min-inline-size: 0;
     inline-size: 100%;
-    border: 1px solid var(--control-borderColor-rest);
+    border: 1px solid var(--cds-border-subtle);
     border-radius: var(--borderRadius-medium);
-    background: var(--bgColor-default);
+    background: var(--cds-layer-background);
     overflow: clip;
   }
 
@@ -782,26 +801,37 @@
     gap: 0.125rem;
     align-content: center;
     padding: 0.5rem 0.75rem;
-    color: var(--color-text);
+    color: var(--cds-text-primary);
     text-decoration: none;
-    background: var(--bgColor-default);
+    background: var(--cds-layer-background);
     transition: background-color 0.15s ease;
   }
 
   .feed-copy-link:hover {
-    background: var(--bgColor-muted);
+    background: var(--cds-layer);
     text-decoration: none;
+  }
+
+  .feed-copy-link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--cds-focus);
+    outline-offset: -2px;
+    position: relative;
+    z-index: 1;
   }
 
   .feed-copy-link-title {
     font-size: var(--text-sm);
     font-weight: 600;
     line-height: 1.15;
+    text-decoration-line: underline;
+    text-decoration-thickness: max(1px, 0.08em);
+    text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
   }
 
   .feed-copy-link-url {
     font-size: var(--text-xs);
-    color: var(--color-meta);
+    color: var(--cds-text-secondary);
     font-family: var(--font-mono);
     line-height: 1.15;
   }
@@ -811,9 +841,9 @@
     min-block-size: 100%;
     position: relative;
     border: 0;
-    border-inline-start: 1px solid var(--control-borderColor-rest);
-    background: var(--control-bgColor-rest);
-    color: var(--fgColor-muted);
+    border-inline-start: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer);
+    color: var(--cds-text-secondary);
     cursor: pointer;
     transition:
       background-color 0.15s ease,
@@ -822,16 +852,16 @@
   }
 
   .feed-copy-trigger:hover {
-    background: var(--control-bgColor-hover);
-    color: var(--control-fgColor-rest);
+    background: var(--cds-layer-hover);
+    color: var(--cds-text-primary);
   }
 
   .feed-copy-trigger:active {
-    background: var(--control-bgColor-active);
+    background: var(--cds-layer-active);
   }
 
   .feed-copy-trigger:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-outlineColor);
+    outline: var(--focus-ring-width) solid var(--cds-focus);
     outline-offset: -2px;
     z-index: 1;
   }
@@ -893,6 +923,11 @@
   }
 
   .feed-entry-link {
+    color: var(--cds-link-primary);
+    text-decoration-line: underline;
+    text-decoration-thickness: max(1px, 0.08em);
+    text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
     overflow-wrap: anywhere;
     word-break: break-word;
   }

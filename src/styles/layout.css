@@ -74,12 +74,4 @@
     align-items: center;
     gap: var(--space-s);
   }
-
-  .site-footer-action-link::part(link) {
-    min-block-size: 2rem;
-    display: inline-flex;
-    align-items: center;
-    padding-inline: 0.35rem;
-    border-radius: var(--borderRadius-medium);
-  }
 }
