@@ -77,20 +77,12 @@
 
   /**
    * Returns true when module registration should fallback to classic mode.
+   * Fallback is skipped only when both modes target the same script URL.
    *
-   * @param {unknown} error
    * @returns {boolean}
    */
-  function shouldFallbackToClassicRegistration(error) {
-    if (error instanceof TypeError) {
-      return true;
-    }
-
-    if (error instanceof DOMException) {
-      return error.name === "TypeError" || error.name === "NotSupportedError";
-    }
-
-    return false;
+  function shouldFallbackToClassicRegistration() {
+    return swModuleUrl !== swClassicUrl;
   }
 
   /**
@@ -184,7 +176,7 @@
       handleRegistration(moduleRegistration, "module");
       return;
     } catch (error) {
-      const shouldFallback = shouldFallbackToClassicRegistration(error);
+      const shouldFallback = shouldFallbackToClassicRegistration();
 
       log("module registration failed", {
         error: toErrorMessage(error),

@@ -15,6 +15,14 @@ const CANONICAL_ASSET_URLS = [
   "/scripts/pagefind-lazy-init.js",
 ] as const;
 const SERVICE_WORKER_VERSION_PLACEHOLDER = "__SW_VERSION__";
+const SERVICE_WORKER_VERSION_SOURCES = [
+  "/sw.js",
+  "/sw-core.js",
+  "/sw-lifecycle.js",
+  "/sw-routing.js",
+  "/sw-classic.js",
+  "/sw-module.js",
+] as const;
 
 type AssetRewrite = {
   sourceUrl: string;
@@ -169,7 +177,19 @@ async function rewriteUrlsInSiteOutput(
 async function injectServiceWorkerVersion(rootDir: string): Promise<string> {
   const swCorePath = toOutputPath(rootDir, "/sw-core.js");
   const swCoreCode = await Deno.readTextFile(swCorePath);
-  const swVersion = await hashContent(new TextEncoder().encode(swCoreCode));
+  const swVersionInputs = await Promise.all(
+    SERVICE_WORKER_VERSION_SOURCES.map(async (sourcePath) => {
+      const sourceCode = await Deno.readTextFile(
+        toOutputPath(rootDir, sourcePath),
+      );
+
+      return `// ${sourcePath}\n${sourceCode}`;
+    }),
+  );
+  const swVersionMaterial = swVersionInputs.join("\n\n");
+  const swVersion = await hashContent(
+    new TextEncoder().encode(swVersionMaterial),
+  );
   const versionedSwCoreCode = swCoreCode.replaceAll(
     SERVICE_WORKER_VERSION_PLACEHOLDER,
     swVersion,
@@ -208,7 +228,7 @@ async function main(): Promise<void> {
   for (const [sourceUrl, fingerprintedUrl] of orderedRewrites) {
     console.info(`[fingerprint] ${sourceUrl} -> ${fingerprintedUrl}`);
   }
-  console.info(`[fingerprint] /sw-core.js version -> ${swVersion}`);
+  console.info(`[fingerprint] service worker graph version -> ${swVersion}`);
 }
 
 await main();
