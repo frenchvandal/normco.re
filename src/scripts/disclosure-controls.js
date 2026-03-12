@@ -1,9 +1,7 @@
 // @ts-check
 (() => {
   const disclosures = Array.from(
-    globalThis.document.querySelectorAll(
-      ".language-menu, .site-search",
-    ),
+    globalThis.document.querySelectorAll(".language-menu"),
   ).filter((element) => element instanceof HTMLDetailsElement);
 
   if (disclosures.length === 0) {
@@ -11,13 +9,13 @@
   }
 
   /** @type {WeakMap<HTMLDetailsElement, HTMLElement>} */
-  const disclosureTriggerByElement = new WeakMap();
+  const triggerByDisclosure = new WeakMap();
 
   for (const disclosure of disclosures) {
     const trigger = disclosure.querySelector(":scope > summary");
 
     if (trigger instanceof HTMLElement) {
-      disclosureTriggerByElement.set(disclosure, trigger);
+      triggerByDisclosure.set(disclosure, trigger);
     }
 
     disclosure.addEventListener("toggle", () => {
@@ -25,27 +23,12 @@
         return;
       }
 
-      for (const otherDisclosure of disclosures) {
-        if (otherDisclosure !== disclosure && otherDisclosure.open) {
-          otherDisclosure.open = false;
-        }
-      }
-
-      closeCarbonMenu();
-
-      if (disclosure.classList.contains("site-search")) {
-        queueMicrotask(() => {
-          focusSearchInput(disclosure);
-        });
-      }
+      closeDisclosures(disclosure);
+      closeCarbonChrome();
     });
   }
 
-  /**
-   * @param {HTMLDetailsElement} disclosure
-   * @param {boolean} [restoreFocus]
-   * @returns {boolean}
-   */
+  /** @param {HTMLDetailsElement} disclosure */
   function closeDisclosure(disclosure, restoreFocus = false) {
     if (!disclosure.open) {
       return false;
@@ -54,113 +37,79 @@
     disclosure.open = false;
 
     if (restoreFocus) {
-      const trigger = disclosureTriggerByElement.get(disclosure);
-
-      if (trigger instanceof HTMLElement) {
-        trigger.focus({ preventScroll: true });
-      }
+      triggerByDisclosure.get(disclosure)?.focus({ preventScroll: true });
     }
 
     return true;
   }
 
-  /**
-   * Closes Carbon side nav state when details-based panels open.
-   * @returns {boolean}
-   */
-  function closeCarbonMenu() {
+  /** @param {HTMLDetailsElement} [exceptDisclosure] */
+  function closeDisclosures(exceptDisclosure) {
+    for (const disclosure of disclosures) {
+      if (disclosure === exceptDisclosure) {
+        continue;
+      }
+
+      closeDisclosure(disclosure);
+    }
+  }
+
+  function closeCarbonChrome(restoreFocus = false) {
     let closed = false;
 
-    for (
-      const menuButton of globalThis.document.querySelectorAll(
-        "cds-header-menu-button[active]",
+    const focusTarget = restoreFocus
+      ? globalThis.document.querySelector(
+        "cds-header-global-action[active], cds-header-menu-button[active]",
       )
-    ) {
-      menuButton.removeAttribute("active");
-      closed = true;
-    }
+      : null;
 
     for (
-      const sideNav of globalThis.document.querySelectorAll(
-        "cds-side-nav[expanded]",
+      const element of globalThis.document.querySelectorAll(
+        "cds-header-menu-button[active], cds-side-nav[expanded], cds-header-panel[expanded], cds-header-global-action[active]",
       )
     ) {
-      sideNav.removeAttribute("expanded");
-      closed = true;
+      if (element.hasAttribute("active")) {
+        element.removeAttribute("active");
+        closed = true;
+      }
+
+      if (element.hasAttribute("expanded")) {
+        element.removeAttribute("expanded");
+        closed = true;
+      }
+
+      if (!(element instanceof HTMLElement)) {
+        continue;
+      }
+
+      if (!element.matches("cds-header-global-action")) {
+        continue;
+      }
+
+      const panelId = element.getAttribute("panel-id");
+
+      if (panelId === null || panelId.length === 0) {
+        continue;
+      }
+
+      const linkedPanel = globalThis.document.getElementById(panelId);
+      linkedPanel?.removeAttribute("expanded");
+    }
+
+    if (restoreFocus && focusTarget instanceof HTMLElement) {
+      focusTarget.focus({ preventScroll: true });
     }
 
     return closed;
   }
 
-  /**
-   * @param {HTMLDetailsElement} searchDisclosure
-   * @returns {void}
-   */
-  function focusSearchInput(searchDisclosure) {
-    if (!searchDisclosure.open) {
-      return;
-    }
-
-    const searchRoot = searchDisclosure.querySelector(".site-search-root");
-
-    if (!(searchRoot instanceof HTMLElement)) {
-      return;
-    }
-
-    if (tryFocusSearchInput(searchRoot)) {
-      return;
-    }
-
-    const observer = new MutationObserver(() => {
-      if (!searchDisclosure.open) {
-        observer.disconnect();
-        return;
-      }
-
-      if (tryFocusSearchInput(searchRoot)) {
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(searchRoot, { childList: true, subtree: true });
-
-    globalThis.setTimeout(() => {
-      observer.disconnect();
-    }, 1500);
-  }
-
-  /**
-   * @param {HTMLElement} searchRoot
-   * @returns {boolean}
-   */
-  function tryFocusSearchInput(searchRoot) {
-    const searchInput = searchRoot.querySelector(".pagefind-ui__search-input");
-
-    if (!(searchInput instanceof HTMLInputElement)) {
-      return false;
-    }
-
-    if (searchInput.disabled) {
-      return false;
-    }
-
-    searchInput.focus({ preventScroll: true });
-    return true;
-  }
-
   globalThis.document.addEventListener("pointerdown", (event) => {
-    const eventTarget = event.target;
-
-    if (!(eventTarget instanceof Node)) {
+    if (!(event.target instanceof Node)) {
       return;
     }
 
     for (const disclosure of disclosures) {
-      if (!disclosure.open) {
-        continue;
-      }
-
-      if (disclosure.contains(eventTarget)) {
+      if (!disclosure.open || disclosure.contains(event.target)) {
         continue;
       }
 
@@ -176,17 +125,13 @@
     for (let index = disclosures.length - 1; index >= 0; index -= 1) {
       const disclosure = disclosures[index];
 
-      if (disclosure === undefined) {
-        continue;
-      }
-
-      if (closeDisclosure(disclosure, true)) {
+      if (disclosure !== undefined && closeDisclosure(disclosure, true)) {
         event.preventDefault();
-        break;
+        return;
       }
     }
 
-    if (closeCarbonMenu()) {
+    if (closeCarbonChrome(true)) {
       event.preventDefault();
     }
   });
@@ -209,9 +154,30 @@
         return;
       }
 
-      for (const disclosure of disclosures) {
-        closeDisclosure(disclosure);
-      }
+      closeDisclosures();
     },
   );
+
+  for (
+    const globalAction of globalThis.document.querySelectorAll(
+      "cds-header-global-action",
+    )
+  ) {
+    if (!(globalAction instanceof HTMLElement)) {
+      continue;
+    }
+
+    const actionObserver = new MutationObserver(() => {
+      if (!globalAction.hasAttribute("active")) {
+        return;
+      }
+
+      closeDisclosures();
+    });
+
+    actionObserver.observe(globalAction, {
+      attributes: true,
+      attributeFilter: ["active"],
+    });
+  }
 })();

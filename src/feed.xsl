@@ -47,16 +47,14 @@
                 </cds-header>
               </div>
               <div class="site-header-end">
-                <details class="site-search">
-                  <summary class="site-search-trigger" aria-label="Search" title="Search">
-                    <img class="site-search-trigger-icon octicon-svg" width="16" height="16" src="/icons/octicons/search-16.svg" alt="" aria-hidden="true" focusable="false"/>
-                    <span class="sr-only">Search</span>
-                  </summary>
-                  <div class="site-search-panel" role="dialog" aria-label="Search">
-                    <p class="site-search-panel-title">Search</p>
-                    <div id="feed-search" class="site-search-root"></div>
-                  </div>
-                </details>
+                <cds-header-global-action class="site-search-action" aria-label="Search" button-label-active="Search" button-label-inactive="Search" panel-id="feed-search-panel">
+                  <svg slot="icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
+                    <path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/>
+                  </svg>
+                </cds-header-global-action>
+                <cds-header-panel id="feed-search-panel" class="site-search-panel" aria-label="Search" data-search-panel="">
+                  <div id="feed-search" class="site-search-root"></div>
+                </cds-header-panel>
                 <div class="language-switcher">
                   <details class="language-menu">
                     <summary class="language-menu-trigger" aria-label="Select language" title="Language">

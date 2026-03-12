@@ -31,6 +31,9 @@ const DEFAULT_ICON_HELPERS: IconHelpers = {
   },
 };
 
+const CARBON_SEARCH_ICON_PATH =
+  "M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z";
+
 /** Renders the site header with logo, navigation, and user controls. */
 export default (
   { currentUrl, language }: {
@@ -43,9 +46,9 @@ export default (
   const homeUrl = getLocalizedUrl("/", language);
   const postsUrl = getLocalizedUrl("/posts/", language);
   const aboutUrl = getLocalizedUrl("/about/", language);
-  const searchIcon = helpers.icon("search", "octicons", "16");
   const checkIcon = helpers.icon("check", "octicons", "16");
   const searchContainerId = "search";
+  const searchPanelId = "site-search-panel";
   const navigationItems = [
     {
       href: homeUrl,
@@ -117,31 +120,33 @@ export default (
           </cds-header>
         </div>
         <div class="site-header-end">
-          <details class="site-search">
-            <summary
-              class="site-search-trigger"
-              aria-label={translations.site.searchLabel}
-              title={translations.site.searchLabel}
+          <cds-header-global-action
+            class="site-search-action"
+            aria-label={translations.site.searchLabel}
+            button-label-active={translations.site.searchLabel}
+            button-label-inactive={translations.site.searchLabel}
+            panel-id={searchPanelId}
+          >
+            <svg
+              slot="icon"
+              width="20"
+              height="20"
+              viewBox="0 0 32 32"
+              fill="currentColor"
+              aria-hidden="true"
+              focusable="false"
             >
-              <img
-                inline
-                class="site-search-trigger-icon octicon-svg"
-                width="16"
-                height="16"
-                src={searchIcon}
-                alt=""
-                aria-hidden="true"
-                focusable="false"
-              />
-              <span class="sr-only">{translations.site.searchLabel}</span>
-            </summary>
-            <div class="site-search-panel">
-              <p class="site-search-panel-title">
-                {translations.site.searchLabel}
-              </p>
-              <div id={searchContainerId} class="site-search-root"></div>
-            </div>
-          </details>
+              <path d={CARBON_SEARCH_ICON_PATH}></path>
+            </svg>
+          </cds-header-global-action>
+          <cds-header-panel
+            id={searchPanelId}
+            class="site-search-panel"
+            aria-label={translations.site.searchLabel}
+            data-search-panel=""
+          >
+            <div id={searchContainerId} class="site-search-root"></div>
+          </cds-header-panel>
           <div class="language-switcher">
             <details class="language-menu">
               <summary

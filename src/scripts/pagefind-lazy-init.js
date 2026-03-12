@@ -1,15 +1,15 @@
 // @ts-check
 (() => {
-  const SEARCH_DISCLOSURE_SELECTOR = ".site-search";
+  const SEARCH_PANEL_SELECTOR = "[data-search-panel]";
   const SEARCH_CONTAINER_SELECTOR = ".site-search-root";
   const PAGEFIND_SCRIPT_URL = "/pagefind/pagefind-ui.js";
   const PAGEFIND_STYLE_URL = "/pagefind/pagefind-ui.css";
 
-  const searchDisclosures = Array.from(
-    globalThis.document.querySelectorAll(SEARCH_DISCLOSURE_SELECTOR),
-  ).filter((candidate) => candidate instanceof HTMLDetailsElement);
+  const searchPanels = Array.from(
+    globalThis.document.querySelectorAll(SEARCH_PANEL_SELECTOR),
+  ).filter((candidate) => candidate instanceof HTMLElement);
 
-  if (searchDisclosures.length === 0) {
+  if (searchPanels.length === 0) {
     return;
   }
 
@@ -19,35 +19,91 @@
   const initPromiseByContainer = new WeakMap();
   let generatedContainerId = 0;
 
-  for (const searchDisclosure of searchDisclosures) {
-    searchDisclosure.addEventListener("toggle", () => {
-      if (!searchDisclosure.open) {
-        return;
+  const panelObserver = new MutationObserver((mutationList) => {
+    for (const mutation of mutationList) {
+      if (
+        mutation.type !== "attributes" ||
+        mutation.attributeName !== "expanded" ||
+        !(mutation.target instanceof HTMLElement) ||
+        !mutation.target.hasAttribute("expanded")
+      ) {
+        continue;
       }
 
-      const container = searchDisclosure.querySelector(
-        SEARCH_CONTAINER_SELECTOR,
-      );
+      handleSearchPanelOpened(mutation.target);
+    }
+  });
 
-      if (!(container instanceof HTMLElement)) {
-        return;
-      }
-
-      if (container.dataset.pagefindReady === "true") {
-        return;
-      }
-
-      if (initPromiseByContainer.has(container)) {
-        return;
-      }
-
-      const initPromise = initializePagefind(container);
-      initPromiseByContainer.set(container, initPromise);
-
-      void initPromise.catch(() => {
-        initPromiseByContainer.delete(container);
-      });
+  for (const searchPanel of searchPanels) {
+    panelObserver.observe(searchPanel, {
+      attributes: true,
+      attributeFilter: ["expanded"],
     });
+
+    if (searchPanel.hasAttribute("expanded")) {
+      handleSearchPanelOpened(searchPanel);
+    }
+  }
+
+  /**
+   * Handles a user opening a search panel.
+   * @param {HTMLElement} searchPanel
+   * @returns {void}
+   */
+  function handleSearchPanelOpened(searchPanel) {
+    const container = searchPanel.querySelector(SEARCH_CONTAINER_SELECTOR);
+
+    if (!(container instanceof HTMLElement)) {
+      return;
+    }
+
+    focusSearchInput(container);
+
+    void ensurePagefindInitialized(container).then(() => {
+      focusSearchInput(container);
+    });
+  }
+
+  /**
+   * Ensures Pagefind initialization runs once per container.
+   * @param {HTMLElement} container
+   * @returns {Promise<void>}
+   */
+  function ensurePagefindInitialized(container) {
+    if (container.dataset.pagefindReady === "true") {
+      return Promise.resolve();
+    }
+
+    const existingInitPromise = initPromiseByContainer.get(container);
+
+    if (existingInitPromise !== undefined) {
+      return existingInitPromise;
+    }
+
+    const initPromise = initializePagefind(container).catch((error) => {
+      initPromiseByContainer.delete(container);
+      throw error;
+    });
+
+    initPromiseByContainer.set(container, initPromise);
+    return initPromise;
+  }
+
+  /**
+   * Focuses the Pagefind search input when available.
+   * @param {HTMLElement} searchContainer
+   * @returns {void}
+   */
+  function focusSearchInput(searchContainer) {
+    const searchInput = searchContainer.querySelector(
+      ".pagefind-ui__search-input",
+    );
+
+    if (!(searchInput instanceof HTMLInputElement) || searchInput.disabled) {
+      return;
+    }
+
+    searchInput.focus({ preventScroll: true });
   }
 
   /**

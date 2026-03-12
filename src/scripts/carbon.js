@@ -50,6 +50,20 @@
         ),
     },
     {
+      selector: "cds-header-global-action",
+      register: () =>
+        import(
+          "npm/carbon-web-components/es/components/ui-shell/header-global-action.js"
+        ),
+    },
+    {
+      selector: "cds-header-panel",
+      register: () =>
+        import(
+          "npm/carbon-web-components/es/components/ui-shell/header-panel.js"
+        ),
+    },
+    {
       selector: "cds-side-nav",
       register: () =>
         import("npm/carbon-web-components/es/components/ui-shell/side-nav.js"),
@@ -68,7 +82,7 @@
           "npm/carbon-web-components/es/components/ui-shell/side-nav-link.js"
         ),
     },
-    // TODO(phiphi): [Carbon-P2] Add selective registrations for Carbon search/language/theme header actions when those zones migrate; remove this TODO once all header actions are Carbon-registered through this bootstrap.
+    // TODO(phiphi): [Carbon-P2] Add selective registrations for Carbon language and theme header actions when those zones migrate; remove this TODO once all remaining header actions are Carbon-registered through this bootstrap.
   ];
 
   void registerMatchingCarbonElements(selectiveRegistrations);

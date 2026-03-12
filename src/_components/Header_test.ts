@@ -135,7 +135,7 @@ describe("Header()", () => {
       assertStringIncludes(html, "About");
     });
 
-    it("renders a hamburger trigger and a modal-style search trigger", async () => {
+    it("renders a hamburger trigger and a Carbon search action panel", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
@@ -143,13 +143,13 @@ describe("Header()", () => {
         html,
         /<cds-header-menu-button[^>]*button-label-active="Open navigation menu"[^>]*button-label-inactive="Open navigation menu"/,
       );
-      assertMatch(
-        html,
-        /class="site-search-trigger-icon octicon-svg"[^>]*src="\/icons\/octicons\/search-16\.svg"/,
-      );
+      assertStringIncludes(html, "<cds-header-global-action");
+      assertStringIncludes(html, 'panel-id="site-search-panel"');
+      assertStringIncludes(html, "<cds-header-panel");
       assertStringIncludes(html, 'class="site-search-panel"');
+      assertStringIncludes(html, 'data-search-panel=""');
       assertStringIncludes(html, 'id="search"');
-      assertNotMatch(html, /aria-modal="true"/);
+      assertNotMatch(html, /search-16\.svg/);
     });
 
     it("renders Carbon header navigation shell elements", async () => {
