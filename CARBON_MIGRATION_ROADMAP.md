@@ -18,8 +18,8 @@ The plan intentionally combines findings from:
 | Phase                                              | Status      | Notes                                                                                                                           |
 | -------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | Phase 0 - Baseline and ADR framing                 | In progress | Technical baseline and custom-maintenance debt baseline were captured on 2026-03-12; screenshots and ADR follow-up remain open. |
-| Phase 1 - Dependency and bootstrap plumbing        | In progress | Carbon dependency/bootstrap plumbing started on 2026-03-12 with selective, no-mass-migration wiring.                            |
-| Phase 2 - Header shell migration                   | Planned     | Not started.                                                                                                                    |
+| Phase 1 - Dependency and bootstrap plumbing        | Completed   | Carbon dependency/bootstrap plumbing is complete, including selective `cds-header*` and `cds-side-nav*` registrations.          |
+| Phase 2 - Header shell migration                   | In progress | Slice 1 (navigation/menu) is migrated; search/language/theme header actions remain pending.                                     |
 | Phase 3 - Content surfaces migration               | Planned     | Not started.                                                                                                                    |
 | Phase 4 - Token harmonization and theming          | Planned     | Not started.                                                                                                                    |
 | Phase 5 - Search, media, and performance hardening | Planned     | Not started.                                                                                                                    |
@@ -62,6 +62,15 @@ The plan intentionally combines findings from:
 - Carbon defaults come first; custom CSS/JS is exception-only and must be
   justified, temporary, and tracked.
 
+## 2.4 Icon strategy decision
+
+- Carbon icons (`@carbon/icons`) are the default icon source inside migrated
+  Carbon components and shells.
+- Octicons remain allowed in non-migrated zones until those zones are migrated
+  to Carbon equivalents.
+- Do not mix Carbon and Octicon iconography within the same migrated component
+  unless a documented accessibility or parity blocker exists.
+
 ## 3. Target Architecture
 
 ## 3.1 Integration model
@@ -97,6 +106,8 @@ The plan intentionally combines findings from:
   directly (reading measure, prose rhythm, language-specific typography).
 - Forbid creation of new bespoke UI primitives in migrated areas when a Carbon
   equivalent exists.
+- In migrated Carbon shells, use Carbon iconography by default; retain Octicons
+  only in non-migrated surfaces until their migration slice lands.
 - Every temporary override must have an explicit removal plan tracked with a
   migration TODO comment.
 - Track custom-maintenance debt from Phase 0 onward with two indicators:
@@ -122,18 +133,19 @@ The plan intentionally combines findings from:
 
 ## 5. Carbon Mapping Matrix
 
-| Existing responsibility   | Carbon candidate(s)                            | Migration rule                                                  |
-| ------------------------- | ---------------------------------------------- | --------------------------------------------------------------- |
-| Top navigation            | `cds-header-nav`, `cds-header-nav-item`        | Preserve `aria-current="page"` and localized URLs.              |
-| Mobile menu trigger/panel | `cds-header-menu-button`, `cds-side-nav`       | Keep one-open-at-a-time behavior and Escape close parity.       |
-| Global actions            | `cds-header-global-action`, `cds-header-panel` | Search, language, and theme remain secondary actions.           |
-| Search input              | `cds-search`                                   | Keep lazy Pagefind runtime loading and focus-on-open behavior.  |
-| Language selector         | `cds-dropdown` or overflow-menu composition    | Keep all supported languages and current language indicators.   |
-| Theme control             | `cds-toggle` or `cds-content-switcher`         | Keep persisted user preference and system fallback.             |
-| Inline tags/metadata      | `cds-tag` (read-only)                          | Use only when metadata clarity improves; avoid decorative tags. |
-| Content links             | `cds-link` and semantic `<a>`                  | Body links remain clearly underlined for readability and a11y.  |
-| Breadcrumb trail          | `cds-breadcrumb`, `cds-breadcrumb-item`        | Render only on deep pages, not on shallow routes.               |
-| Code copy affordance      | `cds-copy-button` and/or `cds-code-snippet`    | Keep code readability first; avoid visual noise.                |
+| Existing responsibility   | Carbon candidate(s)                                                | Migration rule                                                        |
+| ------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| Top navigation            | `cds-header-nav`, `cds-header-nav-item`                            | Preserve `aria-current="page"` and localized URLs.                    |
+| Mobile menu trigger/panel | `cds-header-menu-button`, `cds-side-nav`                           | Keep one-open-at-a-time behavior and Escape close parity.             |
+| Global actions            | `cds-header-global-action`, `cds-header-panel`                     | Search, language, and theme remain secondary actions.                 |
+| Search input              | `cds-search`                                                       | Keep lazy Pagefind runtime loading and focus-on-open behavior.        |
+| Language selector         | `cds-dropdown` or overflow-menu composition                        | Keep all supported languages and current language indicators.         |
+| Theme control             | `cds-toggle` or `cds-content-switcher`                             | Keep persisted user preference and system fallback.                   |
+| Iconography               | Carbon icons in `cds-*` shells, Octicons elsewhere until migration | Keep visual consistency per component boundary during phased rollout. |
+| Inline tags/metadata      | `cds-tag` (read-only)                                              | Use only when metadata clarity improves; avoid decorative tags.       |
+| Content links             | `cds-link` and semantic `<a>`                                      | Body links remain clearly underlined for readability and a11y.        |
+| Breadcrumb trail          | `cds-breadcrumb`, `cds-breadcrumb-item`                            | Render only on deep pages, not on shallow routes.                     |
+| Code copy affordance      | `cds-copy-button` and/or `cds-code-snippet`                        | Keep code readability first; avoid visual noise.                      |
 
 ## 6. Phased Execution Plan
 
@@ -307,9 +319,10 @@ Temporary compatibility code is allowed only when marked with explicit TODOs.
 
 ## 7.3 Progress log (update on every merge to `main`)
 
-| Date       | Phase   | Status      | PR/Commit    | Summary                                                                                                                                                     | Remaining TODOs                                                                                                         | Custom debt delta                                                                       |
-| ---------- | ------- | ----------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| 2026-03-12 | P0 + P1 | In progress | Working tree | Captured Phase 0 technical/debt baseline and started Phase 1 Carbon plumbing (dependency alias + selective bootstrap wiring) without mass visual migration. | 2 TODOs: `src/_includes/layouts/base.tsx` (P2 disclosure removal), `src/scripts/carbon.js` (P2 selective registrations) | Baseline set: 5 bespoke scripts, 90 selectors (89 unique); delta is 0 at snapshot time. |
+| Date       | Phase   | Status      | PR/Commit    | Summary                                                                                                                                                                                                                                                                                                                                                         | Remaining TODOs                                                                                                             | Custom debt delta                                                                                                                 |
+| ---------- | ------- | ----------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-12 | P2-S1   | In progress | Working tree | Migrated header/menu shell to Carbon (`cds-header`, `cds-header-menu-button`, `cds-side-nav`, `cds-header-nav`, `cds-header-nav-item`) in main and feed/sitemap shells; kept search/language/theme behavior unchanged; documented Carbon icon policy for migrated shells; replaced the i18n trigger globe with the IBM Watson Language Translator service icon. | 2 TODOs: `src/_includes/layouts/base.tsx` (P2 disclosure removal), `src/scripts/carbon.js` (P2 header-action registrations) | Scripts: 5 files, 918 LOC (+58). Selectors: 74 entries (74 unique), down from 90 (89 unique). Header/menu selectors: 8 (from 24). |
+| 2026-03-12 | P0 + P1 | In progress | Working tree | Captured Phase 0 technical/debt baseline and started Phase 1 Carbon plumbing (dependency alias + selective bootstrap wiring) without mass visual migration.                                                                                                                                                                                                     | 2 TODOs: `src/_includes/layouts/base.tsx` (P2 disclosure removal), `src/scripts/carbon.js` (P2 selective registrations)     | Baseline set: 5 bespoke scripts, 90 selectors (89 unique); delta is 0 at snapshot time.                                           |
 
 ## 8. Quality Gates and Validation Protocol
 

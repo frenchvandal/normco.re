@@ -184,7 +184,7 @@ export default (
             fetchpriority="low"
           >
           </script>
-          {/* TODO(phiphi): [Carbon-P2] Remove disclosure-controls.js once the header no longer relies on `details/summary` interactions after Carbon shell parity is complete. */}
+          {/* TODO(phiphi): [Carbon-P2] Remove disclosure-controls.js once search and language controls no longer rely on `details/summary` interactions after Carbon header-action parity is complete. */}
           <script
             src="/scripts/disclosure-controls.js"
             fetchpriority="low"

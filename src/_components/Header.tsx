@@ -43,110 +43,78 @@ export default (
   const homeUrl = getLocalizedUrl("/", language);
   const postsUrl = getLocalizedUrl("/posts/", language);
   const aboutUrl = getLocalizedUrl("/about/", language);
-  const menuIcon = helpers.icon("three-bars", "octicons", "24");
-  const homeIcon = helpers.icon("home", "octicons", "16");
-  const writingIcon = helpers.icon("book", "octicons", "16");
-  const aboutIcon = helpers.icon("info", "octicons", "16");
   const searchIcon = helpers.icon("search", "octicons", "16");
-  const globeIcon = helpers.icon("globe", "octicons", "16");
   const checkIcon = helpers.icon("check", "octicons", "16");
   const searchContainerId = "search";
+  const navigationItems = [
+    {
+      href: homeUrl,
+      label: translations.navigation.home,
+      isCurrent: ariaCurrent(homeUrl, currentUrl)["aria-current"] === "page",
+    },
+    {
+      href: postsUrl,
+      label: translations.navigation.writing,
+      isCurrent: ariaCurrent(postsUrl, currentUrl)["aria-current"] === "page",
+    },
+    {
+      href: aboutUrl,
+      label: translations.navigation.about,
+      isCurrent: ariaCurrent(aboutUrl, currentUrl)["aria-current"] === "page",
+    },
+  ] as const;
 
   return (
     <header class="site-header">
       <div class="site-header-inner">
         <div class="site-header-start">
-          <details class="site-menu">
-            <summary
-              class="site-menu-trigger"
-              aria-label={translations.site.menuToggleLabel}
-              title={translations.site.menuToggleLabel}
+          <cds-header
+            class="site-carbon-header"
+            aria-label={translations.site.mainNavigationAriaLabel}
+          >
+            <cds-header-menu-button
+              button-label-active={translations.site.menuToggleLabel}
+              button-label-inactive={translations.site.menuToggleLabel}
             >
-              <img
-                inline
-                class="site-menu-trigger-icon octicon-svg"
-                width="24"
-                height="24"
-                src={menuIcon}
-                alt=""
-                aria-hidden="true"
-                focusable="false"
-              />
-              <span class="sr-only">{translations.site.menuToggleLabel}</span>
-            </summary>
-            <div class="site-menu-panel">
-              <nav
-                class="site-menu-nav"
-                aria-label={translations.site.mainNavigationAriaLabel}
-              >
-                <ul class="site-menu-nav-list">
-                  <li class="site-menu-nav-item">
-                    <a
-                      href={homeUrl}
-                      class="site-menu-link"
-                      {...ariaCurrent(homeUrl, currentUrl)}
-                    >
-                      <img
-                        inline
-                        class="site-menu-link-icon octicon-svg"
-                        width="16"
-                        height="16"
-                        src={homeIcon}
-                        alt=""
-                        aria-hidden="true"
-                        focusable="false"
-                      />
-                      <span class="site-menu-link-label">
-                        {translations.navigation.home}
-                      </span>
-                    </a>
-                  </li>
-                  <li class="site-menu-nav-item">
-                    <a
-                      href={postsUrl}
-                      class="site-menu-link"
-                      {...ariaCurrent(postsUrl, currentUrl)}
-                    >
-                      <img
-                        inline
-                        class="site-menu-link-icon octicon-svg"
-                        width="16"
-                        height="16"
-                        src={writingIcon}
-                        alt=""
-                        aria-hidden="true"
-                        focusable="false"
-                      />
-                      <span class="site-menu-link-label">
-                        {translations.navigation.writing}
-                      </span>
-                    </a>
-                  </li>
-                  <li class="site-menu-nav-item">
-                    <a
-                      href={aboutUrl}
-                      class="site-menu-link"
-                      {...ariaCurrent(aboutUrl, currentUrl)}
-                    >
-                      <img
-                        inline
-                        class="site-menu-link-icon octicon-svg"
-                        width="16"
-                        height="16"
-                        src={aboutIcon}
-                        alt=""
-                        aria-hidden="true"
-                        focusable="false"
-                      />
-                      <span class="site-menu-link-label">
-                        {translations.navigation.about}
-                      </span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </details>
+            </cds-header-menu-button>
+            <cds-side-nav
+              class="site-carbon-side-nav"
+              aria-label={translations.site.mainNavigationAriaLabel}
+            >
+              <cds-side-nav-items>
+                {navigationItems.map(({ href, label, isCurrent }) => (
+                  <cds-side-nav-link
+                    href={href}
+                    {...(isCurrent
+                      ? ({
+                        active: "",
+                        "aria-current": "page" as const,
+                      })
+                      : {})}
+                  >
+                    {label}
+                  </cds-side-nav-link>
+                ))}
+              </cds-side-nav-items>
+            </cds-side-nav>
+            <cds-header-nav
+              menu-bar-label={translations.site.mainNavigationAriaLabel}
+            >
+              {navigationItems.map(({ href, label, isCurrent }) => (
+                <cds-header-nav-item
+                  href={href}
+                  {...(isCurrent
+                    ? ({
+                      "is-active": "",
+                      "aria-current": "page" as const,
+                    })
+                    : {})}
+                >
+                  {label}
+                </cds-header-nav-item>
+              ))}
+            </cds-header-nav>
+          </cds-header>
         </div>
         <div class="site-header-end">
           <details class="site-search">
@@ -181,16 +149,24 @@ export default (
                 aria-label={translations.site.languageSelectAriaLabel}
                 title={translations.site.languageSelectLabel}
               >
-                <img
-                  inline
-                  class="language-menu-trigger-icon octicon-svg"
+                <svg
+                  class="language-menu-trigger-icon language-menu-trigger-icon--watson"
                   width="16"
                   height="16"
-                  src={globeIcon}
-                  alt=""
+                  viewBox="0 0 32 32"
+                  fill="currentColor"
                   aria-hidden="true"
                   focusable="false"
-                />
+                >
+                  <path d="M16,28h-3c-3.9,0-7-3.1-7-7v-4h2v4c0,2.8,2.2,5,5,5h3V28z">
+                  </path>
+                  <path d="M28,30h2.2l-4.6-11h-2.2l-4.6,11H21l0.8-2h5.3L28,30z M22.7,26l1.8-4.4l1.8,4.4H22.7z">
+                  </path>
+                  <path d="M28,15h-2v-4c0-2.8-2.2-5-5-5h-4V4h4c3.9,0,7,3.1,7,7V15z">
+                  </path>
+                  <path d="M14,5V3H9V1H7v2H2v2h8.2C10,5.9,9.4,7.5,8,9C7.4,8.3,6.9,7.6,6.6,7H4.3c0.4,1,1.1,2.2,2.1,3.3C5.6,11,4.4,11.6,3,12.1 L3.7,14c1.8-0.7,3.2-1.5,4.3-2.3c1.1,0.9,2.5,1.7,4.3,2.3l0.7-1.9c-1.4-0.5-2.6-1.2-3.5-1.8c1.9-2,2.5-4.1,2.7-5.3H14z">
+                  </path>
+                </svg>
                 <span class="sr-only">
                   {translations.site.languageSelectLabel}
                 </span>

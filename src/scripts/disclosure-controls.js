@@ -2,7 +2,7 @@
 (() => {
   const disclosures = Array.from(
     globalThis.document.querySelectorAll(
-      ".site-menu, .language-menu, .site-search",
+      ".language-menu, .site-search",
     ),
   ).filter((element) => element instanceof HTMLDetailsElement);
 
@@ -30,6 +30,8 @@
           otherDisclosure.open = false;
         }
       }
+
+      closeCarbonMenu();
 
       if (disclosure.classList.contains("site-search")) {
         queueMicrotask(() => {
@@ -60,6 +62,34 @@
     }
 
     return true;
+  }
+
+  /**
+   * Closes Carbon side nav state when details-based panels open.
+   * @returns {boolean}
+   */
+  function closeCarbonMenu() {
+    let closed = false;
+
+    for (
+      const menuButton of globalThis.document.querySelectorAll(
+        "cds-header-menu-button[active]",
+      )
+    ) {
+      menuButton.removeAttribute("active");
+      closed = true;
+    }
+
+    for (
+      const sideNav of globalThis.document.querySelectorAll(
+        "cds-side-nav[expanded]",
+      )
+    ) {
+      sideNav.removeAttribute("expanded");
+      closed = true;
+    }
+
+    return closed;
   }
 
   /**
@@ -155,5 +185,33 @@
         break;
       }
     }
+
+    if (closeCarbonMenu()) {
+      event.preventDefault();
+    }
   });
+
+  globalThis.document.addEventListener(
+    "cds-header-menu-button-toggled",
+    (event) => {
+      if (!(event instanceof CustomEvent)) {
+        return;
+      }
+
+      const detail = event.detail;
+
+      if (
+        typeof detail !== "object" ||
+        detail === null ||
+        !("active" in detail) ||
+        detail.active !== true
+      ) {
+        return;
+      }
+
+      for (const disclosure of disclosures) {
+        closeDisclosure(disclosure);
+      }
+    },
+  );
 })();

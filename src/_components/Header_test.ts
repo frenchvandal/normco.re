@@ -12,7 +12,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /href="\/" class="site-menu-link"[^>]*aria-current="page"/,
+        /<cds-header-nav-item[^>]*href="\/"[^>]*aria-current="page"/,
       );
     });
 
@@ -22,7 +22,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /href="\/" class="site-menu-link"[^>]*aria-current="page"/,
+        /<cds-header-nav-item[^>]*href="\/"[^>]*aria-current="page"/,
       );
     });
 
@@ -32,7 +32,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /href="\/" class="site-menu-link"[^>]*aria-current="page"/,
+        /<cds-header-nav-item[^>]*href="\/"[^>]*aria-current="page"/,
       );
     });
   });
@@ -42,7 +42,10 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/posts/", language: "en" }),
       );
-      assertMatch(html, /href="\/posts\/"[^>]*aria-current="page"/);
+      assertMatch(
+        html,
+        /<cds-header-nav-item[^>]*href="\/posts\/"[^>]*aria-current="page"/,
+      );
     });
 
     it("marks /posts/ as current for a child URL /posts/my-post/", async () => {
@@ -52,14 +55,20 @@ describe("Header()", () => {
           language: "en",
         }),
       );
-      assertMatch(html, /href="\/posts\/"[^>]*aria-current="page"/);
+      assertMatch(
+        html,
+        /<cds-header-nav-item[^>]*href="\/posts\/"[^>]*aria-current="page"/,
+      );
     });
 
     it('does not mark /posts/ as current on "/"', async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertNotMatch(html, /href="\/posts\/"[^>]*aria-current="page"/);
+      assertNotMatch(
+        html,
+        /<cds-header-nav-item[^>]*href="\/posts\/"[^>]*aria-current="page"/,
+      );
     });
   });
 
@@ -68,14 +77,20 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/about/", language: "en" }),
       );
-      assertMatch(html, /href="\/about\/"[^>]*aria-current="page"/);
+      assertMatch(
+        html,
+        /<cds-header-nav-item[^>]*href="\/about\/"[^>]*aria-current="page"/,
+      );
     });
 
     it('does not mark /about/ as current on "/"', async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertNotMatch(html, /href="\/about\/"[^>]*aria-current="page"/);
+      assertNotMatch(
+        html,
+        /<cds-header-nav-item[^>]*href="\/about\/"[^>]*aria-current="page"/,
+      );
     });
   });
 
@@ -108,7 +123,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /href="\/" class="site-menu-link"[\s\S]*\/icons\/octicons\/home-16\.svg/,
+        /<cds-side-nav-link[^>]*href="\/"[^>]*>Home<\/cds-side-nav-link>/,
       );
     });
 
@@ -126,7 +141,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /class="site-menu-trigger-icon octicon-svg"[^>]*src="\/icons\/octicons\/three-bars-24\.svg"/,
+        /<cds-header-menu-button[^>]*button-label-active="Open navigation menu"[^>]*button-label-inactive="Open navigation menu"/,
       );
       assertMatch(
         html,
@@ -137,23 +152,23 @@ describe("Header()", () => {
       assertNotMatch(html, /aria-modal="true"/);
     });
 
-    it("renders menu item icons for Home, Writing, and About", async () => {
+    it("renders Carbon header navigation shell elements", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, "/icons/octicons/home-16.svg");
-      assertStringIncludes(html, "/icons/octicons/book-16.svg");
-      assertStringIncludes(html, "/icons/octicons/info-16.svg");
+      assertStringIncludes(html, "<cds-header");
+      assertStringIncludes(html, "<cds-header-nav");
+      assertStringIncludes(html, "<cds-side-nav");
     });
 
-    it("renders a globe trigger and localized language menu options", async () => {
+    it("renders a Watson Language Translator trigger and localized language menu options", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "fr" }),
       );
       assertStringIncludes(html, 'class="language-switcher"');
       assertMatch(
         html,
-        /class="language-menu-trigger-icon octicon-svg"[^>]*src="\/icons\/octicons\/globe-16\.svg"/,
+        /class="language-menu-trigger-icon language-menu-trigger-icon--watson"/,
       );
       assertStringIncludes(html, 'data-language-option="en"');
       assertStringIncludes(html, 'data-language-option="fr"');
