@@ -264,6 +264,28 @@
     margin-block: 0;
   }
 
+  /* Carbon token bridge for migrated reading surfaces. */
+  /* TODO(phiphi): [Carbon-P4] Remove this scoped token bridge after global Carbon token parity is complete for content and feed surfaces. */
+  :where(.post-card, .post-article, .post-code-block, .site-footer) {
+    --cds-focus: var(--focus-outlineColor);
+    --cds-layer: var(--bgColor-muted);
+    --cds-layer-hover: var(--control-bgColor-hover);
+    --cds-layer-active: var(--control-bgColor-active);
+    --cds-layer-background: var(--bgColor-default);
+    --cds-text-primary: var(--fgColor-default);
+    --cds-text-secondary: var(--fgColor-muted);
+    --cds-border-subtle: var(--borderColor-muted);
+    --cds-border-strong: var(--borderColor-default);
+    --cds-link-primary: var(--fgColor-accent);
+    --cds-link-primary-hover: var(--bgColor-accent-emphasis);
+    --cds-link-focus-text-color: var(--focus-outlineColor);
+  }
+
+  .site-footer-nav {
+    --cds-link-text-color: var(--fgColor-muted);
+    --cds-link-hover-text-color: var(--fgColor-default);
+  }
+
   /* ——— Post card ——— */
 
   .post-card {
@@ -286,22 +308,17 @@
     font-weight: 600;
     line-height: var(--leading-heading);
     text-wrap: balance;
-  }
-
-  .post-card-title cds-link::part(link) {
-    color: var(--color-text);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.15s ease;
-  }
-
-  .post-card-title cds-link::part(link):hover {
-    color: var(--color-accent);
+    --cds-link-text-color: var(--fgColor-default);
+    --cds-link-hover-text-color: var(--fgColor-accent);
   }
 
   .post-card-reading-time {
     grid-column: 2;
     margin-block-start: 0.2em;
+    --cds-tag-background-cool-gray: var(--bgColor-muted);
+    --cds-tag-color-cool-gray: var(--fgColor-muted);
+    --cds-tag-hover-cool-gray: var(--control-bgColor-hover);
+    --cds-tag-border-cool-gray: var(--borderColor-muted);
   }
 
   /* ——— Individual post ——— */
@@ -322,6 +339,11 @@
 
   .post-breadcrumb-shell {
     margin-block-end: var(--space-s);
+  }
+
+  .post-breadcrumb {
+    --cds-link-text-color: var(--fgColor-muted);
+    --cds-link-hover-text-color: var(--fgColor-accent);
   }
 
   .post-breadcrumb-current {
@@ -391,11 +413,6 @@
     inline-size: 100%;
   }
 
-  .post-code-copy-button::part(button) {
-    min-inline-size: 2rem;
-    min-block-size: 2rem;
-  }
-
   .post-content img {
     border-radius: 4px;
   }
@@ -404,8 +421,9 @@
   .about-content a,
   .pagehead-lead a {
     text-decoration-line: underline;
-    text-decoration-thickness: 1px;
+    text-decoration-thickness: max(1px, 0.08em);
     text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
   }
 
   /* Post prev/next navigation */

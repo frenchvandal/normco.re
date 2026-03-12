@@ -81,12 +81,5 @@
     align-items: center;
     padding-inline: 0.35rem;
     border-radius: var(--borderRadius-medium);
-    color: var(--color-meta);
-    text-decoration: none;
-  }
-
-  .site-footer-action-link::part(link):hover {
-    color: var(--color-text);
-    background: var(--bgColor-muted);
   }
 }
