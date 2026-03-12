@@ -65,6 +65,12 @@ const MIN_TRANSITION_HITS = 2;
 const MAX_TRACKED_ROUTES = 60;
 const MAX_TRANSITIONS_PER_ROUTE = 12;
 const BLOCKED_EFFECTIVE_CONNECTION_TYPES = ["slow-2g", "2g"];
+/**
+ * @typedef {{
+ *   readonly saveData?: boolean;
+ *   readonly effectiveType?: string;
+ * }} NetworkInformationLike
+ */
 
 /** @type {Map<string, Map<string, number>>} */
 const navigationTransitions = new Map();
@@ -166,20 +172,33 @@ function getPredictedRoutes(route) {
  * @returns {boolean}
  */
 function shouldPreloadPredictedPages() {
-  const connection = sw.navigator.connection;
+  const navigatorWithConnection =
+    /** @type {WorkerNavigator & { readonly connection?: unknown }} */ (
+      sw.navigator
+    );
+  const connectionCandidate = navigatorWithConnection.connection;
 
-  if (connection === undefined) {
+  if (
+    typeof connectionCandidate !== "object" || connectionCandidate === null
+  ) {
     return true;
   }
+
+  const connection =
+    /** @type {NetworkInformationLike} */ (connectionCandidate);
+  const effectiveType = connection.effectiveType;
 
   if (connection.saveData) {
     logSw("predictive-preload: disabled (Save-Data enabled)");
     return false;
   }
 
-  if (BLOCKED_EFFECTIVE_CONNECTION_TYPES.includes(connection.effectiveType)) {
+  if (
+    typeof effectiveType === "string" &&
+    BLOCKED_EFFECTIVE_CONNECTION_TYPES.includes(effectiveType)
+  ) {
     logSw("predictive-preload: disabled (slow effectiveType)", {
-      effectiveType: connection.effectiveType,
+      effectiveType,
     });
     return false;
   }

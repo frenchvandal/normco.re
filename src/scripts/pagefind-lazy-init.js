@@ -4,6 +4,47 @@
   const SEARCH_CONTAINER_SELECTOR = ".site-search-root";
   const PAGEFIND_SCRIPT_URL = "/pagefind/pagefind-ui.js";
   const PAGEFIND_STYLE_URL = "/pagefind/pagefind-ui.css";
+  /**
+   * @typedef {{
+   *   readonly element: string;
+   *   readonly showImages: boolean;
+   *   readonly showSubResults: boolean;
+   *   readonly resetStyles: boolean;
+   * }} PagefindUiOptions
+   */
+  /** @typedef {new (options: PagefindUiOptions) => unknown} PagefindUiConstructor */
+
+  /**
+   * Returns the Pagefind UI constructor when the runtime has loaded.
+   * @returns {PagefindUiConstructor | null}
+   */
+  function getPagefindUiConstructor() {
+    const runtime =
+      /** @type {{ readonly PagefindUI?: unknown }} */ (globalThis);
+    const pagefindUi = runtime.PagefindUI;
+
+    if (typeof pagefindUi !== "function") {
+      return null;
+    }
+
+    return /** @type {PagefindUiConstructor} */ (pagefindUi);
+  }
+
+  /**
+   * Returns the optional Scheduler API object when available.
+   * @returns {{ yield?: () => Promise<void> } | undefined}
+   */
+  function getSchedulerApi() {
+    const runtime =
+      /** @type {{ readonly scheduler?: unknown }} */ (globalThis);
+    const scheduler = runtime.scheduler;
+
+    if (typeof scheduler !== "object" || scheduler === null) {
+      return undefined;
+    }
+
+    return /** @type {{ yield?: () => Promise<void> }} */ (scheduler);
+  }
 
   const searchPanels = Array.from(
     globalThis.document.querySelectorAll(SEARCH_PANEL_SELECTOR),
@@ -116,8 +157,8 @@
     await loadPagefindScript();
     await yieldToMain();
 
-    const pagefindUi = globalThis["PagefindUI"];
-    if (typeof pagefindUi !== "function") {
+    const pagefindUi = getPagefindUiConstructor();
+    if (pagefindUi === null) {
       return;
     }
 
@@ -172,7 +213,7 @@
    * @returns {Promise<void>}
    */
   async function loadPagefindScript() {
-    if (typeof globalThis["PagefindUI"] === "function") {
+    if (getPagefindUiConstructor() !== null) {
       return;
     }
 
@@ -223,11 +264,7 @@
    * @returns {Promise<void>}
    */
   async function yieldToMain() {
-    /** @type {{ yield?: () => Promise<void> } | undefined} */
-    const schedulerApi =
-      /** @type {{ yield?: () => Promise<void> } | undefined} */ (
-        /** @type {unknown} */ (globalThis["scheduler"])
-      );
+    const schedulerApi = getSchedulerApi();
 
     if (typeof schedulerApi?.yield === "function") {
       await schedulerApi.yield();

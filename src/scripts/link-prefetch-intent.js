@@ -8,7 +8,34 @@
     return;
   }
 
-  const connection = globalThis.navigator.connection;
+  /**
+   * @typedef {{
+   *   readonly saveData?: boolean;
+   *   readonly effectiveType?: string;
+   * }} NetworkInformationLike
+   */
+
+  /**
+   * Returns the optional Network Information API object when available.
+   * @returns {NetworkInformationLike | undefined}
+   */
+  function getNavigatorConnection() {
+    const navigatorWithConnection =
+      /** @type {Navigator & { readonly connection?: unknown }} */ (
+        globalThis.navigator
+      );
+    const connectionCandidate = navigatorWithConnection.connection;
+
+    if (
+      typeof connectionCandidate !== "object" || connectionCandidate === null
+    ) {
+      return undefined;
+    }
+
+    return /** @type {NetworkInformationLike} */ (connectionCandidate);
+  }
+
+  const connection = getNavigatorConnection();
   const blockedEffectiveTypes = new Set(["slow-2g", "2g"]);
 
   if (connection?.saveData) {
