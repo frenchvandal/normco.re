@@ -69,6 +69,11 @@ Before finalizing a change (opening a PR or merging), run the following commands
    `validate_html` plugin during build/update) and fix all reported HTML errors
    before merge. If a false positive or external blocker remains, document it in
    the PR with a concrete follow-up plan.
+1. Analyze `_broken-links.json` (generated at the repository root by the
+   `checkUrls` plugin during build/update) and fix all reported broken links
+   before merge. If a false positive or external blocker remains, document it in
+   the PR with a concrete follow-up plan.
+
 
 ### Commit message validation
 

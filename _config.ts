@@ -451,6 +451,7 @@ site.use(
     anchors: true,
     throw: true,
     ignore: ["/feed.xml", "/feed.json", "/sitemap.xml"],
+    output: "_broken_links.json",
   }),
 );
 
