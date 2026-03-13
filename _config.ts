@@ -435,6 +435,8 @@ site.use(
       "heading-level": "off",
       "script-type": "off",
       "attribute-boolean-style": "off",
+      "attribute-empty-style": "off", // JSX renders hidden as hidden=""
+      "unique-landmark": "off", // SideNav nav inherits aside aria-label
     },
   }),
 );

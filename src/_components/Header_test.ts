@@ -99,7 +99,7 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertMatch(html, /<header[^>]*class="bx--header"[^>]*role="banner"/);
+      assertMatch(html, /<header[^>]*class="bx--header"/);
     });
 
     it("renders header wrapper with bx--header__wrapper", async () => {

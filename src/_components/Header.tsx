@@ -86,7 +86,7 @@ export default (
   return (
     <>
       {/* Carbon UI Shell Header */}
-      <header class="bx--header" role="banner">
+      <header class="bx--header">
         <div class="bx--header__wrapper">
           {/* Left section: hamburger menu + product name */}
           <div class="bx--header__left">
@@ -237,16 +237,17 @@ export default (
       <div
         id={languagePanelId}
         class="bx--header__panel bx--header__language-panel"
-        aria-label={translations.site.languageSelectAriaLabel}
-        role="dialog"
         aria-modal="true"
         hidden
       >
         <div class="bx--header__panel-content">
-          <h2 class="bx--header__panel-title">
+          <h2 id={`${languagePanelId}-title`} class="bx--header__panel-title">
             {translations.site.languageSelectLabel}
           </h2>
-          <nav class="bx--header__language-list" role="navigation">
+          <nav
+            class="bx--header__language-list"
+            aria-labelledby={`${languagePanelId}-title`}
+          >
             {SUPPORTED_LANGUAGES.map((optionLanguage) => {
               const optionUrl = getLocalizedUrl("/", optionLanguage);
               const isSelected = optionLanguage === language;
@@ -255,7 +256,6 @@ export default (
                   key={optionLanguage}
                   href={optionUrl}
                   class="bx--header__menu-item bx--header__language-item"
-                  role="menuitem"
                   {...(isSelected ? { "aria-current": "page" as const } : {})}
                 >
                   {translations.languageNames[optionLanguage]}
@@ -270,8 +270,6 @@ export default (
       <div
         id={searchPanelId}
         class="bx--header__panel bx--header__search-panel"
-        aria-label={translations.site.searchLabel}
-        role="dialog"
         aria-modal="true"
         hidden
       >

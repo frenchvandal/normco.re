@@ -12,7 +12,9 @@ import _themeData from "../../design/Theme.json" with { type: "json" };
 import _spacingData from "../../design/Spacing.json" with { type: "json" };
 import _layerData from "../../design/Layer.json" with { type: "json" };
 import _radiusData from "../../design/Radius.json" with { type: "json" };
-import _breakpointData from "../../design/Breakpoint.json" with { type: "json" };
+import _breakpointData from "../../design/Breakpoint.json" with {
+  type: "json",
+};
 import _colorsData from "../../design/Colors.json" with { type: "json" };
 
 /** Carbon theme mode identifiers. */
