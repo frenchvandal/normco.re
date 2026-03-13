@@ -162,11 +162,13 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, title);
     });
 
-    it("renders a Carbon breadcrumb for post hierarchy", async () => {
+    it("renders a semantic breadcrumb trail for post hierarchy", async () => {
       const html = await renderComponent(
         postLayout(makeData({}), MOCK_HELPERS),
       );
-      assertStringIncludes(html, "<cds-breadcrumb");
+      assertStringIncludes(html, '<nav class="post-breadcrumb-shell"');
+      assertStringIncludes(html, 'href="/"');
+      assertStringIncludes(html, 'href="/posts/"');
       assertStringIncludes(html, "Home");
       assertStringIncludes(html, "Writing");
     });

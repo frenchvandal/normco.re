@@ -1,0 +1,278 @@
+{
+  "id": "VariableCollectionId:50388:1641",
+  "name": "AI presence",
+  "modes": {
+    "50388:0": "No AI",
+    "50388:1": "All AI elements",
+    "50388:2": "AI layer only"
+  },
+  "variableIds": [
+    "VariableID:50388:1642",
+    "VariableID:50388:1643",
+    "VariableID:50388:1644",
+    "VariableID:50388:1645",
+    "VariableID:55029:1305",
+    "VariableID:56525:2128",
+    "VariableID:62100:3640585",
+    "VariableID:58322:79247"
+  ],
+  "variables": [
+    {
+      "id": "VariableID:58322:79247",
+      "name": "Test",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50388:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:58322:79248" },
+        "50388:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:58322:79249" },
+        "50388:2": { "type": "VARIABLE_ALIAS", "id": "VariableID:58322:79250" }
+      },
+      "resolvedValuesByMode": {
+        "50388:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:58322:79248",
+          "aliasName": "No AI/AI spacer - Data table"
+        },
+        "50388:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:58322:79249",
+          "aliasName": "All AI elements/Test"
+        },
+        "50388:2": {
+          "resolvedValue": true,
+          "alias": "VariableID:58322:79250",
+          "aliasName": "AI layer only/Test"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:50388:1642",
+      "name": "AI slug",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50388:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:161" },
+        "50388:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1248" },
+        "50388:2": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1254" }
+      },
+      "resolvedValuesByMode": {
+        "50388:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:161",
+          "aliasName": "No AI/AI slug"
+        },
+        "50388:1": {
+          "resolvedValue": true,
+          "alias": "VariableID:55029:1248",
+          "aliasName": "AlI AI elements/AI slug"
+        },
+        "50388:2": {
+          "resolvedValue": false,
+          "alias": "VariableID:55029:1254",
+          "aliasName": "AI layer only/AI slug"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:50388:1643",
+      "name": "AI background",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50388:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:162" },
+        "50388:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1249" },
+        "50388:2": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1255" }
+      },
+      "resolvedValuesByMode": {
+        "50388:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:162",
+          "aliasName": "No AI/AI background"
+        },
+        "50388:1": {
+          "resolvedValue": true,
+          "alias": "VariableID:55029:1249",
+          "aliasName": "AlI AI elements/AI background"
+        },
+        "50388:2": {
+          "resolvedValue": true,
+          "alias": "VariableID:55029:1255",
+          "aliasName": "AI layer only/AI background"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:50388:1644",
+      "name": "AI border",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50388:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:163" },
+        "50388:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1250" },
+        "50388:2": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1256" }
+      },
+      "resolvedValuesByMode": {
+        "50388:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:163",
+          "aliasName": "No AI/AI border"
+        },
+        "50388:1": {
+          "resolvedValue": true,
+          "alias": "VariableID:55029:1250",
+          "aliasName": "AlI AI elements/AI border"
+        },
+        "50388:2": {
+          "resolvedValue": true,
+          "alias": "VariableID:55029:1256",
+          "aliasName": "AI layer only/AI border"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:50388:1645",
+      "name": "AI aura",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50388:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:164" },
+        "50388:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1251" },
+        "50388:2": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1257" }
+      },
+      "resolvedValuesByMode": {
+        "50388:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:164",
+          "aliasName": "No AI/AI aura"
+        },
+        "50388:1": {
+          "resolvedValue": true,
+          "alias": "VariableID:55029:1251",
+          "aliasName": "AlI AI elements/AI aura"
+        },
+        "50388:2": {
+          "resolvedValue": true,
+          "alias": "VariableID:55029:1257",
+          "aliasName": "AI layer only/AI aura"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1305",
+      "name": "AI revert button",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50388:0": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:50542:440445"
+        },
+        "50388:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1252" },
+        "50388:2": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1258" }
+      },
+      "resolvedValuesByMode": {
+        "50388:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:50542:440445",
+          "aliasName": "No AI/AI revert button"
+        },
+        "50388:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55029:1252",
+          "aliasName": "AlI AI elements/AI revert button"
+        },
+        "50388:2": {
+          "resolvedValue": false,
+          "alias": "VariableID:55029:1258",
+          "aliasName": "AI layer only/AI revert button"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:56525:2128",
+      "name": "No AI (skeleton)",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50388:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:58245:28317" },
+        "50388:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1251" },
+        "50388:2": { "type": "VARIABLE_ALIAS", "id": "VariableID:55029:1251" }
+      },
+      "resolvedValuesByMode": {
+        "50388:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:58245:28317",
+          "aliasName": "AI presence/No AI + AI present/No AI (Skeleton)"
+        },
+        "50388:1": {
+          "resolvedValue": true,
+          "alias": "VariableID:55029:1251",
+          "aliasName": "AlI AI elements/AI aura"
+        },
+        "50388:2": {
+          "resolvedValue": true,
+          "alias": "VariableID:55029:1251",
+          "aliasName": "AlI AI elements/AI aura"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:62100:3640585",
+      "name": "AI spacer - Data table",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50388:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:58322:79248" },
+        "50388:1": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:62100:3637983"
+        },
+        "50388:2": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:62100:3639407"
+        }
+      },
+      "resolvedValuesByMode": {
+        "50388:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:58322:79248",
+          "aliasName": "No AI/AI spacer - Data table"
+        },
+        "50388:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:62100:3637983",
+          "aliasName": "AlI AI elements/AI spacer - Data table"
+        },
+        "50388:2": {
+          "resolvedValue": false,
+          "alias": "VariableID:62100:3639407",
+          "aliasName": "AI layer only/AI spacer - Data table"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+{
+  "id": "VariableCollectionId:18076:5541",
+  "name": "Numbers",
+  "modes": { "18076:0": "Mode 1" },
+  "variableIds": [
+    "VariableID:18169:7298",
+    "VariableID:18172:8616",
+    "VariableID:18169:8244",
+    "VariableID:18172:8613",
+    "VariableID:18172:8614",
+    "VariableID:18172:8615",
+    "VariableID:18172:8617",
+    "VariableID:18172:8618",
+    "VariableID:18169:7342",
+    "VariableID:18500:9103",
+    "VariableID:18500:9102",
+    "VariableID:18500:9104",
+    "VariableID:18500:9105"
+  ],
+  "variables": [
+    {
+      "id": "VariableID:18169:7298",
+      "name": "Category/Width",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 1344 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 1344, "alias": null }
+      },
+      "scopes": ["WIDTH_HEIGHT"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18169:7342",
+      "name": "Pictogram card/Dimensions",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 288 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 288, "alias": null }
+      },
+      "scopes": ["WIDTH_HEIGHT"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18169:8244",
+      "name": "Category/Spacing reference",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 256 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 256, "alias": null }
+      },
+      "scopes": [],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18172:8613",
+      "name": "Category/Padding (Sides)",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 96 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 96, "alias": null }
+      },
+      "scopes": ["GAP"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18172:8614",
+      "name": "Category/Padding (Top)",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 370 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 370, "alias": null }
+      },
+      "scopes": ["GAP"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18172:8615",
+      "name": "Category/Padding (Bottom)",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 212 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 212, "alias": null }
+      },
+      "scopes": ["GAP"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18172:8616",
+      "name": "Category/Gap",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 0 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 0, "alias": null }
+      },
+      "scopes": ["GAP"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18172:8617",
+      "name": "Category/Opacity",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 100 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 100, "alias": null }
+      },
+      "scopes": ["OPACITY"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18172:8618",
+      "name": "Category/Corner radius",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 0 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 0, "alias": null }
+      },
+      "scopes": ["CORNER_RADIUS"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18500:9102",
+      "name": "Pictogram card/Padding",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 16 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 16, "alias": null }
+      },
+      "scopes": ["GAP"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18500:9103",
+      "name": "Pictogram card/Gap",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 0 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 0, "alias": null }
+      },
+      "scopes": ["GAP"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18500:9104",
+      "name": "Pictogram card/Opacity",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 100 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 100, "alias": null }
+      },
+      "scopes": ["OPACITY"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:18500:9105",
+      "name": "Pictogram card/Corner radius",
+      "description": "",
+      "type": "FLOAT",
+      "valuesByMode": { "18076:0": 0 },
+      "resolvedValuesByMode": {
+        "18076:0": { "resolvedValue": 0, "alias": null }
+      },
+      "scopes": ["CORNER_RADIUS"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    }
+  ]
+}

@@ -163,23 +163,13 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           class="post-breadcrumb-shell"
           aria-label={translations.post.breadcrumbAriaLabel}
         >
-          <cds-breadcrumb class="post-breadcrumb" size="sm" no-trailing-slash>
-            <cds-breadcrumb-item>
-              <cds-link href={homeUrl} size="sm">
-                {translations.navigation.home}
-              </cds-link>
-            </cds-breadcrumb-item>
-            <cds-breadcrumb-item>
-              <cds-link href={postsBaseUrl} size="sm">
-                {translations.navigation.writing}
-              </cds-link>
-            </cds-breadcrumb-item>
-            <cds-breadcrumb-item>
-              <span class="post-breadcrumb-current" aria-current="page">
-                {currentTitle}
-              </span>
-            </cds-breadcrumb-item>
-          </cds-breadcrumb>
+          <a href={homeUrl}>{translations.navigation.home}</a>
+          <span aria-hidden="true">/</span>
+          <a href={postsBaseUrl}>{translations.navigation.writing}</a>
+          <span aria-hidden="true">/</span>
+          <span class="post-breadcrumb-current" aria-current="page">
+            {currentTitle}
+          </span>
         </nav>
         <h1 class="post-title">{data.title ?? ""}</h1>
         <div class="post-meta">

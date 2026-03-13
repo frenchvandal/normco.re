@@ -29,9 +29,7 @@ export default (
   },
 ): string => {
   const meta = readingLabel !== undefined
-    ? `<cds-tag class="post-card-reading-time" size="sm" type="cool-gray">${
-      escapeHtml(readingLabel)
-    }</cds-tag>`
+    ? `<span class="post-card-reading-time">${escapeHtml(readingLabel)}</span>`
     : "";
   const safeTitle = escapeHtml(title);
   const safeUrl = escapeAttribute(url);
@@ -40,7 +38,7 @@ export default (
 
   return `<article class="post-card">
   <time class="post-card-date" datetime="${safeDateIso}">${safeDateStr}</time>
-  <h3 class="post-card-title"><cds-link href="${safeUrl}">${safeTitle}</cds-link></h3>
+  <h3 class="post-card-title"><a href="${safeUrl}">${safeTitle}</a></h3>
   ${meta}
 </article>`;
 };

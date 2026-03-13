@@ -128,6 +128,7 @@
   "unstable": [
     "temporal"
   ],
+  "nodeModulesDir": "auto",
   "fmt": { "exclude": ["**/*.xml"] },
   "lint": {
     "plugins": [

@@ -20,12 +20,12 @@ function makeBase(seed: number) {
 
 describe("PostCard()", () => {
   describe("with readingLabel", () => {
-    it("renders reading time in a Carbon tag", () => {
+    it("renders reading time in a native metadata badge", () => {
       const base = makeBase(301);
       const html = PostCard({ ...base, readingLabel: "3 min read" });
       assertStringIncludes(html, "3 min read");
       assertStringIncludes(html, 'class="post-card-reading-time"');
-      assertStringIncludes(html, "<cds-tag");
+      assertStringIncludes(html, "<span");
     });
 
     it("renders the provided reading label value", () => {
@@ -36,11 +36,11 @@ describe("PostCard()", () => {
   });
 
   describe("without readingLabel", () => {
-    it("renders no Carbon reading-time tag", () => {
+    it("renders no reading-time badge", () => {
       const base = makeBase(303);
       const html = PostCard({ ...base });
       assertNotMatch(html, /post-card-reading-time/);
-      assertNotMatch(html, /<cds-tag/);
+      assertNotMatch(html, /<span class="post-card-reading-time"/);
       assertNotMatch(html, /min read/);
     });
   });
@@ -59,13 +59,14 @@ describe("PostCard()", () => {
       assertStringIncludes(html, base.dateStr);
     });
 
-    it("renders the title in an h3 with a Carbon link", () => {
+    it("renders the title in an h3 with a native link", () => {
       const base = makeBase(306);
       const html = PostCard({ ...base });
       assertStringIncludes(html, `href="${base.url}"`);
       assertStringIncludes(html, base.title);
       assertStringIncludes(html, "<h3");
-      assertStringIncludes(html, "<cds-link");
+      assertStringIncludes(html, "<h3");
+      assertStringIncludes(html, "<a");
     });
 
     it("escapes title and URL values before interpolation", () => {

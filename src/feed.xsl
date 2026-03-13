@@ -182,8 +182,8 @@
             <div class="site-footer-inner">
               <span>&#169; <script>document.write(new Date().getFullYear())</script> Phiphi</span>
               <nav class="site-footer-nav" aria-label="Site links">
-                <cds-link href="https://github.com/frenchvandal/normco.re" class="site-footer-action-link" size="sm" target="_blank" rel="noopener noreferrer" aria-label="Open GitHub repository">GitHub</cds-link>
-                <cds-link href="/feed.xml" class="site-footer-action-link" size="sm" aria-label="Open RSS feed">RSS</cds-link>
+                <a href="https://github.com/frenchvandal/normco.re" target="_blank" rel="noopener noreferrer" aria-label="Open GitHub repository">GitHub</a>
+                <a href="/feed.xml" aria-label="Open RSS feed">RSS</a>
               </nav>
             </div>
           </footer>

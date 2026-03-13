@@ -29,24 +29,17 @@ export default (
           class="site-footer-nav"
           aria-label={translations.site.siteLinksAriaLabel}
         >
-          <cds-link
+          <a
             href={repositoryUrl}
-            class="site-footer-action-link"
-            size="sm"
             target="_blank"
             rel="noopener noreferrer"
             aria-label={translations.site.repositoryLinkAriaLabel}
           >
             GitHub
-          </cds-link>
-          <cds-link
-            href={feedXmlUrl}
-            class="site-footer-action-link"
-            size="sm"
-            aria-label={translations.site.rssLinkAriaLabel}
-          >
+          </a>
+          <a href={feedXmlUrl} aria-label={translations.site.rssLinkAriaLabel}>
             RSS
-          </cds-link>
+          </a>
         </nav>
       </div>
     </footer>

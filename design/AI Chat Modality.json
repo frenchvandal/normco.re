@@ -1,0 +1,234 @@
+{
+  "id": "VariableCollectionId:67639:159",
+  "name": "AI Chat Modality",
+  "modes": {
+    "67639:0": "Floating",
+    "67639:1": "Docked Left",
+    "67639:2": "Docked Right",
+    "67639:3": "Spotlight"
+  },
+  "variableIds": [
+    "VariableID:67639:160",
+    "VariableID:67639:161",
+    "VariableID:67639:162",
+    "VariableID:67639:163",
+    "VariableID:67639:164",
+    "VariableID:67639:165",
+    "VariableID:67639:166",
+    "VariableID:67639:167",
+    "VariableID:67639:168",
+    "VariableID:67639:169"
+  ],
+  "variables": [
+    {
+      "id": "VariableID:67639:160",
+      "name": "Show on floating",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "67639:0": true,
+        "67639:1": false,
+        "67639:2": false,
+        "67639:3": false
+      },
+      "resolvedValuesByMode": {
+        "67639:0": { "resolvedValue": true, "alias": null },
+        "67639:1": { "resolvedValue": false, "alias": null },
+        "67639:2": { "resolvedValue": false, "alias": null },
+        "67639:3": { "resolvedValue": false, "alias": null }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:67639:161",
+      "name": "Show on docked",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "67639:0": false,
+        "67639:1": true,
+        "67639:2": true,
+        "67639:3": false
+      },
+      "resolvedValuesByMode": {
+        "67639:0": { "resolvedValue": false, "alias": null },
+        "67639:1": { "resolvedValue": true, "alias": null },
+        "67639:2": { "resolvedValue": true, "alias": null },
+        "67639:3": { "resolvedValue": false, "alias": null }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:67639:162",
+      "name": "Show on docked left",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "67639:0": false,
+        "67639:1": true,
+        "67639:2": false,
+        "67639:3": false
+      },
+      "resolvedValuesByMode": {
+        "67639:0": { "resolvedValue": false, "alias": null },
+        "67639:1": { "resolvedValue": true, "alias": null },
+        "67639:2": { "resolvedValue": false, "alias": null },
+        "67639:3": { "resolvedValue": false, "alias": null }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:67639:163",
+      "name": "Show on docked right",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "67639:0": false,
+        "67639:1": false,
+        "67639:2": true,
+        "67639:3": false
+      },
+      "resolvedValuesByMode": {
+        "67639:0": { "resolvedValue": false, "alias": null },
+        "67639:1": { "resolvedValue": false, "alias": null },
+        "67639:2": { "resolvedValue": true, "alias": null },
+        "67639:3": { "resolvedValue": false, "alias": null }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:67639:164",
+      "name": "Show on spotlight",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "67639:0": false,
+        "67639:1": false,
+        "67639:2": false,
+        "67639:3": true
+      },
+      "resolvedValuesByMode": {
+        "67639:0": { "resolvedValue": false, "alias": null },
+        "67639:1": { "resolvedValue": false, "alias": null },
+        "67639:2": { "resolvedValue": false, "alias": null },
+        "67639:3": { "resolvedValue": true, "alias": null }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:67639:165",
+      "name": "Hide on floating",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "67639:0": false,
+        "67639:1": true,
+        "67639:2": true,
+        "67639:3": true
+      },
+      "resolvedValuesByMode": {
+        "67639:0": { "resolvedValue": false, "alias": null },
+        "67639:1": { "resolvedValue": true, "alias": null },
+        "67639:2": { "resolvedValue": true, "alias": null },
+        "67639:3": { "resolvedValue": true, "alias": null }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:67639:166",
+      "name": "Hide on docked",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "67639:0": true,
+        "67639:1": false,
+        "67639:2": false,
+        "67639:3": true
+      },
+      "resolvedValuesByMode": {
+        "67639:0": { "resolvedValue": true, "alias": null },
+        "67639:1": { "resolvedValue": false, "alias": null },
+        "67639:2": { "resolvedValue": false, "alias": null },
+        "67639:3": { "resolvedValue": true, "alias": null }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:67639:167",
+      "name": "Hide on docked left",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "67639:0": true,
+        "67639:1": false,
+        "67639:2": true,
+        "67639:3": true
+      },
+      "resolvedValuesByMode": {
+        "67639:0": { "resolvedValue": true, "alias": null },
+        "67639:1": { "resolvedValue": false, "alias": null },
+        "67639:2": { "resolvedValue": true, "alias": null },
+        "67639:3": { "resolvedValue": true, "alias": null }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:67639:168",
+      "name": "Hide on docked right",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "67639:0": true,
+        "67639:1": true,
+        "67639:2": false,
+        "67639:3": true
+      },
+      "resolvedValuesByMode": {
+        "67639:0": { "resolvedValue": true, "alias": null },
+        "67639:1": { "resolvedValue": true, "alias": null },
+        "67639:2": { "resolvedValue": false, "alias": null },
+        "67639:3": { "resolvedValue": true, "alias": null }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:67639:169",
+      "name": "Hide on spotlight",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "67639:0": true,
+        "67639:1": true,
+        "67639:2": true,
+        "67639:3": false
+      },
+      "resolvedValuesByMode": {
+        "67639:0": { "resolvedValue": true, "alias": null },
+        "67639:1": { "resolvedValue": true, "alias": null },
+        "67639:2": { "resolvedValue": true, "alias": null },
+        "67639:3": { "resolvedValue": false, "alias": null }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    }
+  ]
+}

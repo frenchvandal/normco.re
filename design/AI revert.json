@@ -1,0 +1,547 @@
+{
+  "id": "VariableCollectionId:50542:440444",
+  "name": "AI revert",
+  "modes": { "50542:0": "AI present", "50542:1": "AI reverted" },
+  "variableIds": [
+    "VariableID:55015:161",
+    "VariableID:55015:162",
+    "VariableID:55015:163",
+    "VariableID:55015:164",
+    "VariableID:50542:440445",
+    "VariableID:58322:79248",
+    "VariableID:55029:1248",
+    "VariableID:55029:1249",
+    "VariableID:55029:1250",
+    "VariableID:55029:1251",
+    "VariableID:55029:1252",
+    "VariableID:62100:3637983",
+    "VariableID:58322:79249",
+    "VariableID:55029:1254",
+    "VariableID:55029:1255",
+    "VariableID:55029:1256",
+    "VariableID:55029:1257",
+    "VariableID:55029:1258",
+    "VariableID:58322:79250",
+    "VariableID:62100:3639407"
+  ],
+  "variables": [
+    {
+      "id": "VariableID:58322:79249",
+      "name": "All AI elements/Test",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:58322:79243" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:58322:79244" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:58322:79243",
+          "aliasName": "AI presence/All AI elements + AI present/Test"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:58322:79244",
+          "aliasName": "AI presence/All AI elements + AI reverted/Test"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:58322:79250",
+      "name": "AI layer only/Test",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:58322:79245" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:58322:79246" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:58322:79245",
+          "aliasName": "AI presence/AI layer only + AI present/Test"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:58322:79246",
+          "aliasName": "AI presence/AI layer only + AI reverted/Test"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:50542:440445",
+      "name": "No AI/AI revert button",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:169" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:174" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:169",
+          "aliasName": "AI presence/No AI + AI present/AI revert button"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:174",
+          "aliasName": "AI presence/No AI + AI reverted/AI revert button"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55015:161",
+      "name": "No AI/AI slug",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:165" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:170" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:165",
+          "aliasName": "AI presence/No AI + AI present/🚫 AI slug"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:170",
+          "aliasName": "AI presence/No AI + AI reverted/AI slug"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55015:162",
+      "name": "No AI/AI background",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:166" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:171" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:166",
+          "aliasName": "AI presence/No AI + AI present/🚫 AI background"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:171",
+          "aliasName": "AI presence/No AI + AI reverted/AI background"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55015:163",
+      "name": "No AI/AI border",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:167" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:172" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:167",
+          "aliasName": "AI presence/No AI + AI present/AI border"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:172",
+          "aliasName": "AI presence/No AI + AI reverted/AI border"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55015:164",
+      "name": "No AI/AI aura",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:168" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:173" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:168",
+          "aliasName": "AI presence/No AI + AI present/🚫 AI aura"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:173",
+          "aliasName": "AI presence/No AI + AI reverted/AI aura"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1248",
+      "name": "AlI AI elements/AI slug",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:175" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:180" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:55015:175",
+          "aliasName": "AI presence/All AI elements + AI present/AI slug"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:180",
+          "aliasName": "AI presence/All AI elements + AI reverted/AI slug"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1249",
+      "name": "AlI AI elements/AI background",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:176" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:181" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:55015:176",
+          "aliasName": "AI presence/All AI elements + AI present/AI background"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:181",
+          "aliasName": "AI presence/All AI elements + AI reverted/AI background"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1250",
+      "name": "AlI AI elements/AI border",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:177" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:182" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:55015:177",
+          "aliasName": "AI presence/All AI elements + AI present/AI border"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:182",
+          "aliasName": "AI presence/All AI elements + AI reverted/AI border"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1251",
+      "name": "AlI AI elements/AI aura",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:178" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:183" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:55015:178",
+          "aliasName": "AI presence/All AI elements + AI present/AI aura"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:183",
+          "aliasName": "AI presence/All AI elements + AI reverted/AI aura"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1252",
+      "name": "AlI AI elements/AI revert button",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:179" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:184" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:179",
+          "aliasName": "AI presence/All AI elements + AI present/AI revert button"
+        },
+        "50542:1": {
+          "resolvedValue": true,
+          "alias": "VariableID:55015:184",
+          "aliasName": "AI presence/All AI elements + AI reverted/AI revert button"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1254",
+      "name": "AI layer only/AI slug",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:185" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:190" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:185",
+          "aliasName": "AI presence/AI layer only + AI present/AI slug"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:190",
+          "aliasName": "AI presence/AI layer only + AI reverted/AI slug"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1255",
+      "name": "AI layer only/AI background",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:186" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:191" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:55015:186",
+          "aliasName": "AI presence/AI layer only + AI present/AI background"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:191",
+          "aliasName": "AI presence/AI layer only + AI reverted/AI background"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1256",
+      "name": "AI layer only/AI border",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:187" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:192" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:55015:187",
+          "aliasName": "AI presence/AI layer only + AI present/AI border"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:192",
+          "aliasName": "AI presence/AI layer only + AI reverted/AI border"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1257",
+      "name": "AI layer only/AI aura",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:188" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:193" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:55015:188",
+          "aliasName": "AI presence/AI layer only + AI present/AI aura"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:193",
+          "aliasName": "AI presence/AI layer only + AI reverted/AI aura"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:55029:1258",
+      "name": "AI layer only/AI revert button",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:189" },
+        "50542:1": { "type": "VARIABLE_ALIAS", "id": "VariableID:55015:194" }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:189",
+          "aliasName": "AI presence/AI layer only + AI present/AI revert button"
+        },
+        "50542:1": {
+          "resolvedValue": false,
+          "alias": "VariableID:55015:194",
+          "aliasName": "AI presence/AI layer only + AI reverted/AI revert button"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:58322:79248",
+      "name": "No AI/AI spacer - Data table",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:62100:3584912"
+        },
+        "50542:1": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:62100:3594113"
+        }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": true,
+          "alias": "VariableID:62100:3584912",
+          "aliasName": "AI presence/No AI + AI present/AI spacer - Data table"
+        },
+        "50542:1": {
+          "resolvedValue": true,
+          "alias": "VariableID:62100:3594113",
+          "aliasName": "AI presence/No AI + AI reverted/AI spacer - Data table"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": false,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:62100:3637983",
+      "name": "AlI AI elements/AI spacer - Data table",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:62100:3601679"
+        },
+        "50542:1": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:62100:3607516"
+        }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:62100:3601679",
+          "aliasName": "AI presence/All AI elements + AI present/AI spacer - Data table"
+        },
+        "50542:1": {
+          "resolvedValue": true,
+          "alias": "VariableID:62100:3607516",
+          "aliasName": "AI presence/All AI elements + AI reverted/AI spacer - Data table"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    },
+    {
+      "id": "VariableID:62100:3639407",
+      "name": "AI layer only/AI spacer - Data table",
+      "description": "",
+      "type": "BOOLEAN",
+      "valuesByMode": {
+        "50542:0": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:62100:3611513"
+        },
+        "50542:1": {
+          "type": "VARIABLE_ALIAS",
+          "id": "VariableID:62100:3618734"
+        }
+      },
+      "resolvedValuesByMode": {
+        "50542:0": {
+          "resolvedValue": false,
+          "alias": "VariableID:62100:3611513",
+          "aliasName": "AI presence/AI layer only + AI present/AI spacer - Data table"
+        },
+        "50542:1": {
+          "resolvedValue": true,
+          "alias": "VariableID:62100:3618734",
+          "aliasName": "AI presence/AI layer only + AI reverted/AI spacer - Data table"
+        }
+      },
+      "scopes": ["ALL_SCOPES"],
+      "hiddenFromPublishing": true,
+      "codeSyntax": {}
+    }
+  ]
+}
