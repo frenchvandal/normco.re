@@ -11,7 +11,8 @@ Deno.test("carbon bootstrap uses browser-resolvable Carbon module URLs", () => {
     CARBON_COMPONENTS_BASE_URL,
     /(?:https?:\/\/|npm\/|jsr:|node:)/,
   );
-  assertEquals(SELECTIVE_CARBON_COMPONENTS.length, 17);
+  // 13 entries (no duplicates after P5-S20 cleanup)
+  assertEquals(SELECTIVE_CARBON_COMPONENTS.length, 13);
   const entryUrls = new Set<string>();
 
   for (const { modulePath } of SELECTIVE_CARBON_COMPONENTS) {
@@ -33,6 +34,13 @@ Deno.test("carbon bootstrap uses browser-resolvable Carbon module URLs", () => {
   }
 
   assertEquals(entryUrls.size, SELECTIVE_CARBON_COMPONENTS.length);
+  assert(
+    !SELECTIVE_CARBON_COMPONENTS.some(({ selector }) =>
+      selector === "cds-link" || selector === "cds-tag" ||
+      selector === "cds-breadcrumb" || selector === "cds-breadcrumb-item"
+    ),
+    "Expected low-ROI editorial Carbon primitives to be removed from selective bootstrap",
+  );
 });
 
 Deno.test("carbon bootstrap rejects invalid component module paths", () => {

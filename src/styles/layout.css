@@ -74,4 +74,20 @@
     align-items: center;
     gap: var(--space-s);
   }
+
+  .site-footer-nav a {
+    color: var(--color-meta);
+    text-decoration: none;
+  }
+
+  .site-footer-nav a:hover {
+    color: var(--fgColor-default);
+    text-decoration: underline;
+  }
+
+  .site-footer-nav a:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-outlineColor);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--borderRadius-medium);
+  }
 }

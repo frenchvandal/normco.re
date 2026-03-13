@@ -22,13 +22,6 @@ export const SELECTIVE_CARBON_COMPONENTS = [
   { selector: "cds-switcher", modulePath: "ui-shell/switcher.js" },
   { selector: "cds-switcher-item", modulePath: "ui-shell/switcher-item.js" },
   { selector: "cds-button", modulePath: "button/button.js" },
-  { selector: "cds-link", modulePath: "link/link.js" },
-  { selector: "cds-tag", modulePath: "tag/tag.js" },
-  { selector: "cds-breadcrumb", modulePath: "breadcrumb/breadcrumb.js" },
-  {
-    selector: "cds-breadcrumb-item",
-    modulePath: "breadcrumb/breadcrumb-item.js",
-  },
   {
     selector: "cds-copy-button",
     modulePath: "copy-button/copy-button.js",
@@ -38,14 +31,11 @@ export const SELECTIVE_CARBON_COMPONENTS = [
     selector: "cds-side-nav-items",
     modulePath: "ui-shell/side-nav-items.js",
   },
-  {
-    selector: "cds-side-nav-link",
-    modulePath: "ui-shell/side-nav-link.js",
-  },
+  { selector: "cds-side-nav-link", modulePath: "ui-shell/side-nav-link.js" },
 ];
 
 /**
- * Resolves a browser-compatible URL for a Carbon Web Components module.
+ * Resolves a local browser URL for a Carbon module.
  * @param {string} componentPath
  * @returns {string}
  */
@@ -70,8 +60,7 @@ export function getCarbonComponentUrl(componentPath) {
   root.dataset.carbonBootstrap = "ready";
 
   /**
-   * Registers Carbon custom elements only when matching selectors are present.
-   * This keeps registration selective while migration is incremental.
+   * Registers only the Carbon elements needed by the current document.
    * @param {ReadonlyArray<{ readonly selector: string; readonly modulePath: string }>} selectiveComponents
    * @returns {Promise<void>}
    */

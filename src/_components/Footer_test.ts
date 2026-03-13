@@ -26,7 +26,6 @@ describe("Footer()", () => {
     );
     assertStringIncludes(html, 'href="/feed.xml"');
     assertStringIncludes(html, 'aria-label="Open RSS feed"');
-    assertStringIncludes(html, "<cds-link");
     assertStringIncludes(html, ">RSS<");
   });
 
@@ -42,7 +41,6 @@ describe("Footer()", () => {
     assertStringIncludes(html, 'target="_blank"');
     assertStringIncludes(html, 'rel="noopener noreferrer"');
     assertStringIncludes(html, 'aria-label="Open GitHub repository"');
-    assertStringIncludes(html, "<cds-link");
     assertStringIncludes(html, ">GitHub<");
   });
 
@@ -80,5 +78,25 @@ describe("Footer()", () => {
       Footer({ author: author, language: "fr", feedXmlUrl: "/fr/feed.xml" }),
     );
     assertStringIncludes(html, 'href="/fr/feed.xml"');
+  });
+});
+
+describe("Footer CSS contracts", () => {
+  it("has hover/focus styles for footer navigation links", async () => {
+    // This test verifies that the layout.css file contains the required
+    // hover and focus-visible styles for footer navigation links.
+    const cssContent = await Deno.readTextFile(
+      new URL("../styles/layout.css", import.meta.url),
+    );
+    assertStringIncludes(
+      cssContent,
+      ".site-footer-nav a:hover",
+      "Missing hover style for footer navigation links",
+    );
+    assertStringIncludes(
+      cssContent,
+      ".site-footer-nav a:focus-visible",
+      "Missing focus-visible style for footer navigation links",
+    );
   });
 });

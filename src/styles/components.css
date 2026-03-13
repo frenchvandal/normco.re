@@ -271,12 +271,6 @@
     margin-block: 0;
   }
 
-  /* TODO(phiphi): [Carbon-P5] Remove footer utility-link token overrides after global Carbon link tokens preserve muted idle state and readable hover contrast on home, feed, and sitemap without local wrappers. */
-  .site-footer-nav {
-    --cds-link-text-color: var(--fgColor-muted);
-    --cds-link-hover-text-color: var(--fgColor-default);
-  }
-
   /* ——— Post card ——— */
 
   .post-card {
@@ -299,17 +293,34 @@
     font-weight: 600;
     line-height: var(--leading-heading);
     text-wrap: balance;
-    --cds-link-text-color: var(--fgColor-default);
-    --cds-link-hover-text-color: var(--fgColor-accent);
+  }
+
+  .post-card-title a {
+    color: var(--fgColor-default);
   }
 
   .post-card-reading-time {
     grid-column: 2;
     margin-block-start: 0.2em;
-    --cds-tag-background-cool-gray: var(--bgColor-muted);
-    --cds-tag-color-cool-gray: var(--fgColor-muted);
-    --cds-tag-hover-cool-gray: var(--control-bgColor-hover);
-    --cds-tag-border-cool-gray: var(--borderColor-muted);
+    color: var(--color-meta);
+    font-size: var(--text-sm);
+  }
+
+  .post-breadcrumb-shell {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-block-end: var(--space-s);
+    font-size: var(--text-sm);
+  }
+
+  .post-breadcrumb-shell a {
+    color: var(--fgColor-muted);
+  }
+
+  .post-breadcrumb-current {
+    color: var(--color-meta);
   }
 
   /* ——— Individual post ——— */
@@ -329,12 +340,16 @@
   }
 
   .post-breadcrumb-shell {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
     margin-block-end: var(--space-s);
+    font-size: var(--text-sm);
   }
 
-  .post-breadcrumb {
-    --cds-link-text-color: var(--fgColor-muted);
-    --cds-link-hover-text-color: var(--fgColor-accent);
+  .post-breadcrumb-shell a {
+    color: var(--fgColor-muted);
   }
 
   .post-breadcrumb-current {
