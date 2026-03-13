@@ -446,11 +446,18 @@ site.use(
 
 // Detect broken internal links, including hash anchors, and fail the build
 // when invalid URLs are detected.
+// Ignore JavaScript files: URL-like strings in JS are routing/service worker
+// paths, not actual links. The plugin would otherwise report false positives.
 site.use(
   checkUrls({
     anchors: true,
     throw: true,
-    ignore: ["/feed.xml", "/feed.json", "/sitemap.xml"],
+    ignore: [
+      "/feed.xml",
+      "/feed.json",
+      "/sitemap.xml",
+      /\.js$/,
+    ],
     output: "_broken_links.json",
   }),
 );
