@@ -122,6 +122,7 @@ export type SiteTranslations = {
     readonly navigationAriaLabel: string;
     readonly previousLabel: string;
     readonly nextLabel: string;
+    readonly tagsAriaLabel: string;
     readonly copyCodeLabel: string;
     readonly copyCodeFeedback: string;
     readonly copyCodeFailedFeedback: string;
@@ -200,6 +201,7 @@ const SITE_TRANSLATIONS = {
       navigationAriaLabel: "Post navigation",
       previousLabel: "Previous",
       nextLabel: "Next",
+      tagsAriaLabel: "Post tags",
       copyCodeLabel: "Copy code",
       copyCodeFeedback: "Code copied",
       copyCodeFailedFeedback: "Cannot copy code",
@@ -277,6 +279,7 @@ const SITE_TRANSLATIONS = {
       navigationAriaLabel: "Navigation entre articles",
       previousLabel: "Précédent",
       nextLabel: "Suivant",
+      tagsAriaLabel: "Étiquettes de l'article",
       copyCodeLabel: "Copier le code",
       copyCodeFeedback: "Code copié",
       copyCodeFailedFeedback: "Impossible de copier le code",
@@ -352,6 +355,7 @@ const SITE_TRANSLATIONS = {
       navigationAriaLabel: "文章导航",
       previousLabel: "上一篇",
       nextLabel: "下一篇",
+      tagsAriaLabel: "文章标签",
       copyCodeLabel: "复制代码",
       copyCodeFeedback: "代码已复制",
       copyCodeFailedFeedback: "无法复制代码",
@@ -427,6 +431,7 @@ const SITE_TRANSLATIONS = {
       navigationAriaLabel: "文章導覽",
       previousLabel: "上一篇",
       nextLabel: "下一篇",
+      tagsAriaLabel: "文章標籤",
       copyCodeLabel: "複製程式碼",
       copyCodeFeedback: "程式碼已複製",
       copyCodeFailedFeedback: "無法複製程式碼",

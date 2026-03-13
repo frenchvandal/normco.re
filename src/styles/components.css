@@ -1510,6 +1510,14 @@
     margin-block: var(--cds-spacing-05) var(--cds-spacing-07);
   }
 
+  /* Post tags container */
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--cds-spacing-03);
+    margin-block-start: var(--cds-spacing-05);
+  }
+
   /* Dark mode tag color adjustments */
   :root[data-color-mode="dark"] .bx--tag--blue {
     background-color: rgb(69 137 255 / 15%);
