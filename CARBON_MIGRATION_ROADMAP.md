@@ -348,6 +348,80 @@ Temporary compatibility code is allowed only when marked with explicit TODOs.
 
 ## 7.3 Progress log (update on every merge to `main`)
 
+<!-- P5-S22 PROMPT (à copier-coller pour la prochaine itération) :
+
+P5-S22: Remplacer `cds-switcher` (language panel) + corriger menus Home et recherche
+
+Objectif:
+- Cibler `cds-switcher` dans Header.tsx, feed.xsl, sitemap.xsl (language panel)
+- Extraire tokens depuis `/design/*.json` :
+  - Colors.json : Gray/20 pour hover, Gray/10 pour focus, Blue/60 pour selected
+  - Spacing.json : spacing-03 (8px) padding, spacing-05 (16px) touch target
+  - Content switcher.json : background et selected tokens
+- Implémenter `<select>` natif avec styles Carbon :
+  - appearance: base-select + ::picker(select) pour le dropdown natif
+  - Hover/focus-visible states avec tokens locaux
+  - Selected state visuel (language actuel)
+- Préserver :
+  - Language routing logic (getLocalizedUrl, SUPPORTED_LANGUAGES)
+  - Selected state (current language via option[selected])
+  - ARIA labels (languageSelectAriaLabel)
+  - Navigation clavier (flèches haut/bas, Enter, Escape)
+- Supprimer `cds-switcher` + `cds-switcher-item` de carbon.js (10 entries restantes)
+- Ajouter tests rendering + CSS contracts
+
+Livrables:
+- Header.tsx, feed.xsl, sitemap.xsl : `<select>` natif pour language
+- layout.css : styles `.site-language-select` (tokens Carbon, appearance: base-select)
+- carbon.js : 10 entries (remove cds-switcher, cds-switcher-item)
+- Header_test.ts : tests select options + selected state + keyboard nav
+- carbon_test.ts : validation 10 entries
+- CARBON_MIGRATION_ROADMAP.md : log P5-S22
+- Payload delta : cible 0 bytes (CSS-only)
+
+Validation:
+1. deno fmt
+2. deno lint
+3. deno task check
+4. deno task lint:doc
+5. deno test --allow-read
+6. deno task test:doc
+7. deno task build
+8. Vérifier _html-issues.json
+9. deno task lint-commit
+10. Commit + push
+
+---
+
+CORRECTIONS UI SHELL (à traiter en parallèle ou P5-S23) :
+
+1. Menu Home (cds-header-nav / cds-side-nav) :
+   - Vérifier alignement avec Carbon UI Shell Header pattern
+   - Remplacer par `<nav>` + `<ul>` + `<li>` + `<a>` natifs si aucun comportement custom requis
+   - Préserver aria-current="page" et active states
+   - Tokens : Colors.json (link-primary, link-primary-hover), Spacing.json
+
+2. Sélecteur de langue (cds-switcher) :
+   - Voir objectif P5-S22 ci-dessus
+   - Pattern Carbon : Overflow Menu ou Dropdown natif selon complexité
+   - Alternative : `<details>` + `<summary>` si comportement simple
+
+3. Recherche (cds-header-global-action + cds-header-panel + Pagefind) :
+   - Garder Pagefind lazy-loading (pagefind({ ui: false }))
+   - Remplacer cds-header-global-action par `<button>` natif avec icône Carbon
+   - Remplacer cds-header-panel par `<div>` avec aria-expanded/aria-controls
+   - Préserver focus-on-open behavior et Escape close
+   - Tokens : search form (spacing-05 input padding, border-radius medium)
+
+Références Carbon Design System :
+- Dropdown : https://carbondesignsystem.com/components/dropdown/
+- Overflow Menu : https://carbondesignsystem.com/components/overflow-menu/
+- Search : https://carbondesignsystem.com/components/search/
+- UI Shell Header : https://carbondesignsystem.com/components/UI-shell-header/
+- Content Switcher : https://carbondesignsystem.com/components/content-switcher/
+
+-->
+
 | Date       | Phase   | Status      | PR/Commit    | Summary                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Remaining TODOs                                                                                                                                                                                                                                                                                                                                                                                                       | Custom debt delta                                                                                                                                                                                                                                                                                                                                          |
 | ---------- | ------- | ----------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-03-13 | P5-S21  | Completed   | Working tree | Delivered token-first slice by replacing `cds-button` web component with native `<button>` for theme toggle: extracted Carbon design tokens from `/design/*.json` (Spacing: `spacing-05`/`spacing-06` for touch target, Colors: Gray scale for hover states), implemented native semantic HTML button with Carbon-aligned CSS in `src/styles/layout.css` (48px min-size, focus-visible ring, hover transition), updated `src/_components/Header.tsx`, `src/feed.xsl`, and `src/sitemap.xsl` to use native button while preserving all ARIA attributes and data attributes for `theme-toggle.js`, removed `cds-button` from `src/scripts/carbon.js` selective bootstrap (12 entries from 13), and added rendering contract tests in `src/_components/Header_test.ts` plus bootstrap validation in `src/scripts/carbon_test.ts` to prevent reintroduction.                                                                                                                                                                                                                                                       | 2 TODOs (accepted carryover): `src/scripts/post-code-copy.js` (`[Carbon-P3]` remove `execCommand` fallback after clipboard API support baseline for site visitors reaches parity in analytics), `src/styles/components.css` (`[Carbon-P5]` remove footer utility-link token overrides after global Carbon link tokens preserve muted idle/hover affordance parity on home, feed, and sitemap without local wrappers). | Scripts (migrated chrome): 7 files, 1,103 LOC (no change vs P5-S20, +243 vs baseline). Selectors (search/content surfaces): replaced 1 Carbon runtime selector (`cds-button`) with native equivalent while adding 3 new CSS rules for `.site-theme-action` in layout.css. Payload (default key routes): total JS/CSS bytes delta 0 vs P5-S21 baseline report (no new JS/CSS bytes, Carbon vendor bundle reduced by 1 entry). |
