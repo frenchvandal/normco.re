@@ -785,7 +785,7 @@ Components live in `_components/` and are consumed via the `comp` variable
 (never via direct `import` — Deno cannot hot-reload imported modules without
 restarting the process):
 
-```ts
+```tsx
 // _components/Button.tsx
 export default function ({ content }: { readonly content: string }) {
   return <button class="btn">{content}</button>;
@@ -1022,7 +1022,7 @@ Common stubbing patterns:
 
 Replaces `Date`, `setTimeout`, `setInterval` with controllable versions:
 
-```ts
+```ts ignore
 using time = new FakeTime(startDate?);
 time.tick(ms);       // advance by ms, fire due timers
 time.next();         // advance to the next scheduled timer

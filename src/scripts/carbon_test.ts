@@ -11,8 +11,8 @@ Deno.test("carbon bootstrap uses browser-resolvable Carbon module URLs", () => {
     CARBON_COMPONENTS_BASE_URL,
     /(?:https?:\/\/|npm\/|jsr:|node:)/,
   );
-  // 10 entries (cds-button removed in P5-S21, cds-switcher* removed in P5-S22, low-ROI editorial primitives removed in P5-S20)
-  assertEquals(SELECTIVE_CARBON_COMPONENTS.length, 10);
+  // 1 entry remaining: cds-copy-button (other components replaced in P5-* refactoring steps)
+  assertEquals(SELECTIVE_CARBON_COMPONENTS.length, 1);
   const entryUrls = new Set<string>();
 
   for (const { modulePath } of SELECTIVE_CARBON_COMPONENTS) {
@@ -39,9 +39,14 @@ Deno.test("carbon bootstrap uses browser-resolvable Carbon module URLs", () => {
       selector === "cds-link" || selector === "cds-tag" ||
       selector === "cds-breadcrumb" || selector === "cds-breadcrumb-item" ||
       selector === "cds-button" || selector === "cds-switcher" ||
-      selector === "cds-switcher-item"
+      selector === "cds-switcher-item" || selector === "cds-header" ||
+      selector === "cds-header-menu-button" || selector === "cds-header-nav" ||
+      selector === "cds-header-nav-item" ||
+      selector === "cds-header-global-action" ||
+      selector === "cds-header-panel" || selector === "cds-side-nav" ||
+      selector === "cds-side-nav-items" || selector === "cds-side-nav-link"
     ),
-    "Expected low-ROI editorial Carbon primitives, cds-button, and cds-switcher* to be removed from selective bootstrap",
+    "Expected obsolete Carbon UI shell primitives to be removed from selective bootstrap",
   );
 });
 

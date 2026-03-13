@@ -26,31 +26,28 @@
             <div class="site-header-inner">
               <div class="site-header-start">
                 <a href="/" class="site-name">normco.re</a>
-                <cds-header class="site-carbon-header" aria-label="Main navigation">
-                  <cds-header-menu-button button-label-active="Open navigation menu" button-label-inactive="Open navigation menu"></cds-header-menu-button>
-                  <cds-side-nav class="site-carbon-side-nav" aria-label="Main navigation">
-                    <cds-side-nav-items>
-                      <cds-side-nav-link href="/">Home</cds-side-nav-link>
-                      <cds-side-nav-link href="/posts/">Writing</cds-side-nav-link>
-                      <cds-side-nav-link href="/about/">About</cds-side-nav-link>
-                    </cds-side-nav-items>
-                  </cds-side-nav>
-                  <cds-header-nav menu-bar-label="Main navigation">
-                    <cds-header-nav-item href="/">Home</cds-header-nav-item>
-                    <cds-header-nav-item href="/posts/">Writing</cds-header-nav-item>
-                    <cds-header-nav-item href="/about/">About</cds-header-nav-item>
-                  </cds-header-nav>
-                </cds-header>
+                <button type="button" class="site-navigation-toggle" aria-expanded="false" aria-controls="site-navigation-menu" aria-label="Open navigation menu">
+                  <svg class="site-navigation-toggle-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
+                    <path d="M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z"/>
+                  </svg>
+                </button>
+                <nav id="site-navigation-menu" class="site-navigation" aria-label="Main navigation">
+                  <ul class="site-navigation-list">
+                    <li class="site-navigation-item"><a href="/" class="site-navigation-link">Home</a></li>
+                    <li class="site-navigation-item"><a href="/posts/" class="site-navigation-link">Writing</a></li>
+                    <li class="site-navigation-item"><a href="/about/" class="site-navigation-link">About</a></li>
+                  </ul>
+                </nav>
               </div>
               <div class="site-header-end">
-                <cds-header-global-action class="site-search-action" aria-label="Search" button-label-active="Search" button-label-inactive="Search" panel-id="sitemap-search-panel">
-                  <svg slot="icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
+                <button type="button" class="site-search-action" aria-label="Search" aria-expanded="false" aria-controls="sitemap-search-panel">
+                  <svg class="site-search-action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/>
                   </svg>
-                </cds-header-global-action>
-                <cds-header-panel id="sitemap-search-panel" class="site-search-panel" aria-label="Search" data-search-panel="">
+                </button>
+                <div id="sitemap-search-panel" class="site-search-panel" aria-label="Search" data-search-panel="">
                   <div id="sitemap-search" class="site-search-root" data-search-root=""></div>
-                </cds-header-panel>
+                </div>
                 <cds-header-global-action class="site-language-action" aria-label="Select language" button-label-active="Language" button-label-inactive="Language" panel-id="sitemap-language-panel">
                   <svg slot="icon" class="site-language-action-icon site-language-action-icon--watson" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M16,28h-3c-3.9,0-7-3.1-7-7v-4h2v4c0,2.8,2.2,5,5,5h3V28z"/>

@@ -145,3 +145,69 @@
     });
   }
 })();
+
+/**
+ * Handle native UI shell toggles (navigation and search)
+ * Replaces functionality previously provided by Carbon Web Components
+ */
+document.addEventListener("DOMContentLoaded", () => {
+  const navToggle = document.querySelector(".site-navigation-toggle");
+  const searchToggle = document.querySelector(".site-search-action");
+
+  /**
+   * Toggles a panel's visibility and updates ARIA states
+   * @param {Element|null} button The trigger button
+   * @param {string} panelId The ID of the panel to toggle
+   */
+  const setupToggle = (button, panelId) => {
+    if (!(button instanceof HTMLElement)) return;
+
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+
+    button.addEventListener("click", () => {
+      const isExpanded = button.getAttribute("aria-expanded") === "true";
+      const newState = !isExpanded;
+
+      button.setAttribute("aria-expanded", String(newState));
+
+      // The search script relies on the 'expanded' attribute (no value)
+      if (newState) {
+        panel.setAttribute("expanded", "");
+        // Only necessary for the search input to get focus when opened
+        const searchInput = panel.querySelector('input[type="text"]');
+        if (searchInput) {
+          // slight delay to allow display:block to apply before focusing
+          setTimeout(() => searchInput.focus(), 50);
+        }
+      } else {
+        panel.removeAttribute("expanded");
+      }
+    });
+
+    // Close on escape key
+    panel.addEventListener("keydown", (e) => {
+      // @ts-ignore: e may not be typed as KeyboardEvent in some environments
+      if (e.key === "Escape") {
+        button.setAttribute("aria-expanded", "false");
+        panel.removeAttribute("expanded");
+        button.focus();
+      }
+    });
+  };
+
+  setupToggle(navToggle, "site-navigation-menu");
+  setupToggle(searchToggle, "site-search-panel");
+  setupToggle(
+    document.querySelector(
+      ".site-search-action[aria-controls='feed-search-panel']",
+    ),
+    "feed-search-panel",
+  );
+  setupToggle(
+    document.querySelector(
+      ".site-search-action[aria-controls='sitemap-search-panel']",
+    ),
+    "sitemap-search-panel",
+  );
+});

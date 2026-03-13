@@ -82,64 +82,59 @@ export default (
     <header class="site-header">
       <div class="site-header-inner">
         <div class="site-header-start">
-          <cds-header
-            class="site-carbon-header"
+          <button
+            type="button"
+            class="site-navigation-toggle"
+            aria-expanded="false"
+            aria-controls="site-navigation-menu"
+            aria-label={translations.site.menuToggleLabel}
+          >
+            <svg
+              class="site-navigation-toggle-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 32 32"
+              fill="currentColor"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z"></path>
+            </svg>
+          </button>
+          <nav
+            id="site-navigation-menu"
+            class="site-navigation"
             aria-label={translations.site.mainNavigationAriaLabel}
           >
-            <cds-header-menu-button
-              button-label-active={translations.site.menuToggleLabel}
-              button-label-inactive={translations.site.menuToggleLabel}
-            >
-            </cds-header-menu-button>
-            <cds-side-nav
-              class="site-carbon-side-nav"
-              aria-label={translations.site.mainNavigationAriaLabel}
-            >
-              <cds-side-nav-items>
-                {navigationItems.map(({ href, label, isCurrent }) => (
-                  <cds-side-nav-link
+            <ul class="site-navigation-list">
+              {navigationItems.map(({ href, label, isCurrent }) => (
+                <li class="site-navigation-item">
+                  <a
                     href={href}
+                    class="site-navigation-link"
                     {...(isCurrent
                       ? ({
-                        active: "",
                         "aria-current": "page" as const,
                       })
                       : {})}
                   >
                     {label}
-                  </cds-side-nav-link>
-                ))}
-              </cds-side-nav-items>
-            </cds-side-nav>
-            <cds-header-nav
-              menu-bar-label={translations.site.mainNavigationAriaLabel}
-            >
-              {navigationItems.map(({ href, label, isCurrent }) => (
-                <cds-header-nav-item
-                  href={href}
-                  {...(isCurrent
-                    ? ({
-                      "is-active": "",
-                      "aria-current": "page" as const,
-                    })
-                    : {})}
-                >
-                  {label}
-                </cds-header-nav-item>
+                  </a>
+                </li>
               ))}
-            </cds-header-nav>
-          </cds-header>
+            </ul>
+          </nav>
         </div>
         <div class="site-header-end">
-          <cds-header-global-action
+          <button
+            type="button"
             class="site-search-action"
             aria-label={translations.site.searchLabel}
-            button-label-active={translations.site.searchLabel}
-            button-label-inactive={translations.site.searchLabel}
-            panel-id={searchPanelId}
+            aria-expanded="false"
+            aria-controls={searchPanelId}
           >
             <svg
-              slot="icon"
+              class="site-search-action-icon"
               width="20"
               height="20"
               viewBox="0 0 32 32"
@@ -149,8 +144,8 @@ export default (
             >
               <path d={CARBON_SEARCH_ICON_PATH}></path>
             </svg>
-          </cds-header-global-action>
-          <cds-header-panel
+          </button>
+          <div
             id={searchPanelId}
             class="site-search-panel"
             aria-label={translations.site.searchLabel}
@@ -162,7 +157,7 @@ export default (
               data-search-root=""
             >
             </div>
-          </cds-header-panel>
+          </div>
           <cds-header-global-action
             class="site-language-action"
             aria-label={translations.site.languageSelectAriaLabel}

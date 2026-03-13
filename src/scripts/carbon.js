@@ -4,31 +4,10 @@ export const CARBON_COMPONENTS_BASE_URL = "/scripts/carbon-vendor";
 
 /** @type {ReadonlyArray<{ readonly selector: string; readonly modulePath: string }>} */
 export const SELECTIVE_CARBON_COMPONENTS = [
-  { selector: "cds-header", modulePath: "ui-shell/header.js" },
-  {
-    selector: "cds-header-menu-button",
-    modulePath: "ui-shell/header-menu-button.js",
-  },
-  { selector: "cds-header-nav", modulePath: "ui-shell/header-nav.js" },
-  {
-    selector: "cds-header-nav-item",
-    modulePath: "ui-shell/header-nav-item.js",
-  },
-  {
-    selector: "cds-header-global-action",
-    modulePath: "ui-shell/header-global-action.js",
-  },
-  { selector: "cds-header-panel", modulePath: "ui-shell/header-panel.js" },
   {
     selector: "cds-copy-button",
     modulePath: "copy-button/copy-button.js",
   },
-  { selector: "cds-side-nav", modulePath: "ui-shell/side-nav.js" },
-  {
-    selector: "cds-side-nav-items",
-    modulePath: "ui-shell/side-nav-items.js",
-  },
-  { selector: "cds-side-nav-link", modulePath: "ui-shell/side-nav-link.js" },
 ];
 
 /**

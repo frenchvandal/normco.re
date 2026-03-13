@@ -12,7 +12,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<cds-header-nav-item[^>]*href="\/"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
       );
     });
 
@@ -22,7 +22,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<cds-header-nav-item[^>]*href="\/"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
       );
     });
 
@@ -32,7 +32,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<cds-header-nav-item[^>]*href="\/"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
       );
     });
   });
@@ -44,7 +44,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<cds-header-nav-item[^>]*href="\/posts\/"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/posts\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
       );
     });
 
@@ -57,7 +57,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<cds-header-nav-item[^>]*href="\/posts\/"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/posts\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
       );
     });
 
@@ -67,7 +67,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<cds-header-nav-item[^>]*href="\/posts\/"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/posts\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
       );
     });
   });
@@ -79,7 +79,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<cds-header-nav-item[^>]*href="\/about\/"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/about\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
       );
     });
 
@@ -89,7 +89,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<cds-header-nav-item[^>]*href="\/about\/"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/about\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
       );
     });
   });
@@ -123,7 +123,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<cds-side-nav-link[^>]*href="\/"[^>]*>Home<\/cds-side-nav-link>/,
+        /<a[^>]*href="\/"[^>]*class="site-navigation-link"[^>]*>Home<\/a>/,
       );
     });
 
@@ -135,17 +135,20 @@ describe("Header()", () => {
       assertStringIncludes(html, "About");
     });
 
-    it("renders a hamburger trigger and a Carbon search action panel", async () => {
+    it("renders a native toggle trigger and a search action panel", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
       assertMatch(
         html,
-        /<cds-header-menu-button[^>]*button-label-active="Open navigation menu"[^>]*button-label-inactive="Open navigation menu"/,
+        /<button[^>]*class="site-navigation-toggle"[^>]*aria-label="Open navigation menu"/,
       );
-      assertStringIncludes(html, "<cds-header-global-action");
-      assertStringIncludes(html, 'panel-id="site-search-panel"');
-      assertStringIncludes(html, "<cds-header-panel");
+      assertStringIncludes(
+        html,
+        '<button type="button" class="site-search-action"',
+      );
+      assertStringIncludes(html, 'aria-controls="site-search-panel"');
+      assertStringIncludes(html, '<div id="site-search-panel"');
       assertStringIncludes(html, 'class="site-search-panel"');
       assertStringIncludes(html, 'data-search-panel=""');
       assertStringIncludes(html, 'data-search-root=""');
@@ -153,13 +156,16 @@ describe("Header()", () => {
       assertNotMatch(html, /search-16\.svg/);
     });
 
-    it("renders Carbon header navigation shell elements", async () => {
+    it("renders native navigation shell elements", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, "<cds-header");
-      assertStringIncludes(html, "<cds-header-nav");
-      assertStringIncludes(html, "<cds-side-nav");
+      assertStringIncludes(
+        html,
+        '<nav id="site-navigation-menu" class="site-navigation"',
+      );
+      assertStringIncludes(html, '<ul class="site-navigation-list">');
+      assertStringIncludes(html, '<li class="site-navigation-item">');
     });
 
     it("renders a native language selector <select> with localized options", async () => {
