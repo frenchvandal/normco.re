@@ -1102,11 +1102,10 @@ Supported language identifiers: `js`, `javascript`, `mjs`, `cjs`, `jsx`, `ts`,
  * @returns The sum of a and b.
  *
  * @example
- * ```ts
- * import { assertEquals } from "jsr:@std/assert/equals";
- *
+ * ```ts ignore
+ * // Exported items from the documented module are automatically imported
  * const sum = add(1, 2);
- * assertEquals(sum, 3);
+ * // assertEquals(sum, 3);
  * ```
  */
 export function add(a: number, b: number): number {
