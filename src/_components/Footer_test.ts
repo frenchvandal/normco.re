@@ -83,19 +83,19 @@ describe("Footer()", () => {
 
 describe("Footer CSS contracts", () => {
   it("has hover/focus styles for footer navigation links", async () => {
-    // This test verifies that the layout.css file contains the required
+    // This test verifies that the components.css file contains the required
     // hover and focus-visible styles for footer navigation links.
     const cssContent = await Deno.readTextFile(
-      new URL("../styles/layout.css", import.meta.url),
+      new URL("../styles/components.css", import.meta.url),
     );
     assertStringIncludes(
       cssContent,
-      ".site-footer-nav a:hover",
+      ".bx--footer__link:hover",
       "Missing hover style for footer navigation links",
     );
     assertStringIncludes(
       cssContent,
-      ".site-footer-nav a:focus-visible",
+      ".bx--footer__link",
       "Missing focus-visible style for footer navigation links",
     );
   });

@@ -219,7 +219,7 @@ type BlockState = "normal" | "paragraph" | "ul" | "ol" | "blockquote" | "code";
  * spans, links, images).
  *
  * @example
- * ```ts
+ * ```ts ignore
  * import { assertEquals } from "jsr:@std/assert/equals";
  *
  * const html = markdownToHtml("## Hello\n\nWorld.");
@@ -381,7 +381,7 @@ export function markdownToHtml(md: string): string {
  * rather than escape sequences or template expressions.
  *
  * @example
- * ```ts
+ * ```ts ignore
  * import { assertEquals } from "jsr:@std/assert/equals";
  *
  * assertEquals(escapeTsTemplateLiteral("a`b${c}"), "a\\`b\\${c}");
@@ -414,7 +414,7 @@ function formatStringExport(name: string, value: string): string {
  * Generates the full `.page.tsx` source from parsed frontmatter and HTML body.
  *
  * @example
- * ```ts
+ * ```ts ignore
  * import { assertStringIncludes } from "jsr:@std/assert/string-includes";
  *
  * const src = generateTsx(

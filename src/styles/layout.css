@@ -1,6 +1,90 @@
 /* Layer: layout */
 @layer layout {
-  /* Full-bleed centered layout via named grid lines */
+  /* =====================================================================
+     CARBON 2x GRID SYSTEM — 8px BASE UNIT
+     Source: https://carbondesignsystem.com/elements/2x-grid/overview/
+     ===================================================================== */
+  .bx--grid {
+    width: 100%;
+    padding-right: var(--cds-spacing-05);  /* 16px */
+    padding-left: var(--cds-spacing-05);   /* 16px */
+    margin-right: auto;
+    margin-left: auto;
+    max-width: var(--cds-fixed-width, 1584px);
+  }
+
+  .bx--grid--full-width {
+    max-width: 100%;
+    padding-left: var(--cds-spacing-05);
+    padding-right: var(--cds-spacing-05);
+  }
+
+  .bx--row {
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    margin: 0 calc(var(--cds-spacing-05) * -1); /* -16px */
+  }
+
+  /* Responsive columns */
+  .bx--col {
+    flex: 1 1 0%;
+    box-sizing: border-box;
+    padding: 0 var(--cds-spacing-05);
+  }
+
+  /* Fixed columns (Carbon 16-column grid) */
+  .bx--col-lg-1 { flex: 0 0 6.25%; max-width: 6.25%; }
+  .bx--col-lg-2 { flex: 0 0 12.5%; max-width: 12.5%; }
+  .bx--col-lg-3 { flex: 0 0 18.75%; max-width: 18.75%; }
+  .bx--col-lg-4 { flex: 0 0 25%; max-width: 25%; }
+  .bx--col-lg-5 { flex: 0 0 31.25%; max-width: 31.25%; }
+  .bx--col-lg-6 { flex: 0 0 37.5%; max-width: 37.5%; }
+  .bx--col-lg-7 { flex: 0 0 43.75%; max-width: 43.75%; }
+  .bx--col-lg-8 { flex: 0 0 50%; max-width: 50%; }
+  .bx--col-lg-9 { flex: 0 0 56.25%; max-width: 56.25%; }
+  .bx--col-lg-10 { flex: 0 0 62.5%; max-width: 62.5%; }
+  .bx--col-lg-11 { flex: 0 0 68.75%; max-width: 68.75%; }
+  .bx--col-lg-12 { flex: 0 0 75%; max-width: 75%; }
+  .bx--col-lg-13 { flex: 0 0 81.25%; max-width: 81.25%; }
+  .bx--col-lg-14 { flex: 0 0 87.5%; max-width: 87.5%; }
+  .bx--col-lg-15 { flex: 0 0 93.75%; max-width: 93.75%; }
+  .bx--col-lg-16 { flex: 0 0 100%; max-width: 100%; }
+
+  /* Medium breakpoint */
+  @media (max-width: 1056px) {
+    .bx--col-md-1 { flex: 0 0 12.5%; max-width: 12.5%; }
+    .bx--col-md-2 { flex: 0 0 25%; max-width: 25%; }
+    .bx--col-md-3 { flex: 0 0 37.5%; max-width: 37.5%; }
+    .bx--col-md-4 { flex: 0 0 50%; max-width: 50%; }
+    .bx--col-md-5 { flex: 0 0 62.5%; max-width: 62.5%; }
+    .bx--col-md-6 { flex: 0 0 75%; max-width: 75%; }
+    .bx--col-md-7 { flex: 0 0 87.5%; max-width: 87.5%; }
+    .bx--col-md-8 { flex: 0 0 100%; max-width: 100%; }
+  }
+
+  /* Small breakpoint */
+  @media (max-width: 672px) {
+    .bx--col-sm-1,
+    .bx--col-sm-2,
+    .bx--col-sm-3,
+    .bx--col-sm-4 { flex: 0 0 100%; max-width: 100%; }
+  }
+
+  /* Gutter utilities */
+  .bx--grid--condensed {
+    padding-left: var(--cds-spacing-03);
+    padding-right: var(--cds-spacing-03);
+  }
+
+  .bx--grid--wide {
+    padding-left: var(--cds-spacing-09);
+    padding-right: var(--cds-spacing-09);
+  }
+
+  /* =====================================================================
+     FULL-BLEED CENTERED LAYOUT (LEGACY SUPPORT)
+     ===================================================================== */
   .site-wrapper {
     display: grid;
     grid-template-columns:

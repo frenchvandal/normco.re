@@ -3,58 +3,238 @@
   :root {
     color-scheme: light dark;
 
-    /* Spacing tokens */
-    --space-xs: 0.25rem;
-    --space-s: 0.5rem;
-    --space-m: 1rem;
-    --space-l: 1.5rem;
-    --space-xl: 2rem;
-    --space-2xl: 4rem;
+    /* =====================================================================
+       CARBON DESIGN SYSTEM v11 TOKENS — WHITE THEME (DEFAULT LIGHT)
+       Source: https://carbondesignsystem.com/elements/themes/overview/
+       ===================================================================== */
 
-    /* Primer-like semantic color tokens (light) */
-    --bgColor-default: #ffffff;
-    --bgColor-muted: #f6f8fa;
-    --bgColor-inset: #f6f8fa;
-    --bgColor-accent-emphasis: #0969da;
-    --bgColor-accent-muted: #ddf4ff;
-    --bgColor-danger-muted: #ffebe9;
+    /* Background tokens */
+    --cds-background: #ffffff;
+    --cds-background-inverse: #161616;
+    --cds-background-hover: #f4f4f4;
+    --cds-background-active: #e0e0e0;
+    --cds-background-selected: #e0e0e0;
+    --cds-background-disabled: #f4f4f4;
 
-    --fgColor-default: #1f2328;
-    --fgColor-muted: #59636e;
-    --fgColor-accent: #0969da;
-    --fgColor-onEmphasis: #ffffff;
+    /* Layer tokens (surfaces) */
+    --cds-layer: #f4f4f4;
+    --cds-layer-hover: #e0e0e0;
+    --cds-layer-active: #cdcdcd;
+    --cds-layer-selected: #cdcdcd;
+    --cds-layer-selected-disabled: #8d8d8d;
+    --cds-layer-selected-hover: #cdcdcd;
+    --cds-layer-selected-inverse: #161616;
 
-    --borderColor-default: #d0d7de;
-    --borderColor-muted: #d8dee4;
+    /* Layer accent tokens */
+    --cds-layer-accent: #e0e0e0;
+    --cds-layer-accent-hover: #cdcdcd;
+    --cds-layer-accent-active: #b6b6b6;
 
-    /* Semantic tokens for interactive and state colors */
-    --fgColor-success: #1a7f37;
-    --borderColor-success: #1f883d;
-    --borderColor-navActive: #fd8c73;
+    /* Field tokens (inputs) */
+    --cds-field: #ffffff;
+    --cds-field-hover: #f4f4f4;
 
-    --focus-outlineColor: #0969da;
-    --selection-bgColor: rgb(9 105 218 / 20%);
+    /* Border tokens */
+    --cds-border-subtle: #e0e0e0;
+    --cds-border-strong: #8d8d8d;
+    --cds-border-inverse: #ffffff;
+    --cds-border-disabled: #f4f4f4;
+    --cds-border-interactive: #0f62fe;
+    --cds-border-tile-interactive: #e0e0e0;
 
-    --control-bgColor-rest: #f6f8fa;
-    --control-bgColor-hover: #eff2f5;
-    --control-bgColor-active: #e6eaef;
-    --control-borderColor-rest: #d0d7de;
-    --control-fgColor-rest: #24292f;
+    /* Text tokens */
+    --cds-text-primary: #161616;
+    --cds-text-secondary: #525252;
+    --cds-text-placeholder: #8d8d8d;
+    --cds-text-helper: #6f6f6f;
+    --cds-text-inverse: #ffffff;
+    --cds-text-link: #0f62fe;
+    --cds-text-error: #da1e28;
+    --cds-text-success: #198038;
+    --cds-text-warning: #713f12;
 
-    /* Typography */
-    --fontStack-system:
-      -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
-      Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-    --fontStack-monospace:
-      ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono",
+    /* Link tokens */
+    --cds-link-primary: #0f62fe;
+    --cds-link-primary-hover: #0043ce;
+    --cds-link-primary-visited: #8a3ffc;
+    --cds-link-secondary: #0f62fe;
+    --cds-link-inverse: #ffffff;
+
+    /* Icon tokens */
+    --cds-icon-primary: #161616;
+    --cds-icon-secondary: #525252;
+    --cds-icon-inverse: #ffffff;
+    --cds-icon-on-color: #ffffff;
+    --cds-icon-disabled: #c6c6c6;
+
+    /* Focus token */
+    --cds-focus: #0f62fe;
+
+    /* Support colors (semantic feedback) */
+    --cds-support-error: #da1e28;
+    --cds-support-error-hover: #b81921;
+    --cds-support-success: #198038;
+    --cds-support-success-hover: #146c2e;
+    --cds-support-warning: #f1c21b;
+    --cds-support-warning-hover: #d2a306;
+    --cds-support-info: #0043ce;
+    --cds-support-info-hover: #0036a8;
+
+    /* Spacing tokens — Carbon 2x Grid (8px base unit)
+       Source: https://carbondesignsystem.com/elements/2x-grid/overview/
+       ===================================================================== */
+    --cds-spacing-01: 0.125rem;  /* 2px */
+    --cds-spacing-02: 0.25rem;   /* 4px */
+    --cds-spacing-03: 0.5rem;    /* 8px */
+    --cds-spacing-04: 0.75rem;   /* 12px */
+    --cds-spacing-05: 1rem;      /* 16px */
+    --cds-spacing-06: 1.5rem;    /* 24px */
+    --cds-spacing-07: 2rem;      /* 32px */
+    --cds-spacing-08: 2.5rem;    /* 40px */
+    --cds-spacing-09: 3rem;      /* 48px */
+    --cds-spacing-10: 4rem;      /* 64px */
+    --cds-spacing-11: 5rem;      /* 80px */
+    --cds-spacing-12: 6rem;      /* 96px */
+    --cds-spacing-13: 10rem;     /* 160px */
+
+    /* Legacy spacing aliases for backward compatibility */
+    --space-xs: var(--cds-spacing-02);
+    --space-s: var(--cds-spacing-03);
+    --space-m: var(--cds-spacing-05);
+    --space-l: var(--cds-spacing-06);
+    --space-xl: var(--cds-spacing-07);
+    --space-2xl: var(--cds-spacing-10);
+
+    /* =====================================================================
+       IBM PLEX TYPOGRAPHY
+       Source: https://carbondesignsystem.com/elements/typography/overview/
+       ===================================================================== */
+
+    /* Font families */
+    --cds-font-family-sans:
+      'IBM Plex Sans',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      Helvetica,
+      Arial,
+      sans-serif;
+    --cds-font-family-mono:
+      'IBM Plex Mono',
+      'SF Mono',
+      'Menlo',
+      'Consolas',
       monospace;
 
-    --text-xs: clamp(0.75rem, 0.7rem + 0.2vw, 0.8125rem);
-    --text-sm: clamp(0.875rem, 0.8rem + 0.25vw, 0.9375rem);
-    --text-base: clamp(0.9375rem, 0.88rem + 0.3vw, 1rem);
-    --text-lg: clamp(1.125rem, 1rem + 0.7vw, 1.25rem);
-    --text-xl: clamp(1.5rem, 1.2rem + 1.3vw, 2rem);
-    --text-2xl: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+    /* Productive type tokens (UI, forms, metadata) */
+    --cds-productive-heading-01-font-size: 0.875rem;
+    --cds-productive-heading-01-line-height: 1.285715rem;
+    --cds-productive-heading-01: var(--cds-productive-heading-01-font-size) / var(--cds-productive-heading-01-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-productive-heading-02-font-size: 1rem;
+    --cds-productive-heading-02-line-height: 1.375rem;
+    --cds-productive-heading-02: var(--cds-productive-heading-02-font-size) / var(--cds-productive-heading-02-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-productive-heading-03-font-size: 1.25rem;
+    --cds-productive-heading-03-line-height: 1.625rem;
+    --cds-productive-heading-03: var(--cds-productive-heading-03-font-size) / var(--cds-productive-heading-03-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-productive-heading-04-font-size: 1.75rem;
+    --cds-productive-heading-04-line-height: 2.25rem;
+    --cds-productive-heading-04: var(--cds-productive-heading-04-font-size) / var(--cds-productive-heading-04-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-productive-heading-05-font-size: 2rem;
+    --cds-productive-heading-05-line-height: 2.5rem;
+    --cds-productive-heading-05: var(--cds-productive-heading-05-font-size) / var(--cds-productive-heading-05-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-productive-heading-06-font-size: 2.25rem;
+    --cds-productive-heading-06-line-height: 2.625rem;
+    --cds-productive-heading-06: var(--cds-productive-heading-06-font-size) / var(--cds-productive-heading-06-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-productive-body-01-font-size: 0.875rem;
+    --cds-productive-body-01-line-height: 1.285715rem;
+    --cds-productive-body-01: var(--cds-productive-body-01-font-size) / var(--cds-productive-body-01-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-productive-body-02-font-size: 1rem;
+    --cds-productive-body-02-line-height: 1.375rem;
+    --cds-productive-body-02: var(--cds-productive-body-02-font-size) / var(--cds-productive-body-02-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-productive-body-longform-font-size: 1rem;
+    --cds-productive-body-longform-line-height: 1.5rem;
+    --cds-productive-body-longform: var(--cds-productive-body-longform-font-size) / var(--cds-productive-body-longform-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-productive-code-01-font-size: 0.875rem;
+    --cds-productive-code-01-line-height: 1.285715rem;
+    --cds-productive-code-01: var(--cds-productive-code-01-font-size) / var(--cds-productive-code-01-line-height) 'IBM Plex Mono', monospace;
+
+    --cds-productive-code-02-font-size: 1rem;
+    --cds-productive-code-02-line-height: 1.375rem;
+    --cds-productive-code-02: var(--cds-productive-code-02-font-size) / var(--cds-productive-code-02-line-height) 'IBM Plex Mono', monospace;
+
+    /* Expressive type tokens (hero, editorial) */
+    --cds-expressive-heading-01-font-size: 0.875rem;
+    --cds-expressive-heading-01-line-height: 1.25rem;
+    --cds-expressive-heading-01: var(--cds-expressive-heading-01-font-size) / var(--cds-expressive-heading-01-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-expressive-heading-02-font-size: 1rem;
+    --cds-expressive-heading-02-line-height: 1.375rem;
+    --cds-expressive-heading-02: var(--cds-expressive-heading-02-font-size) / var(--cds-expressive-heading-02-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-expressive-heading-03-font-size: 1.25rem;
+    --cds-expressive-heading-03-line-height: 1.625rem;
+    --cds-expressive-heading-03: var(--cds-expressive-heading-03-font-size) / var(--cds-expressive-heading-03-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-expressive-heading-04-font-size: 1.75rem;
+    --cds-expressive-heading-04-line-height: 2.25rem;
+    --cds-expressive-heading-04: var(--cds-expressive-heading-04-font-size) / var(--cds-expressive-heading-04-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-expressive-heading-05-font-size: 2rem;
+    --cds-expressive-heading-05-line-height: 2.5rem;
+    --cds-expressive-heading-05: var(--cds-expressive-heading-05-font-size) / var(--cds-expressive-heading-05-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-expressive-heading-06-font-size: 2.25rem;
+    --cds-expressive-heading-06-line-height: 2.625rem;
+    --cds-expressive-heading-06: var(--cds-expressive-heading-06-font-size) / var(--cds-expressive-heading-06-line-height) 'IBM Plex Sans', sans-serif;
+
+    /* Display sizes */
+    --cds-display-01-font-size: 2.25rem;
+    --cds-display-01-line-height: 2.625rem;
+    --cds-display-01: var(--cds-display-01-font-size) / var(--cds-display-01-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-display-02-font-size: 2.625rem;
+    --cds-display-02-line-height: 3.125rem;
+    --cds-display-02: var(--cds-display-02-font-size) / var(--cds-display-02-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-display-03-font-size: 3.375rem;
+    --cds-display-03-line-height: 3.75rem;
+    --cds-display-03: var(--cds-display-03-font-size) / var(--cds-display-03-line-height) 'IBM Plex Sans', sans-serif;
+
+    --cds-display-04-font-size: 4.5rem;
+    --cds-display-04-line-height: 4.75rem;
+    --cds-display-04: var(--cds-display-04-font-size) / var(--cds-display-04-line-height) 'IBM Plex Sans', sans-serif;
+
+    /* Font weights */
+    --cds-font-weight-light: 300;
+    --cds-font-weight-regular: 400;
+    --cds-font-weight-semibold: 500;
+    --cds-font-weight-bold: 600;
+
+    /* Letter spacing */
+    --cds-letter-spacing-heading: -0.01em;
+    --cds-letter-spacing-body: 0;
+    --cds-letter-spacing-code: 0;
+
+    /* Legacy typography aliases for backward compatibility */
+    --fontStack-system: var(--cds-font-family-sans);
+    --fontStack-monospace: var(--cds-font-family-mono);
+
+    --text-xs: var(--cds-productive-heading-01-font-size);
+    --text-sm: var(--cds-productive-body-01-font-size);
+    --text-base: var(--cds-productive-body-02-font-size);
+    --text-lg: var(--cds-productive-heading-03-font-size);
+    --text-xl: var(--cds-productive-heading-04-font-size);
+    --text-2xl: var(--cds-productive-heading-05-font-size);
 
     --leading: 1.6;
     --leading-tight: 1.25;
@@ -71,30 +251,16 @@
     --focus-ring-width: 2px;
     --focus-ring-offset: 2px;
 
-    /* Global Carbon semantic token mapping for migrated surfaces. */
-    --cds-focus: var(--focus-outlineColor);
-    --cds-layer: var(--bgColor-muted);
-    --cds-layer-hover: var(--control-bgColor-hover);
-    --cds-layer-active: var(--control-bgColor-active);
-    --cds-layer-background: var(--bgColor-default);
-    --cds-text-primary: var(--fgColor-default);
-    --cds-text-secondary: var(--fgColor-muted);
-    --cds-border-subtle: var(--borderColor-muted);
-    --cds-border-strong: var(--borderColor-default);
-    --cds-link-primary: var(--fgColor-accent);
-    --cds-link-primary-hover: var(--bgColor-accent-emphasis);
-    --cds-link-focus-text-color: var(--focus-outlineColor);
-
     /* Backward-compatible aliases used across component/layout files. */
-    --color-bg: var(--bgColor-default);
-    --color-text: var(--fgColor-default);
-    --color-meta: var(--fgColor-muted);
-    --color-accent: var(--fgColor-accent);
-    --color-border: var(--borderColor-default);
-    --color-code-bg: var(--bgColor-muted);
-    --color-selection-bg: var(--selection-bgColor);
-    --font-sans: var(--fontStack-system);
-    --font-mono: var(--fontStack-monospace);
+    --color-bg: var(--cds-background);
+    --color-text: var(--cds-text-primary);
+    --color-meta: var(--cds-text-secondary);
+    --color-accent: var(--cds-link-primary);
+    --color-border: var(--cds-border-strong);
+    --color-code-bg: var(--cds-layer);
+    --color-selection-bg: rgb(15 98 254 / 20%);
+    --font-sans: var(--cds-font-family-sans);
+    --font-mono: var(--cds-font-family-mono);
   }
 
   :root[data-color-mode="light"] {
@@ -104,34 +270,92 @@
   :root[data-color-mode="dark"] {
     color-scheme: dark;
 
-    --bgColor-default: #0d1117;
-    --bgColor-muted: #161b22;
-    --bgColor-inset: #010409;
-    --bgColor-accent-emphasis: #1f6feb;
-    --bgColor-accent-muted: rgb(56 139 253 / 18%);
-    --bgColor-danger-muted: rgb(248 81 73 / 18%);
+    /* =====================================================================
+       CARBON DESIGN SYSTEM v11 TOKENS — GRAY 100 THEME (DARK)
+       Source: https://carbondesignsystem.com/elements/themes/overview/
+       ===================================================================== */
 
-    --fgColor-default: #f0f6fc;
-    --fgColor-muted: #9198a1;
-    --fgColor-accent: #58a6ff;
-    --fgColor-onEmphasis: #ffffff;
+    /* Background tokens */
+    --cds-background: #161616;
+    --cds-background-inverse: #ffffff;
+    --cds-background-hover: #262626;
+    --cds-background-active: #393939;
+    --cds-background-selected: #393939;
+    --cds-background-disabled: #262626;
 
-    --borderColor-default: #3d444d;
-    --borderColor-muted: #30363d;
+    /* Layer tokens (surfaces) */
+    --cds-layer: #262626;
+    --cds-layer-hover: #393939;
+    --cds-layer-active: #4c4c4c;
+    --cds-layer-selected: #4c4c4c;
+    --cds-layer-selected-disabled: #6f6f6f;
+    --cds-layer-selected-hover: #4c4c4c;
+    --cds-layer-selected-inverse: #ffffff;
 
-    /* Semantic tokens for interactive and state colors (dark) */
-    --fgColor-success: #3fb950;
-    --borderColor-success: #3fb950;
-    --borderColor-navActive: #f78166;
+    /* Layer accent tokens */
+    --cds-layer-accent: #393939;
+    --cds-layer-accent-hover: #4c4c4c;
+    --cds-layer-accent-active: #6f6f6f;
 
-    --focus-outlineColor: #58a6ff;
-    --selection-bgColor: rgb(31 111 235 / 50%);
+    /* Field tokens (inputs) */
+    --cds-field: #262626;
+    --cds-field-hover: #393939;
 
-    --control-bgColor-rest: #21262d;
-    --control-bgColor-hover: #30363d;
-    --control-bgColor-active: #353c45;
-    --control-borderColor-rest: #3d444d;
-    --control-fgColor-rest: #f0f6fc;
+    /* Border tokens */
+    --cds-border-subtle: #393939;
+    --cds-border-strong: #6f6f6f;
+    --cds-border-inverse: #ffffff;
+    --cds-border-disabled: #262626;
+    --cds-border-interactive: #4589ff;
+    --cds-border-tile-interactive: #393939;
+
+    /* Text tokens */
+    --cds-text-primary: #f4f4f4;
+    --cds-text-secondary: #c6c6c6;
+    --cds-text-placeholder: #8d8d8d;
+    --cds-text-helper: #a8a8a8;
+    --cds-text-inverse: #161616;
+    --cds-text-link: #78a9ff;
+    --cds-text-error: #ff7b7b;
+    --cds-text-success: #42be65;
+    --cds-text-warning: #f1c21b;
+
+    /* Link tokens */
+    --cds-link-primary: #78a9ff;
+    --cds-link-primary-hover: #a6c8ff;
+    --cds-link-primary-visited: #be95ff;
+    --cds-link-secondary: #78a9ff;
+    --cds-link-inverse: #ffffff;
+
+    /* Icon tokens */
+    --cds-icon-primary: #f4f4f4;
+    --cds-icon-secondary: #c6c6c6;
+    --cds-icon-inverse: #161616;
+    --cds-icon-on-color: #ffffff;
+    --cds-icon-disabled: #6f6f6f;
+
+    /* Focus token */
+    --cds-focus: #78a9ff;
+
+    /* Support colors (semantic feedback) */
+    --cds-support-error: #ff7b7b;
+    --cds-support-error-hover: #ff8787;
+    --cds-support-success: #42be65;
+    --cds-support-success-hover: #58d47b;
+    --cds-support-warning: #f1c21b;
+    --cds-support-warning-hover: #ffd76e;
+    --cds-support-info: #4589ff;
+    --cds-support-info-hover: #78a9ff;
+
+    /* Legacy aliases update for dark mode */
+    --color-bg: var(--cds-background);
+    --color-text: var(--cds-text-primary);
+    --color-meta: var(--cds-text-secondary);
+    --color-accent: var(--cds-link-primary);
+    --color-border: var(--cds-border-strong);
+    --color-code-bg: var(--cds-layer);
+    --color-selection-bg: rgb(120 169 255 / 30%);
+    --focus-outlineColor: var(--cds-focus);
   }
 
   ::selection {
@@ -139,11 +363,9 @@
   }
 
   html {
-    font-family: var(--font-sans);
-    font-size: var(--text-base);
-    line-height: var(--leading);
-    color: var(--color-text);
-    background-color: var(--color-bg);
+    font: var(--cds-productive-body-02);
+    color: var(--cds-text-primary);
+    background-color: var(--cds-background);
     scroll-behavior: smooth;
     transition: background-color 0.2s ease, color 0.2s ease;
   }
@@ -155,15 +377,16 @@
   }
 
   a {
-    color: var(--color-accent);
+    color: var(--cds-link-primary);
     text-decoration: none;
     transition: color 0.15s ease, text-decoration-color 0.15s ease;
   }
 
   body[data-a11y-link-underlines="true"] a {
     text-decoration-line: underline;
-    text-decoration-thickness: 1px;
+    text-decoration-thickness: max(1px, 0.08em);
     text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
   }
 
   body[data-a11y-link-underlines="false"] a {
@@ -171,20 +394,22 @@
   }
 
   a:hover {
+    color: var(--cds-link-primary-hover);
     text-decoration-line: underline;
-    text-decoration-thickness: 1px;
+    text-decoration-thickness: max(1px, 0.08em);
     text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
   }
 
   a:focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-outlineColor);
+    outline: var(--focus-ring-width) solid var(--cds-focus);
     outline-offset: var(--focus-ring-offset);
-    border-radius: 2px;
+    border-radius: 0; /* Carbon uses square focus rings */
     text-decoration: none;
   }
 
   :where(button, [role="button"], input, select, textarea):focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-outlineColor);
+    outline: var(--focus-ring-width) solid var(--cds-focus);
     outline-offset: var(--focus-ring-offset);
   }
 
@@ -194,50 +419,54 @@
   h4,
   h5,
   h6 {
-    line-height: var(--leading-heading);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: var(--cds-font-weight-semibold);
+    letter-spacing: var(--cds-letter-spacing-heading);
     text-wrap: balance;
-    font-weight: 600;
-    letter-spacing: -0.01em;
   }
 
   h1 {
-    font-size: var(--text-2xl);
+    font: var(--cds-expressive-heading-05);
   }
 
   h2 {
-    font-size: var(--text-xl);
+    font: var(--cds-expressive-heading-04);
   }
 
   h3 {
-    font-size: var(--text-lg);
+    font: var(--cds-expressive-heading-03);
   }
 
-  h4,
+  h4 {
+    font: var(--cds-productive-heading-03);
+  }
+
   h5,
   h6 {
-    font-size: var(--text-base);
+    font: var(--cds-productive-heading-02);
   }
 
   p {
+    font: var(--cds-productive-body-longform);
     text-wrap: pretty;
     max-inline-size: var(--measure);
   }
 
   code {
-    font-family: var(--font-mono);
-    font-size: 0.875em;
-    background-color: var(--color-code-bg);
-    padding: 0.1em 0.35em;
-    border-radius: 3px;
+    font: var(--cds-productive-code-01);
+    font-family: var(--cds-font-family-mono);
+    background-color: var(--cds-layer);
+    padding: var(--cds-spacing-01) var(--cds-spacing-02);
+    border-radius: 0; /* Carbon code is square */
   }
 
   pre {
-    background-color: var(--color-code-bg);
-    border: 1px solid var(--borderColor-muted);
-    padding: var(--space-m);
-    border-radius: var(--borderRadius-medium);
+    background-color: var(--cds-layer);
+    border: 1px solid var(--cds-border-subtle);
+    padding: var(--cds-spacing-05);
+    border-radius: 0; /* Carbon pre is square */
     overflow-x: auto;
-    font-size: var(--text-sm);
+    font: var(--cds-productive-code-01);
     line-height: 1.6;
   }
 
@@ -249,16 +478,16 @@
   }
 
   blockquote {
-    border-inline-start: 3px solid var(--color-accent);
-    padding-inline-start: var(--space-m);
-    color: var(--color-meta);
+    border-inline-start: 3px solid var(--cds-link-primary);
+    padding-inline-start: var(--cds-spacing-05);
+    color: var(--cds-text-secondary);
     font-style: italic;
   }
 
   hr {
     border: none;
-    border-block-start: 1px solid var(--color-border);
-    margin-block: var(--space-xl);
+    border-block-start: 1px solid var(--cds-border-subtle);
+    margin-block: var(--cds-spacing-07);
   }
 
   .octicon-svg {
