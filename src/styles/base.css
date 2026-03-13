@@ -637,7 +637,8 @@
     background: transparent;
     color: var(--cds-icon-primary);
     cursor: pointer;
-    transition: background-color var(--cds-motion-duration-moderate) var(--cds-motion-easing-standard);
+    transition: background-color var(--cds-motion-duration-moderate)
+      var(--cds-motion-easing-standard);
   }
 
   .icon-button:hover {

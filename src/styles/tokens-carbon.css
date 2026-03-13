@@ -212,26 +212,54 @@
        ================================================================ */
 
     /* Font families */
-    --cds-font-family-sans: "IBM Plex Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --cds-font-family-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    --cds-font-family-sans:
+      "IBM Plex Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, "Helvetica Neue", Arial, sans-serif;
+    --cds-font-family-mono:
+      "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas,
+      "Liberation Mono", Menlo, monospace;
 
     /* Productive type scale (UI elements) */
-    --cds-productive-heading-01: 400 0.875rem/1.29 var(--cds-font-family-sans); /* 14px */
-    --cds-productive-heading-02: 600 1rem/1.375 var(--cds-font-family-sans); /* 16px */
-    --cds-productive-heading-03: 400 1.25rem/1.4 var(--cds-font-family-sans); /* 20px */
-    --cds-productive-heading-04: 400 1.75rem/1.29 var(--cds-font-family-sans); /* 28px */
-    --cds-productive-heading-05: 400 2rem/1.25 var(--cds-font-family-sans); /* 32px */
-    --cds-productive-heading-06: 600 2rem/1.25 var(--cds-font-family-sans); /* 32px semibold */
-    --cds-productive-heading-07: 600 2.625rem/1.19 var(--cds-font-family-sans); /* 42px */
+    --cds-productive-heading-01: 400 0.875rem/1.29 var(
+      --cds-font-family-sans
+    ); /* 14px */
+    --cds-productive-heading-02: 600 1rem/1.375 var(
+      --cds-font-family-sans
+    ); /* 16px */
+    --cds-productive-heading-03: 400 1.25rem/1.4 var(
+      --cds-font-family-sans
+    ); /* 20px */
+    --cds-productive-heading-04: 400 1.75rem/1.29 var(
+      --cds-font-family-sans
+    ); /* 28px */
+    --cds-productive-heading-05: 400 2rem/1.25 var(
+      --cds-font-family-sans
+    ); /* 32px */
+    --cds-productive-heading-06: 600 2rem/1.25 var(
+      --cds-font-family-sans
+    ); /* 32px semibold */
+    --cds-productive-heading-07: 600 2.625rem/1.19 var(
+      --cds-font-family-sans
+    ); /* 42px */
 
-    --cds-productive-body-01: 400 0.875rem/1.29 var(--cds-font-family-sans); /* 14px */
-    --cds-productive-body-long-01: 400 0.875rem/1.5 var(--cds-font-family-sans); /* Long form */
+    --cds-productive-body-01: 400 0.875rem/1.29 var(
+      --cds-font-family-sans
+    ); /* 14px */
+    --cds-productive-body-long-01: 400 0.875rem/1.5 var(
+      --cds-font-family-sans
+    ); /* Long form */
 
-    --cds-productive-body-02: 400 1rem/1.375 var(--cds-font-family-sans); /* 16px */
+    --cds-productive-body-02: 400 1rem/1.375 var(
+      --cds-font-family-sans
+    ); /* 16px */
     --cds-productive-body-long-02: 400 1rem/1.5 var(--cds-font-family-sans);
 
-    --cds-productive-code-01: 400 0.75rem/1.33 var(--cds-font-family-mono); /* 12px */
-    --cds-productive-code-02: 400 0.875rem/1.29 var(--cds-font-family-mono); /* 14px */
+    --cds-productive-code-01: 400 0.75rem/1.33 var(
+      --cds-font-family-mono
+    ); /* 12px */
+    --cds-productive-code-02: 400 0.875rem/1.29 var(
+      --cds-font-family-mono
+    ); /* 14px */
 
     /* Expressive type scale (marketing, hero content) */
     --cds-expressive-heading-01: 400 0.875rem/1.29 var(--cds-font-family-sans);
@@ -241,7 +269,9 @@
     --cds-expressive-heading-05: 400 2rem/1.25 var(--cds-font-family-sans);
     --cds-expressive-heading-06: 600 2rem/1.25 var(--cds-font-family-sans);
 
-    --cds-expressive-paragraph-01: 400 1.25rem/1.625 var(--cds-font-family-sans);
+    --cds-expressive-paragraph-01: 400 1.25rem/1.625 var(
+      --cds-font-family-sans
+    );
     --cds-expressive-paragraph-02: 400 1.5rem/1.625 var(--cds-font-family-sans);
 
     /* Font weights */
@@ -277,7 +307,9 @@
     --cds-motion-easing-exit: cubic-bezier(0.2, 0, 1, 0.9);
 
     /* Transition shorthand */
-    --cds-transition-default: var(--cds-motion-duration-moderate) var(--cds-motion-easing-standard);
+    --cds-transition-default: var(--cds-motion-duration-moderate) var(
+      --cds-motion-easing-standard
+    );
 
     /* ================================================================
        CARBON SHADOWS

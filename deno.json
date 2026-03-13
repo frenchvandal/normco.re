@@ -129,7 +129,12 @@
     "temporal"
   ],
   "nodeModulesDir": "auto",
-  "test": { "exclude": ["**/*.md"] },
+  "test": {
+    "exclude": ["**/*.md"],
+    "permissions": {
+      "read": ["./src/"]
+    }
+  },
   "fmt": { "exclude": ["**/*.xml"] },
   "lint": {
     "plugins": [

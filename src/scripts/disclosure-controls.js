@@ -179,125 +179,126 @@
    * Replaces functionality previously provided by Carbon Web Components
    */
   function setupDisclosureControls() {
-  const navToggle = document.querySelector(".bx--header__menu-toggle");
-  const sideNav = document.getElementById("site-side-nav");
-  const searchToggle = document.querySelector(
-    ".bx--header__action[aria-controls='site-search-panel']",
-  );
-  const searchPanel = document.getElementById("site-search-panel");
-  const languageToggle = document.querySelector(".bx--header__language-toggle");
-  const languagePanel = document.getElementById("site-language-panel");
-  const overlay = document.querySelector(".bx--side-nav__overlay");
+    const navToggle = document.querySelector(".bx--header__menu-toggle");
+    const sideNav = document.getElementById("site-side-nav");
+    const searchToggle = document.querySelector(
+      ".bx--header__action[aria-controls='site-search-panel']",
+    );
+    const searchPanel = document.getElementById("site-search-panel");
+    const languageToggle = document.querySelector(
+      ".bx--header__language-toggle",
+    );
+    const languagePanel = document.getElementById("site-language-panel");
+    const overlay = document.querySelector(".bx--side-nav__overlay");
 
-  /**
-   * Toggles a panel's visibility and updates ARIA states
-   * @param {HTMLElement|null} button The trigger button
-   * @param {HTMLElement|null} panel The panel to toggle
-   */
-  const setupPanelToggle = (button, panel) => {
-    if (!button || !panel) return;
+    /**
+     * Toggles a panel's visibility and updates ARIA states
+     * @param {HTMLElement|null} button The trigger button
+     * @param {HTMLElement|null} panel The panel to toggle
+     */
+    const setupPanelToggle = (button, panel) => {
+      if (!button || !panel) return;
 
-    button.addEventListener("click", () => {
-      const isExpanded = button.getAttribute("aria-expanded") === "true";
-      const newState = !isExpanded;
+      button.addEventListener("click", () => {
+        const isExpanded = button.getAttribute("aria-expanded") === "true";
+        const newState = !isExpanded;
 
-      // Close all other panels first
-      closeCarbonChrome({ exceptControl: button });
+        // Close all other panels first
+        closeCarbonChrome({ exceptControl: button });
 
-      button.setAttribute("aria-expanded", String(newState));
+        button.setAttribute("aria-expanded", String(newState));
 
-      if (newState) {
-        panel.removeAttribute("hidden");
-        panel.setAttribute("expanded", "");
-        // Focus first focusable element in panel
-        const firstFocusable = panel.querySelector(
-          "a, button, input, [tabindex]:not([tabindex='-1'])",
-        );
-        if (firstFocusable instanceof HTMLElement) {
-          setTimeout(() => firstFocusable.focus(), 50);
+        if (newState) {
+          panel.removeAttribute("hidden");
+          panel.setAttribute("expanded", "");
+          // Focus first focusable element in panel
+          const firstFocusable = panel.querySelector(
+            "a, button, input, [tabindex]:not([tabindex='-1'])",
+          );
+          if (firstFocusable instanceof HTMLElement) {
+            setTimeout(() => firstFocusable.focus(), 50);
+          }
+        } else {
+          panel.setAttribute("hidden", "");
+          panel.removeAttribute("expanded");
         }
-      } else {
-        panel.setAttribute("hidden", "");
-        panel.removeAttribute("expanded");
+      });
+    };
+
+    /**
+     * Setup SideNav toggle with overlay
+     * @param {HTMLElement|null} button The hamburger button
+     * @param {HTMLElement|null} nav The SideNav element
+     */
+    const setupSideNavToggle = (button, nav) => {
+      if (!button || !nav) return;
+
+      button.addEventListener("click", () => {
+        const isExpanded = button.getAttribute("aria-expanded") === "true";
+        const newState = !isExpanded;
+
+        // Close all other panels first
+        closeCarbonChrome({ exceptControl: button });
+
+        button.setAttribute("aria-expanded", String(newState));
+
+        if (newState) {
+          nav.removeAttribute("hidden");
+          nav.setAttribute("expanded", "");
+          if (overlay instanceof HTMLElement) {
+            overlay.setAttribute("aria-hidden", "false");
+          }
+          // Focus first nav link
+          const firstLink = nav.querySelector("a.bx--side-nav__link");
+          if (firstLink instanceof HTMLElement) {
+            setTimeout(() => firstLink.focus(), 50);
+          }
+        } else {
+          nav.setAttribute("hidden", "");
+          nav.removeAttribute("expanded");
+          if (overlay instanceof HTMLElement) {
+            overlay.setAttribute("aria-hidden", "true");
+          }
+        }
+      });
+    };
+
+    // Setup SideNav toggle
+    setupSideNavToggle(navToggle, sideNav);
+
+    // Setup search panel toggle
+    setupPanelToggle(searchToggle, searchPanel);
+
+    // Setup language panel toggle
+    setupPanelToggle(languageToggle, languagePanel);
+
+    // Close panels when clicking overlay
+    if (overlay instanceof HTMLElement) {
+      overlay.addEventListener("click", () => {
+        closeCarbonChrome({ restoreFocus: true });
+      });
+    }
+
+    // Close panels when clicking outside (but not on overlay)
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+
+      const isInsidePanel = target.closest(".bx--header__panel, .bx--side-nav");
+      const isToggleButton = target.closest(
+        ".bx--header__menu-toggle, .bx--header__language-toggle, .bx--header__action[aria-controls]",
+      );
+
+      if (!isInsidePanel && !isToggleButton) {
+        closeCarbonChrome();
       }
-    });
-  };
-
-  /**
-   * Setup SideNav toggle with overlay
-   * @param {HTMLElement|null} button The hamburger button
-   * @param {HTMLElement|null} nav The SideNav element
-   */
-  const setupSideNavToggle = (button, nav) => {
-    if (!button || !nav) return;
-
-    button.addEventListener("click", () => {
-      const isExpanded = button.getAttribute("aria-expanded") === "true";
-      const newState = !isExpanded;
-
-      // Close all other panels first
-      closeCarbonChrome({ exceptControl: button });
-
-      button.setAttribute("aria-expanded", String(newState));
-
-      if (newState) {
-        nav.removeAttribute("hidden");
-        nav.setAttribute("expanded", "");
-        if (overlay instanceof HTMLElement) {
-          overlay.setAttribute("aria-hidden", "false");
-        }
-        // Focus first nav link
-        const firstLink = nav.querySelector("a.bx--side-nav__link");
-        if (firstLink instanceof HTMLElement) {
-          setTimeout(() => firstLink.focus(), 50);
-        }
-      } else {
-        nav.setAttribute("hidden", "");
-        nav.removeAttribute("expanded");
-        if (overlay instanceof HTMLElement) {
-          overlay.setAttribute("aria-hidden", "true");
-        }
-      }
-    });
-  };
-
-  // Setup SideNav toggle
-  setupSideNavToggle(navToggle, sideNav);
-
-  // Setup search panel toggle
-  setupPanelToggle(searchToggle, searchPanel);
-
-  // Setup language panel toggle
-  setupPanelToggle(languageToggle, languagePanel);
-
-  // Close panels when clicking overlay
-  if (overlay instanceof HTMLElement) {
-    overlay.addEventListener("click", () => {
-      closeCarbonChrome({ restoreFocus: true });
     });
   }
 
-  // Close panels when clicking outside (but not on overlay)
-  document.addEventListener("click", (event) => {
-    const target = event.target;
-    if (!(target instanceof HTMLElement)) return;
-
-    const isInsidePanel = target.closest(".bx--header__panel, .bx--side-nav");
-    const isToggleButton = target.closest(
-      ".bx--header__menu-toggle, .bx--header__language-toggle, .bx--header__action[aria-controls]",
-    );
-
-    if (!isInsidePanel && !isToggleButton) {
-      closeCarbonChrome();
-    }
-  });
-}
-
-// Run immediately if DOM is ready, otherwise wait for DOMContentLoaded
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", setupDisclosureControls);
-} else {
-  setupDisclosureControls();
-}
-
+  // Run immediately if DOM is ready, otherwise wait for DOMContentLoaded
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupDisclosureControls);
+  } else {
+    setupDisclosureControls();
+  }
 })();

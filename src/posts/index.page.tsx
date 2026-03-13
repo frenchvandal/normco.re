@@ -169,7 +169,12 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     ? `<nav class="bx--pagination" aria-label="${translations.archive.paginationAriaLabel}">
   <div class="bx--pagination__content">
     <span class="bx--pagination__text">
-      ${translations.archive.paginationItemsRange.replace("{start}", "1").replace("{end}", String(Math.min(POSTS_PER_PAGE, posts.length))).replace("{total}", String(posts.length))}
+      ${
+      translations.archive.paginationItemsRange.replace("{start}", "1").replace(
+        "{end}",
+        String(Math.min(POSTS_PER_PAGE, posts.length)),
+      ).replace("{total}", String(posts.length))
+    }
     </span>
     <div class="bx--pagination__control">
       <button class="bx--pagination__button bx--pagination__button--backward" disabled aria-label="${translations.archive.paginationPrevious}">
@@ -178,11 +183,15 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
         </svg>
       </button>
       <div class="bx--pagination__pages">
-        ${Array.from({ length: totalPages }, (_, i) => {
-          const pageNum = i + 1;
-          const isCurrent = pageNum === currentPage;
-          return `<button class="bx--pagination__page-button${isCurrent ? '" aria-current="page' : ''}" aria-label="${translations.archive.paginationPage} ${pageNum}">${pageNum}</button>`;
-        }).join("")}
+        ${
+      Array.from({ length: totalPages }, (_, i) => {
+        const pageNum = i + 1;
+        const isCurrent = pageNum === currentPage;
+        return `<button class="bx--pagination__page-button${
+          isCurrent ? '" aria-current="page' : ""
+        }" aria-label="${translations.archive.paginationPage} ${pageNum}">${pageNum}</button>`;
+      }).join("")
+    }
       </div>
       <button class="bx--pagination__button bx--pagination__button--forward" aria-label="${translations.archive.paginationNext}">
         <svg class="bx--pagination__button-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">

@@ -172,50 +172,98 @@ répertoire `design/` à la racine du repo**.
 
 ## Résumé exécutif
 
-Le **widget Telegram** a été officiellement abandonné et retiré du code de l’application. Ce plan détaille les conséquences visuelles, fonctionnelles et opérationnelles de cette suppression. Nous confirmons qu’aucun autre contenu n’est affecté : les composants restants ont été vérifiés contre les designs Figma (exports JSON dans `design/`) et restent conformes aux spécifications. Comme l’indiquent les directives Carbon précédentes, le widget Telegram n’était qu’un module secondaire (sous la section « Recent writing ») et ne devait jamais figurer dans le **header** ou le menu mobile【96†L68-L69】【99†L1-L2】. Sa suppression simplifie la page d’accueil et respecte ces recommandations de design. 
+Le **widget Telegram** a été officiellement abandonné et retiré du code de
+l’application. Ce plan détaille les conséquences visuelles, fonctionnelles et
+opérationnelles de cette suppression. Nous confirmons qu’aucun autre contenu
+n’est affecté : les composants restants ont été vérifiés contre les designs
+Figma (exports JSON dans `design/`) et restent conformes aux spécifications.
+Comme l’indiquent les directives Carbon précédentes, le widget Telegram n’était
+qu’un module secondaire (sous la section « Recent writing ») et ne devait jamais
+figurer dans le **header** ou le menu mobile【96†L68-L69】【99†L1-L2】. Sa
+suppression simplifie la page d’accueil et respecte ces recommandations de
+design.
 
 ## 1. Raison du changement
 
-Le widget Telegram a été jugé inutile et retiré du produit. Les raisons principales sont : 
+Le widget Telegram a été jugé inutile et retiré du produit. Les raisons
+principales sont : 
 
-- **Conformité au design initial** : Le plan Carbon spécifiait que ce widget ne devait pas apparaître dans le header ni dans le menu principal【96†L68-L69】【99†L1-L2】. Dans la pratique, il n’existait plus dans le code, confirmant son obsolescence.  
-- **Simplicité de l’UI** : La suppression élimine un élément social non essentiel, limitant les distractions pour l’utilisateur et respectant le principe Carbon de ne pas surcharger le header ou les modules principaux【99†L1-L2】.  
-- **Pas d’impact sur le contenu critique** : Aucune fonctionnalité vitale n’est liée à ce widget. La section « Recent writing » reste la section principale de la page d’accueil.  
+- **Conformité au design initial** : Le plan Carbon spécifiait que ce widget ne
+  devait pas apparaître dans le header ni dans le menu
+  principal【96†L68-L69】【99†L1-L2】. Dans la pratique, il n’existait plus dans
+  le code, confirmant son obsolescence.
+- **Simplicité de l’UI** : La suppression élimine un élément social non
+  essentiel, limitant les distractions pour l’utilisateur et respectant le
+  principe Carbon de ne pas surcharger le header ou les modules
+  principaux【99†L1-L2】.
+- **Pas d’impact sur le contenu critique** : Aucune fonctionnalité vitale n’est
+  liée à ce widget. La section « Recent writing » reste la section principale de
+  la page d’accueil.
 
 ## 2. Fichiers à modifier / supprimer
 
-| Fichier                                  | Action                                                                                | Diff ou extrait de remplacement                                             |
-| ---------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `src/_components/TelegramWidget.tsx`     | Supprimé (widget retiré précédemment)                                                 | *Aucun contenu – fichier supprimé (aucune référence résiduelle).*           |
-| `src/styles/components.css`              | Mise à jour : retrait des règles CSS liées au widget Telegram                          | ```diff<br>- .telegram-widget { ... }<br>- .telegram-widget__title { ... }<br>- /* etc. jusqu'aux classes du widget */<br>``` |
+| Fichier                              | Action                                                        | Diff ou extrait de remplacement                                                                                           |
+| ------------------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `src/_components/TelegramWidget.tsx` | Supprimé (widget retiré précédemment)                         | _Aucun contenu – fichier supprimé (aucune référence résiduelle)._                                                         |
+| `src/styles/components.css`          | Mise à jour : retrait des règles CSS liées au widget Telegram | `diff<br>- .telegram-widget { ... }<br>- .telegram-widget__title { ... }<br>- /* etc. jusqu'aux classes du widget */<br>` |
 
-> **Note :** Aucun autre fichier code n’est concerné, car le composant Telegram n’était plus utilisé. 
+> **Note :** Aucun autre fichier code n’est concerné, car le composant Telegram
+> n’était plus utilisé.
 
 ## 3. Étapes de test (local, préproduction, production)
 
-1. **Tests locaux (dev)** : Lancer le serveur de développement (`deno task serve`). Vérifier que la page d’accueil s’affiche sans erreur et que la section « Recent writing » se présente normalement. S’assurer qu’aucune mention ou espace réservé au widget Telegram n’apparaît dans le DOM (inspecteur).  
-2. **Tests en staging** : Déployer la branche de feature sur l’environnement de staging. Confirmer les mêmes vérifications visuelles qu’en local sur les navigateurs cibles (desktop, mobile). Vérifier la console navigateur qu’aucune requête ou script lié à Telegram n’est exécuté.  
-3. **Tests en production** : Après déploiement final, reproduire rapidement les vérifications en staging. En complément, surveiller les logs d’erreurs de la build (aucun import manquant ou erreur JS relatif à Telegram).  
+1. **Tests locaux (dev)** : Lancer le serveur de développement
+   (`deno task serve`). Vérifier que la page d’accueil s’affiche sans erreur et
+   que la section « Recent writing » se présente normalement. S’assurer
+   qu’aucune mention ou espace réservé au widget Telegram n’apparaît dans le DOM
+   (inspecteur).
+2. **Tests en staging** : Déployer la branche de feature sur l’environnement de
+   staging. Confirmer les mêmes vérifications visuelles qu’en local sur les
+   navigateurs cibles (desktop, mobile). Vérifier la console navigateur
+   qu’aucune requête ou script lié à Telegram n’est exécuté.
+3. **Tests en production** : Après déploiement final, reproduire rapidement les
+   vérifications en staging. En complément, surveiller les logs d’erreurs de la
+   build (aucun import manquant ou erreur JS relatif à Telegram).
 
 ## 4. Plan de rollback et checklist QA
 
-- **Rollback rapide** : Si un problème majeur survient, révertir le commit de suppression (e.g. via `git revert`). Comme le widget n’est plus dans le code, le rollback devrait simplement réintroduire le composant si besoin.  
-- **Checklist QA** :  
-  - [ ] Lien vers le canal Telegram retiré du site (notamment dans le footer ou ailleurs).  
-  - [ ] Aucune erreur JS/HTML liée au widget dans la console navigateur.  
-  - [ ] Aucune référence CSS restante aux classes `.telegram-widget*`.  
-  - [ ] Page d’accueil toujours conforme au design (espacements, grilles inchangés).  
-  - [ ] Pas de régression visuelle dans les sections adjacentes.  
-  - [ ] Tests unitaires et d’intégration existants passent (aucun test sur Telegram).  
+- **Rollback rapide** : Si un problème majeur survient, révertir le commit de
+  suppression (e.g. via `git revert`). Comme le widget n’est plus dans le code,
+  le rollback devrait simplement réintroduire le composant si besoin.
+- **Checklist QA** :
+  - [ ] Lien vers le canal Telegram retiré du site (notamment dans le footer ou
+        ailleurs).
+  - [ ] Aucune erreur JS/HTML liée au widget dans la console navigateur.
+  - [ ] Aucune référence CSS restante aux classes `.telegram-widget*`.
+  - [ ] Page d’accueil toujours conforme au design (espacements, grilles
+        inchangés).
+  - [ ] Pas de régression visuelle dans les sections adjacentes.
+  - [ ] Tests unitaires et d’intégration existants passent (aucun test sur
+        Telegram).
 
 ## 5. Accessibilité et SEO après suppression
 
-- **Accessibilité (WCAG)** : L’élément `<aside>` du widget Telegram (qui aurait eu `aria-label="Telegram"`) a été supprimé. Vérifier que les autres landmarks (`<header>`, `<main>`, `<footer>`) restent corrects. Comme le widget était purement informatif (texte), sa suppression n’empêche pas l’accès au contenu principal. Les autres liens et boutons (ex. liens d’archives, fil d’Ariane) conservent leurs attributs sémantiques et ARIA.  
-- **Référencement (SEO)** : Le lien de CTA « Voir le canal » vers `t.me/...` a été retiré. Étant donné qu’il s’agissait d’un lien externe vers Telegram, son retrait n’affecte pas négativement le SEO interne. Au contraire, le contenu principal (articles récents) reste prédominant. Le sitemap et les balises Meta (titres, descriptions) restent inchangés. Aucune nouvelle URL n’est créée ni supprimée du sitemap.  
+- **Accessibilité (WCAG)** : L’élément `<aside>` du widget Telegram (qui aurait
+  eu `aria-label="Telegram"`) a été supprimé. Vérifier que les autres landmarks
+  (`<header>`, `<main>`, `<footer>`) restent corrects. Comme le widget était
+  purement informatif (texte), sa suppression n’empêche pas l’accès au contenu
+  principal. Les autres liens et boutons (ex. liens d’archives, fil d’Ariane)
+  conservent leurs attributs sémantiques et ARIA.
+- **Référencement (SEO)** : Le lien de CTA « Voir le canal » vers `t.me/...` a
+  été retiré. Étant donné qu’il s’agissait d’un lien externe vers Telegram, son
+  retrait n’affecte pas négativement le SEO interne. Au contraire, le contenu
+  principal (articles récents) reste prédominant. Le sitemap et les balises Meta
+  (titres, descriptions) restent inchangés. Aucune nouvelle URL n’est créée ni
+  supprimée du sitemap.
 
 ## 6. Analytique / Traçage
 
-Aucun service d’analytics n’était lié au widget Telegram (pas de Google Analytics, pas de pixel, etc.). Il n’y a donc **aucun événement à retirer ou modifier**. Les seuls liens d’interaction (par exemple l’archive des posts) ne sont pas liés au widget. Si un suivi de clics sur « Voir le canal » avait été configuré, il doit être supprimé (spécifier la balise event si existante). Actuellement, rien n’est reporté concernant Telegram.
+Aucun service d’analytics n’était lié au widget Telegram (pas de Google
+Analytics, pas de pixel, etc.). Il n’y a donc **aucun événement à retirer ou
+modifier**. Les seuls liens d’interaction (par exemple l’archive des posts) ne
+sont pas liés au widget. Si un suivi de clics sur « Voir le canal » avait été
+configuré, il doit être supprimé (spécifier la balise event si existante).
+Actuellement, rien n’est reporté concernant Telegram.
 
 ## 7. Maquettes visuelles avant/après
 
@@ -240,3 +288,4 @@ PAGE D’ACCUEIL (Before)                      PAGE D’ACCUEIL (After)
 ├────────────────────────┤                   ├────────────────────────┤
 │ Footer (liens légaux)  │                   │ Footer (liens légaux)  │
 └────────────────────────┘                   └────────────────────────┘
+```
