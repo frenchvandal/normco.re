@@ -275,9 +275,10 @@ describe("Header()", () => {
         Header({ currentUrl: "/", language: "en" }),
       );
       assertMatch(html, /<svg[^>]*class="bx--header__action-icon"/);
+      // IBM Watson Language Translator icon — Carbon Design System
       assertStringIncludes(
         html,
-        'd="M14 2C14 1.4 13.6 1 13 1H3C2.4 1 2 1.4 2 2V14C2 14.6 2.4 15 3 15H13C13.6 15 14 14.6 14 14V2Z',
+        'd="M28 10V6c0-.6-.4-1-1-1h-1c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h-1c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1h3c.6 0 1-.4 1-1v-4c0-.6-.4-1-1-1zm-2 3h-1v-1h1v1zm0-2h-1V9h1v2zm-4-7c0-.6-.4-1-1-1h-4c-.6 0-1 .4-1 1v8c0 .6.4 1 1 1h4c.6 0 1-.4 1-1V6zm-1 8h-3V6h3v6zm-9-6h2c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zm0 3h2c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zm0 4h2c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zM2 10h2c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H2C1.4 3 1 3.4 1 4v5c0 .6.4 1 1 1zm1-5h1v4H3V5z"',
       );
     });
   });

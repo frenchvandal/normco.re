@@ -25,7 +25,12 @@ function ariaCurrent(
 const CARBON_SEARCH_ICON_PATH =
   "M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z";
 const CARBON_MENU_ICON_PATH = "M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z";
-/** IBM Watson Language Translator icon — official Carbon icon */
+/**
+ * IBM Watson Language Translator icon — official Carbon Design System icon.
+ * Source: https://carbondesignsystem.com/elements/icons/library/
+ * Icon name: ibm-watson--language-translator (Enterprise category)
+ * This icon represents language translation functionality.
+ */
 const CARBON_LANGUAGE_ICON_PATH =
   "M28 10V6c0-.6-.4-1-1-1h-1c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h-1c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1h3c.6 0 1-.4 1-1v-4c0-.6-.4-1-1-1zm-2 3h-1v-1h1v1zm0-2h-1V9h1v2zm-4-7c0-.6-.4-1-1-1h-4c-.6 0-1 .4-1 1v8c0 .6.4 1 1 1h4c.6 0 1-.4 1-1V6zm-1 8h-3V6h3v6zm-9-6h2c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zm0 3h2c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zm0 4h2c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zM2 10h2c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H2C1.4 3 1 3.4 1 4v5c0 .6.4 1 1 1zm1-5h1v4H3V5z";
 const CARBON_THEME_LIGHT_ICON_PATHS = [

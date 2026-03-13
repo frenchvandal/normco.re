@@ -2,7 +2,7 @@
 (() => {
   const controls = Array.from(
     globalThis.document.querySelectorAll(
-      "cds-header-global-action[panel-id], cds-header-menu-button, .bx--header__language-toggle, .bx--header__menu-toggle",
+      "cds-header-global-action[panel-id], cds-header-menu-button, .bx--header__language-toggle, .bx--header__menu-toggle, .bx--header__action[aria-controls]",
     ),
   ).filter((element) => element instanceof HTMLElement);
 
@@ -15,7 +15,11 @@
    * @returns {string | null}
    */
   function getLinkedPanelId(control) {
-    if (control.matches(".bx--header__language-toggle")) {
+    if (
+      control.matches(
+        ".bx--header__language-toggle, .bx--header__action[aria-controls]",
+      )
+    ) {
       return control.getAttribute("aria-controls");
     }
     if (control.matches(".bx--header__menu-toggle")) {
@@ -81,6 +85,11 @@
       if (!linkedPanel.hasAttribute("hidden")) {
         linkedPanel.setAttribute("hidden", "");
         closed = true;
+      }
+
+      // Update aria-expanded on the control
+      if (control.getAttribute("aria-expanded") === "true") {
+        control.setAttribute("aria-expanded", "false");
       }
     }
 
@@ -200,6 +209,7 @@ function setupDisclosureControls() {
 
       if (newState) {
         panel.removeAttribute("hidden");
+        panel.setAttribute("expanded", "");
         // Focus first focusable element in panel
         const firstFocusable = panel.querySelector(
           "a, button, input, [tabindex]:not([tabindex='-1'])",
@@ -209,6 +219,7 @@ function setupDisclosureControls() {
         }
       } else {
         panel.setAttribute("hidden", "");
+        panel.removeAttribute("expanded");
       }
     });
   };
@@ -232,6 +243,7 @@ function setupDisclosureControls() {
 
       if (newState) {
         nav.removeAttribute("hidden");
+        nav.setAttribute("expanded", "");
         if (overlay instanceof HTMLElement) {
           overlay.setAttribute("aria-hidden", "false");
         }
@@ -242,6 +254,7 @@ function setupDisclosureControls() {
         }
       } else {
         nav.setAttribute("hidden", "");
+        nav.removeAttribute("expanded");
         if (overlay instanceof HTMLElement) {
           overlay.setAttribute("aria-hidden", "true");
         }
@@ -265,19 +278,7 @@ function setupDisclosureControls() {
     });
   }
 
-  // Close panels on escape key
-  document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") return;
-
-    const openPanel = document.querySelector(
-      ".bx--header__panel:not([hidden]), .bx--side-nav:not([hidden])",
-    );
-    if (openPanel instanceof HTMLElement) {
-      closeCarbonChrome({ restoreFocus: true });
-    }
-  });
-
-  // Close panels when clicking outside
+  // Close panels when clicking outside (but not on overlay)
   document.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
