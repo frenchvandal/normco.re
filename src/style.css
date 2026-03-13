@@ -9,6 +9,7 @@
 
 /* CSS Cascade Layers — order determined by import sequence
    Each imported file contains its own @layer block */
+@import "./styles/tokens-carbon.css";
 @import "./styles/reset.css";
 @import "./styles/base.css";
 @import "./styles/layout-carbon.css";

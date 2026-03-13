@@ -4,116 +4,118 @@
     color-scheme: light dark;
 
     /* =====================================================================
-       CARBON DESIGN SYSTEM v11 TOKENS — WHITE THEME (DEFAULT LIGHT)
+       CARBON DESIGN SYSTEM v11 TOKENS — GRAY 10 THEME (DEFAULT LIGHT)
        Source: https://carbondesignsystem.com/elements/themes/overview/
        W3C DTCG 2025.10 naming convention: category-property-modifier
+       Colors use oklch() for perceptual uniformity and wide gamut
        ===================================================================== */
 
-    /* Background tokens */
-    --cds-background: #ffffff;
-    --cds-background-inverse: #161616;
-    --cds-background-hover: #f4f4f4;
-    --cds-background-active: #e0e0e0;
-    --cds-background-selected: #e0e0e0;
-    --cds-background-disabled: #f4f4f4;
+    /* Background tokens — oklch() */
+    --cds-background: oklch(100% 0 0); /* White */
+    --cds-background-inverse: oklch(14.9% 0 0); /* Gray 100 */
+    --cds-background-hover: oklch(95.7% 0 0); /* Gray 10 */
+    --cds-background-active: oklch(87.8% 0 0); /* Gray 20 */
+    --cds-background-selected: oklch(55.3% 0 0 / 0.2); /* Gray 50 at 20% */
+    --cds-background-disabled: oklch(95.7% 0 0);
 
     /* Layer tokens (surfaces) */
-    --cds-layer: #f4f4f4;
-    --cds-layer-hover: #e0e0e0;
-    --cds-layer-active: #cdcdcd;
-    --cds-layer-selected: #cdcdcd;
-    --cds-layer-selected-disabled: #8d8d8d;
-    --cds-layer-selected-hover: #cdcdcd;
-    --cds-layer-selected-inverse: #161616;
+    --cds-layer: oklch(95.7% 0 0); /* Gray 10 */
+    --cds-layer-hover: oklch(91% 0 0);
+    --cds-layer-active: oklch(87.8% 0 0); /* Gray 20 */
+    --cds-layer-selected: oklch(87.8% 0 0);
+    --cds-layer-selected-disabled: oklch(55.3% 0 0);
+    --cds-layer-selected-hover: oklch(82% 0 0);
+    --cds-layer-selected-inverse: oklch(14.9% 0 0);
 
     /* Layer accent tokens */
-    --cds-layer-accent: #e0e0e0;
-    --cds-layer-accent-hover: #cdcdcd;
-    --cds-layer-accent-active: #b6b6b6;
+    --cds-layer-accent: oklch(87.8% 0 0);
+    --cds-layer-accent-hover: oklch(82% 0 0);
+    --cds-layer-accent-active: oklch(65.9% 0 0);
 
     /* Field tokens (inputs) */
-    --cds-field: #ffffff;
-    --cds-field-hover: #f4f4f4;
+    --cds-field: oklch(100% 0 0);
+    --cds-field-hover: oklch(95.7% 0 0);
 
     /* Border tokens */
-    --cds-border-subtle: #e0e0e0;
-    --cds-border-strong: #8d8d8d;
-    --cds-border-inverse: #ffffff;
-    --cds-border-disabled: #f4f4f4;
-    --cds-border-interactive: #0f62fe;
-    --cds-border-tile-interactive: #e0e0e0;
+    --cds-border-subtle: oklch(87.8% 0 0); /* Gray 20 */
+    --cds-border-strong: oklch(55.3% 0 0); /* Gray 50 */
+    --cds-border-inverse: oklch(100% 0 0);
+    --cds-border-disabled: oklch(95.7% 0 0);
+    --cds-border-interactive: oklch(45% 0.2 264); /* Blue 60 */
+    --cds-border-tile-interactive: oklch(87.8% 0 0);
 
     /* Text tokens */
-    --cds-text-primary: #161616;
-    --cds-text-secondary: #525252;
-    --cds-text-placeholder: #8d8d8d;
-    --cds-text-helper: #6f6f6f;
-    --cds-text-inverse: #ffffff;
-    --cds-text-link: #0f62fe;
-    --cds-text-error: #da1e28;
-    --cds-text-success: #198038;
-    --cds-text-warning: #713f12;
+    --cds-text-primary: oklch(14.9% 0 0); /* Gray 100 */
+    --cds-text-secondary: oklch(32.2% 0 0); /* Gray 70 */
+    --cds-text-placeholder: oklch(55.3% 0 0); /* Gray 50 */
+    --cds-text-helper: oklch(43.5% 0 0); /* Gray 60 */
+    --cds-text-inverse: oklch(100% 0 0);
+    --cds-text-link: oklch(45% 0.2 264); /* Blue 60 */
+    --cds-text-error: oklch(45% 0.25 25); /* Red 60 */
+    --cds-text-success: oklch(55% 0.2 150); /* Green 60 */
+    --cds-text-warning: oklch(75% 0.18 80); /* Yellow 50 */
 
     /* Link tokens */
-    --cds-link-primary: #0f62fe;
-    --cds-link-primary-hover: #0043ce;
-    --cds-link-primary-visited: #8a3ffc;
-    --cds-link-secondary: #0f62fe;
-    --cds-link-inverse: #ffffff;
+    --cds-link-primary: oklch(45% 0.2 264); /* Blue 60 */
+    --cds-link-primary-hover: oklch(40% 0.2 264); /* Blue 70 */
+    --cds-link-primary-visited: oklch(55% 0.25 300); /* Purple */
+    --cds-link-secondary: oklch(32.2% 0 0);
+    --cds-link-inverse: oklch(100% 0 0);
 
     /* Icon tokens */
-    --cds-icon-primary: #161616;
-    --cds-icon-secondary: #525252;
-    --cds-icon-inverse: #ffffff;
-    --cds-icon-on-color: #ffffff;
-    --cds-icon-disabled: #c6c6c6;
+    --cds-icon-primary: oklch(14.9% 0 0);
+    --cds-icon-secondary: oklch(32.2% 0 0);
+    --cds-icon-inverse: oklch(100% 0 0);
+    --cds-icon-on-color: oklch(100% 0 0);
+    --cds-icon-disabled: oklch(65.9% 0 0);
 
     /* Focus token */
-    --cds-focus: #0f62fe;
+    --cds-focus: oklch(45% 0.2 264); /* Blue 60 */
 
-    /* Support colors (semantic feedback) */
-    --cds-support-error: #da1e28;
-    --cds-support-error-hover: #b81921;
-    --cds-support-success: #198038;
-    --cds-support-success-hover: #146c2e;
-    --cds-support-warning: #f1c21b;
-    --cds-support-warning-hover: #d2a306;
-    --cds-support-info: #0043ce;
-    --cds-support-info-hover: #0036a8;
+    /* Support colors (semantic feedback) — oklch() */
+    --cds-support-error: oklch(45% 0.25 25);
+    --cds-support-error-hover: oklch(40% 0.25 25);
+    --cds-support-success: oklch(55% 0.2 150);
+    --cds-support-success-hover: oklch(50% 0.2 150);
+    --cds-support-warning: oklch(75% 0.18 80);
+    --cds-support-warning-hover: oklch(70% 0.18 80);
+    --cds-support-info: oklch(65% 0.15 240);
+    --cds-support-info-hover: oklch(60% 0.15 240);
 
     /* Interactive tokens */
-    --cds-interactive: #0f62fe;
-    --cds-interactive-hover: #0043ce;
-    --cds-interactive-active: #002d9c;
-    --cds-visited-link: #8a3ffc;
-    --cds-disabled-01: #f4f4f4;
-    --cds-disabled-02: #c6c6c6;
-    --cds-disabled-03: #8d8d8d;
-    --cds-highlight: #d0e2ff;
-    --cds-inverse-01: #161616;
-    --cds-inverse-02: #ffffff;
-    --cds-inverse-03: #e0e0e0;
-    --cds-inverse-hover: #4c4c4c;
-    --cds-inverse-active: #8d8d8d;
-    --cds-inverse-focus: #ffffff;
-    --cds-inverse-disabled: #8d8d8d;
-    --cds-overlay: #161616;
-    --cds-button-separator: #e0e0e0;
-    --cds-skeleton-background: #e0e0e0;
-    --cds-skeleton-element: #c6c6c6;
-    --cds-brand-01: #0f62fe;
-    --cds-brand-02: #0043ce;
-    --cds-brand-03: #002d9c;
-    --cds-focus-inset: #ffffff;
-    --cds-inverse-support-01: #da1e28;
-    --cds-inverse-support-02: #198038;
-    --cds-inverse-support-03: #f1c21b;
-    --cds-inverse-support-04: #0043ce;
-    --cds-inverse-support-05: #8a3ffc;
-    --cds-toggle-off: #8d8d8d;
+    --cds-interactive: oklch(45% 0.2 264);
+    --cds-interactive-hover: oklch(40% 0.2 264);
+    --cds-interactive-active: oklch(32.2% 0 0);
+    --cds-visited-link: oklch(55% 0.25 300);
+    --cds-disabled-01: oklch(95.7% 0 0);
+    --cds-disabled-02: oklch(77.6% 0 0);
+    --cds-disabled-03: oklch(55.3% 0 0);
+    --cds-highlight: oklch(90% 0.1 264);
+    --cds-inverse-01: oklch(14.9% 0 0);
+    --cds-inverse-02: oklch(100% 0 0);
+    --cds-inverse-03: oklch(87.8% 0 0);
+    --cds-inverse-hover: oklch(32.2% 0 0);
+    --cds-inverse-active: oklch(55.3% 0 0);
+    --cds-inverse-focus: oklch(100% 0 0);
+    --cds-inverse-disabled: oklch(55.3% 0 0);
+    --cds-overlay: oklch(14.9% 0 0);
+    --cds-button-separator: oklch(87.8% 0 0);
+    --cds-skeleton-background: oklch(87.8% 0 0);
+    --cds-skeleton-element: oklch(77.6% 0 0);
+    --cds-brand-01: oklch(45% 0.2 264);
+    --cds-brand-02: oklch(40% 0.2 264);
+    --cds-brand-03: oklch(32.2% 0 0);
+    --cds-focus-inset: oklch(100% 0 0);
+    --cds-inverse-support-01: oklch(45% 0.25 25);
+    --cds-inverse-support-02: oklch(55% 0.2 150);
+    --cds-inverse-support-03: oklch(75% 0.18 80);
+    --cds-inverse-support-04: oklch(45% 0.2 264);
+    --cds-inverse-support-05: oklch(55% 0.25 300);
+    --cds-toggle-off: oklch(55.3% 0 0);
 
     /* Spacing tokens — Carbon 2x Grid (8px base unit)
        Source: https://carbondesignsystem.com/elements/2x-grid/overview/
+       design/Spacing.json
        ===================================================================== */
     --cds-spacing-01: 0.125rem; /* 2px */
     --cds-spacing-02: 0.25rem; /* 4px */
@@ -378,88 +380,90 @@
   :root.cds-theme--gray100 {
     color-scheme: dark;
 
-    /* Carbon Gray 100 Theme tokens (dark mode default) */
-    --cds-background: #161616;
-    --cds-background-inverse: #ffffff;
-    --cds-background-hover: #262626;
-    --cds-background-active: #393939;
-    --cds-layer: #262626;
-    --cds-layer-hover: #393939;
-    --cds-layer-active: #4c4c4c;
-    --cds-field: #262626;
-    --cds-field-hover: #393939;
-    --cds-border-subtle: #393939;
-    --cds-border-strong: #6f6f6f;
-    --cds-border-interactive: #4589ff;
-    --cds-text-primary: #f4f4f4;
-    --cds-text-secondary: #c6c6c6;
-    --cds-text-link: #78a9ff;
-    --cds-link-primary: #78a9ff;
-    --cds-link-primary-hover: #a6c8ff;
-    --cds-icon-primary: #f4f4f4;
-    --cds-icon-secondary: #c6c6c6;
-    --cds-focus: #78a9ff;
-    --cds-interactive: #4589ff;
-    --cds-interactive-hover: #78a9ff;
-    --cds-interactive-active: #a6c8ff;
+    /* Carbon Gray 100 Theme tokens (dark mode default) — oklch() */
+    --cds-background: oklch(14.9% 0 0); /* Gray 100 */
+    --cds-background-inverse: oklch(100% 0 0);
+    --cds-background-hover: oklch(22.4% 0 0); /* Gray 80 */
+    --cds-background-active: oklch(32.2% 0 0); /* Gray 70 */
+    --cds-layer: oklch(22.4% 0 0); /* Gray 80 */
+    --cds-layer-hover: oklch(28% 0 0);
+    --cds-layer-active: oklch(32.2% 0 0);
+    --cds-field: oklch(22.4% 0 0);
+    --cds-field-hover: oklch(28% 0 0);
+    --cds-border-subtle: oklch(32.2% 0 0); /* Gray 70 */
+    --cds-border-strong: oklch(55.3% 0 0); /* Gray 50 */
+    --cds-border-interactive: oklch(55% 0.2 264); /* Blue 50 */
+    --cds-text-primary: oklch(95.7% 0 0); /* Gray 10 */
+    --cds-text-secondary: oklch(77.6% 0 0); /* Gray 30 */
+    --cds-text-link: oklch(65% 0.2 264); /* Blue 50 */
+    --cds-link-primary: oklch(65% 0.2 264);
+    --cds-link-primary-hover: oklch(70% 0.2 264);
+    --cds-icon-primary: oklch(95.7% 0 0);
+    --cds-icon-secondary: oklch(77.6% 0 0);
+    --cds-focus: oklch(65% 0.2 264);
+    --cds-interactive: oklch(55% 0.2 264);
+    --cds-interactive-hover: oklch(65% 0.2 264);
+    --cds-interactive-active: oklch(70% 0.2 264);
   }
 
   /* Carbon Gray 10 Theme (light, higher contrast) */
   :root.cds-theme--gray10 {
     color-scheme: light;
 
-    --cds-background: #f4f4f4;
-    --cds-background-inverse: #161616;
-    --cds-background-hover: #e0e0e0;
-    --cds-background-active: #cdcdcd;
-    --cds-layer: #ffffff;
-    --cds-layer-hover: #f4f4f4;
-    --cds-layer-active: #e0e0e0;
-    --cds-field: #ffffff;
-    --cds-field-hover: #f4f4f4;
-    --cds-border-subtle: #e0e0e0;
-    --cds-border-strong: #8d8d8d;
-    --cds-border-interactive: #0f62fe;
-    --cds-text-primary: #161616;
-    --cds-text-secondary: #525252;
-    --cds-text-link: #0f62fe;
-    --cds-link-primary: #0f62fe;
-    --cds-link-primary-hover: #0043ce;
-    --cds-icon-primary: #161616;
-    --cds-icon-secondary: #525252;
-    --cds-focus: #0f62fe;
-    --cds-interactive: #0f62fe;
-    --cds-interactive-hover: #0043ce;
-    --cds-interactive-active: #002d9c;
+    /* Carbon Gray 10 Theme tokens — oklch() */
+    --cds-background: oklch(95.7% 0 0); /* Gray 10 */
+    --cds-background-inverse: oklch(14.9% 0 0);
+    --cds-background-hover: oklch(87.8% 0 0);
+    --cds-background-active: oklch(77.6% 0 0);
+    --cds-layer: oklch(100% 0 0);
+    --cds-layer-hover: oklch(95.7% 0 0);
+    --cds-layer-active: oklch(87.8% 0 0);
+    --cds-field: oklch(100% 0 0);
+    --cds-field-hover: oklch(95.7% 0 0);
+    --cds-border-subtle: oklch(87.8% 0 0);
+    --cds-border-strong: oklch(55.3% 0 0);
+    --cds-border-interactive: oklch(45% 0.2 264);
+    --cds-text-primary: oklch(14.9% 0 0);
+    --cds-text-secondary: oklch(32.2% 0 0);
+    --cds-text-link: oklch(45% 0.2 264);
+    --cds-link-primary: oklch(45% 0.2 264);
+    --cds-link-primary-hover: oklch(40% 0.2 264);
+    --cds-icon-primary: oklch(14.9% 0 0);
+    --cds-icon-secondary: oklch(32.2% 0 0);
+    --cds-focus: oklch(45% 0.2 264);
+    --cds-interactive: oklch(45% 0.2 264);
+    --cds-interactive-hover: oklch(40% 0.2 264);
+    --cds-interactive-active: oklch(32.2% 0 0);
   }
 
   /* Carbon Gray 90 Theme (dark, medium contrast) */
   :root.cds-theme--gray90 {
     color-scheme: dark;
 
-    --cds-background: #262626;
-    --cds-background-inverse: #ffffff;
-    --cds-background-hover: #393939;
-    --cds-background-active: #4c4c4c;
-    --cds-layer: #393939;
-    --cds-layer-hover: #4c4c4c;
-    --cds-layer-active: #6f6f6f;
-    --cds-field: #393939;
-    --cds-field-hover: #4c4c4c;
-    --cds-border-subtle: #4c4c4c;
-    --cds-border-strong: #8d8d8d;
-    --cds-border-interactive: #4589ff;
-    --cds-text-primary: #f4f4f4;
-    --cds-text-secondary: #c6c6c6;
-    --cds-text-link: #78a9ff;
-    --cds-link-primary: #78a9ff;
-    --cds-link-primary-hover: #a6c8ff;
-    --cds-icon-primary: #f4f4f4;
-    --cds-icon-secondary: #c6c6c6;
-    --cds-focus: #78a9ff;
-    --cds-interactive: #4589ff;
-    --cds-interactive-hover: #78a9ff;
-    --cds-interactive-active: #a6c8ff;
+    /* Carbon Gray 90 Theme tokens — oklch() */
+    --cds-background: oklch(22.4% 0 0); /* Gray 80 */
+    --cds-background-inverse: oklch(100% 0 0);
+    --cds-background-hover: oklch(28% 0 0);
+    --cds-background-active: oklch(32.2% 0 0);
+    --cds-layer: oklch(28% 0 0);
+    --cds-layer-hover: oklch(32.2% 0 0);
+    --cds-layer-active: oklch(43.5% 0 0);
+    --cds-field: oklch(28% 0 0);
+    --cds-field-hover: oklch(32.2% 0 0);
+    --cds-border-subtle: oklch(32.2% 0 0);
+    --cds-border-strong: oklch(55.3% 0 0);
+    --cds-border-interactive: oklch(55% 0.2 264);
+    --cds-text-primary: oklch(95.7% 0 0);
+    --cds-text-secondary: oklch(77.6% 0 0);
+    --cds-text-link: oklch(65% 0.2 264);
+    --cds-link-primary: oklch(65% 0.2 264);
+    --cds-link-primary-hover: oklch(70% 0.2 264);
+    --cds-icon-primary: oklch(95.7% 0 0);
+    --cds-icon-secondary: oklch(77.6% 0 0);
+    --cds-focus: oklch(65% 0.2 264);
+    --cds-interactive: oklch(55% 0.2 264);
+    --cds-interactive-hover: oklch(65% 0.2 264);
+    --cds-interactive-active: oklch(70% 0.2 264);
   }
 
   ::selection {
