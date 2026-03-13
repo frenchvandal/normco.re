@@ -1,6 +1,7 @@
 /* ============================================================
    normco.re — main stylesheet entrypoint
    Architecture: CUBE/ITCSS-inspired layers + split partials
+   Carbon Design System v11 implementation
    ============================================================ */
 
 /* IBM Plex fonts — Carbon Design System typeface */
@@ -10,6 +11,6 @@
 
 @import "./styles/reset.css";
 @import "./styles/base.css";
-@import "./styles/layout.css";
+@import "./styles/layout-carbon.css";
 @import "./styles/components.css";
 @import "./styles/utilities.css";

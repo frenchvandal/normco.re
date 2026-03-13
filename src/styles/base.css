@@ -6,6 +6,7 @@
     /* =====================================================================
        CARBON DESIGN SYSTEM v11 TOKENS — WHITE THEME (DEFAULT LIGHT)
        Source: https://carbondesignsystem.com/elements/themes/overview/
+       W3C DTCG 2025.10 naming convention: category-property-modifier
        ===================================================================== */
 
     /* Background tokens */
@@ -343,130 +344,122 @@
     --font-mono: var(--cds-font-family-mono);
   }
 
-  :root[data-color-mode="light"] {
+  :root[data-color-mode="light"],
+  :root.cds-theme--white {
     color-scheme: light;
+
+    /* Carbon White Theme tokens */
+    --cds-background: #ffffff;
+    --cds-background-inverse: #161616;
+    --cds-background-hover: #f4f4f4;
+    --cds-background-active: #e0e0e0;
+    --cds-layer: #f4f4f4;
+    --cds-layer-hover: #e0e0e0;
+    --cds-layer-active: #cdcdcd;
+    --cds-field: #ffffff;
+    --cds-field-hover: #f4f4f4;
+    --cds-border-subtle: #e0e0e0;
+    --cds-border-strong: #8d8d8d;
+    --cds-border-interactive: #0f62fe;
+    --cds-text-primary: #161616;
+    --cds-text-secondary: #525252;
+    --cds-text-link: #0f62fe;
+    --cds-link-primary: #0f62fe;
+    --cds-link-primary-hover: #0043ce;
+    --cds-icon-primary: #161616;
+    --cds-icon-secondary: #525252;
+    --cds-focus: #0f62fe;
+    --cds-interactive: #0f62fe;
+    --cds-interactive-hover: #0043ce;
+    --cds-interactive-active: #002d9c;
   }
 
-  :root[data-color-mode="dark"] {
+  :root[data-color-mode="dark"],
+  :root.cds-theme--gray100 {
     color-scheme: dark;
 
-    /* =====================================================================
-       CARBON DESIGN SYSTEM v11 TOKENS — GRAY 100 THEME (DARK)
-       Source: https://carbondesignsystem.com/elements/themes/overview/
-       ===================================================================== */
-
-    /* Background tokens */
+    /* Carbon Gray 100 Theme tokens (dark mode default) */
     --cds-background: #161616;
     --cds-background-inverse: #ffffff;
     --cds-background-hover: #262626;
     --cds-background-active: #393939;
-    --cds-background-selected: #393939;
-    --cds-background-disabled: #262626;
-
-    /* Layer tokens (surfaces) */
     --cds-layer: #262626;
     --cds-layer-hover: #393939;
     --cds-layer-active: #4c4c4c;
-    --cds-layer-selected: #4c4c4c;
-    --cds-layer-selected-disabled: #6f6f6f;
-    --cds-layer-selected-hover: #4c4c4c;
-    --cds-layer-selected-inverse: #ffffff;
-
-    /* Layer accent tokens */
-    --cds-layer-accent: #393939;
-    --cds-layer-accent-hover: #4c4c4c;
-    --cds-layer-accent-active: #6f6f6f;
-
-    /* Field tokens (inputs) */
     --cds-field: #262626;
     --cds-field-hover: #393939;
-
-    /* Border tokens */
     --cds-border-subtle: #393939;
     --cds-border-strong: #6f6f6f;
-    --cds-border-inverse: #ffffff;
-    --cds-border-disabled: #262626;
     --cds-border-interactive: #4589ff;
-    --cds-border-tile-interactive: #393939;
-
-    /* Text tokens */
     --cds-text-primary: #f4f4f4;
     --cds-text-secondary: #c6c6c6;
-    --cds-text-placeholder: #8d8d8d;
-    --cds-text-helper: #a8a8a8;
-    --cds-text-inverse: #161616;
     --cds-text-link: #78a9ff;
-    --cds-text-error: #ff7b7b;
-    --cds-text-success: #42be65;
-    --cds-text-warning: #f1c21b;
-
-    /* Link tokens */
     --cds-link-primary: #78a9ff;
     --cds-link-primary-hover: #a6c8ff;
-    --cds-link-primary-visited: #be95ff;
-    --cds-link-secondary: #78a9ff;
-    --cds-link-inverse: #ffffff;
-
-    /* Icon tokens */
     --cds-icon-primary: #f4f4f4;
     --cds-icon-secondary: #c6c6c6;
-    --cds-icon-inverse: #161616;
-    --cds-icon-on-color: #ffffff;
-    --cds-icon-disabled: #6f6f6f;
-
-    /* Focus token */
     --cds-focus: #78a9ff;
-
-    /* Support colors (semantic feedback) */
-    --cds-support-error: #ff7b7b;
-    --cds-support-error-hover: #ff8787;
-    --cds-support-success: #42be65;
-    --cds-support-success-hover: #58d47b;
-    --cds-support-warning: #f1c21b;
-    --cds-support-warning-hover: #ffd76e;
-    --cds-support-info: #4589ff;
-    --cds-support-info-hover: #78a9ff;
-
-    /* Interactive tokens */
     --cds-interactive: #4589ff;
     --cds-interactive-hover: #78a9ff;
     --cds-interactive-active: #a6c8ff;
-    --cds-visited-link: #be95ff;
-    --cds-disabled-01: #262626;
-    --cds-disabled-02: #393939;
-    --cds-disabled-03: #6f6f6f;
-    --cds-highlight: #002d9c;
-    --cds-inverse-01: #ffffff;
-    --cds-inverse-02: #161616;
-    --cds-inverse-03: #393939;
-    --cds-inverse-hover: #c6c6c6;
-    --cds-inverse-active: #8d8d8d;
-    --cds-inverse-focus: #161616;
-    --cds-inverse-disabled: #6f6f6f;
-    --cds-overlay: #161616;
-    --cds-button-separator: #393939;
-    --cds-skeleton-background: #393939;
-    --cds-skeleton-element: #6f6f6f;
-    --cds-brand-01: #4589ff;
-    --cds-brand-02: #78a9ff;
-    --cds-brand-03: #a6c8ff;
-    --cds-focus-inset: #161616;
-    --cds-inverse-support-01: #da1e28;
-    --cds-inverse-support-02: #198038;
-    --cds-inverse-support-03: #f1c21b;
-    --cds-inverse-support-04: #0043ce;
-    --cds-inverse-support-05: #8a3ffc;
-    --cds-toggle-off: #6f6f6f;
+  }
 
-    /* Legacy aliases update for dark mode */
-    --color-bg: var(--cds-background);
-    --color-text: var(--cds-text-primary);
-    --color-meta: var(--cds-text-secondary);
-    --color-accent: var(--cds-link-primary);
-    --color-border: var(--cds-border-strong);
-    --color-code-bg: var(--cds-layer);
-    --color-selection-bg: rgb(120 169 255 / 30%);
-    --focus-outlineColor: var(--cds-focus);
+  /* Carbon Gray 10 Theme (light, higher contrast) */
+  :root.cds-theme--gray10 {
+    color-scheme: light;
+
+    --cds-background: #f4f4f4;
+    --cds-background-inverse: #161616;
+    --cds-background-hover: #e0e0e0;
+    --cds-background-active: #cdcdcd;
+    --cds-layer: #ffffff;
+    --cds-layer-hover: #f4f4f4;
+    --cds-layer-active: #e0e0e0;
+    --cds-field: #ffffff;
+    --cds-field-hover: #f4f4f4;
+    --cds-border-subtle: #e0e0e0;
+    --cds-border-strong: #8d8d8d;
+    --cds-border-interactive: #0f62fe;
+    --cds-text-primary: #161616;
+    --cds-text-secondary: #525252;
+    --cds-text-link: #0f62fe;
+    --cds-link-primary: #0f62fe;
+    --cds-link-primary-hover: #0043ce;
+    --cds-icon-primary: #161616;
+    --cds-icon-secondary: #525252;
+    --cds-focus: #0f62fe;
+    --cds-interactive: #0f62fe;
+    --cds-interactive-hover: #0043ce;
+    --cds-interactive-active: #002d9c;
+  }
+
+  /* Carbon Gray 90 Theme (dark, medium contrast) */
+  :root.cds-theme--gray90 {
+    color-scheme: dark;
+
+    --cds-background: #262626;
+    --cds-background-inverse: #ffffff;
+    --cds-background-hover: #393939;
+    --cds-background-active: #4c4c4c;
+    --cds-layer: #393939;
+    --cds-layer-hover: #4c4c4c;
+    --cds-layer-active: #6f6f6f;
+    --cds-field: #393939;
+    --cds-field-hover: #4c4c4c;
+    --cds-border-subtle: #4c4c4c;
+    --cds-border-strong: #8d8d8d;
+    --cds-border-interactive: #4589ff;
+    --cds-text-primary: #f4f4f4;
+    --cds-text-secondary: #c6c6c6;
+    --cds-text-link: #78a9ff;
+    --cds-link-primary: #78a9ff;
+    --cds-link-primary-hover: #a6c8ff;
+    --cds-icon-primary: #f4f4f4;
+    --cds-icon-secondary: #c6c6c6;
+    --cds-focus: #78a9ff;
+    --cds-interactive: #4589ff;
+    --cds-interactive-hover: #78a9ff;
+    --cds-interactive-active: #a6c8ff;
   }
 
   ::selection {
