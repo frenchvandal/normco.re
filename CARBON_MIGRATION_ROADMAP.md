@@ -468,6 +468,8 @@ For every migration slice:
 6. `deno task test:doc`
 7. `deno task build`
 8. Review `_html-issues.json` and resolve all HTML errors.
+9. Provide the optimized and detailed text to efficiently begin the next phase
+   of the migration.
 
 For rendering-affecting slices:
 
