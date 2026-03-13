@@ -107,6 +107,7 @@ export type SiteTranslations = {
     readonly activityAriaLabel: string;
     readonly yearsAriaLabel: string;
     readonly emptyState: string;
+    readonly breadcrumbAriaLabel: string;
   };
   readonly about: {
     readonly eyebrow: string;
@@ -182,6 +183,7 @@ const SITE_TRANSLATIONS = {
       activityAriaLabel: "Writing activity",
       yearsAriaLabel: "Archive years",
       emptyState: "No posts published yet.",
+      breadcrumbAriaLabel: "Archive breadcrumb",
     },
     about: {
       eyebrow: "Profile",
@@ -258,6 +260,7 @@ const SITE_TRANSLATIONS = {
       activityAriaLabel: "Activité des articles",
       yearsAriaLabel: "Années d'archives",
       emptyState: "Aucun article publié pour le moment.",
+      breadcrumbAriaLabel: "Fil d'Ariane des archives",
     },
     about: {
       eyebrow: "Profil",
@@ -332,6 +335,7 @@ const SITE_TRANSLATIONS = {
       activityAriaLabel: "文章活动",
       yearsAriaLabel: "归档年份",
       emptyState: "暂时还没有已发布的文章。",
+      breadcrumbAriaLabel: "归档面包屑导航",
     },
     about: {
       eyebrow: "个人简介",
@@ -406,6 +410,7 @@ const SITE_TRANSLATIONS = {
       activityAriaLabel: "文章活動",
       yearsAriaLabel: "彙整年份",
       emptyState: "目前尚無已發佈文章。",
+      breadcrumbAriaLabel: "彙整麵包屑導覽",
     },
     about: {
       eyebrow: "個人簡介",

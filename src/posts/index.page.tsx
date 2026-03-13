@@ -129,7 +129,14 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   }).join("\n");
 
   const archiveIntro =
-    `<section class="pagehead archive-pagehead" aria-labelledby="archive-title">
+    `<nav class="bx--breadcrumb" aria-label="${translations.archive.breadcrumbAriaLabel}">
+  <a href="/" class="bx--breadcrumb-item">Home</a>
+  <span class="bx--breadcrumb-separator" aria-hidden="true">/</span>
+  <a href="/posts/" class="bx--breadcrumb-item">Writing</a>
+  <span class="bx--breadcrumb-separator" aria-hidden="true">/</span>
+  <span class="bx--breadcrumb-item bx--breadcrumb-item--current" aria-current="page">Archive</span>
+</nav>
+<section class="pagehead archive-pagehead" aria-labelledby="archive-title">
   <p class="pagehead-eyebrow">${translations.archive.eyebrow}</p>
   <h1 id="archive-title" class="archive-page-title">${translations.archive.title}</h1>
   <p class="pagehead-lead">${translations.archive.lead}</p>
