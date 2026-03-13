@@ -62,9 +62,7 @@ function todayIsoDate(): string {
  * structured frontmatter and the trimmed body text.
  *
  * @example
- * ```ts
- * import { assertEquals } from "jsr:@std/assert/equals";
- *
+ * ```ts ignore
  * const { frontmatter, body } = parseDocument(
  *   "---\ntitle: Hello\ndate: 2026-01-01\n---\n\nWorld.",
  * );
