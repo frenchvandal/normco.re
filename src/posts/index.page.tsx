@@ -14,6 +14,9 @@ type H = {
   date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
 };
 
+/** Posts per page for pagination (Carbon recommends 10-25 for editorial content). */
+const POSTS_PER_PAGE = 10;
+
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Archive page URL. */
@@ -159,7 +162,40 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     ? '<script src="/scripts/archive-year-nav.js" defer></script>'
     : "";
 
+  // Carbon pagination — only show if more posts than POSTS_PER_PAGE
+  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+  const currentPage = 1; // Static for now; would be dynamic with query params
+  const paginationMarkup = totalPages > 1
+    ? `<nav class="bx--pagination" aria-label="${translations.archive.paginationAriaLabel}">
+  <div class="bx--pagination__content">
+    <span class="bx--pagination__text">
+      ${translations.archive.paginationItemsRange.replace("{start}", "1").replace("{end}", String(Math.min(POSTS_PER_PAGE, posts.length))).replace("{total}", String(posts.length))}
+    </span>
+    <div class="bx--pagination__control">
+      <button class="bx--pagination__button bx--pagination__button--backward" disabled aria-label="${translations.archive.paginationPrevious}">
+        <svg class="bx--pagination__button-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+          <path d="M11 3.5l-5 4.5 5 4.5V3.5z"/>
+        </svg>
+      </button>
+      <div class="bx--pagination__pages">
+        ${Array.from({ length: totalPages }, (_, i) => {
+          const pageNum = i + 1;
+          const isCurrent = pageNum === currentPage;
+          return `<button class="bx--pagination__page-button${isCurrent ? '" aria-current="page' : ''}" aria-label="${translations.archive.paginationPage} ${pageNum}">${pageNum}</button>`;
+        }).join("")}
+      </div>
+      <button class="bx--pagination__button bx--pagination__button--forward" aria-label="${translations.archive.paginationNext}">
+        <svg class="bx--pagination__button-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+          <path d="M5 11.5l5-4.5-5-4.5v9z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>`
+    : "";
+
   return `${archiveIntro}
 ${archiveBody}
+${paginationMarkup}
 ${archiveYearNavScript}`;
 };

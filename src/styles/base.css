@@ -606,6 +606,50 @@
     flex-shrink: 0;
   }
 
+  /* =====================================================================
+     CARBON ICON STANDARD SIZES
+     Source: https://carbondesignsystem.com/elements/icons/usage/
+     Standard icon sizes: 16px, 20px, 24px
+     ===================================================================== */
+  .icon--sm {
+    inline-size: 1rem; /* 16px */
+    block-size: 1rem;
+  }
+
+  .icon--md {
+    inline-size: 1.25rem; /* 20px */
+    block-size: 1.25rem;
+  }
+
+  .icon--lg {
+    inline-size: 1.5rem; /* 24px */
+    block-size: 1.5rem;
+  }
+
+  /* Icon button container for consistent sizing */
+  .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 2.5rem; /* 40px touch target */
+    block-size: 2.5rem;
+    border: none;
+    background: transparent;
+    color: var(--cds-icon-primary);
+    cursor: pointer;
+    transition: background-color var(--cds-motion-duration-moderate) var(--cds-motion-easing-standard);
+  }
+
+  .icon-button:hover {
+    background: var(--cds-layer-hover);
+    color: var(--cds-icon-primary);
+  }
+
+  .icon-button:focus-visible {
+    outline: var(--focus-ring-width) solid var(--cds-focus);
+    outline-offset: var(--focus-ring-offset);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

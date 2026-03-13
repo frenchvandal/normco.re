@@ -108,6 +108,11 @@ export type SiteTranslations = {
     readonly yearsAriaLabel: string;
     readonly emptyState: string;
     readonly breadcrumbAriaLabel: string;
+    readonly paginationAriaLabel: string;
+    readonly paginationItemsRange: string;
+    readonly paginationPrevious: string;
+    readonly paginationNext: string;
+    readonly paginationPage: string;
   };
   readonly about: {
     readonly eyebrow: string;
@@ -185,6 +190,11 @@ const SITE_TRANSLATIONS = {
       yearsAriaLabel: "Archive years",
       emptyState: "No posts published yet.",
       breadcrumbAriaLabel: "Archive breadcrumb",
+      paginationAriaLabel: "Archive pagination",
+      paginationItemsRange: "{start}–{end} of {total} items",
+      paginationPrevious: "Previous page",
+      paginationNext: "Next page",
+      paginationPage: "Page",
     },
     about: {
       eyebrow: "Profile",
@@ -263,6 +273,11 @@ const SITE_TRANSLATIONS = {
       yearsAriaLabel: "Années d'archives",
       emptyState: "Aucun article publié pour le moment.",
       breadcrumbAriaLabel: "Fil d'Ariane des archives",
+      paginationAriaLabel: "Pagination des archives",
+      paginationItemsRange: "{start}–{end} sur {total} éléments",
+      paginationPrevious: "Page précédente",
+      paginationNext: "Page suivante",
+      paginationPage: "Page",
     },
     about: {
       eyebrow: "Profil",
@@ -339,6 +354,11 @@ const SITE_TRANSLATIONS = {
       yearsAriaLabel: "归档年份",
       emptyState: "暂时还没有已发布的文章。",
       breadcrumbAriaLabel: "归档面包屑导航",
+      paginationAriaLabel: "归档分页",
+      paginationItemsRange: "共{total}项，第{start}–{end}项",
+      paginationPrevious: "上一页",
+      paginationNext: "下一页",
+      paginationPage: "第",
     },
     about: {
       eyebrow: "个人简介",
@@ -415,6 +435,11 @@ const SITE_TRANSLATIONS = {
       yearsAriaLabel: "彙整年份",
       emptyState: "目前尚無已發佈文章。",
       breadcrumbAriaLabel: "彙整麵包屑導覽",
+      paginationAriaLabel: "彙整分頁",
+      paginationItemsRange: "共{total}項，第{start}–{end}項",
+      paginationPrevious: "上一頁",
+      paginationNext: "下一頁",
+      paginationPage: "第",
     },
     about: {
       eyebrow: "個人簡介",

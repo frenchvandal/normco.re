@@ -465,6 +465,36 @@
     text-decoration-skip-ink: auto;
   }
 
+  /* Inline links (within text) vs Standalone links (block-level)
+     Source: https://carbondesignsystem.com/components/link/usage/
+     ===================================================================== */
+  /* Inline links appear within paragraph text — subtle underline */
+  .post-content p > a,
+  .about-content p > a {
+    color: var(--cds-link-primary);
+  }
+
+  .post-content p > a:hover,
+  .about-content p > a:hover {
+    color: var(--cds-link-primary-hover);
+  }
+
+  /* Standalone links appear outside paragraph text — more prominent */
+  .post-content > a,
+  .about-content > a,
+  .post-content li > a,
+  .about-content li > a {
+    color: var(--cds-link-primary);
+    font-weight: 500;
+  }
+
+  .post-content > a:hover,
+  .about-content > a:hover,
+  .post-content li > a:hover,
+  .about-content li > a:hover {
+    color: var(--cds-link-primary-hover);
+  }
+
   /* Post prev/next navigation */
   .post-nav {
     display: grid;
