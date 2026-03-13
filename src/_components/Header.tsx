@@ -25,8 +25,9 @@ function ariaCurrent(
 const CARBON_SEARCH_ICON_PATH =
   "M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z";
 const CARBON_MENU_ICON_PATH = "M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z";
+/** IBM Watson Language Translator icon — official Carbon icon */
 const CARBON_LANGUAGE_ICON_PATH =
-  "M14 2C14 1.4 13.6 1 13 1H3C2.4 1 2 1.4 2 2V14C2 14.6 2.4 15 3 15H13C13.6 15 14 14.6 14 14V2ZM13 13H3V2H13V13ZM22 6C22 5.4 21.6 5 21 5H17C16.4 5 16 5.4 16 6V14C16 14.6 16.4 15 17 15H21C21.6 15 22 14.6 22 14V6ZM21 13H17V6H21V13ZM27 10C27 9.4 26.6 9 26 9H25C25.6 9 26 8.6 26 8V6C26 5.4 25.6 5 25 5H24C23.4 5 23 5.4 23 6V8C23 8.6 23.4 9 24 9H23C22.4 9 22 9.4 22 10V14C22 14.6 22.4 15 23 15H26C26.6 15 27 14.6 27 14V10Z";
+  "M28 10V6c0-.6-.4-1-1-1h-1c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h-1c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1h3c.6 0 1-.4 1-1v-4c0-.6-.4-1-1-1zm-2 3h-1v-1h1v1zm0-2h-1V9h1v2zm-4-7c0-.6-.4-1-1-1h-4c-.6 0-1 .4-1 1v8c0 .6.4 1 1 1h4c.6 0 1-.4 1-1V6zm-1 8h-3V6h3v6zm-9-6h2c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zm0 3h2c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zm0 4h2c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zM2 10h2c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H2C1.4 3 1 3.4 1 4v5c0 .6.4 1 1 1zm1-5h1v4H3V5z";
 const CARBON_THEME_LIGHT_ICON_PATHS = [
   { d: "M7.5 1H8.5V3.5H7.5z" },
   { d: "M10.8 3.4H13.3V4.4H10.8z", transform: "rotate(-45 12.041 3.923)" },
@@ -272,6 +273,7 @@ export default (
         class="bx--header__panel bx--header__search-panel"
         aria-modal="true"
         hidden
+        data-search-panel=""
       >
         <div class="bx--header__panel-content">
           <div

@@ -10,7 +10,7 @@ import seo from "lume/plugins/seo.ts";
 import prism from "lume/plugins/prism.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
 import postcss from "lume/plugins/postcss.ts";
-import purgecss from "lume/plugins/purgecss.ts"; // Temporarily disabled — see usage comment below
+import _purgecss from "lume/plugins/purgecss.ts"; // Temporarily disabled — see usage comment below
 import lightningcss from "lume/plugins/lightningcss.ts";
 import terser from "lume/plugins/terser.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";

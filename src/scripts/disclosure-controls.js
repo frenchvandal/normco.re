@@ -170,7 +170,7 @@
  * Handle native UI shell toggles (navigation, search, language)
  * Replaces functionality previously provided by Carbon Web Components
  */
-document.addEventListener("DOMContentLoaded", () => {
+function setupDisclosureControls() {
   const navToggle = document.querySelector(".bx--header__menu-toggle");
   const sideNav = document.getElementById("site-side-nav");
   const searchToggle = document.querySelector(
@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Close on escape key
+  // Close panels on escape key
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
 
@@ -291,4 +291,11 @@ document.addEventListener("DOMContentLoaded", () => {
       closeCarbonChrome();
     }
   });
-});
+}
+
+// Run immediately if DOM is ready, otherwise wait for DOMContentLoaded
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", setupDisclosureControls);
+} else {
+  setupDisclosureControls();
+}
