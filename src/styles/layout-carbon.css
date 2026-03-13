@@ -728,4 +728,12 @@
     outline: 2px solid var(--cds-focus);
     outline-offset: 2px;
   }
+
+  .site-footer-icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 1rem; /* 16px */
+    height: 1rem;
+    fill: currentColor;
+  }
 }
