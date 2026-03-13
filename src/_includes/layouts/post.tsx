@@ -154,21 +154,22 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
 
   // Carbon tag color mapping based on tag name hash
   const getTagColor = (tag: string): string => {
-    const colors = ["blue", "green", "purple", "red", "teal", "cyan", "gray"] as const;
-    const hash = tag.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return colors[hash % colors.length] ?? "gray";
+    const colors = [
+      "blue",
+      "green",
+      "purple",
+      "red",
+      "teal",
+      "cyan",
+      "gray",
+    ] as const;
+    const hash = tag.split("").reduce(
+      (acc, char) => acc + char.charCodeAt(0),
+      0,
+    );
+    // Modulo always produces a valid index, but noUncheckedIndexedAccess requires handling
+    return colors[hash % colors.length] as string;
   };
-
-  const tagMarkup = tags.length > 0
-    ? `<div class="post-tags" role="list" aria-label="${translations.post.tagsAriaLabel}">
-        ${tags.map((tag) => {
-          const color = getTagColor(String(tag));
-          return `<span class="bx--tag bx--tag--${color}" role="listitem">
-            <span class="bx--tag__label">${tag}</span>
-          </span>`;
-        }).join("")}
-      </div>`
-    : "";
 
   return (
     <article
@@ -207,11 +208,19 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           )}
         </div>
         {tags.length > 0 && (
-          <div class="post-tags" role="list" aria-label={translations.post.tagsAriaLabel}>
-            {tags.map((tag) => {
+          <div
+            class="post-tags"
+            role="list"
+            aria-label={translations.post.tagsAriaLabel}
+          >
+            {tags.map((tag, index) => {
               const color = getTagColor(String(tag));
               return (
-                <span class="bx--tag bx--tag--{color}" role="listitem">
+                <span
+                  key={`${tag}-${index}`}
+                  class="bx--tag bx--tag--{color}"
+                  role="listitem"
+                >
                   <span class="bx--tag__label">{tag}</span>
                 </span>
               );

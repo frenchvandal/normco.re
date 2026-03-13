@@ -36,9 +36,7 @@ function makeData(
     },
     comp: {
       PostCard: (props: Record<string, unknown>) =>
-        Promise.resolve(
-          `<article class="post-card"><h3>${props["title"]}</h3></article>`,
-        ),
+        `<article class="post-card"><h3>${props["title"]}</h3></article>`,
     },
   } as unknown as Lume.Data;
 }
@@ -67,47 +65,47 @@ function makePost(
 
 describe("index.page.tsx", () => {
   describe("hero section", () => {
-    it("renders the hero section", async () => {
-      const html = await indexPage(makeData([]), MOCK_HELPERS);
+    it("renders the hero section", () => {
+      const html = indexPage(makeData([]), MOCK_HELPERS);
       assertMatch(html, /class="[^"]*\bhero\b[^"]*"/);
     });
 
-    it("renders an h1 in the hero", async () => {
-      const html = await indexPage(makeData([]), MOCK_HELPERS);
+    it("renders an h1 in the hero", () => {
+      const html = indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, "<h1");
     });
   });
 
   describe("recent posts", () => {
-    it("renders a link to the full archive", async () => {
-      const html = await indexPage(makeData([]), MOCK_HELPERS);
+    it("renders a link to the full archive", () => {
+      const html = indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, 'href="/posts/"');
     });
 
-    it("renders each post via PostCard", async () => {
+    it("renders each post via PostCard", () => {
       const firstPost = makePost(401, { readingInfo: { minutes: 2 } });
       const secondPost = makePost(402, { readingInfo: { minutes: 3 } });
       const posts = [
         firstPost,
         secondPost,
       ];
-      const html = await indexPage(makeData(posts), MOCK_HELPERS);
+      const html = indexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, firstPost.title);
       assertStringIncludes(html, secondPost.title);
     });
 
-    it("handles posts that lack reading info", async () => {
+    it("handles posts that lack reading info", () => {
       const { readingInfo: _unusedReadingInfo, ...postWithoutReadingInfo } =
         makePost(403);
       const posts = [
         postWithoutReadingInfo,
       ];
-      const html = await indexPage(makeData(posts), MOCK_HELPERS);
+      const html = indexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, postWithoutReadingInfo.title);
     });
 
-    it("renders the home-posts container even when no posts exist", async () => {
-      const html = await indexPage(makeData([]), MOCK_HELPERS);
+    it("renders the home-posts container even when no posts exist", () => {
+      const html = indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, 'class="home-posts"');
     });
   });
