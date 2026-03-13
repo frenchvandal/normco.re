@@ -162,26 +162,40 @@ describe("Header()", () => {
       assertStringIncludes(html, "<cds-side-nav");
     });
 
-    it("renders a Watson Language Translator Carbon panel and localized language options", async () => {
+    it("renders a native language selector <select> with localized options", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "fr" }),
       );
-      assertStringIncludes(html, 'panel-id="site-language-panel"');
-      assertStringIncludes(html, 'id="site-language-panel"');
-      assertStringIncludes(html, 'class="site-language-panel"');
-      assertStringIncludes(html, 'data-language-panel=""');
-      assertStringIncludes(html, "<cds-switcher");
+      // Select element with proper accessibility (aria-label is localized)
       assertMatch(
         html,
-        /class="site-language-action-icon site-language-action-icon--watson"/,
+        /<select[^>]*id="language-select"[^>]*name="language"[^>]*class="site-language-select"[^>]*aria-label="Choisir la langue"/,
       );
-      assertStringIncludes(html, 'data-language-option="en"');
-      assertStringIncludes(html, 'data-language-option="fr"');
-      assertStringIncludes(html, 'data-language-option="zhHans"');
-      assertStringIncludes(html, 'data-language-option="zhHant"');
-      assertStringIncludes(html, 'data-current-language="true"');
-      assertMatch(html, /<cds-switcher-item[^>]*selected=""[^>]*>Français/);
-      assertNotMatch(html, /🇬🇧|🇫🇷|🇨🇳|🇹🇼/);
+      // All language options present
+      assertStringIncludes(html, 'value="en"');
+      assertStringIncludes(html, 'value="fr"');
+      assertStringIncludes(html, 'value="zhHans"');
+      assertStringIncludes(html, 'value="zhHant"');
+      // Current language selected
+      assertMatch(
+        html,
+        /<option[^>]*value="fr"[^>]*selected[^>]*>Français<\/option>/,
+      );
+      // Language names displayed
+      assertStringIncludes(html, ">English<");
+      assertStringIncludes(html, ">Français<");
+      assertStringIncludes(html, ">简体中文<");
+      assertStringIncludes(html, ">繁體中文<");
+      // Hidden label for accessibility (localized)
+      assertMatch(
+        html,
+        /<label[^>]*for="language-select"[^>]*class="site-language-select-label sr-only"[^>]*>Langue<\/label>/,
+      );
+      // Old Carbon switcher removed
+      assertNotMatch(html, /<cds-switcher/);
+      assertNotMatch(html, /<cds-switcher-item/);
+      assertNotMatch(html, /data-language-option=/);
+      assertNotMatch(html, /data-current-language=/);
     });
 
     it("contains the native theme toggle button", async () => {

@@ -190,51 +190,29 @@ export default (
               </path>
             </svg>
           </cds-header-global-action>
-          <cds-header-panel
-            id={languagePanelId}
-            class="site-language-panel"
-            aria-label={translations.site.languageSelectAriaLabel}
-            data-language-panel=""
-          >
-            <cds-switcher
-              class="site-language-switcher"
-              aria-label={translations.site.languageSelectLabel}
+          <div class="site-language-select-root">
+            <label
+              for="language-select"
+              class="site-language-select-label sr-only"
             >
-              {SUPPORTED_LANGUAGES.map((optionLanguage) => {
-                const isCurrentLanguage = optionLanguage === language;
-                const optionUrl = getLocalizedUrl("/", optionLanguage);
-
-                return (
-                  <cds-switcher-item
-                    href={optionUrl}
-                    data-language-option={optionLanguage}
-                    {...(isCurrentLanguage
-                      ? {
-                        selected: "",
-                        "data-current-language": "true",
-                      }
-                      : {})}
-                  >
-                    {translations.languageNames[optionLanguage]}
-                  </cds-switcher-item>
-                );
-              })}
-            </cds-switcher>
-          </cds-header-panel>
-          <div class="site-language-fallback">
-            <label class="sr-only" for="language-select">
               {translations.site.languageSelectLabel}
             </label>
             <select
               id="language-select"
               name="language"
-              class="sr-only"
+              class="site-language-select"
               aria-label={translations.site.languageSelectAriaLabel}
-              aria-hidden="true"
-              tabindex="-1"
+              value={language}
+              onChange={(event: Event) => {
+                const selectedLanguage = (event.target as HTMLSelectElement)
+                  .value as SiteLanguage;
+                const targetUrl = getLocalizedUrl("/", selectedLanguage);
+                globalThis.location?.assign(targetUrl);
+              }}
             >
               {SUPPORTED_LANGUAGES.map((optionLanguage) => (
                 <option
+                  key={optionLanguage}
                   value={optionLanguage}
                   selected={optionLanguage === language}
                 >

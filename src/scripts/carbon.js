@@ -19,8 +19,6 @@ export const SELECTIVE_CARBON_COMPONENTS = [
     modulePath: "ui-shell/header-global-action.js",
   },
   { selector: "cds-header-panel", modulePath: "ui-shell/header-panel.js" },
-  { selector: "cds-switcher", modulePath: "ui-shell/switcher.js" },
-  { selector: "cds-switcher-item", modulePath: "ui-shell/switcher-item.js" },
   {
     selector: "cds-copy-button",
     modulePath: "copy-button/copy-button.js",
