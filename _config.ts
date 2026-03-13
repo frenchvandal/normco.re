@@ -10,7 +10,7 @@ import seo from "lume/plugins/seo.ts";
 import prism from "lume/plugins/prism.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
 import postcss from "lume/plugins/postcss.ts";
-import purgecss from "lume/plugins/purgecss.ts";
+import purgecss from "lume/plugins/purgecss.ts"; // Temporarily disabled — see usage comment below
 import lightningcss from "lume/plugins/lightningcss.ts";
 import terser from "lume/plugins/terser.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
@@ -217,10 +217,11 @@ site.use(
 );
 
 // Minify CSS and preserve modern syntax targets.
+// Temporarily disabled to debug CSS output issues
 site.use(
   lightningcss({
     options: {
-      minify: true,
+      minify: false, // Changed to debug
       targets: {
         chrome: 123 << 16,
         firefox: 120 << 16,
@@ -230,17 +231,19 @@ site.use(
   }),
 );
 
-// Remove unused selectors while preserving dynamic class patterns.
-site.use(
-  purgecss({
-    contentExtensions: [".html", ".js", ".xsl"],
-    options: {
-      keyframes: true,
-      variables: true,
-      safelist: [/^feed-/, /^sr-only$/, /^pagefind-ui/],
-    },
-  }),
-);
+// NOTE: PurgeCSS disabled temporarily — it removes Carbon Design System classes
+// because they are generated dynamically by TSX components and not detected in
+// static HTML scanning. Re-enable only with a complete safelist or custom extractor.
+// site.use(
+//   purgecss({
+//     contentExtensions: [".html", ".js", ".xsl"],
+//     options: {
+//       keyframes: true,
+//       variables: true,
+//       safelist: [/^feed-/, /^sr-only$/, /^pagefind-ui/],
+//     },
+//   }),
+// );
 
 // Keep source maps in local `serve` sessions; skip them in build/CI output to
 // trim shipped JS/CSS bytes and avoid non-production sidecars.

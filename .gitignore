@@ -5,3 +5,4 @@ _cache
 coverage
 _html-issues.json
 node_modules
+.deno_cache
