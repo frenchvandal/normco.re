@@ -1,4 +1,4 @@
-/** Site header with logo, primary navigation, and user controls. */
+/** Site header with Carbon UI Shell structure, navigation, and user controls. */
 
 import {
   getLocalizedUrl,
@@ -24,6 +24,9 @@ function ariaCurrent(
 
 const CARBON_SEARCH_ICON_PATH =
   "M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z";
+const CARBON_MENU_ICON_PATH = "M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z";
+const CARBON_LANGUAGE_ICON_PATH =
+  "M14 2C14 1.4 13.6 1 13 1H3C2.4 1 2 1.4 2 2V14C2 14.6 2.4 15 3 15H13C13.6 15 14 14.6 14 14V2ZM13 13H3V2H13V13ZM22 6C22 5.4 21.6 5 21 5H17C16.4 5 16 5.4 16 6V14C16 14.6 16.4 15 17 15H21C21.6 15 22 14.6 22 14V6ZM21 13H17V6H21V13ZM27 10C27 9.4 26.6 9 26 9H25C25.6 9 26 8.6 26 8V6C26 5.4 25.6 5 25 5H24C23.4 5 23 5.4 23 6V8C23 8.6 23.4 9 24 9H23C22.4 9 22 9.4 22 10V14C22 14.6 22.4 15 23 15H26C26.6 15 27 14.6 27 14V10Z";
 const CARBON_THEME_LIGHT_ICON_PATHS = [
   { d: "M7.5 1H8.5V3.5H7.5z" },
   { d: "M10.8 3.4H13.3V4.4H10.8z", transform: "rotate(-45 12.041 3.923)" },
@@ -46,7 +49,7 @@ const CARBON_THEME_DARK_ICON_PATHS = [
   },
 ] as const;
 
-/** Renders the site header with logo, navigation, and user controls. */
+/** Renders the Carbon UI Shell header with navigation and user controls. */
 export default (
   { currentUrl, language }: {
     readonly currentUrl: string;
@@ -60,6 +63,8 @@ export default (
   const searchContainerId = "search";
   const searchPanelId = "site-search-panel";
   const languagePanelId = "site-language-panel";
+  const sideNavId = "site-side-nav";
+
   const navigationItems = [
     {
       href: homeUrl,
@@ -79,188 +84,237 @@ export default (
   ] as const;
 
   return (
-    <header class="site-header">
-      <div class="site-header-inner">
-        <div class="site-header-start">
-          <button
-            type="button"
-            class="site-navigation-toggle"
-            aria-expanded="false"
-            aria-controls="site-navigation-menu"
-            aria-label={translations.site.menuToggleLabel}
-          >
-            <svg
-              class="site-navigation-toggle-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 32 32"
-              fill="currentColor"
-              aria-hidden="true"
-              focusable="false"
+    <>
+      {/* Carbon UI Shell Header */}
+      <header class="bx--header" role="banner">
+        <div class="bx--header__wrapper">
+          {/* Left section: hamburger menu + product name */}
+          <div class="bx--header__left">
+            {/* Hamburger menu trigger for SideNav */}
+            <button
+              type="button"
+              class="bx--header__action bx--header__menu-toggle"
+              aria-label={translations.site.menuToggleLabel}
+              aria-expanded="false"
+              aria-controls={sideNavId}
             >
-              <path d="M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z"></path>
-            </svg>
-          </button>
-          <nav
-            id="site-navigation-menu"
-            class="site-navigation"
-            aria-label={translations.site.mainNavigationAriaLabel}
-          >
-            <ul class="site-navigation-list">
+              <svg
+                class="bx--header__menu-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 32 32"
+                fill="currentColor"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d={CARBON_MENU_ICON_PATH}></path>
+              </svg>
+            </button>
+
+            {/* Product/brand name */}
+            <a href={homeUrl} class="bx--header__name">
+              <span class="bx--header__name--prefix">normco</span>
+              .re
+            </a>
+
+            {/* Header navigation (desktop) */}
+            <nav
+              class="bx--header__nav"
+              aria-label={translations.site.mainNavigationAriaLabel}
+            >
               {navigationItems.map(({ href, label, isCurrent }) => (
-                <li class="site-navigation-item">
-                  <a
-                    href={href}
-                    class="site-navigation-link"
-                    {...(isCurrent
-                      ? ({
-                        "aria-current": "page" as const,
-                      })
-                      : {})}
-                  >
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-        <div class="site-header-end">
-          <button
-            type="button"
-            class="site-search-action"
-            aria-label={translations.site.searchLabel}
-            aria-expanded="false"
-            aria-controls={searchPanelId}
-          >
-            <svg
-              class="site-search-action-icon"
-              width="20"
-              height="20"
-              viewBox="0 0 32 32"
-              fill="currentColor"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path d={CARBON_SEARCH_ICON_PATH}></path>
-            </svg>
-          </button>
-          <div
-            id={searchPanelId}
-            class="site-search-panel"
-            aria-label={translations.site.searchLabel}
-            data-search-panel=""
-          >
-            <div
-              id={searchContainerId}
-              class="site-search-root"
-              data-search-root=""
-            >
-            </div>
-          </div>
-          <cds-header-global-action
-            class="site-language-action"
-            aria-label={translations.site.languageSelectAriaLabel}
-            button-label-active={translations.site.languageSelectLabel}
-            button-label-inactive={translations.site.languageSelectLabel}
-            panel-id={languagePanelId}
-          >
-            <svg
-              slot="icon"
-              class="site-language-action-icon site-language-action-icon--watson"
-              width="16"
-              height="16"
-              viewBox="0 0 32 32"
-              fill="currentColor"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path d="M16,28h-3c-3.9,0-7-3.1-7-7v-4h2v4c0,2.8,2.2,5,5,5h3V28z">
-              </path>
-              <path d="M28,30h2.2l-4.6-11h-2.2l-4.6,11H21l0.8-2h5.3L28,30z M22.7,26l1.8-4.4l1.8,4.4H22.7z">
-              </path>
-              <path d="M28,15h-2v-4c0-2.8-2.2-5-5-5h-4V4h4c3.9,0,7,3.1,7,7V15z">
-              </path>
-              <path d="M14,5V3H9V1H7v2H2v2h8.2C10,5.9,9.4,7.5,8,9C7.4,8.3,6.9,7.6,6.6,7H4.3c0.4,1,1.1,2.2,2.1,3.3C5.6,11,4.4,11.6,3,12.1 L3.7,14c1.8-0.7,3.2-1.5,4.3-2.3c1.1,0.9,2.5,1.7,4.3,2.3l0.7-1.9c-1.4-0.5-2.6-1.2-3.5-1.8c1.9-2,2.5-4.1,2.7-5.3H14z">
-              </path>
-            </svg>
-          </cds-header-global-action>
-          <div class="site-language-select-root">
-            <label
-              for="language-select"
-              class="site-language-select-label sr-only"
-            >
-              {translations.site.languageSelectLabel}
-            </label>
-            <select
-              id="language-select"
-              name="language"
-              class="site-language-select"
-              aria-label={translations.site.languageSelectAriaLabel}
-              value={language}
-              onChange={(event: Event) => {
-                const selectedLanguage = (event.target as HTMLSelectElement)
-                  .value as SiteLanguage;
-                const targetUrl = getLocalizedUrl("/", selectedLanguage);
-                globalThis.location?.assign(targetUrl);
-              }}
-            >
-              {SUPPORTED_LANGUAGES.map((optionLanguage) => (
-                <option
-                  key={optionLanguage}
-                  value={optionLanguage}
-                  selected={optionLanguage === language}
-                >
-                  {translations.languageNames[optionLanguage]}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button
-            id="theme-toggle"
-            type="button"
-            class="site-theme-action"
-            aria-label={translations.site.themeToggleLabel}
-            aria-pressed="false"
-            data-label-switch-light={translations.site.switchToLightThemeLabel}
-            data-label-switch-dark={translations.site.switchToDarkThemeLabel}
-          >
-            <svg
-              class="theme-icon theme-icon--sun"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              aria-hidden="true"
-              focusable="false"
-            >
-              {CARBON_THEME_LIGHT_ICON_PATHS.map((path) => (
-                <path
-                  key={path.d}
-                  d={path.d}
-                  {...("transform" in path
-                    ? { transform: path.transform }
+                <a
+                  key={href}
+                  href={href}
+                  class="bx--header__menu-item"
+                  {...(isCurrent
+                    ? ({
+                      "aria-current": "page" as const,
+                    })
                     : {})}
                 >
-                </path>
+                  {label}
+                </a>
               ))}
-            </svg>
-            <svg
-              class="theme-icon theme-icon--moon"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-              aria-hidden="true"
-              focusable="false"
+            </nav>
+          </div>
+
+          {/* Right section: global actions */}
+          <div class="bx--header__global">
+            {/* Search action */}
+            <button
+              type="button"
+              class="bx--header__action"
+              aria-label={translations.site.searchLabel}
+              aria-expanded="false"
+              aria-controls={searchPanelId}
             >
-              {CARBON_THEME_DARK_ICON_PATHS.map(({ d }) => (
-                <path key={d} d={d}></path>
-              ))}
-            </svg>
-          </button>
+              <svg
+                class="bx--header__action-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 32 32"
+                fill="currentColor"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d={CARBON_SEARCH_ICON_PATH}></path>
+              </svg>
+            </button>
+
+            {/* Language selector action */}
+            <button
+              type="button"
+              class="bx--header__action bx--header__language-toggle"
+              aria-label={translations.site.languageSelectAriaLabel}
+              aria-expanded="false"
+              aria-controls={languagePanelId}
+              aria-haspopup="true"
+            >
+              <svg
+                class="bx--header__action-icon"
+                width="20"
+                height="20"
+                viewBox="0 0 32 32"
+                fill="currentColor"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <path d={CARBON_LANGUAGE_ICON_PATH}></path>
+              </svg>
+            </button>
+
+            {/* Theme toggle action */}
+            <button
+              id="theme-toggle"
+              type="button"
+              class="bx--header__action"
+              aria-label={translations.site.themeToggleLabel}
+              aria-pressed="false"
+              data-label-switch-light={translations.site
+                .switchToLightThemeLabel}
+              data-label-switch-dark={translations.site.switchToDarkThemeLabel}
+            >
+              <svg
+                class="bx--header__action-icon theme-icon theme-icon--sun"
+                width="20"
+                height="20"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                aria-hidden="true"
+                focusable="false"
+              >
+                {CARBON_THEME_LIGHT_ICON_PATHS.map((path) => (
+                  <path
+                    key={path.d}
+                    d={path.d}
+                    {...("transform" in path
+                      ? { transform: path.transform }
+                      : {})}
+                  >
+                  </path>
+                ))}
+              </svg>
+              <svg
+                class="bx--header__action-icon theme-icon theme-icon--moon"
+                width="20"
+                height="20"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                aria-hidden="true"
+                focusable="false"
+              >
+                {CARBON_THEME_DARK_ICON_PATHS.map(({ d }) => (
+                  <path key={d} d={d}></path>
+                ))}
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Language selector dropdown panel */}
+      <div
+        id={languagePanelId}
+        class="bx--header__panel bx--header__language-panel"
+        aria-label={translations.site.languageSelectAriaLabel}
+        role="dialog"
+        aria-modal="true"
+        hidden
+      >
+        <div class="bx--header__panel-content">
+          <h2 class="bx--header__panel-title">
+            {translations.site.languageSelectLabel}
+          </h2>
+          <nav class="bx--header__language-list" role="navigation">
+            {SUPPORTED_LANGUAGES.map((optionLanguage) => {
+              const optionUrl = getLocalizedUrl("/", optionLanguage);
+              const isSelected = optionLanguage === language;
+              return (
+                <a
+                  key={optionLanguage}
+                  href={optionUrl}
+                  class="bx--header__menu-item bx--header__language-item"
+                  role="menuitem"
+                  {...(isSelected ? { "aria-current": "page" as const } : {})}
+                >
+                  {translations.languageNames[optionLanguage]}
+                </a>
+              );
+            })}
+          </nav>
         </div>
       </div>
-    </header>
+
+      {/* Search panel */}
+      <div
+        id={searchPanelId}
+        class="bx--header__panel bx--header__search-panel"
+        aria-label={translations.site.searchLabel}
+        role="dialog"
+        aria-modal="true"
+        hidden
+      >
+        <div class="bx--header__panel-content">
+          <div
+            id={searchContainerId}
+            class="bx--header__search-root"
+            data-search-root=""
+          >
+          </div>
+        </div>
+      </div>
+
+      {/* Carbon UI Shell Left Panel (SideNav) */}
+      <aside
+        id={sideNavId}
+        class="bx--side-nav"
+        aria-label={translations.site.mainNavigationAriaLabel}
+        hidden
+      >
+        <nav class="bx--side-nav__navigation">
+          <ul class="bx--side-nav__items">
+            {navigationItems.map(({ href, label, isCurrent }) => (
+              <li class="bx--side-nav__item" key={href}>
+                <a
+                  href={href}
+                  class="bx--side-nav__link"
+                  {...(isCurrent
+                    ? ({
+                      "aria-current": "page" as const,
+                    })
+                    : {})}
+                >
+                  <span class="bx--side-nav__link-text">{label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      {/* Overlay for mobile when SideNav is open */}
+      <div class="bx--side-nav__overlay" aria-hidden="true"></div>
+    </>
   );
 };

@@ -2,7 +2,7 @@
 (() => {
   const controls = Array.from(
     globalThis.document.querySelectorAll(
-      "cds-header-global-action[panel-id], cds-header-menu-button",
+      "cds-header-global-action[panel-id], cds-header-menu-button, .bx--header__language-toggle, .bx--header__menu-toggle",
     ),
   ).filter((element) => element instanceof HTMLElement);
 
@@ -15,6 +15,12 @@
    * @returns {string | null}
    */
   function getLinkedPanelId(control) {
+    if (control.matches(".bx--header__language-toggle")) {
+      return control.getAttribute("aria-controls");
+    }
+    if (control.matches(".bx--header__menu-toggle")) {
+      return control.getAttribute("aria-controls");
+    }
     if (!control.matches("cds-header-global-action[panel-id]")) {
       return null;
     }
@@ -36,11 +42,11 @@
       ? null
       : getLinkedPanelId(exceptControl);
     const preserveSideNav = exceptControl !== null &&
-      exceptControl.matches("cds-header-menu-button") &&
-      exceptControl.hasAttribute("active");
+      exceptControl.matches(".bx--header__menu-toggle") &&
+      exceptControl.getAttribute("aria-expanded") === "true";
     const focusTarget = restoreFocus
       ? globalThis.document.querySelector(
-        "cds-header-global-action[active], cds-header-menu-button[active]",
+        "cds-header-global-action[active], cds-header-menu-button[active], .bx--header__language-toggle[aria-expanded='true'], .bx--header__menu-toggle[aria-expanded='true']",
       )
       : null;
 
@@ -70,11 +76,17 @@
         linkedPanel.removeAttribute("expanded");
         closed = true;
       }
+
+      // Handle native hidden attribute for Carbon panels
+      if (!linkedPanel.hasAttribute("hidden")) {
+        linkedPanel.setAttribute("hidden", "");
+        closed = true;
+      }
     }
 
     for (
       const panel of globalThis.document.querySelectorAll(
-        "cds-header-panel[expanded]",
+        "cds-header-panel[expanded], .bx--header__panel:not([hidden])",
       )
     ) {
       if (!(panel instanceof HTMLElement)) {
@@ -86,12 +98,13 @@
       }
 
       panel.removeAttribute("expanded");
+      panel.setAttribute("hidden", "");
       closed = true;
     }
 
     for (
       const sideNav of globalThis.document.querySelectorAll(
-        "cds-side-nav[expanded]",
+        "cds-side-nav[expanded], .bx--side-nav:not([hidden])",
       )
     ) {
       if (!(sideNav instanceof HTMLElement)) {
@@ -103,7 +116,14 @@
       }
 
       sideNav.removeAttribute("expanded");
+      sideNav.setAttribute("hidden", "");
       closed = true;
+    }
+
+    // Hide overlay when SideNav closes
+    const overlay = globalThis.document.querySelector(".bx--side-nav__overlay");
+    if (overlay instanceof HTMLElement && !preserveSideNav) {
+      overlay.setAttribute("aria-hidden", "true");
     }
 
     if (restoreFocus && focusTarget instanceof HTMLElement) {
@@ -147,67 +167,128 @@
 })();
 
 /**
- * Handle native UI shell toggles (navigation and search)
+ * Handle native UI shell toggles (navigation, search, language)
  * Replaces functionality previously provided by Carbon Web Components
  */
 document.addEventListener("DOMContentLoaded", () => {
-  const navToggle = document.querySelector(".site-navigation-toggle");
-  const searchToggle = document.querySelector(".site-search-action");
+  const navToggle = document.querySelector(".bx--header__menu-toggle");
+  const sideNav = document.getElementById("site-side-nav");
+  const searchToggle = document.querySelector(
+    ".bx--header__action[aria-controls='site-search-panel']",
+  );
+  const searchPanel = document.getElementById("site-search-panel");
+  const languageToggle = document.querySelector(".bx--header__language-toggle");
+  const languagePanel = document.getElementById("site-language-panel");
+  const overlay = document.querySelector(".bx--side-nav__overlay");
 
   /**
    * Toggles a panel's visibility and updates ARIA states
-   * @param {Element|null} button The trigger button
-   * @param {string} panelId The ID of the panel to toggle
+   * @param {HTMLElement|null} button The trigger button
+   * @param {HTMLElement|null} panel The panel to toggle
    */
-  const setupToggle = (button, panelId) => {
-    if (!(button instanceof HTMLElement)) return;
-
-    const panel = document.getElementById(panelId);
-    if (!panel) return;
+  const setupPanelToggle = (button, panel) => {
+    if (!button || !panel) return;
 
     button.addEventListener("click", () => {
       const isExpanded = button.getAttribute("aria-expanded") === "true";
       const newState = !isExpanded;
 
+      // Close all other panels first
+      closeCarbonChrome({ exceptControl: button });
+
       button.setAttribute("aria-expanded", String(newState));
 
-      // The search script relies on the 'expanded' attribute (no value)
       if (newState) {
-        panel.setAttribute("expanded", "");
-        // Only necessary for the search input to get focus when opened
-        const searchInput = panel.querySelector('input[type="text"]');
-        if (searchInput) {
-          // slight delay to allow display:block to apply before focusing
-          setTimeout(() => searchInput.focus(), 50);
+        panel.removeAttribute("hidden");
+        // Focus first focusable element in panel
+        const firstFocusable = panel.querySelector(
+          "a, button, input, [tabindex]:not([tabindex='-1'])",
+        );
+        if (firstFocusable instanceof HTMLElement) {
+          setTimeout(() => firstFocusable.focus(), 50);
         }
       } else {
-        panel.removeAttribute("expanded");
-      }
-    });
-
-    // Close on escape key
-    panel.addEventListener("keydown", (e) => {
-      // @ts-ignore: e may not be typed as KeyboardEvent in some environments
-      if (e.key === "Escape") {
-        button.setAttribute("aria-expanded", "false");
-        panel.removeAttribute("expanded");
-        button.focus();
+        panel.setAttribute("hidden", "");
       }
     });
   };
 
-  setupToggle(navToggle, "site-navigation-menu");
-  setupToggle(searchToggle, "site-search-panel");
-  setupToggle(
-    document.querySelector(
-      ".site-search-action[aria-controls='feed-search-panel']",
-    ),
-    "feed-search-panel",
-  );
-  setupToggle(
-    document.querySelector(
-      ".site-search-action[aria-controls='sitemap-search-panel']",
-    ),
-    "sitemap-search-panel",
-  );
+  /**
+   * Setup SideNav toggle with overlay
+   * @param {HTMLElement|null} button The hamburger button
+   * @param {HTMLElement|null} nav The SideNav element
+   */
+  const setupSideNavToggle = (button, nav) => {
+    if (!button || !nav) return;
+
+    button.addEventListener("click", () => {
+      const isExpanded = button.getAttribute("aria-expanded") === "true";
+      const newState = !isExpanded;
+
+      // Close all other panels first
+      closeCarbonChrome({ exceptControl: button });
+
+      button.setAttribute("aria-expanded", String(newState));
+
+      if (newState) {
+        nav.removeAttribute("hidden");
+        if (overlay instanceof HTMLElement) {
+          overlay.setAttribute("aria-hidden", "false");
+        }
+        // Focus first nav link
+        const firstLink = nav.querySelector("a.bx--side-nav__link");
+        if (firstLink instanceof HTMLElement) {
+          setTimeout(() => firstLink.focus(), 50);
+        }
+      } else {
+        nav.setAttribute("hidden", "");
+        if (overlay instanceof HTMLElement) {
+          overlay.setAttribute("aria-hidden", "true");
+        }
+      }
+    });
+  };
+
+  // Setup SideNav toggle
+  setupSideNavToggle(navToggle, sideNav);
+
+  // Setup search panel toggle
+  setupPanelToggle(searchToggle, searchPanel);
+
+  // Setup language panel toggle
+  setupPanelToggle(languageToggle, languagePanel);
+
+  // Close panels when clicking overlay
+  if (overlay instanceof HTMLElement) {
+    overlay.addEventListener("click", () => {
+      closeCarbonChrome({ restoreFocus: true });
+    });
+  }
+
+  // Close on escape key
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+
+    const openPanel = document.querySelector(
+      ".bx--header__panel:not([hidden]), .bx--side-nav:not([hidden])",
+    );
+    if (openPanel instanceof HTMLElement) {
+      closeCarbonChrome({ restoreFocus: true });
+    }
+  });
+
+  // Close panels when clicking outside
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const isInsidePanel = target.closest(".bx--header__panel, .bx--side-nav");
+    const isToggleButton = target.closest(
+      ".bx--header__menu-toggle, .bx--header__language-toggle, .bx--header__action[aria-controls]",
+    );
+
+    if (!isInsidePanel && !isToggleButton) {
+      closeCarbonChrome();
+    }
+  });
 });

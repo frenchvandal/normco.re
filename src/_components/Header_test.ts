@@ -12,7 +12,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<a[^>]*href="\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
       );
     });
 
@@ -22,7 +22,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<a[^>]*href="\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
       );
     });
 
@@ -32,7 +32,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<a[^>]*href="\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
       );
     });
   });
@@ -44,7 +44,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<a[^>]*href="\/posts\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/posts\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
       );
     });
 
@@ -57,7 +57,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<a[^>]*href="\/posts\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/posts\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
       );
     });
 
@@ -67,7 +67,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<a[^>]*href="\/posts\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/posts\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
       );
     });
   });
@@ -79,7 +79,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<a[^>]*href="\/about\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/about\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
       );
     });
 
@@ -89,160 +89,226 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<a[^>]*href="\/about\/"[^>]*class="site-navigation-link"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/about\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
       );
     });
   });
 
-  describe("structure", () => {
-    it("wraps everything in .site-header", async () => {
+  describe("Carbon UI Shell structure", () => {
+    it("renders Carbon UI Shell header with bx--header class", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, 'class="site-header"');
+      assertMatch(html, /<header[^>]*class="bx--header"[^>]*role="banner"/);
     });
 
-    it("does not render the left-side site-name link anymore", async () => {
-      const html = await renderComponent(
-        Header({ currentUrl: "/about/", language: "en" }),
-      );
-      assertNotMatch(html, /class="site-name"/);
-    });
-
-    it("contains a Writing nav link", async () => {
+    it("renders header wrapper with bx--header__wrapper", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
+      assertStringIncludes(html, 'class="bx--header__wrapper"');
+    });
+
+    it("renders header left section with bx--header__left", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertStringIncludes(html, 'class="bx--header__left"');
+    });
+
+    it("renders header global actions with bx--header__global", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertStringIncludes(html, 'class="bx--header__global"');
+    });
+
+    it("renders product name with bx--header__name", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertMatch(html, /<a[^>]*href="\/"[^>]*class="bx--header__name"/);
+      assertStringIncludes(
+        html,
+        '<span class="bx--header__name--prefix">normco</span>',
+      );
+    });
+  });
+
+  describe("hamburger menu toggle", () => {
+    it("renders hamburger menu toggle button", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertMatch(
+        html,
+        /<button[^>]*class="bx--header__action bx--header__menu-toggle"[^>]*aria-label="Open navigation menu"[^>]*aria-expanded="false"[^>]*aria-controls="site-side-nav"/,
+      );
+    });
+
+    it("renders hamburger menu icon SVG", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertMatch(html, /<svg[^>]*class="bx--header__menu-icon"/);
+      assertStringIncludes(
+        html,
+        'd="M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z"',
+      );
+    });
+  });
+
+  describe("header navigation", () => {
+    it("renders header navigation with bx--header__nav", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertMatch(
+        html,
+        /<nav[^>]*class="bx--header__nav"[^>]*aria-label="Main navigation"/,
+      );
+    });
+
+    it("renders navigation items as bx--header__menu-item", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertStringIncludes(html, 'class="bx--header__menu-item"');
+      assertStringIncludes(html, 'href="/"');
       assertStringIncludes(html, 'href="/posts/"');
-      assertStringIncludes(html, "Writing");
-    });
-
-    it("contains a Home nav link in the hamburger menu", async () => {
-      const html = await renderComponent(
-        Header({ currentUrl: "/", language: "en" }),
-      );
-      assertMatch(
-        html,
-        /<a[^>]*href="\/"[^>]*class="site-navigation-link"[^>]*>Home<\/a>/,
-      );
-    });
-
-    it("contains an About nav link", async () => {
-      const html = await renderComponent(
-        Header({ currentUrl: "/", language: "en" }),
-      );
       assertStringIncludes(html, 'href="/about/"');
-      assertStringIncludes(html, "About");
     });
+  });
 
-    it("renders a native toggle trigger and a search action panel", async () => {
+  describe("SideNav (Left Panel)", () => {
+    it("renders SideNav aside with bx--side-nav class", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
       assertMatch(
         html,
-        /<button[^>]*class="site-navigation-toggle"[^>]*aria-label="Open navigation menu"/,
+        /<aside[^>]*id="site-side-nav"[^>]*class="bx--side-nav"[^>]*aria-label="Main navigation"[^>]*hidden/,
       );
-      assertStringIncludes(
-        html,
-        '<button type="button" class="site-search-action"',
-      );
-      assertStringIncludes(html, 'aria-controls="site-search-panel"');
-      assertStringIncludes(html, '<div id="site-search-panel"');
-      assertStringIncludes(html, 'class="site-search-panel"');
-      assertStringIncludes(html, 'data-search-panel=""');
-      assertStringIncludes(html, 'data-search-root=""');
-      assertStringIncludes(html, 'id="search"');
-      assertNotMatch(html, /search-16\.svg/);
     });
 
-    it("renders native navigation shell elements", async () => {
+    it("renders SideNav navigation structure", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(
-        html,
-        '<nav id="site-navigation-menu" class="site-navigation"',
-      );
-      assertStringIncludes(html, '<ul class="site-navigation-list">');
-      assertStringIncludes(html, '<li class="site-navigation-item">');
+      assertStringIncludes(html, 'class="bx--side-nav__navigation"');
+      assertStringIncludes(html, 'class="bx--side-nav__items"');
+      assertStringIncludes(html, 'class="bx--side-nav__item"');
+      assertStringIncludes(html, 'class="bx--side-nav__link"');
+      assertStringIncludes(html, 'class="bx--side-nav__link-text"');
     });
 
-    it("renders a native language selector <select> with localized options", async () => {
+    it("renders SideNav overlay", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertMatch(
+        html,
+        /<div[^>]*class="bx--side-nav__overlay"[^>]*aria-hidden="true"/,
+      );
+    });
+  });
+
+  describe("search action", () => {
+    it("renders search action button", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertMatch(
+        html,
+        /<button[^>]*class="bx--header__action"[^>]*aria-label="Search"[^>]*aria-expanded="false"[^>]*aria-controls="site-search-panel"/,
+      );
+    });
+
+    it("renders search panel", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertMatch(
+        html,
+        /<div[^>]*id="site-search-panel"[^>]*class="bx--header__panel bx--header__search-panel"/,
+      );
+      assertStringIncludes(html, 'class="bx--header__search-root"');
+    });
+  });
+
+  describe("language selector", () => {
+    it("renders language toggle button", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      assertMatch(
+        html,
+        /<button[^>]*class="bx--header__action bx--header__language-toggle"[^>]*aria-label="Select language"[^>]*aria-controls="site-language-panel"/,
+      );
+    });
+
+    it("renders language panel with language options", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "fr" }),
       );
-      // Select element with proper accessibility (aria-label is localized)
       assertMatch(
         html,
-        /<select[^>]*id="language-select"[^>]*name="language"[^>]*class="site-language-select"[^>]*aria-label="Choisir la langue"/,
+        /<div[^>]*id="site-language-panel"[^>]*class="bx--header__panel bx--header__language-panel"[^>]*hidden/,
       );
-      // All language options present
-      assertStringIncludes(html, 'value="en"');
-      assertStringIncludes(html, 'value="fr"');
-      assertStringIncludes(html, 'value="zhHans"');
-      assertStringIncludes(html, 'value="zhHant"');
-      // Current language selected
+      assertStringIncludes(html, 'class="bx--header__panel-title"');
+      assertStringIncludes(html, 'class="bx--header__language-list"');
+      assertStringIncludes(html, "bx--header__language-item");
+      // Language options present
+      assertStringIncludes(html, 'href="/"');
+      assertStringIncludes(html, 'href="/fr/"');
+      assertStringIncludes(html, 'href="/zh-hans/"');
+      assertStringIncludes(html, 'href="/zh-hant/"');
+      // Current language marked
       assertMatch(
         html,
-        /<option[^>]*value="fr"[^>]*selected[^>]*>Français<\/option>/,
+        /<a[^>]*href="\/fr\/"[^>]*bx--header__language-item[^>]*aria-current="page"/,
       );
-      // Language names displayed
-      assertStringIncludes(html, ">English<");
-      assertStringIncludes(html, ">Français<");
-      assertStringIncludes(html, ">简体中文<");
-      assertStringIncludes(html, ">繁體中文<");
-      // Hidden label for accessibility (localized)
-      assertMatch(
-        html,
-        /<label[^>]*for="language-select"[^>]*class="site-language-select-label sr-only"[^>]*>Langue<\/label>/,
-      );
-      // Old Carbon switcher removed
-      assertNotMatch(html, /<cds-switcher/);
-      assertNotMatch(html, /<cds-switcher-item/);
-      assertNotMatch(html, /data-language-option=/);
-      assertNotMatch(html, /data-current-language=/);
     });
 
-    it("contains the native theme toggle button", async () => {
+    it("renders language icon SVG", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, "<button");
-      assertStringIncludes(html, 'id="theme-toggle"');
-      assertStringIncludes(html, 'type="button"');
-      assertStringIncludes(html, 'class="site-theme-action"');
-      assertStringIncludes(html, 'aria-label="Toggle color theme"');
-      assertStringIncludes(html, 'aria-pressed="false"');
+      assertMatch(html, /<svg[^>]*class="bx--header__action-icon"/);
+      assertStringIncludes(
+        html,
+        'd="M14 2C14 1.4 13.6 1 13 1H3C2.4 1 2 1.4 2 2V14C2 14.6 2.4 15 3 15H13C13.6 15 14 14.6 14 14V2Z',
+      );
     });
+  });
 
-    it("contains the contrast SVG icon", async () => {
+  describe("theme toggle", () => {
+    it("renders theme toggle button", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertMatch(html, /class="theme-icon[^"]*"/);
+      assertMatch(
+        html,
+        /<button[^>]*id="theme-toggle"[^>]*class="bx--header__action"[^>]*aria-label="Toggle color theme"/,
+      );
     });
 
-    it("has correct accessibility attributes for theme toggle button", async () => {
+    it("contains theme icons", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      // Native button with proper type and ARIA
       assertMatch(
         html,
-        /<button[^>]*id="theme-toggle"[^>]*type="button"[^>]*aria-label="Toggle color theme"[^>]*aria-pressed="false"/,
-      );
-      // Data attributes for JS theme toggle
-      assertMatch(
-        html,
-        /data-label-switch-light="Switch to light theme"/,
+        /<svg[^>]*class="bx--header__action-icon theme-icon theme-icon--sun"/,
       );
       assertMatch(
         html,
-        /data-label-switch-dark="Switch to dark theme"/,
+        /<svg[^>]*class="bx--header__action-icon theme-icon theme-icon--moon"/,
       );
     });
+  });
 
+  describe("localization", () => {
     it("localizes navigation links for French pages", async () => {
       const html = await renderComponent(
         Header({
@@ -251,37 +317,52 @@ describe("Header()", () => {
         }),
       );
       assertStringIncludes(html, 'href="/fr/posts/"');
-      assertStringIncludes(html, "À propos");
+      assertStringIncludes(html, "Articles");
+    });
+
+    it("localizes menu toggle label", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "fr" }),
+      );
+      assertStringIncludes(html, 'aria-label="Ouvrir le menu de navigation"');
+    });
+
+    it("localizes search label", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "fr" }),
+      );
+      assertStringIncludes(html, 'aria-label="Recherche"');
     });
   });
 
-  describe("home link label — i18n", () => {
-    it('renders "Home" as the home link text in English', async () => {
+  describe("old native components removed", () => {
+    it("does not render old site-navigation-toggle", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, ">Home<");
+      assertNotMatch(html, /class="site-navigation-toggle"/);
     });
 
-    it('renders "Accueil" as the home link text in French', async () => {
+    it("does not render old site-navigation", async () => {
       const html = await renderComponent(
-        Header({ currentUrl: "/fr/", language: "fr" }),
+        Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, ">Accueil<");
+      assertNotMatch(html, /class="site-navigation"/);
     });
 
-    it('renders "首页" as the home link text in Simplified Chinese', async () => {
+    it("does not render old site-language-select", async () => {
       const html = await renderComponent(
-        Header({ currentUrl: "/zh-hans/", language: "zhHans" }),
+        Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, ">首页<");
+      assertNotMatch(html, /class="site-language-select"/);
+      assertNotMatch(html, /id="language-select"/);
     });
 
-    it('renders "首頁" as the home link text in Traditional Chinese', async () => {
+    it("does not render old Carbon cds-header-global-action", async () => {
       const html = await renderComponent(
-        Header({ currentUrl: "/zh-hant/", language: "zhHant" }),
+        Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, ">首頁<");
+      assertNotMatch(html, /<cds-header-global-action/);
     });
   });
 });
