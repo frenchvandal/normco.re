@@ -26,13 +26,13 @@ const CARBON_SEARCH_ICON_PATH =
   "M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z";
 const CARBON_MENU_ICON_PATH = "M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z";
 /**
- * IBM Watson Language Translator icon — official Carbon Design System icon.
+ * Carbon Translate icon — official Carbon Design System icon.
  * Source: https://carbondesignsystem.com/elements/icons/library/
- * Icon name: ibm-watson--language-translator (Enterprise category)
+ * Icon name: translate
  * This icon represents language translation functionality.
  */
 const CARBON_LANGUAGE_ICON_PATH =
-  "M28 10V6c0-.6-.4-1-1-1h-1c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h-1c-.6 0-1 .4-1 1v4c0 .6.4 1 1 1h3c.6 0 1-.4 1-1v-4c0-.6-.4-1-1-1zm-2 3h-1v-1h1v1zm0-2h-1V9h1v2zm-4-7c0-.6-.4-1-1-1h-4c-.6 0-1 .4-1 1v8c0 .6.4 1 1 1h4c.6 0 1-.4 1-1V6zm-1 8h-3V6h3v6zm-9-6h2c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zm0 3h2c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zm0 4h2c.6 0 1-.4 1-1v-1c0-.6-.4-1-1-1h-2c-.6 0-1 .4-1 1v1c0 .6.4 1 1 1zM2 10h2c.6 0 1-.4 1-1V4c0-.6-.4-1-1-1H2C1.4 3 1 3.4 1 4v5c0 .6.4 1 1 1zm1-5h1v4H3V5z";
+  "M27.85 29H30L24 14H21.65l-6 15H17.8l1.6-4h6.85zM20.2 23l2.62-6.56L25.45 23zM18 7V5H11V2H9V5H2V7H12.74a14.71 14.71 0 0 1-3.19 6.18A13.5 13.5 0 0 1 7.26 9H5.16a16.47 16.47 0 0 0 3 5.58A16.84 16.84 0 0 1 3 18l.75 1.86A18.47 18.47 0 0 0 9.53 16a16.92 16.92 0 0 0 5.76 3.84L16 18a14.48 14.48 0 0 1-5.12-3.37A17.64 17.64 0 0 0 14.8 7z";
 const CARBON_THEME_LIGHT_ICON_PATHS = [
   { d: "M7.5 1H8.5V3.5H7.5z" },
   { d: "M10.8 3.4H13.3V4.4H10.8z", transform: "rotate(-45 12.041 3.923)" },
