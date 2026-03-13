@@ -60,7 +60,7 @@ cms.upload({
 });
 
 cms.git({
-  prodBranch: "main",
+  prodBranch: "master",
 });
 
 export default cms;
