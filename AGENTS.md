@@ -74,7 +74,6 @@ Before finalizing a change (opening a PR or merging), run the following commands
    before merge. If a false positive or external blocker remains, document it in
    the PR with a concrete follow-up plan.
 
-
 ### Commit message validation
 
 Validate every commit message against the Conventional Commits specification
