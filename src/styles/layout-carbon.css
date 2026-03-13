@@ -55,14 +55,14 @@
     max-width: var(--cds-breakpoint-max);
   }
 
-  @media (min-width: --cds-breakpoint-md) {
+  @media (min-width: var(--cds-breakpoint-md)) {
     .bx--grid {
       padding-right: var(--cds-grid-margin-md);
       padding-left: var(--cds-grid-margin-md);
     }
   }
 
-  @media (min-width: --cds-breakpoint-lg) {
+  @media (min-width: var(--cds-breakpoint-lg)) {
     .bx--grid {
       padding-right: var(--cds-grid-margin-lg);
       padding-left: var(--cds-grid-margin-lg);
@@ -80,7 +80,7 @@
     padding-left: var(--cds-spacing-09);
   }
 
-  @media (min-width: --cds-breakpoint-lg) {
+  @media (min-width: var(--cds-breakpoint-lg)) {
     .bx--grid--wide {
       padding-right: var(--cds-spacing-10);
       padding-left: var(--cds-spacing-10);
