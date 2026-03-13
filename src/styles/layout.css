@@ -90,4 +90,33 @@
     outline-offset: var(--focus-ring-offset);
     border-radius: var(--borderRadius-medium);
   }
+
+  /* Theme toggle button (native replacement for cds-button) */
+  .site-theme-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 3rem; /* Carbon 48px touch target */
+    block-size: 3rem;
+    padding: 0 var(--space-s);
+    border: 1px solid transparent;
+    border-radius: var(--borderRadius-medium);
+    background: transparent;
+    color: var(--color-text-default);
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .site-theme-action:hover {
+    background: var(--color-background-hover);
+  }
+
+  .site-theme-action:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-outlineColor);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .site-theme-action .theme-icon {
+    display: block;
+  }
 }

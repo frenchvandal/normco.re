@@ -184,17 +184,16 @@ describe("Header()", () => {
       assertNotMatch(html, /🇬🇧|🇫🇷|🇨🇳|🇹🇼/);
     });
 
-    it("contains the Carbon theme toggle action", async () => {
+    it("contains the native theme toggle button", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, "<cds-button");
+      assertStringIncludes(html, "<button");
       assertStringIncludes(html, 'id="theme-toggle"');
+      assertStringIncludes(html, 'type="button"');
       assertStringIncludes(html, 'class="site-theme-action"');
-      assertStringIncludes(html, 'kind="ghost"');
-      assertStringIncludes(html, 'size="lg"');
-      assertStringIncludes(html, 'tooltip-text="Toggle color theme"');
       assertStringIncludes(html, 'aria-label="Toggle color theme"');
+      assertStringIncludes(html, 'aria-pressed="false"');
     });
 
     it("contains the contrast SVG icon", async () => {
@@ -202,6 +201,26 @@ describe("Header()", () => {
         Header({ currentUrl: "/", language: "en" }),
       );
       assertMatch(html, /class="theme-icon[^"]*"/);
+    });
+
+    it("has correct accessibility attributes for theme toggle button", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+      // Native button with proper type and ARIA
+      assertMatch(
+        html,
+        /<button[^>]*id="theme-toggle"[^>]*type="button"[^>]*aria-label="Toggle color theme"[^>]*aria-pressed="false"/,
+      );
+      // Data attributes for JS theme toggle
+      assertMatch(
+        html,
+        /data-label-switch-light="Switch to light theme"/,
+      );
+      assertMatch(
+        html,
+        /data-label-switch-dark="Switch to dark theme"/,
+      );
     });
 
     it("localizes navigation links for French pages", async () => {

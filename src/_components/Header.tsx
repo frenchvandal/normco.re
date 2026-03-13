@@ -243,19 +243,16 @@ export default (
               ))}
             </select>
           </div>
-          <cds-button
+          <button
             id="theme-toggle"
+            type="button"
             class="site-theme-action"
-            kind="ghost"
-            size="lg"
-            tooltip-text={translations.site.themeToggleLabel}
             aria-label={translations.site.themeToggleLabel}
             aria-pressed="false"
             data-label-switch-light={translations.site.switchToLightThemeLabel}
             data-label-switch-dark={translations.site.switchToDarkThemeLabel}
           >
             <svg
-              slot="icon"
               class="theme-icon theme-icon--sun"
               width="16"
               height="16"
@@ -276,7 +273,6 @@ export default (
               ))}
             </svg>
             <svg
-              slot="icon"
               class="theme-icon theme-icon--moon"
               width="16"
               height="16"
@@ -289,7 +285,7 @@ export default (
                 <path key={d} d={d}></path>
               ))}
             </svg>
-          </cds-button>
+          </button>
         </div>
       </div>
     </header>
