@@ -173,13 +173,12 @@
       attributeFilter: ["active"],
     });
   }
-})();
 
-/**
- * Handle native UI shell toggles (navigation, search, language)
- * Replaces functionality previously provided by Carbon Web Components
- */
-function setupDisclosureControls() {
+  /**
+   * Handle native UI shell toggles (navigation, search, language)
+   * Replaces functionality previously provided by Carbon Web Components
+   */
+  function setupDisclosureControls() {
   const navToggle = document.querySelector(".bx--header__menu-toggle");
   const sideNav = document.getElementById("site-side-nav");
   const searchToggle = document.querySelector(
@@ -300,3 +299,5 @@ if (document.readyState === "loading") {
 } else {
   setupDisclosureControls();
 }
+
+})();
