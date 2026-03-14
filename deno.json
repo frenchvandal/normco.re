@@ -32,8 +32,6 @@
         "jsr.io:443",
         "cdn.jsdelivr.net:443",
         "data.jsdelivr.com:443",
-        "fonts.googleapis.com:443",
-        "fonts.gstatic.com:443",
         "registry.npmjs.org:443",
         "contrib.rocks:443",
         "localhost:4318",

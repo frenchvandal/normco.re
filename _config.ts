@@ -22,6 +22,7 @@ import pagefind from "lume/plugins/pagefind.ts";
 import jsx from "lume/plugins/jsx.ts";
 import checkUrls from "lume/plugins/check_urls.ts";
 import validateHtml from "lume/plugins/validate_html.ts";
+import googleFonts from "lume/plugins/google_fonts.ts";
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
 import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns-locale";
@@ -204,6 +205,18 @@ site.use(
       compress: true,
       mangle: true,
     },
+  }),
+);
+
+// Download IBM Plex fonts locally instead of loading from Google Fonts CDN.
+// The plugin generates @font-face rules with font-display: swap.
+// Must run before postcss so generated CSS is processed.
+site.use(
+  googleFonts({
+    fonts:
+      "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap",
+    cssFile: "styles/fonts.css",
+    fontsFolder: "/fonts",
   }),
 );
 

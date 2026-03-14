@@ -4,8 +4,8 @@
    Carbon Design System v11 implementation
    ============================================================ */
 
-/* IBM Plex fonts — Carbon Design System typeface */
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap");
+/* IBM Plex fonts — Carbon Design System typeface (served locally) */
+@import "./styles/fonts.css";
 
 /* CSS Cascade Layers — order determined by import sequence
    Each imported file contains its own @layer block */
