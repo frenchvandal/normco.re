@@ -208,24 +208,19 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           )}
         </div>
         {tags.length > 0 && (
-          <div
-            class="post-tags"
-            role="list"
-            aria-label={translations.post.tagsAriaLabel}
-          >
+          <ul class="post-tags">
             {tags.map((tag, index) => {
               const color = getTagColor(String(tag));
               return (
-                <span
+                <li
                   key={`${tag}-${index}`}
                   class="bx--tag bx--tag--{color}"
-                  role="listitem"
                 >
                   <span class="bx--tag__label">{tag}</span>
-                </span>
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
       </header>
       <div class="post-content">
