@@ -206,10 +206,7 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'src="/scripts/post-code-copy.js"');
       assertNotMatch(html, /post-code-copy-target/);
       assertNotMatch(html, /data-code-copy-label=/);
-      assertNotMatch(
-        html,
-        /src="\/scripts\/post-code-copy-exec-command\.js"/,
-      );
+      // Legacy execCommand fallback was removed — clipboard API is universally supported.
     });
 
     it("emits localized code-copy dataset values only when they differ from defaults", async () => {

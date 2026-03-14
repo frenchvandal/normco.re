@@ -187,25 +187,6 @@
     --cds-background-warning: oklch(75% 0.18 80);
     --cds-background-info: oklch(65% 0.15 240);
 
-    /* Background muted (for secondary contexts) */
-    --bgColor-muted: var(--cds-layer);
-    --bgColor-default: var(--cds-background);
-    --bgColor-accent-emphasis: var(--cds-button-primary);
-
-    /* Border colors (legacy aliases) */
-    --borderColor-muted: var(--cds-border-subtle);
-    --borderColor-default: var(--cds-border-strong);
-    --borderColor-success: var(--cds-support-success);
-
-    /* Text colors (legacy aliases) */
-    --color-meta: var(--cds-text-secondary);
-    --color-text: var(--cds-text-primary);
-    --color-accent: var(--cds-link-primary);
-    --color-border: var(--cds-border-subtle);
-    --fgColor-default: var(--cds-text-primary);
-    --fgColor-muted: var(--cds-text-secondary);
-    --fgColor-onEmphasis: var(--cds-text-on-emphasis);
-
     /* ================================================================
        CARBON TYPOGRAPHY — IBM PLEX
        Source: https://carbondesignsystem.com/elements/typography/overview/
@@ -341,8 +322,7 @@
      DARK THEME — GRAY 90
      Activated via data-color-mode="dark" or prefers-color-scheme
      ================================================================ */
-  [data-color-mode="dark"],
-  :root:has(> style:contains("dark")) {
+  [data-color-mode="dark"] {
     /* Backgrounds — Gray 90 theme */
     --cds-background: oklch(14.9% 0 0); /* Gray 90 */
     --cds-background-hover: oklch(22.4% 0 0); /* Gray 80 hover */

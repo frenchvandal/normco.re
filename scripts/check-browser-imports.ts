@@ -238,11 +238,7 @@ async function main(): Promise<void> {
 
   for (const filePath of scriptFiles) {
     const source = await Deno.readTextFile(filePath);
-    const fileIssues = analyzeImportSpecifiers(source, filePath, {
-      allowDynamicExpression: (currentPath, expression) =>
-        currentPath.endsWith("/scripts/carbon.js") &&
-        /^getCarbonComponentUrl\(/.test(expression),
-    });
+    const fileIssues = analyzeImportSpecifiers(source, filePath, {});
 
     issues.push(...fileIssues);
   }
