@@ -1,6 +1,363 @@
 // @ts-check
 /// <reference lib="webworker" />
 
-import "./sw-core.js";
-import "./sw-lifecycle.js";
-import "./sw-routing.js";
+/** @type {ServiceWorkerGlobalScope} */
+const sw = /** @type {ServiceWorkerGlobalScope} */ (
+  /** @type {unknown} */ (self)
+);
+
+// ---------------------------------------------------------------------------
+// Configuration
+// ---------------------------------------------------------------------------
+
+const SW_URL = new URL(sw.location.href);
+const SW_VERSION = SW_URL.searchParams.get("v") ?? "__SW_VERSION__";
+const SW_DEBUG_LEVEL = SW_URL.searchParams.get("debug") ?? "off";
+const STATIC_CACHE = `static-${SW_VERSION}`;
+const PAGE_CACHE = `pages-${SW_VERSION}`;
+const FEED_CACHE = `feeds-${SW_VERSION}`;
+
+const OFFLINE_URL_BY_LANGUAGE = {
+  en: "/offline/",
+  fr: "/fr/offline/",
+  zhHans: "/zh-hans/offline/",
+  zhHant: "/zh-hant/offline/",
+};
+
+const OFFLINE_FALLBACK_HTML = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Offline — normco.re</title>
+  </head>
+  <body>
+    <main>
+      <h1>Offline</h1>
+      <p>The site is temporarily unavailable. Please retry when a connection is restored.</p>
+      <p><a href="/">Back to home</a></p>
+    </main>
+  </body>
+</html>`;
+
+const STATIC_ASSETS = [
+  "/",
+  "/style.css",
+  "/scripts/theme-toggle.js",
+  "/scripts/anti-flash.js",
+  "/scripts/language-preference.js",
+  "/scripts/feed-copy.js",
+  "/scripts/post-code-copy.js",
+  "/scripts/link-prefetch-intent.js",
+  "/feed.xml",
+  "/feed.json",
+  "/fr/feed.xml",
+  "/fr/feed.json",
+  "/zh-hans/feed.xml",
+  "/zh-hans/feed.json",
+  "/zh-hant/feed.xml",
+  "/zh-hant/feed.json",
+  OFFLINE_URL_BY_LANGUAGE.en,
+  OFFLINE_URL_BY_LANGUAGE.fr,
+  OFFLINE_URL_BY_LANGUAGE.zhHans,
+  OFFLINE_URL_BY_LANGUAGE.zhHant,
+];
+
+const FEED_TTL_MS = 30 * 60 * 1000;
+
+const KNOWN_BOT_PATTERN =
+  /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
+
+// ---------------------------------------------------------------------------
+// Logging
+// ---------------------------------------------------------------------------
+
+/**
+ * @param {string} event
+ * @param {Record<string, unknown>} [details]
+ * @returns {void}
+ */
+function logSw(event, details = {}) {
+  if (SW_DEBUG_LEVEL !== "summary" && SW_DEBUG_LEVEL !== "verbose") {
+    return;
+  }
+
+  console.info("[SW]", event, {
+    version: SW_VERSION,
+    debug: SW_DEBUG_LEVEL,
+    ...details,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Lifecycle: install → activate → message
+// ---------------------------------------------------------------------------
+
+sw.addEventListener(
+  "install",
+  /** @param {ExtendableEvent} event */ (event) => {
+    logSw("install", {
+      staticCache: STATIC_CACHE,
+      assets: STATIC_ASSETS.length,
+    });
+
+    event.waitUntil((async () => {
+      const cache = await caches.open(STATIC_CACHE);
+      await cache.addAll(STATIC_ASSETS);
+      await sw.skipWaiting();
+    })());
+  },
+);
+
+sw.addEventListener(
+  "activate",
+  /** @param {ExtendableEvent} event */ (event) => {
+    logSw("activate", {
+      staticCache: STATIC_CACHE,
+      pageCache: PAGE_CACHE,
+      feedCache: FEED_CACHE,
+    });
+
+    event.waitUntil((async () => {
+      const keys = await caches.keys();
+      const staleKeys = keys.filter((key) =>
+        ![STATIC_CACHE, PAGE_CACHE, FEED_CACHE].includes(key)
+      );
+
+      logSw("activate: pruning stale caches", {
+        staleKeys,
+        cacheCountBefore: keys.length,
+      });
+
+      await Promise.all(staleKeys.map((key) => caches.delete(key)));
+      await sw.clients.claim();
+    })());
+  },
+);
+
+sw.addEventListener(
+  "message",
+  /** @param {ExtendableMessageEvent} event */ (event) => {
+    if (event.data?.type === "SKIP_WAITING") {
+      logSw("message: SKIP_WAITING");
+      void sw.skipWaiting();
+    }
+  },
+);
+
+// ---------------------------------------------------------------------------
+// Fetch: routing and cache strategies
+// ---------------------------------------------------------------------------
+
+/**
+ * @param {Request} request
+ * @returns {boolean}
+ */
+function shouldBypassRequest(request) {
+  const userAgent = request.headers.get("user-agent") ?? "";
+
+  if (KNOWN_BOT_PATTERN.test(userAgent)) {
+    return true;
+  }
+
+  if (request.method !== "GET") {
+    return true;
+  }
+
+  const url = new URL(request.url);
+
+  if (url.origin !== sw.location.origin) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * @param {string} pathname
+ * @returns {"en" | "fr" | "zhHans" | "zhHant"}
+ */
+function resolveLanguageByPathname(pathname) {
+  if (pathname.startsWith("/fr/")) {
+    return "fr";
+  }
+
+  if (pathname.startsWith("/zh-hans/")) {
+    return "zhHans";
+  }
+
+  if (pathname.startsWith("/zh-hant/")) {
+    return "zhHant";
+  }
+
+  return "en";
+}
+
+/**
+ * Cache-first strategy for static assets (CSS, JS, images, fonts).
+ *
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
+async function cacheFirst(request) {
+  const cache = await caches.open(STATIC_CACHE);
+  const cached = await cache.match(request);
+
+  if (cached !== undefined) {
+    return cached;
+  }
+
+  const response = await fetch(request);
+
+  if (response.ok) {
+    await cache.put(request, response.clone());
+  }
+
+  return response;
+}
+
+/**
+ * Network-first strategy for HTML pages with multilingual offline fallback.
+ *
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
+async function networkFirstPage(request) {
+  const cache = await caches.open(PAGE_CACHE);
+
+  try {
+    const response = await fetch(request);
+
+    if (response.ok) {
+      await cache.put(request, response.clone());
+    }
+
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const requestUrl = new URL(request.url);
+    const staticCache = await caches.open(STATIC_CACHE);
+    const fallbackLanguage = resolveLanguageByPathname(requestUrl.pathname);
+    const offlinePath = OFFLINE_URL_BY_LANGUAGE[fallbackLanguage] ??
+      OFFLINE_URL_BY_LANGUAGE.en;
+    const offlinePage = await staticCache.match(offlinePath);
+
+    if (offlinePage !== undefined) {
+      return offlinePage;
+    }
+
+    return new Response(OFFLINE_FALLBACK_HTML, {
+      headers: { "content-type": "text/html; charset=utf-8" },
+      status: 503,
+      statusText: "Service Unavailable",
+    });
+  }
+}
+
+/**
+ * Stale-while-revalidate strategy for feeds with a 30-minute TTL.
+ *
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
+async function staleWhileRevalidateFeed(request) {
+  const cache = await caches.open(FEED_CACHE);
+  const cached = await cache.match(request);
+
+  const refreshPromise = fetch(request)
+    .then(async (networkResponse) => {
+      if (networkResponse.ok) {
+        const headers = new Headers(networkResponse.headers);
+        headers.set("x-sw-cached-at", Date.now().toString());
+
+        const body = await networkResponse.clone().blob();
+        await cache.put(
+          request,
+          new Response(body, {
+            status: networkResponse.status,
+            statusText: networkResponse.statusText,
+            headers,
+          }),
+        );
+      }
+
+      return networkResponse;
+    })
+    .catch(() => undefined);
+
+  if (cached !== undefined) {
+    const cachedAt = Number(cached.headers.get("x-sw-cached-at") ?? "0");
+    const isFresh = Date.now() - cachedAt < FEED_TTL_MS;
+
+    if (!isFresh) {
+      await refreshPromise;
+    } else {
+      void refreshPromise;
+    }
+
+    return cached;
+  }
+
+  const networkResponse = await refreshPromise;
+
+  if (networkResponse !== undefined) {
+    return networkResponse;
+  }
+
+  return new Response("Feed unavailable while offline.", {
+    status: 503,
+    statusText: "Service Unavailable",
+    headers: { "content-type": "text/plain; charset=utf-8" },
+  });
+}
+
+sw.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
+  const { request } = event;
+
+  if (SW_DEBUG_LEVEL === "verbose") {
+    logSw("fetch", {
+      method: request.method,
+      destination: request.destination,
+      mode: request.mode,
+      url: request.url,
+    });
+  }
+
+  if (shouldBypassRequest(request)) {
+    return;
+  }
+
+  const url = new URL(request.url);
+
+  if (request.mode === "navigate") {
+    event.respondWith(networkFirstPage(request));
+    return;
+  }
+
+  const isFeedRoute = url.pathname.endsWith("/feed.xml") ||
+    url.pathname.endsWith("/feed.json");
+
+  if (isFeedRoute) {
+    event.respondWith(staleWhileRevalidateFeed(request));
+    return;
+  }
+
+  const isStaticAsset = url.pathname.endsWith(".css") ||
+    url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".woff2") ||
+    url.pathname.endsWith(".png") ||
+    url.pathname.endsWith(".svg") ||
+    url.pathname.endsWith(".webp") ||
+    url.pathname.endsWith(".avif") ||
+    url.pathname.endsWith(".jpg") ||
+    url.pathname.endsWith(".jpeg");
+
+  if (isStaticAsset) {
+    event.respondWith(cacheFirst(request));
+  }
+});

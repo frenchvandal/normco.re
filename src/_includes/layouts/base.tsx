@@ -235,9 +235,7 @@ export default (
           )}
           <script
             src="/scripts/sw-register.js"
-            data-sw-module-url="/sw.js"
-            data-sw-classic-url="/sw-classic.js"
-            data-sw-url="/sw-classic.js"
+            data-sw-url="/sw.js"
             data-sw-debug-level={swDebugLevel}
             fetchpriority="low"
             defer

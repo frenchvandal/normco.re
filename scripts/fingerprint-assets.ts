@@ -24,11 +24,6 @@ const CANONICAL_ASSET_URLS = [
 const SERVICE_WORKER_VERSION_PLACEHOLDER = "__SW_VERSION__";
 const SERVICE_WORKER_VERSION_SOURCES = [
   "/sw.js",
-  "/sw-core.js",
-  "/sw-lifecycle.js",
-  "/sw-routing.js",
-  "/sw-classic.js",
-  "/sw-module.js",
 ] as const;
 
 type AssetRewrite = {
