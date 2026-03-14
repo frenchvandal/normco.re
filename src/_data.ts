@@ -3,6 +3,12 @@
 /** Primary language of the site. */
 export const lang = "en";
 
+/**
+ * Year the blog was launched. Used to format the copyright notice.
+ * Set to the current year if you want a single-year notice.
+ */
+export const blogStartYear = 2022 as const;
+
 /** Default layout applied to every page. Posts override this via `src/posts/_data.ts`. */
 export const layout = "layouts/base.tsx";
 

@@ -210,11 +210,11 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
         {tags.length > 0 && (
           <ul class="post-tags">
             {tags.map((tag, index) => {
-              const color = getTagColor(String(tag));
+              const _color = getTagColor(String(tag));
               return (
                 <li
                   key={`${tag}-${index}`}
-                  class="bx--tag bx--tag--{color}"
+                  class="bx--tag bx--tag--{_color}"
                 >
                   <span class="bx--tag__label">{tag}</span>
                 </li>

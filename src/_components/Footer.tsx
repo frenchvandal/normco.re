@@ -1,6 +1,7 @@
 /** Site footer with copyright and primary links. */
 
 import { getSiteTranslations, type SiteLanguage } from "../utils/i18n.ts";
+import { formatCopyrightYears } from "../utils/copyright.ts";
 
 const repositoryUrl = "https://github.com/frenchvandal/normco.re" as const;
 
@@ -29,20 +30,23 @@ export default (
     author,
     language,
     feedXmlUrl,
+    blogStartYear,
   }: {
     readonly author: string;
     readonly language: SiteLanguage;
     readonly feedXmlUrl: string;
+    readonly blogStartYear: number;
   },
 ) => {
   const year = new Date().getFullYear();
+  const copyrightYears = formatCopyrightYears(blogStartYear, year);
   const translations = getSiteTranslations(language);
 
   return (
     <footer class="site-footer">
       <div class="site-footer-inner">
         <span>
-          © {year} {author}
+          © {copyrightYears} {author}
         </span>
         <nav
           class="site-footer-nav"

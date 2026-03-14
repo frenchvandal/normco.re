@@ -1,7 +1,7 @@
 # Carbon Design System Migration & Architecture Audit
 
-**Date:** March 14, 2026  
-**Author:** Qwen Code  
+**Date:** March 14, 2026\
+**Author:** Qwen Code\
 **Repository:** `frenchvandal/normco.re`
 
 ---
@@ -24,7 +24,8 @@ Documentation interne à lire en priorité dans le repo :
 
 ⚠️ **Important**
 
-Les fichiers **`CLAUDE.md` et `AGENTS.md` ont un contenu strictement identique** dans ce projet.
+Les fichiers **`CLAUDE.md` et `AGENTS.md` ont un contenu strictement identique**
+dans ce projet.
 
 Ils doivent donc :
 
@@ -60,16 +61,16 @@ https://carbondesignsystem.com/
 
 ### Figma
 
-Carbon Design System  
+Carbon Design System\
 https://www.figma.com/design/tVdGpdfznZUzo6LeGIKbte/-v11--Carbon-Design-System--Community-
 
-IBM Color Library  
+IBM Color Library\
 https://www.figma.com/design/LB0FBc9Sv0lAiXcm5fVkea/IBM®-Color-Library--Community-
 
-IBM Pictogram Library  
+IBM Pictogram Library\
 https://www.figma.com/design/BH4YnsefetmaVoj1hhZYvP/IBM®-Pictogram-Library--Community-
 
-IBM UI Icon Library  
+IBM UI Icon Library\
 https://www.figma.com/design/UXvYp7qRiZfaxxJgf6xMf2/IBM®-UI-Icon-Library--Community-
 
 ---
@@ -273,7 +274,8 @@ Proposer :
 
 # 6. Gestion des fonts Carbon avec le plugin Lume Google Fonts
 
-Définir la stratégie complète pour utiliser **IBM Plex via le plugin Google Fonts de Lume**.
+Définir la stratégie complète pour utiliser **IBM Plex via le plugin Google
+Fonts de Lume**.
 
 Inclure :
 
@@ -371,14 +373,15 @@ Ce prompt doit :
 
 Structure la réponse en sections :
 
-1. Audit architecture  
-2. Analyse UI du site  
-3. Mapping Carbon  
-4. Architecture cible  
-5. Stratégie implémentation Carbon  
-6. Gestion des fonts Carbon avec le plugin Lume Google Fonts  
-7. Mise à jour de la documentation (`AGENTS.md`, `CLAUDE.md`, `ARCHITECTURE.md`, `CARBON_MIGRATION_PLAN.md`)  
-8. Prompt pour lancer la migration  
+1. Audit architecture
+2. Analyse UI du site
+3. Mapping Carbon
+4. Architecture cible
+5. Stratégie implémentation Carbon
+6. Gestion des fonts Carbon avec le plugin Lume Google Fonts
+7. Mise à jour de la documentation (`AGENTS.md`, `CLAUDE.md`, `ARCHITECTURE.md`,
+   `CARBON_MIGRATION_PLAN.md`)
+8. Prompt pour lancer la migration
 
 Utiliser :
 
@@ -396,25 +399,27 @@ Utiliser :
 
 **Points forts identifiés :**
 
-- ✅ Architecture fonctionnelle avec séparation logique (functional core, imperative shell)
+- ✅ Architecture fonctionnelle avec séparation logique (functional core,
+  imperative shell)
 - ✅ TypeScript strict avec bonnes pratiques modernes
 - ✅ Tests unitaires présents pour les composants critiques
 - ✅ CSS moderne avec `@layer`, custom properties, `@scope`
 - ✅ Carbon Design System partiellement implémenté (tokens, header, grid)
 - ✅ Documentation interne complète (AGENTS.md, ARCHITECTURE.md, etc.)
-- ✅ Workflow de validation robuste (lint, type check, HTML validation, link checking)
+- ✅ Workflow de validation robuste (lint, type check, HTML validation, link
+  checking)
 
 **Problèmes majeurs identifiés :**
 
-| Problème | Impact | Sévérité |
-|----------|--------|----------|
-| **1. Google Fonts via CDN** dans `style.css` | Non-conforme aux contraintes projet (fonts doivent être locales via plugin Lume) | 🔴 Critique |
-| **2. `_config.ts` monolithique** (600+ lignes) | Difficile à maintenir, tester, et faire évoluer | 🟠 Élevé |
-| **3. Mélange Primer/Carbon** dans le CSS | Incohérence design, dette technique visuelle | 🟠 Élevé |
-| **4. Scripts JS front-end non optimisés** | Build complexe, bundling manuel Carbon | 🟡 Moyen |
-| **5. Composants Carbon incomplets** | Seuls header/footer sont implémentés | 🟡 Moyen |
-| **6. Architecture CSS partiellement overengineered** | 7 fichiers CSS, certaines redondances | 🟡 Moyen |
-| **7. `design/` JSON non exploités** | Tokens Carbon non générés automatiquement | 🟡 Moyen |
+| Problème                                             | Impact                                                                           | Sévérité    |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------- | ----------- |
+| **1. Google Fonts via CDN** dans `style.css`         | Non-conforme aux contraintes projet (fonts doivent être locales via plugin Lume) | 🔴 Critique |
+| **2. `_config.ts` monolithique** (600+ lignes)       | Difficile à maintenir, tester, et faire évoluer                                  | 🟠 Élevé    |
+| **3. Mélange Primer/Carbon** dans le CSS             | Incohérence design, dette technique visuelle                                     | 🟠 Élevé    |
+| **4. Scripts JS front-end non optimisés**            | Build complexe, bundling manuel Carbon                                           | 🟡 Moyen    |
+| **5. Composants Carbon incomplets**                  | Seuls header/footer sont implémentés                                             | 🟡 Moyen    |
+| **6. Architecture CSS partiellement overengineered** | 7 fichiers CSS, certaines redondances                                            | 🟡 Moyen    |
+| **7. `design/` JSON non exploités**                  | Tokens Carbon non générés automatiquement                                        | 🟡 Moyen    |
 
 ---
 
@@ -425,11 +430,13 @@ Utiliser :
 **Problème :** Fichier de 600+ lignes qui orchestre tout le build.
 
 **Impact :**
+
 - Difficile à tester unitairement
 - Complexe à faire évoluer
 - Mélange configuration, pipelines assets, et logique métier
 
 **Refactorisation proposée :**
+
 ```
 _config.ts
 ├── site.ts (instanciation Lume)
@@ -448,11 +455,13 @@ _config.ts
 **Problème :** 7 fichiers CSS avec redondances tokens-carbon.css / base.css.
 
 **Impact :**
+
 - Tokens définis en double
 - Risque d'incohérence
 - Poids CSS inutile
 
 **Refactorisation proposée :**
+
 ```
 styles/
 ├── tokens.css (Carbon tokens uniquement)
@@ -467,11 +476,13 @@ styles/
 **Problème :** Build Carbon vendor complexe via `build-carbon-vendor.ts`.
 
 **Impact :**
+
 - Post-build hook lent
 - Dépendance à `deno bundle` avec code-splitting
 - 12+ fichiers JS dans `src/scripts/`
 
 **Refactorisation proposée :**
+
 - Utiliser import maps pour Carbon
 - Réduire scripts au strict minimum
 - Documenter chaque script
@@ -481,10 +492,12 @@ styles/
 **Problème :** Seulement Header, Footer, PostCard implémentés.
 
 **Impact :**
+
 - Migration Carbon incomplète
 - Composants manquants : Button, Card, Tag, Breadcrumb, Pagination, etc.
 
 **Refactorisation proposée :**
+
 ```
 _components/
 ├── shell/
@@ -511,33 +524,33 @@ _components/
 
 ### 2.1 Pages analysées
 
-| Page | URL | État |
-|------|-----|------|
-| **Home** | `/` | ✅ Fonctionnelle |
+| Page            | URL              | État             |
+| --------------- | ---------------- | ---------------- |
+| **Home**        | `/`              | ✅ Fonctionnelle |
 | **Post detail** | `/posts/{slug}/` | ✅ Fonctionnelle |
-| **Archive** | `/posts/` | ✅ Fonctionnelle |
-| **About** | `/about/` | ✅ Fonctionnelle |
-| **404** | `/404` | ✅ Fonctionnelle |
-| **Offline** | `/offline` | ✅ Fonctionnelle |
-| **Feeds hub** | `/feeds/` | ✅ Fonctionnelle |
+| **Archive**     | `/posts/`        | ✅ Fonctionnelle |
+| **About**       | `/about/`        | ✅ Fonctionnelle |
+| **404**         | `/404`           | ✅ Fonctionnelle |
+| **Offline**     | `/offline`       | ✅ Fonctionnelle |
+| **Feeds hub**   | `/feeds/`        | ✅ Fonctionnelle |
 
 ### 2.2 Éléments UI identifiés
 
-| Élément | Localisation | État actuel | Priorité migration |
-|---------|--------------|-------------|-------------------|
-| **Header** | Global | Carbon UI Shell (partiel) | ✅ Déjà migré |
-| **Footer** | Global | Carbon-compatible | ✅ Déjà migré |
-| **Hero** | Home | Primer-like | 🔴 Haute |
-| **PostCard** | Home, Archive | Primer-like | 🔴 Haute |
-| **Breadcrumb** | Post detail | Custom | 🟠 Moyenne |
-| **Tags** | Post detail | Carbon (partiel) | 🟠 Moyenne |
-| **Pagination** | Archive | Custom | 🟠 Moyenne |
-| **Archive year nav** | Archive | Custom | 🟡 Basse |
-| **Search** | Header panel | Pagefind UI | 🟠 Moyenne |
-| **Language dropdown** | Header | Custom panel | 🟠 Moyenne |
-| **Theme toggle** | Header | Custom | 🟡 Basse |
-| **Skip link** | Global | Carbon-compatible | ✅ Déjà migré |
-| **Code blocks** | Post detail | Custom + copy button | 🟡 Basse |
+| Élément               | Localisation  | État actuel               | Priorité migration |
+| --------------------- | ------------- | ------------------------- | ------------------ |
+| **Header**            | Global        | Carbon UI Shell (partiel) | ✅ Déjà migré      |
+| **Footer**            | Global        | Carbon-compatible         | ✅ Déjà migré      |
+| **Hero**              | Home          | Primer-like               | 🔴 Haute           |
+| **PostCard**          | Home, Archive | Primer-like               | 🔴 Haute           |
+| **Breadcrumb**        | Post detail   | Custom                    | 🟠 Moyenne         |
+| **Tags**              | Post detail   | Carbon (partiel)          | 🟠 Moyenne         |
+| **Pagination**        | Archive       | Custom                    | 🟠 Moyenne         |
+| **Archive year nav**  | Archive       | Custom                    | 🟡 Basse           |
+| **Search**            | Header panel  | Pagefind UI               | 🟠 Moyenne         |
+| **Language dropdown** | Header        | Custom panel              | 🟠 Moyenne         |
+| **Theme toggle**      | Header        | Custom                    | 🟡 Basse           |
+| **Skip link**         | Global        | Carbon-compatible         | ✅ Déjà migré      |
+| **Code blocks**       | Post detail   | Custom + copy button      | 🟡 Basse           |
 
 ---
 
@@ -545,29 +558,29 @@ _components/
 
 ### 3.1 Composants à implémenter
 
-| Composant actuel | Composant Carbon recommandé | Source Carbon | Statut |
-|------------------|----------------------------|---------------|--------|
-| Hero section | Content block | [Content block](https://carbondesignsystem.com/components/content-block/usage/) | 🔴 À faire |
-| PostCard | Card + Link | [Card](https://carbondesignsystem.com/components/card/usage/) | 🔴 À faire |
-| Breadcrumb | Breadcrumb | [Breadcrumb](https://carbondesignsystem.com/components/breadcrumb/usage/) | 🟠 Partiel |
-| Tags | Tag | [Tag](https://carbondesignsystem.com/components/tag/usage/) | 🟠 Partiel |
-| Archive nav | Pagination | [Pagination](https://carbondesignsystem.com/components/pagination/usage/) | 🔴 À faire |
-| Search | Search | [Search](https://carbondesignsystem.com/components/search/usage/) | 🟠 Partiel |
-| Language selector | Dropdown | [Dropdown](https://carbondesignsystem.com/components/dropdown/usage/) | 🔴 À faire |
-| Theme toggle | Toggle | [Toggle](https://carbondesignsystem.com/components/toggle/usage/) | 🔴 À faire |
-| Buttons | Button | [Button](https://carbondesignsystem.com/components/button/usage/) | 🔴 À faire |
-| Links | Link | [Link](https://carbondesignsystem.com/components/link/usage/) | ✅ Déjà fait |
+| Composant actuel  | Composant Carbon recommandé | Source Carbon                                                                   | Statut       |
+| ----------------- | --------------------------- | ------------------------------------------------------------------------------- | ------------ |
+| Hero section      | Content block               | [Content block](https://carbondesignsystem.com/components/content-block/usage/) | 🔴 À faire   |
+| PostCard          | Card + Link                 | [Card](https://carbondesignsystem.com/components/card/usage/)                   | 🔴 À faire   |
+| Breadcrumb        | Breadcrumb                  | [Breadcrumb](https://carbondesignsystem.com/components/breadcrumb/usage/)       | 🟠 Partiel   |
+| Tags              | Tag                         | [Tag](https://carbondesignsystem.com/components/tag/usage/)                     | 🟠 Partiel   |
+| Archive nav       | Pagination                  | [Pagination](https://carbondesignsystem.com/components/pagination/usage/)       | 🔴 À faire   |
+| Search            | Search                      | [Search](https://carbondesignsystem.com/components/search/usage/)               | 🟠 Partiel   |
+| Language selector | Dropdown                    | [Dropdown](https://carbondesignsystem.com/components/dropdown/usage/)           | 🔴 À faire   |
+| Theme toggle      | Toggle                      | [Toggle](https://carbondesignsystem.com/components/toggle/usage/)               | 🔴 À faire   |
+| Buttons           | Button                      | [Button](https://carbondesignsystem.com/components/button/usage/)               | 🔴 À faire   |
+| Links             | Link                        | [Link](https://carbondesignsystem.com/components/link/usage/)                   | ✅ Déjà fait |
 
 ### 3.2 Tokens Figma à extraire
 
-| Token | Fichier JSON | Usage |
-|-------|--------------|-------|
-| Couleurs | `design/Colors.json`, `design/Color palette*.json` | Thèmes light/dark |
-| Spacing | `design/Spacing.json` | Marges, paddings |
-| Breakpoints | `design/Breakpoint.json`, `design/Breakpoint LG–XL.json` | Responsive |
-| Radius | `design/Radius.json` | Coins arrondis |
-| Typography | `design/Numbers.json` | Tailles, weights |
-| Grid | `design/Grid mode.json`, `design/Column span.json` | Layout |
+| Token       | Fichier JSON                                             | Usage             |
+| ----------- | -------------------------------------------------------- | ----------------- |
+| Couleurs    | `design/Colors.json`, `design/Color palette*.json`       | Thèmes light/dark |
+| Spacing     | `design/Spacing.json`                                    | Marges, paddings  |
+| Breakpoints | `design/Breakpoint.json`, `design/Breakpoint LG–XL.json` | Responsive        |
+| Radius      | `design/Radius.json`                                     | Coins arrondis    |
+| Typography  | `design/Numbers.json`                                    | Tailles, weights  |
+| Grid        | `design/Grid mode.json`, `design/Column span.json`       | Layout            |
 
 ---
 
@@ -618,14 +631,14 @@ turbo-fiesta/
 
 ### 4.2 Conventions de nommage
 
-| Type | Convention | Exemple |
-|------|------------|---------|
-| Composant | `PascalCase.tsx` | `PostCard.tsx` |
-| Utility | `kebab-case.ts` | `date-helpers.ts` |
-| Style | `kebab-case.css` | `tokens.css` |
-| Page | `kebab-case.page.tsx` | `about.page.tsx` |
-| Layout | `kebab-case.tsx` | `base.tsx` |
-| Dossier | `kebab-case` | `_components/` |
+| Type      | Convention            | Exemple           |
+| --------- | --------------------- | ----------------- |
+| Composant | `PascalCase.tsx`      | `PostCard.tsx`    |
+| Utility   | `kebab-case.ts`       | `date-helpers.ts` |
+| Style     | `kebab-case.css`      | `tokens.css`      |
+| Page      | `kebab-case.page.tsx` | `about.page.tsx`  |
+| Layout    | `kebab-case.tsx`      | `base.tsx`        |
+| Dossier   | `kebab-case`          | `_components/`    |
 
 ---
 
@@ -643,9 +656,10 @@ import spacing from "../design/Spacing.json";
 function generateCssTokens() {
   return `
     :root {
-      ${Object.entries(colors).map(([key, value]) => 
-        `--cds-${key}: ${value};`
-      ).join("\n")}
+      ${
+    Object.entries(colors).map(([key, value]) => `--cds-${key}: ${value};`)
+      .join("\n")
+  }
     }
   `;
 }
@@ -661,7 +675,7 @@ Utiliser la nomenclature W3C DTCG `category-property-modifier` :
   --color-background-default: oklch(100% 0 0);
   --color-background-hover: oklch(95.7% 0 0);
   --color-text-primary: oklch(14.9% 0 0);
-  
+
   /* Spacing */
   --space-01: 0.125rem;
   --space-02: 0.25rem;
@@ -676,15 +690,15 @@ Utiliser la nomenclature W3C DTCG `category-property-modifier` :
 ```tsx
 // _components/ui/Button.tsx
 export default (
-  { 
-    variant = "primary", 
-    size = "md", 
-    children 
+  {
+    variant = "primary",
+    size = "md",
+    children,
   }: {
     readonly variant?: "primary" | "secondary" | "danger";
     readonly size?: "sm" | "md" | "lg";
     readonly children: string;
-  }
+  },
 ) => (
   <button class={`bx--btn bx--btn--${variant} bx--btn--${size}`}>
     {children}
@@ -731,7 +745,7 @@ site.use(
     output: "fonts",
     preload: true,
     display: "swap",
-  })
+  }),
 );
 ```
 
@@ -785,7 +799,8 @@ src/
 
 ### 7.1 Fichiers à mettre à jour
 
-**Règle :** `AGENTS.md` et `CLAUDE.md` doivent avoir un contenu **strictement identique**.
+**Règle :** `AGENTS.md` et `CLAUDE.md` doivent avoir un contenu **strictement
+identique**.
 
 ### 7.2 Contenu à ajouter dans `AGENTS.md` et `CLAUDE.md`
 
@@ -814,13 +829,12 @@ src/
 
 Structure :
 ```
-_components/
-├── shell/      # Header, Footer, SideNav
-├── content/    # Card, Hero, PostCard
-├── navigation/ # Breadcrumb, Pagination, Link
-└── ui/         # Button, Tag, Search, Dropdown
-```
 
+_components/ ├── shell/ # Header, Footer, SideNav ├── content/ # Card, Hero,
+PostCard ├── navigation/ # Breadcrumb, Pagination, Link └── ui/ # Button, Tag,
+Search, Dropdown
+
+```
 ### 6.5 CSS
 
 - Modern CSS first (`@layer`, `@scope`, custom properties)
@@ -836,6 +850,7 @@ _components/
 ### Design tokens
 
 Générés depuis `design/*.json` :
+
 - `Theme.json` : thèmes light/dark
 - `Colors.json` : palette couleurs
 - `Spacing.json` : échelle 8px
@@ -844,6 +859,7 @@ Générés depuis `design/*.json` :
 ### Composants
 
 Chaque composant :
+
 1. TSX dans `_components/{category}/`
 2. Styles dans `styles/components.css`
 3. Tests dans `_components/{category}/_test.ts`
@@ -851,6 +867,7 @@ Chaque composant :
 ### Fonts
 
 IBM Plex via plugin Lume :
+
 - Téléchargement local
 - WOFF2 uniquement
 - Subsetting Latin
@@ -862,22 +879,26 @@ IBM Plex via plugin Lume :
 ## Plan de migration
 
 ### Phase 1 : Fondations (Semaine 1)
+
 - [ ] Configurer plugin Lume Google Fonts
 - [ ] Générer tokens CSS depuis JSON Figma
 - [ ] Nettoyer redondances CSS
 
 ### Phase 2 : Composants critiques (Semaine 2-3)
+
 - [ ] Hero section → Carbon Content Block
 - [ ] PostCard → Carbon Card
 - [ ] Tags → Carbon Tag
 - [ ] Breadcrumb → Carbon Breadcrumb
 
 ### Phase 3 : Navigation (Semaine 4)
+
 - [ ] Archive pagination → Carbon Pagination
 - [ ] Language selector → Carbon Dropdown
 - [ ] Search → Carbon Search
 
 ### Phase 4 : Polishing (Semaine 5)
+
 - [ ] Theme toggle → Carbon Toggle
 - [ ] Buttons → Carbon Button
 - [ ] Tests visuels
@@ -885,11 +906,11 @@ IBM Plex via plugin Lume :
 
 ## Mapping Primer → Carbon
 
-| Primer | Carbon | Fichier |
-|--------|--------|---------|
-| `.hero` | Content Block | `index.page.tsx` |
-| `.post-card` | Card | `PostCard.tsx` |
-| `.blankslate` | Empty State | `_components/ui/EmptyState.tsx` |
+| Primer        | Carbon        | Fichier                         |
+| ------------- | ------------- | ------------------------------- |
+| `.hero`       | Content Block | `index.page.tsx`                |
+| `.post-card`  | Card          | `PostCard.tsx`                  |
+| `.blankslate` | Empty State   | `_components/ui/EmptyState.tsx` |
 ```
 
 ---
@@ -901,8 +922,8 @@ IBM Plex via plugin Lume :
 
 ## Contexte
 
-Tu es un expert Carbon Design System et Lume. Tu dois migrer progressivement 
-le blog normco.re de Primer vers Carbon Design System.
+Tu es un expert Carbon Design System et Lume. Tu dois migrer progressivement le
+blog normco.re de Primer vers Carbon Design System.
 
 ## Contraintes
 
@@ -914,6 +935,7 @@ le blog normco.re de Primer vers Carbon Design System.
 ## Étapes
 
 ### Étape 1 : Configuration Google Fonts (2h)
+
 1. Installer le plugin `lume/plugins/google_fonts`
 2. Configurer IBM Plex Sans (400, 500, 600) et IBM Plex Mono (400, 500)
 3. Générer les fichiers fonts dans `src/fonts/`
@@ -921,22 +943,26 @@ le blog normco.re de Primer vers Carbon Design System.
 5. Supprimer l'import CDN Google Fonts actuel
 
 **Validation :**
+
 - `deno task build` réussit
 - Fonts sont dans `_site/fonts/`
 - Pas de requête vers `fonts.googleapis.com`
 
 ### Étape 2 : Tokens CSS (3h)
+
 1. Créer `scripts/generate-carbon-tokens.ts`
 2. Lire `design/Colors.json`, `design/Spacing.json`, `design/Theme.json`
 3. Générer `src/styles/tokens.css`
 4. Nettoyer les redondances entre `tokens-carbon.css` et `base.css`
 
 **Validation :**
+
 - Tokens sont à jour avec Figma
 - Nomenclature W3C DTCG respectée
 - Tests de non-régression CSS
 
 ### Étape 3 : Hero Section (4h)
+
 1. Créer `_components/content/Hero.tsx`
 2. Implémenter Carbon Content Block guidelines
 3. Mettre à jour `index.page.tsx`
@@ -946,28 +972,30 @@ le blog normco.re de Primer vers Carbon Design System.
 https://carbondesignsystem.com/components/content-block/usage/
 
 **Validation :**
+
 - Screenshots avant/après
 - Tests passent
 - Accessibilité (skip link, focus)
 
 ### Étape 4 : PostCard (4h)
+
 1. Refondre `PostCard.tsx` vers Carbon Card
 2. Ajouter variantes (home, archive)
 3. Mettre à jour `index.page.tsx` et `posts/index.page.tsx`
 4. Tests `PostCard_test.ts`
 
-**Guidelines Carbon :**
-https://carbondesignsystem.com/components/card/usage/
+**Guidelines Carbon :** https://carbondesignsystem.com/components/card/usage/
 
 ### Étape 5 : Tags (2h)
+
 1. Mettre à jour `_components/ui/Tag.tsx`
 2. Couleurs Carbon (blue, green, purple, red, teal, cyan, gray)
 3. Mettre à jour `layouts/post.tsx`
 
-**Guidelines Carbon :**
-https://carbondesignsystem.com/components/tag/usage/
+**Guidelines Carbon :** https://carbondesignsystem.com/components/tag/usage/
 
 ### Étape 6 : Breadcrumb (2h)
+
 1. Créer `_components/navigation/Breadcrumb.tsx`
 2. Implémenter Carbon Breadcrumb
 3. Mettre à jour `layouts/post.tsx`
@@ -976,6 +1004,7 @@ https://carbondesignsystem.com/components/tag/usage/
 https://carbondesignsystem.com/components/breadcrumb/usage/
 
 ### Étape 7 : Documentation (1h)
+
 1. Mettre à jour `AGENTS.md` et `CLAUDE.md` (contenu identique)
 2. Mettre à jour `ARCHITECTURE.md`
 3. Mettre à jour `CARBON_MIGRATION_PLAN.md`
@@ -983,6 +1012,7 @@ https://carbondesignsystem.com/components/breadcrumb/usage/
 ## Workflow
 
 Pour chaque étape :
+
 1. `deno task serve` — capture screenshot avant
 2. Implémentation
 3. `deno task build` — capture screenshot après
@@ -1023,22 +1053,25 @@ Pour chaque étape :
 
 ### Effort estimé
 
-| Phase | Durée | Complexité |
-|-------|-------|------------|
-| Fonts | 2h | 🟢 Faible |
-| Tokens | 3h | 🟢 Faible |
-| Hero | 4h | 🟡 Moyenne |
-| PostCard | 4h | 🟡 Moyenne |
-| Tags | 2h | 🟢 Faible |
-| Breadcrumb | 2h | 🟢 Faible |
-| **Total** | **17h** | |
+| Phase      | Durée   | Complexité |
+| ---------- | ------- | ---------- |
+| Fonts      | 2h      | 🟢 Faible  |
+| Tokens     | 3h      | 🟢 Faible  |
+| Hero       | 4h      | 🟡 Moyenne |
+| PostCard   | 4h      | 🟡 Moyenne |
+| Tags       | 2h      | 🟢 Faible  |
+| Breadcrumb | 2h      | 🟢 Faible  |
+| **Total**  | **17h** |            |
 
 ### Risques identifiés
 
-- ⚠️ **Rupture de synchronisation AGENTS.md / CLAUDE.md** — Mettre en place validation automatique
+- ⚠️ **Rupture de synchronisation AGENTS.md / CLAUDE.md** — Mettre en place
+  validation automatique
 - ⚠️ **Régression visuelle** — Screenshots systématiques + tests
 - ⚠️ **Performance fonts** — Subsetting et WOFF2 obligatoires
 
 ---
 
-**Prochaine action recommandée :** Commencer par l'**Étape 1 : Configuration Google Fonts** car c'est la contrainte la plus critique et le prérequis pour toutes les autres migrations.
+**Prochaine action recommandée :** Commencer par l'**Étape 1 : Configuration
+Google Fonts** car c'est la contrainte la plus critique et le prérequis pour
+toutes les autres migrations.

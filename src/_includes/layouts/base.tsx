@@ -36,6 +36,8 @@ type LayoutData = Lume.Data & {
   author?: string;
   /** Injected by `src/_data.ts` - site metadata for meta tags. */
   metas?: { readonly site?: string; readonly description?: string };
+  /** Injected by `src/_data.ts` - year the blog was launched. */
+  blogStartYear?: number;
 };
 
 /** Return type of an ssx JSX element, used to type Lume component functions. */
@@ -51,6 +53,7 @@ type Comp = {
     readonly author: string;
     readonly language: SiteLanguage;
     readonly feedXmlUrl: string;
+    readonly blogStartYear: number;
   }) => SsxElement;
 };
 
@@ -107,6 +110,7 @@ export default (
     siteName,
     author,
     metas,
+    blogStartYear,
   }: LayoutData,
   _helpers: Lume.Helpers,
 ) => {
@@ -195,6 +199,7 @@ export default (
               author={resolvedAuthor}
               language={language}
               feedXmlUrl={feedXmlUrl}
+              blogStartYear={blogStartYear ?? new Date().getFullYear()}
             />
           </div>
           <script

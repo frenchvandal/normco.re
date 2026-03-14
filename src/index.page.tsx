@@ -54,10 +54,10 @@ type H = {
 };
 
 /** Renders the home page body. */
-export default (
+export default async (
   data: Lume.Data,
   helpers: Lume.Helpers,
-): string => {
+): Promise<string> => {
   // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 - library boundary).
   const { PostCard } = data.comp as unknown as Comp;
   const { date: dateFormat } = helpers as unknown as H;
@@ -76,12 +76,12 @@ export default (
     5,
   ) as Lume.Data[];
 
-  const postItems = recent.map((post) => {
+  const postItems = await Promise.all(recent.map(async (post) => {
     const postDate = resolvePostDate(post.date);
     const minutes = resolveReadingMinutes(post.readingInfo);
 
     // exactOptionalPropertyTypes: only include readingLabel when it has a value.
-    const card = PostCard({
+    const card = await PostCard({
       title: post.title as string,
       url: post.url as string,
       dateStr: dateFormat(postDate, shortDatePattern, language) ??
@@ -93,7 +93,7 @@ export default (
     });
 
     return `<li class="home-posts-item">${card}</li>`;
-  }).join("\n");
+  })).then((items) => items.join("\n"));
 
   const emptyState = `<li class="home-posts-item home-posts-item--empty">
     <p class="blankslate">${translations.home.emptyState}</p>
