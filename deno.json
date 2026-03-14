@@ -166,6 +166,7 @@
     "npm:@ibm/plex-sans-thai@1.1.0",
     "npm:@ibm/plex-sans@1.1.0",
     "npm:@ibm/plex-serif@1.1.0",
-    "npm:esbuild@0.27.3"
+    "npm:esbuild@0.27.3",
+    "npm:lightningcss-cli@1.32.0"
   ]
 }
