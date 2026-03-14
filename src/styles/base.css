@@ -6,7 +6,7 @@
     /* =====================================================================
        CONVENIENCE ALIASES
        Map legacy property names to canonical Carbon tokens.
-       Used across components.css and utilities.css (~130 references).
+       Used across components/ and utilities.css (~130 references).
        ===================================================================== */
 
     /* Spacing aliases → Carbon spacing scale */

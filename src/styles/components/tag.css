@@ -1,0 +1,163 @@
+/* Carbon tag (filter pattern).
+   Source: https://carbondesignsystem.com/components/tag/usage/
+
+   Tag colors follow Carbon's semantic color palette.
+   For archive filters, use muted/neutral variants. */
+@layer components {
+  .bx--tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cds-spacing-02);
+    padding-block: var(--cds-spacing-01);
+    padding-inline: var(--cds-spacing-03);
+    border-radius: 1rem; /* Carbon tags are fully rounded */
+    font: var(--cds-productive-heading-01);
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+    cursor: pointer;
+    max-inline-size: 100%;
+  }
+
+  .bx--tag--default {
+    background-color: var(--cds-layer);
+    color: var(--cds-text-primary);
+    border-color: var(--cds-border-subtle);
+  }
+
+  .bx--tag--default:hover {
+    background-color: var(--cds-layer-hover);
+    border-color: var(--cds-border-strong);
+  }
+
+  .bx--tag--blue {
+    background-color: rgb(0 99 255 / 10%);
+    color: #0043ce;
+    border-color: rgb(0 99 255 / 20%);
+  }
+
+  .bx--tag--blue:hover {
+    background-color: rgb(0 99 255 / 20%);
+    border-color: #0043ce;
+  }
+
+  .bx--tag--green {
+    background-color: rgb(25 128 56 / 10%);
+    color: #146c2e;
+    border-color: rgb(25 128 56 / 20%);
+  }
+
+  .bx--tag--green:hover {
+    background-color: rgb(25 128 56 / 20%);
+    border-color: #146c2e;
+  }
+
+  .bx--tag--purple {
+    background-color: rgb(138 64 255 / 10%);
+    color: #8a3ffc;
+    border-color: rgb(138 64 255 / 20%);
+  }
+
+  .bx--tag--purple:hover {
+    background-color: rgb(138 64 255 / 20%);
+    border-color: #8a3ffc;
+  }
+
+  .bx--tag--red {
+    background-color: rgb(218 30 40 / 10%);
+    color: #b81921;
+    border-color: rgb(218 30 40 / 20%);
+  }
+
+  .bx--tag--red:hover {
+    background-color: rgb(218 30 40 / 20%);
+    border-color: #b81921;
+  }
+
+  .bx--tag--gray {
+    background-color: var(--cds-layer);
+    color: var(--cds-text-secondary);
+    border-color: var(--cds-border-subtle);
+  }
+
+  .bx--tag--gray:hover {
+    background-color: var(--cds-layer-hover);
+    color: var(--cds-text-primary);
+    border-color: var(--cds-border-strong);
+  }
+
+  .bx--tag:focus-visible {
+    outline: var(--focus-ring-width) solid var(--cds-focus);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  .bx--tag__label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Tag filter group */
+  .bx--tag-filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--cds-spacing-03);
+    margin-block: var(--cds-spacing-05) var(--cds-spacing-07);
+  }
+
+  /* Post tags container */
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--cds-spacing-03);
+    margin-block-start: var(--cds-spacing-05);
+  }
+
+  /* Dark mode tag color adjustments */
+  :root[data-color-mode="dark"] .bx--tag--blue {
+    background-color: rgb(69 137 255 / 15%);
+    color: #78a9ff;
+    border-color: rgb(69 137 255 / 30%);
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--blue:hover {
+    background-color: rgb(69 137 255 / 25%);
+    border-color: #78a9ff;
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--green {
+    background-color: rgb(66 190 101 / 15%);
+    color: #42be65;
+    border-color: rgb(66 190 101 / 30%);
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--green:hover {
+    background-color: rgb(66 190 101 / 25%);
+    border-color: #42be65;
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--purple {
+    background-color: rgb(190 149 255 / 15%);
+    color: #be95ff;
+    border-color: rgb(190 149 255 / 30%);
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--purple:hover {
+    background-color: rgb(190 149 255 / 25%);
+    border-color: #be95ff;
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--red {
+    background-color: rgb(255 123 123 / 15%);
+    color: #ff7b7b;
+    border-color: rgb(255 123 123 / 30%);
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--red:hover {
+    background-color: rgb(255 123 123 / 25%);
+    border-color: #ff7b7b;
+  }
+}

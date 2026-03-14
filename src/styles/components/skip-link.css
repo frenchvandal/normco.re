@@ -1,0 +1,31 @@
+/* Carbon skip-to-content link — accessibility first.
+   Source: https://carbondesignsystem.com/components/UI-shell-header/usage/ */
+@layer components {
+  .bx--skip-to-content {
+    position: absolute;
+    inset-inline-start: var(--cds-spacing-05);
+    inset-block-start: var(--cds-spacing-05);
+    z-index: 10000;
+    padding: var(--cds-spacing-03) var(--cds-spacing-05);
+    background: var(--cds-background);
+    border: 2px solid var(--cds-focus);
+    color: var(--cds-text-link);
+    font: var(--cds-productive-body-01);
+    font-weight: var(--cds-font-weight-semibold);
+    text-decoration: none;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .bx--skip-to-content:focus {
+    clip: auto;
+    clip-path: none;
+    width: auto;
+    height: auto;
+    outline: 2px solid var(--cds-focus);
+    outline-offset: 2px;
+  }
+}

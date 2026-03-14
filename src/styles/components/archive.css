@@ -1,0 +1,210 @@
+/* Archive page — timeline, year groups, sticky year nav. */
+@layer components {
+  .archive-page-title {
+    margin-block-end: var(--space-s);
+  }
+
+  .archive-activity {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-l);
+    align-items: start;
+  }
+
+  .archive-activity-main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+    padding-inline-start: 1.5rem;
+  }
+
+  .archive-activity-main::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0.5rem;
+    inset-block-end: 0;
+    inset-inline-start: 0.5rem;
+    inline-size: 1px;
+    background: var(--cds-border-subtle);
+  }
+
+  .archive-year {
+    position: relative;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 20rem;
+  }
+
+  .archive-year::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0.35rem;
+    inset-inline-start: -1.125rem;
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
+    border-radius: 999px;
+    background: var(--cds-button-primary);
+    box-shadow: 0 0 0 3px var(--cds-background);
+  }
+
+  .archive-year-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-xs) var(--space-m);
+    margin-block-end: var(--space-s);
+  }
+
+  .archive-year-heading {
+    font-size: var(--text-lg);
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--cds-text-primary);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .archive-year-summary {
+    margin: 0;
+    color: var(--cds-text-secondary);
+    font-size: var(--text-sm);
+  }
+
+  .archive-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .archive-item {
+    display: grid;
+    grid-template-columns: 5.5ch 1fr auto;
+    gap: var(--space-s);
+    align-items: center;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid var(--cds-border-subtle);
+    border-radius: var(--borderRadius-medium);
+    background: var(--cds-background);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+
+  .archive-item:hover {
+    border-color: var(--cds-border-strong);
+    background: var(--cds-layer);
+  }
+
+  .archive-date {
+    font-size: var(--text-sm);
+    color: var(--cds-text-secondary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .archive-title {
+    font-size: var(--text-base);
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--cds-text-primary);
+    transition: color 0.15s ease;
+  }
+
+  .archive-title:hover {
+    color: var(--cds-link-primary);
+  }
+
+  .archive-reading-time {
+    font-size: var(--text-sm);
+    color: var(--cds-text-secondary);
+    white-space: nowrap;
+  }
+
+  .archive-year-nav {
+    position: sticky;
+    inset-block-start: calc(var(--space-l) + 0.25rem);
+    /* TODO(phiphi): Add container-type: scroll-state and a
+       @container scroll-state(stuck: top) shadow once Deno's CSS formatter
+       supports the scroll-state() query syntax. */
+  }
+
+  .archive-year-nav-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: 0;
+    margin: 0;
+  }
+
+  .archive-year-nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    min-inline-size: 6.5rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: var(--borderRadius-medium);
+    border: 1px solid transparent;
+    color: var(--cds-text-secondary);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    font-variant-numeric: tabular-nums;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .archive-year-nav-link:hover {
+    background: var(--cds-layer);
+    border-color: var(--cds-border-subtle);
+    color: var(--cds-text-primary);
+    text-decoration: none;
+  }
+
+  .archive-year-nav-link[aria-current="true"] {
+    color: var(--cds-text-on-emphasis);
+    background: var(--cds-button-primary);
+    border-color: var(--cds-button-primary);
+  }
+
+  .archive-year-nav-count {
+    font-size: var(--text-xs);
+    opacity: 0.9;
+  }
+
+  @container (max-width: 48rem) {
+    .archive-activity {
+      grid-template-columns: 1fr;
+    }
+
+    .archive-year-nav {
+      position: static;
+      margin-block-start: var(--space-s);
+    }
+
+    .archive-year-nav-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .archive-year-nav-link {
+      min-inline-size: 5.5rem;
+    }
+  }
+
+  @container (max-width: 36ch) {
+    .archive-item {
+      grid-template-columns: 1fr;
+      align-items: flex-start;
+    }
+
+    .archive-date {
+      order: 2;
+    }
+
+    .archive-reading-time {
+      display: none;
+    }
+  }
+}
