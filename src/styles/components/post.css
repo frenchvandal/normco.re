@@ -1,0 +1,203 @@
+/* Individual post page — article, breadcrumb shell, content prose, prev/next nav. */
+@layer components {
+  .post-breadcrumb-shell {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-block-end: var(--space-s);
+    font-size: var(--text-sm);
+  }
+
+  .post-breadcrumb-shell a {
+    color: var(--cds-text-secondary);
+  }
+
+  .post-breadcrumb-current {
+    color: var(--cds-text-secondary);
+    font-size: var(--text-sm);
+    overflow-wrap: anywhere;
+  }
+
+  .post-article {
+    max-inline-size: var(--measure);
+  }
+
+  .post-pagehead {
+    border-block-end: none;
+    margin-block-end: var(--space-l);
+    padding-block-end: 0;
+  }
+
+  .post-header {
+    margin-block-end: 0;
+  }
+
+  .post-title {
+    margin-block-end: var(--space-s);
+  }
+
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s) var(--space-m);
+    font-size: var(--text-sm);
+    color: var(--cds-text-secondary);
+    align-items: center;
+  }
+
+  .post-meta-separator {
+    color: var(--cds-border-subtle);
+  }
+
+  /* Post body prose */
+  .post-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+  }
+
+  .post-content h2 {
+    margin-block-start: var(--space-xl);
+    margin-block-end: var(--space-s);
+  }
+
+  .post-content h3 {
+    margin-block-start: var(--space-l);
+    margin-block-end: var(--space-s);
+  }
+
+  .post-content ul,
+  .post-content ol {
+    list-style: revert;
+    padding-inline-start: var(--space-l);
+  }
+
+  .post-content li + li {
+    margin-block-start: var(--space-xs);
+  }
+
+  .post-content pre {
+    margin-block: var(--space-m);
+  }
+
+  .post-code-copy-button {
+    display: block;
+    margin-inline-start: auto;
+    margin-block-start: var(--space-m);
+    padding: var(--cds-spacing-02) var(--cds-spacing-04);
+    border: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer);
+    color: var(--cds-text-secondary);
+    font: var(--cds-productive-body-01);
+    cursor: pointer;
+    transition:
+      background-color var(--cds-transition-default),
+      color var(--cds-transition-default);
+  }
+
+  .post-code-copy-button:hover {
+    background: var(--cds-layer-hover);
+    color: var(--cds-text-primary);
+  }
+
+  .post-code-copy-button:focus-visible {
+    outline: 2px solid var(--cds-focus);
+    outline-offset: -2px;
+  }
+
+  .post-code-copy-button--copied {
+    color: var(--cds-support-success);
+    border-color: var(--cds-support-success);
+  }
+
+  .post-content .post-code-copy-button + pre {
+    margin-block-start: var(--cds-spacing-02);
+  }
+
+  .post-content img {
+    border-radius: 4px;
+  }
+
+  .post-content a,
+  .about-content a,
+  .pagehead-lead a {
+    text-decoration-line: underline;
+    text-decoration-thickness: max(1px, 0.08em);
+    text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
+  }
+
+  /* Inline links (within text) vs Standalone links (block-level)
+     Source: https://carbondesignsystem.com/components/link/usage/ */
+  .post-content p > a,
+  .about-content p > a {
+    color: var(--cds-link-primary);
+  }
+
+  .post-content p > a:hover,
+  .about-content p > a:hover {
+    color: var(--cds-link-primary-hover);
+  }
+
+  .post-content > a,
+  .about-content > a,
+  .post-content li > a,
+  .about-content li > a {
+    color: var(--cds-link-primary);
+    font-weight: 500;
+  }
+
+  .post-content > a:hover,
+  .about-content > a:hover,
+  .post-content li > a:hover,
+  .about-content li > a:hover {
+    color: var(--cds-link-primary-hover);
+  }
+
+  /* Post prev/next navigation */
+  .post-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-m);
+    margin-block-start: var(--space-2xl);
+    padding-block-start: var(--space-l);
+    border-block-start: 1px solid var(--cds-border-subtle);
+  }
+
+  .post-nav-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .post-nav-placeholder {
+    min-block-size: 1px;
+  }
+
+  .post-nav-item--next {
+    text-align: end;
+  }
+
+  .post-nav-label {
+    font-size: var(--text-xs);
+    color: var(--cds-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+
+  .post-nav-title {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: var(--leading-heading);
+    text-wrap: balance;
+    color: var(--cds-text-primary);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .post-nav-title:hover {
+    color: var(--cds-link-primary);
+  }
+}

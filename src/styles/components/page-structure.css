@@ -1,0 +1,85 @@
+/* Shared page structure: pagehead, subhead, blankslate, about page.
+   Carbon section heading.
+   Source: https://carbondesignsystem.com/elements/typography/overview/ */
+@layer components {
+  .pagehead {
+    padding-block-end: var(--space-xl);
+    border-block-end: 1px solid var(--cds-border-subtle);
+    margin-block-end: var(--space-xl);
+  }
+
+  .pagehead-eyebrow {
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cds-text-secondary);
+    font-weight: 600;
+    margin-block-end: var(--space-s);
+  }
+
+  .pagehead-lead {
+    color: var(--cds-text-secondary);
+    max-inline-size: 56ch;
+  }
+
+  .subhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-m);
+    margin-block-end: var(--space-m);
+    padding-block-end: var(--space-s);
+    border-block-end: 1px solid var(--cds-border-subtle);
+  }
+
+  .subhead-heading {
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .blankslate {
+    border: 1px dashed var(--cds-border-subtle);
+    border-radius: var(--borderRadius-medium);
+    padding: var(--space-l);
+    color: var(--cds-text-secondary);
+    background: var(--cds-layer);
+    max-inline-size: 100%;
+  }
+
+  /* About page */
+  .about-title {
+    margin-block-end: var(--space-s);
+  }
+
+  .about-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+  }
+
+  .about-content p {
+    max-inline-size: var(--measure);
+  }
+
+  /* Carbon section heading */
+  .bx--section-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--cds-spacing-05);
+    padding-block-end: var(--cds-spacing-03);
+    border-block-end: 1px solid var(--cds-border-subtle);
+    margin-block-end: var(--cds-spacing-05);
+  }
+
+  .bx--section-heading__title {
+    font: var(--cds-productive-heading-02);
+    font-weight: var(--cds-font-weight-semibold);
+    color: var(--cds-text-primary);
+    margin: 0;
+  }
+
+  .bx--section-heading__action {
+    font: var(--cds-productive-body-01);
+  }
+}
