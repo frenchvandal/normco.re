@@ -4,134 +4,12 @@
     color-scheme: light dark;
 
     /* =====================================================================
-       CARBON DESIGN SYSTEM v11 TOKENS — GRAY 10 THEME (DEFAULT LIGHT)
-       Source: https://carbondesignsystem.com/elements/themes/overview/
-       W3C DTCG 2025.10 naming convention: category-property-modifier
-       Colors use oklch() for perceptual uniformity and wide gamut
+       CONVENIENCE ALIASES
+       Map legacy property names to canonical Carbon tokens.
+       Used across components.css and utilities.css (~130 references).
        ===================================================================== */
 
-    /* Background tokens — oklch() */
-    --cds-background: oklch(100% 0 0); /* White */
-    --cds-background-inverse: oklch(14.9% 0 0); /* Gray 100 */
-    --cds-background-hover: oklch(95.7% 0 0); /* Gray 10 */
-    --cds-background-active: oklch(87.8% 0 0); /* Gray 20 */
-    --cds-background-selected: oklch(55.3% 0 0 / 0.2); /* Gray 50 at 20% */
-    --cds-background-disabled: oklch(95.7% 0 0);
-
-    /* Layer tokens (surfaces) */
-    --cds-layer: oklch(95.7% 0 0); /* Gray 10 */
-    --cds-layer-hover: oklch(91% 0 0);
-    --cds-layer-active: oklch(87.8% 0 0); /* Gray 20 */
-    --cds-layer-selected: oklch(87.8% 0 0);
-    --cds-layer-selected-disabled: oklch(55.3% 0 0);
-    --cds-layer-selected-hover: oklch(82% 0 0);
-    --cds-layer-selected-inverse: oklch(14.9% 0 0);
-
-    /* Layer accent tokens */
-    --cds-layer-accent: oklch(87.8% 0 0);
-    --cds-layer-accent-hover: oklch(82% 0 0);
-    --cds-layer-accent-active: oklch(65.9% 0 0);
-
-    /* Field tokens (inputs) */
-    --cds-field: oklch(100% 0 0);
-    --cds-field-hover: oklch(95.7% 0 0);
-
-    /* Border tokens */
-    --cds-border-subtle: oklch(87.8% 0 0); /* Gray 20 */
-    --cds-border-strong: oklch(55.3% 0 0); /* Gray 50 */
-    --cds-border-inverse: oklch(100% 0 0);
-    --cds-border-disabled: oklch(95.7% 0 0);
-    --cds-border-interactive: oklch(45% 0.2 264); /* Blue 60 */
-    --cds-border-tile-interactive: oklch(87.8% 0 0);
-
-    /* Text tokens */
-    --cds-text-primary: oklch(14.9% 0 0); /* Gray 100 */
-    --cds-text-secondary: oklch(32.2% 0 0); /* Gray 70 */
-    --cds-text-placeholder: oklch(55.3% 0 0); /* Gray 50 */
-    --cds-text-helper: oklch(43.5% 0 0); /* Gray 60 */
-    --cds-text-inverse: oklch(100% 0 0);
-    --cds-text-link: oklch(45% 0.2 264); /* Blue 60 */
-    --cds-text-error: oklch(45% 0.25 25); /* Red 60 */
-    --cds-text-success: oklch(55% 0.2 150); /* Green 60 */
-    --cds-text-warning: oklch(75% 0.18 80); /* Yellow 50 */
-
-    /* Link tokens */
-    --cds-link-primary: oklch(45% 0.2 264); /* Blue 60 */
-    --cds-link-primary-hover: oklch(40% 0.2 264); /* Blue 70 */
-    --cds-link-primary-visited: oklch(55% 0.25 300); /* Purple */
-    --cds-link-secondary: oklch(32.2% 0 0);
-    --cds-link-inverse: oklch(100% 0 0);
-
-    /* Icon tokens */
-    --cds-icon-primary: oklch(14.9% 0 0);
-    --cds-icon-secondary: oklch(32.2% 0 0);
-    --cds-icon-inverse: oklch(100% 0 0);
-    --cds-icon-on-color: oklch(100% 0 0);
-    --cds-icon-disabled: oklch(65.9% 0 0);
-
-    /* Focus token */
-    --cds-focus: oklch(45% 0.2 264); /* Blue 60 */
-
-    /* Support colors (semantic feedback) — oklch() */
-    --cds-support-error: oklch(45% 0.25 25);
-    --cds-support-error-hover: oklch(40% 0.25 25);
-    --cds-support-success: oklch(55% 0.2 150);
-    --cds-support-success-hover: oklch(50% 0.2 150);
-    --cds-support-warning: oklch(75% 0.18 80);
-    --cds-support-warning-hover: oklch(70% 0.18 80);
-    --cds-support-info: oklch(65% 0.15 240);
-    --cds-support-info-hover: oklch(60% 0.15 240);
-
-    /* Interactive tokens */
-    --cds-interactive: oklch(45% 0.2 264);
-    --cds-interactive-hover: oklch(40% 0.2 264);
-    --cds-interactive-active: oklch(32.2% 0 0);
-    --cds-visited-link: oklch(55% 0.25 300);
-    --cds-disabled-01: oklch(95.7% 0 0);
-    --cds-disabled-02: oklch(77.6% 0 0);
-    --cds-disabled-03: oklch(55.3% 0 0);
-    --cds-highlight: oklch(90% 0.1 264);
-    --cds-inverse-01: oklch(14.9% 0 0);
-    --cds-inverse-02: oklch(100% 0 0);
-    --cds-inverse-03: oklch(87.8% 0 0);
-    --cds-inverse-hover: oklch(32.2% 0 0);
-    --cds-inverse-active: oklch(55.3% 0 0);
-    --cds-inverse-focus: oklch(100% 0 0);
-    --cds-inverse-disabled: oklch(55.3% 0 0);
-    --cds-overlay: oklch(14.9% 0 0);
-    --cds-button-separator: oklch(87.8% 0 0);
-    --cds-skeleton-background: oklch(87.8% 0 0);
-    --cds-skeleton-element: oklch(77.6% 0 0);
-    --cds-brand-01: oklch(45% 0.2 264);
-    --cds-brand-02: oklch(40% 0.2 264);
-    --cds-brand-03: oklch(32.2% 0 0);
-    --cds-focus-inset: oklch(100% 0 0);
-    --cds-inverse-support-01: oklch(45% 0.25 25);
-    --cds-inverse-support-02: oklch(55% 0.2 150);
-    --cds-inverse-support-03: oklch(75% 0.18 80);
-    --cds-inverse-support-04: oklch(45% 0.2 264);
-    --cds-inverse-support-05: oklch(55% 0.25 300);
-    --cds-toggle-off: oklch(55.3% 0 0);
-
-    /* Spacing tokens — Carbon 2x Grid (8px base unit)
-       Source: https://carbondesignsystem.com/elements/2x-grid/overview/
-       design/Spacing.json
-       ===================================================================== */
-    --cds-spacing-01: 0.125rem; /* 2px */
-    --cds-spacing-02: 0.25rem; /* 4px */
-    --cds-spacing-03: 0.5rem; /* 8px */
-    --cds-spacing-04: 0.75rem; /* 12px */
-    --cds-spacing-05: 1rem; /* 16px */
-    --cds-spacing-06: 1.5rem; /* 24px */
-    --cds-spacing-07: 2rem; /* 32px */
-    --cds-spacing-08: 2.5rem; /* 40px */
-    --cds-spacing-09: 3rem; /* 48px */
-    --cds-spacing-10: 4rem; /* 64px */
-    --cds-spacing-11: 5rem; /* 80px */
-    --cds-spacing-12: 6rem; /* 96px */
-    --cds-spacing-13: 10rem; /* 160px */
-
-    /* Legacy spacing aliases for backward compatibility */
+    /* Spacing aliases → Carbon spacing scale */
     --space-xs: var(--cds-spacing-02);
     --space-s: var(--cds-spacing-03);
     --space-m: var(--cds-spacing-05);
@@ -139,185 +17,18 @@
     --space-xl: var(--cds-spacing-07);
     --space-2xl: var(--cds-spacing-10);
 
-    /* =====================================================================
-       IBM PLEX TYPOGRAPHY
-       Source: https://carbondesignsystem.com/elements/typography/overview/
-       ===================================================================== */
-
-    /* Font families */
-    --cds-font-family-sans:
-      "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Helvetica, Arial, sans-serif;
-    --cds-font-family-mono:
-      "IBM Plex Mono", "SF Mono", "Menlo", "Consolas", monospace;
-
-    /* Productive type tokens (UI, forms, metadata) */
-    --cds-productive-heading-01-font-size: 0.875rem;
-    --cds-productive-heading-01-line-height: 1.285715rem;
-    --cds-productive-heading-01:
-      var(--cds-productive-heading-01-font-size) / var(
-      --cds-productive-heading-01-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-productive-heading-02-font-size: 1rem;
-    --cds-productive-heading-02-line-height: 1.375rem;
-    --cds-productive-heading-02:
-      var(--cds-productive-heading-02-font-size) / var(
-      --cds-productive-heading-02-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-productive-heading-03-font-size: 1.25rem;
-    --cds-productive-heading-03-line-height: 1.625rem;
-    --cds-productive-heading-03:
-      var(--cds-productive-heading-03-font-size) / var(
-      --cds-productive-heading-03-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-productive-heading-04-font-size: 1.75rem;
-    --cds-productive-heading-04-line-height: 2.25rem;
-    --cds-productive-heading-04:
-      var(--cds-productive-heading-04-font-size) / var(
-      --cds-productive-heading-04-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-productive-heading-05-font-size: 2rem;
-    --cds-productive-heading-05-line-height: 2.5rem;
-    --cds-productive-heading-05:
-      var(--cds-productive-heading-05-font-size) / var(
-      --cds-productive-heading-05-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-productive-heading-06-font-size: 2.25rem;
-    --cds-productive-heading-06-line-height: 2.625rem;
-    --cds-productive-heading-06:
-      var(--cds-productive-heading-06-font-size) / var(
-      --cds-productive-heading-06-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-productive-body-01-font-size: 0.875rem;
-    --cds-productive-body-01-line-height: 1.285715rem;
-    --cds-productive-body-01:
-      var(--cds-productive-body-01-font-size) / var(
-      --cds-productive-body-01-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-productive-body-02-font-size: 1rem;
-    --cds-productive-body-02-line-height: 1.375rem;
-    --cds-productive-body-02:
-      var(--cds-productive-body-02-font-size) / var(
-      --cds-productive-body-02-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-productive-body-longform-font-size: 1rem;
-    --cds-productive-body-longform-line-height: 1.5rem;
-    --cds-productive-body-longform:
-      var(--cds-productive-body-longform-font-size) / var(
-      --cds-productive-body-longform-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-productive-code-01-font-size: 0.875rem;
-    --cds-productive-code-01-line-height: 1.285715rem;
-    --cds-productive-code-01:
-      var(--cds-productive-code-01-font-size) / var(
-      --cds-productive-code-01-line-height
-    ) "IBM Plex Mono", monospace;
-
-    --cds-productive-code-02-font-size: 1rem;
-    --cds-productive-code-02-line-height: 1.375rem;
-    --cds-productive-code-02:
-      var(--cds-productive-code-02-font-size) / var(
-      --cds-productive-code-02-line-height
-    ) "IBM Plex Mono", monospace;
-
-    /* Expressive type tokens (hero, editorial) */
-    --cds-expressive-heading-01-font-size: 0.875rem;
-    --cds-expressive-heading-01-line-height: 1.25rem;
-    --cds-expressive-heading-01:
-      var(--cds-expressive-heading-01-font-size) / var(
-      --cds-expressive-heading-01-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-expressive-heading-02-font-size: 1rem;
-    --cds-expressive-heading-02-line-height: 1.375rem;
-    --cds-expressive-heading-02:
-      var(--cds-expressive-heading-02-font-size) / var(
-      --cds-expressive-heading-02-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-expressive-heading-03-font-size: 1.25rem;
-    --cds-expressive-heading-03-line-height: 1.625rem;
-    --cds-expressive-heading-03:
-      var(--cds-expressive-heading-03-font-size) / var(
-      --cds-expressive-heading-03-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-expressive-heading-04-font-size: 1.75rem;
-    --cds-expressive-heading-04-line-height: 2.25rem;
-    --cds-expressive-heading-04:
-      var(--cds-expressive-heading-04-font-size) / var(
-      --cds-expressive-heading-04-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-expressive-heading-05-font-size: 2rem;
-    --cds-expressive-heading-05-line-height: 2.5rem;
-    --cds-expressive-heading-05:
-      var(--cds-expressive-heading-05-font-size) / var(
-      --cds-expressive-heading-05-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    --cds-expressive-heading-06-font-size: 2.25rem;
-    --cds-expressive-heading-06-line-height: 2.625rem;
-    --cds-expressive-heading-06:
-      var(--cds-expressive-heading-06-font-size) / var(
-      --cds-expressive-heading-06-line-height
-    ) "IBM Plex Sans", sans-serif;
-
-    /* Display sizes */
-    --cds-display-01-font-size: 2.25rem;
-    --cds-display-01-line-height: 2.625rem;
-    --cds-display-01:
-      var(--cds-display-01-font-size) / var(--cds-display-01-line-height)
-      "IBM Plex Sans", sans-serif;
-
-    --cds-display-02-font-size: 2.625rem;
-    --cds-display-02-line-height: 3.125rem;
-    --cds-display-02:
-      var(--cds-display-02-font-size) / var(--cds-display-02-line-height)
-      "IBM Plex Sans", sans-serif;
-
-    --cds-display-03-font-size: 3.375rem;
-    --cds-display-03-line-height: 3.75rem;
-    --cds-display-03:
-      var(--cds-display-03-font-size) / var(--cds-display-03-line-height)
-      "IBM Plex Sans", sans-serif;
-
-    --cds-display-04-font-size: 4.5rem;
-    --cds-display-04-line-height: 4.75rem;
-    --cds-display-04:
-      var(--cds-display-04-font-size) / var(--cds-display-04-line-height)
-      "IBM Plex Sans", sans-serif;
-
-    /* Font weights */
-    --cds-font-weight-light: 300;
-    --cds-font-weight-regular: 400;
-    --cds-font-weight-semibold: 500;
-    --cds-font-weight-bold: 600;
-
-    /* Letter spacing */
-    --cds-letter-spacing-heading: -0.01em;
-    --cds-letter-spacing-body: 0;
-    --cds-letter-spacing-code: 0;
-
-    /* Legacy typography aliases for backward compatibility */
+    /* Typography aliases → Carbon type tokens */
     --fontStack-system: var(--cds-font-family-sans);
     --fontStack-monospace: var(--cds-font-family-mono);
+    --font-sans: var(--cds-font-family-sans);
+    --font-mono: var(--cds-font-family-mono);
 
-    --text-xs: var(--cds-productive-heading-01-font-size);
-    --text-sm: var(--cds-productive-body-01-font-size);
-    --text-base: var(--cds-productive-body-02-font-size);
-    --text-lg: var(--cds-productive-heading-03-font-size);
-    --text-xl: var(--cds-productive-heading-04-font-size);
-    --text-2xl: var(--cds-productive-heading-05-font-size);
+    --text-xs: 0.875rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.25rem;
+    --text-xl: 1.75rem;
+    --text-2xl: 2rem;
 
     --leading: 1.6;
     --leading-tight: 1.25;
@@ -326,144 +37,19 @@
     /* Layout */
     --measure: 68ch;
 
-    /* Primitive sizing */
-    --borderRadius-medium: 0.375rem;
+    /* Border radii — Carbon default is square (0), but small radii
+       are used on search inputs and interactive badges */
+    --borderRadius-medium: 0.25rem;
     --borderRadius-large: 0.75rem;
 
-    /* Interaction tokens */
-    --focus-ring-width: 2px;
-    --focus-ring-offset: 2px;
-
-    /* Backward-compatible aliases used across component/layout files. */
+    /* Color aliases → Carbon semantic tokens */
     --color-bg: var(--cds-background);
     --color-text: var(--cds-text-primary);
     --color-meta: var(--cds-text-secondary);
     --color-accent: var(--cds-link-primary);
     --color-border: var(--cds-border-strong);
     --color-code-bg: var(--cds-layer);
-    --color-selection-bg: rgb(15 98 254 / 20%);
-    --font-sans: var(--cds-font-family-sans);
-    --font-mono: var(--cds-font-family-mono);
-  }
-
-  :root[data-color-mode="light"],
-  :root.cds-theme--white {
-    color-scheme: light;
-
-    /* Carbon White Theme tokens */
-    --cds-background: #ffffff;
-    --cds-background-inverse: #161616;
-    --cds-background-hover: #f4f4f4;
-    --cds-background-active: #e0e0e0;
-    --cds-layer: #f4f4f4;
-    --cds-layer-hover: #e0e0e0;
-    --cds-layer-active: #cdcdcd;
-    --cds-field: #ffffff;
-    --cds-field-hover: #f4f4f4;
-    --cds-border-subtle: #e0e0e0;
-    --cds-border-strong: #8d8d8d;
-    --cds-border-interactive: #0f62fe;
-    --cds-text-primary: #161616;
-    --cds-text-secondary: #525252;
-    --cds-text-link: #0f62fe;
-    --cds-link-primary: #0f62fe;
-    --cds-link-primary-hover: #0043ce;
-    --cds-icon-primary: #161616;
-    --cds-icon-secondary: #525252;
-    --cds-focus: #0f62fe;
-    --cds-interactive: #0f62fe;
-    --cds-interactive-hover: #0043ce;
-    --cds-interactive-active: #002d9c;
-  }
-
-  :root[data-color-mode="dark"],
-  :root.cds-theme--gray100 {
-    color-scheme: dark;
-
-    /* Carbon Gray 100 Theme tokens (dark mode default) — oklch() */
-    --cds-background: oklch(14.9% 0 0); /* Gray 100 */
-    --cds-background-inverse: oklch(100% 0 0);
-    --cds-background-hover: oklch(22.4% 0 0); /* Gray 80 */
-    --cds-background-active: oklch(32.2% 0 0); /* Gray 70 */
-    --cds-layer: oklch(22.4% 0 0); /* Gray 80 */
-    --cds-layer-hover: oklch(28% 0 0);
-    --cds-layer-active: oklch(32.2% 0 0);
-    --cds-field: oklch(22.4% 0 0);
-    --cds-field-hover: oklch(28% 0 0);
-    --cds-border-subtle: oklch(32.2% 0 0); /* Gray 70 */
-    --cds-border-strong: oklch(55.3% 0 0); /* Gray 50 */
-    --cds-border-interactive: oklch(55% 0.2 264); /* Blue 50 */
-    --cds-text-primary: oklch(95.7% 0 0); /* Gray 10 */
-    --cds-text-secondary: oklch(77.6% 0 0); /* Gray 30 */
-    --cds-text-link: oklch(65% 0.2 264); /* Blue 50 */
-    --cds-link-primary: oklch(65% 0.2 264);
-    --cds-link-primary-hover: oklch(70% 0.2 264);
-    --cds-icon-primary: oklch(95.7% 0 0);
-    --cds-icon-secondary: oklch(77.6% 0 0);
-    --cds-focus: oklch(65% 0.2 264);
-    --cds-interactive: oklch(55% 0.2 264);
-    --cds-interactive-hover: oklch(65% 0.2 264);
-    --cds-interactive-active: oklch(70% 0.2 264);
-  }
-
-  /* Carbon Gray 10 Theme (light, higher contrast) */
-  :root.cds-theme--gray10 {
-    color-scheme: light;
-
-    /* Carbon Gray 10 Theme tokens — oklch() */
-    --cds-background: oklch(95.7% 0 0); /* Gray 10 */
-    --cds-background-inverse: oklch(14.9% 0 0);
-    --cds-background-hover: oklch(87.8% 0 0);
-    --cds-background-active: oklch(77.6% 0 0);
-    --cds-layer: oklch(100% 0 0);
-    --cds-layer-hover: oklch(95.7% 0 0);
-    --cds-layer-active: oklch(87.8% 0 0);
-    --cds-field: oklch(100% 0 0);
-    --cds-field-hover: oklch(95.7% 0 0);
-    --cds-border-subtle: oklch(87.8% 0 0);
-    --cds-border-strong: oklch(55.3% 0 0);
-    --cds-border-interactive: oklch(45% 0.2 264);
-    --cds-text-primary: oklch(14.9% 0 0);
-    --cds-text-secondary: oklch(32.2% 0 0);
-    --cds-text-link: oklch(45% 0.2 264);
-    --cds-link-primary: oklch(45% 0.2 264);
-    --cds-link-primary-hover: oklch(40% 0.2 264);
-    --cds-icon-primary: oklch(14.9% 0 0);
-    --cds-icon-secondary: oklch(32.2% 0 0);
-    --cds-focus: oklch(45% 0.2 264);
-    --cds-interactive: oklch(45% 0.2 264);
-    --cds-interactive-hover: oklch(40% 0.2 264);
-    --cds-interactive-active: oklch(32.2% 0 0);
-  }
-
-  /* Carbon Gray 90 Theme (dark, medium contrast) */
-  :root.cds-theme--gray90 {
-    color-scheme: dark;
-
-    /* Carbon Gray 90 Theme tokens — oklch() */
-    --cds-background: oklch(22.4% 0 0); /* Gray 80 */
-    --cds-background-inverse: oklch(100% 0 0);
-    --cds-background-hover: oklch(28% 0 0);
-    --cds-background-active: oklch(32.2% 0 0);
-    --cds-layer: oklch(28% 0 0);
-    --cds-layer-hover: oklch(32.2% 0 0);
-    --cds-layer-active: oklch(43.5% 0 0);
-    --cds-field: oklch(28% 0 0);
-    --cds-field-hover: oklch(32.2% 0 0);
-    --cds-border-subtle: oklch(32.2% 0 0);
-    --cds-border-strong: oklch(55.3% 0 0);
-    --cds-border-interactive: oklch(55% 0.2 264);
-    --cds-text-primary: oklch(95.7% 0 0);
-    --cds-text-secondary: oklch(77.6% 0 0);
-    --cds-text-link: oklch(65% 0.2 264);
-    --cds-link-primary: oklch(65% 0.2 264);
-    --cds-link-primary-hover: oklch(70% 0.2 264);
-    --cds-icon-primary: oklch(95.7% 0 0);
-    --cds-icon-secondary: oklch(77.6% 0 0);
-    --cds-focus: oklch(65% 0.2 264);
-    --cds-interactive: oklch(55% 0.2 264);
-    --cds-interactive-hover: oklch(65% 0.2 264);
-    --cds-interactive-active: oklch(70% 0.2 264);
+    --color-selection-bg: oklch(45% 0.2 264 / 20%);
   }
 
   ::selection {
@@ -527,9 +113,9 @@
   h4,
   h5,
   h6 {
-    font-family: "IBM Plex Sans", sans-serif;
+    font-family: var(--cds-font-family-sans);
     font-weight: var(--cds-font-weight-semibold);
-    letter-spacing: var(--cds-letter-spacing-heading);
+    letter-spacing: var(--cds-letter-spacing-expressive);
     text-wrap: balance;
   }
 
@@ -555,26 +141,26 @@
   }
 
   p {
-    font: var(--cds-productive-body-longform);
+    font: var(--cds-productive-body-long-02);
     text-wrap: pretty;
     max-inline-size: var(--measure);
   }
 
   code {
-    font: var(--cds-productive-code-01);
+    font: var(--cds-productive-code-02);
     font-family: var(--cds-font-family-mono);
     background-color: var(--cds-layer);
     padding: var(--cds-spacing-01) var(--cds-spacing-02);
-    border-radius: 0; /* Carbon code is square */
+    border-radius: 0;
   }
 
   pre {
     background-color: var(--cds-layer);
     border: 1px solid var(--cds-border-subtle);
     padding: var(--cds-spacing-05);
-    border-radius: 0; /* Carbon pre is square */
+    border-radius: 0;
     overflow-x: auto;
-    font: var(--cds-productive-code-01);
+    font: var(--cds-productive-code-02);
     line-height: 1.6;
   }
 
@@ -664,19 +250,19 @@
 
   @media (prefers-contrast: more) {
     :root {
-      --bgColor-default: #ffffff;
-      --fgColor-default: #000000;
-      --fgColor-accent: #005fcc;
-      --borderColor-default: #000000;
-      --focus-outlineColor: #005fcc;
+      --cds-background: #ffffff;
+      --cds-text-primary: #000000;
+      --cds-link-primary: #005fcc;
+      --cds-border-strong: #000000;
+      --cds-focus: #005fcc;
     }
 
     :root[data-color-mode="dark"] {
-      --bgColor-default: #000000;
-      --fgColor-default: #ffffff;
-      --fgColor-accent: #79c0ff;
-      --borderColor-default: #ffffff;
-      --focus-outlineColor: #79c0ff;
+      --cds-background: #000000;
+      --cds-text-primary: #ffffff;
+      --cds-link-primary: #79c0ff;
+      --cds-border-strong: #ffffff;
+      --cds-focus: #79c0ff;
     }
   }
 
@@ -692,13 +278,11 @@
 
   @media (prefers-reduced-transparency: reduce) {
     :root {
-      --selection-bgColor: #b3d4ff;
-      --bgColor-accent-muted: #cce5ff;
+      --color-selection-bg: #b3d4ff;
     }
 
     :root[data-color-mode="dark"] {
-      --selection-bgColor: #1c4a8a;
-      --bgColor-accent-muted: #1c3a6e;
+      --color-selection-bg: #1c4a8a;
     }
   }
 

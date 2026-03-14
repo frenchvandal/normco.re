@@ -20,10 +20,10 @@
     inset-inline-start: var(--space-s);
     padding: var(--space-s) var(--space-m);
     background: var(--color-bg);
-    color: var(--color-accent);
+    color: var(--cds-link-primary);
     font-weight: 700;
     font-size: var(--text-sm);
-    border: var(--focus-ring-width) solid var(--color-accent);
+    border: var(--focus-ring-width) solid var(--cds-link-primary);
     border-radius: 4px;
     text-decoration: none;
     z-index: 999;

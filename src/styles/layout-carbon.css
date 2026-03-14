@@ -18,15 +18,8 @@
      - Nested: for sub-composition within grids
      ===================================================================== */
 
-  /* CSS Custom properties for breakpoint values */
+  /* Grid layout properties — breakpoint values are defined in tokens-carbon.css */
   :root {
-    --cds-breakpoint-sm: 320px;
-    --cds-breakpoint-md: 672px;
-    --cds-breakpoint-lg: 1056px;
-    --cds-breakpoint-xl: 1312px;
-    --cds-breakpoint-max: 1584px;
-    --cds-breakpoint-max-plus: 1784px;
-
     /* Grid configuration — Wide grid (default) */
     --cds-grid-columns-lg: 16;
     --cds-grid-columns-md: 8;
