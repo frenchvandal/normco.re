@@ -19,35 +19,19 @@
   const copyFailedFeedback = article.dataset.codeCopyFailedFeedback ??
     "Cannot copy code";
   const feedbackResetMs = 1800;
-  let execCommandWriterPromise;
 
-  function getExecCommandWriter() {
-    // TODO(phiphi): [Carbon-P3] Remove execCommand fallback after clipboard API support baseline for site visitors reaches full parity in analytics.
-    return execCommandWriterPromise ??= import(
-      "/scripts/post-code-copy-exec-command.js"
-    )
-      .then(({ writeWithExecCommand }) =>
-        typeof writeWithExecCommand === "function"
-          ? writeWithExecCommand
-          : undefined
-      )
-      .catch(() => undefined);
-  }
-
+  /**
+   * Copies text to clipboard using the Clipboard API.
+   * @param {string} text
+   * @returns {Promise<boolean>}
+   */
   async function copyText(text) {
-    const writeText = globalThis.navigator.clipboard?.writeText;
-    if (typeof writeText === "function") {
-      try {
-        await writeText.call(globalThis.navigator.clipboard, text);
-        return true;
-      } catch {
-        // Fall through to lazy legacy fallback.
-      }
+    try {
+      await globalThis.navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
     }
-
-    const writeWithExecCommand = await getExecCommandWriter();
-    return typeof writeWithExecCommand === "function" &&
-      writeWithExecCommand(text);
   }
 
   for (const codeBlock of codeBlocks) {
@@ -63,20 +47,25 @@
       continue;
     }
 
-    const copyButton = globalThis.document.createElement("cds-copy-button");
+    const copyButton = globalThis.document.createElement("button");
+    copyButton.type = "button";
     copyButton.className = "post-code-copy-button";
-    copyButton.setAttribute("feedback", copyFeedback);
-    copyButton.setAttribute("feedback-timeout", String(feedbackResetMs));
     copyButton.textContent = copyLabel;
+    copyButton.setAttribute("aria-label", copyLabel);
     pre.before(copyButton);
-    copyButton.addEventListener("click", async () => {
-      if (await copyText(codeText)) {
-        return;
-      }
 
-      copyButton.setAttribute("feedback", copyFailedFeedback);
+    copyButton.addEventListener("click", async () => {
+      const success = await copyText(codeText);
+      const feedback = success ? copyFeedback : copyFailedFeedback;
+
+      copyButton.textContent = feedback;
+      copyButton.setAttribute("aria-label", feedback);
+      copyButton.classList.add("post-code-copy-button--copied");
+
       globalThis.setTimeout(() => {
-        copyButton.setAttribute("feedback", copyFeedback);
+        copyButton.textContent = copyLabel;
+        copyButton.setAttribute("aria-label", copyLabel);
+        copyButton.classList.remove("post-code-copy-button--copied");
       }, feedbackResetMs);
     });
   }

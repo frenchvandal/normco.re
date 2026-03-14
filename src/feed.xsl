@@ -206,7 +206,6 @@
             </div>
           </footer>
         </div>
-        <script src="/scripts/carbon.js" type="module"/>
         <script src="/scripts/disclosure-controls.js"/>
         <script src="/scripts/theme-toggle.js"/>
         <script src="/scripts/pagefind-lazy-init.js"/>

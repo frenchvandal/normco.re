@@ -57,11 +57,10 @@ describe("analyzeImportSpecifiers()", () => {
   });
 
   it("allows a dynamic expression explicitly whitelisted by the caller", () => {
-    const source = `const lazy = () => import(getCarbonComponentUrl(path));`;
-    const issues = analyzeImportSpecifiers(source, "_site/scripts/carbon.js", {
-      allowDynamicExpression: (filePath, expression) =>
-        filePath.endsWith("/scripts/carbon.js") &&
-        expression.startsWith("getCarbonComponentUrl("),
+    const source = `const lazy = () => import(getComponentUrl(path));`;
+    const issues = analyzeImportSpecifiers(source, "_site/scripts/example.js", {
+      allowDynamicExpression: (_filePath, expression) =>
+        expression.startsWith("getComponentUrl("),
     });
 
     assertEquals(issues.length, 0);

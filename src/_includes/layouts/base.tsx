@@ -203,12 +203,6 @@ export default (
             />
           </div>
           <script
-            src="/scripts/carbon.js"
-            type="module"
-            fetchpriority="low"
-          >
-          </script>
-          <script
             src="/scripts/disclosure-controls.js"
             fetchpriority="low"
             defer

@@ -7,8 +7,6 @@ const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
  * Canonical asset URLs to fingerprint.
  * Must match the paths registered via site.add() in _config.ts.
  * Service worker files are excluded — they use internal versioning instead.
- * carbon.js is excluded — it is rebundled by build-carbon-vendor.ts after
- * fingerprinting, so it must keep a stable path for the vendor build step.
  */
 const CANONICAL_ASSET_URLS = [
   "/style.css",
@@ -18,7 +16,6 @@ const CANONICAL_ASSET_URLS = [
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
   "/scripts/post-code-copy.js",
-  "/scripts/post-code-copy-exec-command.js",
   "/scripts/link-prefetch-intent.js",
   "/scripts/sw-register.js",
   "/scripts/archive-year-nav.js",

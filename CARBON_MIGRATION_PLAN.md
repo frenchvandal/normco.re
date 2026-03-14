@@ -12,16 +12,16 @@ replaces the previous handoff/Telegram-focused migration plan.
 
 ### 1.1. Contradictions and inconsistencies
 
-| Issue | File(s) | Impact | Recommendation |
-|---|---|---|---|
-| `CLAUDE.md` §6.3 mandates "system fonts only" but project uses IBM Plex (Carbon) | `CLAUDE.md`, `src/style.css` | **Blocking** — mutually exclusive goals | Update `CLAUDE.md` to authorize IBM Plex as Carbon exception |
-| Google Fonts CDN used (`@import url("https://fonts.googleapis.com/...")`) | `src/style.css:8` | **Blocking** — violates "serve locally" constraint | Migrate to Lume `google_fonts` plugin for local hosting |
-| `@carbon/web-components@2.50.0` in `deno.json` | `deno.json` | **Contradictory** — constraint says "no Carbon npm components" | Remove npm Carbon dependency; implement everything locally |
-| Legacy Primer aliases still present in CSS tokens | `src/styles/tokens-carbon.css:191-207` | **Medium** — namespace pollution, confusing for maintainers | Remove `--bgColor-*`, `--fgColor-*`, `--borderColor-*`, `--color-meta`, `--color-text`, `--color-accent`, `--color-border` aliases |
-| Breakpoints defined in two places | `tokens-carbon.css:41-46` AND `layout-carbon.css:22-28` | **Medium** — ambiguous source of truth | Define breakpoints only once in `tokens-carbon.css` |
-| `layout.css` and `layout-carbon.css` are near-duplicates | `src/styles/` | **High** — 1467 lines of duplicated grid code | Remove `layout.css`, keep `layout-carbon.css` |
-| `base.css` redefines tokens already in `tokens-carbon.css` | `src/styles/base.css` | **High** — three sources of truth for color tokens | Consolidate all tokens in `tokens-carbon.css` only |
-| Invalid CSS selector for dark mode | `tokens-carbon.css:345` | **Medium** — `:root:has(> style:contains("dark"))` is non-standard | Use only `[data-color-mode="dark"]` and `@media (prefers-color-scheme: dark)` |
+| Issue                                                                            | File(s)                                                 | Impact                                                             | Recommendation                                                                                                                     |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `CLAUDE.md` §6.3 mandates "system fonts only" but project uses IBM Plex (Carbon) | `CLAUDE.md`, `src/style.css`                            | **Blocking** — mutually exclusive goals                            | Update `CLAUDE.md` to authorize IBM Plex as Carbon exception                                                                       |
+| Google Fonts CDN used (`@import url("https://fonts.googleapis.com/...")`)        | `src/style.css:8`                                       | **Blocking** — violates "serve locally" constraint                 | Migrate to Lume `google_fonts` plugin for local hosting                                                                            |
+| `@carbon/web-components@2.50.0` in `deno.json`                                   | `deno.json`                                             | **Contradictory** — constraint says "no Carbon npm components"     | Remove npm Carbon dependency; implement everything locally                                                                         |
+| Legacy Primer aliases still present in CSS tokens                                | `src/styles/tokens-carbon.css:191-207`                  | **Medium** — namespace pollution, confusing for maintainers        | Remove `--bgColor-*`, `--fgColor-*`, `--borderColor-*`, `--color-meta`, `--color-text`, `--color-accent`, `--color-border` aliases |
+| Breakpoints defined in two places                                                | `tokens-carbon.css:41-46` AND `layout-carbon.css:22-28` | **Medium** — ambiguous source of truth                             | Define breakpoints only once in `tokens-carbon.css`                                                                                |
+| `layout.css` and `layout-carbon.css` are near-duplicates                         | `src/styles/`                                           | **High** — 1467 lines of duplicated grid code                      | Remove `layout.css`, keep `layout-carbon.css`                                                                                      |
+| `base.css` redefines tokens already in `tokens-carbon.css`                       | `src/styles/base.css`                                   | **High** — three sources of truth for color tokens                 | Consolidate all tokens in `tokens-carbon.css` only                                                                                 |
+| Invalid CSS selector for dark mode                                               | `tokens-carbon.css:345`                                 | **Medium** — `:root:has(> style:contains("dark"))` is non-standard | Use only `[data-color-mode="dark"]` and `@media (prefers-color-scheme: dark)`                                                      |
 
 ### 1.2. `_config.ts` — 614 lines, too monolithic
 
@@ -42,90 +42,94 @@ _config/
 
 ### 1.3. JS pipeline — 18 scripts, excessive complexity
 
-| Script | Recommendation |
-|---|---|
-| `anti-flash.js` | Keep (FOUC prevention) |
-| `theme-toggle.js` | Keep |
-| `language-preference.js` | Keep |
-| `disclosure-controls.js` | Keep |
-| `carbon.js` | Merge into `disclosure-controls.js` |
-| `pagefind-lazy-init.js` | Keep |
-| `link-prefetch-intent.js` | Keep (performance) |
-| `post-code-copy.js` | Keep |
-| `post-code-copy-exec-command.js` | **Remove** — `navigator.clipboard` is universally supported |
-| `feed-copy.js` | Keep |
-| `archive-year-nav.js` | Keep |
-| `sw.js` + 5 SW files (~870 lines) | **Consolidate** into 2 files: `sw.js` + `sw-register.js` |
+| Script                            | Recommendation                                              |
+| --------------------------------- | ----------------------------------------------------------- |
+| `anti-flash.js`                   | Keep (FOUC prevention)                                      |
+| `theme-toggle.js`                 | Keep                                                        |
+| `language-preference.js`          | Keep                                                        |
+| `disclosure-controls.js`          | Keep                                                        |
+| `carbon.js`                       | Merge into `disclosure-controls.js`                         |
+| `pagefind-lazy-init.js`           | Keep                                                        |
+| `link-prefetch-intent.js`         | Keep (performance)                                          |
+| `post-code-copy.js`               | Keep                                                        |
+| `post-code-copy-exec-command.js`  | **Remove** — `navigator.clipboard` is universally supported |
+| `feed-copy.js`                    | Keep                                                        |
+| `archive-year-nav.js`             | Keep                                                        |
+| `sw.js` + 5 SW files (~870 lines) | **Consolidate** into 2 files: `sw.js` + `sw-register.js`    |
 
 ### 1.4. CSS architecture
 
 **Well done:**
-- Cascade layers correctly used (`@layer tokens, reset, base, layout, components, utilities`)
+
+- Cascade layers correctly used
+  (`@layer tokens, reset, base, layout, components, utilities`)
 - Carbon v11 tokens faithfully implemented
 - Colors in `oklch()` throughout
 - Dark mode (Gray 90) and High Contrast (Gray 100) supported
 - Full accessibility media queries
 
 **Problems:**
+
 - `components.css` is 52 KB — too large, mixes many components
-- `layout-carbon.css` has 740 lines with full 16-column grid system — most classes unused
+- `layout-carbon.css` has 740 lines with full 16-column grid system — most
+  classes unused
 - `layout.css` is a near-duplicate with Primer fallbacks — must be removed
 - `base.css` (708 lines) redefines tokens, creating triple source of truth
 
 ### 1.5. Dependencies — cleanup needed
 
-| Dependency | Action |
-|---|---|
-| `@carbon/web-components@2.50.0` | **Remove** — violates "no npm Carbon" constraint |
-| `@carbon/styles` (in `allowScripts`) | **Remove** |
-| `@ibm/plex` (in `allowScripts`) | **Replace** with Lume `google_fonts` plugin |
-| Octicons `icons` plugin in `_config.ts` | **Remove** if no longer used |
+| Dependency                              | Action                                           |
+| --------------------------------------- | ------------------------------------------------ |
+| `@carbon/web-components@2.50.0`         | **Remove** — violates "no npm Carbon" constraint |
+| `@carbon/styles` (in `allowScripts`)    | **Remove**                                       |
+| `@ibm/plex` (in `allowScripts`)         | **Replace** with Lume `google_fonts` plugin      |
+| Octicons `icons` plugin in `_config.ts` | **Remove** if no longer used                     |
 
 ---
 
 ## 2. UI component inventory
 
-| Component | Status | Carbon pattern | Classes |
-|---|---|---|---|
-| Fixed header | Done | UI Shell Header | `bx--header`, `bx--header__*` |
-| Desktop navigation | Done | Header Navigation | `bx--header__nav`, `bx--header__menu-item` |
-| Mobile SideNav | Done | UI Shell Left Panel | `bx--side-nav`, `bx--side-nav__*` |
-| Hamburger menu | Done | Menu Toggle | `bx--header__menu-toggle` |
-| Search panel | Partial | Header Panel + Pagefind | `bx--header__panel` |
-| Language selector | Done | Header Panel + Dropdown | `bx--header__language-*` |
-| Theme toggle | Done | Header Action | `bx--header__action` |
-| Footer | Done | Custom (Carbon-aligned) | `site-footer` |
-| Post cards | Done | Structured List | `post-card` |
-| Breadcrumb | Done | Breadcrumb | In `components.css` |
-| Pagination | Done | Pagination | In `components.css` |
-| Code blocks | Done | Code Snippet | Prism.js + copy button |
-| Skip link | Done | Skip to Content | `bx--skip-to-content` |
-| Hero text | Done | Expressive Type | `heading-05`/`heading-06` |
-| Year nav (archive) | Done | Content Switcher | Sidebar + JS |
+| Component          | Status  | Carbon pattern          | Classes                                    |
+| ------------------ | ------- | ----------------------- | ------------------------------------------ |
+| Fixed header       | Done    | UI Shell Header         | `bx--header`, `bx--header__*`              |
+| Desktop navigation | Done    | Header Navigation       | `bx--header__nav`, `bx--header__menu-item` |
+| Mobile SideNav     | Done    | UI Shell Left Panel     | `bx--side-nav`, `bx--side-nav__*`          |
+| Hamburger menu     | Done    | Menu Toggle             | `bx--header__menu-toggle`                  |
+| Search panel       | Partial | Header Panel + Pagefind | `bx--header__panel`                        |
+| Language selector  | Done    | Header Panel + Dropdown | `bx--header__language-*`                   |
+| Theme toggle       | Done    | Header Action           | `bx--header__action`                       |
+| Footer             | Done    | Custom (Carbon-aligned) | `site-footer`                              |
+| Post cards         | Done    | Structured List         | `post-card`                                |
+| Breadcrumb         | Done    | Breadcrumb              | In `components.css`                        |
+| Pagination         | Done    | Pagination              | In `components.css`                        |
+| Code blocks        | Done    | Code Snippet            | Prism.js + copy button                     |
+| Skip link          | Done    | Skip to Content         | `bx--skip-to-content`                      |
+| Hero text          | Done    | Expressive Type         | `heading-05`/`heading-06`                  |
+| Year nav (archive) | Done    | Content Switcher        | Sidebar + JS                               |
 
 ### Icons — all using Carbon inline SVG
 
-Search, Menu, Translate, Sun/Moon, GitHub, RSS — all defined as inline SVG
-path constants in `Header.tsx` and `Footer.tsx`.
+Search, Menu, Translate, Sun/Moon, GitHub, RSS — all defined as inline SVG path
+constants in `Header.tsx` and `Footer.tsx`.
 
 ---
 
 ## 3. Carbon mapping
 
-| Current UI component | Carbon v11 component | Guideline | Difficulty | Risk |
-|---|---|---|---|---|
-| Fixed header | [UI Shell Header](https://carbondesignsystem.com/components/UI-shell-header/usage/) | 48px height, Gray 10 bg | **Done** | Low |
-| Desktop navigation | [Header Navigation](https://carbondesignsystem.com/components/UI-shell-header/usage/) | Active: bottom border blue-60 | **Done** | Low |
-| Mobile SideNav | [UI Shell Left Panel](https://carbondesignsystem.com/components/UI-shell-left-panel/usage/) | 256px width, slide-in | **Done** | Low |
-| Search | [Search](https://carbondesignsystem.com/components/search/usage/) | Compact variant in header | Partial | Medium |
-| Language selector | [Dropdown](https://carbondesignsystem.com/components/dropdown/usage/) | Within Header Panel | **Done** | Low |
-| Theme toggle | [Toggle](https://carbondesignsystem.com/components/toggle/usage/) | Header action pattern | **Done** | Low |
-| Post list | [Structured List](https://carbondesignsystem.com/components/structured-list/usage/) | Selectable variant | Medium | Low |
-| Breadcrumb | [Breadcrumb](https://carbondesignsystem.com/components/breadcrumb/usage/) | Slash separator | Easy | Low |
-| Pagination | [Pagination](https://carbondesignsystem.com/components/pagination/usage/) | Page numbers + arrows | Medium | Medium |
-| Code blocks | [Code Snippet](https://carbondesignsystem.com/components/code-snippet/usage/) | Multi-line + copy button | Medium | Medium |
-| Year nav | [Content Switcher](https://carbondesignsystem.com/components/content-switcher/usage/) | Horizontal tabs-like | Medium | Low |
-| Tags | [Tag](https://carbondesignsystem.com/components/tag/usage/) | Filter variant | Easy | Low |
+| Current UI component | Carbon v11 component                                                                        | Guideline                     | Difficulty | Risk   |
+| -------------------- | ------------------------------------------------------------------------------------------- | ----------------------------- | ---------- | ------ |
+| Fixed header         | [UI Shell Header](https://carbondesignsystem.com/components/UI-shell-header/usage/)         | 48px height, Gray 10 bg       | **Done**   | Low    |
+| Desktop navigation   | [Header Navigation](https://carbondesignsystem.com/components/UI-shell-header/usage/)       | Active: bottom border blue-60 | **Done**   | Low    |
+| Mobile SideNav       | [UI Shell Left Panel](https://carbondesignsystem.com/components/UI-shell-left-panel/usage/) | 256px width, slide-in         | **Done**   | Low    |
+| Search               | [Search](https://carbondesignsystem.com/components/search/usage/)                           | Compact variant in header     | Partial    | Medium |
+| Language selector    | [Dropdown](https://carbondesignsystem.com/components/dropdown/usage/)                       | Within Header Panel           | **Done**   | Low    |
+| Theme toggle         | [Toggle](https://carbondesignsystem.com/components/toggle/usage/)                           | Header action pattern         | **Done**   | Low    |
+| Post list            | [Structured List](https://carbondesignsystem.com/components/structured-list/usage/)         | Selectable variant            | Medium     | Low    |
+| Breadcrumb           | [Breadcrumb](https://carbondesignsystem.com/components/breadcrumb/usage/)                   | Slash separator               | Easy       | Low    |
+| Pagination           | [Pagination](https://carbondesignsystem.com/components/pagination/usage/)                   | Page numbers + arrows         | Medium     | Medium |
+| Code blocks          | [Code Snippet](https://carbondesignsystem.com/components/code-snippet/usage/)               | Multi-line + copy button      | Medium     | Medium |
+| Year nav             | [Content Switcher](https://carbondesignsystem.com/components/content-switcher/usage/)       | Horizontal tabs-like          | Medium     | Low    |
+| Tags                 | [Tag](https://carbondesignsystem.com/components/tag/usage/)                                 | Filter variant                | Easy       | Low    |
 
 ---
 
@@ -244,8 +248,10 @@ import googleFonts from "lume/plugins/google_fonts.ts";
 
 site.use(googleFonts({
   fonts: {
-    sans: "https://fonts.google.com/share?selection.family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400",
-    mono: "https://fonts.google.com/share?selection.family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400",
+    sans:
+      "https://fonts.google.com/share?selection.family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400",
+    mono:
+      "https://fonts.google.com/share?selection.family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400",
   },
   folder: "/fonts",
   cssFile: "/styles/fonts.css",
@@ -256,8 +262,20 @@ site.use(googleFonts({
 
 ```html
 <!-- In base.tsx <head> — preload critical weights -->
-<link rel="preload" href="/fonts/ibm-plex-sans-400.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="preload" href="/fonts/ibm-plex-sans-600.woff2" as="font" type="font/woff2" crossorigin />
+<link
+  rel="preload"
+  href="/fonts/ibm-plex-sans-400.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
+<link
+  rel="preload"
+  href="/fonts/ibm-plex-sans-600.woff2"
+  as="font"
+  type="font/woff2"
+  crossorigin
+/>
 ```
 
 ### Update `style.css`
@@ -289,7 +307,13 @@ site.use(googleFonts({
     { "type": "heading", "level": 2, "text": "Introduction" },
     { "type": "paragraph", "text": "Lorem ipsum..." },
     { "type": "code", "language": "bash", "content": "aws s3 sync ..." },
-    { "type": "image", "src": "/images/diagram.png", "alt": "Architecture", "width": 800, "height": 600 },
+    {
+      "type": "image",
+      "src": "/images/diagram.png",
+      "alt": "Architecture",
+      "width": 800,
+      "height": 600
+    },
     { "type": "quote", "text": "Quote text.", "attribution": "Author" },
     { "type": "list", "ordered": false, "items": ["Item 1", "Item 2"] }
   ]
@@ -298,14 +322,14 @@ site.use(googleFonts({
 
 ### Supported block types
 
-| Block | Required fields | Optional fields |
-|---|---|---|
-| `paragraph` | `type`, `text` | — |
-| `heading` | `type`, `level`, `text` | — |
-| `code` | `type`, `content` | `language` |
-| `image` | `type`, `src`, `alt` | `width`, `height` |
-| `quote` | `type`, `text` | `attribution` |
-| `list` | `type`, `items` | `ordered` |
+| Block       | Required fields         | Optional fields   |
+| ----------- | ----------------------- | ----------------- |
+| `paragraph` | `type`, `text`          | —                 |
+| `heading`   | `type`, `level`, `text` | —                 |
+| `code`      | `type`, `content`       | `language`        |
+| `image`     | `type`, `src`, `alt`    | `width`, `height` |
+| `quote`     | `type`, `text`          | `attribution`     |
+| `list`      | `type`, `items`         | `ordered`         |
 
 ### Generation strategy
 
@@ -380,7 +404,8 @@ deno task validate-contracts  # Validates all generated JSON against schemas
 
 1. Add `google_fonts` plugin to `_config.ts`
 2. Configure IBM Plex Sans (400, 400i, 500, 600) and Mono (400, 400i, 500)
-3. Replace `@import url(...)` in `src/style.css` with `@import "./styles/fonts.css"`
+3. Replace `@import url(...)` in `src/style.css` with
+   `@import "./styles/fonts.css"`
 4. Add `<link rel="preload">` in `base.tsx` for critical weights
 5. Verify `font-display: swap` is used
 

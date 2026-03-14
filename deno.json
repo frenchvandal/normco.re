@@ -8,7 +8,6 @@
     "jsr/fmt-colors": "jsr:@std/fmt@^1.0.9/colors",
     "jsr/path": "jsr:@std/path@^1.1.4",
     "jsr/testing-bdd": "jsr:@std/testing@^1.0.17/bdd",
-    "npm/carbon-web-components": "npm:@carbon/web-components@^2.50.0",
     "npm/faker-js": "npm:@faker-js/faker@^10.3.0",
     "npm/opentelemetry-api": "npm:@opentelemetry/api@^1.9.0",
     "npm/date-fns-locale": "npm:date-fns@4.1.0/locale",
@@ -147,25 +146,6 @@
     }
   },
   "allowScripts": [
-    "npm:@carbon/colors@11.48.0",
-    "npm:@carbon/feature-flags@1.1.0",
-    "npm:@carbon/grid@11.51.0",
-    "npm:@carbon/icon-helpers@10.47.0",
-    "npm:@carbon/icons@11.76.0",
-    "npm:@carbon/layout@11.49.0",
-    "npm:@carbon/motion@11.42.0",
-    "npm:@carbon/styles@1.102.0",
-    "npm:@carbon/themes@11.69.0",
-    "npm:@carbon/type@11.55.0",
-    "npm:@carbon/web-components@2.50.0",
-    "npm:@ibm/plex-mono@1.1.0",
-    "npm:@ibm/plex-sans-arabic@1.1.0",
-    "npm:@ibm/plex-sans-devanagari@1.1.0",
-    "npm:@ibm/plex-sans-hebrew@1.1.0",
-    "npm:@ibm/plex-sans-thai-looped@1.1.0",
-    "npm:@ibm/plex-sans-thai@1.1.0",
-    "npm:@ibm/plex-sans@1.1.0",
-    "npm:@ibm/plex-serif@1.1.0",
     "npm:esbuild@0.27.3",
     "npm:lightningcss-cli@1.32.0"
   ]

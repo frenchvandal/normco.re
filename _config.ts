@@ -179,11 +179,9 @@ site.add("/style.css");
 site.add("/scripts/theme-toggle.js");
 site.add("/scripts/disclosure-controls.js");
 site.add("/scripts/anti-flash.js");
-site.add("/scripts/carbon.js");
 site.add("/scripts/language-preference.js");
 site.add("/scripts/feed-copy.js");
 site.add("/scripts/post-code-copy.js");
-site.add("/scripts/post-code-copy-exec-command.js");
 site.add("/scripts/link-prefetch-intent.js");
 site.add("/scripts/sw-register.js");
 site.add("/scripts/archive-year-nav.js");
@@ -608,7 +606,7 @@ site.process([".xml"], (pages: Page[]) => {
 site.use(otelPlugin());
 site.addEventListener(
   "afterBuild",
-  "deno run --allow-read --allow-write scripts/fingerprint-assets.ts _site && deno run --allow-read --allow-write --allow-run=deno scripts/build-carbon-vendor.ts _site && deno run --allow-read scripts/check-browser-imports.ts _site && deno fmt _site/**/*.html",
+  "deno run --allow-read --allow-write scripts/fingerprint-assets.ts _site && deno run --allow-read scripts/check-browser-imports.ts _site && deno fmt _site/**/*.html",
 );
 
 export default site;
