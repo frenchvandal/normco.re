@@ -1,0 +1,3198 @@
+[
+  {
+    "name": "Colors",
+    "modes": [
+      {
+        "name": "Value",
+        "modeId": "4165:0",
+        "variables": [
+          {
+            "name": "Transparent",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 1,
+              "b": 1,
+              "a": 0.000009999999747378752
+            }
+          },
+          {
+            "name": "Default/Neutral/White",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 1,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Neutral/Black",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Blue/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.929411768913269,
+              "g": 0.9607843160629272,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Blue/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8156862854957581,
+              "g": 0.886274516582489,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Blue/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6509804129600525,
+              "g": 0.7843137383460999,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Blue/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.47058823704719543,
+              "g": 0.6627451181411743,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Blue/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.2705882489681244,
+              "g": 0.5372549295425415,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Blue/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.05882352963089943,
+              "g": 0.3843137323856354,
+              "b": 0.9960784316062927,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Blue/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.26274511218070984,
+              "b": 0.8078431487083435,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Blue/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.1764705926179886,
+              "b": 0.6117647290229797,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Blue/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.11372549086809158,
+              "b": 0.42352941632270813,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Blue/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.06666667014360428,
+              "b": 0.2549019753932953,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Gray/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.95686274766922,
+              "g": 0.95686274766922,
+              "b": 0.95686274766922,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Gray/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8784313797950745,
+              "g": 0.8784313797950745,
+              "b": 0.8784313797950745,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Gray/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7764706015586853,
+              "g": 0.7764706015586853,
+              "b": 0.7764706015586853,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Gray/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.658823549747467,
+              "g": 0.658823549747467,
+              "b": 0.658823549747467,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Gray/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.5529412031173706,
+              "g": 0.5529412031173706,
+              "b": 0.5529412031173706,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Gray/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.43529412150382996,
+              "g": 0.43529412150382996,
+              "b": 0.43529412150382996,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Gray/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.32156863808631897,
+              "g": 0.32156863808631897,
+              "b": 0.32156863808631897,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Gray/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.2235294133424759,
+              "g": 0.2235294133424759,
+              "b": 0.2235294133424759,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Gray/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.14901961386203766,
+              "g": 0.14901961386203766,
+              "b": 0.14901961386203766,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Gray/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.08627451211214066,
+              "g": 0.08627451211214066,
+              "b": 0.08627451211214066,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cool Gray/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9490196108818054,
+              "g": 0.95686274766922,
+              "b": 0.9725490212440491,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cool Gray/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8666666746139526,
+              "g": 0.8823529481887817,
+              "b": 0.9019607901573181,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cool Gray/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7568627595901489,
+              "g": 0.7803921699523926,
+              "b": 0.8039215803146362,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cool Gray/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6352941393852234,
+              "g": 0.6627451181411743,
+              "b": 0.6901960968971252,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cool Gray/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.529411792755127,
+              "g": 0.5529412031173706,
+              "b": 0.5882353186607361,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cool Gray/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.4117647111415863,
+              "g": 0.43921568989753723,
+              "b": 0.46666666865348816,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cool Gray/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.3019607961177826,
+              "g": 0.32549020648002625,
+              "b": 0.3450980484485626,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cool Gray/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.20392157137393951,
+              "g": 0.22745098173618317,
+              "b": 0.24705882370471954,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cool Gray/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.12941177189350128,
+              "g": 0.15294118225574493,
+              "b": 0.16470588743686676,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cool Gray/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.07058823853731155,
+              "g": 0.08627451211214066,
+              "b": 0.09803921729326248,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Warm Gray/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9686274528503418,
+              "g": 0.9529411792755127,
+              "b": 0.9490196108818054,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Warm Gray/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8980392217636108,
+              "g": 0.8784313797950745,
+              "b": 0.8745098114013672,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Warm Gray/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7921568751335144,
+              "g": 0.772549033164978,
+              "b": 0.7686274647712708,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Warm Gray/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6784313917160034,
+              "g": 0.658823549747467,
+              "b": 0.658823549747467,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Warm Gray/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.5607843399047852,
+              "g": 0.545098066329956,
+              "b": 0.545098066329956,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Warm Gray/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.4470588266849518,
+              "g": 0.4313725531101227,
+              "b": 0.4313725531101227,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Warm Gray/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.33725491166114807,
+              "g": 0.3176470696926117,
+              "b": 0.3176470696926117,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Warm Gray/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.23529411852359772,
+              "g": 0.21960784494876862,
+              "b": 0.21960784494876862,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Warm Gray/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.15294118225574493,
+              "g": 0.14509804546833038,
+              "b": 0.14509804546833038,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Warm Gray/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.09019608050584793,
+              "g": 0.0784313753247261,
+              "b": 0.0784313753247261,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cyan/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8980392217636108,
+              "g": 0.9647058844566345,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cyan/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.729411780834198,
+              "g": 0.9019607901573181,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cyan/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.5098039507865906,
+              "g": 0.8117647171020508,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cyan/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.20000000298023224,
+              "g": 0.6941176652908325,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cyan/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.06666667014360428,
+              "g": 0.572549045085907,
+              "b": 0.9098039269447327,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cyan/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.4470588266849518,
+              "b": 0.7647058963775635,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cyan/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.32549020648002625,
+              "b": 0.6039215922355652,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cyan/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.22745098173618317,
+              "b": 0.4274509847164154,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cyan/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.003921568859368563,
+              "g": 0.15294118225574493,
+              "b": 0.2862745225429535,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Cyan/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.0235294122248888,
+              "g": 0.09019608050584793,
+              "b": 0.15294118225574493,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Green/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8705882430076599,
+              "g": 0.9843137264251709,
+              "b": 0.9019607901573181,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Green/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6549019813537598,
+              "g": 0.9411764740943909,
+              "b": 0.729411780834198,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Green/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.43529412150382996,
+              "g": 0.8627451062202454,
+              "b": 0.5490196347236633,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Green/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.25882354378700256,
+              "g": 0.7450980544090271,
+              "b": 0.3960784375667572,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Green/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.1411764770746231,
+              "g": 0.6313725709915161,
+              "b": 0.2823529541492462,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Green/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.09803921729326248,
+              "g": 0.501960813999176,
+              "b": 0.21960784494876862,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Green/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.054901961237192154,
+              "g": 0.3764705955982208,
+              "b": 0.15294118225574493,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Green/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.01568627543747425,
+              "g": 0.26274511218070984,
+              "b": 0.09019608050584793,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Green/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.007843137718737125,
+              "g": 0.1764705926179886,
+              "b": 0.05098039284348488,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Green/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.027450980618596077,
+              "g": 0.09803921729326248,
+              "b": 0.0313725508749485,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Magenta/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.9411764740943909,
+              "b": 0.9686274528503418,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Magenta/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.8392156958580017,
+              "b": 0.9098039269447327,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Magenta/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.686274528503418,
+              "b": 0.8235294222831726,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Magenta/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.4941176474094391,
+              "b": 0.7137255072593689,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Magenta/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9333333373069763,
+              "g": 0.32549020648002625,
+              "b": 0.5882353186607361,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Magenta/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8156862854957581,
+              "g": 0.14901961386203766,
+              "b": 0.43921568989753723,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Magenta/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6235294342041016,
+              "g": 0.0941176488995552,
+              "b": 0.32549020648002625,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Magenta/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.45490196347236633,
+              "g": 0.03529411926865578,
+              "b": 0.21568627655506134,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Magenta/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.3176470696926117,
+              "g": 0.007843137718737125,
+              "b": 0.1411764770746231,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Magenta/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.16470588743686676,
+              "g": 0.03921568766236305,
+              "b": 0.0941176488995552,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Purple/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9647058844566345,
+              "g": 0.9490196108818054,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Purple/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9098039269447327,
+              "g": 0.8549019694328308,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Purple/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8313725590705872,
+              "g": 0.7333333492279053,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Purple/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7450980544090271,
+              "g": 0.5843137502670288,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Purple/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6470588445663452,
+              "g": 0.4313725531101227,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Purple/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.5411764979362488,
+              "g": 0.24705882370471954,
+              "b": 0.9882352948188782,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Purple/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.4117647111415863,
+              "g": 0.16078431904315948,
+              "b": 0.7686274647712708,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Purple/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.2862745225429535,
+              "g": 0.11372549086809158,
+              "b": 0.545098066329956,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Purple/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.1921568661928177,
+              "g": 0.07450980693101883,
+              "b": 0.3686274588108063,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Purple/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.10980392247438431,
+              "g": 0.05882352963089943,
+              "b": 0.1882352977991104,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Red/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.9450980424880981,
+              "b": 0.9450980424880981,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Red/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.843137264251709,
+              "b": 0.8509804010391235,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Red/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.7019608020782471,
+              "b": 0.7215686440467834,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Red/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.5137255191802979,
+              "b": 0.5372549295425415,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Red/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9803921580314636,
+              "g": 0.3019607961177826,
+              "b": 0.33725491166114807,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Red/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8549019694328308,
+              "g": 0.11764705926179886,
+              "b": 0.1568627506494522,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Red/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6352941393852234,
+              "g": 0.09803921729326248,
+              "b": 0.12156862765550613,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Red/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.4588235318660736,
+              "g": 0.054901961237192154,
+              "b": 0.07450980693101883,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Red/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.32156863808631897,
+              "g": 0.01568627543747425,
+              "b": 0.0313725508749485,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Red/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.1764705926179886,
+              "g": 0.027450980618596077,
+              "b": 0.03529411926865578,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Teal/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8509804010391235,
+              "g": 0.9843137264251709,
+              "b": 0.9843137264251709,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Teal/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6196078658103943,
+              "g": 0.9411764740943909,
+              "b": 0.9411764740943909,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Teal/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.239215686917305,
+              "g": 0.8588235378265381,
+              "b": 0.8509804010391235,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Teal/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.0313725508749485,
+              "g": 0.7411764860153198,
+              "b": 0.729411780834198,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Teal/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.615686297416687,
+              "b": 0.6039215922355652,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Teal/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.4901960790157318,
+              "b": 0.4745098054409027,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Teal/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.364705890417099,
+              "b": 0.364705890417099,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Teal/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.2549019753932953,
+              "b": 0.2666666805744171,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Teal/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.007843137718737125,
+              "g": 0.16862745583057404,
+              "b": 0.1882352977991104,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Teal/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.0313725508749485,
+              "g": 0.10196078568696976,
+              "b": 0.10980392247438431,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Yellow/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9882352948188782,
+              "g": 0.95686274766922,
+              "b": 0.8392156958580017,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Yellow/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9921568632125854,
+              "g": 0.8627451062202454,
+              "b": 0.4117647111415863,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Yellow/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9450980424880981,
+              "g": 0.7607843279838562,
+              "b": 0.10588235408067703,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Yellow/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8235294222831726,
+              "g": 0.6313725709915161,
+              "b": 0.0235294122248888,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Yellow/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6980392336845398,
+              "g": 0.5254902243614197,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Yellow/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.5568627715110779,
+              "g": 0.4156862795352936,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Yellow/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.40784314274787903,
+              "g": 0.30588236451148987,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Yellow/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.2823529541492462,
+              "g": 0.21568627655506134,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Yellow/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.1882352977991104,
+              "g": 0.1411764770746231,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Yellow/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.10980392247438431,
+              "g": 0.08235294371843338,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Orange/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.9490196108818054,
+              "b": 0.9098039269447327,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Orange/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.8509804010391235,
+              "b": 0.7450980544090271,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Orange/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.7176470756530762,
+              "b": 0.5176470875740051,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Orange/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.5137255191802979,
+              "b": 0.16862745583057404,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Orange/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9215686321258545,
+              "g": 0.3843137323856354,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Orange/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.729411780834198,
+              "g": 0.30588236451148987,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Orange/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.5411764979362488,
+              "g": 0.21960784494876862,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Orange/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.3686274588108063,
+              "g": 0.16078431904315948,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Orange/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.24313725531101227,
+              "g": 0.10196078568696976,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Default/Orange/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.13725490868091583,
+              "g": 0.062745101749897,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Neutral/White",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 1,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Neutral/Black",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.12941177189350128,
+              "g": 0.12941177189350128,
+              "b": 0.12941177189350128,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Blue/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8588235378265381,
+              "g": 0.9215686321258545,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Blue/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7215686440467834,
+              "g": 0.8274509906768799,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Blue/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.5411764979362488,
+              "g": 0.7137255072593689,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Blue/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.3607843220233917,
+              "g": 0.5921568870544434,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Blue/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.12156862765550613,
+              "g": 0.43921568989753723,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Blue/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.3137255012989044,
+              "b": 0.9019607901573181,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Blue/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.32549020648002625,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Blue/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.2235294133424759,
+              "b": 0.7803921699523926,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Blue/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.14509804546833038,
+              "b": 0.5411764979362488,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Blue/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.12156862765550613,
+              "b": 0.4588235318660736,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Gray/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9098039269447327,
+              "g": 0.9098039269447327,
+              "b": 0.9098039269447327,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Gray/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8196078538894653,
+              "g": 0.8196078538894653,
+              "b": 0.8196078538894653,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Gray/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7098039388656616,
+              "g": 0.7098039388656616,
+              "b": 0.7098039388656616,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Gray/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6000000238418579,
+              "g": 0.6000000238418579,
+              "b": 0.6000000238418579,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Gray/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.47843137383461,
+              "g": 0.47843137383461,
+              "b": 0.47843137383461,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Gray/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.3686274588108063,
+              "g": 0.3686274588108063,
+              "b": 0.3686274588108063,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Gray/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.38823530077934265,
+              "g": 0.38823530077934265,
+              "b": 0.38823530077934265,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Gray/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.27843138575553894,
+              "g": 0.27843138575553894,
+              "b": 0.27843138575553894,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Gray/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.20000000298023224,
+              "g": 0.20000000298023224,
+              "b": 0.20000000298023224,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Gray/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.16078431904315948,
+              "g": 0.16078431904315948,
+              "b": 0.16078431904315948,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cool Gray/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8941176533699036,
+              "g": 0.9137254953384399,
+              "b": 0.9450980424880981,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cool Gray/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8039215803146362,
+              "g": 0.8274509906768799,
+              "b": 0.8549019694328308,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cool Gray/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6784313917160034,
+              "g": 0.7098039388656616,
+              "b": 0.7411764860153198,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cool Gray/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.5686274766921997,
+              "g": 0.6000000238418579,
+              "b": 0.6313725709915161,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cool Gray/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.4588235318660736,
+              "g": 0.48235294222831726,
+              "b": 0.5215686559677124,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cool Gray/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.3450980484485626,
+              "g": 0.3686274588108063,
+              "b": 0.3921568691730499,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cool Gray/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.364705890417099,
+              "g": 0.3921568691730499,
+              "b": 0.4156862795352936,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cool Gray/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.26274511218070984,
+              "g": 0.29019609093666077,
+              "b": 0.3176470696926117,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cool Gray/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.16862745583057404,
+              "g": 0.19607843458652496,
+              "b": 0.21176470816135406,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cool Gray/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.07058823853731155,
+              "g": 0.08627451211214066,
+              "b": 0.09803921729326248,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Warm Gray/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9411764740943909,
+              "g": 0.9098039269447327,
+              "b": 0.9019607901573181,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Warm Gray/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8470588326454163,
+              "g": 0.8156862854957581,
+              "b": 0.8117647171020508,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Warm Gray/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7254902124404907,
+              "g": 0.7019608020782471,
+              "b": 0.6941176652908325,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Warm Gray/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6117647290229797,
+              "g": 0.5882353186607361,
+              "b": 0.5882353186607361,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Warm Gray/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.49803921580314636,
+              "g": 0.48235294222831726,
+              "b": 0.48235294222831726,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Warm Gray/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.3764705955982208,
+              "g": 0.364705890417099,
+              "b": 0.364705890417099,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Warm Gray/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.4117647111415863,
+              "g": 0.38823530077934265,
+              "b": 0.38823530077934265,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Warm Gray/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.2980392277240753,
+              "g": 0.2823529541492462,
+              "b": 0.2823529541492462,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Warm Gray/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.20392157137393951,
+              "g": 0.19607843458652496,
+              "b": 0.19607843458652496,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Warm Gray/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.09019608050584793,
+              "g": 0.0784313753247261,
+              "b": 0.0784313753247261,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cyan/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.800000011920929,
+              "g": 0.9333333373069763,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cyan/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6000000238418579,
+              "g": 0.8549019694328308,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cyan/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.34117648005485535,
+              "g": 0.7450980544090271,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cyan/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.019607843831181526,
+              "g": 0.6235294342041016,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cyan/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.05882352963089943,
+              "g": 0.4941176474094391,
+              "b": 0.7843137383460999,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cyan/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.37254902720451355,
+              "b": 0.6392157077789307,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cyan/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.4000000059604645,
+              "b": 0.7411764860153198,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cyan/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.2862745225429535,
+              "b": 0.5411764979362488,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cyan/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.003921568859368563,
+              "g": 0.20000000298023224,
+              "b": 0.3764705955982208,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Cyan/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.0235294122248888,
+              "g": 0.09019608050584793,
+              "b": 0.15294118225574493,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Green/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7137255072593689,
+              "g": 0.9647058844566345,
+              "b": 0.7843137383460999,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Green/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.45490196347236633,
+              "g": 0.9058823585510254,
+              "b": 0.572549045085907,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Green/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.21176470816135406,
+              "g": 0.8078431487083435,
+              "b": 0.3686274588108063,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Green/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.23137255012989044,
+              "g": 0.6705882549285889,
+              "b": 0.3529411852359772,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Green/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.125490203499794,
+              "g": 0.5568627715110779,
+              "b": 0.24705882370471954,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Green/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.08627451211214066,
+              "g": 0.43529412150382996,
+              "b": 0.1921568661928177,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Green/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.06666667014360428,
+              "g": 0.45490196347236633,
+              "b": 0.18431372940540314,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Green/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.019607843831181526,
+              "g": 0.32156863808631897,
+              "b": 0.10980392247438431,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Green/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.0117647061124444,
+              "g": 0.23137255012989044,
+              "b": 0.06666667014360428,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Green/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.027450980618596077,
+              "g": 0.09803921729326248,
+              "b": 0.0313725508749485,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Magenta/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.8784313797950745,
+              "b": 0.9372549057006836,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Magenta/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.7411764860153198,
+              "b": 0.8549019694328308,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Magenta/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.5803921818733215,
+              "b": 0.7647058963775635,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Magenta/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.34117648005485535,
+              "b": 0.6274510025978088,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Magenta/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8901960849761963,
+              "g": 0.09019608050584793,
+              "b": 0.43529412150382996,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Magenta/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6901960968971252,
+              "g": 0.12941177189350128,
+              "b": 0.37254902720451355,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Magenta/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7490196228027344,
+              "g": 0.11372549086809158,
+              "b": 0.38823530077934265,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Magenta/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.5568627715110779,
+              "g": 0.04313725605607033,
+              "b": 0.26274511218070984,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Magenta/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.40784314274787903,
+              "g": 0.0117647061124444,
+              "b": 0.18039216101169586,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Magenta/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.16470588743686676,
+              "g": 0.03921568766236305,
+              "b": 0.0941176488995552,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Purple/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.929411768913269,
+              "g": 0.8980392217636108,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Purple/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8627451062202454,
+              "g": 0.7803921699523926,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Purple/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.772549033164978,
+              "g": 0.6392157077789307,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Purple/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6823529601097107,
+              "g": 0.47843137383461,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Purple/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.5764706134796143,
+              "g": 0.32156863808631897,
+              "b": 1,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Purple/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.47058823704719543,
+              "g": 0.13333334028720856,
+              "b": 0.9843137264251709,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Purple/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.48627451062202454,
+              "g": 0.239215686917305,
+              "b": 0.8392156958580017,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Purple/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.35686275362968445,
+              "g": 0.1411764770746231,
+              "b": 0.6784313917160034,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Purple/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.250980406999588,
+              "g": 0.09803921729326248,
+              "b": 0.48235294222831726,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Purple/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.10980392247438431,
+              "g": 0.05882352963089943,
+              "b": 0.1882352977991104,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Red/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.8784313797950745,
+              "b": 0.8784313797950745,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Red/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.7607843279838562,
+              "b": 0.772549033164978,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Red/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.6000000238418579,
+              "b": 0.6274510025978088,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Red/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.3803921639919281,
+              "b": 0.40784314274787903,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Red/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9333333373069763,
+              "g": 0.027450980618596077,
+              "b": 0.07450980693101883,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Red/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7215686440467834,
+              "g": 0.09803921729326248,
+              "b": 0.13333334028720856,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Red/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7607843279838562,
+              "g": 0.11764705926179886,
+              "b": 0.14509804546833038,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Red/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.572549045085907,
+              "g": 0.06666667014360428,
+              "b": 0.0941176488995552,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Red/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.4000000059604645,
+              "g": 0.019607843831181526,
+              "b": 0.03921568766236305,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Red/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.1764705926179886,
+              "g": 0.027450980618596077,
+              "b": 0.03529411926865578,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Teal/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6745098233222961,
+              "g": 0.9647058844566345,
+              "b": 0.9647058844566345,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Teal/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.34117648005485535,
+              "g": 0.8980392217636108,
+              "b": 0.8980392217636108,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Teal/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.14509804546833038,
+              "g": 0.7921568751335144,
+              "b": 0.7843137383460999,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Teal/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.027450980618596077,
+              "g": 0.6705882549285889,
+              "b": 0.6627451181411743,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Teal/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.5411764979362488,
+              "b": 0.529411792755127,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Teal/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.41960784792900085,
+              "b": 0.40784314274787903,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Teal/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.43921568989753723,
+              "b": 0.43921568989753723,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Teal/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0,
+              "g": 0.32549020648002625,
+              "b": 0.34117648005485535,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Teal/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.0117647061124444,
+              "g": 0.2235294133424759,
+              "b": 0.250980406999588,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Teal/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.05882352963089943,
+              "g": 0.1882352977991104,
+              "b": 0.20392157137393951,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Yellow/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9725490212440491,
+              "g": 0.9019607901573181,
+              "b": 0.6274510025978088,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Yellow/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9882352948188782,
+              "g": 0.8039215803146362,
+              "b": 0.15294118225574493,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Yellow/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.8666666746139526,
+              "g": 0.6901960968971252,
+              "b": 0.054901961237192154,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Yellow/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.7372549176216125,
+              "g": 0.5647059082984924,
+              "b": 0.019607843831181526,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Yellow/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6196078658103943,
+              "g": 0.46666666865348816,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Yellow/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.4588235318660736,
+              "g": 0.3450980484485626,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Yellow/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.501960813999176,
+              "g": 0.3764705955982208,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Yellow/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.3607843220233917,
+              "g": 0.27450981736183167,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Yellow/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.239215686917305,
+              "g": 0.18039216101169586,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Yellow/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.10980392247438431,
+              "g": 0.08235294371843338,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Orange/10",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.886274516582489,
+              "b": 0.800000011920929,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Orange/20",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.7764706015586853,
+              "b": 0.6196078658103943,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Orange/30",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 1,
+              "g": 0.615686297416687,
+              "b": 0.34117648005485535,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Orange/40",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.9803921580314636,
+              "g": 0.40784314274787903,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Orange/50",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.800000011920929,
+              "g": 0.3333333432674408,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Orange/60",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.6196078658103943,
+              "g": 0.25882354378700256,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Orange/70",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.658823549747467,
+              "g": 0.2666666805744171,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Orange/80",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.4588235318660736,
+              "g": 0.20000000298023224,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Orange/90",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.32156863808631897,
+              "g": 0.13333334028720856,
+              "b": 0,
+              "a": 1
+            }
+          },
+          {
+            "name": "Hover/Orange/100",
+            "type": "COLOR",
+            "scopes": [
+              "ALL_SCOPES"
+            ],
+            "value": {
+              "r": 0.25882354378700256,
+              "g": 0.11764705926179886,
+              "b": 0,
+              "a": 1
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
