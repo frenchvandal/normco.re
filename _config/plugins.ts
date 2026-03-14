@@ -7,7 +7,6 @@ import lightningcss from "lume/plugins/lightningcss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
 import jsx from "lume/plugins/jsx.ts";
-import icons, { type Catalog } from "lume/plugins/icons.ts";
 import inline from "lume/plugins/inline.ts";
 import imageSize from "lume/plugins/image_size.ts";
 import date from "lume/plugins/date.ts";
@@ -27,15 +26,6 @@ import "npm/prism-bash";
 import "npm/prism-typescript";
 import "npm/prism-yaml";
 import otelPlugin from "../plugins/otel.ts";
-
-const OCTICON_CATALOGS = [
-  {
-    id: "octicons",
-    src:
-      "https://cdn.jsdelivr.net/npm/@primer/octicons@19.22.0/build/svg/{name}-{variant}.svg",
-    variants: ["16", "24", "12", "48", "96"],
-  },
-] as const satisfies Catalog[];
 
 /** Register all Lume plugins in the correct cascade order. */
 export function registerPlugins(
@@ -95,11 +85,6 @@ export function registerPlugins(
 
   site.use(attributes());
   site.use(jsx());
-  site.use(
-    icons({
-      catalogs: OCTICON_CATALOGS,
-    }),
-  );
   site.use(
     inline({
       copyAttributes: [/^data-/, /^aria-/, "focusable", "role"],
