@@ -152,6 +152,20 @@ export default (
           <meta name="description" content={metaDescription} />
           <meta name="color-scheme" content="light dark" />
           <link
+            rel="preload"
+            href="/fonts/ibm-plex-sans-400.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin="anonymous"
+          />
+          <link
+            rel="preload"
+            href="/fonts/ibm-plex-sans-600.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin="anonymous"
+          />
+          <link
             rel="stylesheet"
             href="/style.css"
             fetchpriority="high"
