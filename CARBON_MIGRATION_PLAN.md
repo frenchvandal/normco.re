@@ -477,7 +477,7 @@ deno task validate-contracts  # Validates all generated JSON against schemas
 ### Phase 10 — Documentation update
 
 1. Update `CLAUDE.md` and `AGENTS.md` (must stay identical) with Carbon changes
-2. Update `ARCHITECTURE.md` with diagram and content contract
+2. Update `ARCHITECTURE.md` with diagram and content contract (Mermaid)
 3. Update this file with completed phases
 
 **Verification:** `CLAUDE.md` and `AGENTS.md` are byte-identical.
