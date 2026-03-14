@@ -1,0 +1,97 @@
+/** HTML processors — image dimensions, XML stylesheets, multilanguage aliases. */
+
+import type Site from "lume/core/site.ts";
+import type { Page } from "lume/core/file.ts";
+import {
+  assertEditorialImageDimensions,
+  type EditorialImagePageSnapshot,
+} from "../src/utils/editorial-image-dimensions.ts";
+import { getXmlStylesheetHref } from "../src/utils/xml-stylesheet.ts";
+
+const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
+const XML_PI_PATTERN = /^(<\?xml[^?]*\?>)/;
+
+// Maps hyphenated Lume data keys (URL-style) to their camelCase TypeScript
+// equivalents used throughout the codebase. The multilanguage plugin resolves
+// "zh-hans" as "zh" then "hans" (two separate segments), so page data exported
+// as `zhHans` must be copied to the "zh-hans" key at preprocess time.
+const MULTILANGUAGE_DATA_ALIASES = {
+  "zh-hans": "zhHans",
+  "zh-hant": "zhHant",
+} as const;
+
+/** Register all HTML and XML processors. */
+export function registerProcessors(site: Site): void {
+  // Add image-size attribute to editorial images missing dimensions.
+  site.process([".html"], (pages: Page[]) => {
+    for (const page of pages) {
+      for (
+        const image of page.document.querySelectorAll(
+          "main[data-pagefind-body] img:not([width]):not([height]):not([image-size])",
+        )
+      ) {
+        const src = image.getAttribute("src");
+
+        if (!src || REMOTE_IMAGE_SOURCE_PATTERN.test(src)) {
+          continue;
+        }
+
+        image.setAttribute("image-size", "");
+      }
+    }
+  });
+
+  // Enforce explicit dimensions in editorial HTML for CLS safeguards.
+  site.process([".html"], (pages: Page[]) => {
+    const snapshots: EditorialImagePageSnapshot[] = pages.map((page) => ({
+      pageUrl: typeof page.data.url === "string"
+        ? page.data.url
+        : page.outputPath,
+      document: page.document,
+    }));
+
+    assertEditorialImageDimensions(snapshots);
+  });
+
+  // Expose camelCase data aliases for multilanguage hyphenated codes.
+  site.preprocess([".html"], (pages: Page[]) => {
+    for (const page of pages) {
+      const pageData = page.data as Record<string, unknown>;
+
+      for (
+        const [languageCode, exportKey] of Object.entries(
+          MULTILANGUAGE_DATA_ALIASES,
+        )
+      ) {
+        if (pageData[languageCode] !== undefined) {
+          continue;
+        }
+
+        const aliasData = pageData[exportKey];
+
+        if (aliasData !== undefined) {
+          pageData[languageCode] = aliasData;
+        }
+      }
+    }
+  });
+
+  // Inject <?xml-stylesheet?> processing instructions into XML outputs.
+  site.process([".xml"], (pages: Page[]) => {
+    for (const page of pages) {
+      const pageUrl = page.data.url;
+
+      if (typeof pageUrl !== "string") {
+        continue;
+      }
+
+      const xslHref = getXmlStylesheetHref(pageUrl);
+
+      if (xslHref === undefined) continue;
+
+      const content = String(page.content);
+      const pi = `<?xml-stylesheet type="text/xsl" href="${xslHref}"?>`;
+      page.content = content.replace(XML_PI_PATTERN, `$1\n${pi}`);
+    }
+  });
+}
