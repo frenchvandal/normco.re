@@ -57,6 +57,10 @@ export function registerPlugins(
   // Must run before postcss so generated CSS is processed.
   site.use(
     googleFonts({
+      subsets: [
+        "latin",
+        "latin-ext",
+      ],
       fonts:
         "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap",
       cssFile: "styles/fonts.css",
