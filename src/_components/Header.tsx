@@ -6,6 +6,13 @@ import {
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
 } from "../utils/i18n.ts";
+import {
+  DARK_ICON_PATHS,
+  LIGHT_ICON_PATHS,
+  MENU_ICON_PATH,
+  SEARCH_ICON_PATH,
+  TRANSLATE_ICON_PATH,
+} from "../utils/carbon-icons.ts";
 
 /**
  * Returns `{ "aria-current": "page" }` when the link matches the active URL,
@@ -21,39 +28,6 @@ function ariaCurrent(
   }
   return {};
 }
-
-const CARBON_SEARCH_ICON_PATH =
-  "M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z";
-const CARBON_MENU_ICON_PATH = "M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z";
-/**
- * Carbon Translate icon — official Carbon Design System icon.
- * Source: https://carbondesignsystem.com/elements/icons/library/
- * Icon name: translate
- * This icon represents language translation functionality.
- */
-const CARBON_LANGUAGE_ICON_PATH =
-  "M27.85 29H30L24 14H21.65l-6 15H17.8l1.6-4h6.85zM20.2 23l2.62-6.56L25.45 23zM18 7V5H11V2H9V5H2V7H12.74a14.71 14.71 0 0 1-3.19 6.18A13.5 13.5 0 0 1 7.26 9H5.16a16.47 16.47 0 0 0 3 5.58A16.84 16.84 0 0 1 3 18l.75 1.86A18.47 18.47 0 0 0 9.53 16a16.92 16.92 0 0 0 5.76 3.84L16 18a14.48 14.48 0 0 1-5.12-3.37A17.64 17.64 0 0 0 14.8 7z";
-const CARBON_THEME_LIGHT_ICON_PATHS = [
-  { d: "M7.5 1H8.5V3.5H7.5z" },
-  { d: "M10.8 3.4H13.3V4.4H10.8z", transform: "rotate(-45 12.041 3.923)" },
-  { d: "M12.5 7.5H15V8.5H12.5z" },
-  { d: "M11.6 10.8H12.6V13.3H11.6z", transform: "rotate(-45 12.075 12.04)" },
-  { d: "M7.5 12.5H8.5V15H7.5z" },
-  { d: "M2.7 11.6H5.2V12.6H2.7z", transform: "rotate(-45 3.96 12.078)" },
-  { d: "M1 7.5H3.5V8.5H1z" },
-  { d: "M3.4 2.7H4.4V5.2H3.4z", transform: "rotate(-45 3.925 3.961)" },
-  {
-    d: "M8,6c1.1,0,2,0.9,2,2s-0.9,2-2,2S6,9.1,6,8S6.9,6,8,6 M8,5C6.3,5,5,6.3,5,8s1.3,3,3,3s3-1.3,3-3S9.7,5,8,5z",
-  },
-] as const;
-const CARBON_THEME_DARK_ICON_PATHS = [
-  {
-    d: "M7.2,2.3c-1,4.4,1.7,8.7,6.1,9.8c0.1,0,0.1,0,0.2,0c-1.1,1.2-2.7,1.8-4.3,1.8c-0.1,0-0.2,0-0.2,0C5.6,13.8,3,11,3.2,7.7 C3.2,5.3,4.8,3.1,7.2,2.3",
-  },
-  {
-    d: "M8,1L8,1C4.1,1.6,1.5,5.3,2.1,9.1c0.6,3.3,3.4,5.8,6.8,5.9c0.1,0,0.2,0,0.3,0c2.3,0,4.4-1.1,5.8-3 c0.2-0.2,0.1-0.6-0.1-0.7c-0.1-0.1-0.2-0.1-0.3-0.1c-3.9-0.3-6.7-3.8-6.4-7.6C8.3,3,8.4,2.4,8.6,1.8c0.1-0.3,0-0.6-0.3-0.7 C8.1,1,8.1,1,8,1z",
-  },
-] as const;
 
 /** Renders the Carbon UI Shell header with navigation and user controls. */
 export default (
@@ -113,7 +87,7 @@ export default (
                 aria-hidden="true"
                 focusable="false"
               >
-                <path d={CARBON_MENU_ICON_PATH}></path>
+                <path d={MENU_ICON_PATH}></path>
               </svg>
             </button>
 
@@ -164,7 +138,7 @@ export default (
                 aria-hidden="true"
                 focusable="false"
               >
-                <path d={CARBON_SEARCH_ICON_PATH}></path>
+                <path d={SEARCH_ICON_PATH}></path>
               </svg>
             </button>
 
@@ -186,7 +160,7 @@ export default (
                 aria-hidden="true"
                 focusable="false"
               >
-                <path d={CARBON_LANGUAGE_ICON_PATH}></path>
+                <path d={TRANSLATE_ICON_PATH}></path>
               </svg>
             </button>
 
@@ -210,7 +184,7 @@ export default (
                 aria-hidden="true"
                 focusable="false"
               >
-                {CARBON_THEME_LIGHT_ICON_PATHS.map((path) => (
+                {LIGHT_ICON_PATHS.map((path) => (
                   <path
                     key={path.d}
                     d={path.d}
@@ -230,9 +204,7 @@ export default (
                 aria-hidden="true"
                 focusable="false"
               >
-                {CARBON_THEME_DARK_ICON_PATHS.map(({ d }) => (
-                  <path key={d} d={d}></path>
-                ))}
+                {DARK_ICON_PATHS.map(({ d }) => <path key={d} d={d}></path>)}
               </svg>
             </button>
           </div>
