@@ -6,7 +6,7 @@ import icons, { type Catalog } from "lume/plugins/icons.ts";
 import inline from "lume/plugins/inline.ts";
 import imageSize from "lume/plugins/image_size.ts";
 import jsonLd from "lume/plugins/json_ld.ts";
-import seo from "lume/plugins/seo.ts";
+// import seo from "lume/plugins/seo.ts";
 import prism from "lume/plugins/prism.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
 import postcss from "lume/plugins/postcss.ts";
@@ -465,7 +465,7 @@ site.use(
 // - jsonLd: renders <script type="application/ld+json"> from page data
 // - seo: reports common issues in Lume debug bar (titles, descriptions, image alts, etc.)
 site.use(jsonLd());
-site.use(
+/* site.use(
   seo({
     output: (reports) => {
       seoIssues.length = 0;
@@ -501,7 +501,7 @@ site.use(
       updateSeoDebugCollection(site);
     },
   }),
-);
+); */
 
 // Prism grammars are preloaded with side-effect imports above.
 // Avoid `autoloadLanguages` here because it is async and may finish
