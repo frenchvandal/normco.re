@@ -134,13 +134,13 @@ type SeoIssue = {
 
 const seoIssues: SeoIssue[] = [];
 
-function normalizeSeoMessage(message: unknown): string {
+/* function normalizeSeoMessage(message: unknown): string {
   if (typeof message === "string") {
     return message;
   }
 
   return JSON.stringify(message, null, 2);
-}
+} */
 
 function updateSeoDebugCollection(site: Site): void {
   const collection = site.debugBar?.collection("SEO output errors");
