@@ -1,17 +1,465 @@
-# Handoff développeurs — Blog Lume + Carbon + widget Telegram
+# Carbon Design System Migration — Audit & Plan
 
-## Convention de sources
+## Overview
 
-### Sources Carbon
+Complete audit of the normco.re repository covering the Carbon Design System
+migration, architecture refactoring, and monorepo transformation. This document
+replaces the previous handoff/Telegram-focused migration plan.
 
-Toujours référencer la page officielle correspondante du Carbon Design System.
+---
 
-### Sources JSON du repo
+## 1. Current state audit
 
-Les exports JSON Figma/Carbon utilisés pour ce document sont **stockés dans le
-répertoire `design/` à la racine du repo**.
+### 1.1. Contradictions and inconsistencies
 
-**Convention à utiliser dans le projet :**
+| Issue | File(s) | Impact | Recommendation |
+|---|---|---|---|
+| `CLAUDE.md` §6.3 mandates "system fonts only" but project uses IBM Plex (Carbon) | `CLAUDE.md`, `src/style.css` | **Blocking** — mutually exclusive goals | Update `CLAUDE.md` to authorize IBM Plex as Carbon exception |
+| Google Fonts CDN used (`@import url("https://fonts.googleapis.com/...")`) | `src/style.css:8` | **Blocking** — violates "serve locally" constraint | Migrate to Lume `google_fonts` plugin for local hosting |
+| `@carbon/web-components@2.50.0` in `deno.json` | `deno.json` | **Contradictory** — constraint says "no Carbon npm components" | Remove npm Carbon dependency; implement everything locally |
+| Legacy Primer aliases still present in CSS tokens | `src/styles/tokens-carbon.css:191-207` | **Medium** — namespace pollution, confusing for maintainers | Remove `--bgColor-*`, `--fgColor-*`, `--borderColor-*`, `--color-meta`, `--color-text`, `--color-accent`, `--color-border` aliases |
+| Breakpoints defined in two places | `tokens-carbon.css:41-46` AND `layout-carbon.css:22-28` | **Medium** — ambiguous source of truth | Define breakpoints only once in `tokens-carbon.css` |
+| `layout.css` and `layout-carbon.css` are near-duplicates | `src/styles/` | **High** — 1467 lines of duplicated grid code | Remove `layout.css`, keep `layout-carbon.css` |
+| `base.css` redefines tokens already in `tokens-carbon.css` | `src/styles/base.css` | **High** — three sources of truth for color tokens | Consolidate all tokens in `tokens-carbon.css` only |
+| Invalid CSS selector for dark mode | `tokens-carbon.css:345` | **Medium** — `:root:has(> style:contains("dark"))` is non-standard | Use only `[data-color-mode="dark"]` and `@media (prefers-color-scheme: dark)` |
+
+### 1.2. `_config.ts` — 614 lines, too monolithic
+
+Mixes site configuration, asset registration (20+ scripts), 15+ plugin configs,
+post-build hooks, image processing, and feed generation.
+
+**Target refactoring:**
+
+```text
+_config.ts          → ~100 lines: site + imports
+_config/
+├── plugins.ts      → all Lume plugin configurations
+├── assets.ts       → script and stylesheet registration
+├── feeds.ts        → 4 multilingual feed configurations
+├── post-build.ts   → post-build hooks (fingerprint, vendor, etc.)
+└── image-rules.ts  → image dimension validation
+```
+
+### 1.3. JS pipeline — 18 scripts, excessive complexity
+
+| Script | Recommendation |
+|---|---|
+| `anti-flash.js` | Keep (FOUC prevention) |
+| `theme-toggle.js` | Keep |
+| `language-preference.js` | Keep |
+| `disclosure-controls.js` | Keep |
+| `carbon.js` | Merge into `disclosure-controls.js` |
+| `pagefind-lazy-init.js` | Keep |
+| `link-prefetch-intent.js` | Keep (performance) |
+| `post-code-copy.js` | Keep |
+| `post-code-copy-exec-command.js` | **Remove** — `navigator.clipboard` is universally supported |
+| `feed-copy.js` | Keep |
+| `archive-year-nav.js` | Keep |
+| `sw.js` + 5 SW files (~870 lines) | **Consolidate** into 2 files: `sw.js` + `sw-register.js` |
+
+### 1.4. CSS architecture
+
+**Well done:**
+- Cascade layers correctly used (`@layer tokens, reset, base, layout, components, utilities`)
+- Carbon v11 tokens faithfully implemented
+- Colors in `oklch()` throughout
+- Dark mode (Gray 90) and High Contrast (Gray 100) supported
+- Full accessibility media queries
+
+**Problems:**
+- `components.css` is 52 KB — too large, mixes many components
+- `layout-carbon.css` has 740 lines with full 16-column grid system — most classes unused
+- `layout.css` is a near-duplicate with Primer fallbacks — must be removed
+- `base.css` (708 lines) redefines tokens, creating triple source of truth
+
+### 1.5. Dependencies — cleanup needed
+
+| Dependency | Action |
+|---|---|
+| `@carbon/web-components@2.50.0` | **Remove** — violates "no npm Carbon" constraint |
+| `@carbon/styles` (in `allowScripts`) | **Remove** |
+| `@ibm/plex` (in `allowScripts`) | **Replace** with Lume `google_fonts` plugin |
+| Octicons `icons` plugin in `_config.ts` | **Remove** if no longer used |
+
+---
+
+## 2. UI component inventory
+
+| Component | Status | Carbon pattern | Classes |
+|---|---|---|---|
+| Fixed header | Done | UI Shell Header | `bx--header`, `bx--header__*` |
+| Desktop navigation | Done | Header Navigation | `bx--header__nav`, `bx--header__menu-item` |
+| Mobile SideNav | Done | UI Shell Left Panel | `bx--side-nav`, `bx--side-nav__*` |
+| Hamburger menu | Done | Menu Toggle | `bx--header__menu-toggle` |
+| Search panel | Partial | Header Panel + Pagefind | `bx--header__panel` |
+| Language selector | Done | Header Panel + Dropdown | `bx--header__language-*` |
+| Theme toggle | Done | Header Action | `bx--header__action` |
+| Footer | Done | Custom (Carbon-aligned) | `site-footer` |
+| Post cards | Done | Structured List | `post-card` |
+| Breadcrumb | Done | Breadcrumb | In `components.css` |
+| Pagination | Done | Pagination | In `components.css` |
+| Code blocks | Done | Code Snippet | Prism.js + copy button |
+| Skip link | Done | Skip to Content | `bx--skip-to-content` |
+| Hero text | Done | Expressive Type | `heading-05`/`heading-06` |
+| Year nav (archive) | Done | Content Switcher | Sidebar + JS |
+
+### Icons — all using Carbon inline SVG
+
+Search, Menu, Translate, Sun/Moon, GitHub, RSS — all defined as inline SVG
+path constants in `Header.tsx` and `Footer.tsx`.
+
+---
+
+## 3. Carbon mapping
+
+| Current UI component | Carbon v11 component | Guideline | Difficulty | Risk |
+|---|---|---|---|---|
+| Fixed header | [UI Shell Header](https://carbondesignsystem.com/components/UI-shell-header/usage/) | 48px height, Gray 10 bg | **Done** | Low |
+| Desktop navigation | [Header Navigation](https://carbondesignsystem.com/components/UI-shell-header/usage/) | Active: bottom border blue-60 | **Done** | Low |
+| Mobile SideNav | [UI Shell Left Panel](https://carbondesignsystem.com/components/UI-shell-left-panel/usage/) | 256px width, slide-in | **Done** | Low |
+| Search | [Search](https://carbondesignsystem.com/components/search/usage/) | Compact variant in header | Partial | Medium |
+| Language selector | [Dropdown](https://carbondesignsystem.com/components/dropdown/usage/) | Within Header Panel | **Done** | Low |
+| Theme toggle | [Toggle](https://carbondesignsystem.com/components/toggle/usage/) | Header action pattern | **Done** | Low |
+| Post list | [Structured List](https://carbondesignsystem.com/components/structured-list/usage/) | Selectable variant | Medium | Low |
+| Breadcrumb | [Breadcrumb](https://carbondesignsystem.com/components/breadcrumb/usage/) | Slash separator | Easy | Low |
+| Pagination | [Pagination](https://carbondesignsystem.com/components/pagination/usage/) | Page numbers + arrows | Medium | Medium |
+| Code blocks | [Code Snippet](https://carbondesignsystem.com/components/code-snippet/usage/) | Multi-line + copy button | Medium | Medium |
+| Year nav | [Content Switcher](https://carbondesignsystem.com/components/content-switcher/usage/) | Horizontal tabs-like | Medium | Low |
+| Tags | [Tag](https://carbondesignsystem.com/components/tag/usage/) | Filter variant | Easy | Low |
+
+---
+
+## 4. Target architecture
+
+### 4.1. Simplified repository structure
+
+The proposed `apps/` + `packages/` monorepo is over-engineered for this project.
+Deno does not manage workspaces like npm. The Lume site and the Swift app share
+no code (different languages).
+
+```text
+normco.re/
+├── src/                    # Lume site (unchanged, source of truth)
+│   ├── _components/
+│   ├── _includes/layouts/
+│   ├── posts/
+│   ├── scripts/
+│   ├── styles/
+│   │   └── components/     # Split from monolithic components.css
+│   └── utils/
+├── ios/                    # SwiftUI app (peer directory)
+│   ├── NormCore/
+│   │   ├── App/
+│   │   ├── Models/
+│   │   ├── Network/
+│   │   ├── ViewModels/
+│   │   ├── Views/
+│   │   └── DesignSystem/
+│   ├── NormCore.xcodeproj
+│   └── Package.swift
+├── contracts/              # Shared JSON schemas
+│   ├── feed.schema.json
+│   ├── post.schema.json
+│   └── validate.ts
+├── plugins/
+├── scripts/
+├── design/                 # Figma JSON exports (existing)
+├── _config.ts
+├── _config/                # Split config modules
+│   ├── plugins.ts
+│   ├── assets.ts
+│   ├── feeds.ts
+│   └── post-build.ts
+├── deno.json
+├── CLAUDE.md
+├── AGENTS.md
+└── .github/
+    └── workflows/
+        ├── site.yml
+        └── ios.yml
+```
+
+### 4.2. Grid simplification
+
+Replace the 116-class `bx--col-*` system with native CSS Grid:
+
+```css
+@layer layout {
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr min(65ch, 100%) 1fr;
+    padding-inline: var(--cds-spacing-05);
+  }
+
+  .grid > * {
+    grid-column: 2;
+  }
+
+  .grid--wide {
+    grid-template-columns: 1fr min(var(--cds-breakpoint-max), 100%) 1fr;
+  }
+
+  .grid--16 {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: var(--cds-spacing-07);
+    max-width: var(--cds-breakpoint-max);
+    margin-inline: auto;
+    padding-inline: var(--cds-spacing-05);
+  }
+}
+```
+
+This reduces `layout-carbon.css` from 740 lines to ~50 lines.
+
+### 4.3. CSS target structure
+
+```text
+src/styles/
+├── tokens-carbon.css       # Single source of truth for all tokens
+├── reset.css               # Keep as-is
+├── base.css                # Typography + element styles ONLY (no token redefinition)
+├── layout.css              # Simplified CSS Grid (replaces layout-carbon.css)
+├── components/
+│   ├── header.css
+│   ├── side-nav.css
+│   ├── footer.css
+│   ├── post-card.css
+│   ├── breadcrumb.css
+│   ├── pagination.css
+│   ├── code-block.css
+│   └── search.css
+└── utilities.css           # Keep as-is
+```
+
+---
+
+## 5. Font strategy — IBM Plex local hosting
+
+### Configuration
+
+```ts
+// In _config.ts
+import googleFonts from "lume/plugins/google_fonts.ts";
+
+site.use(googleFonts({
+  fonts: {
+    sans: "https://fonts.google.com/share?selection.family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400",
+    mono: "https://fonts.google.com/share?selection.family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400",
+  },
+  folder: "/fonts",
+  cssFile: "/styles/fonts.css",
+}));
+```
+
+### Performance
+
+```html
+<!-- In base.tsx <head> — preload critical weights -->
+<link rel="preload" href="/fonts/ibm-plex-sans-400.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/ibm-plex-sans-600.woff2" as="font" type="font/woff2" crossorigin />
+```
+
+### Update `style.css`
+
+```css
+/* BEFORE */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:...");
+
+/* AFTER */
+@import "./styles/fonts.css"; /* Generated by google_fonts plugin */
+```
+
+---
+
+## 6. Content contract for apps
+
+### `post.json` — structured block format
+
+```json
+{
+  "version": "1.0.0",
+  "id": "alibaba-cloud-oss-cdn-deployment",
+  "title": "Alibaba Cloud OSS CDN Deployment",
+  "date": "2024-03-15T00:00:00Z",
+  "lang": "en",
+  "readingTime": 5,
+  "tags": ["cloud", "deployment"],
+  "blocks": [
+    { "type": "heading", "level": 2, "text": "Introduction" },
+    { "type": "paragraph", "text": "Lorem ipsum..." },
+    { "type": "code", "language": "bash", "content": "aws s3 sync ..." },
+    { "type": "image", "src": "/images/diagram.png", "alt": "Architecture", "width": 800, "height": 600 },
+    { "type": "quote", "text": "Quote text.", "attribution": "Author" },
+    { "type": "list", "ordered": false, "items": ["Item 1", "Item 2"] }
+  ]
+}
+```
+
+### Supported block types
+
+| Block | Required fields | Optional fields |
+|---|---|---|
+| `paragraph` | `type`, `text` | — |
+| `heading` | `type`, `level`, `text` | — |
+| `code` | `type`, `content` | `language` |
+| `image` | `type`, `src`, `alt` | `width`, `height` |
+| `quote` | `type`, `text` | `attribution` |
+| `list` | `type`, `items` | `ordered` |
+
+### Generation strategy
+
+A Lume processor parses rendered HTML into blocks and writes
+`/api/posts/{slug}.json` for each article during build.
+
+### Validation
+
+```bash
+deno task validate-contracts  # Validates all generated JSON against schemas
+```
+
+---
+
+## 7. Architecture diagram
+
+```text
+                    ┌─────────────────────────────────────┐
+                    │         normco.re (root)             │
+                    │  deno.json · _config.ts · CLAUDE.md  │
+                    └──────────┬──────────────┬────────────┘
+                               │              │
+              ┌────────────────┘              └────────────────┐
+              ▼                                                ▼
+┌──────────────────────────┐                    ┌──────────────────────────┐
+│         src/             │                    │         ios/             │
+│    Lume SSG (Deno)       │                    │   SwiftUI native app     │
+│                          │                    │                          │
+│  posts/*.page.tsx        │                    │  Models/ (Codable)       │
+│  _components/*.tsx       │                    │  Views/ (SwiftUI)        │
+│  _includes/layouts/*.tsx │                    │  ViewModels/             │
+│  styles/ (Carbon CSS)    │                    │  DesignSystem/ (HIG)     │
+│  scripts/ (vanilla JS)   │                    │  Network/ (URLSession)   │
+│  utils/ (TS helpers)     │                    └──────────┬───────────────┘
+└──────────┬───────────────┘                               │
+           │                                               │
+           │ deno task build                               │ fetches at runtime
+           ▼                                               │
+┌──────────────────────────┐                               │
+│       _site/ (output)    │                               │
+│                          │                               │
+│  *.html (pages)          │                               │
+│  /fonts/ (IBM Plex)      │◄──────────────────────────────┘
+│  /style.css              │
+│  /feed.xml · /feed.json  │──── JSON Feed 1.1 (article list)
+│  /api/posts/*.json       │──── Content contract (per-article blocks)
+│  /scripts/*.js           │
+└──────────────────────────┘
+
+              ┌──────────────────────────┐
+              │     contracts/           │
+              │  feed.schema.json        │──── validates /feed.json
+              │  post.schema.json        │──── validates /api/posts/*.json
+              │  validate.ts             │──── deno task validate-contracts
+              └──────────────────────────┘
+```
+
+---
+
+## 8. Migration phases
+
+### Phase 1 — Dependency cleanup
+
+1. Remove `@carbon/web-components` and `@carbon/styles` from `deno.json`
+2. Remove corresponding entries from `allowScripts`
+3. Verify no imports reference these packages
+4. Run `deno task check`
+
+**Verification:** `deno task build` succeeds without npm Carbon dependencies.
+
+### Phase 2 — Local fonts
+
+1. Add `google_fonts` plugin to `_config.ts`
+2. Configure IBM Plex Sans (400, 400i, 500, 600) and Mono (400, 400i, 500)
+3. Replace `@import url(...)` in `src/style.css` with `@import "./styles/fonts.css"`
+4. Add `<link rel="preload">` in `base.tsx` for critical weights
+5. Verify `font-display: swap` is used
+
+**Verification:** no requests to `fonts.googleapis.com` in network.
+
+### Phase 3 — CSS token cleanup
+
+1. Remove Primer aliases in `tokens-carbon.css` (lines 191-207)
+2. Find and replace all references to those aliases in CSS
+3. Remove duplicate breakpoints in `layout-carbon.css` (lines 22-44)
+4. Remove `layout.css` (duplicate of `layout-carbon.css`)
+5. Remove token redefinitions from `base.css`
+6. Fix invalid dark mode selector
+
+**Verification:** `deno task build` + visual inspection in light/dark mode.
+
+### Phase 4 — Grid simplification
+
+1. Replace the `bx--col-*` system (116 classes) with native CSS Grid
+2. Adapt TSX templates to use new classes
+3. Keep header/footer with existing `bx--` classes
+
+**Verification:** responsive correct at 320px, 672px, 1056px+.
+
+### Phase 5 — `_config.ts` refactoring
+
+1. Extract plugin config into `_config/plugins.ts`
+2. Extract asset registration into `_config/assets.ts`
+3. Extract feeds into `_config/feeds.ts`
+4. Extract post-build hooks into `_config/post-build.ts`
+5. Reduce `_config.ts` to ~100 lines of orchestration
+
+**Verification:** identical `deno task build` output before/after.
+
+### Phase 6 — JS consolidation
+
+1. Remove `post-code-copy-exec-command.js`
+2. Merge `carbon.js` into `disclosure-controls.js`
+3. Consolidate 6 service worker files into 2 (`sw.js` + `sw-register.js`)
+4. Update asset registrations in `_config.ts`
+
+**Verification:** all JS features work (theme, search, copy, SW).
+
+### Phase 7 — Icon extraction
+
+1. Create `src/utils/carbon-icons.ts` with all SVG paths
+2. Refactor `Header.tsx` and `Footer.tsx` to import from this module
+3. Remove `icons` plugin (Octicons) from `_config.ts` if unused
+
+**Verification:** icons visually identical.
+
+### Phase 8 — Split `components.css`
+
+1. Create `src/styles/components/` with one file per component
+2. Move each block from `components.css` into its own file
+3. Update imports in `style.css`
+
+**Verification:** identical CSS after build.
+
+### Phase 9 — Content contract
+
+1. Create `contracts/post.schema.json` and `contracts/feed.schema.json`
+2. Implement Lume plugin `content-contract.ts` generating `/api/posts/*.json`
+3. Create `contracts/validate.ts` for validation
+4. Add `deno task validate-contracts` to `deno.json`
+
+**Verification:** valid JSON generated for each article, conforming to schema.
+
+### Phase 10 — Documentation update
+
+1. Update `CLAUDE.md` and `AGENTS.md` (must stay identical) with Carbon changes
+2. Update `ARCHITECTURE.md` with diagram and content contract
+3. Update this file with completed phases
+
+**Verification:** `CLAUDE.md` and `AGENTS.md` are byte-identical.
+
+---
+
+## 9. Design JSON sources (from `design/` directory)
 
 - `design/Theme.json`
 - `design/Layer.json`
@@ -34,258 +482,22 @@ répertoire `design/` à la racine du repo**.
 - `design/Color palette 4.json`
 - `design/Numbers.json`
 
----
-
-## 1. Fondations
-
-| Section     | Décision                                                                        | Do                                                                                                               | Don’t                                   | Source Carbon                                                                 | Source JSON dans le repo                                                                    |
-| ----------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Thèmes      | Supporter White, Gray 10, Gray 90, Gray 100                                     | Utiliser uniquement des tokens sémantiques ; préparer clair/sombre                                               | Pas de couleurs codées en dur           | [Themes overview](https://carbondesignsystem.com/elements/themes/overview/)   | `design/Theme.json`                                                                         |
-| Layers      | Page = Background ; module secondaire = Layer 01 ; sous-module = Layer 02       | Utiliser Layer 01 pour les blocs secondaires                                                                     | Pas de faux fond “card” hors système    | [Themes overview](https://carbondesignsystem.com/elements/themes/overview/)   | `design/Layer.json`, `design/Theme.json`                                                    |
-| Spacing     | Échelle Carbon stricte                                                          | 8 = micro-gap ; 16 = padding standard ; 24 = séparation moyenne ; 32–40 = séparation forte ; 48–64 = respiration | Pas de 18/20/28/36 arbitraires          | [2x Grid overview](https://carbondesignsystem.com/elements/2x-grid/overview/) | `design/Spacing.json`, `design/Numbers.json`                                                |
-| Radius      | Coins carrés par défaut ; round seulement si justifié                           | Garder les surfaces sobres                                                                                       | Pas d’arrondis décoratifs partout       | [Tile usage](https://carbondesignsystem.com/components/tile/usage/)           | `design/Radius.json`                                                                        |
-| Breakpoints | 320 / 672 / 1056 / 1312 / 1584 / 1784                                           | Définir le responsive sur ces vrais seuils                                                                       | Pas de breakpoints maison non alignés   | [2x Grid overview](https://carbondesignsystem.com/elements/2x-grid/overview/) | `design/Breakpoint.json`, `design/Breakpoint LG–XL.json`, `design/Breakpoint Max-Max+.json` |
-| Grille      | Wide en desktop ; Narrow pour contenus resserrés ; Nested pour sous-composition | Standardiser la mise en page desktop sur Wide                                                                    | Pas de Condensed pour la lecture longue | [2x Grid overview](https://carbondesignsystem.com/elements/2x-grid/overview/) | `design/Grid mode.json`, `design/Column span.json`                                          |
-
----
-
-## 2. Shell
-
-| Section             | Décision                                                     | Do                                                    | Don’t                                                  | Source Carbon                                                                                                                                                                                             | Source JSON dans le repo                                        |
-| ------------------- | ------------------------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Header global       | Le header contient hamburger, marque, nav, recherche, langue | Header stable, persistant, purement navigationnel     | Pas de Telegram, pas d’articles récents dans le header | [UI shell header / usage](https://carbondesignsystem.com/components/UI-shell-header/usage/) ; [UI shell header / style](https://carbondesignsystem.com/components/UI-shell-header/style/)                 | `design/Theme.json`, `design/Layer.json`, `design/Spacing.json` |
-| Navigation mobile   | Panneau latéral mobile simple                                | Home, Writing, About, Archive, langue, thème éventuel | Pas de contenu éditorial dans le panneau               | [UI shell left panel / usage](https://carbondesignsystem.com/components/UI-shell-left-panel/usage/) ; [UI shell left panel / style](https://carbondesignsystem.com/components/UI-shell-left-panel/style/) | `design/Aside.json`, `design/Breakpoint.json`                   |
-| Recherche           | Recherche compacte intégrée au header                        | UI Carbon, moteur libre côté Lume, clavier OK         | Pas de bloc de recherche surdimensionné                | [Search / usage](https://carbondesignsystem.com/components/search/usage/) ; [Search / style](https://carbondesignsystem.com/components/search/style/)                                                     | `design/Layer.json`, `design/Theme.json`, `design/Spacing.json` |
-| Sélecteur de langue | Dropdown standard compact                                    | Accessible clavier ; intégré proprement au header     | Pas de menu gadget                                     | [Dropdown / usage](https://carbondesignsystem.com/components/dropdown/usage/) ; [Dropdown / style](https://carbondesignsystem.com/components/dropdown/style/)                                             | `design/Layer.json`, `design/Theme.json`, `design/Spacing.json` |
-
----
-
-## 3. Home
-
-| Section         | Décision                                         | Do                                                                       | Don’t                                                                         | Source Carbon                                                                                                                                                                                                                 | Source JSON dans le repo                                                                                                                                                                                |
-| --------------- | ------------------------------------------------ | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Hero            | Bloc éditorial, pas une card                     | Eyebrow, H1, baseline, respiration forte                                 | Pas de look applicatif                                                        | [Typography overview](https://carbondesignsystem.com/elements/typography/overview/) ; [2x Grid overview](https://carbondesignsystem.com/elements/2x-grid/overview/)                                                           | `design/Breakpoint.json`, `design/Breakpoint LG–XL.json`, `design/Spacing.json`                                                                                                                         |
-| Recent writing  | Contenu principal de la home                     | Liste sobre, date secondaire, titre en lien, lien archive séparé         | Ne pas concurrencer visuellement cette section                                | [Link / usage](https://carbondesignsystem.com/components/link/usage/) ; [Link / style](https://carbondesignsystem.com/components/link/style/)                                                                                 | `design/Spacing.json`, `design/Theme.json`                                                                                                                                                              |
-| Widget Telegram | Module secondaire de contenu sous Recent writing | Surface sur Layer 01, 3 messages max, CTA final, visuellement secondaire | Pas dans le header, pas dans la nav mobile, pas au-dessus des billets récents | [2x Grid overview](https://carbondesignsystem.com/elements/2x-grid/overview/) ; [Tile / usage](https://carbondesignsystem.com/components/tile/usage/) ; [Link / usage](https://carbondesignsystem.com/components/link/usage/) | `design/Layer.json`, `design/Theme.json`, `design/Spacing.json`, `design/Radius.json`, `design/Breakpoint.json`, `design/Breakpoint LG–XL.json`, `design/Breakpoint Max-Max+.json`, `design/Aside.json` |
-| Footer          | Footer léger et aligné à la grille               | Peu de liens, typographie secondaire                                     | Pas de surcharge ni de second widget social                                   | [2x Grid overview](https://carbondesignsystem.com/elements/2x-grid/overview/) ; [Link / usage](https://carbondesignsystem.com/components/link/usage/)                                                                         | `design/Spacing.json`, `design/Theme.json`                                                                                                                                                              |
-
----
-
-## 4. Archive
-
-| Section        | Décision                                                | Do                                                 | Don’t                                             | Source Carbon                                                                     | Source JSON dans le repo                                                                                                                                |
-| -------------- | ------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Breadcrumb     | Recommandé sur archive                                  | `Home / Writing / Archive` sous le header          | Pas de hiérarchie inutilement profonde            | [Breadcrumb / usage](https://carbondesignsystem.com/components/breadcrumb/usage/) | `design/Spacing.json`, `design/Theme.json`                                                                                                              |
-| Filtres / Tags | Utiliser les couleurs de tags pour de vraies catégories | Peu de couleurs ; focus visible ; taxonomie claire | Pas de patchwork chromatique                      | [Tag / usage](https://carbondesignsystem.com/components/tag/usage/)               | `design/Color palette.json`, `design/Color palette 1.json`, `design/Color palette 2.json`, `design/Color palette 3.json`, `design/Color palette 4.json` |
-| Pagination     | Pagination de navigation en bas de l’archive            | Accessible, claire, alignée à la grille            | Pas de logique “data table” si archive éditoriale | [Pagination / usage](https://carbondesignsystem.com/components/pagination/usage/) | `design/Spacing.json`, `design/Breakpoint.json`                                                                                                         |
-
----
-
-## 5. Article
-
-| Section             | Décision                                                | Do                                 | Don’t                                     | Source Carbon                                                                                                                                             | Source JSON dans le repo                                                                                                                                |
-| ------------------- | ------------------------------------------------------- | ---------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Métadonnées / Tags  | Tags read-only et discrets                              | Peu de tags, cohérence chromatique | Pas de tags qui ressemblent à des CTA     | [Tag / usage](https://carbondesignsystem.com/components/tag/usage/) ; [Typography overview](https://carbondesignsystem.com/elements/typography/overview/) | `design/Color palette.json`, `design/Color palette 1.json`, `design/Color palette 2.json`, `design/Color palette 3.json`, `design/Color palette 4.json` |
-| Liens dans le corps | Inline links dans le texte, standalone links hors texte | Différencier les usages            | Pas de liens stylés comme boutons partout | [Link / usage](https://carbondesignsystem.com/components/link/usage/) ; [Link / style](https://carbondesignsystem.com/components/link/style/)             | `design/Theme.json`, `design/Spacing.json`                                                                                                              |
-
----
-
-## 6. About
-
-| Section                | Décision                                    | Do                                 | Don’t                              | Source Carbon                                                                                                                                                       | Source JSON dans le repo                        |
-| ---------------------- | ------------------------------------------- | ---------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Structure générale     | Page éditoriale, sobre, alignée à la grille | Structure lisible, rythme cohérent | Pas de landing page lourde         | [Typography overview](https://carbondesignsystem.com/elements/typography/overview/) ; [2x Grid overview](https://carbondesignsystem.com/elements/2x-grid/overview/) | `design/Spacing.json`, `design/Breakpoint.json` |
-| Pictogrammes éventuels | Illustratifs uniquement                     | Usage ponctuel et illustratif      | Pas dans la navigation ni le shell | [Pictograms / usage](https://carbondesignsystem.com/elements/pictograms/usage/)                                                                                     | `design/Colors pictogram.json`                  |
-
----
-
-## 7. Icônes et composants secondaires
-
-| Section          | Décision                                          | Do                                   | Don’t                               | Source Carbon                                                                                 | Source JSON dans le repo                             |
-| ---------------- | ------------------------------------------------- | ------------------------------------ | ----------------------------------- | --------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| Icônes           | Un seul langage d’icônes UI cohérent              | Standardiser les tailles et le style | Pas de mélange de familles d’icônes | [Icons / usage](https://carbondesignsystem.com/elements/icons/usage/)                         | `design/Colors.json`, `design/Colors pictogram.json` |
-| Content switcher | Référence éventuelle pour futures bascules de vue | Réserver à un vrai besoin            | Ne pas le forcer sans cas d’usage   | [Content switcher / usage](https://carbondesignsystem.com/components/content-switcher/usage/) | `design/Content switcher.json`                       |
-| Modal            | Référence pour futurs overlays                    | Utiliser seulement si besoin clair   | Pas nécessaire au MVP du blog       | [Modal / usage](https://carbondesignsystem.com/components/modal/usage/)                       | `design/Modal.json`                                  |
-
----
-
-## 8. QA finale
-
-| Section     | Décision                                                  | Do                                               | Don’t                                  | Source Carbon                                                                                                                                                                                     | Source JSON dans le repo                                                                  |
-| ----------- | --------------------------------------------------------- | ------------------------------------------------ | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Shell QA    | Vérifier skip link, header, nav mobile, recherche, langue | Tout tester au clavier                           | Pas de contenu éditorial dans le shell | [UI shell header / usage](https://carbondesignsystem.com/components/UI-shell-header/usage/) ; [UI shell left panel / usage](https://carbondesignsystem.com/components/UI-shell-left-panel/usage/) | `design/Breakpoint.json`                                                                  |
-| Layout QA   | Vérifier spacing, grille, layers, radius                  | Respect strict de l’échelle Carbon               | Pas d’ajustements arbitraires          | [2x Grid overview](https://carbondesignsystem.com/elements/2x-grid/overview/)                                                                                                                     | `design/Spacing.json`, `design/Grid mode.json`, `design/Radius.json`, `design/Layer.json` |
-| Telegram QA | Vérifier placement, hiérarchie, thèmes, états             | Sous Recent writing, sur Layer 01, états propres | Jamais dans header/nav mobile          | [Tile / usage](https://carbondesignsystem.com/components/tile/usage/) ; [2x Grid overview](https://carbondesignsystem.com/elements/2x-grid/overview/)                                             | `design/Layer.json`, `design/Spacing.json`, `design/Aside.json`, `design/Breakpoint.json` |
-
----
-
-## 9. Liste des sources à transmettre à l’équipe
-
-### Carbon
+## 10. Carbon guidelines references
 
 - [Themes overview](https://carbondesignsystem.com/elements/themes/overview/)
 - [2x Grid overview](https://carbondesignsystem.com/elements/2x-grid/overview/)
 - [Typography overview](https://carbondesignsystem.com/elements/typography/overview/)
-- [UI shell header / usage](https://carbondesignsystem.com/components/UI-shell-header/usage/)
-- [UI shell header / style](https://carbondesignsystem.com/components/UI-shell-header/style/)
-- [UI shell left panel / usage](https://carbondesignsystem.com/components/UI-shell-left-panel/usage/)
-- [UI shell left panel / style](https://carbondesignsystem.com/components/UI-shell-left-panel/style/)
-- [Search / usage](https://carbondesignsystem.com/components/search/usage/)
-- [Search / style](https://carbondesignsystem.com/components/search/style/)
-- [Dropdown / usage](https://carbondesignsystem.com/components/dropdown/usage/)
-- [Dropdown / style](https://carbondesignsystem.com/components/dropdown/style/)
-- [Link / usage](https://carbondesignsystem.com/components/link/usage/)
-- [Link / style](https://carbondesignsystem.com/components/link/style/)
-- [Breadcrumb / usage](https://carbondesignsystem.com/components/breadcrumb/usage/)
-- [Pagination / usage](https://carbondesignsystem.com/components/pagination/usage/)
-- [Tag / usage](https://carbondesignsystem.com/components/tag/usage/)
-- [Tile / usage](https://carbondesignsystem.com/components/tile/usage/)
-- [Icons / usage](https://carbondesignsystem.com/elements/icons/usage/)
-- [Pictograms / usage](https://carbondesignsystem.com/elements/pictograms/usage/)
-- [Content switcher / usage](https://carbondesignsystem.com/components/content-switcher/usage/)
-- [Modal / usage](https://carbondesignsystem.com/components/modal/usage/)
-
-### JSON dans `design/` à la racine du repo
-
-- `design/Theme.json`
-- `design/Layer.json`
-- `design/Spacing.json`
-- `design/Radius.json`
-- `design/Breakpoint.json`
-- `design/Breakpoint LG–XL.json`
-- `design/Breakpoint Max-Max+.json`
-- `design/Grid mode.json`
-- `design/Column span.json`
-- `design/Aside.json`
-- `design/Modal.json`
-- `design/Content switcher.json`
-- `design/Colors.json`
-- `design/Colors pictogram.json`
-- `design/Color palette.json`
-- `design/Color palette 1.json`
-- `design/Color palette 2.json`
-- `design/Color palette 3.json`
-- `design/Color palette 4.json`
-- `design/Numbers.json`
-
-# Plan de migration — Suppression du widget Telegram
-
-## Résumé exécutif
-
-Le **widget Telegram** a été officiellement abandonné et retiré du code de
-l’application. Ce plan détaille les conséquences visuelles, fonctionnelles et
-opérationnelles de cette suppression. Nous confirmons qu’aucun autre contenu
-n’est affecté : les composants restants ont été vérifiés contre les designs
-Figma (exports JSON dans `design/`) et restent conformes aux spécifications.
-Comme l’indiquent les directives Carbon précédentes, le widget Telegram n’était
-qu’un module secondaire (sous la section « Recent writing ») et ne devait jamais
-figurer dans le **header** ou le menu mobile【96†L68-L69】【99†L1-L2】. Sa
-suppression simplifie la page d’accueil et respecte ces recommandations de
-design.
-
-## 1. Raison du changement
-
-Le widget Telegram a été jugé inutile et retiré du produit. Les raisons
-principales sont : 
-
-- **Conformité au design initial** : Le plan Carbon spécifiait que ce widget ne
-  devait pas apparaître dans le header ni dans le menu
-  principal【96†L68-L69】【99†L1-L2】. Dans la pratique, il n’existait plus dans
-  le code, confirmant son obsolescence.
-- **Simplicité de l’UI** : La suppression élimine un élément social non
-  essentiel, limitant les distractions pour l’utilisateur et respectant le
-  principe Carbon de ne pas surcharger le header ou les modules
-  principaux【99†L1-L2】.
-- **Pas d’impact sur le contenu critique** : Aucune fonctionnalité vitale n’est
-  liée à ce widget. La section « Recent writing » reste la section principale de
-  la page d’accueil.
-
-## 2. Fichiers à modifier / supprimer
-
-| Fichier                              | Action                                                        | Diff ou extrait de remplacement                                                                                           |
-| ------------------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `src/_components/TelegramWidget.tsx` | Supprimé (widget retiré précédemment)                         | _Aucun contenu – fichier supprimé (aucune référence résiduelle)._                                                         |
-| `src/styles/components.css`          | Mise à jour : retrait des règles CSS liées au widget Telegram | `diff<br>- .telegram-widget { ... }<br>- .telegram-widget__title { ... }<br>- /* etc. jusqu'aux classes du widget */<br>` |
-
-> **Note :** Aucun autre fichier code n’est concerné, car le composant Telegram
-> n’était plus utilisé.
-
-## 3. Étapes de test (local, préproduction, production)
-
-1. **Tests locaux (dev)** : Lancer le serveur de développement
-   (`deno task serve`). Vérifier que la page d’accueil s’affiche sans erreur et
-   que la section « Recent writing » se présente normalement. S’assurer
-   qu’aucune mention ou espace réservé au widget Telegram n’apparaît dans le DOM
-   (inspecteur).
-2. **Tests en staging** : Déployer la branche de feature sur l’environnement de
-   staging. Confirmer les mêmes vérifications visuelles qu’en local sur les
-   navigateurs cibles (desktop, mobile). Vérifier la console navigateur
-   qu’aucune requête ou script lié à Telegram n’est exécuté.
-3. **Tests en production** : Après déploiement final, reproduire rapidement les
-   vérifications en staging. En complément, surveiller les logs d’erreurs de la
-   build (aucun import manquant ou erreur JS relatif à Telegram).
-
-## 4. Plan de rollback et checklist QA
-
-- **Rollback rapide** : Si un problème majeur survient, révertir le commit de
-  suppression (e.g. via `git revert`). Comme le widget n’est plus dans le code,
-  le rollback devrait simplement réintroduire le composant si besoin.
-- **Checklist QA** :
-  - [ ] Lien vers le canal Telegram retiré du site (notamment dans le footer ou
-        ailleurs).
-  - [ ] Aucune erreur JS/HTML liée au widget dans la console navigateur.
-  - [ ] Aucune référence CSS restante aux classes `.telegram-widget*`.
-  - [ ] Page d’accueil toujours conforme au design (espacements, grilles
-        inchangés).
-  - [ ] Pas de régression visuelle dans les sections adjacentes.
-  - [ ] Tests unitaires et d’intégration existants passent (aucun test sur
-        Telegram).
-
-## 5. Accessibilité et SEO après suppression
-
-- **Accessibilité (WCAG)** : L’élément `<aside>` du widget Telegram (qui aurait
-  eu `aria-label="Telegram"`) a été supprimé. Vérifier que les autres landmarks
-  (`<header>`, `<main>`, `<footer>`) restent corrects. Comme le widget était
-  purement informatif (texte), sa suppression n’empêche pas l’accès au contenu
-  principal. Les autres liens et boutons (ex. liens d’archives, fil d’Ariane)
-  conservent leurs attributs sémantiques et ARIA.
-- **Référencement (SEO)** : Le lien de CTA « Voir le canal » vers `t.me/...` a
-  été retiré. Étant donné qu’il s’agissait d’un lien externe vers Telegram, son
-  retrait n’affecte pas négativement le SEO interne. Au contraire, le contenu
-  principal (articles récents) reste prédominant. Le sitemap et les balises Meta
-  (titres, descriptions) restent inchangés. Aucune nouvelle URL n’est créée ni
-  supprimée du sitemap.
-
-## 6. Analytique / Traçage
-
-Aucun service d’analytics n’était lié au widget Telegram (pas de Google
-Analytics, pas de pixel, etc.). Il n’y a donc **aucun événement à retirer ou
-modifier**. Les seuls liens d’interaction (par exemple l’archive des posts) ne
-sont pas liés au widget. Si un suivi de clics sur « Voir le canal » avait été
-configuré, il doit être supprimé (spécifier la balise event si existante).
-Actuellement, rien n’est reporté concernant Telegram.
-
-## 7. Maquettes visuelles avant/après
-
-```plaintext
-PAGE D’ACCUEIL (Before)                      PAGE D’ACCUEIL (After)
-┌────────────────────────┐                   ┌────────────────────────┐
-│        Header          │                   │        Header          │
-│ (Hamburger, logo, ...) │                   │ (Hamburger, logo, ...) │
-├────────────────────────┤                   ├────────────────────────┤
-│ Hero : grand titre     │                   │ Hero : grand titre     │
-│ (eyebrow, H1, lead)    │                   │ (idem)                 │
-├────────────────────────┤                   ├────────────────────────┤
-│ Section “Recent writing”│                  │ Section “Recent writing”│
-│ - Posts list (2xgrid)  │                  │ - Posts list (2xgrid)  │
-│ - Lien « Voir tout »    │                  │ - Lien « Voir tout »    │
-├────────────────────────┤                   ├────────────────────────┤
-│ **Widget Telegram**    │   ← **SUPPRIMÉ**    │ (SECTION SUPPRIMÉE)     │
-│ - [@ChannelName]       │                  │                        │
-│ - Message 1 (date, txt)│                  │                        │
-│ - Message 2 ...        │                  │                        │
-│ - Bouton « Voir le canal » │              │                        │
-├────────────────────────┤                   ├────────────────────────┤
-│ Footer (liens légaux)  │                   │ Footer (liens légaux)  │
-└────────────────────────┘                   └────────────────────────┘
-```
+- [UI Shell Header](https://carbondesignsystem.com/components/UI-shell-header/usage/)
+- [UI Shell Left Panel](https://carbondesignsystem.com/components/UI-shell-left-panel/usage/)
+- [Search](https://carbondesignsystem.com/components/search/usage/)
+- [Dropdown](https://carbondesignsystem.com/components/dropdown/usage/)
+- [Link](https://carbondesignsystem.com/components/link/usage/)
+- [Breadcrumb](https://carbondesignsystem.com/components/breadcrumb/usage/)
+- [Pagination](https://carbondesignsystem.com/components/pagination/usage/)
+- [Tag](https://carbondesignsystem.com/components/tag/usage/)
+- [Tile](https://carbondesignsystem.com/components/tile/usage/)
+- [Code Snippet](https://carbondesignsystem.com/components/code-snippet/usage/)
+- [Content Switcher](https://carbondesignsystem.com/components/content-switcher/usage/)
+- [Icons](https://carbondesignsystem.com/elements/icons/usage/)
+- [Pictograms](https://carbondesignsystem.com/elements/pictograms/usage/)
+- [Modal](https://carbondesignsystem.com/components/modal/usage/)
