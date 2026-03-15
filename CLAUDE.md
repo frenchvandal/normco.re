@@ -10,10 +10,8 @@ modules as the single source of truth for tokens. Prefix: `cds--` (classes),
 
 Before modifying UI code, agents must read:
 
-docs/migration/CARBON_MIGRATION_PLAN.md\
 docs/tokens/CARBON_TOKEN_MAP.json\
-docs/migration/CARBON_GUIDELINE_INDEX.md\
-docs/audits/carbon_engineering_audit.md
+docs/migration/CARBON_GUIDELINE_INDEX.md
 
 Carbon documentation is the authoritative reference:
 
