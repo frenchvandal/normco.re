@@ -151,10 +151,7 @@ describe("Header()", () => {
         Header({ currentUrl: "/", language: "en" }),
       );
       assertMatch(html, /<svg[^>]*class="cds--header__menu-icon"/);
-      assertStringIncludes(
-        html,
-        'd="M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z"',
-      );
+      assertStringIncludes(html, 'data-carbon-icon="menu"');
     });
   });
 
@@ -233,6 +230,15 @@ describe("Header()", () => {
         /<div[^>]*id="site-search-panel"[^>]*class="cds--header__panel cds--header__search-panel"/,
       );
       assertStringIncludes(html, 'class="cds--header__search-root"');
+      assertStringIncludes(
+        html,
+        'data-search-unavailable-label="Search is temporarily unavailable."',
+      );
+      assertStringIncludes(
+        html,
+        'data-search-offline-label="Search is unavailable while offline."',
+      );
+      assertStringIncludes(html, 'data-search-retry-label="Retry"');
     });
   });
 
@@ -255,9 +261,9 @@ describe("Header()", () => {
         html,
         /<section[^>]*id="site-language-panel"[^>]*class="cds--header__panel cds--header__language-panel"[^>]*hidden/,
       );
-      assertStringIncludes(html, 'class="cds--header__panel-title"');
-      assertStringIncludes(html, 'class="cds--header__language-list"');
-      assertStringIncludes(html, "cds--header__language-item");
+      assertStringIncludes(html, 'data-language-menu=""');
+      assertStringIncludes(html, 'role="menu"');
+      assertStringIncludes(html, "cds--header__language-option");
       // Language options present
       assertStringIncludes(html, 'href="/"');
       assertStringIncludes(html, 'href="/fr/"');
@@ -266,7 +272,38 @@ describe("Header()", () => {
       // Current language marked
       assertMatch(
         html,
-        /<a[^>]*href="\/fr\/"[^>]*cds--header__language-item[^>]*aria-current="page"/,
+        /<a[^>]*href="\/fr\/"[^>]*cds--header__language-option[^>]*role="menuitemradio"[^>]*aria-checked="true"/,
+      );
+      assertStringIncludes(html, 'data-language-panel=""');
+      assertStringIncludes(html, 'data-language-option="en"');
+      assertStringIncludes(html, 'data-carbon-icon="checkmark"');
+    });
+
+    it("uses page alternates for language links when available", async () => {
+      const html = await renderComponent(
+        Header({
+          currentUrl: "/fr/about/",
+          language: "fr",
+          languageAlternates: {
+            en: "/about/",
+            fr: "/fr/about/",
+            zhHans: "/zh-hans/about/",
+            zhHant: "/zh-hant/about/",
+          },
+        }),
+      );
+
+      assertStringIncludes(
+        html,
+        'href="/about/" class="cds--header__language-option" data-language-option="en"',
+      );
+      assertStringIncludes(
+        html,
+        'href="/fr/about/" class="cds--header__language-option" data-language-option="fr"',
+      );
+      assertMatch(
+        html,
+        /<a[^>]*href="\/fr\/about\/"[^>]*aria-checked="true"/,
       );
     });
 
@@ -275,11 +312,7 @@ describe("Header()", () => {
         Header({ currentUrl: "/", language: "en" }),
       );
       assertMatch(html, /<svg[^>]*class="cds--header__action-icon"/);
-      // Carbon Translate icon
-      assertStringIncludes(
-        html,
-        'd="M27.85 29H30L24 14H21.65l-6 15H17.8l1.6-4h6.85zM20.2 23l2.62-6.56L25.45 23zM18 7V5H11V2H9V5H2V7H12.74a14.71 14.71 0 0 1-3.19 6.18A13.5 13.5 0 0 1 7.26 9H5.16a16.47 16.47 0 0 0 3 5.58A16.84 16.84 0 0 1 3 18l.75 1.86A18.47 18.47 0 0 0 9.53 16a16.92 16.92 0 0 0 5.76 3.84L16 18a14.48 14.48 0 0 1-5.12-3.37A17.64 17.64 0 0 0 14.8 7z"',
-      );
+      assertStringIncludes(html, 'data-carbon-icon="translate"');
     });
   });
 
@@ -306,6 +339,14 @@ describe("Header()", () => {
         html,
         /<svg[^>]*class="cds--header__action-icon theme-icon theme-icon--moon"/,
       );
+      assertMatch(
+        html,
+        /<svg[^>]*class="cds--header__action-icon theme-icon theme-icon--system"/,
+      );
+      assertStringIncludes(html, 'data-carbon-icon="sun"');
+      assertStringIncludes(html, 'data-carbon-icon="moon"');
+      assertStringIncludes(html, 'data-carbon-icon="screen"');
+      assertStringIncludes(html, 'data-label-follow-system="Follow system theme"');
     });
   });
 

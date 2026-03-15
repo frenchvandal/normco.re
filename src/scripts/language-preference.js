@@ -306,6 +306,7 @@
     }
 
     languagePanel.removeAttribute("expanded");
+    languagePanel.setAttribute("hidden", "");
 
     const panelId = languagePanel.id;
 
@@ -313,17 +314,20 @@
       return;
     }
 
-    for (
-      const action of globalThis.document.querySelectorAll(
-        "cds-header-global-action[panel-id]",
-      )
-    ) {
+    for (const action of globalThis.document.querySelectorAll(
+      '.cds--header__action[aria-controls], .cds--header__menu-toggle, cds-header-global-action[panel-id]',
+    )) {
       if (!(action instanceof HTMLElement)) {
         continue;
       }
 
-      if (action.getAttribute("panel-id") === panelId) {
+      if (
+        action.getAttribute("aria-controls") === panelId ||
+        action.getAttribute("panel-id") === panelId
+      ) {
+        action.setAttribute("aria-expanded", "false");
         action.removeAttribute("active");
+        action.focus({ preventScroll: true });
       }
     }
   }

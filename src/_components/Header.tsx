@@ -1,18 +1,22 @@
 /** Site header with Carbon UI Shell structure, navigation, and user controls. */
 
 import {
+  CHECKMARK_ICON,
+  DARK_ICON,
+  LIGHT_ICON,
+  MENU_ICON,
+  SEARCH_ICON,
+  SYSTEM_ICON,
+  TRANSLATE_ICON,
+} from "../utils/carbon-icons.ts";
+import CarbonIcon from "./CarbonIcon.tsx";
+import {
   getLocalizedUrl,
+  getLanguageTag,
   getSiteTranslations,
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
 } from "../utils/i18n.ts";
-import {
-  DARK_ICON_PATHS,
-  LIGHT_ICON_PATHS,
-  MENU_ICON_PATH,
-  SEARCH_ICON_PATH,
-  TRANSLATE_ICON_PATH,
-} from "../utils/carbon-icons.ts";
 
 const HOME_URLS = new Set(
   SUPPORTED_LANGUAGES.map((language) => getLocalizedUrl("/", language)),
@@ -49,9 +53,10 @@ function ariaCurrent(
 
 /** Renders the Carbon UI Shell header with navigation and user controls. */
 export default (
-  { currentUrl, language }: {
+  { currentUrl, language, languageAlternates = {} }: {
     readonly currentUrl: string;
     readonly language: SiteLanguage;
+    readonly languageAlternates?: Partial<Record<SiteLanguage, string>>;
   },
 ) => {
   const translations = getSiteTranslations(language);
@@ -96,17 +101,12 @@ export default (
               aria-expanded="false"
               aria-controls={sideNavId}
             >
-              <svg
-                class="cds--header__menu-icon"
-                width="20"
-                height="20"
-                viewBox="0 0 32 32"
-                fill="currentColor"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path d={MENU_ICON_PATH}></path>
-              </svg>
+              <CarbonIcon
+                icon={MENU_ICON}
+                className="cds--header__menu-icon"
+                width={20}
+                height={20}
+              />
             </button>
 
             {/* Product/brand name */}
@@ -147,17 +147,12 @@ export default (
               aria-expanded="false"
               aria-controls={searchPanelId}
             >
-              <svg
-                class="cds--header__action-icon"
-                width="20"
-                height="20"
-                viewBox="0 0 32 32"
-                fill="currentColor"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path d={SEARCH_ICON_PATH}></path>
-              </svg>
+              <CarbonIcon
+                icon={SEARCH_ICON}
+                className="cds--header__action-icon"
+                width={20}
+                height={20}
+              />
             </button>
 
             {/* Language selector action */}
@@ -167,19 +162,14 @@ export default (
               aria-label={translations.site.languageSelectAriaLabel}
               aria-expanded="false"
               aria-controls={languagePanelId}
-              aria-haspopup="true"
+              aria-haspopup="menu"
             >
-              <svg
-                class="cds--header__action-icon"
-                width="20"
-                height="20"
-                viewBox="0 0 32 32"
-                fill="currentColor"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path d={TRANSLATE_ICON_PATH}></path>
-              </svg>
+              <CarbonIcon
+                icon={TRANSLATE_ICON}
+                className="cds--header__action-icon"
+                width={20}
+                height={20}
+              />
             </button>
 
             {/* Theme toggle action */}
@@ -188,77 +178,78 @@ export default (
               type="button"
               class="cds--header__action"
               aria-label={translations.site.themeToggleLabel}
-              aria-pressed="false"
               data-label-switch-light={translations.site
                 .switchToLightThemeLabel}
               data-label-switch-dark={translations.site.switchToDarkThemeLabel}
+              data-label-follow-system={translations.site.followSystemThemeLabel}
             >
-              <svg
-                class="cds--header__action-icon theme-icon theme-icon--sun"
-                width="20"
-                height="20"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                aria-hidden="true"
-                focusable="false"
-              >
-                {LIGHT_ICON_PATHS.map((path) => (
-                  <path
-                    key={path.d}
-                    d={path.d}
-                    {...("transform" in path
-                      ? { transform: path.transform }
-                      : {})}
-                  >
-                  </path>
-                ))}
-              </svg>
-              <svg
-                class="cds--header__action-icon theme-icon theme-icon--moon"
-                width="20"
-                height="20"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                aria-hidden="true"
-                focusable="false"
-              >
-                {DARK_ICON_PATHS.map(({ d }) => <path key={d} d={d}></path>)}
-              </svg>
+              <CarbonIcon
+                icon={LIGHT_ICON}
+                className="cds--header__action-icon theme-icon theme-icon--sun"
+                width={20}
+                height={20}
+              />
+              <CarbonIcon
+                icon={DARK_ICON}
+                className="cds--header__action-icon theme-icon theme-icon--moon"
+                width={20}
+                height={20}
+              />
+              <CarbonIcon
+                icon={SYSTEM_ICON}
+                className="cds--header__action-icon theme-icon theme-icon--system"
+                width={20}
+                height={20}
+              />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Language selector dropdown panel */}
+      {/* Language selector dropdown menu */}
       <section
         id={languagePanelId}
         class="cds--header__panel cds--header__language-panel"
-        aria-labelledby={`${languagePanelId}-title`}
+        aria-label={translations.site.languageSelectLabel}
+        data-language-panel=""
         hidden
       >
-        <div class="cds--header__panel-content">
-          <h2 id={`${languagePanelId}-title`} class="cds--header__panel-title">
-            {translations.site.languageSelectLabel}
-          </h2>
-          <nav
-            class="cds--header__language-list"
-            aria-labelledby={`${languagePanelId}-title`}
-          >
-            {SUPPORTED_LANGUAGES.map((optionLanguage) => {
-              const optionUrl = getLocalizedUrl("/", optionLanguage);
-              const isSelected = optionLanguage === language;
-              return (
-                <a
-                  key={optionLanguage}
-                  href={optionUrl}
-                  class="cds--header__menu-item cds--header__language-item"
-                  {...(isSelected ? { "aria-current": "page" as const } : {})}
-                >
+        <div
+          class="cds--header__panel-content cds--header__language-menu"
+          role="menu"
+          aria-label={translations.site.languageSelectLabel}
+          data-language-menu=""
+        >
+          {SUPPORTED_LANGUAGES.map((optionLanguage) => {
+            const optionUrl = languageAlternates[optionLanguage] ??
+              getLocalizedUrl("/", optionLanguage);
+            const isSelected = optionLanguage === language;
+            return (
+              <a
+                key={optionLanguage}
+                href={optionUrl}
+                class="cds--header__language-option"
+                data-language-option={optionLanguage}
+                hreflang={getLanguageTag(optionLanguage)}
+                lang={getLanguageTag(optionLanguage)}
+                role="menuitemradio"
+                aria-checked={isSelected ? "true" : "false"}
+                tabindex={isSelected ? "0" : "-1"}
+              >
+                <span class="cds--header__language-label">
                   {translations.languageNames[optionLanguage]}
-                </a>
-              );
-            })}
-          </nav>
+                </span>
+                <span class="cds--header__language-check" aria-hidden="true">
+                  <CarbonIcon
+                    icon={CHECKMARK_ICON}
+                    className="cds--header__language-check-icon"
+                    width={16}
+                    height={16}
+                  />
+                </span>
+              </a>
+            );
+          })}
         </div>
       </section>
 
@@ -276,6 +267,10 @@ export default (
             id={searchContainerId}
             class="cds--header__search-root"
             data-search-root=""
+            data-search-unavailable-label={translations.site
+              .searchUnavailableLabel}
+            data-search-offline-label={translations.site.searchOfflineLabel}
+            data-search-retry-label={translations.site.searchRetryLabel}
           >
           </div>
         </div>

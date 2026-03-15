@@ -56,6 +56,8 @@
 
   /** @type {Set<string>} */
   const prefetchedUrls = new Set();
+  /** @type {Map<string, Promise<boolean>>} */
+  const pendingPrefetches = new Map();
   /** @type {WeakSet<HTMLAnchorElement>} */
   const hoverBoundLinks = new WeakSet();
   /** @type {Map<HTMLAnchorElement, number>} */
@@ -67,7 +69,7 @@
   })();
 
   function hasPrefetchBudget() {
-    return prefetchedUrls.size < PREFETCH_LIMIT;
+    return prefetchedUrls.size + pendingPrefetches.size < PREFETCH_LIMIT;
   }
 
   /**
@@ -134,32 +136,51 @@
 
   /**
    * @param {string} url
-   * @returns {Promise<void>}
+   * @returns {Promise<boolean>}
    */
   function prefetchUrl(url) {
-    if (prefetchedUrls.has(url) || !hasPrefetchBudget()) {
-      return Promise.resolve();
+    if (prefetchedUrls.has(url)) {
+      return Promise.resolve(true);
     }
 
-    prefetchedUrls.add(url);
+    const existingPrefetch = pendingPrefetches.get(url);
 
-    if (canUseDomPrefetch) {
-      return new Promise((resolve) => {
+    if (existingPrefetch !== undefined) {
+      return existingPrefetch;
+    }
+
+    if (!hasPrefetchBudget()) {
+      return Promise.resolve(false);
+    }
+
+    const prefetchPromise = (canUseDomPrefetch
+      ? new Promise((resolve) => {
         const prefetchLink = globalThis.document.createElement("link");
         prefetchLink.rel = "prefetch";
         prefetchLink.href = url;
         prefetchLink.as = "document";
-        prefetchLink.onload = () => resolve();
-        prefetchLink.onerror = () => resolve();
+        prefetchLink.onload = () => resolve(true);
+        prefetchLink.onerror = () => resolve(false);
         globalThis.document.head.append(prefetchLink);
-      });
-    }
+      })
+      : globalThis.fetch(url, {
+        mode: "same-origin",
+        credentials: "same-origin",
+        headers: { accept: "text/html" },
+      }).then((response) => response.ok, () => false))
+      .then((succeeded) => {
+        if (succeeded) {
+          prefetchedUrls.add(url);
+        }
 
-    return globalThis.fetch(url, {
-      mode: "same-origin",
-      credentials: "same-origin",
-      headers: { accept: "text/html" },
-    }).then(() => undefined, () => undefined);
+        return succeeded;
+      })
+      .finally(() => {
+        pendingPrefetches.delete(url);
+      });
+
+    pendingPrefetches.set(url, prefetchPromise);
+    return prefetchPromise;
   }
 
   /** @param {HTMLAnchorElement} link */

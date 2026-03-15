@@ -1,6 +1,6 @@
 // @ts-check
 (() => {
-  /** @typedef {"idle" | "copied"} CopyState */
+  /** @typedef {"idle" | "copied" | "error"} CopyState */
   const copyControls = globalThis.document.querySelectorAll(
     "[data-copy-control]",
   );
@@ -69,18 +69,23 @@
     const copyButton = getCopyButton(control);
     const copyLabel = getCopyLabel(control);
     const isCopied = state === "copied";
+    const isError = state === "error";
+    const statusMessage = isCopied
+      ? `${copyLabel} URL copied`
+      : isError
+      ? `Cannot copy ${copyLabel} URL`
+      : "";
+    const defaultLabel = `Copy ${copyLabel} URL`;
 
     control.dataset.copyState = state;
     control.classList.toggle("feed-copy-control--copied", isCopied);
-    setStatusMessage(
-      control,
-      isCopied ? `${copyLabel} URL copied` : "",
-    );
+    control.classList.toggle("feed-copy-control--error", isError);
+    setStatusMessage(control, statusMessage);
 
     if (copyButton !== null) {
       copyButton.setAttribute(
         "aria-label",
-        isCopied ? `${copyLabel} URL copied` : `Copy ${copyLabel} URL`,
+        state === "idle" ? defaultLabel : statusMessage,
       );
       copyButton.setAttribute(
         "title",
@@ -93,7 +98,7 @@
    * @param {HTMLElement} control
    * @returns {void}
    */
-  function clearCopiedStateLater(control) {
+  function clearCopyStateLater(control) {
     const existingTimer = resetTimers.get(control);
 
     if (existingTimer !== undefined) {
@@ -118,50 +123,20 @@
 
   /**
    * @param {string} text
-   * @returns {boolean}
-   */
-  function writeWithExecCommand(text) {
-    const textArea = globalThis.document.createElement("textarea");
-    textArea.value = text;
-    textArea.setAttribute("readonly", "true");
-    textArea.style.position = "fixed";
-    textArea.style.top = "0";
-    textArea.style.left = "-9999px";
-
-    globalThis.document.body.append(textArea);
-    textArea.focus();
-    textArea.select();
-
-    // TODO(phiphi): Remove execCommand fallback once browser support confirms it is no
-    // longer needed. execCommand is formally deprecated and may be removed without notice.
-    // Tracking: https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand
-    let success = false;
-    try {
-      success = globalThis.document.execCommand("copy");
-    } catch {
-      success = false;
-    }
-
-    textArea.remove();
-    return success;
-  }
-
-  /**
-   * @param {string} text
    * @returns {Promise<boolean>}
    */
   async function copyText(text) {
     const clipboard = globalThis.navigator.clipboard;
 
     if (clipboard === undefined || typeof clipboard.writeText !== "function") {
-      return writeWithExecCommand(text);
+      return false;
     }
 
     try {
       await clipboard.writeText(text);
       return true;
     } catch {
-      return writeWithExecCommand(text);
+      return false;
     }
   }
 
@@ -171,16 +146,10 @@
    * @returns {Promise<void>}
    */
   async function handleCopy(control, copyPath) {
+    setCopyState(control, "idle");
     const copied = await copyText(toAbsoluteUrl(copyPath));
-    const copyLabel = getCopyLabel(control);
-
-    if (!copied) {
-      setStatusMessage(control, `Cannot copy ${copyLabel} URL`);
-      return;
-    }
-
-    setCopyState(control, "copied");
-    clearCopiedStateLater(control);
+    setCopyState(control, copied ? "copied" : "error");
+    clearCopyStateLater(control);
   }
 
   for (const candidate of copyControls) {

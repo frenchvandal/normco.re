@@ -124,7 +124,9 @@ export function registerProcessors(site: Site): void {
   // Inject <?xml-stylesheet?> processing instructions into XML outputs.
   site.process([".xml"], (pages: Page[]) => {
     for (const page of pages) {
-      const pageUrl = page.data.url;
+      const pageUrl = typeof page.data.url === "string"
+        ? page.data.url
+        : page.outputPath;
 
       if (typeof pageUrl !== "string") {
         continue;
@@ -136,7 +138,14 @@ export function registerProcessors(site: Site): void {
 
       const content = String(page.content);
       const pi = `<?xml-stylesheet type="text/xsl" href="${xslHref}"?>`;
-      page.content = content.replace(XML_PI_PATTERN, `$1\n${pi}`);
+
+      if (content.includes(pi)) {
+        continue;
+      }
+
+      page.content = XML_PI_PATTERN.test(content)
+        ? content.replace(XML_PI_PATTERN, `$1\n${pi}`)
+        : `${pi}\n${content}`;
     }
   });
 }

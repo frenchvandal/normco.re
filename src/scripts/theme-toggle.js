@@ -1,6 +1,7 @@
 // @ts-check
 (() => {
   /** @typedef {"light" | "dark"} ColorMode */
+  /** @typedef {"light" | "dark" | "system"} ThemePreference */
   const root = globalThis.document.documentElement;
   const button = globalThis.document.getElementById("theme-toggle");
   const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
@@ -16,80 +17,118 @@
     "Switch to light theme";
   const switchToDarkLabel = themeToggleButton.dataset.labelSwitchDark ??
     "Switch to dark theme";
+  const followSystemLabel = themeToggleButton.dataset.labelFollowSystem ??
+    "Follow system theme";
 
-  /** @returns {ColorMode | null} */
-  function readStoredMode() {
+  /** @returns {ThemePreference | null} */
+  function readStoredPreference() {
     try {
-      const storedMode = globalThis.localStorage.getItem(STORAGE_KEY) ??
-        globalThis.localStorage.getItem(LEGACY_STORAGE_KEY);
+      const storedPreference = globalThis.localStorage.getItem(STORAGE_KEY);
 
-      return storedMode === "light" || storedMode === "dark"
-        ? storedMode
+      if (
+        storedPreference === "light" || storedPreference === "dark" ||
+        storedPreference === "system"
+      ) {
+        return storedPreference;
+      }
+
+      const legacyPreference = globalThis.localStorage.getItem(
+        LEGACY_STORAGE_KEY,
+      );
+
+      return legacyPreference === "light" || legacyPreference === "dark"
+        ? legacyPreference
         : null;
     } catch {
       return null;
     }
   }
 
-  /** @param {ColorMode} mode */
-  function persistMode(mode) {
+  /** @param {ThemePreference} preference */
+  function persistPreference(preference) {
     try {
-      globalThis.localStorage.setItem(STORAGE_KEY, mode);
-      globalThis.localStorage.setItem(LEGACY_STORAGE_KEY, mode);
+      globalThis.localStorage.setItem(STORAGE_KEY, preference);
+
+      if (preference === "system") {
+        globalThis.localStorage.removeItem(LEGACY_STORAGE_KEY);
+      } else {
+        globalThis.localStorage.setItem(LEGACY_STORAGE_KEY, preference);
+      }
     } catch {
       // Ignore storage failures (private mode, blocked storage, etc.).
     }
   }
 
-  /** @param {ColorMode} mode */
-  function applyMode(mode) {
+  /** @param {ThemePreference} preference */
+  function resolveEffectiveMode(preference) {
+    return preference === "system"
+      ? (mediaQuery.matches ? "dark" : "light")
+      : preference;
+  }
+
+  /** @param {ThemePreference} preference */
+  function applyPreference(preference) {
+    const mode = resolveEffectiveMode(preference);
     root.setAttribute("data-light-theme", "light");
     root.setAttribute("data-dark-theme", "dark");
     root.setAttribute("data-color-mode", mode);
+    root.setAttribute("data-theme-preference", preference);
     // Keep backward compatibility for selectors still using the old attribute.
     root.setAttribute("data-color-scheme", mode);
   }
 
-  /** @returns {ColorMode} */
-  function getEffectiveMode() {
-    const value = root.getAttribute("data-color-mode") ??
-      root.getAttribute("data-color-scheme") ?? readStoredMode();
+  /** @returns {ThemePreference} */
+  function getCurrentPreference() {
+    const rootPreference = root.getAttribute("data-theme-preference");
 
-    if (value === "light" || value === "dark") {
-      return value;
+    if (
+      rootPreference === "light" || rootPreference === "dark" ||
+      rootPreference === "system"
+    ) {
+      return rootPreference;
     }
 
-    return mediaQuery.matches ? "dark" : "light";
+    return readStoredPreference() ?? "system";
   }
 
-  /** @param {ColorMode} mode */
-  function updateToggleAccessibility(mode) {
-    themeToggleButton.setAttribute(
-      "aria-label",
-      mode === "dark" ? switchToLightLabel : switchToDarkLabel,
-    );
-    themeToggleButton.setAttribute("aria-pressed", String(mode === "dark"));
+  /** @param {ThemePreference} preference */
+  function getNextPreference(preference) {
+    if (preference === "light") return "dark";
+    if (preference === "dark") return "system";
+    return "light";
   }
 
-  const currentMode = getEffectiveMode();
-  applyMode(currentMode);
-  updateToggleAccessibility(currentMode);
+  /** @param {ThemePreference} preference */
+  function updateToggleAccessibility(preference) {
+    const nextPreference = getNextPreference(preference);
+    const nextLabel = nextPreference === "light"
+      ? switchToLightLabel
+      : nextPreference === "dark"
+      ? switchToDarkLabel
+      : followSystemLabel;
+
+    themeToggleButton.setAttribute("aria-label", nextLabel);
+    themeToggleButton.setAttribute("title", nextLabel);
+  }
+
+  const currentPreference = getCurrentPreference();
+  applyPreference(currentPreference);
+  updateToggleAccessibility(currentPreference);
 
   themeToggleButton.addEventListener("click", () => {
-    const nextMode = getEffectiveMode() === "dark" ? "light" : "dark";
+    const nextPreference = getNextPreference(getCurrentPreference());
 
-    applyMode(nextMode);
-    persistMode(nextMode);
-    updateToggleAccessibility(nextMode);
+    applyPreference(nextPreference);
+    persistPreference(nextPreference);
+    updateToggleAccessibility(nextPreference);
   });
 
   mediaQuery.addEventListener("change", () => {
-    if (readStoredMode() !== null) {
+    if (getCurrentPreference() !== "system") {
       return;
     }
 
-    const preferredMode = mediaQuery.matches ? "dark" : "light";
-    applyMode(preferredMode);
-    updateToggleAccessibility(preferredMode);
+    applyPreference("system");
+    updateToggleAccessibility("system");
   });
 })();

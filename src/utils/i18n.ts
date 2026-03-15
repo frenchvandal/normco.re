@@ -78,11 +78,15 @@ export type SiteTranslations = {
     readonly siteLinksAriaLabel: string;
     readonly menuToggleLabel: string;
     readonly searchLabel: string;
+    readonly searchUnavailableLabel: string;
+    readonly searchOfflineLabel: string;
+    readonly searchRetryLabel: string;
     readonly languageSelectLabel: string;
     readonly languageSelectAriaLabel: string;
     readonly themeToggleLabel: string;
     readonly switchToLightThemeLabel: string;
     readonly switchToDarkThemeLabel: string;
+    readonly followSystemThemeLabel: string;
     readonly repositoryLinkAriaLabel: string;
     readonly rssLinkAriaLabel: string;
   };
@@ -155,11 +159,15 @@ const SITE_TRANSLATIONS = {
       siteLinksAriaLabel: "Site links",
       menuToggleLabel: "Open navigation menu",
       searchLabel: "Search",
+      searchUnavailableLabel: "Search is temporarily unavailable.",
+      searchOfflineLabel: "Search is unavailable while offline.",
+      searchRetryLabel: "Retry",
       languageSelectLabel: "Language",
       languageSelectAriaLabel: "Select language",
       themeToggleLabel: "Toggle color theme",
       switchToLightThemeLabel: "Switch to light theme",
       switchToDarkThemeLabel: "Switch to dark theme",
+      followSystemThemeLabel: "Follow system theme",
       repositoryLinkAriaLabel: "Open GitHub repository",
       rssLinkAriaLabel: "Open RSS feed",
     },
@@ -238,11 +246,15 @@ const SITE_TRANSLATIONS = {
       siteLinksAriaLabel: "Liens du site",
       menuToggleLabel: "Ouvrir le menu de navigation",
       searchLabel: "Recherche",
+      searchUnavailableLabel: "La recherche est temporairement indisponible.",
+      searchOfflineLabel: "La recherche est indisponible hors ligne.",
+      searchRetryLabel: "Réessayer",
       languageSelectLabel: "Langue",
       languageSelectAriaLabel: "Choisir la langue",
       themeToggleLabel: "Basculer le thème de couleur",
       switchToLightThemeLabel: "Passer au thème clair",
       switchToDarkThemeLabel: "Passer au thème sombre",
+      followSystemThemeLabel: "Suivre le thème du système",
       repositoryLinkAriaLabel: "Ouvrir le dépôt GitHub",
       rssLinkAriaLabel: "Ouvrir le flux RSS",
     },
@@ -322,11 +334,15 @@ const SITE_TRANSLATIONS = {
       siteLinksAriaLabel: "站点链接",
       menuToggleLabel: "打开导航菜单",
       searchLabel: "搜索",
+      searchUnavailableLabel: "搜索暂时不可用。",
+      searchOfflineLabel: "离线时无法使用搜索。",
+      searchRetryLabel: "重试",
       languageSelectLabel: "语言",
       languageSelectAriaLabel: "选择语言",
       themeToggleLabel: "切换颜色主题",
       switchToLightThemeLabel: "切换到浅色主题",
       switchToDarkThemeLabel: "切换到深色主题",
+      followSystemThemeLabel: "跟随系统主题",
       repositoryLinkAriaLabel: "打开 GitHub 仓库",
       rssLinkAriaLabel: "打开 RSS 订阅",
     },
@@ -404,11 +420,15 @@ const SITE_TRANSLATIONS = {
       siteLinksAriaLabel: "網站連結",
       menuToggleLabel: "開啟導覽選單",
       searchLabel: "搜尋",
+      searchUnavailableLabel: "搜尋暫時無法使用。",
+      searchOfflineLabel: "離線時無法使用搜尋。",
+      searchRetryLabel: "重試",
       languageSelectLabel: "語言",
       languageSelectAriaLabel: "選擇語言",
       themeToggleLabel: "切換色彩主題",
       switchToLightThemeLabel: "切換到淺色主題",
       switchToDarkThemeLabel: "切換到深色主題",
+      followSystemThemeLabel: "跟隨系統主題",
       repositoryLinkAriaLabel: "開啟 GitHub 儲存庫",
       rssLinkAriaLabel: "開啟 RSS 訂閱",
     },

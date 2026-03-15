@@ -69,6 +69,38 @@
     }
   }
 
+  /**
+   * @param {HTMLElement} menu
+   * @returns {HTMLElement[]}
+   */
+  function getMenuItems(menu) {
+    return Array.from(
+      menu.querySelectorAll('[data-language-option][role="menuitemradio"]'),
+    ).filter((item) => item instanceof HTMLElement);
+  }
+
+  /**
+   * @param {HTMLElement} menu
+   * @param {number} nextIndex
+   * @returns {void}
+   */
+  function focusMenuItem(menu, nextIndex) {
+    const items = getMenuItems(menu);
+
+    if (items.length === 0) {
+      return;
+    }
+
+    const normalizedIndex = ((nextIndex % items.length) + items.length) %
+      items.length;
+
+    for (const [index, item] of items.entries()) {
+      item.setAttribute("tabindex", index === normalizedIndex ? "0" : "-1");
+    }
+
+    items[normalizedIndex]?.focus({ preventScroll: true });
+  }
+
   /** Locks body scroll to prevent background scrolling when panels are open. */
   function lockScroll() {
     document.body.style.overflow = "hidden";
@@ -277,8 +309,13 @@
           lastTrigger = button;
           panel.removeAttribute("hidden");
           panel.setAttribute("expanded", "");
-          // Focus first focusable element in panel
-          const firstFocusable = panel.querySelector(FOCUSABLE_SELECTOR);
+          // Prefer the current item so the language panel reflects the active locale.
+          const preferredFocusable = panel.querySelector(
+            '[role="menuitemradio"][aria-checked="true"], [aria-current="page"]',
+          );
+          const firstFocusable = preferredFocusable instanceof HTMLElement
+            ? preferredFocusable
+            : panel.querySelector(FOCUSABLE_SELECTOR);
           if (firstFocusable instanceof HTMLElement) {
             setTimeout(() => firstFocusable.focus(), 50);
           }
@@ -287,6 +324,80 @@
           panel.removeAttribute("expanded");
           // Return focus to trigger
           button.focus({ preventScroll: true });
+        }
+      });
+    };
+
+    /**
+     * Setup roving tabindex and arrow-key navigation for menu-style panels.
+     * @param {HTMLElement|null} panel
+     */
+    const setupMenuKeyboardNavigation = (panel) => {
+      if (!(panel instanceof HTMLElement)) {
+        return;
+      }
+
+      const menu = panel.querySelector("[data-language-menu]");
+
+      if (!(menu instanceof HTMLElement) || menu.dataset.keyboardBound === "true") {
+        return;
+      }
+
+      menu.dataset.keyboardBound = "true";
+
+      menu.addEventListener("focusin", (event) => {
+        const target = event.target;
+
+        if (!(target instanceof HTMLElement) || !target.matches("[data-language-option]")) {
+          return;
+        }
+
+        for (const item of getMenuItems(menu)) {
+          item.setAttribute("tabindex", item === target ? "0" : "-1");
+        }
+      });
+
+      menu.addEventListener("keydown", (event) => {
+        const target = event.target;
+
+        if (!(target instanceof HTMLElement) || !target.matches("[data-language-option]")) {
+          return;
+        }
+
+        const items = getMenuItems(menu);
+        const currentIndex = items.indexOf(target);
+
+        if (currentIndex === -1) {
+          return;
+        }
+
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          focusMenuItem(menu, currentIndex + 1);
+          return;
+        }
+
+        if (event.key === "ArrowUp") {
+          event.preventDefault();
+          focusMenuItem(menu, currentIndex - 1);
+          return;
+        }
+
+        if (event.key === "Home") {
+          event.preventDefault();
+          focusMenuItem(menu, 0);
+          return;
+        }
+
+        if (event.key === "End") {
+          event.preventDefault();
+          focusMenuItem(menu, items.length - 1);
+          return;
+        }
+
+        if (event.key === " " || event.key === "Spacebar") {
+          event.preventDefault();
+          target.click();
         }
       });
     };
@@ -353,6 +464,7 @@
 
       const panelId = control.getAttribute("aria-controls");
       const panel = panelId === null ? null : document.getElementById(panelId);
+      setupMenuKeyboardNavigation(panel);
       setupPanelToggle(control, panel);
     }
 

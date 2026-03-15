@@ -18,7 +18,6 @@ const CANONICAL_ASSET_URLS = [
   "/scripts/post-code-copy.js",
   "/scripts/link-prefetch-intent.js",
   "/scripts/sw-register.js",
-  "/scripts/archive-year-nav.js",
   "/scripts/pagefind-lazy-init.js",
 ] as const;
 const SERVICE_WORKER_VERSION_PLACEHOLDER = "__SW_VERSION__";

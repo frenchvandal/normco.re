@@ -18,6 +18,9 @@
   const swDebugLevel = currentScript instanceof HTMLScriptElement
     ? currentScript.dataset.swDebugLevel ?? "off"
     : "off";
+  let controllerWasPresent = globalThis.navigator.serviceWorker.controller !==
+    null;
+  let didReloadForUpdate = false;
 
   /**
    * @param {string} event
@@ -80,7 +83,19 @@
     globalThis.navigator.serviceWorker.addEventListener(
       "controllerchange",
       () => {
-        log("controllerchange -> reloading page");
+        if (!controllerWasPresent) {
+          controllerWasPresent = true;
+          log("controllerchange on first install -> keeping current page");
+          return;
+        }
+
+        if (didReloadForUpdate) {
+          log("controllerchange after update -> reload already handled");
+          return;
+        }
+
+        didReloadForUpdate = true;
+        log("controllerchange after update -> reloading page");
         globalThis.location.reload();
       },
     );

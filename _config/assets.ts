@@ -16,7 +16,6 @@ export function registerAssets(site: Site): void {
   site.add("/scripts/post-code-copy.js");
   site.add("/scripts/link-prefetch-intent.js");
   site.add("/scripts/sw-register.js");
-  site.add("/scripts/archive-year-nav.js");
   site.add("/scripts/pagefind-lazy-init.js");
 
   // Service worker — served from root, not /scripts/

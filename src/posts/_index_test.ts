@@ -36,6 +36,20 @@ function makeData(
     search: {
       pages: (_query: string, _sort: string) => posts,
     },
+    comp: {
+      PostCard: (props: Record<string, unknown>) =>
+        `<article class="post-card"><time class="post-card-date">${
+          props["dateStr"]
+        }</time><h3 class="post-card-title"><a href="${props["url"]}">${
+          props["title"]
+        }</a></h3>${
+          props["readingLabel"]
+            ? `<span class="post-card-reading-time">${
+              props["readingLabel"]
+            }</span>`
+            : ""
+        }</article>`,
+    },
   } as unknown as Lume.Data;
 }
 
@@ -63,32 +77,32 @@ function makePost(
 
 describe("posts/index.page.tsx", () => {
   describe("shell", () => {
-    it("wraps the archive in the wide page shell", () => {
-      const html = postsIndexPage(makeData([]), MOCK_HELPERS);
+    it("wraps the archive in the editorial page shell", async () => {
+      const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(
         html,
-        'class="site-page-shell site-page-shell--wide"',
+        'class="site-page-shell site-page-shell--editorial"',
       );
     });
   });
 
   describe("page title", () => {
-    it('renders the "Writing" heading', () => {
-      const html = postsIndexPage(makeData([]), MOCK_HELPERS);
+    it('renders the "Writing" heading', async () => {
+      const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, "Writing");
     });
   });
 
   describe("empty state", () => {
-    it("renders no year sections when there are no posts", () => {
-      const html = postsIndexPage(makeData([]), MOCK_HELPERS);
+    it("renders no year sections when there are no posts", async () => {
+      const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertNotMatch(html, /archive-year/);
     });
   });
 
   describe("breadcrumb", () => {
-    it("uses the shared ordered-list Carbon breadcrumb structure", () => {
-      const html = postsIndexPage(makeData([]), MOCK_HELPERS);
+    it("uses the shared ordered-list Carbon breadcrumb structure", async () => {
+      const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, 'class="cds--breadcrumb-list"');
       assertStringIncludes(html, 'class="cds--breadcrumb-link"');
       assertStringIncludes(html, 'class="cds--breadcrumb-current"');
@@ -97,7 +111,7 @@ describe("posts/index.page.tsx", () => {
   });
 
   describe("year grouping", () => {
-    it("groups posts by year", () => {
+    it("groups posts by year", async () => {
       const postA = makePost(501, {
         date: new Date("2026-01-01"),
         readingInfo: { minutes: 1 },
@@ -110,14 +124,14 @@ describe("posts/index.page.tsx", () => {
         postA,
         postB,
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, "2026");
       assertStringIncludes(html, "2025");
       assertStringIncludes(html, postA.title);
       assertStringIncludes(html, postB.title);
     });
 
-    it("lists the most recent year first", () => {
+    it("lists the most recent year first", async () => {
       const posts = [
         makePost(503, {
           date: new Date("2024-01-01"),
@@ -128,73 +142,74 @@ describe("posts/index.page.tsx", () => {
           readingInfo: { minutes: 1 },
         }),
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       const idx2026 = html.indexOf("2026");
       const idx2024 = html.indexOf("2024");
       assertEquals(idx2026 < idx2024, true);
     });
 
-    it("falls back to the current year when post.date is not a Date instance", () => {
+    it("falls back to the current year when post.date is not a Date instance", async () => {
       const posts = [
         { title: "Strange", url: "/posts/s/", date: "not-a-date" },
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       const currentYear = new Date().getFullYear().toString();
       assertStringIncludes(html, currentYear);
     });
   });
 
   describe("reading time", () => {
-    it("renders reading time when reading info is present", () => {
+    it("renders reading time when reading info is present", async () => {
       const posts = [
         makePost(505, {
           date: new Date("2026-01-01"),
           readingInfo: { minutes: 4 },
         }),
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, "4 min");
     });
 
-    it("omits the reading-time markup when minutes are absent", () => {
+    it("omits the reading-time markup when minutes are absent", async () => {
       const { readingInfo: _unusedReadingInfo, ...postWithoutReadingInfo } =
         makePost(506, { date: new Date("2026-01-01") });
       const posts = [
         postWithoutReadingInfo,
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
-      assertNotMatch(html, /archive-reading-time/);
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
+      assertNotMatch(html, /post-card-reading-time/);
       assertNotMatch(html, /<span><\/span>/);
     });
   });
 
   describe("archive list structure", () => {
-    it("wraps each post in an li.archive-item", () => {
+    it("wraps each post in an li.archive-list-item", async () => {
       const posts = [
         makePost(507, {
           date: new Date("2026-01-01"),
           readingInfo: { minutes: 1 },
         }),
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="archive-item"');
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="archive-list-item"');
+      assertStringIncludes(html, 'class="post-card"');
     });
 
-    it("renders a time element with the ISO datetime attribute", () => {
+    it("renders a time element with the post-card date class", async () => {
       const posts = [
         makePost(508, {
           date: new Date("2026-01-01"),
           readingInfo: { minutes: 1 },
         }),
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, "<time");
-      assertStringIncludes(html, 'class="archive-date"');
+      assertStringIncludes(html, 'class="post-card-date"');
     });
   });
 
-  describe("archive year-nav script", () => {
-    it("loads the external year-nav script when multiple years are present", () => {
+  describe("archive year navigation", () => {
+    it("renders year jump links when multiple years are present", async () => {
       const posts = [
         makePost(509, {
           date: new Date("2026-01-01"),
@@ -205,14 +220,14 @@ describe("posts/index.page.tsx", () => {
           readingInfo: { minutes: 2 },
         }),
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
-      assertStringIncludes(
-        html,
-        '<script src="/scripts/archive-year-nav.js" defer></script>',
-      );
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="archive-year-nav"');
+      assertStringIncludes(html, 'href="#archive-year-2026"');
+      assertStringIncludes(html, 'href="#archive-year-2025"');
+      assertMatch(html, /class="[^"]*cds--tag[^"]*archive-year-nav-link[^"]*"/);
     });
 
-    it("defers multi-year aria-current state to the runtime year-nav script", () => {
+    it("does not render a runtime script for year navigation", async () => {
       const posts = [
         makePost(515, {
           date: new Date("2026-01-01"),
@@ -223,15 +238,11 @@ describe("posts/index.page.tsx", () => {
           readingInfo: { minutes: 2 },
         }),
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
-      const linksWithAriaCurrent = [...html.matchAll(
-        /class="archive-year-nav-link"[^>]*aria-current=/g,
-      )];
-
-      assertEquals(linksWithAriaCurrent.length, 0);
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
+      assertNotMatch(html, /archive-year-nav\.js/);
     });
 
-    it("does not render the year-nav script when a single year is present", () => {
+    it("hides the year jump navigation when a single year is present", async () => {
       const posts = [
         makePost(511, {
           date: new Date("2026-01-01"),
@@ -242,18 +253,17 @@ describe("posts/index.page.tsx", () => {
           readingInfo: { minutes: 3 },
         }),
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
 
-      assertNotMatch(html, /archive-year-nav\.js/);
-      assertStringIncludes(html, 'aria-current="location"');
+      assertNotMatch(html, /class="archive-year-nav"/);
     });
 
-    it("does not render the year-nav script when no posts are available", () => {
-      const html = postsIndexPage(makeData([]), MOCK_HELPERS);
-      assertNotMatch(html, /archive-year-nav\.js/);
+    it("does not render the year jump navigation when no posts are available", async () => {
+      const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
+      assertNotMatch(html, /class="archive-year-nav"/);
     });
 
-    it("renders year-nav links as hash anchors required by the runtime selector", () => {
+    it("renders year jump links as hash anchors", async () => {
       const posts = [
         makePost(513, {
           date: new Date("2026-01-01"),
@@ -264,9 +274,9 @@ describe("posts/index.page.tsx", () => {
           readingInfo: { minutes: 2 },
         }),
       ];
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       const hrefMatches = [...html.matchAll(
-        /class="archive-year-nav-link"[\s\S]*?href="([^"]+)"/g,
+        /<a[^>]*href="([^"]+)"[^>]*class="[^"]*archive-year-nav-link[^"]*"/g,
       )];
 
       assert(hrefMatches.length > 0);
@@ -277,10 +287,23 @@ describe("posts/index.page.tsx", () => {
         assertMatch(href, /^#archive-year-\d{4}$/);
       }
     });
+
+    it("renders the year summary as a Carbon tag instead of plain recap text", async () => {
+      const posts = [
+        makePost(517, {
+          date: new Date("2026-01-01"),
+          readingInfo: { minutes: 1 },
+        }),
+      ];
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
+
+      assertMatch(html, /class="cds--tag cds--tag--gray archive-year-summary"/);
+      assertNotMatch(html, /archive-year-nav-count/);
+    });
   });
 
   describe("pagination", () => {
-    it("does not render placeholder pagination controls before routing exists", () => {
+    it("does not render placeholder pagination controls before routing exists", async () => {
       const posts = Array.from(
         { length: 12 },
         (_, index) =>
@@ -289,7 +312,7 @@ describe("posts/index.page.tsx", () => {
             readingInfo: { minutes: 3 },
           }),
       );
-      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
 
       assertNotMatch(html, /class="cds--pagination"/);
     });

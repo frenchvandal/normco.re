@@ -2,7 +2,8 @@
 
 import { getSiteTranslations, type SiteLanguage } from "../utils/i18n.ts";
 import { formatCopyrightYears } from "../utils/copyright.ts";
-import { GITHUB_ICON_PATH, RSS_ICON_PATHS } from "../utils/carbon-icons.ts";
+import { GITHUB_ICON, RSS_ICON } from "../utils/carbon-icons.ts";
+import CarbonIcon from "./CarbonIcon.tsx";
 
 const repositoryUrl = "https://github.com/frenchvandal/normco.re" as const;
 
@@ -40,30 +41,20 @@ export default (
             rel="noopener noreferrer"
             aria-label={translations.site.repositoryLinkAriaLabel}
           >
-            <svg
-              class="site-footer-icon"
-              width="16"
-              height="16"
-              viewBox="0 0 32 32"
-              fill="currentColor"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path d={GITHUB_ICON_PATH}></path>
-            </svg>
+            <CarbonIcon
+              icon={GITHUB_ICON}
+              className="site-footer-icon"
+              width={16}
+              height={16}
+            />
           </a>
           <a href={feedXmlUrl} aria-label={translations.site.rssLinkAriaLabel}>
-            <svg
-              class="site-footer-icon"
-              width="16"
-              height="16"
-              viewBox="0 0 32 32"
-              fill="currentColor"
-              aria-hidden="true"
-              focusable="false"
-            >
-              {RSS_ICON_PATHS.map((path) => <path key={path} d={path}></path>)}
-            </svg>
+            <CarbonIcon
+              icon={RSS_ICON}
+              className="site-footer-icon"
+              width={16}
+              height={16}
+            />
           </a>
         </nav>
       </div>

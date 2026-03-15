@@ -60,6 +60,74 @@
   const initPromiseByContainer = new WeakMap();
   let generatedContainerId = 0;
 
+  /**
+   * @param {HTMLElement} container
+   * @returns {{
+   *   readonly unavailable: string;
+   *   readonly offline: string;
+   *   readonly retry: string;
+   * }}
+   */
+  function getSearchMessages(container) {
+    return {
+      unavailable:
+        container.dataset.searchUnavailableLabel ??
+        "Search is temporarily unavailable.",
+      offline:
+        container.dataset.searchOfflineLabel ??
+        "Search is unavailable while offline.",
+      retry: container.dataset.searchRetryLabel ?? "Retry",
+    };
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function clearSearchFallback(container) {
+    if (container.querySelector("[data-pagefind-fallback]") !== null) {
+      container.replaceChildren();
+    }
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function renderSearchFallback(container) {
+    const { unavailable, offline, retry } = getSearchMessages(container);
+    const fallback = globalThis.document.createElement("div");
+    fallback.className = "pagefind-ui__drawer";
+    fallback.dataset.pagefindFallback = "";
+
+    const message = globalThis.document.createElement("p");
+    message.className = "pagefind-ui__message";
+    message.setAttribute("role", "status");
+    message.textContent = globalThis.navigator.onLine === false
+      ? offline
+      : unavailable;
+
+    const retryButton = globalThis.document.createElement("button");
+    retryButton.type = "button";
+    retryButton.className = "pagefind-ui__button";
+    retryButton.textContent = retry;
+
+    retryButton.addEventListener("click", () => {
+      clearSearchFallback(container);
+      void ensurePagefindInitialized(container)
+        .then(() => {
+          focusSearchInput(container);
+        })
+        .catch(() => {
+          renderSearchFallback(container);
+        });
+    });
+
+    fallback.append(message, retryButton);
+    container.replaceChildren(fallback);
+    retryButton.focus({ preventScroll: true });
+  }
+
   const panelObserver = new MutationObserver((mutationList) => {
     for (const mutation of mutationList) {
       if (
@@ -100,9 +168,13 @@
 
     focusSearchInput(container);
 
-    void ensurePagefindInitialized(container).then(() => {
-      focusSearchInput(container);
-    });
+    void ensurePagefindInitialized(container)
+      .then(() => {
+        focusSearchInput(container);
+      })
+      .catch(() => {
+        renderSearchFallback(container);
+      });
   }
 
   /**
@@ -153,13 +225,14 @@
    * @returns {Promise<void>}
    */
   async function initializePagefind(container) {
+    clearSearchFallback(container);
     ensurePagefindStylesheet();
     await loadPagefindScript();
     await yieldToMain();
 
     const pagefindUi = getPagefindUiConstructor();
     if (pagefindUi === null) {
-      return;
+      throw new Error("Pagefind UI constructor was not available.");
     }
 
     if (container.dataset.pagefindReady === "true") {
@@ -227,30 +300,47 @@
     );
 
     if (existingScript instanceof HTMLScriptElement) {
-      if (existingScript.dataset.loaded === "true") {
+      if (existingScript.dataset.loadState === "error") {
+        existingScript.remove();
+      } else {
+        if (existingScript.dataset.loaded === "true") {
+          return;
+        }
+
+        pagefindRuntimePromise = waitForScriptLoad(existingScript)
+          .then(() => {
+            existingScript.dataset.loaded = "true";
+            existingScript.dataset.loadState = "loaded";
+          })
+          .catch((error) => {
+            existingScript.dataset.loadState = "error";
+            existingScript.remove();
+            throw error;
+          })
+          .finally(() => {
+            pagefindRuntimePromise = undefined;
+          });
+
+        await pagefindRuntimePromise;
         return;
       }
-
-      pagefindRuntimePromise = waitForScriptLoad(existingScript)
-        .then(() => {
-          existingScript.dataset.loaded = "true";
-        })
-        .finally(() => {
-          pagefindRuntimePromise = undefined;
-        });
-
-      await pagefindRuntimePromise;
-      return;
     }
 
     const script = globalThis.document.createElement("script");
     script.src = PAGEFIND_SCRIPT_URL;
     script.async = true;
+    script.dataset.loadState = "pending";
     globalThis.document.body.append(script);
 
     pagefindRuntimePromise = waitForScriptLoad(script)
       .then(() => {
         script.dataset.loaded = "true";
+        script.dataset.loadState = "loaded";
+      })
+      .catch((error) => {
+        script.dataset.loadState = "error";
+        script.remove();
+        throw error;
       })
       .finally(() => {
         pagefindRuntimePromise = undefined;

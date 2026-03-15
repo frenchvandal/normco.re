@@ -1,59 +1,38 @@
-/* Archive page — timeline, year groups, sticky year nav. */
+/* Archive page — editorial archive with grouped year navigation. */
 @layer components {
   .archive-page-title {
     margin-block-end: var(--space-s);
   }
 
   .archive-activity {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: var(--space-l);
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
   }
 
   .archive-activity-main {
-    position: relative;
     display: flex;
     flex-direction: column;
-    gap: var(--space-l);
-    padding-inline-start: 1.5rem;
-  }
-
-  .archive-activity-main::before {
-    content: "";
-    position: absolute;
-    inset-block-start: 0.5rem;
-    inset-block-end: 0;
-    inset-inline-start: 0.5rem;
-    inline-size: 1px;
-    background: var(--cds-border-subtle);
+    gap: var(--space-xl);
   }
 
   .archive-year {
-    position: relative;
+    padding-block-start: var(--space-m);
+    border-block-start: 1px solid var(--cds-border-subtle);
     content-visibility: auto;
     contain-intrinsic-size: auto 20rem;
-  }
-
-  .archive-year::before {
-    content: "";
-    position: absolute;
-    inset-block-start: 0.35rem;
-    inset-inline-start: -1.125rem;
-    inline-size: 0.625rem;
-    block-size: 0.625rem;
-    border-radius: var(--cds-radius-round);
-    background: var(--cds-interactive);
-    box-shadow: 0 0 0 3px var(--cds-background);
+    scroll-margin-top: calc(var(--cds-spacing-09) + var(--space-s));
   }
 
   .archive-year-header {
+    margin-block-end: var(--space-m);
+  }
+
+  .archive-year-heading-group {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
+    align-items: center;
     gap: var(--space-xs) var(--space-m);
-    margin-block-end: var(--space-s);
   }
 
   .archive-year-heading {
@@ -67,14 +46,19 @@
 
   .archive-year-summary {
     margin: 0;
-    color: var(--cds-text-secondary);
-    font-size: var(--text-sm);
   }
 
   .archive-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .archive-list-item {
+    list-style: none;
+  }
+
+  .archive-list .post-card {
+    grid-template-columns: 8.5ch minmax(0, 1fr);
   }
 
   .archive-item {
@@ -120,90 +104,44 @@
   }
 
   .archive-year-nav {
-    position: sticky;
-    inset-block-start: calc(var(--space-l) + 0.25rem);
-    /* TODO(phiphi): Add container-type: scroll-state and a
-       @container scroll-state(stuck: top) shadow once Deno's CSS formatter
-       supports the scroll-state() query syntax. */
+    padding-block-end: var(--space-s);
+    border-block-end: 1px solid var(--cds-border-subtle);
   }
 
   .archive-year-nav-list {
     list-style: none;
     display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
+    flex-wrap: wrap;
+    gap: var(--cds-spacing-03);
     padding: 0;
     margin: 0;
   }
 
+  .archive-year-nav-item {
+    list-style: none;
+  }
+
   .archive-year-nav-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-m);
-    min-inline-size: 6.5rem;
-    padding: 0.45rem 0.75rem;
-    border-radius: var(--borderRadius-medium);
-    border: 1px solid transparent;
-    color: var(--cds-text-secondary);
     text-decoration: none;
-    font-size: var(--text-sm);
     font-variant-numeric: tabular-nums;
-    transition:
-      background-color 0.15s ease,
-      border-color 0.15s ease,
-      color 0.15s ease;
   }
 
   .archive-year-nav-link:hover {
-    background: var(--cds-layer);
-    border-color: var(--cds-border-subtle);
-    color: var(--cds-text-primary);
     text-decoration: none;
   }
 
-  .archive-year-nav-link[aria-current="location"] {
-    color: var(--cds-text-inverse);
-    background: var(--cds-interactive);
-    border-color: var(--cds-interactive);
-  }
-
-  .archive-year-nav-count {
-    font-size: var(--text-xs);
-    opacity: 0.9;
-  }
-
-  @container (max-width: 48rem) {
-    .archive-activity {
-      grid-template-columns: 1fr;
-    }
-
-    .archive-year-nav {
-      position: static;
-      margin-block-start: var(--space-s);
-    }
-
-    .archive-year-nav-list {
-      flex-direction: row;
-      flex-wrap: wrap;
-    }
-
-    .archive-year-nav-link {
-      min-inline-size: 5.5rem;
-    }
-  }
-
   @container (max-width: 36ch) {
-    .archive-item {
+    .archive-list .post-card {
       grid-template-columns: 1fr;
-      align-items: flex-start;
+      row-gap: var(--space-xs);
     }
 
-    .archive-date {
+    .archive-list .post-card-date {
       order: 2;
+      padding-block-start: 0;
     }
 
-    .archive-reading-time {
+    .archive-list .post-card-reading-time {
       display: none;
     }
   }

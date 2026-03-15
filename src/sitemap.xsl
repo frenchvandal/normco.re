@@ -21,7 +21,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta name="color-scheme" content="light dark"/>
         <title>Sitemap — normco.re</title>
-        <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{v=localStorage.getItem("color-mode")??localStorage.getItem("color-scheme")}catch{v=null}const t=v==="light"||v==="dark"?v:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-color-scheme",t)})()</script>
+        <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{const s=localStorage.getItem("color-mode");if(s==="light"||s==="dark"||s==="system")v=s;else{const l=localStorage.getItem("color-scheme");v=l==="light"||l==="dark"?l:null}}catch{v=null}const p=v??"system",t=p==="light"||p==="dark"?p:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-theme-preference",p);r.setAttribute("data-color-scheme",t)})()</script>
         <link rel="stylesheet" href="/style.css"/>
       </head>
       <body data-a11y-link-underlines="true">
@@ -53,13 +53,13 @@
                   </svg>
                 </button>
                 <!-- Language selector action -->
-                <button type="button" class="cds--header__action cds--header__language-toggle" aria-label="Select language" aria-expanded="false" aria-controls="site-language-panel" aria-haspopup="true">
+                <button type="button" class="cds--header__action cds--header__language-toggle" aria-label="Select language" aria-expanded="false" aria-controls="site-language-panel" aria-haspopup="menu">
                   <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M27.85 29H30L24 14H21.65l-6 15H17.8l1.6-4h6.85zM20.2 23l2.62-6.56L25.45 23zM18 7V5H11V2H9V5H2V7H12.74a14.71 14.71 0 0 1-3.19 6.18A13.5 13.5 0 0 1 7.26 9H5.16a16.47 16.47 0 0 0 3 5.58A16.84 16.84 0 0 1 3 18l.75 1.86A18.47 18.47 0 0 0 9.53 16a16.92 16.92 0 0 0 5.76 3.84L16 18a14.48 14.48 0 0 1-5.12-3.37A17.64 17.64 0 0 0 14.8 7z"/>
                   </svg>
                 </button>
                 <!-- Theme toggle action -->
-                <button id="theme-toggle" type="button" class="cds--header__action" aria-label="Toggle color theme" aria-pressed="false" data-label-switch-light="Switch to light theme" data-label-switch-dark="Switch to dark theme">
+                <button id="theme-toggle" type="button" class="cds--header__action" aria-label="Toggle color theme" data-label-switch-light="Switch to light theme" data-label-switch-dark="Switch to dark theme" data-label-follow-system="Follow system theme">
                   <svg class="cds--header__action-icon theme-icon theme-icon--sun" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M7.5 1H8.5V3.5H7.5z"/>
                     <path d="M10.8 3.4H13.3V4.4H10.8z" transform="rotate(-45 12.041 3.923)"/>
@@ -75,21 +75,49 @@
                     <path d="M7.2,2.3c-1,4.4,1.7,8.7,6.1,9.8c0.1,0,0.1,0,0.2,0c-1.1,1.2-2.7,1.8-4.3,1.8c-0.1,0-0.2,0-0.2,0C5.6,13.8,3,11,3.2,7.7 C3.2,5.3,4.8,3.1,7.2,2.3"/>
                     <path d="M8,1L8,1C4.1,1.6,1.5,5.3,2.1,9.1c0.6,3.3,3.4,5.8,6.8,5.9c0.1,0,0.2,0,0.3,0c2.3,0,4.4-1.1,5.8-3 c0.2-0.2,0.1-0.6-0.1-0.7c-0.1-0.1-0.2-0.1-0.3-0.1c-3.9-0.3-6.7-3.8-6.4-7.6C8.3,3,8.4,2.4,8.6,1.8c0.1-0.3,0-0.6-0.3-0.7 C8.1,1,8.1,1,8,1z"/>
                   </svg>
+                  <svg class="cds--header__action-icon theme-icon theme-icon--system" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
+                    <path d="M28,4H4A2,2,0,0,0,2,6V22a2,2,0,0,0,2,2h8v4H8v2H24V28H20V24h8a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM18,28H14V24h4Zm10-6H4V6H28Z"/>
+                  </svg>
                 </button>
               </div>
             </div>
           </header>
 
-          <!-- Language selector panel (mirrors Header.tsx language panel) -->
-          <section id="site-language-panel" class="cds--header__panel cds--header__language-panel" aria-labelledby="site-language-panel-title" hidden="">
-            <div class="cds--header__panel-content">
-              <h2 id="site-language-panel-title" class="cds--header__panel-title">Language</h2>
-              <nav class="cds--header__language-list" aria-labelledby="site-language-panel-title">
-                <a href="/" class="cds--header__menu-item cds--header__language-item" aria-current="page">English</a>
-                <a href="/fr/" class="cds--header__menu-item cds--header__language-item">Français</a>
-                <a href="/zh-hans/" class="cds--header__menu-item cds--header__language-item">简体中文</a>
-                <a href="/zh-hant/" class="cds--header__menu-item cds--header__language-item">繁體中文</a>
-              </nav>
+          <!-- Language selector menu (mirrors Header.tsx language menu) -->
+          <section id="site-language-panel" class="cds--header__panel cds--header__language-panel" aria-label="Language" data-language-panel="" hidden="">
+            <div class="cds--header__panel-content cds--header__language-menu" role="menu" aria-label="Language" data-language-menu="">
+              <a href="/" class="cds--header__language-option" data-language-option="en" hreflang="en" lang="en" role="menuitemradio" aria-checked="true" tabindex="0">
+                <span class="cds--header__language-label">English</span>
+                <span class="cds--header__language-check" aria-hidden="true">
+                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" focusable="false">
+                    <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
+                  </svg>
+                </span>
+              </a>
+              <a href="/fr/" class="cds--header__language-option" data-language-option="fr" hreflang="fr" lang="fr" role="menuitemradio" aria-checked="false" tabindex="-1">
+                <span class="cds--header__language-label">Français</span>
+                <span class="cds--header__language-check" aria-hidden="true">
+                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" focusable="false">
+                    <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
+                  </svg>
+                </span>
+              </a>
+              <a href="/zh-hans/" class="cds--header__language-option" data-language-option="zhHans" hreflang="zh-Hans" lang="zh-Hans" role="menuitemradio" aria-checked="false" tabindex="-1">
+                <span class="cds--header__language-label">简体中文</span>
+                <span class="cds--header__language-check" aria-hidden="true">
+                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" focusable="false">
+                    <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
+                  </svg>
+                </span>
+              </a>
+              <a href="/zh-hant/" class="cds--header__language-option" data-language-option="zhHant" hreflang="zh-Hant" lang="zh-Hant" role="menuitemradio" aria-checked="false" tabindex="-1">
+                <span class="cds--header__language-label">繁體中文</span>
+                <span class="cds--header__language-check" aria-hidden="true">
+                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" focusable="false">
+                    <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
+                  </svg>
+                </span>
+              </a>
             </div>
           </section>
 
@@ -125,7 +153,7 @@
           <div class="cds--side-nav__overlay" aria-hidden="true"></div>
 
           <main class="site-main" id="main-content" data-pagefind-ignore="">
-            <section class="feed-page site-page-shell site-page-shell--wide" aria-labelledby="sitemap-title">
+            <section class="feed-page site-page-shell site-page-shell--editorial" aria-labelledby="sitemap-title">
               <header class="pagehead feed-pagehead">
                 <p class="pagehead-eyebrow">Index</p>
                 <h1 id="sitemap-title" class="archive-page-title">Sitemap</h1>

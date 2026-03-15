@@ -48,6 +48,7 @@ type Comp = {
   Header: (props: {
     readonly currentUrl: string;
     readonly language: SiteLanguage;
+    readonly languageAlternates?: Partial<Record<SiteLanguage, string>>;
   }) => SsxElement;
   Footer: (props: {
     readonly author: string;
@@ -192,6 +193,7 @@ export default (
             <Header
               currentUrl={currentUrl}
               language={language}
+              languageAlternates={alternateUrls}
             />
             <main
               class="site-main"

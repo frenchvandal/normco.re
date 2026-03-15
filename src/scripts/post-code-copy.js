@@ -60,12 +60,14 @@
 
       copyButton.textContent = feedback;
       copyButton.setAttribute("aria-label", feedback);
-      copyButton.classList.add("post-code-copy-button--copied");
+      copyButton.classList.toggle("post-code-copy-button--copied", success);
+      copyButton.classList.toggle("post-code-copy-button--error", !success);
 
       globalThis.setTimeout(() => {
         copyButton.textContent = copyLabel;
         copyButton.setAttribute("aria-label", copyLabel);
         copyButton.classList.remove("post-code-copy-button--copied");
+        copyButton.classList.remove("post-code-copy-button--error");
       }, feedbackResetMs);
     });
   }

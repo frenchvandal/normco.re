@@ -107,8 +107,8 @@ site.addEventListener("beforeSave", () => {
 // Module registrations — order matters for some plugins.
 registerAssets(site);
 registerPlugins(site, { isServeTask });
-registerProcessors(site);
 registerFeeds(site);
+registerProcessors(site);
 
 // Post-build: fingerprint assets, check browser imports, format HTML.
 site.addEventListener(

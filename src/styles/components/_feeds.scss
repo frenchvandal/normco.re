@@ -182,6 +182,11 @@
     border-inline-start-color: var(--cds-support-success);
   }
 
+  .feed-copy-control--error .feed-copy-trigger {
+    color: var(--cds-support-error);
+    border-inline-start-color: var(--cds-support-error);
+  }
+
   .feed-page-count {
     margin: 0;
     color: var(--cds-text-secondary);
@@ -190,7 +195,12 @@
   }
 
   .feed-activity {
-    grid-template-columns: 1fr;
+    gap: var(--space-l);
+  }
+
+  .feed-activity .archive-year {
+    padding-block-start: 0;
+    border-block-start: 0;
   }
 
   .feed-entry-list {

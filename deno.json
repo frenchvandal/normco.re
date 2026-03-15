@@ -1,13 +1,7 @@
 {
   "imports": {
-    "@carbon/colors": "npm:@carbon/colors@^11.48.0",
-    "@carbon/feature-flags": "npm:@carbon/feature-flags@^1.1.0",
-    "@carbon/grid": "npm:@carbon/grid@^11.51.0",
-    "@carbon/layout": "npm:@carbon/layout@^11.49.0",
-    "@carbon/motion": "npm:@carbon/motion@^11.42.0",
-    "@carbon/styles": "npm:@carbon/styles@^1.102.0",
-    "@carbon/themes": "npm:@carbon/themes@^11.69.0",
-    "@carbon/type": "npm:@carbon/type@^11.55.0",
+    "npm/carbon-icons": "npm:@carbon/icons@^11.76.0",
+    "npm/carbon-styles": "npm:@carbon/styles@^1.102.0",
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.1/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",
@@ -51,6 +45,16 @@
       "run": true,
       "ffi": true,
       "sys": true
+    },
+    "tests": {
+      "read": true,
+      "write": true,
+      "import": true,
+      "net": true,
+      "env": true,
+      "run": true,
+      "ffi": true,
+      "sys": true
     }
   },
   "tasks": {
@@ -74,13 +78,17 @@
       "description": "Type-check the entire project",
       "command": "deno check **/*.ts **/*.tsx"
     },
+    "test": {
+      "description": "Run unit and integration tests with the configured test permission set",
+      "command": "deno test -P"
+    },
     "lint:doc": {
       "description": "Lint documentation comments (src, scripts, and plugins; root config files are excluded — they reference private Lume types by framework requirement)",
       "command": "deno doc --lint src/**/*.ts src/**/*.tsx scripts/**/*.ts plugins/**/*.ts"
     },
     "test:doc": {
       "description": "Run documentation tests from inline JSDoc examples in source files",
-      "command": "deno test --doc src/**/*.ts src/**/*.tsx plugins/**/*.ts"
+      "command": "deno test -P --doc src/**/*.ts src/**/*.tsx plugins/**/*.ts"
     },
     "payload:report": {
       "description": "Report route-level JS/CSS payload from generated output (`_site` by default)",
@@ -142,9 +150,7 @@
   "nodeModulesDir": "auto",
   "test": {
     "exclude": ["**/*.md"],
-    "permissions": {
-      "read": ["./src/"]
-    }
+    "permissions": "tests"
   },
   "fmt": { "exclude": ["**/*.xml"] },
   "lint": {
@@ -158,14 +164,8 @@
     }
   },
   "allowScripts": [
-    "npm:@carbon/colors@11.48.0",
-    "npm:@carbon/feature-flags@1.1.0",
-    "npm:@carbon/grid@11.51.0",
-    "npm:@carbon/layout@11.49.0",
-    "npm:@carbon/motion@11.42.0",
+    "npm:@carbon/icons@11.76.0",
     "npm:@carbon/styles@1.102.0",
-    "npm:@carbon/themes@11.69.0",
-    "npm:@carbon/type@11.55.0",
     "npm:@ibm/plex-mono@1.1.0",
     "npm:@ibm/plex-sans-arabic@1.1.0",
     "npm:@ibm/plex-sans-devanagari@1.1.0",

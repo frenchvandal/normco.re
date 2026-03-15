@@ -111,6 +111,11 @@
     border-color: var(--cds-support-success);
   }
 
+  .post-code-copy-button--error {
+    color: var(--cds-support-error);
+    border-color: var(--cds-support-error);
+  }
+
   .post-content .post-code-copy-button + pre {
     margin-block-start: var(--cds-spacing-02);
   }

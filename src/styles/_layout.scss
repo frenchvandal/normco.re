@@ -201,30 +201,70 @@
     margin-block-end: var(--cds-spacing-03);
   }
 
-  .cds--header__language-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--cds-spacing-02);
+  .cds--header__language-panel {
+    inline-size: 14rem;
   }
 
-  .cds--header__language-item {
+  .cds--header__language-panel .cds--header__panel-content {
+    padding: var(--cds-spacing-02) 0;
+  }
+
+  .cds--header__language-menu {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cds--header__language-option {
     display: flex;
     align-items: center;
-    block-size: 3rem;
+    justify-content: space-between;
+    min-block-size: 2rem;
     padding-inline: var(--cds-spacing-05);
     color: var(--cds-text-primary);
     text-decoration: none;
-    font: var(--cds-productive-heading-01);
-    transition: background-color 150ms ease;
+    font: var(--cds-productive-body-01);
+    font-weight: var(--cds-font-weight-regular);
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
   }
 
-  .cds--header__language-item:hover {
+  .cds--header__language-option:hover {
     background: var(--cds-layer-hover);
   }
 
-  .cds--header__language-item[aria-current="page"] {
-    background: var(--cds-layer-active);
+  .cds--header__language-option[aria-checked="true"] {
+    background: var(--cds-layer-selected, var(--cds-layer-active));
     font-weight: var(--cds-font-weight-semibold);
+  }
+
+  .cds--header__language-option[aria-checked="true"]:hover {
+    background: var(--cds-layer-selected-hover, var(--cds-layer-hover));
+  }
+
+  .cds--header__language-option:focus-visible {
+    outline: 2px solid var(--cds-focus);
+    outline-offset: -2px;
+    background: var(--cds-layer-hover);
+  }
+
+  .cds--header__language-label {
+    min-inline-size: 0;
+  }
+
+  .cds--header__language-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1rem;
+    block-size: 1rem;
+    color: currentColor;
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  .cds--header__language-option[aria-checked="true"] .cds--header__language-check {
+    opacity: 1;
   }
 
   .cds--header__search-root {
@@ -362,8 +402,15 @@
     }
   }
 
+  .site-wrapper {
+    min-block-size: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
   // Main content area
   .site-main {
+    flex: 1 0 auto;
     padding-block: var(--cds-spacing-07);
     padding-inline: var(--page-shell-gutter);
     margin-block-start: 3rem;
