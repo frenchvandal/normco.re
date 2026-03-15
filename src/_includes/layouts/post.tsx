@@ -237,7 +237,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
         <div class="post-content">
           {data.children}
         </div>
-        <nav class="post-nav" aria-label={translations.post.navigationAriaLabel}>
+        <nav
+          class="post-nav"
+          aria-label={translations.post.navigationAriaLabel}
+        >
           {prev
             ? (
               <div class="post-nav-item">
@@ -253,7 +256,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           {next
             ? (
               <div class="post-nav-item post-nav-item--next">
-                <span class="post-nav-label">{translations.post.nextLabel}</span>
+                <span class="post-nav-label">
+                  {translations.post.nextLabel}
+                </span>
                 <a href={next.url ?? ""} class="post-nav-title">
                   {next.title ?? ""}
                 </a>

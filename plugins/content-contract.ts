@@ -12,7 +12,8 @@ import { Page } from "lume/core/file.ts";
 
 /** Schema version stamped into every generated JSON file. */
 const SCHEMA_VERSION = "1.0.0" as const;
-const GENERATED_POST_API_PATH = /^\/(?:(?:fr|zh-hans|zh-hant)\/)?api\/posts\/.+\.json$/;
+const GENERATED_POST_API_PATH =
+  /^\/(?:(?:fr|zh-hans|zh-hant)\/)?api\/posts\/.+\.json$/;
 
 /** Block types matching `contracts/post.schema.json#/$defs/block`. */
 type ParagraphBlock = { readonly type: "paragraph"; readonly text: string };
