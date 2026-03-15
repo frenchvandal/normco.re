@@ -132,12 +132,12 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   }).join("\n");
 
   const archiveIntro =
-    `<nav class="bx--breadcrumb" aria-label="${translations.archive.breadcrumbAriaLabel}">
-  <a href="/" class="bx--breadcrumb-item">Home</a>
-  <span class="bx--breadcrumb-separator" aria-hidden="true">/</span>
-  <a href="/posts/" class="bx--breadcrumb-item">Writing</a>
-  <span class="bx--breadcrumb-separator" aria-hidden="true">/</span>
-  <span class="bx--breadcrumb-item bx--breadcrumb-item--current" aria-current="page">Archive</span>
+    `<nav class="cds--breadcrumb" aria-label="${translations.archive.breadcrumbAriaLabel}">
+  <a href="/" class="cds--breadcrumb-item">Home</a>
+  <span class="cds--breadcrumb-separator" aria-hidden="true">/</span>
+  <a href="/posts/" class="cds--breadcrumb-item">Writing</a>
+  <span class="cds--breadcrumb-separator" aria-hidden="true">/</span>
+  <span class="cds--breadcrumb-item cds--breadcrumb-item--current" aria-current="page">Archive</span>
 </nav>
 <section class="pagehead archive-pagehead" aria-labelledby="archive-title">
   <p class="pagehead-eyebrow">${translations.archive.eyebrow}</p>
@@ -166,9 +166,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
   const currentPage = 1; // Static for now; would be dynamic with query params
   const paginationMarkup = totalPages > 1
-    ? `<nav class="bx--pagination" aria-label="${translations.archive.paginationAriaLabel}">
-  <div class="bx--pagination__content">
-    <span class="bx--pagination__text">
+    ? `<nav class="cds--pagination" aria-label="${translations.archive.paginationAriaLabel}">
+  <div class="cds--pagination__content">
+    <span class="cds--pagination__text">
       ${
       translations.archive.paginationItemsRange.replace("{start}", "1").replace(
         "{end}",
@@ -176,25 +176,25 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
       ).replace("{total}", String(posts.length))
     }
     </span>
-    <div class="bx--pagination__control">
-      <button class="bx--pagination__button bx--pagination__button--backward" disabled aria-label="${translations.archive.paginationPrevious}">
-        <svg class="bx--pagination__button-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+    <div class="cds--pagination__control">
+      <button class="cds--pagination__button cds--pagination__button--backward" disabled aria-label="${translations.archive.paginationPrevious}">
+        <svg class="cds--pagination__button-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
           <path d="M11 3.5l-5 4.5 5 4.5V3.5z"/>
         </svg>
       </button>
-      <div class="bx--pagination__pages">
+      <div class="cds--pagination__pages">
         ${
       Array.from({ length: totalPages }, (_, i) => {
         const pageNum = i + 1;
         const isCurrent = pageNum === currentPage;
-        return `<button class="bx--pagination__page-button${
+        return `<button class="cds--pagination__page-button${
           isCurrent ? '" aria-current="page' : ""
         }" aria-label="${translations.archive.paginationPage} ${pageNum}">${pageNum}</button>`;
       }).join("")
     }
       </div>
-      <button class="bx--pagination__button bx--pagination__button--forward" aria-label="${translations.archive.paginationNext}">
-        <svg class="bx--pagination__button-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+      <button class="cds--pagination__button cds--pagination__button--forward" aria-label="${translations.archive.paginationNext}">
+        <svg class="cds--pagination__button-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
           <path d="M5 11.5l5-4.5-5-4.5v9z"/>
         </svg>
       </button>

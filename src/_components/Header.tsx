@@ -66,20 +66,20 @@ export default (
   return (
     <>
       {/* Carbon UI Shell Header */}
-      <header class="bx--header">
-        <div class="bx--header__wrapper">
+      <header class="cds--header">
+        <div class="cds--header__wrapper">
           {/* Left section: hamburger menu + product name */}
-          <div class="bx--header__left">
+          <div class="cds--header__left">
             {/* Hamburger menu trigger for SideNav */}
             <button
               type="button"
-              class="bx--header__action bx--header__menu-toggle"
+              class="cds--header__action cds--header__menu-toggle"
               aria-label={translations.site.menuToggleLabel}
               aria-expanded="false"
               aria-controls={sideNavId}
             >
               <svg
-                class="bx--header__menu-icon"
+                class="cds--header__menu-icon"
                 width="20"
                 height="20"
                 viewBox="0 0 32 32"
@@ -92,21 +92,21 @@ export default (
             </button>
 
             {/* Product/brand name */}
-            <a href={homeUrl} class="bx--header__name">
-              <span class="bx--header__name--prefix">normco</span>
+            <a href={homeUrl} class="cds--header__name">
+              <span class="cds--header__name--prefix">normco</span>
               .re
             </a>
 
             {/* Header navigation (desktop) */}
             <nav
-              class="bx--header__nav"
+              class="cds--header__nav"
               aria-label={translations.site.mainNavigationAriaLabel}
             >
               {navigationItems.map(({ href, label, isCurrent }) => (
                 <a
                   key={href}
                   href={href}
-                  class="bx--header__menu-item"
+                  class="cds--header__menu-item"
                   {...(isCurrent
                     ? ({
                       "aria-current": "page" as const,
@@ -120,17 +120,17 @@ export default (
           </div>
 
           {/* Right section: global actions */}
-          <div class="bx--header__global">
+          <div class="cds--header__global">
             {/* Search action */}
             <button
               type="button"
-              class="bx--header__action"
+              class="cds--header__action"
               aria-label={translations.site.searchLabel}
               aria-expanded="false"
               aria-controls={searchPanelId}
             >
               <svg
-                class="bx--header__action-icon"
+                class="cds--header__action-icon"
                 width="20"
                 height="20"
                 viewBox="0 0 32 32"
@@ -145,14 +145,14 @@ export default (
             {/* Language selector action */}
             <button
               type="button"
-              class="bx--header__action bx--header__language-toggle"
+              class="cds--header__action cds--header__language-toggle"
               aria-label={translations.site.languageSelectAriaLabel}
               aria-expanded="false"
               aria-controls={languagePanelId}
               aria-haspopup="true"
             >
               <svg
-                class="bx--header__action-icon"
+                class="cds--header__action-icon"
                 width="20"
                 height="20"
                 viewBox="0 0 32 32"
@@ -168,7 +168,7 @@ export default (
             <button
               id="theme-toggle"
               type="button"
-              class="bx--header__action"
+              class="cds--header__action"
               aria-label={translations.site.themeToggleLabel}
               aria-pressed="false"
               data-label-switch-light={translations.site
@@ -176,7 +176,7 @@ export default (
               data-label-switch-dark={translations.site.switchToDarkThemeLabel}
             >
               <svg
-                class="bx--header__action-icon theme-icon theme-icon--sun"
+                class="cds--header__action-icon theme-icon theme-icon--sun"
                 width="20"
                 height="20"
                 viewBox="0 0 16 16"
@@ -196,7 +196,7 @@ export default (
                 ))}
               </svg>
               <svg
-                class="bx--header__action-icon theme-icon theme-icon--moon"
+                class="cds--header__action-icon theme-icon theme-icon--moon"
                 width="20"
                 height="20"
                 viewBox="0 0 16 16"
@@ -214,17 +214,17 @@ export default (
       {/* Language selector dropdown panel */}
       <div
         id={languagePanelId}
-        class="bx--header__panel bx--header__language-panel"
+        class="cds--header__panel cds--header__language-panel"
         role="region"
         aria-labelledby={`${languagePanelId}-title`}
         hidden
       >
-        <div class="bx--header__panel-content">
-          <h2 id={`${languagePanelId}-title`} class="bx--header__panel-title">
+        <div class="cds--header__panel-content">
+          <h2 id={`${languagePanelId}-title`} class="cds--header__panel-title">
             {translations.site.languageSelectLabel}
           </h2>
           <nav
-            class="bx--header__language-list"
+            class="cds--header__language-list"
             aria-labelledby={`${languagePanelId}-title`}
           >
             {SUPPORTED_LANGUAGES.map((optionLanguage) => {
@@ -234,7 +234,7 @@ export default (
                 <a
                   key={optionLanguage}
                   href={optionUrl}
-                  class="bx--header__menu-item bx--header__language-item"
+                  class="cds--header__menu-item cds--header__language-item"
                   {...(isSelected ? { "aria-current": "page" as const } : {})}
                 >
                   {translations.languageNames[optionLanguage]}
@@ -248,16 +248,16 @@ export default (
       {/* Search panel */}
       <div
         id={searchPanelId}
-        class="bx--header__panel bx--header__search-panel"
+        class="cds--header__panel cds--header__search-panel"
         role="search"
         aria-label={translations.site.searchLabel}
         hidden
         data-search-panel=""
       >
-        <div class="bx--header__panel-content">
+        <div class="cds--header__panel-content">
           <div
             id={searchContainerId}
-            class="bx--header__search-root"
+            class="cds--header__search-root"
             data-search-root=""
           >
           </div>
@@ -267,24 +267,24 @@ export default (
       {/* Carbon UI Shell Left Panel (SideNav) */}
       <aside
         id={sideNavId}
-        class="bx--side-nav"
+        class="cds--side-nav"
         aria-label={translations.site.mainNavigationAriaLabel}
         hidden
       >
-        <nav class="bx--side-nav__navigation">
-          <ul class="bx--side-nav__items">
+        <nav class="cds--side-nav__navigation">
+          <ul class="cds--side-nav__items">
             {navigationItems.map(({ href, label, isCurrent }) => (
-              <li class="bx--side-nav__item" key={href}>
+              <li class="cds--side-nav__item" key={href}>
                 <a
                   href={href}
-                  class="bx--side-nav__link"
+                  class="cds--side-nav__link"
                   {...(isCurrent
                     ? ({
                       "aria-current": "page" as const,
                     })
                     : {})}
                 >
-                  <span class="bx--side-nav__link-text">{label}</span>
+                  <span class="cds--side-nav__link-text">{label}</span>
                 </a>
               </li>
             ))}
@@ -293,7 +293,7 @@ export default (
       </aside>
 
       {/* Overlay for mobile when SideNav is open */}
-      <div class="bx--side-nav__overlay" aria-hidden="true"></div>
+      <div class="cds--side-nav__overlay" aria-hidden="true"></div>
     </>
   );
 };

@@ -1,5 +1,3 @@
-/* Carbon UI Shell header overrides, search panel, theme toggle, site logo.
-   Source: https://carbondesignsystem.com/components/UI-shell-header/style/ */
 @layer components {
   .site-carbon-header {
     position: static;
@@ -82,7 +80,7 @@
   }
 
   .site-search-root .pagefind-ui__search-clear::before {
-    content: "";
+    content: '';
     inline-size: 1rem;
     block-size: 1rem;
     background-color: currentColor;
@@ -166,15 +164,14 @@
     display: none;
   }
 
-  :root[data-color-mode="dark"] .theme-icon--sun {
+  :root[data-color-mode='dark'] .theme-icon--sun {
     display: none;
   }
 
-  :root[data-color-mode="dark"] .theme-icon--moon {
+  :root[data-color-mode='dark'] .theme-icon--moon {
     display: block;
   }
 
-  /* Site logo */
   .site-name {
     font-size: var(--text-sm);
     font-weight: 600;

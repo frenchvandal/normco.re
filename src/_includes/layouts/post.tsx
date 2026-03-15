@@ -180,22 +180,22 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     >
       <header class="post-header pagehead post-pagehead">
         <nav
-          class="bx--breadcrumb"
+          class="cds--breadcrumb"
           aria-label={translations.post.breadcrumbAriaLabel}
         >
-          <ol class="bx--breadcrumb-list">
-            <li class="bx--breadcrumb-item">
-              <a href={homeUrl} class="bx--breadcrumb-link">
+          <ol class="cds--breadcrumb-list">
+            <li class="cds--breadcrumb-item">
+              <a href={homeUrl} class="cds--breadcrumb-link">
                 {translations.navigation.home}
               </a>
             </li>
-            <li class="bx--breadcrumb-item">
-              <a href={postsBaseUrl} class="bx--breadcrumb-link">
+            <li class="cds--breadcrumb-item">
+              <a href={postsBaseUrl} class="cds--breadcrumb-link">
                 {translations.navigation.writing}
               </a>
             </li>
-            <li class="bx--breadcrumb-item">
-              <span class="bx--breadcrumb-current" aria-current="page">
+            <li class="cds--breadcrumb-item">
+              <span class="cds--breadcrumb-current" aria-current="page">
                 {currentTitle}
               </span>
             </li>
@@ -224,9 +224,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               return (
                 <li
                   key={`${tag}-${index}`}
-                  class={`bx--tag bx--tag--${_color}`}
+                  class={`cds--tag cds--tag--${_color}`}
                 >
-                  <span class="bx--tag__label">{tag}</span>
+                  <span class="cds--tag__label">{tag}</span>
                 </li>
               );
             })}

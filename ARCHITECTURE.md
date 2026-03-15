@@ -28,7 +28,7 @@ normco.re/
 │   ├── post.schema.json       # JSON Schema for structured post blocks
 │   ├── feed.schema.json       # JSON Schema for JSON Feed 1.1 output
 │   └── validate.ts            # Post-build schema validation script
-├── design-tokens/             # Figma variable exports (Carbon Design System v11)
+├── design-tokens/             # Figma variable exports (legacy, superseded by @carbon/styles Sass)
 ├── plugins/                   # Custom Lume plugins
 │   ├── content-contract.ts    # Generates /api/posts/*.json from rendered HTML
 │   ├── console_debug.ts       # Console debug levels via LUME_LOGS
@@ -39,18 +39,23 @@ normco.re/
 │   ├── index.page.tsx         # Home page component
 │   ├── about.page.tsx         # About page component
 │   ├── 404.page.tsx           # 404 page component
-│   ├── style.css              # Global CSS entry point (layer imports)
+│   ├── style.scss             # Global Sass entry point (layer imports)
 │   ├── _components/           # Reusable UI components (Header, Footer, PostCard, …)
 │   ├── _includes/layouts/     # Layout wrappers (base.tsx, post.tsx)
 │   ├── posts/                 # Blog posts (*.page.tsx) and post-related utilities
 │   ├── scripts/               # Client-side JavaScript (progressive enhancement)
-│   ├── styles/                # CSS partials, design tokens, and components
-│   │   ├── tokens-carbon.css  # Carbon Design System v11 tokens (single source of truth)
-│   │   ├── reset.css          # CSS reset
-│   │   ├── base.css           # Typography and element styles
-│   │   ├── layout-carbon.css  # Carbon UI Shell layout (header, sidenav, footer)
-│   │   ├── components/        # Per-component CSS files (16 files)
-│   │   └── utilities.css      # Accessibility utilities
+│   ├── styles/                # Sass partials, design tokens, and components
+│   │   ├── carbon/            # Carbon Sass foundation modules
+│   │   │   ├── _config.scss   # @carbon/styles config ($prefix, $css--font-face: false)
+│   │   │   ├── _theme-tokens.scss  # Theme tokens via @carbon/styles/scss/theme
+│   │   │   └── _grid.scss     # Carbon 2x CSS Grid system
+│   │   ├── editorial/         # Site-specific convenience token aliases
+│   │   │   └── _tokens.scss   # Maps --space-* to --cds-spacing-*, etc.
+│   │   ├── _reset.scss        # CSS reset
+│   │   ├── _base.scss         # Typography and element styles
+│   │   ├── _layout.scss       # Carbon UI Shell layout (header, sidenav, footer)
+│   │   ├── components/        # Per-component SCSS files
+│   │   └── _utilities.scss    # Accessibility utilities
 │   └── utils/                 # Pure utility functions (i18n, formatting, validation)
 └── ios/                       # SwiftUI native app (peer project, shares no Deno code)
 ```
@@ -89,9 +94,10 @@ normco.re/
 
 ### Asset pipeline
 
-- **CSS**: `style.css` imports layered partials from `src/styles/` using
-  `@layer tokens, reset, base, layout, components, utilities`. Processed by
-  PostCSS (imports) and LightningCSS (minification and browser targeting).
+- **CSS**: `style.scss` imports layered Sass partials from `src/styles/` using
+  `@layer tokens, reset, base, layout, components, utilities`. Compiled by the
+  Lume Sass plugin (with `loadPaths: ["node_modules"]`), then processed by
+  PostCSS and LightningCSS (browser targeting).
 - **JavaScript**: Client-side scripts in `src/scripts/` are minified by Terser.
   Service Worker (`sw.js`) is a single self-contained file.
 - **Fonts**: IBM Plex Sans and IBM Plex Mono served locally via the Lume
@@ -102,38 +108,40 @@ normco.re/
 
 ## CSS architecture — Carbon Design System v11
 
-The site implements Carbon Design System v11 design tokens locally, without
-importing `@carbon/styles` or `@primer/css` as runtime dependencies.
+The site uses **Carbon Sass modules** (`@carbon/styles`) as the single source of
+truth for design tokens. Sass is compiled at build time by the Lume Sass plugin;
+no CSS-in-JS or client-side npm imports exist.
 
 ```mermaid
 flowchart LR
-    A["Figma exports"] -->|"design-tokens/*.json"| B["carbon-tokens.ts"]
-    B -->|"audit & convert"| C["tokens-carbon.css"]
-    C -->|"layer tokens"| D["style.css"]
-    D -->|"build"| E["_site/style.css"]
+    A["@carbon/styles Sass"] -->|"@use"| B["_theme-tokens.scss"]
+    B -->|"CSS custom properties"| C["style.scss"]
+    C -->|"Sass → CSS"| D["PostCSS"]
+    D -->|"optimize"| E["LightningCSS"]
+    E -->|"output"| F["_site/style.css"]
 ```
 
 ### Design token flow
 
-1. **Figma exports** (`design-tokens/*.json`): Variable collections exported
-   from Figma as JSON arrays with normalized RGB values.
-2. **Token utility** (`src/utils/carbon-tokens.ts`): Loads exports generically,
-   converts sRGB → LMS → Oklab → Oklch for CSS.
-3. **CSS tokens** (`src/styles/tokens-carbon.css`): Single source of truth for
-   all design tokens — colors in `oklch()`, spacing, typography, breakpoints,
-   motion, shadows.
-4. **Theme support**: White (light), Gray 90 (dark via `[data-color-mode]` or
-   `prefers-color-scheme`), and Gray 100 (high contrast).
+1. **Carbon Sass modules** (`@carbon/styles/scss/theme`, `themes`, `spacing`,
+   `motion`): Authoritative source for all design tokens.
+2. **Theme tokens** (`src/styles/carbon/_theme-tokens.scss`): Uses
+   `@include theme.theme()` to emit Carbon theme tokens as CSS custom properties.
+   Configures White (light), Gray 90 (dark), and Gray 100 (high contrast) themes.
+3. **Editorial tokens** (`src/styles/editorial/_tokens.scss`): Site-specific
+   convenience aliases mapping `--space-*` to `--cds-spacing-*`, etc.
+4. **Carbon 2x Grid** (`src/styles/carbon/_grid.scss`): Imports
+   `@carbon/styles/scss/grid` to emit the full CSS Grid system with responsive
+   4/8/16 column breakpoints.
 5. **Cascade layers**:
-   `@layer tokens, reset, base, layout, components,
-   utilities` — strict
+   `@layer tokens, reset, base, layout, components, utilities` — strict
    ordering via import sequence.
 
 ### Component styling
 
-UI components use Carbon `bx--` class conventions for the UI Shell (header,
-sidenav, panels) and site-specific classes for content components. Each
-component has its own CSS file in `src/styles/components/`.
+UI components use Carbon `cds--` class conventions (Carbon v11 prefix) for the
+UI Shell (header, sidenav, panels) and site-specific classes for content
+components. Each component has its own SCSS file in `src/styles/components/`.
 
 ## Content contract
 
@@ -190,8 +198,9 @@ flowchart TD
    reserved for Lume render entry points (pages, layouts, components).
 6. **No barrel files**: Direct imports are preferred. `mod.ts` is used only for
    narrow, intentional public APIs.
-7. **Single source of truth for tokens**: All design tokens live in
-   `tokens-carbon.css`. No other CSS file redefines token values.
+7. **Single source of truth for tokens**: All design tokens are derived from
+   `@carbon/styles` Sass modules, emitted as CSS custom properties in
+   `_theme-tokens.scss`. No other file redefines token values.
 
 ## Cross-cutting concerns
 
@@ -231,7 +240,7 @@ flowchart TD
 | Runtime             | Deno 2.x                       | TypeScript runtime, package manager, and test runner           |
 | SSG                 | Lume 3.x                       | Static site generation, plugin system, and build orchestration |
 | CMS                 | LumeCMS 0.14.x                 | Local content editing interface                                |
-| Design system       | Carbon v11 (local tokens only) | Design tokens and component patterns (no npm dependency)       |
+| Design system       | @carbon/styles (Sass)          | Design tokens, themes, grid, and component patterns            |
 | Fonts               | IBM Plex (via google_fonts)    | Locally hosted typeface for Carbon Design System               |
 | Icons               | Carbon icons (inline SVG)      | SVG icon paths defined in `carbon-icons.ts`                    |
 | Date                | date-fns                       | Date formatting with i18n locales                              |

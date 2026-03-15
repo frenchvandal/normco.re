@@ -31,34 +31,34 @@
       <body data-a11y-link-underlines="true">
         <div class="site-wrapper">
           <!-- Carbon UI Shell Header (mirrors Header.tsx structure) -->
-          <header class="bx--header">
-            <div class="bx--header__wrapper">
-              <div class="bx--header__left">
-                <a href="/" class="bx--header__name">
-                  <span class="bx--header__name--prefix">normco</span>.re
+          <header class="cds--header">
+            <div class="cds--header__wrapper">
+              <div class="cds--header__left">
+                <a href="/" class="cds--header__name">
+                  <span class="cds--header__name--prefix">normco</span>.re
                 </a>
-                <nav class="bx--header__nav" aria-label="Main navigation">
-                  <a href="/" class="bx--header__menu-item">Home</a>
-                  <a href="/posts/" class="bx--header__menu-item">Writing</a>
-                  <a href="/about/" class="bx--header__menu-item">About</a>
+                <nav class="cds--header__nav" aria-label="Main navigation">
+                  <a href="/" class="cds--header__menu-item">Home</a>
+                  <a href="/posts/" class="cds--header__menu-item">Writing</a>
+                  <a href="/about/" class="cds--header__menu-item">About</a>
                 </nav>
               </div>
-              <div class="bx--header__global">
+              <div class="cds--header__global">
                 <!-- Search action -->
-                <button type="button" class="bx--header__action" aria-label="Search" aria-expanded="false" aria-controls="feed-search-panel">
-                  <svg class="bx--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
+                <button type="button" class="cds--header__action" aria-label="Search" aria-expanded="false" aria-controls="feed-search-panel">
+                  <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/>
                   </svg>
                 </button>
                 <!-- Language selector action -->
-                <button type="button" class="bx--header__action bx--header__language-toggle" aria-label="Select language" aria-expanded="false" aria-controls="feed-language-panel" aria-haspopup="true">
-                  <svg class="bx--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
+                <button type="button" class="cds--header__action cds--header__language-toggle" aria-label="Select language" aria-expanded="false" aria-controls="feed-language-panel" aria-haspopup="true">
+                  <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M27.85 29H30L24 14H21.65l-6 15H17.8l1.6-4h6.85zM20.2 23l2.62-6.56L25.45 23zM18 7V5H11V2H9V5H2V7H12.74a14.71 14.71 0 0 1-3.19 6.18A13.5 13.5 0 0 1 7.26 9H5.16a16.47 16.47 0 0 0 3 5.58A16.84 16.84 0 0 1 3 18l.75 1.86A18.47 18.47 0 0 0 9.53 16a16.92 16.92 0 0 0 5.76 3.84L16 18a14.48 14.48 0 0 1-5.12-3.37A17.64 17.64 0 0 0 14.8 7z"/>
                   </svg>
                 </button>
                 <!-- Theme toggle action -->
-                <button id="theme-toggle" type="button" class="bx--header__action" aria-label="Toggle color theme" aria-pressed="false" data-label-switch-light="Switch to light theme" data-label-switch-dark="Switch to dark theme">
-                  <svg class="bx--header__action-icon theme-icon theme-icon--sun" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                <button id="theme-toggle" type="button" class="cds--header__action" aria-label="Toggle color theme" aria-pressed="false" data-label-switch-light="Switch to light theme" data-label-switch-dark="Switch to dark theme">
+                  <svg class="cds--header__action-icon theme-icon theme-icon--sun" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M7.5 1H8.5V3.5H7.5z"/>
                     <path d="M10.8 3.4H13.3V4.4H10.8z" transform="rotate(-45 12.041 3.923)"/>
                     <path d="M12.5 7.5H15V8.5H12.5z"/>
@@ -69,7 +69,7 @@
                     <path d="M3.4 2.7H4.4V5.2H3.4z" transform="rotate(-45 3.925 3.961)"/>
                     <path d="M8,6c1.1,0,2,0.9,2,2s-0.9,2-2,2S6,9.1,6,8S6.9,6,8,6 M8,5C6.3,5,5,6.3,5,8s1.3,3,3,3s3-1.3,3-3S9.7,5,8,5z"/>
                   </svg>
-                  <svg class="bx--header__action-icon theme-icon theme-icon--moon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                  <svg class="cds--header__action-icon theme-icon theme-icon--moon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M7.2,2.3c-1,4.4,1.7,8.7,6.1,9.8c0.1,0,0.1,0,0.2,0c-1.1,1.2-2.7,1.8-4.3,1.8c-0.1,0-0.2,0-0.2,0C5.6,13.8,3,11,3.2,7.7 C3.2,5.3,4.8,3.1,7.2,2.3"/>
                     <path d="M8,1L8,1C4.1,1.6,1.5,5.3,2.1,9.1c0.6,3.3,3.4,5.8,6.8,5.9c0.1,0,0.2,0,0.3,0c2.3,0,4.4-1.1,5.8-3 c0.2-0.2,0.1-0.6-0.1-0.7c-0.1-0.1-0.2-0.1-0.3-0.1c-3.9-0.3-6.7-3.8-6.4-7.6C8.3,3,8.4,2.4,8.6,1.8c0.1-0.3,0-0.6-0.3-0.7 C8.1,1,8.1,1,8,1z"/>
                   </svg>
@@ -79,22 +79,22 @@
           </header>
 
           <!-- Language selector panel (mirrors Header.tsx language panel) -->
-          <div id="feed-language-panel" class="bx--header__panel bx--header__language-panel" aria-modal="true" hidden="">
-            <div class="bx--header__panel-content">
-              <h2 id="feed-language-panel-title" class="bx--header__panel-title">Language</h2>
-              <nav class="bx--header__language-list" aria-labelledby="feed-language-panel-title">
-                <a href="/" class="bx--header__menu-item bx--header__language-item" aria-current="page">English</a>
-                <a href="/fr/" class="bx--header__menu-item bx--header__language-item">Français</a>
-                <a href="/zh-hans/" class="bx--header__menu-item bx--header__language-item">简体中文</a>
-                <a href="/zh-hant/" class="bx--header__menu-item bx--header__language-item">繁體中文</a>
+          <div id="feed-language-panel" class="cds--header__panel cds--header__language-panel" aria-modal="true" hidden="">
+            <div class="cds--header__panel-content">
+              <h2 id="feed-language-panel-title" class="cds--header__panel-title">Language</h2>
+              <nav class="cds--header__language-list" aria-labelledby="feed-language-panel-title">
+                <a href="/" class="cds--header__menu-item cds--header__language-item" aria-current="page">English</a>
+                <a href="/fr/" class="cds--header__menu-item cds--header__language-item">Français</a>
+                <a href="/zh-hans/" class="cds--header__menu-item cds--header__language-item">简体中文</a>
+                <a href="/zh-hant/" class="cds--header__menu-item cds--header__language-item">繁體中文</a>
               </nav>
             </div>
           </div>
 
           <!-- Search panel (mirrors Header.tsx search panel) -->
-          <div id="feed-search-panel" class="bx--header__panel bx--header__search-panel" aria-modal="true" hidden="" data-search-panel="">
-            <div class="bx--header__panel-content">
-              <div id="feed-search" class="bx--header__search-root" data-search-root=""></div>
+          <div id="feed-search-panel" class="cds--header__panel cds--header__search-panel" aria-modal="true" hidden="" data-search-panel="">
+            <div class="cds--header__panel-content">
+              <div id="feed-search" class="cds--header__search-root" data-search-root=""></div>
             </div>
           </div>
 

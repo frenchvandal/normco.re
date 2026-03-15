@@ -1,0 +1,50 @@
+// Editorial tokens — site-specific convenience aliases.
+// These are NOT Carbon tokens. They map legacy property names to
+// canonical Carbon tokens for use across components and utilities.
+// Marked as CUSTOM REPO TOKENS per the migration policy.
+
+@layer tokens {
+  :root {
+    // Spacing aliases → Carbon spacing scale
+    --space-xs: var(--cds-spacing-02);
+    --space-s: var(--cds-spacing-03);
+    --space-m: var(--cds-spacing-05);
+    --space-l: var(--cds-spacing-06);
+    --space-xl: var(--cds-spacing-07);
+    --space-2xl: var(--cds-spacing-10);
+
+    // Typography aliases → Carbon type tokens
+    --fontStack-system: var(--cds-font-family-sans);
+    --fontStack-monospace: var(--cds-font-family-mono);
+    --font-sans: var(--cds-font-family-sans);
+    --font-mono: var(--cds-font-family-mono);
+
+    --text-xs: 0.875rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.25rem;
+    --text-xl: 1.75rem;
+    --text-2xl: 2rem;
+
+    --leading: 1.6;
+    --leading-tight: 1.25;
+    --leading-heading: 1.3;
+
+    // Layout
+    --measure: 68ch;
+
+    // Border radii — Carbon default is square (0), but small radii
+    // are used on search inputs and interactive badges
+    --borderRadius-medium: 0.25rem;
+    --borderRadius-large: 0.75rem;
+
+    // Color aliases → Carbon semantic tokens
+    --color-bg: var(--cds-background);
+    --color-text: var(--cds-text-primary);
+    --color-meta: var(--cds-text-secondary);
+    --color-accent: var(--cds-link-primary);
+    --color-border: var(--cds-border-strong);
+    --color-code-bg: var(--cds-layer);
+    --color-selection-bg: rgba(15, 98, 254, 0.2);
+  }
+}

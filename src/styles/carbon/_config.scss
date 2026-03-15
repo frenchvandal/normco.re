@@ -1,0 +1,12 @@
+// Carbon Design System v11 — configuration.
+// This file MUST be @use'd before any other Carbon module.
+// It configures the prefix, disables font-face (handled by google_fonts plugin),
+// and disables Carbon's own reset/body/default-type (we provide our own).
+
+@use '@carbon/styles/scss/config' with (
+  $prefix: 'cds',
+  $css--font-face: false,
+  $css--body: false,
+  $css--reset: false,
+  $css--default-type: false
+);
