@@ -24,7 +24,7 @@
     font-weight: 700;
     font-size: var(--text-sm);
     border: var(--focus-ring-width) solid var(--cds-link-primary);
-    border-radius: 4px;
+    border-radius: var(--borderRadius-medium);
     text-decoration: none;
     z-index: 999;
     transform: translateY(-200%);

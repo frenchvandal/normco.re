@@ -377,31 +377,40 @@ Prevent regressions in:
 
 # 13 Migration phases
 
-## Phase 1 — accessibility
+## Phase 1 — accessibility (completed 2026-03-15)
 
-1 fix dialog semantics\
-2 implement focus trap\
-3 add missing headings
+1 ~~fix dialog semantics~~ — removed invalid `aria-modal`, added `role="search"`
+and `role="region"` with `aria-labelledby`\
+2 ~~implement focus trap~~ — added to disclosure-controls.js\
+3 ~~add missing headings~~ — added `<h1>` to 404 page
 
-## Phase 2 — tokens
+## Phase 2 — tokens (completed 2026-03-15)
 
-1 remove duplicate tokens\
-2 introduce semantic token layer
+1 ~~normalize error-pages.css~~ — replaced `--space-*` and `--text-*` with
+Carbon tokens\
+2 ~~replace hardcoded rgba~~ — replaced with Carbon shadow tokens and oklch\
+3 ~~normalize tag.css colors~~ — replaced all hex/rgb colors with oklch() from
+Carbon palette\
+4 ~~tokenize border-radius~~ — replaced raw `4px` with
+`var(--borderRadius-medium)` in post.css and utilities.css
 
-## Phase 3 — interaction
+## Phase 3 — interaction (completed 2026-03-15)
 
-1 unify disclosure logic\
-2 add scroll locking
+1 ~~unify disclosure logic~~ — centralized in disclosure-controls.js\
+2 ~~add scroll locking~~ — added lockScroll/unlockScroll\
+3 ~~add focus return~~ — trigger element receives focus on panel close
 
-## Phase 4 — documentation
+## Phase 4 — components (completed 2026-03-15)
 
-Update
+1 ~~normalize breadcrumb~~ — canonical `<ol>` list structure with CSS pseudo
+separators\
+2 ~~fix tag cursor~~ — `cursor:pointer` limited to interactive tags only
 
-```
-AGENTS.md
-CLAUDE.md
-ARCHITECTURE.md
-```
+## Phase 5 — documentation (completed 2026-03-15)
+
+1 ~~update UI_COMPONENT_REGISTRY.md~~ — component statuses refreshed\
+2 ~~update CARBON_MIGRATION_PLAN.md~~ — phase completion status updated\
+3 ~~update CARBON_COMPLIANCE_REPORT.md~~ — score 97/100, 0 critical, 0 important
 
 ---
 

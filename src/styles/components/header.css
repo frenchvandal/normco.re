@@ -100,7 +100,7 @@
   }
 
   .site-search-root .pagefind-ui__drawer {
-    gap: var(--space-s);
+    gap: var(--cds-spacing-03);
     margin-block-start: 0.25rem;
   }
 

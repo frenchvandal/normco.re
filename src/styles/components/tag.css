@@ -1,8 +1,9 @@
 /* Carbon tag (filter pattern).
    Source: https://carbondesignsystem.com/components/tag/usage/
 
-   Tag colors follow Carbon's semantic color palette.
-   For archive filters, use muted/neutral variants. */
+   Tag colors follow Carbon's semantic color palette using oklch().
+   Light theme uses Carbon 70 text on 10% tint backgrounds.
+   Dark theme uses Carbon 40 text on 15% tint backgrounds. */
 @layer components {
   .bx--tag {
     display: inline-flex;
@@ -18,8 +19,13 @@
       background-color 0.15s ease,
       border-color 0.15s ease,
       color 0.15s ease;
-    cursor: pointer;
     max-inline-size: 100%;
+  }
+
+  /* Only show pointer cursor on interactive tags (links, buttons) */
+  a.bx--tag,
+  button.bx--tag {
+    cursor: pointer;
   }
 
   .bx--tag--default {
@@ -33,48 +39,76 @@
     border-color: var(--cds-border-strong);
   }
 
+  /* Blue — Carbon Blue 70 (#0043ce) / Blue 60 (#0f62fe) */
   .bx--tag--blue {
-    background-color: rgb(0 99 255 / 10%);
-    color: #0043ce;
-    border-color: rgb(0 99 255 / 20%);
+    background-color: oklch(55.65% 0.243 262 / 10%);
+    color: oklch(45.4% 0.221 263); /* Blue 70 */
+    border-color: oklch(55.65% 0.243 262 / 20%);
   }
 
   .bx--tag--blue:hover {
-    background-color: rgb(0 99 255 / 20%);
-    border-color: #0043ce;
+    background-color: oklch(55.65% 0.243 262 / 20%);
+    border-color: oklch(45.4% 0.221 263);
   }
 
+  /* Green — Carbon Green 70 (#146c2e) / Green 50 (#24a148) */
   .bx--tag--green {
-    background-color: rgb(25 128 56 / 10%);
-    color: #146c2e;
-    border-color: rgb(25 128 56 / 20%);
+    background-color: oklch(62.34% 0.166 148 / 10%);
+    color: oklch(42.2% 0.122 150); /* Green 70 */
+    border-color: oklch(62.34% 0.166 148 / 20%);
   }
 
   .bx--tag--green:hover {
-    background-color: rgb(25 128 56 / 20%);
-    border-color: #146c2e;
+    background-color: oklch(62.34% 0.166 148 / 20%);
+    border-color: oklch(42.2% 0.122 150);
   }
 
+  /* Purple — Carbon Purple 60 (#8a3ffc) */
   .bx--tag--purple {
-    background-color: rgb(138 64 255 / 10%);
-    color: #8a3ffc;
-    border-color: rgb(138 64 255 / 20%);
+    background-color: oklch(57.37% 0.258 295 / 10%);
+    color: oklch(57.37% 0.258 295); /* Purple 60 */
+    border-color: oklch(57.37% 0.258 295 / 20%);
   }
 
   .bx--tag--purple:hover {
-    background-color: rgb(138 64 255 / 20%);
-    border-color: #8a3ffc;
+    background-color: oklch(57.37% 0.258 295 / 20%);
+    border-color: oklch(57.37% 0.258 295);
   }
 
+  /* Red — Carbon Red 70 (#a2191f) / Red 60 (#da1e28) */
   .bx--tag--red {
-    background-color: rgb(218 30 40 / 10%);
-    color: #b81921;
-    border-color: rgb(218 30 40 / 20%);
+    background-color: oklch(56.92% 0.217 26 / 10%);
+    color: oklch(44.3% 0.168 25); /* Red 70 */
+    border-color: oklch(56.92% 0.217 26 / 20%);
   }
 
   .bx--tag--red:hover {
-    background-color: rgb(218 30 40 / 20%);
-    border-color: #b81921;
+    background-color: oklch(56.92% 0.217 26 / 20%);
+    border-color: oklch(44.3% 0.168 25);
+  }
+
+  /* Teal — Carbon Teal 70 (#005d5d) / Teal 50 (#009d9a) */
+  .bx--tag--teal {
+    background-color: oklch(61.8% 0.089 194 / 10%);
+    color: oklch(42.5% 0.065 194); /* Teal 70 */
+    border-color: oklch(61.8% 0.089 194 / 20%);
+  }
+
+  .bx--tag--teal:hover {
+    background-color: oklch(61.8% 0.089 194 / 20%);
+    border-color: oklch(42.5% 0.065 194);
+  }
+
+  /* Cyan — Carbon Cyan 70 (#00539a) / Cyan 50 (#1192e8) */
+  .bx--tag--cyan {
+    background-color: oklch(59.9% 0.158 240 / 10%);
+    color: oklch(43.2% 0.122 241); /* Cyan 70 */
+    border-color: oklch(59.9% 0.158 240 / 20%);
+  }
+
+  .bx--tag--cyan:hover {
+    background-color: oklch(59.9% 0.158 240 / 20%);
+    border-color: oklch(43.2% 0.122 241);
   }
 
   .bx--tag--gray {
@@ -116,48 +150,70 @@
     margin-block-start: var(--cds-spacing-05);
   }
 
-  /* Dark mode tag color adjustments */
+  /* Dark mode tag color adjustments — use Carbon 40 shades for readability */
   :root[data-color-mode="dark"] .bx--tag--blue {
-    background-color: rgb(69 137 255 / 15%);
-    color: #78a9ff;
-    border-color: rgb(69 137 255 / 30%);
+    background-color: oklch(64.7% 0.189 261 / 15%); /* Blue 50 */
+    color: oklch(73.65% 0.136 261); /* Blue 40 */
+    border-color: oklch(64.7% 0.189 261 / 30%);
   }
 
   :root[data-color-mode="dark"] .bx--tag--blue:hover {
-    background-color: rgb(69 137 255 / 25%);
-    border-color: #78a9ff;
+    background-color: oklch(64.7% 0.189 261 / 25%);
+    border-color: oklch(73.65% 0.136 261);
   }
 
   :root[data-color-mode="dark"] .bx--tag--green {
-    background-color: rgb(66 190 101 / 15%);
-    color: #42be65;
-    border-color: rgb(66 190 101 / 30%);
+    background-color: oklch(71.2% 0.168 149 / 15%); /* Green 40 */
+    color: oklch(71.2% 0.168 149);
+    border-color: oklch(71.2% 0.168 149 / 30%);
   }
 
   :root[data-color-mode="dark"] .bx--tag--green:hover {
-    background-color: rgb(66 190 101 / 25%);
-    border-color: #42be65;
+    background-color: oklch(71.2% 0.168 149 / 25%);
+    border-color: oklch(71.2% 0.168 149);
   }
 
   :root[data-color-mode="dark"] .bx--tag--purple {
-    background-color: rgb(190 149 255 / 15%);
-    color: #be95ff;
-    border-color: rgb(190 149 255 / 30%);
+    background-color: oklch(74.93% 0.153 301 / 15%); /* Purple 40 */
+    color: oklch(74.93% 0.153 301);
+    border-color: oklch(74.93% 0.153 301 / 30%);
   }
 
   :root[data-color-mode="dark"] .bx--tag--purple:hover {
-    background-color: rgb(190 149 255 / 25%);
-    border-color: #be95ff;
+    background-color: oklch(74.93% 0.153 301 / 25%);
+    border-color: oklch(74.93% 0.153 301);
   }
 
   :root[data-color-mode="dark"] .bx--tag--red {
-    background-color: rgb(255 123 123 / 15%);
-    color: #ff7b7b;
-    border-color: rgb(255 123 123 / 30%);
+    background-color: oklch(75.08% 0.151 18 / 15%); /* Red 40 */
+    color: oklch(75.08% 0.151 18);
+    border-color: oklch(75.08% 0.151 18 / 30%);
   }
 
   :root[data-color-mode="dark"] .bx--tag--red:hover {
-    background-color: rgb(255 123 123 / 25%);
-    border-color: #ff7b7b;
+    background-color: oklch(75.08% 0.151 18 / 25%);
+    border-color: oklch(75.08% 0.151 18);
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--teal {
+    background-color: oklch(72.1% 0.075 194 / 15%); /* Teal 40 */
+    color: oklch(72.1% 0.075 194);
+    border-color: oklch(72.1% 0.075 194 / 30%);
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--teal:hover {
+    background-color: oklch(72.1% 0.075 194 / 25%);
+    border-color: oklch(72.1% 0.075 194);
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--cyan {
+    background-color: oklch(73.5% 0.107 237 / 15%); /* Cyan 40 */
+    color: oklch(73.5% 0.107 237);
+    border-color: oklch(73.5% 0.107 237 / 30%);
+  }
+
+  :root[data-color-mode="dark"] .bx--tag--cyan:hover {
+    background-color: oklch(73.5% 0.107 237 / 25%);
+    border-color: oklch(73.5% 0.107 237);
   }
 }

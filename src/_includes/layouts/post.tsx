@@ -180,16 +180,26 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     >
       <header class="post-header pagehead post-pagehead">
         <nav
-          class="post-breadcrumb-shell"
+          class="bx--breadcrumb"
           aria-label={translations.post.breadcrumbAriaLabel}
         >
-          <a href={homeUrl}>{translations.navigation.home}</a>
-          <span aria-hidden="true">/</span>
-          <a href={postsBaseUrl}>{translations.navigation.writing}</a>
-          <span aria-hidden="true">/</span>
-          <span class="post-breadcrumb-current" aria-current="page">
-            {currentTitle}
-          </span>
+          <ol class="bx--breadcrumb-list">
+            <li class="bx--breadcrumb-item">
+              <a href={homeUrl} class="bx--breadcrumb-link">
+                {translations.navigation.home}
+              </a>
+            </li>
+            <li class="bx--breadcrumb-item">
+              <a href={postsBaseUrl} class="bx--breadcrumb-link">
+                {translations.navigation.writing}
+              </a>
+            </li>
+            <li class="bx--breadcrumb-item">
+              <span class="bx--breadcrumb-current" aria-current="page">
+                {currentTitle}
+              </span>
+            </li>
+          </ol>
         </nav>
         <h1 class="post-title">{data.title ?? ""}</h1>
         <div class="post-meta">

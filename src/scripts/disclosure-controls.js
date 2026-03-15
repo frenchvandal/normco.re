@@ -1,5 +1,8 @@
 // @ts-check
 (() => {
+  const FOCUSABLE_SELECTOR =
+    "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
+
   const controls = Array.from(
     globalThis.document.querySelectorAll(
       "cds-header-global-action[panel-id], cds-header-menu-button, .bx--header__language-toggle, .bx--header__menu-toggle, .bx--header__action[aria-controls]",
@@ -9,6 +12,9 @@
   if (controls.length === 0) {
     return;
   }
+
+  /** @type {HTMLElement | null} */
+  let lastTrigger = null;
 
   /**
    * @param {HTMLElement} control
@@ -32,6 +38,48 @@
   }
 
   /**
+   * Traps Tab focus within a container element.
+   * @param {KeyboardEvent} event
+   * @param {HTMLElement} container
+   */
+  function trapFocus(event, container) {
+    if (event.key !== "Tab") return;
+
+    const focusable = Array.from(
+      container.querySelectorAll(FOCUSABLE_SELECTOR),
+    ).filter(
+      (el) => el instanceof HTMLElement && el.offsetParent !== null,
+    );
+
+    if (focusable.length === 0) return;
+
+    const first = /** @type {HTMLElement} */ (focusable[0]);
+    const last = /** @type {HTMLElement} */ (focusable[focusable.length - 1]);
+
+    if (event.shiftKey) {
+      if (document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  }
+
+  /** Locks body scroll to prevent background scrolling when panels are open. */
+  function lockScroll() {
+    document.body.style.overflow = "hidden";
+  }
+
+  /** Unlocks body scroll. */
+  function unlockScroll() {
+    document.body.style.overflow = "";
+  }
+
+  /**
    * @param {{
    *   readonly exceptControl?: HTMLElement | null;
    *   readonly restoreFocus?: boolean;
@@ -48,11 +96,6 @@
     const preserveSideNav = exceptControl !== null &&
       exceptControl.matches(".bx--header__menu-toggle") &&
       exceptControl.getAttribute("aria-expanded") === "true";
-    const focusTarget = restoreFocus
-      ? globalThis.document.querySelector(
-        "cds-header-global-action[active], cds-header-menu-button[active], .bx--header__language-toggle[aria-expanded='true'], .bx--header__menu-toggle[aria-expanded='true']",
-      )
-      : null;
 
     for (const control of controls) {
       if (control === exceptControl) {
@@ -135,20 +178,44 @@
       overlay.setAttribute("aria-hidden", "true");
     }
 
-    if (restoreFocus && focusTarget instanceof HTMLElement) {
-      focusTarget.focus({ preventScroll: true });
+    // Unlock scroll when closing panels
+    if (closed && exceptControl === null) {
+      unlockScroll();
+    }
+
+    // Restore focus to the trigger that opened the panel
+    if (restoreFocus && lastTrigger instanceof HTMLElement) {
+      lastTrigger.focus({ preventScroll: true });
+      lastTrigger = null;
     }
 
     return closed;
   }
 
   globalThis.document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") {
+    if (event.key === "Escape") {
+      if (closeCarbonChrome({ restoreFocus: true })) {
+        event.preventDefault();
+      }
       return;
     }
 
-    if (closeCarbonChrome({ restoreFocus: true })) {
-      event.preventDefault();
+    // Focus trap for open panels and side nav
+    if (event.key === "Tab") {
+      const openPanel = document.querySelector(
+        ".bx--header__panel:not([hidden])",
+      );
+      if (openPanel instanceof HTMLElement) {
+        trapFocus(event, openPanel);
+        return;
+      }
+
+      const openSideNav = document.querySelector(
+        ".bx--side-nav:not([hidden])",
+      );
+      if (openSideNav instanceof HTMLElement) {
+        trapFocus(event, openSideNav);
+      }
     }
   });
 
@@ -192,7 +259,8 @@
     const overlay = document.querySelector(".bx--side-nav__overlay");
 
     /**
-     * Toggles a panel's visibility and updates ARIA states
+     * Toggles a panel's visibility and updates ARIA states.
+     * Includes focus management and scroll locking.
      * @param {HTMLElement|null} button The trigger button
      * @param {HTMLElement|null} panel The panel to toggle
      */
@@ -209,24 +277,27 @@
         button.setAttribute("aria-expanded", String(newState));
 
         if (newState) {
+          lastTrigger = button;
           panel.removeAttribute("hidden");
           panel.setAttribute("expanded", "");
+          lockScroll();
           // Focus first focusable element in panel
-          const firstFocusable = panel.querySelector(
-            "a, button, input, [tabindex]:not([tabindex='-1'])",
-          );
+          const firstFocusable = panel.querySelector(FOCUSABLE_SELECTOR);
           if (firstFocusable instanceof HTMLElement) {
             setTimeout(() => firstFocusable.focus(), 50);
           }
         } else {
           panel.setAttribute("hidden", "");
           panel.removeAttribute("expanded");
+          unlockScroll();
+          // Return focus to trigger
+          button.focus({ preventScroll: true });
         }
       });
     };
 
     /**
-     * Setup SideNav toggle with overlay
+     * Setup SideNav toggle with overlay and scroll locking.
      * @param {HTMLElement|null} button The hamburger button
      * @param {HTMLElement|null} nav The SideNav element
      */
@@ -243,8 +314,10 @@
         button.setAttribute("aria-expanded", String(newState));
 
         if (newState) {
+          lastTrigger = button;
           nav.removeAttribute("hidden");
           nav.setAttribute("expanded", "");
+          lockScroll();
           if (overlay instanceof HTMLElement) {
             overlay.setAttribute("aria-hidden", "false");
           }
@@ -256,9 +329,12 @@
         } else {
           nav.setAttribute("hidden", "");
           nav.removeAttribute("expanded");
+          unlockScroll();
           if (overlay instanceof HTMLElement) {
             overlay.setAttribute("aria-hidden", "true");
           }
+          // Return focus to trigger
+          button.focus({ preventScroll: true });
         }
       });
     };
@@ -276,6 +352,7 @@
     if (overlay instanceof HTMLElement) {
       overlay.addEventListener("click", () => {
         closeCarbonChrome({ restoreFocus: true });
+        unlockScroll();
       });
     }
 
@@ -291,6 +368,7 @@
 
       if (!isInsidePanel && !isToggleButton) {
         closeCarbonChrome();
+        unlockScroll();
       }
     });
   }

@@ -12,19 +12,15 @@ Use these official pages as the review baseline.
 
 - Tokens overview: https://carbondesignsystem.com/guidelines/tokens/overview/
 - Color / themes: https://carbondesignsystem.com/elements/color/overview/
-- Themes overview:
-  https://v10.carbondesignsystem.com/guidelines/themes/overview/
+- Themes overview: https://carbondesignsystem.com/elements/themes/overview/
 
 ## Spacing, typography, layout
 
-- Spacing overview:
-  https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+- Spacing overview: https://carbondesignsystem.com/elements/spacing/overview/
 - Typography overview:
-  https://v10.carbondesignsystem.com/guidelines/typography/overview/
-- Layout overview:
-  https://v10.carbondesignsystem.com/guidelines/layout/overview/
-- 2x Grid overview:
-  https://v10.carbondesignsystem.com/guidelines/2x-grid/overview/
+  https://carbondesignsystem.com/elements/typography/overview/
+- Layout overview: https://carbondesignsystem.com/elements/2x-grid/overview/
+- 2x Grid overview: https://carbondesignsystem.com/elements/2x-grid/overview/
 
 ## Accessibility and motion
 

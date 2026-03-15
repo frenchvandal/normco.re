@@ -141,6 +141,7 @@ export type SiteTranslations = {
   readonly notFound: {
     readonly title: string;
     readonly description: string;
+    readonly heading: string;
     readonly message: string;
     readonly backToHome: string;
   };
@@ -225,7 +226,8 @@ const SITE_TRANSLATIONS = {
     notFound: {
       title: "Page not found",
       description: "The page you requested does not exist.",
-      message: "Page not found.",
+      heading: "Page not found",
+      message: "The page you requested does not exist.",
       backToHome: "Back to home",
     },
   },
@@ -308,7 +310,8 @@ const SITE_TRANSLATIONS = {
     notFound: {
       title: "Page introuvable",
       description: "La page demandée n'existe pas.",
-      message: "Page introuvable.",
+      heading: "Page introuvable",
+      message: "La page demandée n'existe pas.",
       backToHome: "Retour à l'accueil",
     },
   },
@@ -389,7 +392,8 @@ const SITE_TRANSLATIONS = {
     notFound: {
       title: "页面不存在",
       description: "你请求的页面不存在。",
-      message: "页面不存在。",
+      heading: "页面不存在",
+      message: "你请求的页面不存在。",
       backToHome: "返回首页",
     },
   },
@@ -470,7 +474,8 @@ const SITE_TRANSLATIONS = {
     notFound: {
       title: "找不到頁面",
       description: "你要求的頁面不存在。",
-      message: "找不到頁面。",
+      heading: "找不到頁面",
+      message: "你要求的頁面不存在。",
       backToHome: "返回首頁",
     },
   },

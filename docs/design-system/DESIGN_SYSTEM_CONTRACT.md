@@ -172,7 +172,7 @@ Use Carbon spacing scale.
 
 Reference
 
-https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+https://carbondesignsystem.com/elements/spacing/overview/
 
 ---
 
@@ -182,7 +182,7 @@ Use IBM Plex fonts.
 
 Reference
 
-https://v10.carbondesignsystem.com/guidelines/typography/overview/
+https://carbondesignsystem.com/elements/typography/overview/
 
 ---
 
