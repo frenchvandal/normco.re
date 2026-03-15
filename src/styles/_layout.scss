@@ -224,9 +224,7 @@
     text-decoration: none;
     font: var(--cds-productive-body-01);
     font-weight: var(--cds-font-weight-regular);
-    transition:
-      background-color 150ms ease,
-      color 150ms ease;
+    transition: background-color 150ms ease, color 150ms ease;
   }
 
   .cds--header__language-option:hover {
@@ -263,7 +261,8 @@
     transition: opacity 150ms ease;
   }
 
-  .cds--header__language-option[aria-checked="true"] .cds--header__language-check {
+  .cds--header__language-option[aria-checked="true"]
+    .cds--header__language-check {
     opacity: 1;
   }
 

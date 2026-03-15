@@ -11,8 +11,8 @@ import {
 } from "../utils/carbon-icons.ts";
 import CarbonIcon from "./CarbonIcon.tsx";
 import {
-  getLocalizedUrl,
   getLanguageTag,
+  getLocalizedUrl,
   getSiteTranslations,
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
@@ -181,7 +181,8 @@ export default (
               data-label-switch-light={translations.site
                 .switchToLightThemeLabel}
               data-label-switch-dark={translations.site.switchToDarkThemeLabel}
-              data-label-follow-system={translations.site.followSystemThemeLabel}
+              data-label-follow-system={translations.site
+                .followSystemThemeLabel}
             >
               <CarbonIcon
                 icon={LIGHT_ICON}

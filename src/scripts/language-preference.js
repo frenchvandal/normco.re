@@ -314,9 +314,11 @@
       return;
     }
 
-    for (const action of globalThis.document.querySelectorAll(
-      '.cds--header__action[aria-controls], .cds--header__menu-toggle, cds-header-global-action[panel-id]',
-    )) {
+    for (
+      const action of globalThis.document.querySelectorAll(
+        ".cds--header__action[aria-controls], .cds--header__menu-toggle, cds-header-global-action[panel-id]",
+      )
+    ) {
       if (!(action instanceof HTMLElement)) {
         continue;
       }

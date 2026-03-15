@@ -59,7 +59,9 @@
     opacity: 1;
   }
 
-  .cds--header__search-root .pagefind-ui .pagefind-ui__search-clear.pagefind-ui__search-clear {
+  .cds--header__search-root
+    .pagefind-ui
+    .pagefind-ui__search-clear.pagefind-ui__search-clear {
     position: absolute;
     min-block-size: 2.25rem;
     inset-block-start: 1px;
@@ -80,7 +82,9 @@
     overflow: hidden;
   }
 
-  .cds--header__search-root .pagefind-ui .pagefind-ui__search-clear.pagefind-ui__search-clear::before {
+  .cds--header__search-root
+    .pagefind-ui
+    .pagefind-ui__search-clear.pagefind-ui__search-clear::before {
     content: "";
     position: absolute;
     inset-block-start: 50%;
@@ -97,12 +101,16 @@
     mask-size: 100% 100%;
   }
 
-  .cds--header__search-root .pagefind-ui .pagefind-ui__search-clear.pagefind-ui__search-clear:hover {
+  .cds--header__search-root
+    .pagefind-ui
+    .pagefind-ui__search-clear.pagefind-ui__search-clear:hover {
     color: var(--cds-text-primary);
     background: var(--cds-layer);
   }
 
-  .cds--header__search-root .pagefind-ui .pagefind-ui__search-clear.pagefind-ui__search-clear:focus-visible {
+  .cds--header__search-root
+    .pagefind-ui
+    .pagefind-ui__search-clear.pagefind-ui__search-clear:focus-visible {
     outline: var(--focus-ring-width) solid var(--cds-focus);
     outline-offset: var(--focus-ring-offset);
   }

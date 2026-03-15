@@ -95,11 +95,13 @@ export default async (
 
   const years = [...byYear.keys()].sort((a, b) => b - a);
 
-  const yearNavItems = years.map((year) => `<li class="archive-year-nav-item">
+  const yearNavItems = years.map((year) =>
+    `<li class="archive-year-nav-item">
   <a href="#archive-year-${year}" class="cds--tag cds--tag--default archive-year-nav-link">
     <span class="cds--tag__label">${year}</span>
   </a>
-</li>`).join("\n");
+</li>`
+  ).join("\n");
 
   const sections = await Promise.all(years.map(async (year) => {
     const yearPosts = byYear.get(year) ?? [];

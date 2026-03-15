@@ -36,8 +36,8 @@ jobs:
 
       - name: Run build task
         shell: bash
-        run: 
-         deno task build
+        run:
+          deno task build
 
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/aliyun-oss-cdn-sync-action@master

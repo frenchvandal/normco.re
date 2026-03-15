@@ -70,11 +70,9 @@
    */
   function getSearchMessages(container) {
     return {
-      unavailable:
-        container.dataset.searchUnavailableLabel ??
+      unavailable: container.dataset.searchUnavailableLabel ??
         "Search is temporarily unavailable.",
-      offline:
-        container.dataset.searchOfflineLabel ??
+      offline: container.dataset.searchOfflineLabel ??
         "Search is unavailable while offline.",
       retry: container.dataset.searchRetryLabel ?? "Retry",
     };

@@ -346,7 +346,10 @@ describe("Header()", () => {
       assertStringIncludes(html, 'data-carbon-icon="sun"');
       assertStringIncludes(html, 'data-carbon-icon="moon"');
       assertStringIncludes(html, 'data-carbon-icon="screen"');
-      assertStringIncludes(html, 'data-label-follow-system="Follow system theme"');
+      assertStringIncludes(
+        html,
+        'data-label-follow-system="Follow system theme"',
+      );
     });
   });
 

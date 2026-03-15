@@ -339,7 +339,9 @@
 
       const menu = panel.querySelector("[data-language-menu]");
 
-      if (!(menu instanceof HTMLElement) || menu.dataset.keyboardBound === "true") {
+      if (
+        !(menu instanceof HTMLElement) || menu.dataset.keyboardBound === "true"
+      ) {
         return;
       }
 
@@ -348,7 +350,10 @@
       menu.addEventListener("focusin", (event) => {
         const target = event.target;
 
-        if (!(target instanceof HTMLElement) || !target.matches("[data-language-option]")) {
+        if (
+          !(target instanceof HTMLElement) ||
+          !target.matches("[data-language-option]")
+        ) {
           return;
         }
 
@@ -360,7 +365,10 @@
       menu.addEventListener("keydown", (event) => {
         const target = event.target;
 
-        if (!(target instanceof HTMLElement) || !target.matches("[data-language-option]")) {
+        if (
+          !(target instanceof HTMLElement) ||
+          !target.matches("[data-language-option]")
+        ) {
           return;
         }
 
