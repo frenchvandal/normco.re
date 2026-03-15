@@ -39,7 +39,7 @@ const ARIA_MODAL = /aria-modal\s*=\s*["']true["']/g;
 const ROLE_DIALOG = /role\s*=\s*["']dialog["']/g;
 const ARIA_EXPANDED = /aria-expanded/g;
 const ARIA_CONTROLS = /aria-controls/g;
-const ARIA_CURRENT = /aria-current/g;
+const _ARIA_CURRENT = /aria-current/g;
 const H1 = /<h1[\s>]/i;
 const CURSOR_POINTER = /cursor\s*:\s*pointer/g;
 const SKIP_LINK = /(skip link|href=["']#main["'])/i;
@@ -142,8 +142,8 @@ function scanCss(path: string, content: string) {
   const tokens = [...content.matchAll(TOKEN_DECL)].map((m) => m[1]);
   for (const token of tokens) {
     if (
-      !token.startsWith("cds-") && !token.startsWith("semantic-") &&
-      !token.startsWith("editorial-")
+      !token?.startsWith("cds-") && !token?.startsWith("semantic-") &&
+      !token?.startsWith("editorial-")
     ) {
       addFinding({
         severity: "minor",
@@ -253,7 +253,8 @@ function renderReport(findings: Finding[]) {
 
   for (const severity of bySeverity) {
     const group = findings.filter((f) => f.severity === severity);
-    lines.push(`## ${severity[0].toUpperCase()}${severity.slice(1)} findings`);
+    const severityLabel = severity.charAt(0).toUpperCase() + severity.slice(1);
+    lines.push(`## ${severityLabel} findings`);
     lines.push("");
     if (group.length === 0) {
       lines.push("None.");
