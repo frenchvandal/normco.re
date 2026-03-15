@@ -167,7 +167,7 @@ normco.re/
 │   └── validate.ts
 ├── plugins/
 ├── scripts/
-├── design/                 # Figma JSON exports (existing)
+├── design-tokens/          # Figma JSON exports (Carbon v11 variables)
 ├── _config.ts
 ├── _config/                # Split config modules
 │   ├── plugins.ts
@@ -523,28 +523,17 @@ Key corrections:
 
 ---
 
-## 9. Design JSON sources (from `design/` directory)
+## 9. Design JSON sources (from `design-tokens/` directory)
 
-- `design/Theme.json`
-- `design/Layer.json`
-- `design/Spacing.json`
-- `design/Radius.json`
-- `design/Breakpoint.json`
-- `design/Breakpoint LG–XL.json`
-- `design/Breakpoint Max-Max+.json`
-- `design/Grid mode.json`
-- `design/Column span.json`
-- `design/Aside.json`
-- `design/Modal.json`
-- `design/Content switcher.json`
-- `design/Colors.json`
-- `design/Colors pictogram.json`
-- `design/Color palette.json`
-- `design/Color palette 1.json`
-- `design/Color palette 2.json`
-- `design/Color palette 3.json`
-- `design/Color palette 4.json`
-- `design/Numbers.json`
+All Figma variable exports live in `design-tokens/*.json`. The
+`loadDesignTokens()` function in `src/utils/carbon-tokens.ts` scans the
+directory at build time and loads every `.json` file generically — no hardcoded
+filenames. Each file contains an array of Figma variable collections (themes,
+spacing, colors, etc.).
+
+Current files:
+
+- `design-tokens/carbon.json` — consolidated Carbon Design System v11 variables
 
 ## 10. Carbon guidelines references
 
