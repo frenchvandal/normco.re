@@ -31,10 +31,12 @@ jobs:
           deno-version-file: .tool-versions
           cache: true
 
+      - name: Deno install
+        run: deno install
+
       - name: Run build task
         shell: bash
         run: 
-         deno install
          deno task build
 
       - name: Deploy to Alibaba Cloud OSS
