@@ -2,6 +2,7 @@
 
 import terser from "lume/plugins/terser.ts";
 import googleFonts from "lume/plugins/google_fonts.ts";
+import sass from "lume/plugins/sass.ts";
 import postcss from "lume/plugins/postcss.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
@@ -60,6 +61,16 @@ export function registerPlugins(
         "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Noto+Sans+SC:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&display=swap",
       cssFile: "styles/fonts.css",
       fontsFolder: "/fonts",
+    }),
+  );
+
+  // Compile Carbon Sass → CSS before PostCSS/LightningCSS processing.
+  // loadPaths resolves @carbon/styles from node_modules.
+  site.use(
+    sass({
+      options: {
+        loadPaths: ["node_modules"],
+      },
     }),
   );
 

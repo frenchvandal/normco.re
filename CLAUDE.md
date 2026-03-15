@@ -2,9 +2,11 @@
 
 This repository contains a static site using:
 
-Deno + Lume + TSX + modern CSS.
+Deno + Lume + TSX + Carbon Sass.
 
-The UI follows a **Carbon‑aligned design system**.
+The UI follows the **Carbon Design System v11** using `@carbon/styles` Sass
+modules as the single source of truth for tokens. Prefix: `cds--` (classes),
+`--cds-` (CSS custom properties).
 
 Before modifying UI code, agents must read:
 
@@ -32,7 +34,9 @@ Forbidden examples
 color:#000\
 margin:17px
 
-Use Carbon tokens.
+Use Carbon tokens via `var(--cds-*)` custom properties or `@use '@carbon/styles/scss/*'` Sass modules.
+
+Token source of truth: `src/styles/carbon/_theme-tokens.scss`
 
 Reference
 

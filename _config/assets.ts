@@ -4,8 +4,8 @@ import type Site from "lume/core/site.ts";
 
 /** Register all site assets so Lume discovers them before processors run. */
 export function registerAssets(site: Site): void {
-  // Main stylesheet
-  site.add("/style.css");
+  // Main stylesheet (Sass entry point — compiled to /style.css by Lume Sass plugin)
+  site.add("/style.scss");
 
   // Client-side scripts
   site.add("/scripts/theme-toggle.js");

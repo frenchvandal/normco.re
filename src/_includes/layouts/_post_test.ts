@@ -166,7 +166,7 @@ describe("post.tsx layout", () => {
       const html = await renderComponent(
         postLayout(makeData({}), MOCK_HELPERS),
       );
-      assertStringIncludes(html, '<nav class="bx--breadcrumb"');
+      assertStringIncludes(html, '<nav class="cds--breadcrumb"');
       assertStringIncludes(html, 'href="/"');
       assertStringIncludes(html, 'href="/posts/"');
       assertStringIncludes(html, "Home");

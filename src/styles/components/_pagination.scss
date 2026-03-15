@@ -1,7 +1,7 @@
 /* Carbon pagination.
    Source: https://carbondesignsystem.com/components/pagination/usage/ */
 @layer components {
-  .bx--pagination {
+  .cds--pagination {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -11,24 +11,24 @@
     font: var(--cds-productive-body-01);
   }
 
-  .bx--pagination__content {
+  .cds--pagination__content {
     display: flex;
     align-items: center;
     gap: var(--cds-spacing-03);
   }
 
-  .bx--pagination__text {
+  .cds--pagination__text {
     color: var(--cds-text-secondary);
     font-size: var(--cds-productive-body-01-font-size);
   }
 
-  .bx--pagination__control {
+  .cds--pagination__control {
     display: inline-flex;
     align-items: center;
     gap: var(--cds-spacing-02);
   }
 
-  .bx--pagination__button {
+  .cds--pagination__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -48,12 +48,12 @@
       color 0.15s ease;
   }
 
-  .bx--pagination__button:hover {
+  .cds--pagination__button:hover {
     background: var(--cds-layer-hover);
     border-color: var(--cds-border-strong);
   }
 
-  .bx--pagination__button:disabled {
+  .cds--pagination__button:disabled {
     background: var(--cds-background-disabled);
     border-color: var(--cds-border-disabled);
     color: var(--cds-text-placeholder);
@@ -61,23 +61,23 @@
     opacity: 0.5;
   }
 
-  .bx--pagination__button:focus-visible {
+  .cds--pagination__button:focus-visible {
     outline: var(--focus-ring-width) solid var(--cds-focus);
     outline-offset: calc(var(--focus-ring-width) * -1);
   }
 
-  .bx--pagination__button-icon {
+  .cds--pagination__button-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
   }
 
-  .bx--pagination__button-text {
+  .cds--pagination__button-text {
     font-weight: 600;
   }
 
   /* Pagination with page numbers */
-  .bx--pagination__pages {
+  .cds--pagination__pages {
     display: flex;
     align-items: center;
     gap: var(--cds-spacing-02);
@@ -86,11 +86,11 @@
     padding: 0;
   }
 
-  .bx--pagination__page-item {
+  .cds--pagination__page-item {
     display: inline-flex;
   }
 
-  .bx--pagination__page-button {
+  .cds--pagination__page-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -109,35 +109,35 @@
       color 0.15s ease;
   }
 
-  .bx--pagination__page-button:hover {
+  .cds--pagination__page-button:hover {
     background: var(--cds-layer-hover);
     border-color: var(--cds-border-subtle);
   }
 
-  .bx--pagination__page-button[aria-current="page"] {
+  .cds--pagination__page-button[aria-current="page"] {
     background: var(--cds-layer-active);
     border-color: var(--cds-border-strong);
     font-weight: 600;
   }
 
-  .bx--pagination__page-button:focus-visible {
+  .cds--pagination__page-button:focus-visible {
     outline: var(--focus-ring-width) solid var(--cds-focus);
     outline-offset: calc(var(--focus-ring-width) * -1);
   }
 
   /* Responsive pagination */
   @media (max-width: 671px) {
-    .bx--pagination {
+    .cds--pagination {
       flex-direction: column;
       align-items: stretch;
       gap: var(--cds-spacing-03);
     }
 
-    .bx--pagination__content {
+    .cds--pagination__content {
       justify-content: space-between;
     }
 
-    .bx--pagination__pages {
+    .cds--pagination__pages {
       justify-content: center;
       flex-wrap: wrap;
     }

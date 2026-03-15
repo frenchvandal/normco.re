@@ -5,7 +5,7 @@
 
   const controls = Array.from(
     globalThis.document.querySelectorAll(
-      "cds-header-global-action[panel-id], cds-header-menu-button, .bx--header__language-toggle, .bx--header__menu-toggle, .bx--header__action[aria-controls]",
+      "cds-header-global-action[panel-id], cds-header-menu-button, .cds--header__language-toggle, .cds--header__menu-toggle, .cds--header__action[aria-controls]",
     ),
   ).filter((element) => element instanceof HTMLElement);
 
@@ -23,12 +23,12 @@
   function getLinkedPanelId(control) {
     if (
       control.matches(
-        ".bx--header__language-toggle, .bx--header__action[aria-controls]",
+        ".cds--header__language-toggle, .cds--header__action[aria-controls]",
       )
     ) {
       return control.getAttribute("aria-controls");
     }
-    if (control.matches(".bx--header__menu-toggle")) {
+    if (control.matches(".cds--header__menu-toggle")) {
       return control.getAttribute("aria-controls");
     }
     if (!control.matches("cds-header-global-action[panel-id]")) {
@@ -94,7 +94,7 @@
       ? null
       : getLinkedPanelId(exceptControl);
     const preserveSideNav = exceptControl !== null &&
-      exceptControl.matches(".bx--header__menu-toggle") &&
+      exceptControl.matches(".cds--header__menu-toggle") &&
       exceptControl.getAttribute("aria-expanded") === "true";
 
     for (const control of controls) {
@@ -138,7 +138,7 @@
 
     for (
       const panel of globalThis.document.querySelectorAll(
-        "cds-header-panel[expanded], .bx--header__panel:not([hidden])",
+        "cds-header-panel[expanded], .cds--header__panel:not([hidden])",
       )
     ) {
       if (!(panel instanceof HTMLElement)) {
@@ -156,7 +156,7 @@
 
     for (
       const sideNav of globalThis.document.querySelectorAll(
-        "cds-side-nav[expanded], .bx--side-nav:not([hidden])",
+        "cds-side-nav[expanded], .cds--side-nav:not([hidden])",
       )
     ) {
       if (!(sideNav instanceof HTMLElement)) {
@@ -173,7 +173,7 @@
     }
 
     // Hide overlay when SideNav closes
-    const overlay = globalThis.document.querySelector(".bx--side-nav__overlay");
+    const overlay = globalThis.document.querySelector(".cds--side-nav__overlay");
     if (overlay instanceof HTMLElement && !preserveSideNav) {
       overlay.setAttribute("aria-hidden", "true");
     }
@@ -203,7 +203,7 @@
     // Focus trap for open panels and side nav
     if (event.key === "Tab") {
       const openPanel = document.querySelector(
-        ".bx--header__panel:not([hidden])",
+        ".cds--header__panel:not([hidden])",
       );
       if (openPanel instanceof HTMLElement) {
         trapFocus(event, openPanel);
@@ -211,7 +211,7 @@
       }
 
       const openSideNav = document.querySelector(
-        ".bx--side-nav:not([hidden])",
+        ".cds--side-nav:not([hidden])",
       );
       if (openSideNav instanceof HTMLElement) {
         trapFocus(event, openSideNav);
@@ -246,17 +246,17 @@
    * Replaces functionality previously provided by Carbon Web Components
    */
   function setupDisclosureControls() {
-    const navToggle = document.querySelector(".bx--header__menu-toggle");
+    const navToggle = document.querySelector(".cds--header__menu-toggle");
     const sideNav = document.getElementById("site-side-nav");
     const searchToggle = document.querySelector(
-      ".bx--header__action[aria-controls='site-search-panel']",
+      ".cds--header__action[aria-controls='site-search-panel']",
     );
     const searchPanel = document.getElementById("site-search-panel");
     const languageToggle = document.querySelector(
-      ".bx--header__language-toggle",
+      ".cds--header__language-toggle",
     );
     const languagePanel = document.getElementById("site-language-panel");
-    const overlay = document.querySelector(".bx--side-nav__overlay");
+    const overlay = document.querySelector(".cds--side-nav__overlay");
 
     /**
      * Toggles a panel's visibility and updates ARIA states.
@@ -322,7 +322,7 @@
             overlay.setAttribute("aria-hidden", "false");
           }
           // Focus first nav link
-          const firstLink = nav.querySelector("a.bx--side-nav__link");
+          const firstLink = nav.querySelector("a.cds--side-nav__link");
           if (firstLink instanceof HTMLElement) {
             setTimeout(() => firstLink.focus(), 50);
           }
@@ -361,9 +361,9 @@
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
 
-      const isInsidePanel = target.closest(".bx--header__panel, .bx--side-nav");
+      const isInsidePanel = target.closest(".cds--header__panel, .cds--side-nav");
       const isToggleButton = target.closest(
-        ".bx--header__menu-toggle, .bx--header__language-toggle, .bx--header__action[aria-controls]",
+        ".cds--header__menu-toggle, .cds--header__language-toggle, .cds--header__action[aria-controls]",
       );
 
       if (!isInsidePanel && !isToggleButton) {

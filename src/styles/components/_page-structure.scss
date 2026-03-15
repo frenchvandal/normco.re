@@ -1,6 +1,3 @@
-/* Shared page structure: pagehead, subhead, blankslate, about page.
-   Carbon section heading.
-   Source: https://carbondesignsystem.com/elements/typography/overview/ */
 @layer components {
   .pagehead {
     padding-block-end: var(--space-xl);
@@ -46,7 +43,6 @@
     max-inline-size: 100%;
   }
 
-  /* About page */
   .about-title {
     margin-block-end: var(--space-s);
   }

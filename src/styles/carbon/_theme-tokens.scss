@@ -1,0 +1,196 @@
+// Carbon Design System v11 — theme tokens as CSS custom properties.
+// This is the SINGLE SOURCE OF TRUTH for all design tokens.
+// Replaces the former hand-maintained tokens-carbon.css.
+//
+// Sources:
+// - Themes: https://carbondesignsystem.com/elements/themes/overview/
+// - Spacing: https://carbondesignsystem.com/elements/2x-grid/overview/
+// - Colors: https://carbondesignsystem.com/elements/color/overview/
+// - Typography: https://carbondesignsystem.com/elements/typography/overview/
+
+@use 'sass:map';
+@use '../carbon/config';
+@use '@carbon/styles/scss/theme' as theme;
+@use '@carbon/styles/scss/themes' as themes;
+@use '@carbon/styles/scss/spacing' as spacing;
+@use '@carbon/styles/scss/motion' as motion;
+@use '@carbon/styles/scss/type' as type;
+
+@layer tokens {
+  // White theme (default light)
+  :root {
+    @include theme.theme(themes.$white);
+
+    // Spacing scale as CSS custom properties (Carbon Sass provides these as
+    // Sass variables; we emit them for use in plain CSS and component layers).
+    --cds-spacing-00: 0rem;
+    --cds-spacing-01: #{spacing.$spacing-01};
+    --cds-spacing-02: #{spacing.$spacing-02};
+    --cds-spacing-03: #{spacing.$spacing-03};
+    --cds-spacing-04: #{spacing.$spacing-04};
+    --cds-spacing-05: #{spacing.$spacing-05};
+    --cds-spacing-06: #{spacing.$spacing-06};
+    --cds-spacing-07: #{spacing.$spacing-07};
+    --cds-spacing-08: #{spacing.$spacing-08};
+    --cds-spacing-09: #{spacing.$spacing-09};
+    --cds-spacing-10: #{spacing.$spacing-10};
+    --cds-spacing-11: #{spacing.$spacing-11};
+    --cds-spacing-12: #{spacing.$spacing-12};
+    --cds-spacing-13: #{spacing.$spacing-13};
+
+    // Breakpoints (Carbon Sass breakpoints are used via mixins;
+    // these custom properties are for CSS-only usage in components).
+    --cds-breakpoint-sm: 20rem;
+    --cds-breakpoint-md: 42rem;
+    --cds-breakpoint-lg: 66rem;
+    --cds-breakpoint-xl: 82rem;
+    --cds-breakpoint-max: 99rem;
+    --cds-breakpoint-max-plus: 111.5rem;
+
+    // Grid configuration per breakpoint
+    --cds-grid-columns-sm: 4;
+    --cds-grid-columns-md: 8;
+    --cds-grid-columns-lg: 16;
+    --cds-grid-columns-xl: 16;
+    --cds-grid-columns-max: 16;
+
+    // Radius — Carbon uses square corners by default
+    --cds-radius-none: 0;
+    --cds-radius-round: 10000px;
+
+    // Motion tokens
+    --cds-motion-duration-fast: #{motion.$duration-fast-01};
+    --cds-motion-duration-moderate: #{motion.$duration-moderate-01};
+    --cds-motion-duration-slow: #{motion.$duration-moderate-02};
+    --cds-motion-duration-slower: #{motion.$duration-slow-01};
+    --cds-motion-easing-standard: #{motion.$standard-easing};
+    --cds-motion-easing-enter: #{motion.$ease-out};
+    --cds-motion-easing-exit: #{motion.$ease-in};
+    --cds-transition-default: var(--cds-motion-duration-moderate) var(--cds-motion-easing-standard);
+
+    // Font families — IBM Plex (primary), Noto Sans SC/TC (CJK fallback,
+    // served locally via google_fonts plugin), system fonts (final fallback).
+    --cds-font-family-sans:
+      'IBM Plex Sans', 'Noto Sans SC', 'Noto Sans TC', system-ui, -apple-system,
+      BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+      sans-serif;
+    --cds-font-family-mono:
+      'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Consolas,
+      'Liberation Mono', Menlo, monospace;
+
+    // Productive type scale (UI elements) — shorthand tokens
+    --cds-productive-heading-01: 400 0.875rem/1.29 var(--cds-font-family-sans);
+    --cds-productive-heading-02: 600 1rem/1.375 var(--cds-font-family-sans);
+    --cds-productive-heading-03: 400 1.25rem/1.4 var(--cds-font-family-sans);
+    --cds-productive-heading-04: 400 1.75rem/1.29 var(--cds-font-family-sans);
+    --cds-productive-heading-05: 400 2rem/1.25 var(--cds-font-family-sans);
+    --cds-productive-heading-06: 600 2rem/1.25 var(--cds-font-family-sans);
+    --cds-productive-heading-07: 600 2.625rem/1.19 var(--cds-font-family-sans);
+
+    --cds-productive-body-01: 400 0.875rem/1.29 var(--cds-font-family-sans);
+    --cds-productive-body-long-01: 400 0.875rem/1.5 var(--cds-font-family-sans);
+    --cds-productive-body-02: 400 1rem/1.375 var(--cds-font-family-sans);
+    --cds-productive-body-long-02: 400 1rem/1.5 var(--cds-font-family-sans);
+
+    --cds-productive-code-01: 400 0.75rem/1.33 var(--cds-font-family-mono);
+    --cds-productive-code-02: 400 0.875rem/1.29 var(--cds-font-family-mono);
+
+    // Expressive type scale (marketing, hero content)
+    --cds-expressive-heading-01: 400 0.875rem/1.29 var(--cds-font-family-sans);
+    --cds-expressive-heading-02: 400 1rem/1.375 var(--cds-font-family-sans);
+    --cds-expressive-heading-03: 400 1.25rem/1.4 var(--cds-font-family-sans);
+    --cds-expressive-heading-04: 400 1.75rem/1.29 var(--cds-font-family-sans);
+    --cds-expressive-heading-05: 400 2rem/1.25 var(--cds-font-family-sans);
+    --cds-expressive-heading-06: 600 2rem/1.25 var(--cds-font-family-sans);
+
+    --cds-expressive-paragraph-01: 400 1.25rem/1.625 var(--cds-font-family-sans);
+    --cds-expressive-paragraph-02: 400 1.5rem/1.625 var(--cds-font-family-sans);
+
+    // Font weights
+    --cds-font-weight-light: 300;
+    --cds-font-weight-regular: 400;
+    --cds-font-weight-medium: 500;
+    --cds-font-weight-semibold: 600;
+    --cds-font-weight-bold: 700;
+
+    // Line heights
+    --cds-line-height-none: 1;
+    --cds-line-height-tight: 1.25;
+    --cds-line-height-base: 1.375;
+    --cds-line-height-relaxed: 1.5;
+    --cds-line-height-loose: 1.625;
+
+    // Letter spacing
+    --cds-letter-spacing-productive: 0;
+    --cds-letter-spacing-expressive: -0.01em;
+
+    // Shadows
+    --cds-shadow-none: none;
+    --cds-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.1);
+    --cds-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --cds-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --cds-shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.25);
+
+    // Z-index scale
+    --cds-z-index-hide: -1;
+    --cds-z-index-base: 0;
+    --cds-z-index-dropdown: 1000;
+    --cds-z-index-sticky: 1100;
+    --cds-z-index-fixed: 1200;
+    --cds-z-index-overlay-backdrop: 1300;
+    --cds-z-index-overlay: 1400;
+    --cds-z-index-modal: 1500;
+    --cds-z-index-popover: 1600;
+    --cds-z-index-tooltip: 1700;
+    --cds-z-index-notification: 1800;
+
+    // Focus ring tokens
+    --focus-ring-width: 0.1875rem;
+    --focus-ring-offset: 0.125rem;
+  }
+
+  // Dark theme — Gray 90
+  [data-color-mode='dark'] {
+    @include theme.theme(themes.$g90);
+
+    // Darker shadows in dark mode
+    --cds-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
+    --cds-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --cds-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  // System dark mode — mirrors [data-color-mode="dark"].
+  // Applied when no explicit data-color-mode is set and OS prefers dark.
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-color-mode]) {
+      @include theme.theme(themes.$g90);
+
+      --cds-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
+      --cds-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --cds-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  // Gray 100 theme (high contrast dark)
+  [data-color-mode='gray-100'] {
+    @include theme.theme(themes.$g100);
+  }
+
+  // Reduced motion
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --cds-motion-duration-fast: 0ms;
+      --cds-motion-duration-moderate: 0ms;
+      --cds-motion-duration-slow: 0ms;
+      --cds-motion-duration-slower: 0ms;
+    }
+  }
+
+  // High contrast mode
+  @media (prefers-contrast: more) {
+    :root {
+      --cds-border-subtle: #{map.get(themes.$white, 'border-strong-01')};
+      --cds-text-secondary: #{map.get(themes.$white, 'text-primary')};
+    }
+  }
+}

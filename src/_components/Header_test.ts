@@ -12,7 +12,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<a[^>]*href="\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
       );
     });
 
@@ -22,7 +22,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<a[^>]*href="\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
       );
     });
 
@@ -32,7 +32,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<a[^>]*href="\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
       );
     });
   });
@@ -44,7 +44,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<a[^>]*href="\/posts\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
       );
     });
 
@@ -57,7 +57,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<a[^>]*href="\/posts\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
       );
     });
 
@@ -67,7 +67,7 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<a[^>]*href="\/posts\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
       );
     });
   });
@@ -79,7 +79,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<a[^>]*href="\/about\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/about\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
       );
     });
 
@@ -89,48 +89,48 @@ describe("Header()", () => {
       );
       assertNotMatch(
         html,
-        /<a[^>]*href="\/about\/"[^>]*class="bx--header__menu-item"[^>]*aria-current="page"/,
+        /<a[^>]*href="\/about\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
       );
     });
   });
 
   describe("Carbon UI Shell structure", () => {
-    it("renders Carbon UI Shell header with bx--header class", async () => {
+    it("renders Carbon UI Shell header with cds--header class", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertMatch(html, /<header[^>]*class="bx--header"/);
+      assertMatch(html, /<header[^>]*class="cds--header"/);
     });
 
-    it("renders header wrapper with bx--header__wrapper", async () => {
+    it("renders header wrapper with cds--header__wrapper", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, 'class="bx--header__wrapper"');
+      assertStringIncludes(html, 'class="cds--header__wrapper"');
     });
 
-    it("renders header left section with bx--header__left", async () => {
+    it("renders header left section with cds--header__left", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, 'class="bx--header__left"');
+      assertStringIncludes(html, 'class="cds--header__left"');
     });
 
-    it("renders header global actions with bx--header__global", async () => {
+    it("renders header global actions with cds--header__global", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, 'class="bx--header__global"');
+      assertStringIncludes(html, 'class="cds--header__global"');
     });
 
-    it("renders product name with bx--header__name", async () => {
+    it("renders product name with cds--header__name", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertMatch(html, /<a[^>]*href="\/"[^>]*class="bx--header__name"/);
+      assertMatch(html, /<a[^>]*href="\/"[^>]*class="cds--header__name"/);
       assertStringIncludes(
         html,
-        '<span class="bx--header__name--prefix">normco</span>',
+        '<span class="cds--header__name--prefix">normco</span>',
       );
     });
   });
@@ -142,7 +142,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<button[^>]*class="bx--header__action bx--header__menu-toggle"[^>]*aria-label="Open navigation menu"[^>]*aria-expanded="false"[^>]*aria-controls="site-side-nav"/,
+        /<button[^>]*class="cds--header__action cds--header__menu-toggle"[^>]*aria-label="Open navigation menu"[^>]*aria-expanded="false"[^>]*aria-controls="site-side-nav"/,
       );
     });
 
@@ -150,7 +150,7 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertMatch(html, /<svg[^>]*class="bx--header__menu-icon"/);
+      assertMatch(html, /<svg[^>]*class="cds--header__menu-icon"/);
       assertStringIncludes(
         html,
         'd="M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z"',
@@ -159,21 +159,21 @@ describe("Header()", () => {
   });
 
   describe("header navigation", () => {
-    it("renders header navigation with bx--header__nav", async () => {
+    it("renders header navigation with cds--header__nav", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
       assertMatch(
         html,
-        /<nav[^>]*class="bx--header__nav"[^>]*aria-label="Main navigation"/,
+        /<nav[^>]*class="cds--header__nav"[^>]*aria-label="Main navigation"/,
       );
     });
 
-    it("renders navigation items as bx--header__menu-item", async () => {
+    it("renders navigation items as cds--header__menu-item", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, 'class="bx--header__menu-item"');
+      assertStringIncludes(html, 'class="cds--header__menu-item"');
       assertStringIncludes(html, 'href="/"');
       assertStringIncludes(html, 'href="/posts/"');
       assertStringIncludes(html, 'href="/about/"');
@@ -181,13 +181,13 @@ describe("Header()", () => {
   });
 
   describe("SideNav (Left Panel)", () => {
-    it("renders SideNav aside with bx--side-nav class", async () => {
+    it("renders SideNav aside with cds--side-nav class", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
       assertMatch(
         html,
-        /<aside[^>]*id="site-side-nav"[^>]*class="bx--side-nav"[^>]*aria-label="Main navigation"[^>]*hidden/,
+        /<aside[^>]*id="site-side-nav"[^>]*class="cds--side-nav"[^>]*aria-label="Main navigation"[^>]*hidden/,
       );
     });
 
@@ -195,11 +195,11 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertStringIncludes(html, 'class="bx--side-nav__navigation"');
-      assertStringIncludes(html, 'class="bx--side-nav__items"');
-      assertStringIncludes(html, 'class="bx--side-nav__item"');
-      assertStringIncludes(html, 'class="bx--side-nav__link"');
-      assertStringIncludes(html, 'class="bx--side-nav__link-text"');
+      assertStringIncludes(html, 'class="cds--side-nav__navigation"');
+      assertStringIncludes(html, 'class="cds--side-nav__items"');
+      assertStringIncludes(html, 'class="cds--side-nav__item"');
+      assertStringIncludes(html, 'class="cds--side-nav__link"');
+      assertStringIncludes(html, 'class="cds--side-nav__link-text"');
     });
 
     it("renders SideNav overlay", async () => {
@@ -208,7 +208,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<div[^>]*class="bx--side-nav__overlay"[^>]*aria-hidden="true"/,
+        /<div[^>]*class="cds--side-nav__overlay"[^>]*aria-hidden="true"/,
       );
     });
   });
@@ -220,7 +220,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<button[^>]*class="bx--header__action"[^>]*aria-label="Search"[^>]*aria-expanded="false"[^>]*aria-controls="site-search-panel"/,
+        /<button[^>]*class="cds--header__action"[^>]*aria-label="Search"[^>]*aria-expanded="false"[^>]*aria-controls="site-search-panel"/,
       );
     });
 
@@ -230,9 +230,9 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<div[^>]*id="site-search-panel"[^>]*class="bx--header__panel bx--header__search-panel"/,
+        /<div[^>]*id="site-search-panel"[^>]*class="cds--header__panel cds--header__search-panel"/,
       );
-      assertStringIncludes(html, 'class="bx--header__search-root"');
+      assertStringIncludes(html, 'class="cds--header__search-root"');
     });
   });
 
@@ -243,7 +243,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<button[^>]*class="bx--header__action bx--header__language-toggle"[^>]*aria-label="Select language"[^>]*aria-controls="site-language-panel"/,
+        /<button[^>]*class="cds--header__action cds--header__language-toggle"[^>]*aria-label="Select language"[^>]*aria-controls="site-language-panel"/,
       );
     });
 
@@ -253,11 +253,11 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<div[^>]*id="site-language-panel"[^>]*class="bx--header__panel bx--header__language-panel"[^>]*hidden/,
+        /<div[^>]*id="site-language-panel"[^>]*class="cds--header__panel cds--header__language-panel"[^>]*hidden/,
       );
-      assertStringIncludes(html, 'class="bx--header__panel-title"');
-      assertStringIncludes(html, 'class="bx--header__language-list"');
-      assertStringIncludes(html, "bx--header__language-item");
+      assertStringIncludes(html, 'class="cds--header__panel-title"');
+      assertStringIncludes(html, 'class="cds--header__language-list"');
+      assertStringIncludes(html, "cds--header__language-item");
       // Language options present
       assertStringIncludes(html, 'href="/"');
       assertStringIncludes(html, 'href="/fr/"');
@@ -266,7 +266,7 @@ describe("Header()", () => {
       // Current language marked
       assertMatch(
         html,
-        /<a[^>]*href="\/fr\/"[^>]*bx--header__language-item[^>]*aria-current="page"/,
+        /<a[^>]*href="\/fr\/"[^>]*cds--header__language-item[^>]*aria-current="page"/,
       );
     });
 
@@ -274,7 +274,7 @@ describe("Header()", () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertMatch(html, /<svg[^>]*class="bx--header__action-icon"/);
+      assertMatch(html, /<svg[^>]*class="cds--header__action-icon"/);
       // Carbon Translate icon
       assertStringIncludes(
         html,
@@ -290,7 +290,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<button[^>]*id="theme-toggle"[^>]*class="bx--header__action"[^>]*aria-label="Toggle color theme"/,
+        /<button[^>]*id="theme-toggle"[^>]*class="cds--header__action"[^>]*aria-label="Toggle color theme"/,
       );
     });
 
@@ -300,11 +300,11 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<svg[^>]*class="bx--header__action-icon theme-icon theme-icon--sun"/,
+        /<svg[^>]*class="cds--header__action-icon theme-icon theme-icon--sun"/,
       );
       assertMatch(
         html,
-        /<svg[^>]*class="bx--header__action-icon theme-icon theme-icon--moon"/,
+        /<svg[^>]*class="cds--header__action-icon theme-icon theme-icon--moon"/,
       );
     });
   });

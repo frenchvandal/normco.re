@@ -1,0 +1,46 @@
+// normco.re — main stylesheet entrypoint (Sass)
+// Architecture: CUBE/ITCSS-inspired layers + Carbon Sass modules
+// Carbon Design System v11 — compiled at build time via Lume Sass plugin
+//
+// Token source of truth: @carbon/styles Sass modules
+// Grid: Carbon 2x CSS Grid
+// Prefix: cds-- (Carbon v11 default)
+
+// IBM Plex + Noto Sans CJK — Carbon Design System typefaces (served locally).
+// This file is auto-generated at build time by the Lume google_fonts plugin
+// (configured in _config/plugins.ts). It does not exist in the repository;
+// the plugin downloads fonts and emits both fonts.css and /fonts/*.woff2.
+@import './styles/fonts.css';
+
+// Layer 1: Tokens — Carbon theme generates CSS custom properties
+@import './styles/carbon/theme-tokens';
+@import './styles/editorial/tokens';
+
+// Layer 2: Reset
+@import './styles/reset';
+
+// Layer 3: Base
+@import './styles/base';
+
+// Layer 4: Layout (Carbon 2x Grid + UI Shell + site structure)
+@import './styles/carbon/grid';
+@import './styles/layout';
+
+// Components — split into individual files, all in @layer components
+@import './styles/components/skip-link';
+@import './styles/components/header';
+@import './styles/components/page-structure';
+@import './styles/components/hero';
+@import './styles/components/post-card';
+@import './styles/components/post';
+@import './styles/components/archive';
+@import './styles/components/feeds';
+@import './styles/components/prism';
+@import './styles/components/error-pages';
+@import './styles/components/footer';
+@import './styles/components/breadcrumb';
+@import './styles/components/tag';
+@import './styles/components/pagination';
+
+// Layer 6: Utilities
+@import './styles/utilities';
