@@ -28,6 +28,7 @@ import "npm/prism-bash";
 import "npm/prism-typescript";
 import "npm/prism-yaml";
 import otelPlugin from "../plugins/otel.ts";
+import "./materialize_sass_npm_packages.ts";
 
 /** Register all Lume plugins in the correct cascade order. */
 export function registerPlugins(
@@ -66,7 +67,9 @@ export function registerPlugins(
   );
 
   // Compile Carbon Sass → CSS before PostCSS/LightningCSS processing.
-  // loadPaths resolves @carbon/styles from node_modules.
+  // The imported package.json modules above force Deno to materialize the
+  // Carbon Sass dependency graph under top-level node_modules, which is the
+  // location Dart Sass resolves from when using bare package imports.
   site.use(
     sass({
       options: {
