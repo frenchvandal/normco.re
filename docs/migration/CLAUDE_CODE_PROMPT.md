@@ -1,339 +1,395 @@
-# Claude Code / Codex Migration Prompt
+# Carbon Design System v11 — Counter‑Audit Prompt
 
-Repository: `frenchvandal/normco.re`
-
-## Mission
-
-Continue the migration of the repository toward a **Carbon‑aligned lightweight
-design system** based on **IBM Carbon Design System v11**, while preserving the
-project's static architecture:
-
-- Deno
-- Lume
-- TSX
-- modern CSS
-- no React runtime
-- local implementation of Carbon‑inspired patterns
-
-Do **not** assume the goal is a strict one‑to‑one Carbon implementation.\
-The target architecture is a **lightweight static system aligned with Carbon
-tokens, accessibility rules, interaction principles, and component guidance**,
-with documented deviations where needed.
+Repository: `frenchvandal/normco.re`\
+Branch: `claude/review-migration-prompt-TKxCY`
 
 ---
 
-# Mandatory reading order
+# Mission
 
-Before changing any UI code, read these repository documents in this exact
-order:
+Perform a **complete counter‑audit of the Carbon Design System migration**.
 
-1. AGENTS.md
-2. CLAUDE.md
-3. docs/design-system/DESIGN_SYSTEM_CONTRACT.md
-4. docs/design-system/UI_COMPONENT_REGISTRY.md
-5. docs/migration/CARBON_MIGRATION_PLAN.md
-6. docs/migration/CARBON_GUIDELINE_INDEX.md
-7. docs/tokens/CARBON_TOKEN_MAP.json
-8. docs/audits/carbon_engineering_audit.md
-9. docs/audits/combined_carbon_performance_audit.md
+The existing documentation and migration audit in the repository contains errors
+because parts of the analysis relied on:
 
-These documents define:
+- Carbon **v10 assumptions**
+- approximated token values
+- repository implementation choices presented as Carbon rules
 
-- design system posture
-- allowed deviations
-- component inventory
-- migration priorities
-- token strategy
-- audit baseline
+You must **re‑audit everything from scratch using Carbon Design System v11
+only**.
+
+Do not preserve earlier conclusions simply because they exist in the repository.
+
+Every claim must be re‑validated against Carbon v11 sources.
 
 ---
 
-# Authoritative external references
+# Sources of truth
 
-Use Carbon documentation as the external source of truth.
+Use the following sources in strict priority order.
 
-Core references:
+## 1. Carbon Design System v11 official documentation
 
-https://carbondesignsystem.com\
-https://carbondesignsystem.com/components/\
-https://carbondesignsystem.com/guidelines/\
-https://carbondesignsystem.com/guidelines/tokens/overview/\
-https://carbondesignsystem.com/guidelines/accessibility/overview/
+https://carbondesignsystem.com/
 
-Component references most relevant to this repository:
+Consult the official documentation for:
 
-UI Shell Header\
-https://carbondesignsystem.com/components/ui-shell-header/usage/
+- design tokens
+- color system
+- themes
+- typography
+- layout grid
+- breakpoints
+- components
+- UI shell
+- accessibility rules
+- icons and pictograms
 
-Side nav\
-https://carbondesignsystem.com/components/side-nav/usage/
-
-Breadcrumb\
-https://carbondesignsystem.com/components/breadcrumb/usage/
-
-Tag\
-https://carbondesignsystem.com/components/tag/usage/
-
-Search\
-https://carbondesignsystem.com/components/search/usage/
-
-Empty states\
-https://carbondesignsystem.com/components/empty-states/usage/
-
-Typography\
-https://carbondesignsystem.com/guidelines/typography/overview/
-
-Layout\
-https://carbondesignsystem.com/guidelines/layout/overview/
-
-Motion\
-https://carbondesignsystem.com/guidelines/motion/overview/
+Do not rely on any Carbon v10 knowledge.
 
 ---
 
-# Repository posture
+## 2. Local Carbon token export (Figma)
 
-Treat the repository as a **Carbon‑aligned lightweight system**, not as a strict
-Carbon clone.
+The canonical token source inside the repository is:
 
-This means:
+`design-tokens/carbon.json`
 
-- Carbon tokens and semantic layers should be used whenever possible
-- Carbon accessibility expectations are mandatory
-- Carbon interaction patterns should guide shell behavior
-- editorial components may remain custom
-- deviations must be explicit and documented
+All token values used in the code must be traceable to this file.
+
+If a token cannot be traced to this export or to Carbon documentation, it must
+be considered suspicious.
 
 ---
 
-# Primary objectives
+## 3. Repository implementation
 
-## 1 Normalize the token system
+Repository code is **implementation evidence**, not normative truth.
 
-Audit CSS tokens and eliminate unnecessary parallel token systems.
-
-Tasks:
-
-- detect raw spacing values in `px`
-- detect hard‑coded colors (`#hex`, `rgb`, `rgba`)
-- align tokens with `docs/tokens/CARBON_TOKEN_MAP.json`
-
-Target architecture:
-
-1. Carbon base tokens
-2. semantic tokens
-3. editorial tokens
-
----
-
-## 2 Refactor the UI shell and disclosure model
-
-Priority files:
-
-src/_components/Header.tsx\
-src/_includes/base.tsx\
-src/scripts/disclosure-controls.ts
-
-If necessary create:
-
-src/scripts/ui-disclosure.ts
-
-Goals:
-
-- unify toggle logic
-- synchronize aria-expanded
-- manage overlay behavior
-- ensure keyboard accessibility
-
-Each surface must be explicitly classified as:
-
-- dialog
-- disclosure panel
-- navigation surface
-- custom accessible surface
-
-Do not mix semantics.
-
----
-
-## 3 Fix accessibility issues
-
-Audit and correct:
-
-- aria-expanded
-- aria-controls
-- aria-current
-- focus-visible
-- keyboard navigation
-- Escape handling
-- focus return
-- heading hierarchy
-
-If `aria-modal="true"` is used ensure:
-
-- role="dialog"
-- aria-labelledby
-- focus trap
-- focus return
-
-Otherwise remove invalid modal semantics.
-
-Also verify:
-
-- 404 page has `<h1>`
-- skip link exists
-- icon-only controls have accessible labels
-
----
-
-## 4 Normalize component structures
-
-Use `docs/design-system/UI_COMPONENT_REGISTRY.md` as the component inventory.
-
-Priority components:
-
-1. Header
-2. Side navigation
-3. Search panel
-4. Language selector
-5. Breadcrumb
-6. Tag
-7. Empty / error states
-
-Rules:
-
-- Breadcrumb must use a single separator model
-- Non-interactive tags must not use `cursor:pointer`
-- Error states must include semantic headings
-
----
-
-## 5 Preserve performance
-
-The site already performs extremely well.
-
-Do not regress:
-
-- CSS size
-- blocking scripts
-- theme initialization
-- lazy loading
-
-Reference:
-
-docs/audits/combined_carbon_performance_audit.md
-
----
-
-# Required workflow
-
-Step 1 — Read documentation
-
-Understand migration goals and design system contract.
-
-Step 2 — Run repository scanner
+Relevant implementation files include:
 
 ```
-deno run --allow-read --allow-write tools/carbon_repo_scanner.ts .
+src/styles/tokens-carbon.css
+src/styles/base.css
+src/style.css
+src/utils/carbon-tokens.ts
+src/styles/components/*
 ```
 
-Review generated `CARBON_COMPLIANCE_REPORT.md`.
-
-Step 3 — Implement targeted refactors
-
-Refactor:
-
-- tokens
-- shell interactions
-- accessibility semantics
-- component structure
-
-Step 4 — Update documentation
-
-If component behavior changes update:
-
-docs/design-system/UI_COMPONENT_REGISTRY.md\
-docs/design-system/DESIGN_SYSTEM_CONTRACT.md\
-docs/migration/CARBON_MIGRATION_PLAN.md
-
-Step 5 — Produce migration report
-
-Summarize:
-
-- files changed
-- components updated
-- accessibility fixes
-- token normalization
-- remaining technical debt
+Use them to detect mismatches with Carbon v11.
 
 ---
 
-# Implementation rules
+# Non‑authoritative documentation
 
-Tokens:
+The following files may contain outdated or incorrect statements and must be
+critically audited:
 
-- avoid raw colors
-- avoid raw spacing
-- use Carbon tokens whenever possible
+```
+docs/*
+CARBON_MIGRATION_PLAN.md
+CLAUDE.md
+AGENTS.md
+ARCHITECTURE.md
+```
 
-Accessibility:
-
-All interactive controls must support:
-
-- keyboard navigation
-- visible focus
-- correct ARIA state
-
-Components:
-
-Do not label a component Carbon-compliant unless it truly follows Carbon
-structure and behavior.
-
-Documentation:
-
-Any architectural UI change must be reflected in repository documentation.
+Do not assume any claim in those files is correct.
 
 ---
 
-# Target files
+# Audit methodology
 
-Start with:
-
-src/_components/Header.tsx\
-src/_components/Footer.tsx\
-src/_components/PostCard.tsx\
-src/_includes/base.tsx\
-src/styles/style.css\
-src/scripts/disclosure-controls.ts\
-src/scripts/pagefind-lazy-init.ts
-
-Also inspect:
-
-archive templates\
-post templates\
-404 template\
-offline template
+Follow these phases strictly.
 
 ---
 
-# Deliverables
+# Phase 1 — Error ledger
 
-Provide:
+Before proposing fixes, build a **complete error ledger**.
 
-1. updated source files
-2. updated documentation
-3. migration diff
-4. summary of changes
-5. updated CARBON_COMPLIANCE_REPORT.md if relevant
+Format:
+
+| file | section | claim | issue type | correct Carbon v11 reference | action |
+| ---- | ------- | ----- | ---------- | ---------------------------- | ------ |
+
+Issue types may include:
+
+- Carbon v10 assumption
+- incorrect token value
+- incorrect component mapping
+- documentation invention
+- unverifiable statement
+- repository preference presented as Carbon rule
 
 ---
 
-# Success criteria
+# Phase 2 — Token verification
 
-Migration is successful if:
+Audit the entire token system.
 
-- Carbon alignment improves
-- performance remains excellent
-- accessibility is correct
-- tokens become consistent
-- documentation matches implementation
+Cross‑check:
+
+```
+design-tokens/carbon.json
+src/styles/tokens-carbon.css
+src/utils/carbon-tokens.ts
+```
+
+Verify:
+
+- neutral color scale
+- semantic tokens
+- support colors
+- inverse tokens
+- focus colors
+- link colors
+- dark theme tokens
+
+If color conversions exist (hex → oklch), document the conversion method.
+
+---
+
+# Phase 3 — Theme verification
+
+Audit theme definitions.
+
+Verify documentation and implementation for:
+
+- White theme
+- Gray 10
+- Gray 90
+- Gray 100
+
+Ensure documentation does not confuse:
+
+- theme names
+- page background
+- layer tokens
+
+---
+
+# Phase 4 — State behaviour
+
+Verify interaction states:
+
+- hover
+- active
+- selected
+- selected-hover
+- selected-active
+- disabled
+- inverse states
+
+Simplified implementations must be justified by Carbon v11 documentation.
+
+---
+
+# Phase 5 — Typography
+
+Audit typography guidance.
+
+Check alignment with Carbon v11 for:
+
+- productive vs expressive type
+- body tokens
+- heading tokens
+- code tokens
+- line heights
+- font weights
+
+---
+
+# Phase 6 — Layout grid
+
+Audit layout assumptions.
+
+Verify:
+
+- breakpoints
+- columns
+- gutters
+- margins
+- responsive behaviour
+
+If the repository intentionally simplifies Carbon grid rules, document this
+clearly as a **repository deviation**.
+
+---
+
+# Phase 7 — Component mapping
+
+Audit mappings between site components and Carbon components.
+
+Check mappings for:
+
+- header / UI shell header
+- navigation
+- side navigation
+- dropdown
+- language selector
+- breadcrumb
+- pagination
+- tag
+- tile
+- code snippet
+
+Classify each mapping as:
+
+- exact Carbon component
+- adapted Carbon pattern
+- custom component using Carbon tokens
+
+---
+
+# Phase 8 — Documentation integrity
+
+Audit all Carbon‑related documentation.
+
+Identify:
+
+- Carbon v10 references
+- incorrect token claims
+- invented Carbon rules
+- outdated token sources
+- repository preferences presented as Carbon rules
+
+---
+
+# Phase 9 — Source‑of‑truth correction
+
+Ensure documentation clearly states the real sources of truth:
+
+1. Carbon Design System v11 documentation
+2. `design-tokens/carbon.json`
+3. repository implementation
+
+Remove references to obsolete token exports.
+
+---
+
+# Phase 10 — Automated token validation tool
+
+Create or update a **token validation tool** that verifies repository tokens
+against the Carbon token export.
+
+Existing script:
+
+```
+/tool/carbon_repo_scanner.ts
+```
+
+Either:
+
+- extend this script
+- or replace it with a new validator
+
+The tool must:
+
+1. parse `design-tokens/carbon.json`
+2. scan CSS and TypeScript files
+3. detect tokens used in:
+
+```
+src/styles/*
+src/utils/*
+```
+
+4. report:
+
+- tokens used but missing in Carbon export
+- tokens whose value diverges from Carbon
+- unused tokens
+- tokens manually approximated
+
+Output format:
+
+```
+tools/carbon_token_validation_report.md
+```
+
+The tool must run via:
+
+```
+deno task carbon:validate
+```
+
+---
+
+# Required deliverables
+
+## Counter‑audit report
+
+Create:
+
+```
+docs/CARBON_V11_COUNTER_AUDIT.md
+```
+
+Contents:
+
+- executive summary
+- error ledger
+- token validation
+- theme validation
+- documentation issues
+- implementation issues
+- repository deviations
+
+---
+
+## Updated prompt
+
+Rewrite:
+
+```
+CLAUDE_CODE_PROMPT.md
+```
+
+so future agents repeat this counter‑audit methodology.
+
+---
+
+## Documentation corrections
+
+Update documentation where needed:
+
+```
+docs/*
+CARBON_MIGRATION_PLAN.md
+CLAUDE.md
+AGENTS.md
+ARCHITECTURE.md
+```
+
+Important rule:
+
+`CLAUDE.md` and `AGENTS.md` must remain byte‑identical.
+
+---
+
+## Final summary
+
+Provide a final report describing:
+
+- incorrect statements removed
+- corrected tokens
+- documentation updates
+- implementation fixes
+- repository deviations from Carbon
+
+---
+
+# Quality requirements
+
+The counter‑audit must be:
+
+- evidence‑based
+- aligned strictly with Carbon v11
+- traceable to token sources
+- explicit about repository deviations
+- skeptical of previous AI‑generated conclusions
+
+Do not perform a superficial rewrite.
+
+Perform a true counter‑audit.

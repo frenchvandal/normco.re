@@ -309,7 +309,8 @@ Carbon-aligned
 **Known debt**
 
 - `cursor:pointer` now correctly limited to interactive tags only
-- all color variants migrated from hex/rgb to oklch() using Carbon palette values
+- all color variants migrated from hex/rgb to oklch() using Carbon palette
+  values
 
 **Priority**\
 Important

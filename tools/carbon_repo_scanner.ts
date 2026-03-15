@@ -337,9 +337,10 @@ function scanCss(path: string, content: string) {
           selector,
         ) ||
         // Carbon shell buttons and interactive controls
-        /bx--header__action|bx--header__menu-toggle|bx--header__language-toggle/.test(
-          selector,
-        ) ||
+        /bx--header__action|bx--header__menu-toggle|bx--header__language-toggle/
+          .test(
+            selector,
+          ) ||
         // Generic interactive component patterns
         /toggle|btn|action|link|__clear/.test(selector)
       ) {

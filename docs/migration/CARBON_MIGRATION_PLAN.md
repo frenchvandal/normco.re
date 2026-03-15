@@ -379,16 +379,20 @@ Prevent regressions in:
 
 ## Phase 1 — accessibility (completed 2026-03-15)
 
-1 ~~fix dialog semantics~~ — removed invalid `aria-modal`, added `role="search"` and `role="region"` with `aria-labelledby`\
+1 ~~fix dialog semantics~~ — removed invalid `aria-modal`, added `role="search"`
+and `role="region"` with `aria-labelledby`\
 2 ~~implement focus trap~~ — added to disclosure-controls.js\
 3 ~~add missing headings~~ — added `<h1>` to 404 page
 
 ## Phase 2 — tokens (completed 2026-03-15)
 
-1 ~~normalize error-pages.css~~ — replaced `--space-*` and `--text-*` with Carbon tokens\
+1 ~~normalize error-pages.css~~ — replaced `--space-*` and `--text-*` with
+Carbon tokens\
 2 ~~replace hardcoded rgba~~ — replaced with Carbon shadow tokens and oklch\
-3 ~~normalize tag.css colors~~ — replaced all hex/rgb colors with oklch() from Carbon palette\
-4 ~~tokenize border-radius~~ — replaced raw `4px` with `var(--borderRadius-medium)` in post.css and utilities.css
+3 ~~normalize tag.css colors~~ — replaced all hex/rgb colors with oklch() from
+Carbon palette\
+4 ~~tokenize border-radius~~ — replaced raw `4px` with
+`var(--borderRadius-medium)` in post.css and utilities.css
 
 ## Phase 3 — interaction (completed 2026-03-15)
 
@@ -398,7 +402,8 @@ Prevent regressions in:
 
 ## Phase 4 — components (completed 2026-03-15)
 
-1 ~~normalize breadcrumb~~ — canonical `<ol>` list structure with CSS pseudo separators\
+1 ~~normalize breadcrumb~~ — canonical `<ol>` list structure with CSS pseudo
+separators\
 2 ~~fix tag cursor~~ — `cursor:pointer` limited to interactive tags only
 
 ## Phase 5 — documentation (completed 2026-03-15)

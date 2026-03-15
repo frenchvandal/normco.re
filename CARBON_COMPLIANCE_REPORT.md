@@ -17,7 +17,8 @@ Scan date: 2026-03-15
 - spacing: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
 - typography: https://v10.carbondesignsystem.com/guidelines/typography/overview/
 - layout: https://v10.carbondesignsystem.com/guidelines/layout/overview/
-- accessibility: https://carbondesignsystem.com/guidelines/accessibility/overview/
+- accessibility:
+  https://carbondesignsystem.com/guidelines/accessibility/overview/
 - uiShell: https://carbondesignsystem.com/components/ui-shell-header/usage/
 - sideNav: https://carbondesignsystem.com/components/side-nav/usage/
 - breadcrumb: https://carbondesignsystem.com/components/breadcrumb/usage/
@@ -51,8 +52,10 @@ None.
 
 - File: `src/styles/components/pagination.css` line 129
 - Details: Found raw pixel-based declaration: max-width: 671px.
-- Recommendation: Replace direct px values with Carbon spacing/type tokens where applicable.
-- Carbon guideline: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+- Recommendation: Replace direct px values with Carbon spacing/type tokens where
+  applicable.
+- Carbon guideline:
+  https://v10.carbondesignsystem.com/guidelines/spacing/overview/
 
 ### Do not imply clickability for non-interactive elements
 
@@ -65,22 +68,28 @@ None.
 
 - File: `src/styles/components/archive.css` line 45
 - Details: Found raw pixel-based declaration: border-radius: 999px.
-- Recommendation: Replace direct px values with Carbon spacing/type tokens where applicable.
-- Carbon guideline: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+- Recommendation: Replace direct px values with Carbon spacing/type tokens where
+  applicable.
+- Carbon guideline:
+  https://v10.carbondesignsystem.com/guidelines/spacing/overview/
 
 ### Prefer tokenized spacing and typography
 
 - File: `src/styles/layout-carbon.css` line 329
 - Details: Found raw pixel-based declaration: min-width: 672px.
-- Recommendation: Replace direct px values with Carbon spacing/type tokens where applicable.
-- Carbon guideline: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+- Recommendation: Replace direct px values with Carbon spacing/type tokens where
+  applicable.
+- Carbon guideline:
+  https://v10.carbondesignsystem.com/guidelines/spacing/overview/
 
 ### Prefer tokenized spacing and typography
 
 - File: `src/styles/layout-carbon.css` line 346
 - Details: Found raw pixel-based declaration: max-width: 671px.
-- Recommendation: Replace direct px values with Carbon spacing/type tokens where applicable.
-- Carbon guideline: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+- Recommendation: Replace direct px values with Carbon spacing/type tokens where
+  applicable.
+- Carbon guideline:
+  https://v10.carbondesignsystem.com/guidelines/spacing/overview/
 
 ## Next actions
 
