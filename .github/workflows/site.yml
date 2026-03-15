@@ -60,7 +60,6 @@ jobs:
           deno install \
             --allow-scripts="$(IFS=,; echo "${allow_scripts[*]}")"
 
-
       - name: Run build task
         shell: bash
         run:
