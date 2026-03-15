@@ -680,6 +680,13 @@ whitespace, and content quality — not by decorative elements.
 - **RSS (`/feed.xml`):** RSS 2.0 or Atom, full HTML content, author metadata,
   correct dates.
 - **JSON Feed (`/feed.json`):** JSON Feed 1.1 compliant.
+- **XSL stylesheets (`src/feed.xsl`, `src/sitemap.xsl`):** browser-rendered HTML
+  views of `/feed.xml` and `/sitemap.xml`. These files replicate the site header
+  (`Header.tsx`), footer (`Footer.tsx`), and page structure (`base.tsx`) as
+  static XSL templates. **When the site layout, CSS classes, navigation items,
+  or icon SVG paths change, both XSL files MUST be updated to match.** They
+  cannot use TSX components — they duplicate the HTML manually using the same
+  Carbon `bx--*` CSS classes and `site-*` layout classes.
 
 ### 7.7. Performance as UX
 
@@ -1393,6 +1400,11 @@ before merging.
       `prefers-color-scheme`, and `forced-colors` are handled (§6.7).
 - [ ] Semantic HTML with proper heading hierarchy and landmarks (§7.2).
 - [ ] Zero layout shifts; Core Web Vitals optimized (§6.8).
+
+### XSL consistency
+
+- [ ] If header, footer, navigation, or layout CSS classes changed,
+      `src/feed.xsl` and `src/sitemap.xsl` are updated to match (§7.6).
 
 ### Deliverables
 
