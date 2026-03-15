@@ -97,19 +97,26 @@
     --cds-background-hover: oklch(64.34% 0 0 / 0.12); /* Gray 50 @12% */
     --cds-background-active: oklch(64.34% 0 0 / 0.5); /* Gray 50 @50% */
     --cds-background-selected: oklch(64.34% 0 0 / 0.2); /* Gray 50 @20% */
+    --cds-background-selected-hover: oklch(
+      64.34%
+      0
+      0
+      /
+      0.32
+    ); /* Gray 50 @32% */
 
     /* Layers — White theme layer-01 */
     --cds-layer: oklch(96.72% 0 0); /* #f4f4f4 */
     --cds-layer-hover: oklch(93.1% 0 0); /* #e8e8e8 */
     --cds-layer-active: oklch(82.66% 0 0); /* #c6c6c6 */
     --cds-layer-selected: oklch(90.67% 0 0); /* #e0e0e0 */
-    --cds-layer-selected-hover: oklch(82.66% 0 0);
+    --cds-layer-selected-hover: oklch(86.07% 0 0); /* #d1d1d1 */
     --cds-layer-selected-active: oklch(73.16% 0 0);
 
     /* Layer accent */
-    --cds-layer-accent: oklch(90.67% 0 0);
-    --cds-layer-accent-hover: oklch(82.66% 0 0);
-    --cds-layer-accent-active: oklch(64.34% 0 0);
+    --cds-layer-accent: oklch(90.67% 0 0); /* #e0e0e0 */
+    --cds-layer-accent-hover: oklch(86.07% 0 0); /* #d1d1d1 */
+    --cds-layer-accent-active: oklch(73.16% 0 0); /* #a8a8a8 */
 
     /* Fields (interactive input backgrounds) */
     --cds-field: oklch(96.72% 0 0); /* #f4f4f4 */
@@ -118,6 +125,7 @@
 
     /* Background inverse (for dark overlays) */
     --cds-background-inverse: oklch(34.46% 0 0); /* #393939 */
+    --cds-background-inverse-hover: oklch(39.79% 0 0); /* #474747 */
     --cds-background-brand: var(--cds-blue-60);
 
     /* Text colors */
@@ -338,19 +346,20 @@
     --cds-background-active: oklch(64.34% 0 0 / 0.4); /* Gray 50 @40% */
     --cds-background-selected: oklch(64.34% 0 0 / 0.24); /* Gray 50 @24% */
     --cds-background-inverse: oklch(96.72% 0 0); /* #f4f4f4 */
+    --cds-background-inverse-hover: oklch(93.10% 0 0); /* #e8e8e8 */
 
     /* Layers — Gray 90 theme layer-01 */
     --cds-layer: oklch(34.46% 0 0); /* #393939 */
     --cds-layer-hover: oklch(39.79% 0 0); /* #474747 */
     --cds-layer-active: oklch(54.17% 0 0); /* #6f6f6f */
     --cds-layer-selected: oklch(43.86% 0 0); /* #525252 */
-    --cds-layer-selected-hover: oklch(48.19% 0 0);
+    --cds-layer-selected-hover: oklch(49.97% 0 0); /* #636363 */
     --cds-layer-selected-active: oklch(54.17% 0 0);
 
     /* Layer accent */
-    --cds-layer-accent: oklch(43.86% 0 0);
-    --cds-layer-accent-hover: oklch(48.19% 0 0);
-    --cds-layer-accent-active: oklch(64.34% 0 0);
+    --cds-layer-accent: oklch(43.86% 0 0); /* #525252 */
+    --cds-layer-accent-hover: oklch(49.97% 0 0); /* #636363 */
+    --cds-layer-accent-active: oklch(54.17% 0 0); /* #6f6f6f */
 
     /* Fields */
     --cds-field: oklch(34.46% 0 0); /* #393939 */
@@ -429,6 +438,7 @@
       --cds-background-active: oklch(64.34% 0 0 / 0.4);
       --cds-background-selected: oklch(64.34% 0 0 / 0.24);
       --cds-background-inverse: oklch(96.72% 0 0);
+      --cds-background-inverse-hover: oklch(93.10% 0 0);
 
       /* Layers */
       --cds-layer: oklch(34.46% 0 0);
