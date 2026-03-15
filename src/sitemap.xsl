@@ -75,7 +75,7 @@
           </header>
 
           <!-- Language selector panel (mirrors Header.tsx language panel) -->
-          <div id="sitemap-language-panel" class="cds--header__panel cds--header__language-panel" aria-modal="true" hidden="">
+          <section id="sitemap-language-panel" class="cds--header__panel cds--header__language-panel" aria-labelledby="sitemap-language-panel-title" hidden="">
             <div class="cds--header__panel-content">
               <h2 id="sitemap-language-panel-title" class="cds--header__panel-title">Language</h2>
               <nav class="cds--header__language-list" aria-labelledby="sitemap-language-panel-title">
@@ -85,7 +85,7 @@
                 <a href="/zh-hant/" class="cds--header__menu-item cds--header__language-item">繁體中文</a>
               </nav>
             </div>
-          </div>
+          </section>
 
           <!-- Search panel (mirrors Header.tsx search panel) -->
           <div id="sitemap-search-panel" class="cds--header__panel cds--header__search-panel" aria-modal="true" hidden="" data-search-panel="">

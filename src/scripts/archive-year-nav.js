@@ -1,7 +1,16 @@
 // @ts-check
 (() => {
-  const links = globalThis.document.querySelectorAll(
-    ".archive-year-nav-link[href^='#archive-year-']",
+  const links = Array.from(
+    globalThis.document.querySelectorAll(
+      ".archive-year-nav-link[href^='#archive-year-']",
+    ),
+  ).filter(
+    /**
+     * Restrict the list to anchor elements so hash access stays type-safe.
+     * @param {Element} link
+     * @returns {link is HTMLAnchorElement}
+     */
+    (link) => link instanceof HTMLAnchorElement,
   );
 
   if (links.length < 2) {

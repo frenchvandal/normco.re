@@ -212,10 +212,9 @@ export default (
       </header>
 
       {/* Language selector dropdown panel */}
-      <div
+      <section
         id={languagePanelId}
         class="cds--header__panel cds--header__language-panel"
-        role="region"
         aria-labelledby={`${languagePanelId}-title`}
         hidden
       >
@@ -243,7 +242,7 @@ export default (
             })}
           </nav>
         </div>
-      </div>
+      </section>
 
       {/* Search panel */}
       <div
