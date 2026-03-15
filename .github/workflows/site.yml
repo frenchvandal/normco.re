@@ -32,7 +32,7 @@ jobs:
           cache: true
 
       - name: Deno install
-        run: deno install
+        run: deno install --allow-scripts
 
       - name: Run build task
         shell: bash
