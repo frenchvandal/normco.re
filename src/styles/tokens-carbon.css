@@ -196,10 +196,14 @@
        Source: https://carbondesignsystem.com/elements/typography/overview/
        ================================================================ */
 
-    /* Font families */
+    /* Font families — IBM Plex (primary), Noto Sans SC/TC (CJK fallback,
+       served locally via google_fonts plugin), system fonts (final fallback).
+       IBM Plex has no CJK glyphs; Noto Sans SC (Simplified) and TC (Traditional)
+       share a humanist design compatible with IBM Plex's x-height and weight axis. */
     --cds-font-family-sans:
-      "IBM Plex Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-      Roboto, "Helvetica Neue", Arial, sans-serif;
+      "IBM Plex Sans", "Noto Sans SC", "Noto Sans TC", system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+      sans-serif;
     --cds-font-family-mono:
       "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas,
       "Liberation Mono", Menlo, monospace;

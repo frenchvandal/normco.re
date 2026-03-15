@@ -124,8 +124,10 @@ flowchart LR
    motion, shadows.
 4. **Theme support**: White (light), Gray 90 (dark via `[data-color-mode]` or
    `prefers-color-scheme`), and Gray 100 (high contrast).
-5. **Cascade layers**: `@layer tokens, reset, base, layout, components,
-   utilities` — strict ordering via import sequence.
+5. **Cascade layers**:
+   `@layer tokens, reset, base, layout, components,
+   utilities` — strict
+   ordering via import sequence.
 
 ### Component styling
 
@@ -224,18 +226,18 @@ flowchart TD
 
 ## Dependencies
 
-| Category            | Package                         | Purpose                                                        |
-| ------------------- | ------------------------------- | -------------------------------------------------------------- |
-| Runtime             | Deno 2.x                        | TypeScript runtime, package manager, and test runner           |
-| SSG                 | Lume 3.x                        | Static site generation, plugin system, and build orchestration |
-| CMS                 | LumeCMS 0.14.x                  | Local content editing interface                                |
-| Design system       | Carbon v11 (local tokens only)  | Design tokens and component patterns (no npm dependency)       |
-| Fonts               | IBM Plex (via google_fonts)     | Locally hosted typeface for Carbon Design System               |
-| Icons               | Carbon icons (inline SVG)       | SVG icon paths defined in `carbon-icons.ts`                    |
-| Date                | date-fns                        | Date formatting with i18n locales                              |
-| Syntax highlighting | Prism.js                        | Code block highlighting                                        |
-| Search              | Pagefind                        | Client-side search index and UI                                |
-| Telemetry           | OpenTelemetry                   | Build observability (optional)                                 |
+| Category            | Package                        | Purpose                                                        |
+| ------------------- | ------------------------------ | -------------------------------------------------------------- |
+| Runtime             | Deno 2.x                       | TypeScript runtime, package manager, and test runner           |
+| SSG                 | Lume 3.x                       | Static site generation, plugin system, and build orchestration |
+| CMS                 | LumeCMS 0.14.x                 | Local content editing interface                                |
+| Design system       | Carbon v11 (local tokens only) | Design tokens and component patterns (no npm dependency)       |
+| Fonts               | IBM Plex (via google_fonts)    | Locally hosted typeface for Carbon Design System               |
+| Icons               | Carbon icons (inline SVG)      | SVG icon paths defined in `carbon-icons.ts`                    |
+| Date                | date-fns                       | Date formatting with i18n locales                              |
+| Syntax highlighting | Prism.js                       | Code block highlighting                                        |
+| Search              | Pagefind                       | Client-side search index and UI                                |
+| Telemetry           | OpenTelemetry                  | Build observability (optional)                                 |
 
 ## Key design principles
 
@@ -251,16 +253,16 @@ flowchart TD
 
 ## Entry points
 
-| Task               | Command                        | Description                                      |
-| ------------------ | ------------------------------ | ------------------------------------------------ |
-| Build              | `deno task build`              | Production build to `_site/`                     |
-| Serve              | `deno task serve`              | Local development server with hot reload         |
-| Type check         | `deno task check`              | Validate TypeScript types                        |
-| Test               | `deno test`                    | Run unit and integration tests                   |
-| Lint docs          | `deno task lint:doc`           | Validate JSDoc comments                          |
-| Test docs          | `deno task test:doc`           | Run JSDoc code examples as tests                 |
-| Validate contracts | `deno task validate-contracts` | Validate generated JSON against content schemas  |
-| Lint commit        | `deno task lint-commit`        | Validate commit message (Conventional Commits)   |
+| Task               | Command                        | Description                                     |
+| ------------------ | ------------------------------ | ----------------------------------------------- |
+| Build              | `deno task build`              | Production build to `_site/`                    |
+| Serve              | `deno task serve`              | Local development server with hot reload        |
+| Type check         | `deno task check`              | Validate TypeScript types                       |
+| Test               | `deno test`                    | Run unit and integration tests                  |
+| Lint docs          | `deno task lint:doc`           | Validate JSDoc comments                         |
+| Test docs          | `deno task test:doc`           | Run JSDoc code examples as tests                |
+| Validate contracts | `deno task validate-contracts` | Validate generated JSON against content schemas |
+| Lint commit        | `deno task lint-commit`        | Validate commit message (Conventional Commits)  |
 
 ## Service Worker
 

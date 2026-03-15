@@ -147,9 +147,9 @@ If a command cannot be run, state which command would be needed and why.
 - Personal, minimalist blog maintained by Phiphi (FR), based in Chengdu, China.
 - Production: <https://normco.re>
 - GitHub: <https://github.com/frenchvandal/normco.re>
-- Visual language: **Primer-like** (implemented locally in project CSS, no UI
-  framework runtime).
-- Icons: local **full Octicons catalog** (`src/utils/octicon.ts`) rendered as
+- Visual language: **Carbon Design System v11** (implemented locally in project
+  CSS tokens and components, no `@carbon/web-components` runtime).
+- Icons: local **Carbon icon catalog** (`src/utils/carbon-icons.ts`) rendered as
   inline SVG.
 
 ### Stack summary
@@ -159,7 +159,9 @@ If a command cannot be run, state which command would be needed and why.
 | Runtime    | Deno (version in `.tool-versions`)                                 |
 | SSG        | Lume (official plugins only)                                       |
 | Templating | TSX + TypeScript (pages/layouts/components) + TS data/config files |
+| Design     | Carbon Design System v11 (local CSS tokens, no npm runtime)        |
 | Styling    | Modern CSS (SCSS only when native CSS cannot achieve the goal)     |
+| Typography | IBM Plex Sans/Mono + Noto Sans SC/TC (served locally)              |
 | Content    | TSX (`*.page.tsx`) for all posts and pages                         |
 | Fallback   | Other template engines only when TSX+TS is technically impossible  |
 
@@ -210,7 +212,7 @@ Deno enables `strict: true` by default. Add these “beyond strict” flags in
 The gold standard for module-level configuration objects and lookup tables.
 Combines compile-time validation, literal type inference, and deep immutability:
 
-```ts
+```ts ignore
 const ROUTES = {
   home: "/",
   about: "/about",
@@ -243,7 +245,7 @@ structurally identical types (`UserId` vs. `PostId`).
 For disposable resources (file handles, connections). Objects implementing
 `[Symbol.dispose]()` get automatic cleanup at scope exit:
 
-```ts
+```ts ignore
 using file = openFile("template.vto"); // auto-disposed at scope exit
 ```
 
@@ -253,7 +255,7 @@ Prefer the native `Map` and `WeakMap` methods from the TC39 `upsert` proposal
 (`getOrInsert`, `getOrInsertComputed`) over manual check-then-set idioms that
 require non-null assertions or redundant `has` + `get` pairs:
 
-```ts
+```ts ignore
 // Avoid:
 if (!map.has(key)) map.set(key, computeDefault());
 const value = map.get(key)!;
@@ -282,7 +284,7 @@ Both methods are available on `Map` and `WeakMap`.
 
 The `as const` object pattern that replaces enums:
 
-```ts
+```ts ignore
 const HttpStatus = { Ok: 200, NotFound: 404, ServerError: 500 } as const;
 type HttpStatus = (typeof HttpStatus)[keyof typeof HttpStatus]; // 200 | 404 | 500
 ```
@@ -327,7 +329,7 @@ type HttpStatus = (typeof HttpStatus)[keyof typeof HttpStatus]; // 200 | 404 | 5
 - Type caught errors (`if (error instanceof Error)`).
 - Prefer returning discriminated union result types from internal functions:
 
-```ts
+```ts ignore
 type ParseResult =
   | { ok: true; data: Config }
   | { ok: false; error: { kind: string; message: string } };
@@ -378,7 +380,7 @@ into dedicated `types.ts` files to break potential cycles.
 
 Always include an issue number or author handle:
 
-```ts
+```ts ignore
 // TODO(phiphi): Add pagination support.
 // TODO(#42): Handle edge case for empty tags.
 // FIXME(#17): Breaks when date is undefined.
@@ -404,11 +406,11 @@ For this repository, keep `src/style.css` as the CSS entrypoint and split rules
 into layered partials under `src/styles/` (CUBE CSS/ITCSS-inspired
 organization).
 
-Primer alignment rule for this repository: replicate Primer design patterns
-through local tokens/components (`src/styles/base.css`, `src/styles/layout.css`,
-`src/styles/components.css`) rather than importing `@primer/css` globally. Use
-upstream Primer packages/docs as references, not as mandatory runtime
-dependencies.
+Carbon Design System alignment rule for this repository: replicate Carbon v11
+design patterns through local CSS tokens (`src/styles/tokens-carbon.css`) and
+layered component partials (`src/styles/components/*.css`) rather than importing
+`@carbon/web-components` or `@carbon/styles` as npm dependencies. Use upstream
+Carbon documentation as a reference, not a runtime dependency.
 
 When combining CSS processors, enforce a single minifier: `postcss` for
 imports/composition, `purgecss` for selector pruning, and `lightningcss` for
@@ -494,8 +496,16 @@ trivially adjustable for lightness, chroma, and hue in a single edit:
 
 ### 6.3. Typography
 
-- **System fonts only** — no external web fonts. Use
-  `font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;`
+- **IBM Plex typeface family** (Carbon Design System standard) — served locally
+  via the Lume `google_fonts` plugin. Cascade order:
+  1. **IBM Plex Sans / Mono** — primary typeface for Latin scripts.
+  2. **Noto Sans SC / TC** — CJK fallback for Simplified and Traditional Chinese
+     (IBM Plex has no CJK glyphs; Noto Sans shares a compatible humanist design,
+     similar x-height and weight axis).
+  3. **System fonts** — final fallback
+     (`system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`).
+- All font files are self-hosted under `/fonts/` — no external CDN requests. The
+  `styles/fonts.css` file is auto-generated at build time by the plugin.
 - **Fluid typography** with `clamp()`:
   `font-size: clamp(1rem, 0.8rem + 1vw, 1.25rem);`
 - **Hierarchy** through font weight (`600`–`700` for headings, `400` for body),
@@ -750,7 +760,7 @@ TypeScript. Markdown is not used for new content.
 A `*.page.tsx` file exports named variables for metadata and a JSX render
 function as the default export:
 
-```tsx
+```tsx ignore
 export const title = "My Article";
 export const date = new Date("2026-01-15");
 export const layout = "layouts/post.tsx";
@@ -770,7 +780,7 @@ Layouts are TSX functions in `_includes/` that receive page data and helpers.
 Ensure the JSX plugin is enabled in `_config.ts` with `site.use(jsx())`, and use
 `children` (not `content`) in TSX layouts to avoid escaping issues:
 
-```tsx
+```tsx ignore
 export default ({ title, children }: Lume.Data, _helpers: Lume.Helpers) => (
   <html lang="en">
     <head>
@@ -789,7 +799,7 @@ Components live in `_components/` and are consumed via the `comp` variable
 (never via direct `import` — Deno cannot hot-reload imported modules without
 restarting the process):
 
-```tsx
+```tsx ignore
 // _components/Button.tsx
 export default function ({ content }: { readonly content: string }) {
   return <button class="btn">{content}</button>;
@@ -905,7 +915,7 @@ here.
 Extract repeated faker calls into a factory function at the top of each test
 file. Use `as const` on the returned object when all properties are read-only:
 
-```ts
+```ts ignore
 import { faker } from "npm/faker-js";
 
 function makePost(seed: number) {
@@ -973,7 +983,7 @@ strictly necessary:
 
 Tests can restrict (but not grant) permissions via the `permissions` property:
 
-```ts
+```ts ignore
 Deno.test({
   name: "fallback without read access",
   permissions: { read: false },
@@ -1002,7 +1012,7 @@ Spies track calls without changing behavior. Two forms:
 
 Stubs replace a method’s implementation entirely:
 
-```ts
+```ts ignore
 using myStub = stub(obj, "method", returnsNext([val1, val2]));
 ```
 
@@ -1232,7 +1242,7 @@ lefthook install
 <details>
 <summary>Site instantiation defaults</summary>
 
-```js
+```js ignore
 const site = lume(
   {
     src: "./",
@@ -1284,7 +1294,7 @@ const site = lume(
 <details>
 <summary>Site configuration API</summary>
 
-```js
+```js ignore
 site.addEventListener(eventType, fn);
 site.use(plugin);
 site.loadData(extensions, loader);
@@ -1310,7 +1320,7 @@ site.remote(baseLocal, baseUrl, globOrFilenames);
 <details>
 <summary>Site utility functions</summary>
 
-```js
+```js ignore
 site.root(...subdirs);
 site.src(...subdirs);
 site.dest(...subdirs);
@@ -1372,7 +1382,8 @@ before merging.
       CSS Modules (§6.1).
 - [ ] Design tokens follow the W3C DTCG 2025.10 `category-property-modifier`
       naming convention; all colors use `oklch()` (§6.2).
-- [ ] System fonts only; fluid typography with `clamp()` (§6.3).
+- [ ] IBM Plex + Noto Sans CJK typeface stack; fluid typography with `clamp()`
+      (§6.3).
 - [ ] Scroll-position-dependent styles use `container-type: scroll-state`
       instead of JavaScript scroll event listeners (§6.4).
 - [ ] Native `<select>` elements styled with `appearance: base-select` and

@@ -89,23 +89,23 @@ _config/
 
 ## 2. UI component inventory
 
-| Component          | Status  | Carbon pattern          | Classes                                    |
-| ------------------ | ------- | ----------------------- | ------------------------------------------ |
-| Fixed header       | Done    | UI Shell Header         | `bx--header`, `bx--header__*`              |
-| Desktop navigation | Done    | Header Navigation       | `bx--header__nav`, `bx--header__menu-item` |
-| Mobile SideNav     | Done    | UI Shell Left Panel     | `bx--side-nav`, `bx--side-nav__*`          |
-| Hamburger menu     | Done    | Menu Toggle             | `bx--header__menu-toggle`                  |
-| Search panel       | Partial | Header Panel + Pagefind | `bx--header__panel`                        |
-| Language selector  | Done    | Header Panel + Dropdown | `bx--header__language-*`                   |
-| Theme toggle       | Done    | Header Action           | `bx--header__action`                       |
-| Footer             | Done    | Custom (Carbon-aligned) | `site-footer`                              |
-| Post cards         | Done    | Structured List         | `post-card`                                |
-| Breadcrumb         | Done    | Breadcrumb              | In `components.css`                        |
-| Pagination         | Done    | Pagination              | In `components.css`                        |
-| Code blocks        | Done    | Code Snippet            | Prism.js + copy button                     |
-| Skip link          | Done    | Skip to Content         | `bx--skip-to-content`                      |
-| Hero text          | Done    | Expressive Type         | `heading-05`/`heading-06`                  |
-| Year nav (archive) | Done    | Content Switcher        | Sidebar + JS                               |
+| Component          | Status | Carbon pattern          | Classes                                    |
+| ------------------ | ------ | ----------------------- | ------------------------------------------ |
+| Fixed header       | Done   | UI Shell Header         | `bx--header`, `bx--header__*`              |
+| Desktop navigation | Done   | Header Navigation       | `bx--header__nav`, `bx--header__menu-item` |
+| Mobile SideNav     | Done   | UI Shell Left Panel     | `bx--side-nav`, `bx--side-nav__*`          |
+| Hamburger menu     | Done   | Menu Toggle             | `bx--header__menu-toggle`                  |
+| Search panel       | Done   | Header Panel + Pagefind | `bx--header__panel`                        |
+| Language selector  | Done   | Header Panel + Dropdown | `bx--header__language-*`                   |
+| Theme toggle       | Done   | Header Action           | `bx--header__action`                       |
+| Footer             | Done   | Custom (Carbon-aligned) | `site-footer`                              |
+| Post cards         | Done   | Structured List         | `post-card`                                |
+| Breadcrumb         | Done   | Breadcrumb              | In `components.css`                        |
+| Pagination         | Done   | Pagination              | In `components.css`                        |
+| Code blocks        | Done   | Code Snippet            | Prism.js + copy button                     |
+| Skip link          | Done   | Skip to Content         | `bx--skip-to-content`                      |
+| Hero text          | Done   | Expressive Type         | `heading-05`/`heading-06`                  |
+| Year nav (archive) | Done   | Content Switcher        | Sidebar + JS                               |
 
 ### Icons — all using Carbon inline SVG
 
@@ -121,7 +121,7 @@ constants in `Header.tsx` and `Footer.tsx`.
 | Fixed header         | [UI Shell Header](https://carbondesignsystem.com/components/UI-shell-header/usage/)         | 48px height, Gray 10 bg       | **Done**   | Low    |
 | Desktop navigation   | [Header Navigation](https://carbondesignsystem.com/components/UI-shell-header/usage/)       | Active: bottom border blue-60 | **Done**   | Low    |
 | Mobile SideNav       | [UI Shell Left Panel](https://carbondesignsystem.com/components/UI-shell-left-panel/usage/) | 256px width, slide-in         | **Done**   | Low    |
-| Search               | [Search](https://carbondesignsystem.com/components/search/usage/)                           | Compact variant in header     | Partial    | Medium |
+| Search               | [Search](https://carbondesignsystem.com/components/search/usage/)                           | Compact variant in header     | **Done**   | Low    |
 | Language selector    | [Dropdown](https://carbondesignsystem.com/components/dropdown/usage/)                       | Within Header Panel           | **Done**   | Low    |
 | Theme toggle         | [Toggle](https://carbondesignsystem.com/components/toggle/usage/)                           | Header action pattern         | **Done**   | Low    |
 | Post list            | [Structured List](https://carbondesignsystem.com/components/structured-list/usage/)         | Selectable variant            | Medium     | Low    |
@@ -432,15 +432,16 @@ reference `--cds-*` tokens via `var()`.
 4. ~~Remove unused `bx--section-heading*` classes~~
 5. ~~Delete `link.css` (all `bx--link*` classes unused)~~
 6. ~~Delete `post-list.css` (all `bx--post-list*` classes unused)~~
-7. ~~Rewrite `skip-link.css` to target `.skip-link` (was `.bx--skip-to-content`)~~
+7. ~~Rewrite `skip-link.css` to target `.skip-link` (was
+   `.bx--skip-to-content`)~~
 8. ~~Fix tag color bug: template literal `{_color}` → `${_color}` in post.tsx~~
 9. ~~Add `@media (prefers-color-scheme: dark)` fallback for no-JS dark mode~~
 10. ~~Update Footer CSS contract test to match `layout-carbon.css`~~
 
-**Status:** Complete. No `bx--col-*`/`bx--grid`/`bx--row` classes were ever
-used — the site already uses native CSS Grid. Removed 25 unused `bx--` class
-definitions and 2 dead CSS files. The grid simplification goal from the
-original plan was already achieved.
+**Status:** Complete. No `bx--col-*`/`bx--grid`/`bx--row` classes were ever used
+— the site already uses native CSS Grid. Removed 25 unused `bx--` class
+definitions and 2 dead CSS files. The grid simplification goal from the original
+plan was already achieved.
 
 ### Phase 5 — `_config.ts` refactoring ✅
 
@@ -474,7 +475,8 @@ inter-file sharing pattern. SW reduced from ~870 lines (6 files) to ~290 lines
 4. ~~Remove dead Octicons CSS classes from `base.css`~~
 
 **Status:** Complete. All icons are inline SVG from `carbon-icons.ts`. The Lume
-`icons` plugin (Octicons catalog) was dead code — no `comp.icon()` calls existed.
+`icons` plugin (Octicons catalog) was dead code — no `comp.icon()` calls
+existed.
 
 ### Phase 8 — Split `components.css` ✅
 
@@ -496,11 +498,12 @@ inter-file sharing pattern. SW reduced from ~870 lines (6 files) to ~290 lines
 6. ~~Add `--cds-focus-inset`, `--cds-focus-inverse`, `--cds-link-inverse`,
    `--cds-support-*-inverse` tokens~~
 
-**Status:** Complete. All color tokens now match Figma exports precisely.
-Key corrections:
+**Status:** Complete. All color tokens now match Figma exports precisely. Key
+corrections:
+
 - Theme renamed from "Gray 10" to "White" (background is `#ffffff`)
-- Gray palette oklch values corrected (e.g., Gray 100 was `oklch(8.6% 0 0)`,
-  now `oklch(20.02% 0 0)` per Figma `#161616`)
+- Gray palette oklch values corrected (e.g., Gray 100 was `oklch(8.6% 0 0)`, now
+  `oklch(20.02% 0 0)` per Figma `#161616`)
 - Blue 60 corrected from `oklch(45% 0.2 264)` to `oklch(55.65% 0.243 262)`
 - Dark mode now has complete overrides for links (Blue 40), focus (white),
   text-error, support colors, background/border inverse
@@ -522,7 +525,8 @@ Key corrections:
 into typed blocks (headings, paragraphs, code with language detection, images
 with dimensions, blockquotes with attribution, ordered/unordered lists).
 Language-prefixed API paths (`/zh-hans/api/posts/*.json`) are generated for
-non-English posts. Validation runs after build via `deno task validate-contracts`.
+non-English posts. Validation runs after build via
+`deno task validate-contracts`.
 
 ### Phase 10 — Documentation update ✅
 
@@ -537,9 +541,9 @@ non-English posts. Validation runs after build via `deno task validate-contracts
 **Status:** Complete. `ARCHITECTURE.md` fully rewritten to reflect the Carbon
 migration: CSS architecture section, content contract section, updated source
 map with `_config/`, `contracts/`, `design-tokens/`, and corrected dependency
-table (Carbon inline SVG instead of Primer Octicons, IBM Plex via
-google_fonts). `CLAUDE.md`/`AGENTS.md` sync is left to the maintainer — the
-files have minor intentional differences in code examples.
+table (Carbon inline SVG instead of Primer Octicons, IBM Plex via google_fonts).
+`CLAUDE.md`/`AGENTS.md` sync is left to the maintainer — the files have minor
+intentional differences in code examples.
 
 ---
 
