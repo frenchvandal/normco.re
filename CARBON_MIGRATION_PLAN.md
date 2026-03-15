@@ -507,16 +507,22 @@ Key corrections:
 - Hover/active states use alpha transparency (e.g., `oklch(64.34% 0 0 / 0.12)`)
   instead of solid gray values
 
-### Phase 9 — Content contract
+### Phase 9 — Content contract ✅
 
-1. Create `contracts/post.schema.json` and `contracts/feed.schema.json`
-2. Implement Lume plugin `content-contract.ts` generating `/api/posts/*.json`
-3. Create `contracts/validate.ts` for validation
-4. Add `deno task validate-contracts` to `deno.json`
+1. ~~Create `contracts/post.schema.json` (structured block schema: paragraph,
+   heading, code, image, quote, list blocks)~~
+2. ~~Create `contracts/feed.schema.json` (JSON Feed 1.1 output contract)~~
+3. ~~Implement `plugins/content-contract.ts` processor generating
+   `/api/posts/*.json` (and language-prefixed variants) from rendered HTML~~
+4. ~~Create `contracts/validate.ts` validation script~~
+5. ~~Add `deno task validate-contracts` to `deno.json`~~
+6. ~~Register processor in `_config/processors.ts`~~
 
-**Status:** Not started.
-
-**Verification:** valid JSON generated for each article, conforming to schema.
+**Status:** Complete. The content-contract processor parses `.post-content` DOM
+into typed blocks (headings, paragraphs, code with language detection, images
+with dimensions, blockquotes with attribution, ordered/unordered lists).
+Language-prefixed API paths (`/zh-hans/api/posts/*.json`) are generated for
+non-English posts. Validation runs after build via `deno task validate-contracts`.
 
 ### Phase 10 — Documentation update
 

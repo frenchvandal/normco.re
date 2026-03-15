@@ -8,6 +8,7 @@ import {
 } from "../src/utils/editorial-image-dimensions.ts";
 import { getXmlStylesheetHref } from "../src/utils/xml-stylesheet.ts";
 import { selectCriticalFontUrls } from "../src/utils/font-preload.ts";
+import { registerContentContract } from "../plugins/content-contract.ts";
 
 const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
 const XML_PI_PATTERN = /^(<\?xml[^?]*\?>)/;
@@ -116,6 +117,9 @@ export function registerProcessors(site: Site): void {
       }
     }
   });
+
+  // Generate /api/posts/*.json structured block content for native apps.
+  registerContentContract(site);
 
   // Inject <?xml-stylesheet?> processing instructions into XML outputs.
   site.process([".xml"], (pages: Page[]) => {

@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://normco.re/schemas/post.json",
+  "title": "Post",
+  "description": "Structured block representation of a blog post for native app consumption.",
+  "type": "object",
+  "required": ["version", "id", "title", "date", "lang", "blocks"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": "1.0.0",
+      "description": "Schema version."
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique post identifier (slug)."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Post title in the page language."
+    },
+    "date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Publication date in ISO 8601 format."
+    },
+    "lang": {
+      "type": "string",
+      "minLength": 2,
+      "description": "BCP 47 language tag."
+    },
+    "description": {
+      "type": "string",
+      "description": "Meta description / summary."
+    },
+    "readingTime": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Estimated reading time in minutes."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Post tags."
+    },
+    "url": {
+      "type": "string",
+      "description": "Canonical URL path of the post."
+    },
+    "blocks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/block" },
+      "description": "Ordered content blocks."
+    }
+  },
+  "$defs": {
+    "block": {
+      "oneOf": [
+        { "$ref": "#/$defs/paragraphBlock" },
+        { "$ref": "#/$defs/headingBlock" },
+        { "$ref": "#/$defs/codeBlock" },
+        { "$ref": "#/$defs/imageBlock" },
+        { "$ref": "#/$defs/quoteBlock" },
+        { "$ref": "#/$defs/listBlock" }
+      ]
+    },
+    "paragraphBlock": {
+      "type": "object",
+      "required": ["type", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "paragraph" },
+        "text": { "type": "string" }
+      }
+    },
+    "headingBlock": {
+      "type": "object",
+      "required": ["type", "level", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "heading" },
+        "level": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "text": { "type": "string" }
+      }
+    },
+    "codeBlock": {
+      "type": "object",
+      "required": ["type", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "code" },
+        "language": { "type": "string" },
+        "content": { "type": "string" }
+      }
+    },
+    "imageBlock": {
+      "type": "object",
+      "required": ["type", "src", "alt"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "image" },
+        "src": { "type": "string" },
+        "alt": { "type": "string" },
+        "width": { "type": "integer" },
+        "height": { "type": "integer" }
+      }
+    },
+    "quoteBlock": {
+      "type": "object",
+      "required": ["type", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "quote" },
+        "text": { "type": "string" },
+        "attribution": { "type": "string" }
+      }
+    },
+    "listBlock": {
+      "type": "object",
+      "required": ["type", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "list" },
+        "ordered": { "type": "boolean" },
+        "items": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
