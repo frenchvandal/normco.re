@@ -102,6 +102,10 @@
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"
     },
+    "validate-contracts": {
+      "description": "Validate generated JSON files against content contract schemas",
+      "command": "deno run --allow-read contracts/validate.ts"
+    },
     "md-to-tsx": {
       "description": "Convert LumeCMS-generated Markdown posts (src/posts/*.md) to .page.tsx format",
       "command": "deno run --allow-read --allow-write --allow-run=deno scripts/md-to-tsx.ts"

@@ -15,33 +15,53 @@ static HTML, CSS, and minimal JavaScript for progressive enhancement only.
 ## Source map
 
 ```
-turbo-fiesta/
+normco.re/
 ├── _config.ts                 # Lume site configuration — build pipeline entry point
+├── _config/                   # Split configuration modules
+│   ├── plugins.ts             # Lume plugin registrations
+│   ├── assets.ts              # Script and stylesheet registration
+│   ├── feeds.ts               # Multilingual feed configurations
+│   └── processors.ts         # HTML/XML processors and content contract
 ├── _cms.ts                    # LumeCMS configuration for local content editing
 ├── deno.json                  # Deno configuration, imports, and task definitions
+├── contracts/                 # Content contract schemas and validation
+│   ├── post.schema.json       # JSON Schema for structured post blocks
+│   ├── feed.schema.json       # JSON Schema for JSON Feed 1.1 output
+│   └── validate.ts            # Post-build schema validation script
+├── design-tokens/             # Figma variable exports (Carbon Design System v11)
+├── plugins/                   # Custom Lume plugins
+│   ├── content-contract.ts    # Generates /api/posts/*.json from rendered HTML
+│   ├── console_debug.ts       # Console debug levels via LUME_LOGS
+│   └── otel.ts                # OpenTelemetry build instrumentation
+├── scripts/                   # Build automation and maintenance scripts
 ├── src/
 │   ├── _data.ts               # Site-wide data (author, site name, i18n overrides)
 │   ├── index.page.tsx         # Home page component
 │   ├── about.page.tsx         # About page component
 │   ├── 404.page.tsx           # 404 page component
-│   ├── style.css              # Global CSS entry point
+│   ├── style.css              # Global CSS entry point (layer imports)
 │   ├── _components/           # Reusable UI components (Header, Footer, PostCard, …)
 │   ├── _includes/layouts/     # Layout wrappers (base.tsx, post.tsx)
 │   ├── posts/                 # Blog posts (*.page.tsx) and post-related utilities
 │   ├── scripts/               # Client-side JavaScript (progressive enhancement)
-│   ├── styles/                # CSS partials and design tokens
+│   ├── styles/                # CSS partials, design tokens, and components
+│   │   ├── tokens-carbon.css  # Carbon Design System v11 tokens (single source of truth)
+│   │   ├── reset.css          # CSS reset
+│   │   ├── base.css           # Typography and element styles
+│   │   ├── layout-carbon.css  # Carbon UI Shell layout (header, sidenav, footer)
+│   │   ├── components/        # Per-component CSS files (16 files)
+│   │   └── utilities.css      # Accessibility utilities
 │   └── utils/                 # Pure utility functions (i18n, formatting, validation)
-├── plugins/                   # Custom Lume plugins (OpenTelemetry, console debug)
-└── scripts/                   # Build automation and maintenance scripts
+└── ios/                       # SwiftUI native app (peer project, shares no Deno code)
 ```
 
 ## Core modules
 
 ### Configuration layer
 
-- **`_config.ts`**: Instantiates the Lume site, registers plugins, defines asset
-  pipelines, and orchestrates the build. All Lume plugins (SEO, feed, sitemap,
-  multilanguage, validation) are configured here.
+- **`_config.ts`**: Orchestrates the Lume site (~120 lines). Delegates to split
+  modules in `_config/` for plugin registration, asset pipelines, feed
+  configuration, and HTML/XML processors.
 - **`_data.ts`**: Exports site-wide constants and internationalization
   overrides. Available to all pages and layouts through Lume's data cascade.
 - **`_cms.ts`**: Defines LumeCMS collections and uploads for local content
@@ -69,28 +89,89 @@ turbo-fiesta/
 
 ### Asset pipeline
 
-- **CSS**: `style.css` imports layered partials from `src/styles/`. Processed by
-  PostCSS (imports), PurgeCSS (unused selector removal, currently disabled), and
-  LightningCSS (minification and browser targeting).
+- **CSS**: `style.css` imports layered partials from `src/styles/` using
+  `@layer tokens, reset, base, layout, components, utilities`. Processed by
+  PostCSS (imports) and LightningCSS (minification and browser targeting).
 - **JavaScript**: Client-side scripts in `src/scripts/` are minified by Terser.
-  Service Worker modules are bundled separately.
+  Service Worker (`sw.js`) is a single self-contained file.
+- **Fonts**: IBM Plex Sans and IBM Plex Mono served locally via the Lume
+  `google_fonts` plugin. Critical font preloads injected dynamically by a
+  build-time processor.
 - **Images**: Editorial images are validated for explicit dimensions to prevent
   Cumulative Layout Shift (CLS).
+
+## CSS architecture — Carbon Design System v11
+
+The site implements Carbon Design System v11 design tokens locally, without
+importing `@carbon/styles` or `@primer/css` as runtime dependencies.
+
+```mermaid
+flowchart LR
+    A[Figma exports] -->|design-tokens/*.json| B[carbon-tokens.ts]
+    B -->|audit & convert| C[tokens-carbon.css]
+    C -->|@layer tokens| D[style.css]
+    D -->|build| E[_site/style.css]
+```
+
+### Design token flow
+
+1. **Figma exports** (`design-tokens/*.json`): Variable collections exported
+   from Figma as JSON arrays with normalized RGB values.
+2. **Token utility** (`src/utils/carbon-tokens.ts`): Loads exports generically,
+   converts sRGB → LMS → Oklab → Oklch for CSS.
+3. **CSS tokens** (`src/styles/tokens-carbon.css`): Single source of truth for
+   all design tokens — colors in `oklch()`, spacing, typography, breakpoints,
+   motion, shadows.
+4. **Theme support**: White (light), Gray 90 (dark via `[data-color-mode]` or
+   `prefers-color-scheme`), and Gray 100 (high contrast).
+5. **Cascade layers**:
+   `@layer tokens, reset, base, layout, components,
+   utilities` — strict
+   ordering via import sequence.
+
+### Component styling
+
+UI components use Carbon `bx--` class conventions for the UI Shell (header,
+sidenav, panels) and site-specific classes for content components. Each
+component has its own CSS file in `src/styles/components/`.
+
+## Content contract
+
+The build generates structured JSON endpoints for native app consumption:
+
+- **`/api/posts/{slug}.json`**: Per-post structured block representation
+  (paragraph, heading, code, image, quote, list blocks).
+- **Language variants**: `/fr/api/posts/*.json`, `/zh-hans/api/posts/*.json`,
+  `/zh-hant/api/posts/*.json`.
+- **Schemas**: `contracts/post.schema.json` (post blocks) and
+  `contracts/feed.schema.json` (JSON Feed 1.1).
+- **Validation**: `deno task validate-contracts` validates build output against
+  schemas.
+
+```mermaid
+flowchart LR
+    A[*.page.tsx] -->|Lume render| B[HTML pages]
+    B -->|content-contract.ts| C[/api/posts/*.json]
+    C -->|validate.ts| D[Schema validation]
+    B -->|feed plugin| E[/feed.json]
+    E -->|validate.ts| D
+```
 
 ## Build pipeline
 
 ```mermaid
 flowchart TD
     A[deno task build] --> B[_config.ts initialization]
-    B --> C[Register assets & data]
+    B --> C[Register plugins, assets, feeds]
     C --> D[Load pages *.page.tsx]
     D --> E[Preprocess multilanguage aliases]
     E --> F[Render TSX to HTML]
-    F --> G[Process HTML validate images]
-    G --> H[Apply plugins SEO, feed, sitemap]
-    H --> I[Validate HTML & links]
-    I --> J[Write _site/ output]
-    J --> K[Post-build fingerprinting]
+    F --> G[Process: image validation, font preloads]
+    G --> H[Process: content contract /api/posts/*.json]
+    H --> I[Apply plugins: SEO, feed, sitemap]
+    I --> J[Validate HTML & links]
+    J --> K[Write _site/ output]
+    K --> L[Post-build: fingerprint assets, SW version]
 ```
 
 ## Architectural invariants
@@ -109,6 +190,8 @@ flowchart TD
    reserved for Lume render entry points (pages, layouts, components).
 6. **No barrel files**: Direct imports are preferred. `mod.ts` is used only for
    narrow, intentional public APIs.
+7. **Single source of truth for tokens**: All design tokens live in
+   `tokens-carbon.css`. No other CSS file redefines token values.
 
 ## Cross-cutting concerns
 
@@ -118,13 +201,14 @@ flowchart TD
   `<article>`, `<footer>`).
 - WCAG 2.2 AA color contrast ratios.
 - `:focus-visible` styles on all interactive elements.
-- `prefers-reduced-motion`, `prefers-color-scheme`, and `prefers-contrast` media
-  queries supported.
+- `prefers-reduced-motion`, `prefers-color-scheme`, `prefers-contrast`, and
+  `forced-colors` media queries supported.
+- Skip-to-content link for keyboard navigation.
 
 ### Performance
 
-- **Core Web Vitals**: Explicit image dimensions, system fonts only, critical
-  CSS inlined, minimal JavaScript.
+- **Core Web Vitals**: Explicit image dimensions, locally hosted IBM Plex fonts,
+  critical font preloads, minimal JavaScript.
 - **Caching**: Fingerprinted asset URLs with long-lived cache headers. Service
   Worker for offline support.
 - **CLS**: All editorial images enforce `width` and `height` attributes at build
@@ -133,12 +217,12 @@ flowchart TD
 ### Validation
 
 - **Type checking**: `deno task check` validates the entire codebase.
-- **HTML validation**: `validateHtml` plugin checks generated HTML against
-  html-validate rules.
-- **Link validation**: `checkUrls` plugin detects broken internal links and hash
-  anchors.
+- **HTML validation**: `validateHtml` plugin checks generated HTML.
+- **Link validation**: `checkUrls` plugin detects broken internal links.
 - **SEO validation**: `seo` plugin reports missing titles, descriptions, and
   image alt attributes.
+- **Content contracts**: `deno task validate-contracts` validates generated JSON
+  against schemas.
 
 ## Dependencies
 
@@ -147,8 +231,9 @@ flowchart TD
 | Runtime             | Deno 2.x                       | TypeScript runtime, package manager, and test runner           |
 | SSG                 | Lume 3.x                       | Static site generation, plugin system, and build orchestration |
 | CMS                 | LumeCMS 0.14.x                 | Local content editing interface                                |
-| UI                  | Carbon Design System (partial) | Design tokens and component reference                          |
-| Icons               | Primer Octicons                | SVG icon catalog rendered inline                               |
+| Design system       | Carbon v11 (local tokens only) | Design tokens and component patterns (no npm dependency)       |
+| Fonts               | IBM Plex (via google_fonts)    | Locally hosted typeface for Carbon Design System               |
+| Icons               | Carbon icons (inline SVG)      | SVG icon paths defined in `carbon-icons.ts`                    |
 | Date                | date-fns                       | Date formatting with i18n locales                              |
 | Syntax highlighting | Prism.js                       | Code block highlighting                                        |
 | Search              | Pagefind                       | Client-side search index and UI                                |
@@ -168,23 +253,25 @@ flowchart TD
 
 ## Entry points
 
-| Task       | Command              | Description                              |
-| ---------- | -------------------- | ---------------------------------------- |
-| Build      | `deno task build`    | Production build to `_site/`             |
-| Serve      | `deno task serve`    | Local development server with hot reload |
-| Type check | `deno task check`    | Validate TypeScript types                |
-| Test       | `deno test`          | Run unit and integration tests           |
-| Lint docs  | `deno task lint:doc` | Validate JSDoc comments                  |
-| Test docs  | `deno task test:doc` | Run JSDoc code examples as tests         |
+| Task               | Command                        | Description                                     |
+| ------------------ | ------------------------------ | ----------------------------------------------- |
+| Build              | `deno task build`              | Production build to `_site/`                    |
+| Serve              | `deno task serve`              | Local development server with hot reload        |
+| Type check         | `deno task check`              | Validate TypeScript types                       |
+| Test               | `deno test`                    | Run unit and integration tests                  |
+| Lint docs          | `deno task lint:doc`           | Validate JSDoc comments                         |
+| Test docs          | `deno task test:doc`           | Run JSDoc code examples as tests                |
+| Validate contracts | `deno task validate-contracts` | Validate generated JSON against content schemas |
+| Lint commit        | `deno task lint-commit`        | Validate commit message (Conventional Commits)  |
 
-## Service Worker architecture
+## Service Worker
 
-The Service Worker is split into modular files for maintainability:
+The Service Worker (`src/scripts/sw.js`) is a single self-contained file
+implementing three caching strategies:
 
-- **`sw-core.js`**: Cache strategies and fetch handlers.
-- **`sw-routing.js`**: Route definitions and request matching.
-- **`sw-lifecycle.js`**: Install, activate, and cleanup handlers.
-- **`sw-register.js`**: Registration script included in the base layout.
+- **Cache-first**: Static assets (CSS, JS, fonts, images) with fingerprinted
+  URLs.
+- **Network-first**: HTML pages with multilingual offline fallback.
+- **Stale-while-revalidate**: Feeds (RSS and JSON) with a 30-minute TTL.
 
-Modules are composed into `sw.js` at build time via the `_config.ts` post-build
-hook.
+Registration is handled by `sw-register.js` using `{ type: "module" }`.

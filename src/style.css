@@ -4,7 +4,10 @@
    Carbon Design System v11 implementation
    ============================================================ */
 
-/* IBM Plex fonts — Carbon Design System typeface (served locally) */
+/* IBM Plex + Noto Sans CJK — Carbon Design System typefaces (served locally).
+   This file is auto-generated at build time by the Lume google_fonts plugin
+   (configured in _config/plugins.ts). It does not exist in the repository;
+   the plugin downloads fonts and emits both fonts.css and /fonts/*.woff2. */
 @import "./styles/fonts.css";
 
 /* CSS Cascade Layers — order determined by import sequence
@@ -20,12 +23,10 @@
 @import "./styles/components/hero.css";
 @import "./styles/components/post-card.css";
 @import "./styles/components/post.css";
-@import "./styles/components/post-list.css";
 @import "./styles/components/archive.css";
 @import "./styles/components/feeds.css";
 @import "./styles/components/prism.css";
 @import "./styles/components/error-pages.css";
-@import "./styles/components/link.css";
 @import "./styles/components/footer.css";
 @import "./styles/components/breadcrumb.css";
 @import "./styles/components/tag.css";

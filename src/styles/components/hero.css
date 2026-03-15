@@ -36,37 +36,4 @@
   .home-posts-item--empty .blankslate {
     margin-block: 0;
   }
-
-  /* Carbon hero — expressive typography */
-  .bx--hero {
-    padding-block: var(--cds-spacing-09) var(--cds-spacing-07);
-    max-width: var(--cds-fixed-width, 1584px);
-  }
-
-  .bx--hero__eyebrow {
-    display: block;
-    font: var(--cds-productive-heading-01);
-    font-weight: var(--cds-font-weight-semibold);
-    color: var(--cds-text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-block-end: var(--cds-spacing-03);
-  }
-
-  .bx--hero__title {
-    font: var(--cds-expressive-heading-05);
-    font-weight: var(--cds-font-weight-semibold);
-    color: var(--cds-text-primary);
-    line-height: var(--leading-heading);
-    max-width: 20ch;
-    margin-block-end: var(--cds-spacing-05);
-    letter-spacing: var(--cds-letter-spacing-heading);
-  }
-
-  .bx--hero__lead {
-    font: var(--cds-productive-body-02);
-    color: var(--cds-text-secondary);
-    max-width: 48ch;
-    line-height: 1.5;
-  }
 }

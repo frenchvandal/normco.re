@@ -214,7 +214,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               return (
                 <li
                   key={`${tag}-${index}`}
-                  class="bx--tag bx--tag--{_color}"
+                  class={`bx--tag bx--tag--${_color}`}
                 >
                   <span class="bx--tag__label">{tag}</span>
                 </li>
