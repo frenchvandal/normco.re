@@ -6,3 +6,4 @@ coverage
 _html-issues.json
 _broken_links.json
 .deno_cache
+node_modules
