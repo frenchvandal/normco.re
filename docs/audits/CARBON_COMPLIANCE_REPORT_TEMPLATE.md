@@ -66,7 +66,7 @@ For each component record:
 Reference:
 
 - https://carbondesignsystem.com/guidelines/tokens/overview/
-- https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+- https://carbondesignsystem.com/elements/spacing/overview/
 - https://carbondesignsystem.com/elements/color/overview/
 
 Audit:
@@ -81,7 +81,7 @@ Audit:
 
 Reference:
 
-- https://v10.carbondesignsystem.com/guidelines/typography/overview/
+- https://carbondesignsystem.com/elements/typography/overview/
 
 Audit:
 
@@ -95,8 +95,8 @@ Audit:
 
 Reference:
 
-- https://v10.carbondesignsystem.com/guidelines/layout/overview/
-- https://v10.carbondesignsystem.com/guidelines/2x-grid/overview/
+- https://carbondesignsystem.com/elements/2x-grid/overview/
+- https://carbondesignsystem.com/elements/2x-grid/overview/
 
 Audit:
 
