@@ -99,7 +99,7 @@
           </div>
 
           <main class="site-main" id="main-content" data-pagefind-ignore="">
-            <section class="feed-page" aria-labelledby="feed-title">
+            <section class="feed-page site-page-shell site-page-shell--wide" aria-labelledby="feed-title">
               <header class="pagehead feed-pagehead">
                 <p class="pagehead-eyebrow">Syndication</p>
                 <h1 id="feed-title" class="archive-page-title">

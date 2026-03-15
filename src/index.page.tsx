@@ -99,7 +99,8 @@ export default async (
     <p class="blankslate">${translations.home.emptyState}</p>
   </li>`;
 
-  return `<section class="pagehead hero home-pagehead" aria-labelledby="home-title">
+  return `<div class="site-page-shell site-page-shell--editorial">
+<section class="pagehead hero home-pagehead" aria-labelledby="home-title">
   <p class="pagehead-eyebrow">${translations.home.eyebrow}</p>
   <h1 id="home-title" class="hero-title">${translations.home.title}</h1>
   <p class="hero-lead">${translations.home.lead}</p>
@@ -113,5 +114,6 @@ export default async (
   <ul class="home-posts">
     ${recent.length > 0 ? postItems : emptyState}
   </ul>
-</section>`;
+</section>
+</div>`;
 };

@@ -363,8 +363,19 @@
   // Main content area
   .site-main {
     padding-block: var(--cds-spacing-07);
-    container-type: inline-size;
+    padding-inline: var(--page-shell-gutter);
     margin-block-start: 3rem;
+  }
+
+  .site-page-shell {
+    inline-size: 100%;
+    max-inline-size: var(--page-shell-editorial-max);
+    margin-inline: auto;
+    container-type: inline-size;
+  }
+
+  .site-page-shell--wide {
+    max-inline-size: var(--page-shell-wide-max);
   }
 
   // Site footer

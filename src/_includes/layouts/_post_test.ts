@@ -146,6 +146,16 @@ describe("post.tsx layout", () => {
   });
 
   describe("structure", () => {
+    it("wraps the post article in the editorial shell", async () => {
+      const html = await renderComponent(
+        postLayout(makeData({}), MOCK_HELPERS),
+      );
+      assertStringIncludes(
+        html,
+        'class="site-page-shell site-page-shell--editorial"',
+      );
+    });
+
     it("renders article.post-article", async () => {
       const html = await renderComponent(
         postLayout(makeData({}), MOCK_HELPERS),

@@ -62,6 +62,16 @@ function makePost(
 // ---------------------------------------------------------------------------
 
 describe("posts/index.page.tsx", () => {
+  describe("shell", () => {
+    it("wraps the archive in the wide page shell", () => {
+      const html = postsIndexPage(makeData([]), MOCK_HELPERS);
+      assertStringIncludes(
+        html,
+        'class="site-page-shell site-page-shell--wide"',
+      );
+    });
+  });
+
   describe("page title", () => {
     it('renders the "Writing" heading', () => {
       const html = postsIndexPage(makeData([]), MOCK_HELPERS);

@@ -95,7 +95,7 @@
           </div>
 
           <main class="site-main" id="main-content" data-pagefind-ignore="">
-            <section class="feed-page" aria-labelledby="sitemap-title">
+            <section class="feed-page site-page-shell site-page-shell--wide" aria-labelledby="sitemap-title">
               <header class="pagehead feed-pagehead">
                 <p class="pagehead-eyebrow">Index</p>
                 <h1 id="sitemap-title" class="archive-page-title">Sitemap</h1>

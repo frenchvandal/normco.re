@@ -7,6 +7,14 @@ const MOCK_DATA = {} as unknown as Lume.Data;
 const MOCK_HELPERS = {} as unknown as Lume.Helpers;
 
 describe("about.page.tsx", () => {
+  it("wraps the content in the editorial shell", () => {
+    const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
+    assertStringIncludes(
+      html,
+      'class="site-page-shell site-page-shell--editorial"',
+    );
+  });
+
   it("renders an h1 heading", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
     assertStringIncludes(html, "<h1");

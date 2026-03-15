@@ -172,97 +172,99 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   };
 
   return (
-    <article
-      class="post-article"
-      data-code-copy-label={codeCopyLabelAttribute}
-      data-code-copy-feedback={codeCopyFeedbackAttribute}
-      data-code-copy-failed-feedback={codeCopyFailedFeedbackAttribute}
-    >
-      <header class="post-header pagehead post-pagehead">
-        <nav
-          class="cds--breadcrumb"
-          aria-label={translations.post.breadcrumbAriaLabel}
-        >
-          <ol class="cds--breadcrumb-list">
-            <li class="cds--breadcrumb-item">
-              <a href={homeUrl} class="cds--breadcrumb-link">
-                {translations.navigation.home}
-              </a>
-            </li>
-            <li class="cds--breadcrumb-item">
-              <a href={postsBaseUrl} class="cds--breadcrumb-link">
-                {translations.navigation.writing}
-              </a>
-            </li>
-            <li class="cds--breadcrumb-item">
-              <span class="cds--breadcrumb-current" aria-current="page">
-                {currentTitle}
-              </span>
-            </li>
-          </ol>
-        </nav>
-        <h1 class="post-title">{data.title ?? ""}</h1>
-        <div class="post-meta">
-          <time
-            datetime={dateFormat(postDate, "ATOM", language) ??
-              postDate.toISOString()}
+    <div class="site-page-shell site-page-shell--editorial">
+      <article
+        class="post-article"
+        data-code-copy-label={codeCopyLabelAttribute}
+        data-code-copy-feedback={codeCopyFeedbackAttribute}
+        data-code-copy-failed-feedback={codeCopyFailedFeedbackAttribute}
+      >
+        <header class="post-header pagehead post-pagehead">
+          <nav
+            class="cds--breadcrumb"
+            aria-label={translations.post.breadcrumbAriaLabel}
           >
-            {dateFormat(postDate, "HUMAN_DATE", language) ??
-              postDate.toISOString()}
-          </time>
-          {minutes !== undefined && (
-            <>
-              <span class="post-meta-separator" aria-hidden="true">·</span>
-              <span>{formatReadingTime(minutes, language)}</span>
-            </>
+            <ol class="cds--breadcrumb-list">
+              <li class="cds--breadcrumb-item">
+                <a href={homeUrl} class="cds--breadcrumb-link">
+                  {translations.navigation.home}
+                </a>
+              </li>
+              <li class="cds--breadcrumb-item">
+                <a href={postsBaseUrl} class="cds--breadcrumb-link">
+                  {translations.navigation.writing}
+                </a>
+              </li>
+              <li class="cds--breadcrumb-item">
+                <span class="cds--breadcrumb-current" aria-current="page">
+                  {currentTitle}
+                </span>
+              </li>
+            </ol>
+          </nav>
+          <h1 class="post-title">{data.title ?? ""}</h1>
+          <div class="post-meta">
+            <time
+              datetime={dateFormat(postDate, "ATOM", language) ??
+                postDate.toISOString()}
+            >
+              {dateFormat(postDate, "HUMAN_DATE", language) ??
+                postDate.toISOString()}
+            </time>
+            {minutes !== undefined && (
+              <>
+                <span class="post-meta-separator" aria-hidden="true">·</span>
+                <span>{formatReadingTime(minutes, language)}</span>
+              </>
+            )}
+          </div>
+          {tags.length > 0 && (
+            <ul class="post-tags">
+              {tags.map((tag, index) => {
+                const _color = getTagColor(String(tag));
+                return (
+                  <li
+                    key={`${tag}-${index}`}
+                    class={`cds--tag cds--tag--${_color}`}
+                  >
+                    <span class="cds--tag__label">{tag}</span>
+                  </li>
+                );
+              })}
+            </ul>
           )}
+        </header>
+        <div class="post-content">
+          {data.children}
         </div>
-        {tags.length > 0 && (
-          <ul class="post-tags">
-            {tags.map((tag, index) => {
-              const _color = getTagColor(String(tag));
-              return (
-                <li
-                  key={`${tag}-${index}`}
-                  class={`cds--tag cds--tag--${_color}`}
-                >
-                  <span class="cds--tag__label">{tag}</span>
-                </li>
-              );
-            })}
-          </ul>
+        <nav class="post-nav" aria-label={translations.post.navigationAriaLabel}>
+          {prev
+            ? (
+              <div class="post-nav-item">
+                <span class="post-nav-label">
+                  {translations.post.previousLabel}
+                </span>
+                <a href={prev.url ?? ""} class="post-nav-title">
+                  {prev.title ?? ""}
+                </a>
+              </div>
+            )
+            : <div class="post-nav-placeholder" aria-hidden="true"></div>}
+          {next
+            ? (
+              <div class="post-nav-item post-nav-item--next">
+                <span class="post-nav-label">{translations.post.nextLabel}</span>
+                <a href={next.url ?? ""} class="post-nav-title">
+                  {next.title ?? ""}
+                </a>
+              </div>
+            )
+            : <div class="post-nav-placeholder" aria-hidden="true"></div>}
+        </nav>
+        {includeCodeCopyScript && (
+          <script src="/scripts/post-code-copy.js" defer></script>
         )}
-      </header>
-      <div class="post-content">
-        {data.children}
-      </div>
-      <nav class="post-nav" aria-label={translations.post.navigationAriaLabel}>
-        {prev
-          ? (
-            <div class="post-nav-item">
-              <span class="post-nav-label">
-                {translations.post.previousLabel}
-              </span>
-              <a href={prev.url ?? ""} class="post-nav-title">
-                {prev.title ?? ""}
-              </a>
-            </div>
-          )
-          : <div class="post-nav-placeholder" aria-hidden="true"></div>}
-        {next
-          ? (
-            <div class="post-nav-item post-nav-item--next">
-              <span class="post-nav-label">{translations.post.nextLabel}</span>
-              <a href={next.url ?? ""} class="post-nav-title">
-                {next.title ?? ""}
-              </a>
-            </div>
-          )
-          : <div class="post-nav-placeholder" aria-hidden="true"></div>}
-      </nav>
-      {includeCodeCopyScript && (
-        <script src="/scripts/post-code-copy.js" defer></script>
-      )}
-    </article>
+      </article>
+    </div>
   );
 };

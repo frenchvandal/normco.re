@@ -203,8 +203,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 </nav>`
     : "";
 
-  return `${archiveIntro}
+  return `<div class="site-page-shell site-page-shell--wide">
+${archiveIntro}
 ${archiveBody}
 ${paginationMarkup}
+</div>
 ${archiveYearNavScript}`;
 };

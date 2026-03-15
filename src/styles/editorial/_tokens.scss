@@ -32,6 +32,9 @@
 
     // Layout
     --measure: 68ch;
+    --page-shell-gutter: var(--cds-spacing-05);
+    --page-shell-editorial-max: var(--cds-breakpoint-lg);
+    --page-shell-wide-max: var(--cds-breakpoint-xl);
 
     // Border radii — Carbon default is square (0), but small radii
     // are used on search inputs and interactive badges

@@ -43,9 +43,11 @@ export default (data: Lume.Data): string => {
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
 
-  return `<section class="offline-page" aria-label="${translations.offline.ariaLabel}">
+  return `<div class="site-page-shell site-page-shell--editorial">
+  <section class="offline-page" aria-label="${translations.offline.ariaLabel}">
   <h1 class="offline-page-title">${translations.offline.title}</h1>
   <p class="offline-page-lead">${translations.offline.lead}</p>
   <p class="offline-page-action"><a href="${homeUrl}">${translations.offline.backToHome}</a></p>
-</section>`;
+</section>
+</div>`;
 };

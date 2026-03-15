@@ -46,7 +46,8 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
     ? "或"
     : "or";
 
-  return `<section class="pagehead about-pagehead" aria-labelledby="about-title">
+  return `<div class="site-page-shell site-page-shell--editorial">
+<section class="pagehead about-pagehead" aria-labelledby="about-title">
   <p class="pagehead-eyebrow">${translations.about.eyebrow}</p>
   <h1 id="about-title" class="about-title">${translations.about.title}</h1>
   <p class="pagehead-lead">${translations.about.lead}</p>
@@ -58,5 +59,6 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
     ${translations.about.feedsIntro} <a href="${feedXmlUrl}">RSS</a> ${conjunction}
     <a href="${feedJsonUrl}">JSON Feed</a>.
   </p>
+</div>
 </div>`;
 };

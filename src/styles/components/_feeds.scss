@@ -1,7 +1,7 @@
 /* Feeds hub page and feed/sitemap XSLT styled pages. */
 @layer components {
   .feeds-page {
-    max-inline-size: var(--measure);
+    inline-size: 100%;
   }
 
   .feeds-page-title {
@@ -50,7 +50,7 @@
 
   /* Feed/sitemap XSLT page */
   .feed-page {
-    max-inline-size: var(--measure);
+    inline-size: 100%;
   }
 
   .feed-pagehead {

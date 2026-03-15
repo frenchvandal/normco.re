@@ -65,6 +65,14 @@ function makePost(
 
 describe("index.page.tsx", () => {
   describe("hero section", () => {
+    it("wraps the page in the editorial shell", async () => {
+      const html = await indexPage(makeData([]), MOCK_HELPERS);
+      assertStringIncludes(
+        html,
+        'class="site-page-shell site-page-shell--editorial"',
+      );
+    });
+
     it("renders the hero section", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertMatch(html, /class="[^"]*\bhero\b[^"]*"/);

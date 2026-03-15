@@ -6,9 +6,9 @@ Scan date: 2026-03-15
 
 ## Summary
 
-- Global compliance score: **97 / 100**
+- Global compliance score: **61 / 100**
 - Critical findings: **0**
-- Important findings: **0**
+- Important findings: **12**
 - Minor findings: **7**
 
 ## Carbon references
@@ -17,8 +17,7 @@ Scan date: 2026-03-15
 - spacing: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
 - typography: https://v10.carbondesignsystem.com/guidelines/typography/overview/
 - layout: https://v10.carbondesignsystem.com/guidelines/layout/overview/
-- accessibility:
-  https://carbondesignsystem.com/guidelines/accessibility/overview/
+- accessibility: https://carbondesignsystem.com/guidelines/accessibility/overview/
 - uiShell: https://carbondesignsystem.com/components/ui-shell-header/usage/
 - sideNav: https://carbondesignsystem.com/components/side-nav/usage/
 - breadcrumb: https://carbondesignsystem.com/components/breadcrumb/usage/
@@ -30,69 +29,144 @@ None.
 
 ## Important findings
 
-None.
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/editorial/_tokens.scss` line 51
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/carbon/_theme-tokens.scss` line 132
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/carbon/_theme-tokens.scss` line 133
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/carbon/_theme-tokens.scss` line 134
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/carbon/_theme-tokens.scss` line 135
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/carbon/_theme-tokens.scss` line 160
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/carbon/_theme-tokens.scss` line 161
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/carbon/_theme-tokens.scss` line 162
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/carbon/_theme-tokens.scss` line 171
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/carbon/_theme-tokens.scss` line 172
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/carbon/_theme-tokens.scss` line 173
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
+
+### Avoid raw rgb()/rgba() colors
+
+- File: `src/styles/_layout.scss` line 313
+- Details: Found rgba(.
+- Recommendation: Map colors to semantic tokens aligned with Carbon themes.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
 
 ## Minor findings
 
-### Do not imply clickability for non-interactive elements
-
-- File: `src/styles/components/header.css` line 81
-- Details: Found cursor:pointer. Verify the element is truly interactive.
-- Recommendation: Keep pointer only on actionable controls or links.
-- Carbon guideline: https://carbondesignsystem.com/components/tag/usage/
-
-### Do not imply clickability for non-interactive elements
-
-- File: `src/styles/components/feeds.css` line 130
-- Details: Found cursor:pointer. Verify the element is truly interactive.
-- Recommendation: Keep pointer only on actionable controls or links.
-- Carbon guideline: https://carbondesignsystem.com/components/tag/usage/
-
 ### Prefer tokenized spacing and typography
 
-- File: `src/styles/components/pagination.css` line 129
-- Details: Found raw pixel-based declaration: max-width: 671px.
-- Recommendation: Replace direct px values with Carbon spacing/type tokens where
-  applicable.
-- Carbon guideline:
-  https://v10.carbondesignsystem.com/guidelines/spacing/overview/
-
-### Do not imply clickability for non-interactive elements
-
-- File: `src/styles/components/pagination.css` line 44
-- Details: Found cursor:pointer. Verify the element is truly interactive.
-- Recommendation: Keep pointer only on actionable controls or links.
-- Carbon guideline: https://carbondesignsystem.com/components/tag/usage/
-
-### Prefer tokenized spacing and typography
-
-- File: `src/styles/components/archive.css` line 45
-- Details: Found raw pixel-based declaration: border-radius: 999px.
-- Recommendation: Replace direct px values with Carbon spacing/type tokens where
-  applicable.
-- Carbon guideline:
-  https://v10.carbondesignsystem.com/guidelines/spacing/overview/
-
-### Prefer tokenized spacing and typography
-
-- File: `src/styles/layout-carbon.css` line 329
+- File: `src/styles/_layout.scss` line 324
 - Details: Found raw pixel-based declaration: min-width: 672px.
-- Recommendation: Replace direct px values with Carbon spacing/type tokens where
-  applicable.
-- Carbon guideline:
-  https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+- Recommendation: Replace direct px values with Carbon spacing/type tokens where applicable.
+- Carbon guideline: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
 
 ### Prefer tokenized spacing and typography
 
-- File: `src/styles/layout-carbon.css` line 346
+- File: `src/styles/_layout.scss` line 339
 - Details: Found raw pixel-based declaration: max-width: 671px.
-- Recommendation: Replace direct px values with Carbon spacing/type tokens where
-  applicable.
-- Carbon guideline:
-  https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+- Recommendation: Replace direct px values with Carbon spacing/type tokens where applicable.
+- Carbon guideline: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+
+### Do not imply clickability for non-interactive elements
+
+- File: `src/styles/components/_feeds.scss` line 130
+- Details: Found cursor:pointer. Verify the element is truly interactive.
+- Recommendation: Keep pointer only on actionable controls or links.
+- Carbon guideline: https://carbondesignsystem.com/components/tag/usage/
+
+### Prefer tokenized spacing and typography
+
+- File: `src/styles/components/_archive.scss` line 45
+- Details: Found raw pixel-based declaration: border-radius: 999px.
+- Recommendation: Replace direct px values with Carbon spacing/type tokens where applicable.
+- Carbon guideline: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+
+### Prefer tokenized spacing and typography
+
+- File: `src/styles/components/_pagination.scss` line 129
+- Details: Found raw pixel-based declaration: max-width: 671px.
+- Recommendation: Replace direct px values with Carbon spacing/type tokens where applicable.
+- Carbon guideline: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+
+### Do not imply clickability for non-interactive elements
+
+- File: `src/styles/components/_pagination.scss` line 44
+- Details: Found cursor:pointer. Verify the element is truly interactive.
+- Recommendation: Keep pointer only on actionable controls or links.
+- Carbon guideline: https://carbondesignsystem.com/components/tag/usage/
+
+### Do not imply clickability for non-interactive elements
+
+- File: `src/styles/components/_header.scss` line 79
+- Details: Found cursor:pointer. Verify the element is truly interactive.
+- Recommendation: Keep pointer only on actionable controls or links.
+- Carbon guideline: https://carbondesignsystem.com/components/tag/usage/
 
 ## Next actions
 
+2. Normalize token naming and remove raw colors and spacing.
 3. Review minor findings for incremental improvements.
 
 4. Re-run the scanner after each refactor.
