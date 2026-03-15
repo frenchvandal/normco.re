@@ -177,8 +177,8 @@ async function rewriteUrlsInSiteOutput(
 }
 
 async function injectServiceWorkerVersion(rootDir: string): Promise<string> {
-  const swCorePath = toOutputPath(rootDir, "/sw-core.js");
-  const swCoreCode = await Deno.readTextFile(swCorePath);
+  const swPath = toOutputPath(rootDir, "/sw.js");
+  const swCode = await Deno.readTextFile(swPath);
   const swVersionInputs = await Promise.all(
     SERVICE_WORKER_VERSION_SOURCES.map(async (sourcePath) => {
       const sourceCode = await Deno.readTextFile(
@@ -192,13 +192,13 @@ async function injectServiceWorkerVersion(rootDir: string): Promise<string> {
   const swVersion = await hashContent(
     new TextEncoder().encode(swVersionMaterial),
   );
-  const versionedSwCoreCode = swCoreCode.replaceAll(
+  const versionedSwCode = swCode.replaceAll(
     SERVICE_WORKER_VERSION_PLACEHOLDER,
     swVersion,
   );
 
-  if (versionedSwCoreCode !== swCoreCode) {
-    await Deno.writeTextFile(swCorePath, versionedSwCoreCode);
+  if (versionedSwCode !== swCode) {
+    await Deno.writeTextFile(swPath, versionedSwCode);
   }
 
   return swVersion;
