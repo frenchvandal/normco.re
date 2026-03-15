@@ -4,6 +4,7 @@ import {
   formatPostCount,
   formatReadingTime,
   getLanguageDataCode,
+  getLocalizedUrl,
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../utils/i18n.ts";
@@ -13,9 +14,6 @@ import { resolvePostDate, resolveReadingMinutes } from "./post-metadata.ts";
 type H = {
   date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
 };
-
-/** Posts per page for pagination (Carbon recommends 10-25 for editorial content). */
-const POSTS_PER_PAGE = 10;
 
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
@@ -57,6 +55,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
+  const homeUrl = getLocalizedUrl("/", language);
   const shortDatePattern = language === "fr"
     ? "d MMM"
     : language === "zhHans" || language === "zhHant"
@@ -133,11 +132,18 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
 
   const archiveIntro =
     `<nav class="cds--breadcrumb" aria-label="${translations.archive.breadcrumbAriaLabel}">
-  <a href="/" class="cds--breadcrumb-item">Home</a>
-  <span class="cds--breadcrumb-separator" aria-hidden="true">/</span>
-  <a href="/posts/" class="cds--breadcrumb-item">Writing</a>
-  <span class="cds--breadcrumb-separator" aria-hidden="true">/</span>
-  <span class="cds--breadcrumb-item cds--breadcrumb-item--current" aria-current="page">Archive</span>
+  <ol class="cds--breadcrumb-list">
+    <li class="cds--breadcrumb-item">
+      <a href="${homeUrl}" class="cds--breadcrumb-link">
+        ${translations.navigation.home}
+      </a>
+    </li>
+    <li class="cds--breadcrumb-item">
+      <span class="cds--breadcrumb-current" aria-current="page">
+        ${translations.archive.title}
+      </span>
+    </li>
+  </ol>
 </nav>
 <section class="pagehead archive-pagehead" aria-labelledby="archive-title">
   <p class="pagehead-eyebrow">${translations.archive.eyebrow}</p>
@@ -162,51 +168,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     ? '<script src="/scripts/archive-year-nav.js" defer></script>'
     : "";
 
-  // Carbon pagination — only show if more posts than POSTS_PER_PAGE
-  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
-  const currentPage = 1; // Static for now; would be dynamic with query params
-  const paginationMarkup = totalPages > 1
-    ? `<nav class="cds--pagination" aria-label="${translations.archive.paginationAriaLabel}">
-  <div class="cds--pagination__content">
-    <span class="cds--pagination__text">
-      ${
-      translations.archive.paginationItemsRange.replace("{start}", "1").replace(
-        "{end}",
-        String(Math.min(POSTS_PER_PAGE, posts.length)),
-      ).replace("{total}", String(posts.length))
-    }
-    </span>
-    <div class="cds--pagination__control">
-      <button class="cds--pagination__button cds--pagination__button--backward" disabled aria-label="${translations.archive.paginationPrevious}">
-        <svg class="cds--pagination__button-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-          <path d="M11 3.5l-5 4.5 5 4.5V3.5z"/>
-        </svg>
-      </button>
-      <div class="cds--pagination__pages">
-        ${
-      Array.from({ length: totalPages }, (_, i) => {
-        const pageNum = i + 1;
-        const isCurrent = pageNum === currentPage;
-        return `<button class="cds--pagination__page-button${
-          isCurrent ? '" aria-current="page' : ""
-        }" aria-label="${translations.archive.paginationPage} ${pageNum}">${pageNum}</button>`;
-      }).join("")
-    }
-      </div>
-      <button class="cds--pagination__button cds--pagination__button--forward" aria-label="${translations.archive.paginationNext}">
-        <svg class="cds--pagination__button-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-          <path d="M5 11.5l5-4.5-5-4.5v9z"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-</nav>`
-    : "";
-
   return `<div class="site-page-shell site-page-shell--wide">
 ${archiveIntro}
 ${archiveBody}
-${paginationMarkup}
 </div>
 ${archiveYearNavScript}`;
 };

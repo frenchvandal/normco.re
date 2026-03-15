@@ -86,6 +86,16 @@ describe("posts/index.page.tsx", () => {
     });
   });
 
+  describe("breadcrumb", () => {
+    it("uses the shared ordered-list Carbon breadcrumb structure", () => {
+      const html = postsIndexPage(makeData([]), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="cds--breadcrumb-list"');
+      assertStringIncludes(html, 'class="cds--breadcrumb-link"');
+      assertStringIncludes(html, 'class="cds--breadcrumb-current"');
+      assertNotMatch(html, /cds--breadcrumb-separator/);
+    });
+  });
+
   describe("year grouping", () => {
     it("groups posts by year", () => {
       const postA = makePost(501, {
@@ -266,6 +276,22 @@ describe("posts/index.page.tsx", () => {
         assert(href !== undefined);
         assertMatch(href, /^#archive-year-\d{4}$/);
       }
+    });
+  });
+
+  describe("pagination", () => {
+    it("does not render placeholder pagination controls before routing exists", () => {
+      const posts = Array.from(
+        { length: 12 },
+        (_, index) =>
+          makePost(700 + index, {
+            date: new Date(`2026-03-${String(index + 1).padStart(2, "0")}`),
+            readingInfo: { minutes: 3 },
+          }),
+      );
+      const html = postsIndexPage(makeData(posts), MOCK_HELPERS);
+
+      assertNotMatch(html, /class="cds--pagination"/);
     });
   });
 });

@@ -42,8 +42,8 @@
     inset-inline-start: -1.125rem;
     inline-size: 0.625rem;
     block-size: 0.625rem;
-    border-radius: 999px;
-    background: var(--cds-button-primary);
+    border-radius: var(--cds-radius-round);
+    background: var(--cds-interactive);
     box-shadow: 0 0 0 3px var(--cds-background);
   }
 
@@ -162,10 +162,10 @@
     text-decoration: none;
   }
 
-  .archive-year-nav-link[aria-current="true"] {
-    color: var(--cds-text-on-emphasis);
-    background: var(--cds-button-primary);
-    border-color: var(--cds-button-primary);
+  .archive-year-nav-link[aria-current="location"] {
+    color: var(--cds-text-inverse);
+    background: var(--cds-interactive);
+    border-color: var(--cds-interactive);
   }
 
   .archive-year-nav-count {

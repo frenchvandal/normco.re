@@ -79,6 +79,20 @@
     document.body.style.overflow = "";
   }
 
+  /** Applies body scroll locking only while the SideNav is open. */
+  function syncBodyScrollLock() {
+    const hasOpenSideNav =
+      document.querySelector(".cds--side-nav:not([hidden])") instanceof
+        HTMLElement;
+
+    if (hasOpenSideNav) {
+      lockScroll();
+      return;
+    }
+
+    unlockScroll();
+  }
+
   /**
    * @param {{
    *   readonly exceptControl?: HTMLElement | null;
@@ -180,10 +194,7 @@
       overlay.setAttribute("aria-hidden", "true");
     }
 
-    // Unlock scroll when closing panels
-    if (closed && exceptControl === null) {
-      unlockScroll();
-    }
+    syncBodyScrollLock();
 
     // Restore focus to the trigger that opened the panel
     if (restoreFocus && lastTrigger instanceof HTMLElement) {
@@ -202,16 +213,8 @@
       return;
     }
 
-    // Focus trap for open panels and side nav
+    // Focus trap only for the mobile SideNav, which behaves as a modal surface.
     if (event.key === "Tab") {
-      const openPanel = document.querySelector(
-        ".cds--header__panel:not([hidden])",
-      );
-      if (openPanel instanceof HTMLElement) {
-        trapFocus(event, openPanel);
-        return;
-      }
-
       const openSideNav = document.querySelector(
         ".cds--side-nav:not([hidden])",
       );
@@ -249,20 +252,12 @@
    */
   function setupDisclosureControls() {
     const navToggle = document.querySelector(".cds--header__menu-toggle");
-    const sideNav = document.getElementById("site-side-nav");
-    const searchToggle = document.querySelector(
-      ".cds--header__action[aria-controls='site-search-panel']",
-    );
-    const searchPanel = document.getElementById("site-search-panel");
-    const languageToggle = document.querySelector(
-      ".cds--header__language-toggle",
-    );
-    const languagePanel = document.getElementById("site-language-panel");
     const overlay = document.querySelector(".cds--side-nav__overlay");
 
     /**
-     * Toggles a panel's visibility and updates ARIA states.
-     * Includes focus management and scroll locking.
+     * Toggles a header panel's visibility and updates ARIA states.
+     * Panels behave like disclosures, so focus is moved into the panel but
+     * the rest of the page remains available to assistive technology.
      * @param {HTMLElement|null} button The trigger button
      * @param {HTMLElement|null} panel The panel to toggle
      */
@@ -282,7 +277,6 @@
           lastTrigger = button;
           panel.removeAttribute("hidden");
           panel.setAttribute("expanded", "");
-          lockScroll();
           // Focus first focusable element in panel
           const firstFocusable = panel.querySelector(FOCUSABLE_SELECTOR);
           if (firstFocusable instanceof HTMLElement) {
@@ -291,7 +285,6 @@
         } else {
           panel.setAttribute("hidden", "");
           panel.removeAttribute("expanded");
-          unlockScroll();
           // Return focus to trigger
           button.focus({ preventScroll: true });
         }
@@ -319,10 +312,10 @@
           lastTrigger = button;
           nav.removeAttribute("hidden");
           nav.setAttribute("expanded", "");
-          lockScroll();
           if (overlay instanceof HTMLElement) {
             overlay.setAttribute("aria-hidden", "false");
           }
+          syncBodyScrollLock();
           // Focus first nav link
           const firstLink = nav.querySelector("a.cds--side-nav__link");
           if (firstLink instanceof HTMLElement) {
@@ -331,30 +324,42 @@
         } else {
           nav.setAttribute("hidden", "");
           nav.removeAttribute("expanded");
-          unlockScroll();
           if (overlay instanceof HTMLElement) {
             overlay.setAttribute("aria-hidden", "true");
           }
+          syncBodyScrollLock();
           // Return focus to trigger
           button.focus({ preventScroll: true });
         }
       });
     };
 
-    // Setup SideNav toggle
-    setupSideNavToggle(navToggle, sideNav);
+    if (navToggle instanceof HTMLElement) {
+      const sideNavId = navToggle.getAttribute("aria-controls");
+      const sideNav = sideNavId === null
+        ? null
+        : document.getElementById(sideNavId);
+      setupSideNavToggle(navToggle, sideNav);
+    }
 
-    // Setup search panel toggle
-    setupPanelToggle(searchToggle, searchPanel);
+    for (const control of controls) {
+      if (
+        !control.matches(
+          ".cds--header__action[aria-controls]:not(.cds--header__menu-toggle)",
+        )
+      ) {
+        continue;
+      }
 
-    // Setup language panel toggle
-    setupPanelToggle(languageToggle, languagePanel);
+      const panelId = control.getAttribute("aria-controls");
+      const panel = panelId === null ? null : document.getElementById(panelId);
+      setupPanelToggle(control, panel);
+    }
 
     // Close panels when clicking overlay
     if (overlay instanceof HTMLElement) {
       overlay.addEventListener("click", () => {
         closeCarbonChrome({ restoreFocus: true });
-        unlockScroll();
       });
     }
 
@@ -372,7 +377,6 @@
 
       if (!isInsidePanel && !isToggleButton) {
         closeCarbonChrome();
-        unlockScroll();
       }
     });
   }

@@ -14,6 +14,15 @@ import {
   TRANSLATE_ICON_PATH,
 } from "../utils/carbon-icons.ts";
 
+const HOME_URLS = new Set(
+  SUPPORTED_LANGUAGES.map((language) => getLocalizedUrl("/", language)),
+);
+
+function normalizeUrlPath(path: string): string {
+  const pathname = path.split(/[?#]/, 1)[0] || "/";
+  return pathname.endsWith("/") ? pathname : `${pathname}/`;
+}
+
 /**
  * Returns `{ "aria-current": "page" }` when the link matches the active URL,
  * otherwise an empty object, for safe spreading into JSX props.
@@ -22,10 +31,19 @@ function ariaCurrent(
   href: string,
   currentUrl: string,
 ): { readonly "aria-current"?: "page" } {
-  if (href === "/" && currentUrl === "/") return { "aria-current": "page" };
-  if (href !== "/" && currentUrl.startsWith(href)) {
+  const normalizedHref = normalizeUrlPath(href);
+  const normalizedCurrentUrl = normalizeUrlPath(currentUrl);
+
+  if (normalizedHref === normalizedCurrentUrl) {
     return { "aria-current": "page" };
   }
+
+  if (HOME_URLS.has(normalizedHref)) return {};
+
+  if (normalizedCurrentUrl.startsWith(normalizedHref)) {
+    return { "aria-current": "page" };
+  }
+
   return {};
 }
 

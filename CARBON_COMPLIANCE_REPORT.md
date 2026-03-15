@@ -6,10 +6,10 @@ Scan date: 2026-03-15
 
 ## Summary
 
-- Global compliance score: **98 / 100**
+- Global compliance score: **100 / 100**
 - Critical findings: **0**
 - Important findings: **0**
-- Minor findings: **4**
+- Minor findings: **0**
 
 ## Carbon references
 
@@ -17,8 +17,7 @@ Scan date: 2026-03-15
 - spacing: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
 - typography: https://v10.carbondesignsystem.com/guidelines/typography/overview/
 - layout: https://v10.carbondesignsystem.com/guidelines/layout/overview/
-- accessibility:
-  https://carbondesignsystem.com/guidelines/accessibility/overview/
+- accessibility: https://carbondesignsystem.com/guidelines/accessibility/overview/
 - uiShell: https://carbondesignsystem.com/components/ui-shell-header/usage/
 - sideNav: https://carbondesignsystem.com/components/side-nav/usage/
 - breadcrumb: https://carbondesignsystem.com/components/breadcrumb/usage/
@@ -34,38 +33,10 @@ None.
 
 ## Minor findings
 
-### Do not imply clickability for non-interactive elements
-
-- File: `src/styles/components/_feeds.scss` line 130
-- Details: Found cursor:pointer. Verify the element is truly interactive.
-- Recommendation: Keep pointer only on actionable controls or links.
-- Carbon guideline: https://carbondesignsystem.com/components/tag/usage/
-
-### Prefer tokenized spacing and typography
-
-- File: `src/styles/components/_archive.scss` line 45
-- Details: Found raw pixel-based declaration: border-radius: 999px.
-- Recommendation: Replace direct px values with Carbon spacing/type tokens where
-  applicable.
-- Carbon guideline:
-  https://v10.carbondesignsystem.com/guidelines/spacing/overview/
-
-### Do not imply clickability for non-interactive elements
-
-- File: `src/styles/components/_pagination.scss` line 46
-- Details: Found cursor:pointer. Verify the element is truly interactive.
-- Recommendation: Keep pointer only on actionable controls or links.
-- Carbon guideline: https://carbondesignsystem.com/components/tag/usage/
-
-### Do not imply clickability for non-interactive elements
-
-- File: `src/styles/components/_header.scss` line 79
-- Details: Found cursor:pointer. Verify the element is truly interactive.
-- Recommendation: Keep pointer only on actionable controls or links.
-- Carbon guideline: https://carbondesignsystem.com/components/tag/usage/
+None.
 
 ## Next actions
 
-3. Review minor findings for incremental improvements.
+No findings. The repository is Carbon-aligned.
 
 4. Re-run the scanner after each refactor.

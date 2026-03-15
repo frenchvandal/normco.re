@@ -21,7 +21,7 @@
 
   .cds--pagination__text {
     color: var(--cds-text-secondary);
-    font-size: var(--cds-productive-body-01-font-size);
+    font: inherit;
   }
 
   .cds--pagination__control {
@@ -43,7 +43,6 @@
     color: var(--cds-text-primary);
     font: var(--cds-productive-body-01);
     font-weight: 600;
-    cursor: pointer;
     transition:
       background-color 0.15s ease,
       border-color 0.15s ease,
@@ -56,11 +55,10 @@
   }
 
   .cds--pagination__button:disabled {
-    background: var(--cds-background-disabled);
+    background: var(--cds-field);
     border-color: var(--cds-border-disabled);
-    color: var(--cds-text-placeholder);
+    color: var(--cds-text-disabled);
     cursor: not-allowed;
-    opacity: 0.5;
   }
 
   .cds--pagination__button:focus-visible {

@@ -253,7 +253,7 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<div[^>]*id="site-language-panel"[^>]*class="cds--header__panel cds--header__language-panel"[^>]*hidden/,
+        /<section[^>]*id="site-language-panel"[^>]*class="cds--header__panel cds--header__language-panel"[^>]*hidden/,
       );
       assertStringIncludes(html, 'class="cds--header__panel-title"');
       assertStringIncludes(html, 'class="cds--header__language-list"');
@@ -333,6 +333,31 @@ describe("Header()", () => {
         Header({ currentUrl: "/", language: "fr" }),
       );
       assertStringIncludes(html, 'aria-label="Recherche"');
+    });
+
+    it("does not mark the localized home link current on French child routes", async () => {
+      const html = await renderComponent(
+        Header({
+          currentUrl: "/fr/posts/instructions/",
+          language: "fr",
+        }),
+      );
+      assertNotMatch(
+        html,
+        /<a[^>]*href="\/fr\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
+      );
+      assertNotMatch(
+        html,
+        /<a[^>]*href="\/fr\/"[^>]*class="cds--side-nav__link"[^>]*aria-current="page"/,
+      );
+      assertMatch(
+        html,
+        /<a[^>]*href="\/fr\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
+      );
+      assertMatch(
+        html,
+        /<a[^>]*href="\/fr\/posts\/"[^>]*class="cds--side-nav__link"[^>]*aria-current="page"/,
+      );
     });
   });
 

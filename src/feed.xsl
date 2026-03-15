@@ -29,11 +29,17 @@
         <link rel="stylesheet" href="/style.css"/>
       </head>
       <body data-a11y-link-underlines="true">
+        <a class="skip-link" href="#main-content">Skip to content</a>
         <div class="site-wrapper">
           <!-- Carbon UI Shell Header (mirrors Header.tsx structure) -->
           <header class="cds--header">
             <div class="cds--header__wrapper">
               <div class="cds--header__left">
+                <button type="button" class="cds--header__action cds--header__menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="site-side-nav">
+                  <svg class="cds--header__menu-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
+                    <path d="M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z"/>
+                  </svg>
+                </button>
                 <a href="/" class="cds--header__name">
                   <span class="cds--header__name--prefix">normco</span>.re
                 </a>
@@ -45,13 +51,13 @@
               </div>
               <div class="cds--header__global">
                 <!-- Search action -->
-                <button type="button" class="cds--header__action" aria-label="Search" aria-expanded="false" aria-controls="feed-search-panel">
+                <button type="button" class="cds--header__action" aria-label="Search" aria-expanded="false" aria-controls="site-search-panel">
                   <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/>
                   </svg>
                 </button>
                 <!-- Language selector action -->
-                <button type="button" class="cds--header__action cds--header__language-toggle" aria-label="Select language" aria-expanded="false" aria-controls="feed-language-panel" aria-haspopup="true">
+                <button type="button" class="cds--header__action cds--header__language-toggle" aria-label="Select language" aria-expanded="false" aria-controls="site-language-panel" aria-haspopup="true">
                   <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M27.85 29H30L24 14H21.65l-6 15H17.8l1.6-4h6.85zM20.2 23l2.62-6.56L25.45 23zM18 7V5H11V2H9V5H2V7H12.74a14.71 14.71 0 0 1-3.19 6.18A13.5 13.5 0 0 1 7.26 9H5.16a16.47 16.47 0 0 0 3 5.58A16.84 16.84 0 0 1 3 18l.75 1.86A18.47 18.47 0 0 0 9.53 16a16.92 16.92 0 0 0 5.76 3.84L16 18a14.48 14.48 0 0 1-5.12-3.37A17.64 17.64 0 0 0 14.8 7z"/>
                   </svg>
@@ -79,10 +85,10 @@
           </header>
 
           <!-- Language selector panel (mirrors Header.tsx language panel) -->
-          <section id="feed-language-panel" class="cds--header__panel cds--header__language-panel" aria-labelledby="feed-language-panel-title" hidden="">
+          <section id="site-language-panel" class="cds--header__panel cds--header__language-panel" aria-labelledby="site-language-panel-title" hidden="">
             <div class="cds--header__panel-content">
-              <h2 id="feed-language-panel-title" class="cds--header__panel-title">Language</h2>
-              <nav class="cds--header__language-list" aria-labelledby="feed-language-panel-title">
+              <h2 id="site-language-panel-title" class="cds--header__panel-title">Language</h2>
+              <nav class="cds--header__language-list" aria-labelledby="site-language-panel-title">
                 <a href="/" class="cds--header__menu-item cds--header__language-item" aria-current="page">English</a>
                 <a href="/fr/" class="cds--header__menu-item cds--header__language-item">Français</a>
                 <a href="/zh-hans/" class="cds--header__menu-item cds--header__language-item">简体中文</a>
@@ -92,11 +98,35 @@
           </section>
 
           <!-- Search panel (mirrors Header.tsx search panel) -->
-          <div id="feed-search-panel" class="cds--header__panel cds--header__search-panel" aria-modal="true" hidden="" data-search-panel="">
+          <div id="site-search-panel" class="cds--header__panel cds--header__search-panel" role="search" aria-label="Search" hidden="" data-search-panel="">
             <div class="cds--header__panel-content">
-              <div id="feed-search" class="cds--header__search-root" data-search-root=""></div>
+              <div id="search" class="cds--header__search-root" data-search-root=""></div>
             </div>
           </div>
+
+          <aside id="site-side-nav" class="cds--side-nav" aria-label="Main navigation" hidden="">
+            <nav class="cds--side-nav__navigation">
+              <ul class="cds--side-nav__items">
+                <li class="cds--side-nav__item">
+                  <a href="/" class="cds--side-nav__link">
+                    <span class="cds--side-nav__link-text">Home</span>
+                  </a>
+                </li>
+                <li class="cds--side-nav__item">
+                  <a href="/posts/" class="cds--side-nav__link">
+                    <span class="cds--side-nav__link-text">Writing</span>
+                  </a>
+                </li>
+                <li class="cds--side-nav__item">
+                  <a href="/about/" class="cds--side-nav__link">
+                    <span class="cds--side-nav__link-text">About</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+
+          <div class="cds--side-nav__overlay" aria-hidden="true"></div>
 
           <main class="site-main" id="main-content" data-pagefind-ignore="">
             <section class="feed-page site-page-shell site-page-shell--wide" aria-labelledby="feed-title">
