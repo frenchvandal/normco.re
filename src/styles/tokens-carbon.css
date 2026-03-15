@@ -1,21 +1,19 @@
 /* =====================================================================
-   CARBON DESIGN SYSTEM TOKENS — GRAY 10 THEME (DEFAULT)
+   CARBON DESIGN SYSTEM TOKENS — WHITE THEME (DEFAULT)
    Sources:
    - Themes: https://carbondesignsystem.com/elements/themes/overview/
    - Spacing: https://carbondesignsystem.com/elements/2x-grid/overview/
    - Colors: https://carbondesignsystem.com/elements/color/overview/
    - Typography: https://carbondesignsystem.com/elements/typography/overview/
-   
-   Design JSON files:
-   - design/Theme.json, design/Colors.json, design/Spacing.json,
-     design/Layer.json, design/Radius.json, design/Breakpoint.json
+
+   Design tokens: design-tokens/*.json (Figma variable exports)
+   Audited against Figma exports on 2026-03-15.
    ===================================================================== */
 
 @layer tokens {
   :root {
     /* ================================================================
        CARBON SPACING SCALE (2x Grid)
-       Source: design/Spacing.json
        Base: 8px grid system
        ================================================================ */
     --cds-spacing-00: 0rem;
@@ -35,8 +33,7 @@
 
     /* ================================================================
        CARBON BREAKPOINTS
-       Source: design/Breakpoint.json
-       SM: 320px, MD: 672px, LG: 1056px, XL: 1312px, Max: 1584px, Max+: 1784px
+       SM: 320px, MD: 672px, LG: 1056px, XL: 1312px, Max: 1584px
        ================================================================ */
     --cds-breakpoint-sm: 20rem; /* 320px */
     --cds-breakpoint-md: 42rem; /* 672px */
@@ -60,7 +57,6 @@
 
     /* ================================================================
        CARBON RADIUS
-       Source: design/Radius.json
        Carbon uses square corners by default (0), round only when specified
        ================================================================ */
     --cds-radius-none: 0;
@@ -72,120 +68,128 @@
     --borderRadius-large: var(--cds-radius-none);
 
     /* ================================================================
-       CARBON COLORS — GRAY 10 THEME (DEFAULT LIGHT)
-       Source: design/Colors.json, design/Theme.json
-       Using oklch() for perceptually uniform colors
+       CARBON COLORS — WHITE THEME (DEFAULT LIGHT)
+       Values from Figma: design-tokens/carbon.json → Theme → White Theme
+       All oklch() values computed from Figma normalized RGB via sRGB→LMS→Oklab
        ================================================================ */
 
-    /* Neutral grays — Gray 10 theme base */
-    --cds-gray-10: oklch(95.7% 0 0); /* #f4f4f4 */
-    --cds-gray-20: oklch(87.8% 0 0); /* #e0e0e0 */
-    --cds-gray-30: oklch(77.6% 0 0); /* #c6c6c6 */
-    --cds-gray-40: oklch(65.9% 0 0); /* #a8a8a8 */
-    --cds-gray-50: oklch(55.3% 0 0); /* #8d8d8d */
-    --cds-gray-60: oklch(43.5% 0 0); /* #6f6f6f */
-    --cds-gray-70: oklch(32.2% 0 0); /* #525252 */
-    --cds-gray-80: oklch(22.4% 0 0); /* #393939 */
-    --cds-gray-90: oklch(14.9% 0 0); /* #262626 */
-    --cds-gray-100: oklch(8.6% 0 0); /* #161616 */
+    /* Neutral grays — reference palette */
+    --cds-gray-10: oklch(96.72% 0 0); /* #f4f4f4 */
+    --cds-gray-20: oklch(90.67% 0 0); /* #e0e0e0 */
+    --cds-gray-30: oklch(82.66% 0 0); /* #c6c6c6 */
+    --cds-gray-40: oklch(73.16% 0 0); /* #a8a8a8 */
+    --cds-gray-50: oklch(64.34% 0 0); /* #8d8d8d */
+    --cds-gray-60: oklch(54.17% 0 0); /* #6f6f6f */
+    --cds-gray-70: oklch(43.86% 0 0); /* #525252 */
+    --cds-gray-80: oklch(34.46% 0 0); /* #393939 */
+    --cds-gray-90: oklch(26.86% 0 0); /* #262626 */
+    --cds-gray-100: oklch(20.02% 0 0); /* #161616 */
 
-    /* Blue accent — Carbon blue 60 */
-    --cds-blue-60: oklch(45% 0.2 264); /* #0f62fe */
+    /* Blue accent — Carbon Blue 60 */
+    --cds-blue-60: oklch(55.65% 0.243 262); /* #0f62fe */
 
     /* ================================================================
-       CARBON SEMANTIC TOKENS — GRAY 10 THEME
-       Source: design/Layer.json, design/Theme.json
+       CARBON SEMANTIC TOKENS — WHITE THEME
        ================================================================ */
 
     /* Backgrounds */
-    --cds-background: oklch(100% 0 0); /* White background */
-    --cds-background-hover: oklch(95.7% 0 0); /* Gray 10 hover */
-    --cds-background-active: oklch(87.8% 0 0); /* Gray 20 active */
-    --cds-background-selected: oklch(55.3% 0 0 / 0.2); /* Gray 50 at 20% */
+    --cds-background: oklch(100% 0 0); /* #ffffff */
+    --cds-background-hover: oklch(64.34% 0 0 / 0.12); /* Gray 50 @12% */
+    --cds-background-active: oklch(64.34% 0 0 / 0.5); /* Gray 50 @50% */
+    --cds-background-selected: oklch(64.34% 0 0 / 0.2); /* Gray 50 @20% */
 
-    /* Layers — Gray 10 theme */
-    --cds-layer: oklch(95.7% 0 0); /* Gray 10 — secondary surfaces */
-    --cds-layer-hover: oklch(91% 0 0); /* Layer hover state */
-    --cds-layer-active: oklch(87.8% 0 0); /* Layer active state */
-    --cds-layer-selected: oklch(87.8% 0 0); /* Layer selected */
-    --cds-layer-selected-hover: oklch(82% 0 0);
-    --cds-layer-selected-active: oklch(77.6% 0 0);
+    /* Layers — White theme layer-01 */
+    --cds-layer: oklch(96.72% 0 0); /* #f4f4f4 */
+    --cds-layer-hover: oklch(93.1% 0 0); /* #e8e8e8 */
+    --cds-layer-active: oklch(82.66% 0 0); /* #c6c6c6 */
+    --cds-layer-selected: oklch(90.67% 0 0); /* #e0e0e0 */
+    --cds-layer-selected-hover: oklch(82.66% 0 0);
+    --cds-layer-selected-active: oklch(73.16% 0 0);
 
-    /* Layer accent (tertiary surfaces) */
-    --cds-layer-accent: oklch(87.8% 0 0);
-    --cds-layer-accent-hover: oklch(82% 0 0);
-    --cds-layer-accent-active: oklch(65.9% 0 0);
+    /* Layer accent */
+    --cds-layer-accent: oklch(90.67% 0 0);
+    --cds-layer-accent-hover: oklch(82.66% 0 0);
+    --cds-layer-accent-active: oklch(64.34% 0 0);
 
     /* Fields (interactive input backgrounds) */
-    --cds-field: oklch(95.7% 0 0); /* Gray 10 */
-    --cds-field-hover: oklch(91% 0 0);
+    --cds-field: oklch(96.72% 0 0); /* #f4f4f4 */
+    --cds-field-hover: oklch(93.1% 0 0); /* #e8e8e8 */
     --cds-field-active: oklch(100% 0 0); /* White on Gray 10 */
 
     /* Background inverse (for dark overlays) */
-    --cds-background-inverse: oklch(22.4% 0 0); /* Gray 80 */
+    --cds-background-inverse: oklch(34.46% 0 0); /* #393939 */
     --cds-background-brand: var(--cds-blue-60);
 
     /* Text colors */
-    --cds-text-primary: oklch(8.6% 0 0); /* Gray 100 */
-    --cds-text-secondary: oklch(32.2% 0 0); /* Gray 70 */
-    --cds-text-placeholder: oklch(55.3% 0 0); /* Gray 50 */
+    --cds-text-primary: oklch(20.02% 0 0); /* #161616 */
+    --cds-text-secondary: oklch(43.86% 0 0); /* #525252 */
+    --cds-text-placeholder: oklch(73.16% 0 0); /* #a8a8a8 */
     --cds-text-on-color: oklch(100% 0 0); /* White on colored bg */
-    --cds-text-error: oklch(45% 0.25 25); /* Red 60 */
+    --cds-text-error: oklch(56.92% 0.217 26); /* #da1e28 */
     --cds-text-inverse: oklch(100% 0 0); /* White */
-    --cds-text-disabled: oklch(65.9% 0 0); /* Gray 40 */
+    --cds-text-disabled: oklch(20.02% 0 0 / 0.25); /* #161616 @25% */
 
     /* Text on emphasis (dark backgrounds) */
     --cds-text-on-emphasis: oklch(100% 0 0);
 
     /* Links */
-    --cds-link-primary: oklch(45% 0.2 264); /* Blue 60 */
-    --cds-link-primary-hover: oklch(40% 0.2 264); /* Blue 70 */
-    --cds-link-secondary: oklch(32.2% 0 0); /* Gray 70 */
-    --cds-link-visited: oklch(55% 0.25 300); /* Purple */
+    --cds-link-primary: oklch(55.65% 0.243 262); /* #0f62fe — Blue 60 */
+    --cds-link-primary-hover: oklch(45.4% 0.221 263); /* #0043ce */
+    --cds-link-secondary: oklch(45.4% 0.221 263); /* #0043ce */
+    --cds-link-visited: oklch(57.37% 0.258 295); /* #8a3ffc */
+    --cds-link-inverse: oklch(73.65% 0.136 261); /* #78a9ff */
 
     /* Icons */
-    --cds-icon-primary: oklch(8.6% 0 0); /* Gray 100 */
-    --cds-icon-secondary: oklch(32.2% 0 0); /* Gray 70 */
+    --cds-icon-primary: oklch(20.02% 0 0); /* #161616 */
+    --cds-icon-secondary: oklch(43.86% 0 0); /* #525252 */
     --cds-icon-on-color: oklch(100% 0 0); /* White */
     --cds-icon-inverse: oklch(100% 0 0);
-    --cds-icon-disabled: oklch(65.9% 0 0); /* Gray 40 */
+    --cds-icon-disabled: oklch(20.02% 0 0 / 0.25); /* #161616 @25% */
 
     /* Borders */
-    --cds-border-subtle: oklch(87.8% 0 0); /* Gray 20 */
-    --cds-border-strong: oklch(55.3% 0 0); /* Gray 50 */
-    --cds-border-inverse: oklch(100% 0 0); /* White */
-    --cds-border-disabled: oklch(87.8% 0 0);
-    --cds-border-error: oklch(45% 0.25 25); /* Red 60 */
-    --cds-border-interactive: oklch(45% 0.2 264); /* Blue 60 */
-    --cds-border-tile: oklch(77.6% 0 0); /* Gray 30 */
+    --cds-border-subtle: oklch(90.67% 0 0); /* #e0e0e0 */
+    --cds-border-strong: oklch(64.34% 0 0); /* #8d8d8d */
+    --cds-border-inverse: oklch(20.02% 0 0); /* #161616 */
+    --cds-border-disabled: oklch(82.66% 0 0); /* #c6c6c6 */
+    --cds-border-error: oklch(56.92% 0.217 26); /* #da1e28 */
+    --cds-border-interactive: oklch(55.65% 0.243 262); /* #0f62fe */
+    --cds-border-tile: oklch(82.66% 0 0); /* #c6c6c6 */
 
     /* Focus */
-    --cds-focus: oklch(45% 0.2 264); /* Blue 60 */
+    --cds-focus: oklch(55.65% 0.243 262); /* #0f62fe */
+    --cds-focus-inset: oklch(100% 0 0); /* White */
+    --cds-focus-inverse: oklch(100% 0 0); /* White */
     --focus-ring-width: 0.1875rem; /* 3px */
     --focus-ring-offset: 0.125rem; /* 2px */
 
-    /* Interactive */
-    --cds-button-primary: oklch(45% 0.2 264); /* Blue 60 */
-    --cds-button-primary-hover: oklch(40% 0.2 264); /* Blue 70 */
-    --cds-button-primary-active: oklch(32.2% 0 0); /* Gray 70 */
-    --cds-button-secondary: oklch(87.8% 0 0); /* Gray 20 */
-    --cds-button-secondary-hover: oklch(82% 0 0);
-    --cds-button-secondary-active: oklch(77.6% 0 0);
-    --cds-button-danger: oklch(45% 0.25 25); /* Red 60 */
-    --cds-button-danger-hover: oklch(40% 0.25 25);
-    --cds-button-danger-active: oklch(32.2% 0 0);
+    /* Interactive / Buttons */
+    --cds-button-primary: oklch(55.65% 0.243 262); /* #0f62fe */
+    --cds-button-primary-hover: oklch(50.05% 0.236 262); /* #0050e6 */
+    --cds-button-primary-active: oklch(36.3% 0.184 263); /* #002d9c */
+    --cds-button-secondary: oklch(34.46% 0 0); /* #393939 */
+    --cds-button-secondary-hover: oklch(39.79% 0 0); /* #474747 */
+    --cds-button-secondary-active: oklch(54.17% 0 0); /* #6f6f6f */
+    --cds-button-danger: oklch(56.92% 0.217 26); /* #da1e28 */
+    --cds-button-danger-hover: oklch(50.24% 0.191 26); /* #b81922 */
+    --cds-button-danger-active: oklch(36.25% 0.136 26); /* #750e13 */
 
     /* Support colors */
-    --cds-support-error: oklch(45% 0.25 25); /* Red 60 */
-    --cds-support-success: oklch(55% 0.2 150); /* Green 60 */
-    --cds-support-warning: oklch(75% 0.18 80); /* Yellow 50 */
-    --cds-support-info: oklch(65% 0.15 240); /* Cyan 50 */
+    --cds-support-error: oklch(56.92% 0.217 26); /* #da1e28 */
+    --cds-support-success: oklch(62.34% 0.166 148); /* #24a148 */
+    --cds-support-warning: oklch(83.21% 0.166 90); /* #f1c21b */
+    --cds-support-info: oklch(45.4% 0.221 263); /* #0043ce */
+
+    /* Support inverse (for dark backgrounds) */
+    --cds-support-error-inverse: oklch(66.62% 0.209 22); /* #fa4d56 */
+    --cds-support-success-inverse: oklch(71.2% 0.168 149); /* #42be65 */
+    --cds-support-warning-inverse: oklch(83.21% 0.166 90); /* #f1c21b */
+    --cds-support-info-inverse: oklch(64.7% 0.189 261); /* #4589ff */
 
     /* Background emphasis colors */
-    --cds-background-error: oklch(45% 0.25 25);
-    --cds-background-success: oklch(55% 0.2 150);
-    --cds-background-warning: oklch(75% 0.18 80);
-    --cds-background-info: oklch(65% 0.15 240);
+    --cds-background-error: oklch(56.92% 0.217 26);
+    --cds-background-success: oklch(62.34% 0.166 148);
+    --cds-background-warning: oklch(83.21% 0.166 90);
+    --cds-background-info: oklch(45.4% 0.221 263);
 
     /* ================================================================
        CARBON TYPOGRAPHY — IBM PLEX
@@ -320,48 +324,91 @@
 
   /* ================================================================
      DARK THEME — GRAY 90
+     Values from Figma: design-tokens/carbon.json → Theme → Gray 90 Theme
      Activated via data-color-mode="dark" or prefers-color-scheme
      ================================================================ */
   [data-color-mode="dark"] {
-    /* Backgrounds — Gray 90 theme */
-    --cds-background: oklch(14.9% 0 0); /* Gray 90 */
-    --cds-background-hover: oklch(22.4% 0 0); /* Gray 80 hover */
-    --cds-background-active: oklch(32.2% 0 0); /* Gray 70 active */
-    --cds-background-selected: oklch(55.3% 0 0 / 0.2);
+    /* Backgrounds */
+    --cds-background: oklch(26.86% 0 0); /* #262626 */
+    --cds-background-hover: oklch(64.34% 0 0 / 0.16); /* Gray 50 @16% */
+    --cds-background-active: oklch(64.34% 0 0 / 0.4); /* Gray 50 @40% */
+    --cds-background-selected: oklch(64.34% 0 0 / 0.24); /* Gray 50 @24% */
+    --cds-background-inverse: oklch(96.72% 0 0); /* #f4f4f4 */
 
-    /* Layers — Gray 90 theme */
-    --cds-layer: oklch(22.4% 0 0); /* Gray 80 */
-    --cds-layer-hover: oklch(28% 0 0);
-    --cds-layer-active: oklch(32.2% 0 0);
-    --cds-layer-selected: oklch(32.2% 0 0);
-    --cds-layer-selected-hover: oklch(38% 0 0);
-    --cds-layer-selected-active: oklch(43.5% 0 0);
+    /* Layers — Gray 90 theme layer-01 */
+    --cds-layer: oklch(34.46% 0 0); /* #393939 */
+    --cds-layer-hover: oklch(39.79% 0 0); /* #474747 */
+    --cds-layer-active: oklch(54.17% 0 0); /* #6f6f6f */
+    --cds-layer-selected: oklch(43.86% 0 0); /* #525252 */
+    --cds-layer-selected-hover: oklch(48.19% 0 0);
+    --cds-layer-selected-active: oklch(54.17% 0 0);
 
     /* Layer accent */
-    --cds-layer-accent: oklch(32.2% 0 0);
-    --cds-layer-accent-hover: oklch(38% 0 0);
-    --cds-layer-accent-active: oklch(55.3% 0 0);
+    --cds-layer-accent: oklch(43.86% 0 0);
+    --cds-layer-accent-hover: oklch(48.19% 0 0);
+    --cds-layer-accent-active: oklch(64.34% 0 0);
 
     /* Fields */
-    --cds-field: oklch(22.4% 0 0); /* Gray 80 */
-    --cds-field-hover: oklch(28% 0 0);
-    --cds-field-active: oklch(14.9% 0 0); /* Gray 90 */
+    --cds-field: oklch(34.46% 0 0); /* #393939 */
+    --cds-field-hover: oklch(39.79% 0 0); /* #474747 */
+    --cds-field-active: oklch(26.86% 0 0); /* #262626 */
 
-    /* Text colors — Gray 90 theme */
-    --cds-text-primary: oklch(95.7% 0 0); /* Gray 10 */
-    --cds-text-secondary: oklch(77.6% 0 0); /* Gray 30 */
-    --cds-text-placeholder: oklch(55.3% 0 0); /* Gray 50 */
-    --cds-text-disabled: oklch(43.5% 0 0); /* Gray 60 */
+    /* Text colors */
+    --cds-text-primary: oklch(96.72% 0 0); /* #f4f4f4 */
+    --cds-text-secondary: oklch(82.66% 0 0); /* #c6c6c6 */
+    --cds-text-placeholder: oklch(54.17% 0 0); /* #6f6f6f */
+    --cds-text-error: oklch(83.98% 0.089 15); /* #ffb3b8 */
+    --cds-text-inverse: oklch(20.02% 0 0); /* #161616 */
+    --cds-text-disabled: oklch(96.72% 0 0 / 0.25); /* #f4f4f4 @25% */
 
-    /* Borders — Gray 90 theme */
-    --cds-border-subtle: oklch(32.2% 0 0); /* Gray 70 */
-    --cds-border-strong: oklch(55.3% 0 0); /* Gray 50 */
-    --cds-border-tile: oklch(43.5% 0 0); /* Gray 60 */
+    /* Links */
+    --cds-link-primary: oklch(73.65% 0.136 261); /* #78a9ff — Blue 40 */
+    --cds-link-primary-hover: oklch(82.76% 0.086 260); /* #a6c8ff */
+    --cds-link-secondary: oklch(82.76% 0.086 260); /* #a6c8ff */
+    --cds-link-visited: oklch(74.93% 0.153 301); /* #be95ff */
+    --cds-link-inverse: oklch(55.65% 0.243 262); /* #0f62fe */
 
-    /* Icons — Gray 90 theme */
-    --cds-icon-primary: oklch(95.7% 0 0);
-    --cds-icon-secondary: oklch(77.6% 0 0);
-    --cds-icon-disabled: oklch(43.5% 0 0);
+    /* Icons */
+    --cds-icon-primary: oklch(96.72% 0 0); /* #f4f4f4 */
+    --cds-icon-secondary: oklch(82.66% 0 0); /* #c6c6c6 */
+    --cds-icon-inverse: oklch(20.02% 0 0); /* #161616 */
+    --cds-icon-disabled: oklch(96.72% 0 0 / 0.25); /* #f4f4f4 @25% */
+
+    /* Borders */
+    --cds-border-subtle: oklch(43.86% 0 0); /* #525252 */
+    --cds-border-strong: oklch(64.34% 0 0); /* #8d8d8d */
+    --cds-border-inverse: oklch(96.72% 0 0); /* #f4f4f4 */
+    --cds-border-disabled: oklch(64.34% 0 0 / 0.5); /* #8d8d8d @50% */
+    --cds-border-tile: oklch(54.17% 0 0); /* #6f6f6f */
+    --cds-border-interactive: oklch(64.7% 0.189 261); /* #4589ff */
+
+    /* Focus — inverted for dark background */
+    --cds-focus: oklch(100% 0 0); /* White */
+    --cds-focus-inset: oklch(20.02% 0 0); /* #161616 */
+    --cds-focus-inverse: oklch(55.65% 0.243 262); /* #0f62fe */
+
+    /* Buttons */
+    --cds-button-secondary: oklch(54.17% 0 0); /* #6f6f6f */
+    --cds-button-secondary-hover: oklch(48.19% 0 0); /* #5e5e5e */
+    --cds-button-secondary-active: oklch(34.46% 0 0); /* #393939 */
+
+    /* Support colors — lighter variants for dark backgrounds */
+    --cds-support-error: oklch(75.08% 0.151 18); /* #ff8389 */
+    --cds-support-success: oklch(71.2% 0.168 149); /* #42be65 */
+    --cds-support-warning: oklch(83.21% 0.166 90); /* #f1c21b */
+    --cds-support-info: oklch(64.7% 0.189 261); /* #4589ff */
+
+    /* Support inverse (for light areas on dark background) */
+    --cds-support-error-inverse: oklch(56.92% 0.217 26); /* #da1e28 */
+    --cds-support-success-inverse: oklch(62.34% 0.166 148); /* #24a148 */
+    --cds-support-warning-inverse: oklch(83.21% 0.166 90); /* #f1c21b */
+    --cds-support-info-inverse: oklch(45.4% 0.221 263); /* #0043ce */
+
+    /* Background emphasis */
+    --cds-background-error: oklch(75.08% 0.151 18);
+    --cds-background-success: oklch(71.2% 0.168 149);
+    --cds-background-warning: oklch(83.21% 0.166 90);
+    --cds-background-info: oklch(64.7% 0.189 261);
   }
 
   /* ================================================================
@@ -369,12 +416,12 @@
      For users who prefer maximum contrast
      ================================================================ */
   [data-color-mode="gray-100"] {
-    --cds-background: oklch(8.6% 0 0); /* Gray 100 */
-    --cds-layer: oklch(14.9% 0 0); /* Gray 90 */
+    --cds-background: oklch(20.02% 0 0); /* #161616 */
+    --cds-layer: oklch(26.86% 0 0); /* #262626 */
     --cds-text-primary: oklch(100% 0 0); /* White */
-    --cds-text-secondary: oklch(87.8% 0 0); /* Gray 20 */
-    --cds-border-subtle: oklch(22.4% 0 0); /* Gray 80 */
-    --cds-border-strong: oklch(43.5% 0 0); /* Gray 60 */
+    --cds-text-secondary: oklch(90.67% 0 0); /* #e0e0e0 */
+    --cds-border-subtle: oklch(34.46% 0 0); /* #393939 */
+    --cds-border-strong: oklch(54.17% 0 0); /* #6f6f6f */
   }
 
   /* ================================================================
@@ -394,9 +441,9 @@
   /* High contrast mode */
   @media (prefers-contrast: more) {
     :root {
-      --cds-border-subtle: oklch(32.2% 0 0);
-      --cds-border-strong: oklch(14.9% 0 0);
-      --cds-text-secondary: oklch(14.9% 0 0);
+      --cds-border-subtle: oklch(43.86% 0 0);
+      --cds-border-strong: oklch(20.02% 0 0);
+      --cds-text-secondary: oklch(20.02% 0 0);
     }
   }
 }
