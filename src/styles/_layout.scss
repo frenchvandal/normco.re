@@ -61,7 +61,7 @@
     transition: transform 150ms ease;
   }
 
-  .cds--header__menu-toggle[aria-expanded='true'] .cds--header__menu-icon {
+  .cds--header__menu-toggle[aria-expanded="true"] .cds--header__menu-icon {
     transform: rotate(90deg);
   }
 
@@ -115,7 +115,7 @@
     background: var(--cds-layer-hover);
   }
 
-  .cds--header__menu-item[aria-current='page'] {
+  .cds--header__menu-item[aria-current="page"] {
     color: var(--cds-text-primary);
     font-weight: var(--cds-font-weight-semibold);
     border-block-end-color: var(--cds-focus);
@@ -220,7 +220,7 @@
     background: var(--cds-layer-hover);
   }
 
-  .cds--header__language-item[aria-current='page'] {
+  .cds--header__language-item[aria-current="page"] {
     background: var(--cds-layer-active);
     font-weight: var(--cds-font-weight-semibold);
   }
@@ -288,7 +288,7 @@
     background: var(--cds-layer-hover);
   }
 
-  .cds--side-nav__link[aria-current='page'] {
+  .cds--side-nav__link[aria-current="page"] {
     color: var(--cds-text-primary);
     font-weight: var(--cds-font-weight-semibold);
     background: var(--cds-layer-active);
@@ -315,7 +315,7 @@
     pointer-events: none;
   }
 
-  .cds--side-nav__overlay[aria-hidden='false'] {
+  .cds--side-nav__overlay[aria-hidden="false"] {
     display: block;
     pointer-events: auto;
   }
@@ -354,7 +354,7 @@
       transform: translateX(0);
     }
 
-    .cds--side-nav__overlay[aria-hidden='false'] {
+    .cds--side-nav__overlay[aria-hidden="false"] {
       display: block;
       pointer-events: auto;
     }

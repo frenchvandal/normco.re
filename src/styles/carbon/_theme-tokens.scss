@@ -8,13 +8,13 @@
 // - Colors: https://carbondesignsystem.com/elements/color/overview/
 // - Typography: https://carbondesignsystem.com/elements/typography/overview/
 
-@use 'sass:map';
-@use '../carbon/config';
-@use '@carbon/styles/scss/theme' as theme;
-@use '@carbon/styles/scss/themes' as themes;
-@use '@carbon/styles/scss/spacing' as spacing;
-@use '@carbon/styles/scss/motion' as motion;
-@use '@carbon/styles/scss/type' as type;
+@use "sass:map";
+@use "../carbon/config";
+@use "@carbon/styles/scss/theme" as theme;
+@use "@carbon/styles/scss/themes" as themes;
+@use "@carbon/styles/scss/spacing" as spacing;
+@use "@carbon/styles/scss/motion" as motion;
+@use "@carbon/styles/scss/type" as type;
 
 @layer tokens {
   // White theme (default light)
@@ -66,17 +66,19 @@
     --cds-motion-easing-standard: #{motion.$standard-easing};
     --cds-motion-easing-enter: #{motion.$ease-out};
     --cds-motion-easing-exit: #{motion.$ease-in};
-    --cds-transition-default: var(--cds-motion-duration-moderate) var(--cds-motion-easing-standard);
+    --cds-transition-default: var(--cds-motion-duration-moderate) var(
+      --cds-motion-easing-standard
+    );
 
     // Font families — IBM Plex (primary), Noto Sans SC/TC (CJK fallback,
     // served locally via google_fonts plugin), system fonts (final fallback).
     --cds-font-family-sans:
-      'IBM Plex Sans', 'Noto Sans SC', 'Noto Sans TC', system-ui, -apple-system,
-      BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+      "IBM Plex Sans", "Noto Sans SC", "Noto Sans TC", system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
       sans-serif;
     --cds-font-family-mono:
-      'IBM Plex Mono', ui-monospace, SFMono-Regular, 'SF Mono', Consolas,
-      'Liberation Mono', Menlo, monospace;
+      "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas,
+      "Liberation Mono", Menlo, monospace;
 
     // Productive type scale (UI elements) — shorthand tokens
     --cds-productive-heading-01: 400 0.875rem/1.29 var(--cds-font-family-sans);
@@ -103,7 +105,9 @@
     --cds-expressive-heading-05: 400 2rem/1.25 var(--cds-font-family-sans);
     --cds-expressive-heading-06: 600 2rem/1.25 var(--cds-font-family-sans);
 
-    --cds-expressive-paragraph-01: 400 1.25rem/1.625 var(--cds-font-family-sans);
+    --cds-expressive-paragraph-01: 400 1.25rem/1.625 var(
+      --cds-font-family-sans
+    );
     --cds-expressive-paragraph-02: 400 1.5rem/1.625 var(--cds-font-family-sans);
 
     // Font weights
@@ -150,7 +154,7 @@
   }
 
   // Dark theme — Gray 90
-  [data-color-mode='dark'] {
+  [data-color-mode="dark"] {
     @include theme.theme(themes.$g90);
 
     // Darker shadows in dark mode
@@ -172,7 +176,7 @@
   }
 
   // Gray 100 theme (high contrast dark)
-  [data-color-mode='gray-100'] {
+  [data-color-mode="gray-100"] {
     @include theme.theme(themes.$g100);
   }
 
@@ -189,8 +193,8 @@
   // High contrast mode
   @media (prefers-contrast: more) {
     :root {
-      --cds-border-subtle: #{map.get(themes.$white, 'border-strong-01')};
-      --cds-text-secondary: #{map.get(themes.$white, 'text-primary')};
+      --cds-border-subtle: #{map.get(themes.$white, "border-strong-01")};
+      --cds-text-secondary: #{map.get(themes.$white, "text-primary")};
     }
   }
 }

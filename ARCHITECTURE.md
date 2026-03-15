@@ -126,16 +126,17 @@ flowchart LR
 1. **Carbon Sass modules** (`@carbon/styles/scss/theme`, `themes`, `spacing`,
    `motion`): Authoritative source for all design tokens.
 2. **Theme tokens** (`src/styles/carbon/_theme-tokens.scss`): Uses
-   `@include theme.theme()` to emit Carbon theme tokens as CSS custom properties.
-   Configures White (light), Gray 90 (dark), and Gray 100 (high contrast) themes.
+   `@include theme.theme()` to emit Carbon theme tokens as CSS custom
+   properties. Configures White (light), Gray 90 (dark), and Gray 100 (high
+   contrast) themes.
 3. **Editorial tokens** (`src/styles/editorial/_tokens.scss`): Site-specific
    convenience aliases mapping `--space-*` to `--cds-spacing-*`, etc.
 4. **Carbon 2x Grid** (`src/styles/carbon/_grid.scss`): Imports
    `@carbon/styles/scss/grid` to emit the full CSS Grid system with responsive
    4/8/16 column breakpoints.
 5. **Cascade layers**:
-   `@layer tokens, reset, base, layout, components, utilities` — strict
-   ordering via import sequence.
+   `@layer tokens, reset, base, layout, components, utilities` — strict ordering
+   via import sequence.
 
 ### Component styling
 
@@ -235,18 +236,18 @@ flowchart TD
 
 ## Dependencies
 
-| Category            | Package                        | Purpose                                                        |
-| ------------------- | ------------------------------ | -------------------------------------------------------------- |
-| Runtime             | Deno 2.x                       | TypeScript runtime, package manager, and test runner           |
-| SSG                 | Lume 3.x                       | Static site generation, plugin system, and build orchestration |
-| CMS                 | LumeCMS 0.14.x                 | Local content editing interface                                |
-| Design system       | @carbon/styles (Sass)          | Design tokens, themes, grid, and component patterns            |
-| Fonts               | IBM Plex (via google_fonts)    | Locally hosted typeface for Carbon Design System               |
-| Icons               | Carbon icons (inline SVG)      | SVG icon paths defined in `carbon-icons.ts`                    |
-| Date                | date-fns                       | Date formatting with i18n locales                              |
-| Syntax highlighting | Prism.js                       | Code block highlighting                                        |
-| Search              | Pagefind                       | Client-side search index and UI                                |
-| Telemetry           | OpenTelemetry                  | Build observability (optional)                                 |
+| Category            | Package                     | Purpose                                                        |
+| ------------------- | --------------------------- | -------------------------------------------------------------- |
+| Runtime             | Deno 2.x                    | TypeScript runtime, package manager, and test runner           |
+| SSG                 | Lume 3.x                    | Static site generation, plugin system, and build orchestration |
+| CMS                 | LumeCMS 0.14.x              | Local content editing interface                                |
+| Design system       | @carbon/styles (Sass)       | Design tokens, themes, grid, and component patterns            |
+| Fonts               | IBM Plex (via google_fonts) | Locally hosted typeface for Carbon Design System               |
+| Icons               | Carbon icons (inline SVG)   | SVG icon paths defined in `carbon-icons.ts`                    |
+| Date                | date-fns                    | Date formatting with i18n locales                              |
+| Syntax highlighting | Prism.js                    | Code block highlighting                                        |
+| Search              | Pagefind                    | Client-side search index and UI                                |
+| Telemetry           | OpenTelemetry               | Build observability (optional)                                 |
 
 ## Key design principles
 

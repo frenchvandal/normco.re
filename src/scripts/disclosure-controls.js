@@ -173,7 +173,9 @@
     }
 
     // Hide overlay when SideNav closes
-    const overlay = globalThis.document.querySelector(".cds--side-nav__overlay");
+    const overlay = globalThis.document.querySelector(
+      ".cds--side-nav__overlay",
+    );
     if (overlay instanceof HTMLElement && !preserveSideNav) {
       overlay.setAttribute("aria-hidden", "true");
     }
@@ -361,7 +363,9 @@
       const target = event.target;
       if (!(target instanceof HTMLElement)) return;
 
-      const isInsidePanel = target.closest(".cds--header__panel, .cds--side-nav");
+      const isInsidePanel = target.closest(
+        ".cds--header__panel, .cds--side-nav",
+      );
       const isToggleButton = target.closest(
         ".cds--header__menu-toggle, .cds--header__language-toggle, .cds--header__action[aria-controls]",
       );

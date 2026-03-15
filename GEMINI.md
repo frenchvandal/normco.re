@@ -1,4 +1,4 @@
-# CLAUDE.md
+# GEMINI.md
 
 This repository contains a static site using:
 
