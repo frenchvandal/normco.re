@@ -315,10 +315,12 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index: 5997;
+    pointer-events: none;
   }
 
-  .bx--side-nav__overlay:not([aria-hidden="false"]) {
+  .bx--side-nav__overlay[aria-hidden="false"] {
     display: block;
+    pointer-events: auto;
   }
 
   /* =====================================================================
@@ -360,8 +362,9 @@
       transform: translateX(0);
     }
 
-    .bx--side-nav__overlay:not([aria-hidden="false"]) {
+    .bx--side-nav__overlay[aria-hidden="false"] {
       display: block;
+      pointer-events: auto;
     }
   }
 
