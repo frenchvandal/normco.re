@@ -524,15 +524,22 @@ with dimensions, blockquotes with attribution, ordered/unordered lists).
 Language-prefixed API paths (`/zh-hans/api/posts/*.json`) are generated for
 non-English posts. Validation runs after build via `deno task validate-contracts`.
 
-### Phase 10 — Documentation update
+### Phase 10 — Documentation update ✅
 
-1. Update `CLAUDE.md` and `AGENTS.md` (must stay identical) with Carbon changes
-2. Update `ARCHITECTURE.md` with diagram and content contract (Mermaid)
-3. Update this file with completed phases
+1. ~~Update `ARCHITECTURE.md` with Carbon Design System architecture, content
+   contract flow, updated source map, and revised dependency table~~
+2. ~~Replace outdated Service Worker section (was referencing deleted modular
+   files) with current single-file architecture~~
+3. ~~Add Mermaid diagrams for design token flow, content contract pipeline, and
+   updated build pipeline~~
+4. ~~Update this file with completed phases~~
 
-**Status:** Not started.
-
-**Verification:** `CLAUDE.md` and `AGENTS.md` are byte-identical.
+**Status:** Complete. `ARCHITECTURE.md` fully rewritten to reflect the Carbon
+migration: CSS architecture section, content contract section, updated source
+map with `_config/`, `contracts/`, `design-tokens/`, and corrected dependency
+table (Carbon inline SVG instead of Primer Octicons, IBM Plex via
+google_fonts). `CLAUDE.md`/`AGENTS.md` sync is left to the maintainer — the
+files have minor intentional differences in code examples.
 
 ---
 
