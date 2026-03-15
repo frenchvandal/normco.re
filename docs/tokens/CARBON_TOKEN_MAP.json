@@ -1,0 +1,8 @@
+{
+  "space-s": "--cds-spacing-03",
+  "space-m": "--cds-spacing-05",
+  "space-l": "--cds-spacing-07",
+  "text-base": "Carbon productive body (https://carbondesignsystem.com/guidelines/typography/overview/)",
+  "text-lg": "Carbon productive heading-03 (https://carbondesignsystem.com/guidelines/typography/overview/)",
+  "borderRadius-medium": "Avoid or document deviation (Carbon components usually low-radius)"
+}
