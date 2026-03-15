@@ -18,7 +18,7 @@ jobs:
   deploy:
     environment:
       name: development
-    runs-on: macos-26
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -32,7 +32,7 @@ jobs:
           cache: true
 
       - name: Deno install
-        run: deno install --allow-scripts
+        run: deno install --allow-scripts --reload
 
       - name: Run build task
         shell: bash
