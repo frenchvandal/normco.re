@@ -3,7 +3,7 @@
   /* 404 page */
   .not-found {
     text-align: center;
-    padding-block: var(--space-2xl);
+    padding-block: var(--cds-spacing-10);
   }
 
   .not-found-code {
@@ -12,33 +12,39 @@
     letter-spacing: -0.05em;
     color: var(--cds-border-subtle);
     line-height: 1;
-    margin-block-end: var(--space-m);
+    margin-block-end: var(--cds-spacing-05);
+  }
+
+  .not-found-heading {
+    font: var(--cds-expressive-heading-04);
+    font-weight: var(--cds-font-weight-semibold);
+    color: var(--cds-text-primary);
+    margin-block-end: var(--cds-spacing-03);
   }
 
   .not-found-message {
-    font-size: var(--text-lg);
+    font: var(--cds-productive-body-long-02);
     color: var(--cds-text-secondary);
-    margin-block-end: var(--space-l);
+    margin-block-end: var(--cds-spacing-06);
   }
 
   .not-found-link {
-    font-size: var(--text-base);
-    font-weight: 600;
+    font: var(--cds-productive-heading-02);
   }
 
   /* Offline fallback page */
   .offline-page {
     text-align: center;
-    padding-block: var(--space-2xl);
+    padding-block: var(--cds-spacing-10);
   }
 
   .offline-page-title {
-    margin-block-end: var(--space-s);
+    margin-block-end: var(--cds-spacing-03);
   }
 
   .offline-page-lead {
     color: var(--cds-text-secondary);
-    margin-block-end: var(--space-l);
+    margin-block-end: var(--cds-spacing-06);
   }
 
   .offline-page-action a {

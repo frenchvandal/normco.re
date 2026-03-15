@@ -17,8 +17,9 @@ describe("404.page.tsx", () => {
     assertStringIncludes(html, "404");
   });
 
-  it('displays a "Page not found" message', () => {
+  it("contains a semantic h1 heading", () => {
     const html = page404(MOCK_DATA, MOCK_HELPERS);
+    assertStringIncludes(html, "<h1");
     assertStringIncludes(html, "Page not found");
   });
 

@@ -18,8 +18,13 @@
       background-color 0.15s ease,
       border-color 0.15s ease,
       color 0.15s ease;
-    cursor: pointer;
     max-inline-size: 100%;
+  }
+
+  /* Only show pointer cursor on interactive tags (links, buttons) */
+  a.bx--tag,
+  button.bx--tag {
+    cursor: pointer;
   }
 
   .bx--tag--default {

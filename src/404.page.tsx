@@ -45,6 +45,7 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
 
   return `<div class="not-found">
   <p class="not-found-code" aria-hidden="true">404</p>
+  <h1 class="not-found-heading">${translations.notFound.heading}</h1>
   <p class="not-found-message">${translations.notFound.message}</p>
   <a href="${homeUrl}" class="not-found-link">${translations.notFound.backToHome}</a>
 </div>`;

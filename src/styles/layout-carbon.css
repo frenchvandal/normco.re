@@ -174,7 +174,7 @@
     background: var(--cds-layer);
     border-block-end: 1px solid var(--cds-border-subtle);
     border-inline-start: 1px solid var(--cds-border-subtle);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--cds-shadow-md);
     z-index: 5999;
   }
 
@@ -313,7 +313,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: oklch(0% 0 0 / 0.5);
     z-index: 5997;
     pointer-events: none;
   }

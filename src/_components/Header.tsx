@@ -215,7 +215,8 @@ export default (
       <div
         id={languagePanelId}
         class="bx--header__panel bx--header__language-panel"
-        aria-modal="true"
+        role="region"
+        aria-labelledby={`${languagePanelId}-title`}
         hidden
       >
         <div class="bx--header__panel-content">
@@ -248,7 +249,8 @@ export default (
       <div
         id={searchPanelId}
         class="bx--header__panel bx--header__search-panel"
-        aria-modal="true"
+        role="search"
+        aria-label={translations.site.searchLabel}
         hidden
         data-search-panel=""
       >

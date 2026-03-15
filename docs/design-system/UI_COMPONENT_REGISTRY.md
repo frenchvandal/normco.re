@@ -71,7 +71,7 @@ UI Shell Header\
 https://carbondesignsystem.com/components/ui-shell-header/usage/
 
 **Status**\
-Carbon-inspired
+Carbon-aligned with deviations
 
 **Expected contract**
 
@@ -84,8 +84,7 @@ Carbon-inspired
 **Known debt**
 
 - custom action panel behavior
-- menu icon behavior diverges from Carbon
-- potential mismatch between shell semantics and disclosure semantics
+- menu icon rotation on toggle diverges from Carbon
 
 **Priority**\
 Critical
@@ -105,15 +104,15 @@ Critical
 **Probable source files**
 
 - `src/_components/Header.tsx`
-- `src/_includes/base.tsx`
-- `src/scripts/disclosure-controls.ts`
+- `src/_includes/layouts/base.tsx`
+- `src/scripts/disclosure-controls.js`
 
 **Carbon equivalent**\
 Side nav\
 https://carbondesignsystem.com/components/side-nav/usage/
 
 **Status**\
-Carbon-aligned with deviations
+Carbon-aligned
 
 **Expected contract**
 
@@ -122,12 +121,13 @@ Carbon-aligned with deviations
 - overlay support
 - active nav state
 - keyboard support
+- focus trap when open
+- scroll locking when open
+- focus return on close
 
 **Known debt**
 
-- no guaranteed focus trap
-- no guaranteed body scroll lock
-- overlay and disclosure model may be inconsistent with other shell surfaces
+- none critical remaining
 
 **Priority**\
 Critical
@@ -144,28 +144,28 @@ Critical
 **Probable source files**
 
 - `src/_components/Header.tsx`
-- `src/scripts/pagefind-lazy-init.ts`
-- `src/scripts/disclosure-controls.ts`
+- `src/scripts/pagefind-lazy-init.js`
+- `src/scripts/disclosure-controls.js`
 
 **Carbon equivalent**\
 Search / header search pattern\
 https://carbondesignsystem.com/components/search/usage/
 
 **Status**\
-Needs remediation
+Carbon-aligned
 
 **Expected contract**
 
-- labeled search surface
+- labeled search surface (`role="search"`)
 - input focus on open
 - accessible close behavior
-- no invalid modal semantics
+- focus trap when open
+- scroll locking when open
+- focus return on close
 
 **Known debt**
 
-- likely custom panel rather than Carbon component
-- if `aria-modal="true"` is present without dialog semantics, this is invalid
-- focus trapping may be missing
+- none critical remaining
 
 **Priority**\
 Critical
@@ -182,7 +182,7 @@ Critical
 **Probable source files**
 
 - `src/_components/Header.tsx`
-- `src/scripts/disclosure-controls.ts`
+- `src/scripts/disclosure-controls.js`
 
 **Carbon equivalent**\
 No exact one-to-one Carbon component\
@@ -203,8 +203,8 @@ Custom
 
 **Known debt**
 
-- role may be unclear: menu, list of links, or dialog
-- potential misuse of `aria-haspopup` or `aria-modal`
+- role is a `region` with `aria-labelledby` — clear disclosure semantics
+- `aria-haspopup` on trigger may need review
 
 **Priority**\
 Important
@@ -255,28 +255,24 @@ Important
 
 **Probable source files**
 
-- `src/_components/Breadcrumb.tsx` if present
-- otherwise archive/post templates
-- `src/_includes/post.tsx`
-- `src/_includes/archive.tsx`
+- `src/_includes/layouts/post.tsx`
 
 **Carbon equivalent**\
 Breadcrumb\
 https://carbondesignsystem.com/components/breadcrumb/usage/
 
 **Status**\
-Needs remediation
+Carbon-aligned
 
 **Expected contract**
 
-- semantic breadcrumb navigation
-- clear current page item
-- one separator model only
+- semantic breadcrumb navigation (`<nav>` + `<ol>`)
+- clear current page item with `aria-current="page"`
+- single CSS pseudo-element separator model
 
 **Known debt**
 
-- CSS pseudo-separator and HTML separator may coexist
-- structure may not match canonical list-based breadcrumb model
+- none critical remaining
 
 **Priority**\
 Important
@@ -312,8 +308,8 @@ Carbon-inspired
 
 **Known debt**
 
-- `cursor:pointer` may be applied to non-interactive tags
-- appearance may imply filter behavior without true interactivity
+- hardcoded hex colors in tag color variants (tag.css) need Carbon token alignment
+- `cursor:pointer` now correctly limited to interactive tags only
 
 **Priority**\
 Important
@@ -490,29 +486,29 @@ Minor
 
 **Probable source files**
 
-- `404` template
-- offline template
+- `src/404.page.tsx`
+- `src/offline.page.tsx`
 
 **Carbon equivalent**\
 Empty states\
 https://carbondesignsystem.com/components/empty-states/usage/
 
 **Status**\
-Needs remediation
+Carbon-aligned
 
 **Expected contract**
 
-- clear heading
+- clear `<h1>` heading on all error pages
 - clear recovery action
 - accessible structure
+- Carbon tokens for spacing and typography
 
 **Known debt**
 
-- missing `h1` on 404 was previously identified
-- empty state treatment may be minimal rather than structured
+- none critical remaining
 
 **Priority**\
-Critical
+Minor (resolved)
 
 **Notes for AI agents**
 
@@ -552,30 +548,29 @@ Important
 
 **Probable source files**
 
-- base layout
-- shell scripts
-- global CSS
+- `src/_includes/layouts/base.tsx`
+- `src/scripts/disclosure-controls.js`
+- `src/styles/layout-carbon.css`
 
 **Carbon equivalent**\
 Shell overlay behavior\
 https://carbondesignsystem.com/components/side-nav/usage/
 
 **Status**\
-Needs remediation
+Carbon-aligned
 
 **Expected contract**
 
-- appears consistently when modal surface opens
-- click outside behavior documented
-- background interaction blocked when required
+- appears consistently when side nav opens on mobile
+- click outside behavior closes panels and restores focus
+- scroll locking prevents background interaction
 
 **Known debt**
 
-- may be used for side nav only
-- search/language surfaces may not share the same model
+- overlay used for side nav; panels use focus trap instead
 
 **Priority**\
-Critical
+Minor (resolved)
 
 ---
 
