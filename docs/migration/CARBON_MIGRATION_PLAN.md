@@ -383,11 +383,12 @@ Prevent regressions in:
 2 ~~implement focus trap~~ — added to disclosure-controls.js\
 3 ~~add missing headings~~ — added `<h1>` to 404 page
 
-## Phase 2 — tokens (partially completed 2026-03-15)
+## Phase 2 — tokens (completed 2026-03-15)
 
 1 ~~normalize error-pages.css~~ — replaced `--space-*` and `--text-*` with Carbon tokens\
 2 ~~replace hardcoded rgba~~ — replaced with Carbon shadow tokens and oklch\
-3 remaining: tag.css hex colors need Carbon token alignment
+3 ~~normalize tag.css colors~~ — replaced all hex/rgb colors with oklch() from Carbon palette\
+4 ~~tokenize border-radius~~ — replaced raw `4px` with `var(--borderRadius-medium)` in post.css and utilities.css
 
 ## Phase 3 — interaction (completed 2026-03-15)
 
@@ -400,14 +401,11 @@ Prevent regressions in:
 1 ~~normalize breadcrumb~~ — canonical `<ol>` list structure with CSS pseudo separators\
 2 ~~fix tag cursor~~ — `cursor:pointer` limited to interactive tags only
 
-## Phase 5 — documentation
+## Phase 5 — documentation (completed 2026-03-15)
 
-Update
-
-```
-UI_COMPONENT_REGISTRY.md (updated)
-CARBON_MIGRATION_PLAN.md (updated)
-```
+1 ~~update UI_COMPONENT_REGISTRY.md~~ — component statuses refreshed\
+2 ~~update CARBON_MIGRATION_PLAN.md~~ — phase completion status updated\
+3 ~~update CARBON_COMPLIANCE_REPORT.md~~ — score 97/100, 0 critical, 0 important
 
 ---
 

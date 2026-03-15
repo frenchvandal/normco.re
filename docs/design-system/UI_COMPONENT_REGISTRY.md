@@ -298,7 +298,7 @@ Tag\
 https://carbondesignsystem.com/components/tag/usage/
 
 **Status**\
-Carbon-inspired
+Carbon-aligned
 
 **Expected contract**
 
@@ -308,8 +308,8 @@ Carbon-inspired
 
 **Known debt**
 
-- hardcoded hex colors in tag color variants (tag.css) need Carbon token alignment
 - `cursor:pointer` now correctly limited to interactive tags only
+- all color variants migrated from hex/rgb to oklch() using Carbon palette values
 
 **Priority**\
 Important
