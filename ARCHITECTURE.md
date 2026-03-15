@@ -107,10 +107,10 @@ importing `@carbon/styles` or `@primer/css` as runtime dependencies.
 
 ```mermaid
 flowchart LR
-    A[Figma exports] -->|design-tokens/*.json| B[carbon-tokens.ts]
-    B -->|audit & convert| C[tokens-carbon.css]
-    C -->|@layer tokens| D[style.css]
-    D -->|build| E[_site/style.css]
+    A["Figma exports"] -->|"design-tokens/*.json"| B["carbon-tokens.ts"]
+    B -->|"audit & convert"| C["tokens-carbon.css"]
+    C -->|"layer tokens"| D["style.css"]
+    D -->|"build"| E["_site/style.css"]
 ```
 
 ### Design token flow
@@ -150,28 +150,28 @@ The build generates structured JSON endpoints for native app consumption:
 
 ```mermaid
 flowchart LR
-    A[*.page.tsx] -->|Lume render| B[HTML pages]
-    B -->|content-contract.ts| C[/api/posts/*.json]
-    C -->|validate.ts| D[Schema validation]
-    B -->|feed plugin| E[/feed.json]
-    E -->|validate.ts| D
+    A["*.page.tsx"] -->|"Lume render"| B["HTML pages"]
+    B -->|"content-contract.ts"| C["/api/posts/*.json"]
+    C -->|"validate.ts"| D["Schema validation"]
+    B -->|"feed plugin"| E["/feed.json"]
+    E -->|"validate.ts"| D
 ```
 
 ## Build pipeline
 
 ```mermaid
 flowchart TD
-    A[deno task build] --> B[_config.ts initialization]
-    B --> C[Register plugins, assets, feeds]
-    C --> D[Load pages *.page.tsx]
-    D --> E[Preprocess multilanguage aliases]
-    E --> F[Render TSX to HTML]
-    F --> G[Process: image validation, font preloads]
-    G --> H[Process: content contract /api/posts/*.json]
-    H --> I[Apply plugins: SEO, feed, sitemap]
-    I --> J[Validate HTML & links]
-    J --> K[Write _site/ output]
-    K --> L[Post-build: fingerprint assets, SW version]
+    A["deno task build"] --> B["_config.ts initialization"]
+    B --> C["Register plugins, assets, feeds"]
+    C --> D["Load pages *.page.tsx"]
+    D --> E["Preprocess multilanguage aliases"]
+    E --> F["Render TSX to HTML"]
+    F --> G["Process: image validation, font preloads"]
+    G --> H["Process: content contract /api/posts/*.json"]
+    H --> I["Apply plugins: SEO, feed, sitemap"]
+    I --> J["Validate HTML & links"]
+    J --> K["Write _site/ output"]
+    K --> L["Post-build: fingerprint assets, SW version"]
 ```
 
 ## Architectural invariants
