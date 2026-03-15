@@ -1,10 +1,10 @@
 import { slugify } from "../utils/slugify.ts";
 
 /**
- * post — Lume archetype that scaffolds a new `.page.tsx` post.
+ * post — Lume archetype that scaffolds a new multilingual Markdown post.
  *
- * Creates `src/posts/<slug>.page.tsx` with the correct metadata exports and a
- * placeholder body ready to edit.
+ * Creates `src/posts/<slug>/_data.yml` plus one Markdown file per language,
+ * ready to edit while keeping post layouts in TSX.
  *
  * Usage:
  * ```sh
@@ -19,59 +19,66 @@ import { slugify } from "../utils/slugify.ts";
  * ```
  */
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
 /** Returns today's date as an ISO `YYYY-MM-DD` string. */
 function today(): string {
   return Temporal.Now.plainDateISO().toString();
 }
 
-/** Escapes double-quote characters for embedding in a TS string literal. */
-function escapeStr(value: string): string {
-  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+/** Escapes double-quote characters for embedding in YAML string values. */
+function quote(value: string): string {
+  return JSON.stringify(value);
 }
 
-// ── Archetype ────────────────────────────────────────────────────────────────
-
 /**
- * Scaffolds a new post and returns its path and source content.
+ * Scaffolds a new post and yields the files to create.
  *
  * @param title - Post title (required).
  * @param description - Short description shown in meta tags (optional).
  * @param tags - Zero or more tag strings appended after the description.
  */
-export default function post(
+export default function* post(
   title: string,
   description = "",
   ...tags: string[]
-): { path: string; content: string } {
+): Generator<{ path: string; content: string }> {
   const slug = slugify(title);
   const date = today();
-  const safeTitle = escapeStr(title);
-  const safeDesc = escapeStr(description);
-
-  const tagsLine = tags.length > 0
-    ? `/** Post tags. */\nexport const tags = [${
-      tags.map((t) => `"${escapeStr(t)}"`).join(", ")
-    }];\n`
+  const tagLines = tags.length > 0
+    ? `tags:\n${tags.map((tag) => `  - ${tag}`).join("\n")}\n`
     : "";
+  const metadata = `slug: ${slug}
+id: ${slug}
+date: ${date}
+url: /posts/${slug}/
+${tagLines}`.trimEnd() + "\n";
+  const languages = [
+    { code: "en", label: "English" },
+    { code: "fr", label: "French" },
+    { code: "zh-hans", label: "Chinese Simplified" },
+    { code: "zh-hant", label: "Chinese Traditional" },
+  ] as const;
 
-  const descLine = description.length > 0
-    ? `/** Post meta description. */\nexport const description = "${safeDesc}";\n`
-    : "";
+  yield {
+    path: `/posts/${slug}/_data.yml`,
+    content: metadata,
+  };
 
-  // The body is a raw TypeScript source string; backticks inside it must be
-  // escaped so they do not close the outer template literal.
-  const content = `/** ${safeTitle}. */
+  for (const language of languages) {
+    const frontmatter = [
+      "---",
+      `slug: ${slug}`,
+      `lang: ${language.code}`,
+      `title: ${quote(title)}`,
+      `description: ${quote(description)}`,
+      "---",
+      "",
+      `Write the ${language.label.toLowerCase()} content here.`,
+      "",
+    ].join("\n");
 
-export const title = "${safeTitle}";
-/** Publication date. */
-export const date = new Date("${date}");
-${descLine}${tagsLine}
-/** Renders the post body. */
-export default (_data: Lume.Data, _helpers: Lume.Helpers): string =>
-  \`<p>Write your content here.</p>\`;
-`;
-
-  return { path: `/posts/${slug}.page.tsx`, content };
+    yield {
+      path: `/posts/${slug}/${language.code}.md`,
+      content: frontmatter,
+    };
+  }
 }

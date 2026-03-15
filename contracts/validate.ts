@@ -4,8 +4,9 @@
  * Usage: `deno task validate-contracts [--site-dir=_site]`
  *
  * Validates:
- * - `/api/posts/*.json` against `contracts/post.schema.json`
  * - `/feed.json` (and localized variants) against `contracts/feed.schema.json`
+ * - optional `/api/posts/*.json` files against `contracts/post.schema.json`
+ *   when the content-contract plugin is enabled
  *
  * Exits with code 1 if any validation error is found.
  */
@@ -203,7 +204,7 @@ async function main(): Promise<void> {
   const siteDir = Deno.args.find((a) => a.startsWith("--site-dir="))
     ?.split("=")[1] ?? "_site";
 
-  console.log(bold("Content contract validation"));
+  console.log(bold("Generated JSON validation"));
   console.log(`Site directory: ${siteDir}\n`);
 
   const postSchemaText = await Deno.readTextFile("contracts/post.schema.json");

@@ -4,6 +4,17 @@ import type Site from "lume/core/site.ts";
 
 /** Register all site assets so Lume discovers them before processors run. */
 export function registerAssets(site: Site): void {
+  // Editorial images referenced from Markdown posts.
+  site.add([
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".webp",
+    ".avif",
+    ".gif",
+    ".svg",
+  ]);
+
   // Main stylesheet (Sass entry point — compiled to /style.css by Lume Sass plugin)
   site.add("/style.scss");
 

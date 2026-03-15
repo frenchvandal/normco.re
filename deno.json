@@ -119,12 +119,8 @@
       "command": "deno run --allow-read scripts/lint-commit.ts"
     },
     "validate-contracts": {
-      "description": "Validate generated JSON files against content contract schemas",
+      "description": "Validate generated JSON feeds and any optional content-contract output against schemas",
       "command": "deno run --allow-read contracts/validate.ts"
-    },
-    "md-to-tsx": {
-      "description": "Convert LumeCMS-generated Markdown posts (src/posts/*.md) to .page.tsx format",
-      "command": "deno run --allow-read --allow-write --allow-run=deno scripts/md-to-tsx.ts"
     },
     "lefthook:install": {
       "description": "Install Lefthook git hooks non-interactively via deno x (no global install or Node.js required)",

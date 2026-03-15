@@ -9,6 +9,7 @@ import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
 import jsx from "lume/plugins/jsx.ts";
 import inline from "lume/plugins/inline.ts";
+import resolveUrls from "lume/plugins/resolve_urls.ts";
 import imageSize from "lume/plugins/image_size.ts";
 import date from "lume/plugins/date.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
@@ -106,6 +107,7 @@ export function registerPlugins(
       copyAttributes: [/^data-/, /^aria-/, "focusable", "role"],
     }),
   );
+  site.use(resolveUrls());
 
   // --- Content processing ---
 

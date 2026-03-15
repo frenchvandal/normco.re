@@ -1,5 +1,8 @@
 # Carbon guideline index for repo migration
 
+Repository note: UI/layouts remain TSX, while editorial post content is now
+authored in multilingual Markdown under `src/posts/<slug>/`.
+
 Use these official pages as the review baseline.
 
 ## Core

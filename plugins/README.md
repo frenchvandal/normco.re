@@ -5,6 +5,13 @@ request dashboard to the Lume debug bar during local development.
 
 This document describes the in-repository plugin at `plugins/otel.ts`.
 
+## Repository note
+
+This repository also keeps `plugins/content-contract.ts`, but that plugin is not
+registered in the active Lume build at the moment. It is retained for a future
+native-app/iOS content pipeline. Current production JSON outputs come from the
+multilingual feed plugin.
+
 ## Requirements
 
 - Deno 2.7.5 or later

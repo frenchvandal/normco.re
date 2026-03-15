@@ -2,7 +2,14 @@
 
 This repository contains a static site using:
 
-Deno + Lume + TSX + Carbon Sass.
+Deno + Lume + TSX layouts/pages + Markdown posts + Carbon Sass.
+
+Content model:
+
+- site pages, layouts, and UI components stay in TSX
+- blog posts live in `src/posts/<slug>/`
+- shared post metadata lives in `src/posts/<slug>/_data.yml`
+- per-language post bodies live in `src/posts/<slug>/{en,fr,zh-hans,zh-hant}.md`
 
 The UI follows the **Carbon Design System v11** using `@carbon/styles` Sass
 modules as the single source of truth for tokens. Prefix: `cds--` (classes),

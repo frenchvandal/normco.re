@@ -5,11 +5,11 @@ import type Site from "lume/core/site.ts";
 import { getLanguageTag } from "../src/utils/i18n.ts";
 
 /** Shared item mapping for all feed variants. */
-const FEED_ITEMS = {
+export const FEED_ITEMS = {
   title: "=title",
   description: "=description",
   published: "=date",
-  content: "=content",
+  content: "=children",
 } as const;
 
 /** Register all multilingual feed outputs. */

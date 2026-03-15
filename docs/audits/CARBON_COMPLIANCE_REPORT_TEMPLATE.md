@@ -12,6 +12,9 @@ Use this template when an AI agent or reviewer audits the repository manually.
 
 ## 2. Governance
 
+- Content model:
+  - TSX pages/layouts/components
+  - Markdown post bodies in `src/posts/<slug>/{lang}.md`
 - Token policy:
 - Component policy:
 - Documented deviations:

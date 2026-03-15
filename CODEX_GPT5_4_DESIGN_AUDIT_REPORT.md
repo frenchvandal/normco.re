@@ -1,5 +1,9 @@
 # CODEX GPT-5.4 Design Audit Report
 
+Context update: since this audit was produced, individual post bodies moved from
+TSX modules to multilingual Markdown files under `src/posts/<slug>/`. The
+archive page at `src/posts/index.page.tsx` remains unchanged.
+
 ## 1. Executive summary
 
 This repository uses Carbon v11 tokens as a real foundation, but most UI
