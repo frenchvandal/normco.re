@@ -172,11 +172,7 @@
 
   @media (prefers-reduced-transparency: reduce) {
     :root {
-      --color-selection-bg: #b3d4ff;
-    }
-
-    :root[data-color-mode="dark"] {
-      --color-selection-bg: #1c4a8a;
+      --color-selection-bg: var(--cds-layer-selected);
     }
   }
 

@@ -129,10 +129,10 @@
 
     // Shadows
     --cds-shadow-none: none;
-    --cds-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.1);
-    --cds-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
-    --cds-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
-    --cds-shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.25);
+    --cds-shadow-sm: 0 2px 6px var(--cds-shadow);
+    --cds-shadow-md: 0 4px 12px var(--cds-shadow);
+    --cds-shadow-lg: 0 8px 24px var(--cds-shadow);
+    --cds-shadow-xl: 0 12px 48px var(--cds-shadow);
 
     // Z-index scale
     --cds-z-index-hide: -1;
@@ -155,11 +155,6 @@
   // Dark theme — Gray 90
   [data-color-mode="dark"] {
     @include theme.theme(themes.$g90);
-
-    // Darker shadows in dark mode
-    --cds-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
-    --cds-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-    --cds-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
   }
 
   // System dark mode — mirrors [data-color-mode="dark"].
@@ -167,10 +162,6 @@
   @media (prefers-color-scheme: dark) {
     :root:not([data-color-mode]) {
       @include theme.theme(themes.$g90);
-
-      --cds-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.2);
-      --cds-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-      --cds-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
     }
   }
 

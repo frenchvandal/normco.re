@@ -1,5 +1,7 @@
 /* Carbon pagination.
    Source: https://carbondesignsystem.com/components/pagination/usage/ */
+@use "@carbon/styles/scss/breakpoint" as *;
+
 @layer components {
   .cds--pagination {
     display: flex;
@@ -126,7 +128,7 @@
   }
 
   /* Responsive pagination */
-  @media (max-width: 671px) {
+  @include breakpoint-down(md) {
     .cds--pagination {
       flex-direction: column;
       align-items: stretch;

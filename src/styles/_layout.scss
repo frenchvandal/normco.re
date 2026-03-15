@@ -2,6 +2,8 @@
 // Prefix: cds-- (Carbon v11 default)
 // Source: https://carbondesignsystem.com/components/UI-shell-header/style/
 
+@use "@carbon/styles/scss/breakpoint" as *;
+
 @layer layout {
   // Carbon UI Shell Header
   .cds--header {
@@ -310,7 +312,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--cds-overlay);
     z-index: 5997;
     pointer-events: none;
   }
@@ -320,8 +322,8 @@
     pointer-events: auto;
   }
 
-  // Desktop (672px+)
-  @media (min-width: 672px) {
+  // Desktop (Carbon md and up)
+  @include breakpoint-up(md) {
     .cds--header__nav {
       display: flex;
     }
@@ -335,8 +337,8 @@
     }
   }
 
-  // Mobile (320px - 671px)
-  @media (max-width: 671px) {
+  // Mobile (below Carbon md)
+  @include breakpoint-down(md) {
     .cds--header__nav {
       display: none;
     }

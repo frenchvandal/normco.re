@@ -8,10 +8,11 @@
  */
 
 import type Site from "lume/core/site.ts";
-import type { Page } from "lume/core/file.ts";
+import { Page } from "lume/core/file.ts";
 
 /** Schema version stamped into every generated JSON file. */
 const SCHEMA_VERSION = "1.0.0" as const;
+const GENERATED_POST_API_PATH = /^\/(?:(?:fr|zh-hans|zh-hant)\/)?api\/posts\/.+\.json$/;
 
 /** Block types matching `contracts/post.schema.json#/$defs/block`. */
 type ParagraphBlock = { readonly type: "paragraph"; readonly text: string };
@@ -188,9 +189,26 @@ function resolveReadingTime(readingInfo: unknown): number | undefined {
   return undefined;
 }
 
+/** Returns true when the page is a generated post contract JSON file. */
+function isGeneratedPostContractPage(page: Page): boolean {
+  return page.sourcePath === "(generated)" &&
+    GENERATED_POST_API_PATH.test(page.data.url);
+}
+
 /** Register the content contract processor on a Lume site. */
 export function registerContentContract(site: Site): void {
-  site.process([".html"], (pages: Page[]) => {
+  site.process([".html"], (pages: Page[], allPages: Page[]) => {
+    // In watch mode, processors re-run on incremental rebuilds. These API pages
+    // must live only for the current run, otherwise repeated `site.page()`
+    // registration accumulates duplicates in Lume's scopedPages registry.
+    for (let index = allPages.length - 1; index >= 0; index--) {
+      const page = allPages[index];
+
+      if (page !== undefined && isGeneratedPostContractPage(page)) {
+        allPages.splice(index, 1);
+      }
+    }
+
     for (const page of pages) {
       const data = page.data;
 
@@ -232,10 +250,10 @@ export function registerContentContract(site: Site): void {
       const prefix = lang === "en" ? "" : `/${lang}`;
       const apiUrl = `${prefix}/api/posts/${id}.json`;
 
-      site.page({
+      allPages.push(Page.create({
         url: apiUrl,
         content: JSON.stringify(postJson, null, 2),
-      });
+      }));
     }
   });
 }
