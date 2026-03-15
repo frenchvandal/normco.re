@@ -20,12 +20,10 @@
 @import "./styles/components/hero.css";
 @import "./styles/components/post-card.css";
 @import "./styles/components/post.css";
-@import "./styles/components/post-list.css";
 @import "./styles/components/archive.css";
 @import "./styles/components/feeds.css";
 @import "./styles/components/prism.css";
 @import "./styles/components/error-pages.css";
-@import "./styles/components/link.css";
 @import "./styles/components/footer.css";
 @import "./styles/components/breadcrumb.css";
 @import "./styles/components/tag.css";

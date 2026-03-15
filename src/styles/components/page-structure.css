@@ -60,26 +60,4 @@
   .about-content p {
     max-inline-size: var(--measure);
   }
-
-  /* Carbon section heading */
-  .bx--section-heading {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--cds-spacing-05);
-    padding-block-end: var(--cds-spacing-03);
-    border-block-end: 1px solid var(--cds-border-subtle);
-    margin-block-end: var(--cds-spacing-05);
-  }
-
-  .bx--section-heading__title {
-    font: var(--cds-productive-heading-02);
-    font-weight: var(--cds-font-weight-semibold);
-    color: var(--cds-text-primary);
-    margin: 0;
-  }
-
-  .bx--section-heading__action {
-    font: var(--cds-productive-body-01);
-  }
 }

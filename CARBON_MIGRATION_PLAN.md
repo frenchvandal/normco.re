@@ -424,16 +424,23 @@ deno task validate-contracts  # Validates all generated JSON against schemas
 **Status:** Complete. `base.css` now contains only convenience aliases that
 reference `--cds-*` tokens via `var()`.
 
-### Phase 4 — Grid simplification
+### Phase 4 — CSS cleanup and dead code removal ✅
 
-1. Replace the `bx--col-*` system (116 classes) with native CSS Grid
-2. Adapt TSX templates to use new classes
-3. Keep header/footer with existing `bx--` classes
+1. ~~Audit all `bx--` class usage across TSX files vs CSS definitions~~
+2. ~~Remove unused `bx--footer*` classes (footer uses `site-footer*`)~~
+3. ~~Remove unused `bx--hero*` classes (hero uses `hero-*`)~~
+4. ~~Remove unused `bx--section-heading*` classes~~
+5. ~~Delete `link.css` (all `bx--link*` classes unused)~~
+6. ~~Delete `post-list.css` (all `bx--post-list*` classes unused)~~
+7. ~~Rewrite `skip-link.css` to target `.skip-link` (was `.bx--skip-to-content`)~~
+8. ~~Fix tag color bug: template literal `{_color}` → `${_color}` in post.tsx~~
+9. ~~Add `@media (prefers-color-scheme: dark)` fallback for no-JS dark mode~~
+10. ~~Update Footer CSS contract test to match `layout-carbon.css`~~
 
-**Status:** Deferred — grid classes are actively used in layout-carbon.css.
-Evaluate after other phases.
-
-**Verification:** responsive correct at 320px, 672px, 1056px+.
+**Status:** Complete. No `bx--col-*`/`bx--grid`/`bx--row` classes were ever
+used — the site already uses native CSS Grid. Removed 25 unused `bx--` class
+definitions and 2 dead CSS files. The grid simplification goal from the
+original plan was already achieved.
 
 ### Phase 5 — `_config.ts` refactoring ✅
 
