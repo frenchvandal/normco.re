@@ -31,13 +31,15 @@ jobs:
           deno-version-file: .tool-versions
           cache: true
 
-      - name: Deno install
-        run: deno install
+      - name: Install dependencies with lifecycle scripts allowed
+        run: deno install --allow-scripts --node-modules-dir=auto
+
+      - name: Initialize node_modules
+        run: test -d node_modules && echo "node_modules initialized"
 
       - name: Run build task
         shell: bash
-        run: 
-         deno task build
+        run: deno task build
 
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/aliyun-oss-cdn-sync-action@master
