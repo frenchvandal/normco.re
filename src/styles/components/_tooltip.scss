@@ -1,0 +1,17 @@
+@use "@carbon/styles/scss/components/tooltip";
+
+@layer components {
+  .site-header-tooltip {
+    display: inline-flex;
+  }
+
+  .site-header-tooltip .cds--popover,
+  .site-header-tooltip .cds--popover-content,
+  .site-header-tooltip .cds--popover-caret {
+    pointer-events: none;
+  }
+
+  .site-header-tooltip .cds--tooltip-content {
+    text-align: center;
+  }
+}

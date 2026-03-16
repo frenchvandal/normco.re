@@ -157,6 +157,12 @@ function getStatus(window: TestWindow): HTMLElement {
   return status;
 }
 
+function getSearchRoot(window: TestWindow): HTMLElement {
+  const root = window.document.querySelector("[data-search-root]");
+  assert(root instanceof window.HTMLElement);
+  return root;
+}
+
 function getSearchInput(window: TestWindow): HTMLInputElement {
   const input = window.document.querySelector(".pagefind-ui__search-input");
   assert(input instanceof window.HTMLInputElement);
@@ -180,8 +186,12 @@ describe("pagefind-lazy-init.js", () => {
     await flush(window, 1);
 
     const status = getStatus(window);
+    const root = getSearchRoot(window);
     assertEquals(status.hidden, false);
     assertEquals(status.textContent, "Loading search results.");
+    assertEquals(root.getAttribute("aria-busy"), "true");
+    assertEquals(root.dataset.searchBusy, "true");
+    assertEquals(panel.getAttribute("aria-busy"), "true");
 
     const runtimeScript = window.document.querySelector(
       'script[src="/pagefind/pagefind-ui.js"]',
@@ -196,12 +206,16 @@ describe("pagefind-lazy-init.js", () => {
     const input = getSearchInput(window);
     assertEquals(window.document.activeElement, input);
     assertEquals(status.hidden, true);
+    assertEquals(root.getAttribute("aria-busy"), "false");
+    assertEquals(root.dataset.searchBusy, "false");
+    assertEquals(panel.getAttribute("aria-busy"), "false");
 
     input.value = "alpha";
     input.dispatchEvent(new window.Event("input", { bubbles: true }));
     await flush(window);
     assertEquals(status.hidden, false);
     assertEquals(status.textContent, "2 results");
+    assertEquals(root.getAttribute("aria-busy"), "false");
 
     input.value = "none";
     input.dispatchEvent(new window.Event("input", { bubbles: true }));
@@ -229,7 +243,10 @@ describe("pagefind-lazy-init.js", () => {
     await flush(window);
 
     const status = getStatus(window);
+    const root = getSearchRoot(window);
     assertEquals(status.textContent, "Search is temporarily unavailable.");
+    assertEquals(root.getAttribute("aria-busy"), "false");
+    assertEquals(panel.getAttribute("aria-busy"), "false");
 
     const retryButton = window.document.querySelector(
       "[data-pagefind-fallback] .pagefind-ui__button",

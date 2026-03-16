@@ -106,6 +106,23 @@
 
   /**
    * @param {HTMLElement} container
+   * @param {boolean} isBusy
+   * @returns {void}
+   */
+  function setSearchBusyState(container, isBusy) {
+    const busy = isBusy ? "true" : "false";
+    container.setAttribute("aria-busy", busy);
+    container.dataset.searchBusy = busy;
+
+    const searchPanel = container.closest(SEARCH_PANEL_SELECTOR);
+
+    if (searchPanel instanceof HTMLElement) {
+      searchPanel.setAttribute("aria-busy", busy);
+    }
+  }
+
+  /**
+   * @param {HTMLElement} container
    * @param {string} message
    * @param {"idle" | "loading" | "results" | "error"} [state]
    * @returns {void}
@@ -120,6 +137,7 @@
     const text = message.trim();
     status.textContent = text;
     status.dataset.searchStatusState = state;
+    setSearchBusyState(container, text.length > 0 && state === "loading");
 
     if (text.length === 0) {
       status.setAttribute("hidden", "");

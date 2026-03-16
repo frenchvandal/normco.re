@@ -21,6 +21,7 @@ export function registerAssets(site: Site): void {
   // Client-side scripts
   site.add("/scripts/theme-toggle.js");
   site.add("/scripts/disclosure-controls.js");
+  site.add("/scripts/header-tooltips.js");
   site.add("/scripts/anti-flash.js");
   site.add("/scripts/language-preference.js");
   site.add("/scripts/feed-copy.js");

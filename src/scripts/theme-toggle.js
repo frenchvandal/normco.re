@@ -108,7 +108,6 @@
       : followSystemLabel;
 
     themeToggleButton.setAttribute("aria-label", nextLabel);
-    themeToggleButton.setAttribute("title", nextLabel);
   }
 
   const currentPreference = getCurrentPreference();

@@ -157,7 +157,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
 
   return (
     <div class="site-page-shell site-page-shell--wide">
-      <div class={`feature-layout${hasRail ? " feature-layout--with-rail" : ""}`}>
+      <div
+        class={`feature-layout${hasRail ? " feature-layout--with-rail" : ""}`}
+      >
         <article
           class="post-article feature-main"
           data-code-copy-label={codeCopyLabelAttribute}
@@ -213,11 +215,16 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
         </article>
 
         {hasRail && (
-          <aside class="feature-rail post-rail" aria-label={translations.post.railAriaLabel}>
+          <aside
+            class="feature-rail post-rail"
+            aria-label={translations.post.railAriaLabel}
+          >
             <div class="feature-rail-sticky">
               {tags.length > 0 && (
                 <section class="feature-card">
-                  <h2 class="feature-card-title">{translations.post.tagsAriaLabel}</h2>
+                  <h2 class="feature-card-title">
+                    {translations.post.tagsAriaLabel}
+                  </h2>
                   <ul class="post-tags post-tags--rail">
                     {tags.map((tag, index) => {
                       const tagLabel = String(tag);
@@ -241,7 +248,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
 
               {(prev !== undefined || next !== undefined) && (
                 <section class="feature-card">
-                  <h2 class="feature-card-title">{translations.post.navigationAriaLabel}</h2>
+                  <h2 class="feature-card-title">
+                    {translations.post.navigationAriaLabel}
+                  </h2>
                   <nav
                     class="post-nav post-nav--rail"
                     aria-label={translations.post.navigationAriaLabel}
@@ -257,7 +266,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                           </a>
                         </div>
                       )
-                      : <div class="post-nav-placeholder" aria-hidden="true"></div>}
+                      : (
+                        <div class="post-nav-placeholder" aria-hidden="true">
+                        </div>
+                      )}
                     {next
                       ? (
                         <div class="post-nav-item post-nav-item--next">
@@ -269,7 +281,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                           </a>
                         </div>
                       )
-                      : <div class="post-nav-placeholder" aria-hidden="true"></div>}
+                      : (
+                        <div class="post-nav-placeholder" aria-hidden="true">
+                        </div>
+                      )}
                   </nav>
                 </section>
               )}

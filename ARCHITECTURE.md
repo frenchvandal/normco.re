@@ -68,6 +68,10 @@ Route-level pages remain TSX modules. The primary routes are:
 
 Localized variants are generated under `/fr/`, `/zh-hans/`, and `/zh-hant/`.
 
+The `/posts/` archive is rendered server-side as a year-grouped listing. When
+multiple years are present, the page includes a local year jump navigation in
+the HTML so archive navigation does not depend on runtime JavaScript.
+
 ### Posts
 
 Each post is a directory under `src/posts/<slug>/`:
@@ -181,8 +185,10 @@ it. The current enhancement layer includes:
 
 - theme initialization and theme switching
 - disclosure controls for the header, language menu, and search panel
+- Carbon-style header tooltips for search, language, and theme actions
 - language preference persistence
 - Pagefind lazy initialization
+- accessible search loading and retry status updates backed by `aria-busy`
 - code-block copy feedback
 - feed copy handling
 - intent-based link prefetching
@@ -193,7 +199,8 @@ it. The current enhancement layer includes:
 Search is powered by Pagefind and initialized lazily through
 `src/scripts/pagefind-lazy-init.js`. The UI keeps the search status surface
 under project control so loading, empty, retry, and offline states can be
-announced accessibly.
+announced accessibly. The search container and panel also mirror busy state with
+`aria-busy`, while the visible status line exposes an inline loading indicator.
 
 Feeds are emitted per language. Feed item HTML is sourced from rendered post
 content, not raw Markdown.

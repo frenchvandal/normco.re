@@ -114,6 +114,8 @@ Fichiers de reference pour cette baseline:
 - ne pas remplacer le selecteur de langue par un `Select` ou `Dropdown` par
   principe
 - ne pas transformer la navigation annuelle en `Tabs`
+- ne pas remplacer les blocs de code editoriaux par `Code Snippet` Carbon par
+  principe
 - ne pas "carboniser" le footer pour des raisons purement cosmetiques
 - ne pas introduire de CTA hero lourd si le besoin produit n'est pas explicite
 
@@ -134,12 +136,12 @@ Fichiers de reference pour cette baseline:
 
 | ID    | Etat                 | Notes                                                                   |
 | ----- | -------------------- | ----------------------------------------------------------------------- |
-| CR-01 | Termine              | recherche accessible, etats annonces, retry/focus, tests OK             |
+| CR-01 | Termine              | recherche accessible, loading visible, `aria-busy`, retry/focus, tests OK |
 | CR-02 | Termine              | feedback `hover` et `focus-within` sur `PostCard`, tests OK             |
 | CR-03 | Termine              | `StatePanel` partage pour `404`, `offline` et empty states, tests OK    |
 | CR-04 | Termine              | rail article, prev/next plus lisible, copy code annonce, tests OK       |
 | CR-05 | Termine              | alternates `hreflang`, i18n shell/pages, tests OK                       |
-| CR-06 | Partiellement traite | archive clarifiee, taxonomie `/tags/{slug}/` ajoutee, dette a confirmer |
+| CR-06 | Termine              | nav annuelle dediee cote archive, tags editoriaux preserves, tests OK   |
 | CR-07 | Differe              | toujours conditionnel au volume de contenu                              |
 | CR-08 | Differe              | non ouvert comme chantier dedie                                         |
 
@@ -148,6 +150,8 @@ Travaux complementaires deja realises hors cartes strictes:
 - harmonisation desktop/mobile du shell et des largeurs editoriales
 - rail contextuelle sur `About` avec contenu de support et pictogramme Carbon
 - pages taxonomiques `/tags/{slug}/` avec variantes localisees
+- tooltips Carbon-like sur les actions header recherche, langue et theme
+- etat de chargement visible de la recherche avec statut inline et `aria-busy`
 - pipeline qualite deplacee vers `_cache/quality/`
 - check de liens final execute apres fingerprinting
 

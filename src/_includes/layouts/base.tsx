@@ -216,6 +216,12 @@ export default (
           >
           </script>
           <script
+            src="/scripts/header-tooltips.js"
+            fetchpriority="low"
+            defer
+          >
+          </script>
+          <script
             src="/scripts/theme-toggle.js"
             fetchpriority="low"
             defer

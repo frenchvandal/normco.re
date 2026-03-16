@@ -14,6 +14,10 @@ deployed as a static site to [normco.re](https://normco.re).
   Chinese.
 - The UI is built on `@carbon/styles`, with
   `src/styles/carbon/_theme-tokens.scss` as the local token source of truth.
+- The writing archive is grouped by year and exposes a server-rendered year jump
+  navigation without relying on runtime JavaScript.
+- The header actions use Carbon-style tooltips, and search exposes inline
+  loading and error feedback with accessible status announcements.
 - GitHub Actions builds the site and deploys it to Alibaba Cloud OSS + CDN by
   way of OIDC.
 
@@ -123,6 +127,10 @@ Route-level pages remain TSX modules under `src/`:
 Localized routes follow the same structure under `/fr/`, `/zh-hans/`, and
 `/zh-hant/`.
 
+The `/posts/` archive is rendered as a year-grouped listing. When multiple years
+are present, the page also emits a local year jump navigation in the HTML itself
+rather than depending on a client-side enhancement.
+
 ### Feeds
 
 The site emits localized RSS and JSON feeds:
@@ -168,6 +176,15 @@ foundation.
 
 Do not introduce raw spacing, color, or typography values in UI code. Use Carbon
 tokens through `var(--cds-*)` or Carbon Sass modules.
+
+Interactive UI is intentionally narrow and explicit:
+
+- Header icon actions expose Carbon tooltip popovers for search, language, and
+  theme.
+- Search keeps a dedicated status surface under project control, including
+  loading, empty, retry, and offline feedback.
+- Code blocks in posts remain editorial `pre > code` blocks, enhanced only by a
+  lightweight copy action when JavaScript is available.
 
 ## Quality gates
 

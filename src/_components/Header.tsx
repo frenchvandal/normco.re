@@ -143,69 +143,111 @@ export default (
           {/* Right section: global actions */}
           <div class="cds--header__global">
             {/* Search action */}
-            <button
-              type="button"
-              class="cds--header__action"
-              aria-label={translations.site.searchLabel}
-              aria-expanded="false"
-              aria-controls={searchPanelId}
+            <div
+              class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
+              data-header-tooltip=""
             >
-              <CarbonIcon
-                icon={SEARCH_ICON}
-                className="cds--header__action-icon"
-                width={20}
-                height={20}
-              />
-            </button>
+              <button
+                type="button"
+                class="cds--header__action"
+                aria-label={translations.site.searchLabel}
+                aria-expanded="false"
+                aria-controls={searchPanelId}
+                data-header-tooltip-trigger=""
+              >
+                <CarbonIcon
+                  icon={SEARCH_ICON}
+                  className="cds--header__action-icon"
+                  width={20}
+                  height={20}
+                />
+              </button>
+              <div class="cds--popover" aria-hidden="true">
+                <span class="cds--popover-caret"></span>
+                <div class="cds--popover-content">
+                  <span class="cds--tooltip-content">
+                    {translations.site.searchLabel}
+                  </span>
+                </div>
+              </div>
+            </div>
 
             {/* Language selector action */}
-            <button
-              type="button"
-              class="cds--header__action cds--header__language-toggle"
-              aria-label={translations.site.languageSelectAriaLabel}
-              aria-expanded="false"
-              aria-controls={languagePanelId}
-              aria-haspopup="menu"
+            <div
+              class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
+              data-header-tooltip=""
             >
-              <CarbonIcon
-                icon={TRANSLATE_ICON}
-                className="cds--header__action-icon"
-                width={20}
-                height={20}
-              />
-            </button>
+              <button
+                type="button"
+                class="cds--header__action cds--header__language-toggle"
+                aria-label={translations.site.languageSelectAriaLabel}
+                aria-expanded="false"
+                aria-controls={languagePanelId}
+                aria-haspopup="menu"
+                data-header-tooltip-trigger=""
+              >
+                <CarbonIcon
+                  icon={TRANSLATE_ICON}
+                  className="cds--header__action-icon"
+                  width={20}
+                  height={20}
+                />
+              </button>
+              <div class="cds--popover" aria-hidden="true">
+                <span class="cds--popover-caret"></span>
+                <div class="cds--popover-content">
+                  <span class="cds--tooltip-content">
+                    {translations.site.languageSelectLabel}
+                  </span>
+                </div>
+              </div>
+            </div>
 
             {/* Theme toggle action */}
-            <button
-              id="theme-toggle"
-              type="button"
-              class="cds--header__action"
-              aria-label={translations.site.themeToggleLabel}
-              data-label-switch-light={translations.site
-                .switchToLightThemeLabel}
-              data-label-switch-dark={translations.site.switchToDarkThemeLabel}
-              data-label-follow-system={translations.site
-                .followSystemThemeLabel}
+            <div
+              class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
+              data-header-tooltip=""
             >
-              <CarbonIcon
-                icon={LIGHT_ICON}
-                className="cds--header__action-icon theme-icon theme-icon--sun"
-                width={20}
-                height={20}
-              />
-              <CarbonIcon
-                icon={DARK_ICON}
-                className="cds--header__action-icon theme-icon theme-icon--moon"
-                width={20}
-                height={20}
-              />
-              <CarbonIcon
-                icon={SYSTEM_ICON}
-                className="cds--header__action-icon theme-icon theme-icon--system"
-                width={20}
-                height={20}
-              />
-            </button>
+              <button
+                id="theme-toggle"
+                type="button"
+                class="cds--header__action"
+                aria-label={translations.site.themeToggleLabel}
+                data-label-switch-light={translations.site
+                  .switchToLightThemeLabel}
+                data-label-switch-dark={translations.site.switchToDarkThemeLabel}
+                data-label-follow-system={translations.site
+                  .followSystemThemeLabel}
+                data-header-tooltip-trigger=""
+              >
+                <CarbonIcon
+                  icon={LIGHT_ICON}
+                  className="cds--header__action-icon theme-icon theme-icon--sun"
+                  width={20}
+                  height={20}
+                />
+                <CarbonIcon
+                  icon={DARK_ICON}
+                  className="cds--header__action-icon theme-icon theme-icon--moon"
+                  width={20}
+                  height={20}
+                />
+                <CarbonIcon
+                  icon={SYSTEM_ICON}
+                  className="cds--header__action-icon theme-icon theme-icon--system"
+                  width={20}
+                  height={20}
+                />
+              </button>
+              <div class="cds--popover" aria-hidden="true">
+                <span class="cds--popover-caret"></span>
+                <div class="cds--popover-content">
+                  <span class="cds--tooltip-content">
+                    {translations.site.themeToggleLabel}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -281,6 +323,7 @@ export default (
             id={searchContainerId}
             class="cds--header__search-root"
             data-search-root=""
+            aria-busy="false"
             data-search-loading-label={translations.site.searchLoadingLabel}
             data-search-no-results-label={translations.site
               .searchNoResultsLabel}

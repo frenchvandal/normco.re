@@ -233,10 +233,17 @@ describe("posts/index.page.tsx", () => {
         'class="feature-layout feature-layout--with-rail"',
       );
       assertStringIncludes(html, 'class="feature-rail archive-rail"');
+      assertStringIncludes(html, 'class="feature-card archive-year-card"');
       assertStringIncludes(html, 'class="archive-year-nav"');
       assertStringIncludes(html, 'href="#archive-year-2026"');
       assertStringIncludes(html, 'href="#archive-year-2025"');
-      assertMatch(html, /class="[^"]*cds--tag[^"]*archive-year-nav-link[^"]*"/);
+      assertMatch(html, /class="archive-year-nav-link"/);
+      assertStringIncludes(html, 'class="archive-year-nav-link-label"');
+      assertStringIncludes(html, 'class="archive-year-nav-link-meta"');
+      assertNotMatch(
+        html,
+        /class="[^"]*cds--tag[^"]*archive-year-nav-link[^"]*"/,
+      );
     });
 
     it("does not render a runtime script for year navigation", async () => {
@@ -311,6 +318,29 @@ describe("posts/index.page.tsx", () => {
 
       assertMatch(html, /class="cds--tag cds--tag--gray archive-year-summary"/);
       assertNotMatch(html, /archive-year-nav-count/);
+    });
+
+    it("keeps year navigation distinct from article taxonomy tags", async () => {
+      const posts = [
+        makePost(518, {
+          date: new Date("2026-01-01"),
+          readingInfo: { minutes: 1 },
+        }),
+        makePost(519, {
+          date: new Date("2025-01-01"),
+          readingInfo: { minutes: 2 },
+        }),
+      ];
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
+
+      assertMatch(
+        html,
+        /<span class="archive-year-nav-link-meta">1 post published<\/span>/,
+      );
+      assertNotMatch(
+        html,
+        /<a[^>]*class="[^"]*archive-year-nav-link[^"]*cds--tag/,
+      );
     });
   });
 

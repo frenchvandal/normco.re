@@ -134,6 +134,10 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
+        'src="/scripts/header-tooltips.js"',
+      );
+      assertStringIncludes(
+        html,
         'data-sw-url="/sw.js"',
       );
       assertStringIncludes(

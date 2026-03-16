@@ -1,3 +1,5 @@
+@use "@carbon/styles/scss/breakpoint" as *;
+
 /* Archive page — editorial archive with grouped year navigation. */
 @layer components {
   .archive-page-title {
@@ -104,14 +106,14 @@
   }
 
   .archive-year-nav {
-    padding-block-end: var(--space-s);
-    border-block-end: 1px solid var(--cds-border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
   }
 
   .archive-year-nav-list {
     list-style: none;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: var(--cds-spacing-03);
     padding: 0;
     margin: 0;
@@ -122,26 +124,60 @@
   }
 
   .archive-year-nav-link {
-    text-decoration: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--cds-spacing-02) var(--space-m);
+    padding-block: var(--cds-spacing-03);
+    padding-inline: var(--cds-spacing-04);
+    border: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer);
+    color: var(--cds-text-primary);
     font-variant-numeric: tabular-nums;
+    text-decoration: none;
+    transition:
+      background-color var(--cds-transition-default),
+      border-color var(--cds-transition-default),
+      color var(--cds-transition-default);
   }
 
   .archive-year-nav-link:hover {
+    background: var(--cds-layer-hover);
+    border-color: var(--cds-border-strong);
+    color: var(--cds-text-primary);
     text-decoration: none;
   }
 
-  .archive-rail .archive-year-nav {
-    padding-block-end: 0;
-    border-block-end: none;
+  .archive-year-nav-link:focus-visible {
+    outline: var(--focus-ring-width) solid var(--cds-focus);
+    outline-offset: var(--focus-ring-offset);
   }
 
-  .archive-rail .archive-year-nav-list {
-    flex-direction: column;
-    align-items: flex-start;
+  .archive-year-nav-link-label {
+    font: var(--cds-productive-heading-02);
+    color: inherit;
+  }
+
+  .archive-year-nav-link-meta {
+    color: var(--cds-text-secondary);
+    font: var(--cds-productive-body-01);
+    text-align: end;
+  }
+
+  .archive-rail .archive-year-nav {
+    margin-block-start: var(--space-xs);
+  }
+
+  .archive-year-card {
+    gap: var(--space-s);
+  }
+
+  .archive-rail {
+    order: -1;
   }
 
   .archive-rail .archive-year-nav-link {
-    display: inline-flex;
     max-inline-size: 100%;
   }
 
@@ -158,6 +194,12 @@
 
     .archive-list .post-card-reading-time {
       display: none;
+    }
+  }
+
+  @include breakpoint-up(lg) {
+    .archive-rail {
+      order: 0;
     }
   }
 }

@@ -165,7 +165,10 @@ describe("post.tsx layout", () => {
       const html = await renderComponent(
         postLayout(makeData({ tags: ["devops", "cdn"] }), MOCK_HELPERS),
       );
-      assertStringIncludes(html, 'class="feature-layout feature-layout--with-rail"');
+      assertStringIncludes(
+        html,
+        'class="feature-layout feature-layout--with-rail"',
+      );
       assertStringIncludes(html, 'class="feature-rail post-rail"');
       assertStringIncludes(html, 'class="post-tags post-tags--rail"');
       assertStringIncludes(html, 'href="/tags/devops/"');
@@ -274,7 +277,6 @@ describe("post.tsx layout", () => {
 
       assertEquals(scriptMatches.length, 1);
     });
-
     it("skips the post code-copy enhancement script when code blocks are absent", async () => {
       const html = await renderComponent(
         postLayout(makeData({}), MOCK_HELPERS),

@@ -1,4 +1,9 @@
-import { assertMatch, assertNotMatch, assertStringIncludes } from "jsr/assert";
+import {
+  assertEquals,
+  assertMatch,
+  assertNotMatch,
+  assertStringIncludes,
+} from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 
@@ -236,6 +241,7 @@ describe("Header()", () => {
         html,
         /<button[^>]*class="cds--header__action"[^>]*aria-label="Search"[^>]*aria-expanded="false"[^>]*aria-controls="site-search-panel"/,
       );
+      assertStringIncludes(html, 'data-header-tooltip-trigger=""');
     });
 
     it("renders search panel", async () => {
@@ -250,7 +256,10 @@ describe("Header()", () => {
         html,
         /<p[^>]*id="site-search-status"[^>]*class="cds--header__search-status"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-atomic="true"[^>]*data-search-status=""[^>]*hidden/,
       );
-      assertStringIncludes(html, 'class="cds--header__search-root"');
+      assertMatch(
+        html,
+        /<div[^>]*class="cds--header__search-root"[^>]*aria-busy="false"/,
+      );
       assertStringIncludes(
         html,
         'data-search-loading-label="Loading search results."',
@@ -279,6 +288,37 @@ describe("Header()", () => {
     });
   });
 
+  describe("header action tooltips", () => {
+    it("renders Carbon popover tooltips for search, language, and theme actions", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/", language: "en" }),
+      );
+
+      const tooltipContainerMatches = html.match(
+        /class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"/g,
+      ) ?? [];
+
+      assertStringIncludes(
+        html,
+        '<span class="cds--tooltip-content">Search</span>',
+      );
+      assertStringIncludes(
+        html,
+        '<span class="cds--tooltip-content">Language</span>',
+      );
+      assertStringIncludes(
+        html,
+        '<span class="cds--tooltip-content">Toggle color theme</span>',
+      );
+      assertStringIncludes(html, 'class="cds--popover" aria-hidden="true"');
+      assertStringIncludes(html, 'class="cds--popover-caret"');
+      assertStringIncludes(html, 'class="cds--popover-content"');
+      assertStringIncludes(html, 'data-header-tooltip=""');
+      assertStringIncludes(html, 'data-header-tooltip-trigger=""');
+      assertEquals(tooltipContainerMatches.length, 3);
+    });
+  });
+
   describe("language selector", () => {
     it("renders language toggle button", async () => {
       const html = await renderComponent(
@@ -288,6 +328,7 @@ describe("Header()", () => {
         html,
         /<button[^>]*class="cds--header__action cds--header__language-toggle"[^>]*aria-label="Select language"[^>]*aria-controls="site-language-panel"/,
       );
+      assertStringIncludes(html, 'data-header-tooltip-trigger=""');
     });
 
     it("renders language panel with language options", async () => {
@@ -387,6 +428,7 @@ describe("Header()", () => {
         html,
         'data-label-follow-system="Follow system theme"',
       );
+      assertStringIncludes(html, 'data-header-tooltip-trigger=""');
     });
   });
 
