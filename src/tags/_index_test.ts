@@ -41,7 +41,9 @@ describe("tags/index.page.ts", () => {
 
     const pages = [...tagsPage({ search } as unknown as Lume.Data)];
     const designPage = pages.find((page) => page.url === "/tags/design/");
-    const frenchDesignPage = pages.find((page) => page.url === "/fr/tags/design/");
+    const frenchDesignPage = pages.find((page) =>
+      page.url === "/fr/tags/design/"
+    );
 
     assert(designPage);
     assert(frenchDesignPage);

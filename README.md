@@ -2,8 +2,9 @@
 
 normco.re is Phiphi's multilingual personal site. It is built with
 [Deno](https://deno.com/) and [Lume](https://lume.land/), rendered with TSX
-templates and Markdown content, styled with Carbon Design System v11 tokens, and
-deployed as a static site to [normco.re](https://normco.re).
+templates and Markdown content, styled with Carbon Design System v11 through the
+official Carbon packages, and deployed as a static site to
+[normco.re](https://normco.re).
 
 ## Overview
 
@@ -12,16 +13,18 @@ deployed as a static site to [normco.re](https://normco.re).
 - Shared post metadata lives in `src/posts/<slug>/_data.yml`.
 - The site is localized in English, French, Simplified Chinese, and Traditional
   Chinese.
-- The UI is built on `@carbon/styles`, with
-  `src/styles/carbon/_theme-tokens.scss` as the local token source of truth.
+- The UI is built on `@carbon/styles`; Carbon documentation and the installed
+  Carbon npm packages are the authoritative design-system references.
+- `src/styles/carbon/_theme-tokens.scss` exposes the Carbon-backed custom
+  properties consumed by the site.
 - The writing archive is grouped by year and exposes a server-rendered year jump
   navigation without relying on runtime JavaScript.
-- The header actions use Carbon-style tooltips, and search exposes inline
-  loading and error feedback with accessible status announcements.
-- GitHub Actions builds the site and deploys it to Alibaba Cloud OSS + CDN by
+- Search exposes inline loading, retry, and result feedback with accessible
+  status announcements.
+- GitHub Actions builds the site and deploys it to Alibaba Cloud OSS and CDN by
   way of OIDC.
 
-## Getting started
+## Getting Started
 
 ```sh
 git clone https://github.com/frenchvandal/normco.re.git
@@ -37,30 +40,28 @@ deno task serve
 If your environment requires system CA certificates, prefix commands with
 `DENO_TLS_CA_STORE=system`.
 
-## Daily commands
+## Daily Commands
 
-| Task          | Command                                                              | Notes                                        |
-| ------------- | -------------------------------------------------------------------- | -------------------------------------------- |
-| Serve         | `deno task serve`                                                    | Starts the local site and LumeCMS            |
-| Check         | `deno task check`                                                    | Type-checks the codebase                     |
-| Test          | `deno task test`                                                     | Runs unit and integration tests              |
-| Build         | `deno task build`                                                    | Builds `_site/` for production               |
-| Contracts     | `deno task validate-contracts`                                       | Validates feeds and optional JSON outputs    |
-| Carbon scan   | `deno run --allow-read --allow-write tools/carbon_repo_scanner.ts .` | Regenerates `CARBON_COMPLIANCE_REPORT.md`    |
-| Install hooks | `deno task lefthook:install`                                         | Installs local Git hooks                     |
-| Update deps   | `deno task update-deps`                                              | Updates pinned dependencies and the lockfile |
+| Task          | Command                        | Notes                                        |
+| ------------- | ------------------------------ | -------------------------------------------- |
+| Serve         | `deno task serve`              | Starts the local site and LumeCMS            |
+| Check         | `deno task check`              | Type-checks the codebase                     |
+| Test          | `deno task test`               | Runs unit and integration tests              |
+| Build         | `deno task build`              | Builds `_site/` for production               |
+| Contracts     | `deno task validate-contracts` | Validates feeds and optional JSON outputs    |
+| Install hooks | `deno task lefthook:install`   | Installs local Git hooks                     |
+| Update deps   | `deno task update-deps`        | Updates pinned dependencies and the lockfile |
 
-Recommended verification for a non-trivial change:
+Recommended verification for a nontrivial change:
 
 ```sh
 deno fmt
 deno task check
 deno task test
 deno task build
-deno run --allow-read --allow-write tools/carbon_repo_scanner.ts .
 ```
 
-## Project layout
+## Project Layout
 
 ```text
 .
@@ -97,14 +98,14 @@ deno run --allow-read --allow-write tools/carbon_repo_scanner.ts .
 └── deno.lock
 ```
 
-## Content model
+## Content Model
 
 ### Posts
 
 Each post lives in its own slug directory:
 
 - `src/posts/<slug>/_data.yml` stores shared metadata such as `id`, `slug`,
-  `date`, `url`, and optional `tags`.
+  `date`, `url`, and optional `tags`
 - `src/posts/<slug>/en.md`
 - `src/posts/<slug>/fr.md`
 - `src/posts/<slug>/zh-hans.md`
@@ -113,7 +114,7 @@ Each post lives in its own slug directory:
 Each language file contains frontmatter and a Markdown body. Shared defaults for
 all posts remain in [src/posts/_data.ts](./src/posts/_data.ts).
 
-### Pages and taxonomies
+### Pages and Taxonomies
 
 Route-level pages remain TSX modules under `src/`:
 
@@ -128,8 +129,8 @@ Localized routes follow the same structure under `/fr/`, `/zh-hans/`, and
 `/zh-hant/`.
 
 The `/posts/` archive is rendered as a year-grouped listing. When multiple years
-are present, the page also emits a local year jump navigation in the HTML itself
-rather than depending on a client-side enhancement.
+are present, the page emits its year jump navigation directly in the HTML rather
+than depending on a client-side enhancement.
 
 ### Feeds
 
@@ -140,7 +141,7 @@ The site emits localized RSS and JSON feeds:
 - `/zh-hans/feed.xml` and `/zh-hans/feed.json`
 - `/zh-hant/feed.xml` and `/zh-hant/feed.json`
 
-## Authoring workflow
+## Authoring Workflow
 
 Create a new post with the Lume archetype:
 
@@ -170,30 +171,31 @@ Then reference them from Markdown with relative paths.
 The site uses Carbon Design System v11 Sass modules as its design-system
 foundation.
 
-- Carbon token source: `src/styles/carbon/_theme-tokens.scss`
+- Design-system authority: official Carbon documentation and installed Carbon
+  npm packages
+- Local theme bridge: `src/styles/carbon/_theme-tokens.scss`
 - Editorial aliases: `src/styles/editorial/_tokens.scss`
 - Global stylesheet entrypoint: `src/style.scss`
 
-Do not introduce raw spacing, color, or typography values in UI code. Use Carbon
-tokens through `var(--cds-*)` or Carbon Sass modules.
+When a Carbon token already exists, do not introduce new hard-coded spacing,
+color, or typography values in UI code. Prefer `var(--cds-*)` or Carbon Sass
+modules.
 
 Interactive UI is intentionally narrow and explicit:
 
-- Header icon actions expose Carbon tooltip popovers for search, language, and
-  theme.
+- Header icon actions expose tooltips for search, language, and theme.
 - Search keeps a dedicated status surface under project control, including
   loading, empty, retry, and offline feedback.
 - Code blocks in posts remain editorial `pre > code` blocks, enhanced only by a
   lightweight copy action when JavaScript is available.
 
-## Quality gates
+## Quality Gates
 
 The production build runs several checks in sequence:
 
 - HTML validation
 - browser-safe import validation
 - final-output broken-link checking after asset fingerprinting
-- Carbon compliance scanning
 
 Generated quality artifacts live under `_cache/quality/`, which is ignored by
 Git. The key reports are:
@@ -206,14 +208,14 @@ Git. The key reports are:
 
 The `site` GitHub Actions workflow builds the site, assumes an Alibaba Cloud
 role through GitHub OIDC, syncs `_site/` to OSS, and refreshes or preloads CDN
-paths. The workflow also inherits the build-time quality gates, so a failing
-build or link check blocks deployment.
+paths. The workflow inherits the build-time quality gates, so a failing build or
+link check blocks deployment.
 
 The deployment walkthrough in
 [src/posts/alibaba-cloud-oss-cdn-deployment/en.md](./src/posts/alibaba-cloud-oss-cdn-deployment/en.md)
 documents the infrastructure in more detail.
 
-## Additional documentation
+## Additional Documentation
 
 - [ARCHITECTURE.md](./ARCHITECTURE.md)
 - [AGENTS.md](./AGENTS.md)

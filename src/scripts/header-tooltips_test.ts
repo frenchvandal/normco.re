@@ -56,7 +56,9 @@ function getTooltipContainer(window: TestWindow): HTMLElement {
 }
 
 function getTooltipTrigger(window: TestWindow): HTMLButtonElement {
-  const trigger = window.document.querySelector("[data-header-tooltip-trigger]");
+  const trigger = window.document.querySelector(
+    "[data-header-tooltip-trigger]",
+  );
   assert(trigger instanceof window.HTMLButtonElement);
   return trigger;
 }

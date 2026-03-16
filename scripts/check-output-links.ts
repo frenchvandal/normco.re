@@ -133,7 +133,9 @@ async function* walkHtmlFiles(rootDir: string): AsyncGenerator<string> {
       continue;
     }
 
-    if (entry.isFile && HTML_EXTENSIONS.has(extname(entry.name).toLowerCase())) {
+    if (
+      entry.isFile && HTML_EXTENSIONS.has(extname(entry.name).toLowerCase())
+    ) {
       yield path;
     }
   }
@@ -169,7 +171,9 @@ export async function collectBrokenOutputLinks(
   return Object.fromEntries(
     Object.entries(report)
       .sort(([left], [right]) => left.localeCompare(right))
-      .map(([target, pages]) => [target, pages.sort((left, right) => left.localeCompare(right))]),
+      .map((
+        [target, pages],
+      ) => [target, pages.sort((left, right) => left.localeCompare(right))]),
   );
 }
 
@@ -178,7 +182,10 @@ async function main(): Promise<void> {
   const reportPath = Deno.args[1] ?? "_cache/quality/broken-links.json";
   const report = await collectBrokenOutputLinks(rootDir);
 
-  await Deno.writeTextFile(`${reportPath}`, `${JSON.stringify(report, null, 2)}\n`);
+  await Deno.writeTextFile(
+    `${reportPath}`,
+    `${JSON.stringify(report, null, 2)}\n`,
+  );
 
   const brokenTargets = Object.keys(report);
 

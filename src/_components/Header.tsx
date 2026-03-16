@@ -215,7 +215,8 @@ export default (
                 aria-label={translations.site.themeToggleLabel}
                 data-label-switch-light={translations.site
                   .switchToLightThemeLabel}
-                data-label-switch-dark={translations.site.switchToDarkThemeLabel}
+                data-label-switch-dark={translations.site
+                  .switchToDarkThemeLabel}
                 data-label-follow-system={translations.site
                   .followSystemThemeLabel}
                 data-header-tooltip-trigger=""

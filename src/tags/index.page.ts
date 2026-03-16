@@ -3,8 +3,8 @@ import {
   formatTagPageTitle,
   getLanguageDataCode,
   getLocalizedUrl,
-  SUPPORTED_LANGUAGES,
   type SiteLanguage,
+  SUPPORTED_LANGUAGES,
 } from "../utils/i18n.ts";
 import { getTagSlug } from "../utils/tags.ts";
 
@@ -76,9 +76,10 @@ export default function* (data: Lume.Data): Generator<Lume.Data> {
 
   for (const language of SUPPORTED_LANGUAGES) {
     const localizedBuckets = bucketsByLanguage.get(language) ?? new Map();
-    const sortedBuckets = [...localizedBuckets.entries()].sort(([, left], [, right]) =>
-      left.tagName.localeCompare(right.tagName)
-    );
+    const sortedBuckets = [...localizedBuckets.entries()].sort((
+      [, left],
+      [, right],
+    ) => left.tagName.localeCompare(right.tagName));
 
     for (const [tagSlug, bucket] of sortedBuckets) {
       yield {

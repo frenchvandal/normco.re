@@ -123,7 +123,7 @@
    */
   function getOpenLanguagePanel() {
     const panel = document.querySelector(
-      '[data-language-panel]:not([hidden])',
+      "[data-language-panel]:not([hidden])",
     );
     return panel instanceof HTMLElement ? panel : null;
   }

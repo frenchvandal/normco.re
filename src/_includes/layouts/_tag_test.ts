@@ -36,7 +36,10 @@ describe("tag.tsx layout", () => {
     );
 
     assertStringIncludes(html, 'class="site-page-shell site-page-shell--wide"');
-    assertStringIncludes(html, 'class="feature-layout feature-layout--with-rail"');
+    assertStringIncludes(
+      html,
+      'class="feature-layout feature-layout--with-rail"',
+    );
     assertStringIncludes(html, 'class="feature-rail tag-page-rail"');
   });
 

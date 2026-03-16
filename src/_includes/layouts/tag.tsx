@@ -68,7 +68,8 @@ export default async (
     return `<li class="archive-list-item">${card}</li>`;
   })).then((renderedItems) => renderedItems.join("\n"));
 
-  const emptyState = `<p class="blankslate">${translations.archive.emptyState}</p>`;
+  const emptyState =
+    `<p class="blankslate">${translations.archive.emptyState}</p>`;
 
   return `<div class="site-page-shell site-page-shell--wide">
 <div class="feature-layout feature-layout--with-rail">
@@ -96,17 +97,23 @@ export default async (
         <h2 class="subhead-heading">${translations.tagPage.postsHeading}</h2>
         <a href="${archiveUrl}" class="feature-link">${translations.tagPage.archiveLinkLabel}</a>
       </div>
-      ${posts.length > 0 ? `<ul class="archive-list">${items}</ul>` : emptyState}
+      ${
+    posts.length > 0 ? `<ul class="archive-list">${items}</ul>` : emptyState
+  }
     </section>
   </div>
   <aside class="feature-rail tag-page-rail" aria-label="${translations.tagPage.railAriaLabel}">
     <div class="feature-rail-sticky">
       <section class="feature-card">
         <h2 class="feature-card-title">${translations.tagPage.eyebrow}</h2>
-        <span class="cds--tag cds--tag--${getTagColor(tagName)} tag-page-current-tag">
+        <span class="cds--tag cds--tag--${
+    getTagColor(tagName)
+  } tag-page-current-tag">
           <span class="cds--tag__label">${tagName}</span>
         </span>
-        <p class="feature-card-caption">${formatPostCount(posts.length, language)}</p>
+        <p class="feature-card-caption">${
+    formatPostCount(posts.length, language)
+  }</p>
         <a href="${archiveUrl}" class="feature-link">${translations.tagPage.archiveLinkLabel}</a>
       </section>
     </div>
