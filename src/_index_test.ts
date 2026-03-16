@@ -125,5 +125,12 @@ describe("index.page.tsx", () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, 'class="home-posts"');
     });
+
+    it("renders the shared inline state panel when no posts exist", async () => {
+      const html = await indexPage(makeData([]), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="state-panel state-panel--inline"');
+      assertStringIncludes(html, "Nothing published yet.");
+      assertStringIncludes(html, 'href="/about/"');
+    });
   });
 });

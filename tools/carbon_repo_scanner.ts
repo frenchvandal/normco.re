@@ -469,7 +469,8 @@ function scanMarkup(path: string, content: string) {
     if (isErrorPage && !H1_TAG.test(content)) {
       // Check if the page renders <h1 via template literal
       const rendersH1 = /["'`]<h1[\s>]/.test(content) ||
-        /\bh1\b.*class=/.test(content);
+        /\bh1\b.*class=/.test(content) ||
+        /StatePanel\s*\(\s*\{[\s\S]*headingTag:\s*["']h1["']/m.test(content);
       if (!rendersH1) {
         addFinding({
           severity: "critical",

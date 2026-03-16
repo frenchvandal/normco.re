@@ -136,7 +136,7 @@ Fichiers de reference pour cette baseline:
 | ----- | -------------------- | ----------------------------------------------------------------------- |
 | CR-01 | Termine              | recherche accessible, etats annonces, retry/focus, tests OK             |
 | CR-02 | Termine              | feedback `hover` et `focus-within` sur `PostCard`, tests OK             |
-| CR-03 | Non commence         | la carte dediee `StatePanel` reste a faire                              |
+| CR-03 | Termine              | `StatePanel` partage pour `404`, `offline` et empty states, tests OK    |
 | CR-04 | Termine              | rail article, prev/next plus lisible, copy code annonce, tests OK       |
 | CR-05 | Termine              | alternates `hreflang`, i18n shell/pages, tests OK                       |
 | CR-06 | Partiellement traite | archive clarifiee, taxonomie `/tags/{slug}/` ajoutee, dette a confirmer |

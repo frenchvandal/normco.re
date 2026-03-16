@@ -1,5 +1,6 @@
 /** Posts archive - all posts grouped by year, newest first. */
 
+import StatePanel from "../_components/StatePanel.tsx";
 import {
   formatPostCount,
   formatReadingTime,
@@ -175,7 +176,14 @@ export default async (
     ${sections.join("\n")}
   </div>
 </section>`
-    : `<p class="blankslate">${translations.archive.emptyState}</p>`;
+    : StatePanel({
+      title: translations.archive.emptyStateTitle,
+      message: translations.archive.emptyState,
+      actionHref: homeUrl,
+      actionLabel: translations.navigation.home,
+      headingTag: "h2",
+      variant: "inline",
+    });
 
   const archiveLayoutClass = archiveYearNav
     ? "feature-layout feature-layout--with-rail"
@@ -185,7 +193,9 @@ export default async (
   <div class="feature-rail-sticky">
     <section class="feature-card">
       <h2 class="feature-card-title">${translations.archive.yearsAriaLabel}</h2>
-      <p class="feature-card-caption">${formatPostCount(posts.length, language)}</p>
+      <p class="feature-card-caption">${
+      formatPostCount(posts.length, language)
+    }</p>
       ${archiveYearNav}
     </section>
   </div>

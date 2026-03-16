@@ -1,5 +1,6 @@
 /** Home page - hero + five most recent posts. */
 
+import StatePanel from "./_components/StatePanel.tsx";
 import { metas, siteName } from "./_data.ts";
 import {
   formatReadingTime,
@@ -69,6 +70,7 @@ export default async (
     : language === "zhHans" || language === "zhHant"
     ? "M 月 d 日"
     : "SHORT";
+  const aboutUrl = getLocalizedUrl("/about/", language);
   const archiveUrl = getLocalizedUrl("/posts/", language);
   const recent = data.search.pages(
     `type=post lang=${languageDataCode}`,
@@ -96,7 +98,16 @@ export default async (
   })).then((items) => items.join("\n"));
 
   const emptyState = `<li class="home-posts-item home-posts-item--empty">
-    <p class="blankslate">${translations.home.emptyState}</p>
+    ${
+    StatePanel({
+      title: translations.home.emptyStateTitle,
+      message: translations.home.emptyState,
+      actionHref: aboutUrl,
+      actionLabel: translations.navigation.about,
+      headingTag: "h3",
+      variant: "inline",
+    })
+  }
   </li>`;
 
   return `<div class="site-page-shell site-page-shell--wide">

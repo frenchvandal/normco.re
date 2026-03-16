@@ -7,14 +7,15 @@ const MOCK_DATA = {} as unknown as Lume.Data;
 const MOCK_HELPERS = {} as unknown as Lume.Helpers;
 
 describe("404.page.tsx", () => {
-  it("renders the not-found container", () => {
+  it("renders the shared state panel shell", () => {
     const html = page404(MOCK_DATA, MOCK_HELPERS);
-    assertStringIncludes(html, 'class="not-found"');
+    assertStringIncludes(html, 'class="state-panel state-panel--page"');
   });
 
-  it('displays the "404" code', () => {
+  it('displays the "404" eyebrow', () => {
     const html = page404(MOCK_DATA, MOCK_HELPERS);
-    assertStringIncludes(html, "404");
+    assertStringIncludes(html, 'class="state-panel-eyebrow"');
+    assertStringIncludes(html, ">404<");
   });
 
   it("contains a semantic h1 heading", () => {

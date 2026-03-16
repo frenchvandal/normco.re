@@ -1,5 +1,6 @@
 /** 404 error page. */
 
+import StatePanel from "./_components/StatePanel.tsx";
 import {
   getLocalizedUrl,
   getSiteTranslations,
@@ -44,11 +45,17 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
   const homeUrl = getLocalizedUrl("/", language);
 
   return `<div class="site-page-shell site-page-shell--editorial">
-  <div class="not-found">
-  <p class="not-found-code" aria-hidden="true">404</p>
-  <h1 class="not-found-heading">${translations.notFound.heading}</h1>
-  <p class="not-found-message">${translations.notFound.message}</p>
-  <a href="${homeUrl}" class="not-found-link">${translations.notFound.backToHome}</a>
-</div>
+  ${
+    StatePanel({
+      title: translations.notFound.heading,
+      message: translations.notFound.message,
+      actionHref: homeUrl,
+      actionLabel: translations.notFound.backToHome,
+      eyebrow: "404",
+      eyebrowAriaHidden: true,
+      headingTag: "h1",
+      variant: "page",
+    })
+  }
 </div>`;
 };

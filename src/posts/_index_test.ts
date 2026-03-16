@@ -98,6 +98,13 @@ describe("posts/index.page.tsx", () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertNotMatch(html, /archive-year/);
     });
+
+    it("renders the shared inline state panel when no posts exist", async () => {
+      const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="state-panel state-panel--inline"');
+      assertStringIncludes(html, "Archive is empty.");
+      assertStringIncludes(html, 'href="/"');
+    });
   });
 
   describe("breadcrumb", () => {
@@ -221,7 +228,10 @@ describe("posts/index.page.tsx", () => {
         }),
       ];
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="feature-layout feature-layout--with-rail"');
+      assertStringIncludes(
+        html,
+        'class="feature-layout feature-layout--with-rail"',
+      );
       assertStringIncludes(html, 'class="feature-rail archive-rail"');
       assertStringIncludes(html, 'class="archive-year-nav"');
       assertStringIncludes(html, 'href="#archive-year-2026"');
