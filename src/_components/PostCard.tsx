@@ -18,7 +18,7 @@ export default (
   <article class="post-card">
     <time class="post-card-date" datetime={dateIso}>{dateStr}</time>
     <h3 class="post-card-title">
-      <a href={url}>{title}</a>
+      <a class="post-card-link" href={url}>{title}</a>
     </h3>
     {readingLabel !== undefined && (
       <span class="post-card-reading-time">{readingLabel}</span>

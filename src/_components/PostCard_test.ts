@@ -71,6 +71,7 @@ describe("PostCard()", () => {
       assertStringIncludes(html, base.title);
       assertStringIncludes(html, "<h3");
       assertStringIncludes(html, "<a");
+      assertStringIncludes(html, 'class="post-card-link"');
     });
 
     it("escapes title and URL values before interpolation", async () => {
@@ -84,6 +85,26 @@ describe("PostCard()", () => {
       );
       assertStringIncludes(html, '&lt;hello "world"&gt;');
       assertStringIncludes(html, 'href="/posts/&quot;unsafe&quot;/"');
+    });
+  });
+
+  describe("CSS contracts", () => {
+    it("defines Carbon-like hover and focus feedback on the card container", async () => {
+      const cssContent = await Deno.readTextFile(
+        new URL("../styles/components/_post-card.scss", import.meta.url),
+      );
+      assertStringIncludes(cssContent, ".post-card:hover");
+      assertStringIncludes(cssContent, ".post-card:focus-within");
+      assertStringIncludes(cssContent, "var(--cds-layer-hover)");
+      assertStringIncludes(cssContent, "var(--cds-focus)");
+    });
+
+    it("keeps a dedicated class on the primary title link for shared styling", async () => {
+      const cssContent = await Deno.readTextFile(
+        new URL("../styles/components/_post-card.scss", import.meta.url),
+      );
+      assertStringIncludes(cssContent, ".post-card-link");
+      assertStringIncludes(cssContent, ".post-card-link:focus-visible");
     });
   });
 });

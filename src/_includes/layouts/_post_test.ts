@@ -1,6 +1,7 @@
 import {
   assert,
   assertEquals,
+  assertMatch,
   assertNotMatch,
   assertStringIncludes,
 } from "jsr/assert";
@@ -49,6 +50,7 @@ function makeData(
     children?: { __html: string };
     url?: string;
     lang?: string;
+    tags?: string[];
     readingInfo?: { minutes?: number };
     nav?: ReturnType<typeof makeNav>;
     date?: Date;
@@ -118,15 +120,11 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, "post-nav-item--next");
     });
 
-    it("renders two nav placeholders when both prev and next are absent", async () => {
+    it("omits the rail navigation when both prev and next are absent", async () => {
       const html = await renderComponent(
         postLayout(makeData({}), MOCK_HELPERS),
       );
-      const count = (html.match(/post-nav-placeholder/g) ?? []).length;
-      assert(
-        count >= 2,
-        `Expected at least 2 nav placeholders, got ${count}`,
-      );
+      assertNotMatch(html, /class="post-nav post-nav--rail"/);
     });
   });
 
@@ -146,13 +144,13 @@ describe("post.tsx layout", () => {
   });
 
   describe("structure", () => {
-    it("wraps the post article in the editorial shell", async () => {
+    it("wraps the post article in the wide shell", async () => {
       const html = await renderComponent(
         postLayout(makeData({}), MOCK_HELPERS),
       );
       assertStringIncludes(
         html,
-        'class="site-page-shell site-page-shell--editorial"',
+        'class="site-page-shell site-page-shell--wide"',
       );
     });
 
@@ -160,7 +158,18 @@ describe("post.tsx layout", () => {
       const html = await renderComponent(
         postLayout(makeData({}), MOCK_HELPERS),
       );
-      assertStringIncludes(html, 'class="post-article"');
+      assertMatch(html, /class="[^"]*\bpost-article\b[^"]*"/);
+    });
+
+    it("renders the post rail when tags are present", async () => {
+      const html = await renderComponent(
+        postLayout(makeData({ tags: ["devops", "cdn"] }), MOCK_HELPERS),
+      );
+      assertStringIncludes(html, 'class="feature-layout feature-layout--with-rail"');
+      assertStringIncludes(html, 'class="feature-rail post-rail"');
+      assertStringIncludes(html, 'class="post-tags post-tags--rail"');
+      assertStringIncludes(html, 'href="/tags/devops/"');
+      assertStringIncludes(html, 'href="/tags/cdn/"');
     });
 
     it("renders h1 with the post title", async () => {
@@ -195,8 +204,15 @@ describe("post.tsx layout", () => {
     });
 
     it("wraps navigation in nav[aria-label='Post navigation']", async () => {
+      const prevTitle = makeSentence(710);
+      const prevUrl = makePostUrl(711);
       const html = await renderComponent(
-        postLayout(makeData({}), MOCK_HELPERS),
+        postLayout(
+          makeData({
+            nav: makeNav({ url: prevUrl, title: prevTitle }, undefined),
+          }),
+          MOCK_HELPERS,
+        ),
       );
       assertStringIncludes(html, 'aria-label="Post navigation"');
     });

@@ -62,9 +62,11 @@ export default (
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
   const postsUrl = getLocalizedUrl("/posts/", language);
+  const tagsUrl = getLocalizedUrl("/tags/", language);
   const aboutUrl = getLocalizedUrl("/about/", language);
   const searchContainerId = "search";
   const searchPanelId = "site-search-panel";
+  const searchStatusId = "site-search-status";
   const languagePanelId = "site-language-panel";
   const sideNavId = "site-side-nav";
 
@@ -77,7 +79,8 @@ export default (
     {
       href: postsUrl,
       label: translations.navigation.writing,
-      isCurrent: ariaCurrent(postsUrl, currentUrl)["aria-current"] === "page",
+      isCurrent: ariaCurrent(postsUrl, currentUrl)["aria-current"] === "page" ||
+        ariaCurrent(tagsUrl, currentUrl)["aria-current"] === "page",
     },
     {
       href: aboutUrl,
@@ -264,10 +267,27 @@ export default (
         data-search-panel=""
       >
         <div class="cds--header__panel-content">
+          <p
+            id={searchStatusId}
+            class="cds--header__search-status"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            data-search-status=""
+            hidden
+          >
+          </p>
           <div
             id={searchContainerId}
             class="cds--header__search-root"
             data-search-root=""
+            data-search-loading-label={translations.site.searchLoadingLabel}
+            data-search-no-results-label={translations.site
+              .searchNoResultsLabel}
+            data-search-one-result-label={translations.site
+              .searchOneResultLabel}
+            data-search-many-results-label={translations.site
+              .searchManyResultsLabel}
             data-search-unavailable-label={translations.site
               .searchUnavailableLabel}
             data-search-offline-label={translations.site.searchOfflineLabel}

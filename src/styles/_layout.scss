@@ -23,8 +23,8 @@
     justify-content: space-between;
     gap: var(--cds-spacing-05);
     height: 100%;
-    padding-inline: var(--cds-spacing-05);
-    max-width: var(--cds-breakpoint-max);
+    padding-inline: var(--page-shell-gutter);
+    max-width: var(--site-chrome-max);
     margin-inline: auto;
   }
 
@@ -439,9 +439,9 @@
     justify-content: space-between;
     gap: var(--cds-spacing-05);
     flex-wrap: wrap;
-    max-width: var(--cds-breakpoint-max);
+    max-width: var(--site-chrome-max);
     margin-inline: auto;
-    padding-inline: var(--cds-spacing-05);
+    padding-inline: var(--page-shell-gutter);
   }
 
   .site-footer-nav {

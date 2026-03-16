@@ -61,6 +61,23 @@ describe("Header()", () => {
       );
     });
 
+    it("marks /posts/ as current for a tag taxonomy URL", async () => {
+      const html = await renderComponent(
+        Header({
+          currentUrl: "/tags/design/",
+          language: "en",
+        }),
+      );
+      assertMatch(
+        html,
+        /<a[^>]*href="\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
+      );
+      assertMatch(
+        html,
+        /<a[^>]*href="\/posts\/"[^>]*class="cds--side-nav__link"[^>]*aria-current="page"/,
+      );
+    });
+
     it('does not mark /posts/ as current on "/"', async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
@@ -229,7 +246,27 @@ describe("Header()", () => {
         html,
         /<div[^>]*id="site-search-panel"[^>]*class="cds--header__panel cds--header__search-panel"/,
       );
+      assertMatch(
+        html,
+        /<p[^>]*id="site-search-status"[^>]*class="cds--header__search-status"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-atomic="true"[^>]*data-search-status=""[^>]*hidden/,
+      );
       assertStringIncludes(html, 'class="cds--header__search-root"');
+      assertStringIncludes(
+        html,
+        'data-search-loading-label="Loading search results."',
+      );
+      assertStringIncludes(
+        html,
+        'data-search-no-results-label="No results found."',
+      );
+      assertStringIncludes(
+        html,
+        'data-search-one-result-label="[COUNT] result"',
+      );
+      assertStringIncludes(
+        html,
+        'data-search-many-results-label="[COUNT] results"',
+      );
       assertStringIncludes(
         html,
         'data-search-unavailable-label="Search is temporarily unavailable."',
@@ -377,6 +414,22 @@ describe("Header()", () => {
         Header({ currentUrl: "/", language: "fr" }),
       );
       assertStringIncludes(html, 'aria-label="Recherche"');
+      assertStringIncludes(
+        html,
+        'data-search-loading-label="Chargement des resultats de recherche."',
+      );
+      assertStringIncludes(
+        html,
+        'data-search-no-results-label="Aucun resultat."',
+      );
+      assertStringIncludes(
+        html,
+        'data-search-one-result-label="[COUNT] resultat"',
+      );
+      assertStringIncludes(
+        html,
+        'data-search-many-results-label="[COUNT] resultats"',
+      );
     });
 
     it("does not mark the localized home link current on French child routes", async () => {

@@ -8,7 +8,9 @@ import { registerProcessors } from "./_config/processors.ts";
 
 /** Console debug policy, read once at module init from `LUME_LOGS`. */
 const consoleDebugPolicy = readConsoleDebugPolicy((name) => Deno.env.get(name));
-const isServeTask = Deno.env.get("DENO_TASK_NAME") === "serve";
+const isServeTask = Deno.env.get("LUME_SERVE") === "1" ||
+  Deno.env.get("DENO_TASK_NAME") === "serve" ||
+  Deno.args.includes("-s") || Deno.args.includes("--serve");
 
 type BuildData = {
   repositoryUrl?: string;
@@ -110,10 +112,18 @@ registerPlugins(site, { isServeTask });
 registerFeeds(site);
 registerProcessors(site);
 
-// Post-build: fingerprint assets, check browser imports, format HTML.
+// Ensure generated quality reports are written under a dedicated ignored
+// directory instead of polluting the repository root.
+site.addEventListener(
+  "beforeBuild",
+  "deno run --allow-write scripts/ensure-dir.ts _cache/quality",
+);
+
+// Post-build: fingerprint assets, verify browser imports, format HTML, then
+// validate local links against the final rewritten output.
 site.addEventListener(
   "afterBuild",
-  "deno run --allow-read --allow-write scripts/fingerprint-assets.ts _site && deno run --allow-read scripts/check-browser-imports.ts _site && deno fmt _site/**/*.html",
+  "deno run --allow-read --allow-write scripts/fingerprint-assets.ts _site && deno run --allow-read scripts/check-browser-imports.ts _site && deno fmt _site/**/*.html && deno run --allow-read --allow-write scripts/check-output-links.ts _site _cache/quality/broken-links.json",
 );
 
 export default site;

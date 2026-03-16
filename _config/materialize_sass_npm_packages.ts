@@ -1,5 +1,6 @@
 // Ensure Deno materializes the Carbon Sass package graph under top-level
 // node_modules so Dart Sass can resolve sibling package imports consistently.
+import { fromFileUrl } from "jsr/path";
 import carbonColorsPackage from "npm/carbon-colors-package" with {
   type: "json",
 };
@@ -35,3 +36,13 @@ void [
   carbonThemesPackage,
   carbonTypePackage,
 ];
+
+export const CARBON_SASS_LOAD_PATHS = [
+  "node_modules",
+  fromFileUrl(
+    new URL(
+      `../node_modules/.deno/@carbon+styles@${carbonStylesPackage.version}/node_modules`,
+      import.meta.url,
+    ),
+  ),
+] as const;

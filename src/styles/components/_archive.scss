@@ -130,6 +130,21 @@
     text-decoration: none;
   }
 
+  .archive-rail .archive-year-nav {
+    padding-block-end: 0;
+    border-block-end: none;
+  }
+
+  .archive-rail .archive-year-nav-list {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .archive-rail .archive-year-nav-link {
+    display: inline-flex;
+    max-inline-size: 100%;
+  }
+
   @container (max-width: 36ch) {
     .archive-list .post-card {
       grid-template-columns: 1fr;

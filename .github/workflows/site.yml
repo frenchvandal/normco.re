@@ -5,6 +5,18 @@ on:
   push:
     branches: ["master"]
     paths:
+      - ".github/workflows/site.yml"
+      - ".tool-versions"
+      - "_config.ts"
+      - "_config/**"
+      - "contracts/**"
+      - "deno.json"
+      - "deno.lock"
+      - "package.json"
+      - "package-lock.json"
+      - "plugins/**"
+      - "pnpm-lock.yaml"
+      - "scripts/**"
       - "src/**"
   workflow_dispatch:
 

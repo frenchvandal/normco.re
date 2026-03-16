@@ -99,7 +99,7 @@ export default async (
     <p class="blankslate">${translations.home.emptyState}</p>
   </li>`;
 
-  return `<div class="site-page-shell site-page-shell--editorial">
+  return `<div class="site-page-shell site-page-shell--wide">
 <section class="pagehead hero home-pagehead" aria-labelledby="home-title">
   <p class="pagehead-eyebrow">${translations.home.eyebrow}</p>
   <h1 id="home-title" class="hero-title">${translations.home.title}</h1>

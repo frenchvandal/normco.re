@@ -78,6 +78,10 @@ export type SiteTranslations = {
     readonly siteLinksAriaLabel: string;
     readonly menuToggleLabel: string;
     readonly searchLabel: string;
+    readonly searchLoadingLabel: string;
+    readonly searchNoResultsLabel: string;
+    readonly searchOneResultLabel: string;
+    readonly searchManyResultsLabel: string;
     readonly searchUnavailableLabel: string;
     readonly searchOfflineLabel: string;
     readonly searchRetryLabel: string;
@@ -112,6 +116,7 @@ export type SiteTranslations = {
     readonly yearsAriaLabel: string;
     readonly emptyState: string;
     readonly breadcrumbAriaLabel: string;
+    readonly railAriaLabel: string;
     readonly paginationAriaLabel: string;
     readonly paginationItemsRange: string;
     readonly paginationPrevious: string;
@@ -125,10 +130,33 @@ export type SiteTranslations = {
     readonly intro: string;
     readonly body: string;
     readonly feedsIntro: string;
+    readonly railAriaLabel: string;
+    readonly atAGlanceTitle: string;
+    readonly locationLabel: string;
+    readonly locationValue: string;
+    readonly topicsLabel: string;
+    readonly topicsValue: string;
+    readonly languagesLabel: string;
+    readonly languagesValue: string;
+    readonly siteNotesTitle: string;
+    readonly siteNoteOne: string;
+    readonly siteNoteTwo: string;
+    readonly siteNoteThree: string;
+    readonly pictogramTitle: string;
+    readonly pictogramCaption: string;
+  };
+  readonly tagPage: {
+    readonly eyebrow: string;
+    readonly breadcrumbAriaLabel: string;
+    readonly railAriaLabel: string;
+    readonly postsAriaLabel: string;
+    readonly postsHeading: string;
+    readonly archiveLinkLabel: string;
   };
   readonly post: {
     readonly breadcrumbAriaLabel: string;
     readonly navigationAriaLabel: string;
+    readonly railAriaLabel: string;
     readonly previousLabel: string;
     readonly nextLabel: string;
     readonly tagsAriaLabel: string;
@@ -159,6 +187,10 @@ const SITE_TRANSLATIONS = {
       siteLinksAriaLabel: "Site links",
       menuToggleLabel: "Open navigation menu",
       searchLabel: "Search",
+      searchLoadingLabel: "Loading search results.",
+      searchNoResultsLabel: "No results found.",
+      searchOneResultLabel: "[COUNT] result",
+      searchManyResultsLabel: "[COUNT] results",
       searchUnavailableLabel: "Search is temporarily unavailable.",
       searchOfflineLabel: "Search is unavailable while offline.",
       searchRetryLabel: "Retry",
@@ -199,6 +231,7 @@ const SITE_TRANSLATIONS = {
       yearsAriaLabel: "Archive years",
       emptyState: "No posts published yet.",
       breadcrumbAriaLabel: "Archive breadcrumb",
+      railAriaLabel: "Archive tools",
       paginationAriaLabel: "Archive pagination",
       paginationItemsRange: "{start}–{end} of {total} items",
       paginationPrevious: "Previous page",
@@ -214,10 +247,35 @@ const SITE_TRANSLATIONS = {
       body:
         "I write about software, tools, language, and whatever else catches my attention. This site has no comments, no analytics, and no newsletter. It's just a place to think out loud.",
       feedsIntro: "You can follow along via",
+      railAriaLabel: "About details",
+      atAGlanceTitle: "At a glance",
+      locationLabel: "Based in",
+      locationValue: "Chengdu, China",
+      topicsLabel: "Writing on",
+      topicsValue: "Software, language, culture, and everyday life",
+      languagesLabel: "Available in",
+      languagesValue:
+        "English, French, Simplified Chinese, and Traditional Chinese",
+      siteNotesTitle: "This site",
+      siteNoteOne: "Static by default, fast by design.",
+      siteNoteTwo: "Multilingual on purpose.",
+      siteNoteThree: "No comments, no analytics, no newsletter.",
+      pictogramTitle: "Field note",
+      pictogramCaption:
+        "A small nod to the everyday textures behind the writing.",
+    },
+    tagPage: {
+      eyebrow: "Topic",
+      breadcrumbAriaLabel: "Tag breadcrumb",
+      railAriaLabel: "Tag tools",
+      postsAriaLabel: "Tagged posts",
+      postsHeading: "Posts",
+      archiveLinkLabel: "Back to archive",
     },
     post: {
       breadcrumbAriaLabel: "Post breadcrumb",
       navigationAriaLabel: "Post navigation",
+      railAriaLabel: "Post tools",
       previousLabel: "Previous",
       nextLabel: "Next",
       tagsAriaLabel: "Post tags",
@@ -246,6 +304,10 @@ const SITE_TRANSLATIONS = {
       siteLinksAriaLabel: "Liens du site",
       menuToggleLabel: "Ouvrir le menu de navigation",
       searchLabel: "Recherche",
+      searchLoadingLabel: "Chargement des resultats de recherche.",
+      searchNoResultsLabel: "Aucun resultat.",
+      searchOneResultLabel: "[COUNT] resultat",
+      searchManyResultsLabel: "[COUNT] resultats",
       searchUnavailableLabel: "La recherche est temporairement indisponible.",
       searchOfflineLabel: "La recherche est indisponible hors ligne.",
       searchRetryLabel: "Réessayer",
@@ -287,6 +349,7 @@ const SITE_TRANSLATIONS = {
       yearsAriaLabel: "Années d'archives",
       emptyState: "Aucun article publié pour le moment.",
       breadcrumbAriaLabel: "Fil d'Ariane des archives",
+      railAriaLabel: "Outils des archives",
       paginationAriaLabel: "Pagination des archives",
       paginationItemsRange: "{start}–{end} sur {total} éléments",
       paginationPrevious: "Page précédente",
@@ -302,10 +365,35 @@ const SITE_TRANSLATIONS = {
       body:
         "J'écris sur le logiciel, les outils, la langue, et tout ce qui attire mon attention. Ce site n'a ni commentaires, ni analytics, ni newsletter. C'est juste un endroit pour penser à voix haute.",
       feedsIntro: "Tu peux suivre les publications via",
+      railAriaLabel: "Détails à propos",
+      atAGlanceTitle: "En bref",
+      locationLabel: "Basé à",
+      locationValue: "Chengdu, Chine",
+      topicsLabel: "J'écris sur",
+      topicsValue: "logiciel, langue, culture et vie quotidienne",
+      languagesLabel: "Disponible en",
+      languagesValue:
+        "anglais, français, chinois simplifié et chinois traditionnel",
+      siteNotesTitle: "Ce site",
+      siteNoteOne: "Statique par défaut, rapide par conception.",
+      siteNoteTwo: "Multilingue par intention.",
+      siteNoteThree: "Ni commentaires, ni analytics, ni newsletter.",
+      pictogramTitle: "Repère",
+      pictogramCaption:
+        "Un clin d'oeil aux détails du quotidien derrière les textes.",
+    },
+    tagPage: {
+      eyebrow: "Sujet",
+      breadcrumbAriaLabel: "Fil d'Ariane des étiquettes",
+      railAriaLabel: "Outils des étiquettes",
+      postsAriaLabel: "Articles étiquetés",
+      postsHeading: "Articles",
+      archiveLinkLabel: "Retour aux archives",
     },
     post: {
       breadcrumbAriaLabel: "Fil d'Ariane de l'article",
       navigationAriaLabel: "Navigation entre articles",
+      railAriaLabel: "Outils de l'article",
       previousLabel: "Précédent",
       nextLabel: "Suivant",
       tagsAriaLabel: "Étiquettes de l'article",
@@ -334,6 +422,10 @@ const SITE_TRANSLATIONS = {
       siteLinksAriaLabel: "站点链接",
       menuToggleLabel: "打开导航菜单",
       searchLabel: "搜索",
+      searchLoadingLabel: "正在加载搜索结果。",
+      searchNoResultsLabel: "未找到结果。",
+      searchOneResultLabel: "[COUNT] 个结果",
+      searchManyResultsLabel: "[COUNT] 个结果",
       searchUnavailableLabel: "搜索暂时不可用。",
       searchOfflineLabel: "离线时无法使用搜索。",
       searchRetryLabel: "重试",
@@ -373,6 +465,7 @@ const SITE_TRANSLATIONS = {
       yearsAriaLabel: "归档年份",
       emptyState: "暂时还没有已发布的文章。",
       breadcrumbAriaLabel: "归档面包屑导航",
+      railAriaLabel: "归档工具",
       paginationAriaLabel: "归档分页",
       paginationItemsRange: "共{total}项，第{start}–{end}项",
       paginationPrevious: "上一页",
@@ -388,10 +481,33 @@ const SITE_TRANSLATIONS = {
       body:
         "我会写软件、工具、语言，以及任何吸引我注意的主题。这里没有评论、没有统计分析、也没有 newsletter。这里只是我公开思考的地方。",
       feedsIntro: "你可以通过以下方式订阅",
+      railAriaLabel: "关于页面侧栏",
+      atAGlanceTitle: "快速了解",
+      locationLabel: "所在地",
+      locationValue: "中国成都",
+      topicsLabel: "写作主题",
+      topicsValue: "软件、语言、文化与日常生活",
+      languagesLabel: "可阅读语言",
+      languagesValue: "英语、法语、简体中文和繁体中文",
+      siteNotesTitle: "关于这个站点",
+      siteNoteOne: "默认静态，优先速度。",
+      siteNoteTwo: "多语言是有意为之。",
+      siteNoteThree: "没有评论、没有统计分析，也没有邮件通讯。",
+      pictogramTitle: "旁注",
+      pictogramCaption: "给这些文字背后的日常气息留一个小注脚。",
+    },
+    tagPage: {
+      eyebrow: "主题",
+      breadcrumbAriaLabel: "标签面包屑导航",
+      railAriaLabel: "标签工具",
+      postsAriaLabel: "标签文章",
+      postsHeading: "文章",
+      archiveLinkLabel: "返回归档",
     },
     post: {
       breadcrumbAriaLabel: "文章面包屑导航",
       navigationAriaLabel: "文章导航",
+      railAriaLabel: "文章工具",
       previousLabel: "上一篇",
       nextLabel: "下一篇",
       tagsAriaLabel: "文章标签",
@@ -420,6 +536,10 @@ const SITE_TRANSLATIONS = {
       siteLinksAriaLabel: "網站連結",
       menuToggleLabel: "開啟導覽選單",
       searchLabel: "搜尋",
+      searchLoadingLabel: "正在載入搜尋結果。",
+      searchNoResultsLabel: "未找到結果。",
+      searchOneResultLabel: "[COUNT] 個結果",
+      searchManyResultsLabel: "[COUNT] 個結果",
       searchUnavailableLabel: "搜尋暫時無法使用。",
       searchOfflineLabel: "離線時無法使用搜尋。",
       searchRetryLabel: "重試",
@@ -459,6 +579,7 @@ const SITE_TRANSLATIONS = {
       yearsAriaLabel: "彙整年份",
       emptyState: "目前尚無已發佈文章。",
       breadcrumbAriaLabel: "彙整麵包屑導覽",
+      railAriaLabel: "彙整工具",
       paginationAriaLabel: "彙整分頁",
       paginationItemsRange: "共{total}項，第{start}–{end}項",
       paginationPrevious: "上一頁",
@@ -474,10 +595,33 @@ const SITE_TRANSLATIONS = {
       body:
         "我會寫軟體、工具、語言，以及任何吸引我注意的主題。這裡沒有留言、沒有分析追蹤、也沒有電子報。這裡只是我公開思考的地方。",
       feedsIntro: "你可以透過以下方式訂閱",
+      railAriaLabel: "關於頁面側欄",
+      atAGlanceTitle: "快速了解",
+      locationLabel: "所在地",
+      locationValue: "中國成都",
+      topicsLabel: "寫作主題",
+      topicsValue: "軟體、語言、文化與日常生活",
+      languagesLabel: "可閱讀語言",
+      languagesValue: "英語、法語、簡體中文和繁體中文",
+      siteNotesTitle: "關於這個站點",
+      siteNoteOne: "預設靜態，優先速度。",
+      siteNoteTwo: "多語言是刻意為之。",
+      siteNoteThree: "沒有留言、沒有分析追蹤，也沒有電子報。",
+      pictogramTitle: "旁註",
+      pictogramCaption: "給這些文字背後的日常氣息留一個小註腳。",
+    },
+    tagPage: {
+      eyebrow: "主題",
+      breadcrumbAriaLabel: "標籤麵包屑導覽",
+      railAriaLabel: "標籤工具",
+      postsAriaLabel: "標籤文章",
+      postsHeading: "文章",
+      archiveLinkLabel: "返回彙整",
     },
     post: {
       breadcrumbAriaLabel: "文章麵包屑導覽",
       navigationAriaLabel: "文章導覽",
+      railAriaLabel: "文章工具",
       previousLabel: "上一篇",
       nextLabel: "下一篇",
       tagsAriaLabel: "文章標籤",
@@ -576,6 +720,27 @@ const POST_COUNT_FORMAT = {
   zhHant: (n: number) => `${n} 篇文章`,
 } as const satisfies Record<SiteLanguage, (n: number) => string>;
 
+const TAG_PAGE_TITLE_FORMAT = {
+  en: (tag: string) => `Tag: ${tag}`,
+  fr: (tag: string) => `Étiquette : ${tag}`,
+  zhHans: (tag: string) => `标签：${tag}`,
+  zhHant: (tag: string) => `標籤：${tag}`,
+} as const satisfies Record<SiteLanguage, (tag: string) => string>;
+
+const TAG_PAGE_DESCRIPTION_FORMAT = {
+  en: (tag: string, count: number) =>
+    `${POST_COUNT_FORMAT.en(count)} filed under ${tag}.`,
+  fr: (tag: string, count: number) =>
+    `${POST_COUNT_FORMAT.fr(count)} sous l'étiquette ${tag}.`,
+  zhHans: (tag: string, count: number) =>
+    `${tag} 主题下的 ${POST_COUNT_FORMAT.zhHans(count)}。`,
+  zhHant: (tag: string, count: number) =>
+    `${tag} 主題下的 ${POST_COUNT_FORMAT.zhHant(count)}。`,
+} as const satisfies Record<
+  SiteLanguage,
+  (tag: string, count: number) => string
+>;
+
 /** Formats a reading-time label localized to the target language. */
 export function formatReadingTime(
   minutes: number,
@@ -587,4 +752,21 @@ export function formatReadingTime(
 /** Formats a yearly post-count summary localized to the target language. */
 export function formatPostCount(count: number, language: SiteLanguage): string {
   return POST_COUNT_FORMAT[language](count);
+}
+
+/** Formats the localized page title for a tag taxonomy route. */
+export function formatTagPageTitle(
+  tag: string,
+  language: SiteLanguage,
+): string {
+  return TAG_PAGE_TITLE_FORMAT[language](tag);
+}
+
+/** Formats the localized meta description for a tag taxonomy route. */
+export function formatTagPageDescription(
+  tag: string,
+  count: number,
+  language: SiteLanguage,
+): string {
+  return TAG_PAGE_DESCRIPTION_FORMAT[language](tag, count);
 }

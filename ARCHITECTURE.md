@@ -1,25 +1,26 @@
 # Architecture
 
 normco.re is a static, multilingual editorial site built with Deno and Lume. The
-architecture separates three concerns clearly:
+architecture keeps content, presentation, and build concerns separate:
 
-- TSX for pages, layouts, and UI components
-- Markdown for post bodies
-- build-time processors/plugins for feeds, assets, validation, and localization
+- Markdown for editorial post bodies
+- TSX for pages, layouts, and shared UI components
+- build-time plugins and scripts for localization, feeds, assets, validation,
+  and search
 
-## High-level model
+## System overview
 
 ```text
-Markdown post bodies + shared YAML metadata
-            +
-TSX layouts, pages, and components
-            +
-Lume plugins/processors
-            =
-localized static HTML, feeds, assets, and search index
+shared post metadata + localized Markdown bodies
+                    +
+TSX pages, layouts, and components
+                    +
+Lume plugins, processors, and post-build scripts
+                    =
+localized HTML, feeds, assets, search indexes, and deployment artifacts
 ```
 
-## Source map
+## Source tree
 
 ```text
 normco.re/
@@ -27,32 +28,20 @@ normco.re/
 ├── _config/
 │   ├── assets.ts
 │   ├── feeds.ts
+│   ├── materialize_sass_npm_packages.ts
 │   ├── plugins.ts
 │   └── processors.ts
 ├── _cms.ts
 ├── contracts/
-│   ├── feed.schema.json
-│   ├── post.schema.json
-│   └── validate.ts
+├── docs/
 ├── plugins/
-│   ├── console_debug.ts
-│   ├── content-contract.ts
-│   └── otel.ts
 ├── scripts/
 ├── src/
-│   ├── _archetypes/post.ts
+│   ├── _archetypes/
 │   ├── _components/
 │   ├── _includes/layouts/
 │   ├── posts/
-│   │   ├── _data.ts
-│   │   ├── index.page.tsx
-│   │   ├── post-metadata.ts
-│   │   └── <slug>/
-│   │       ├── _data.yml
-│   │       ├── en.md
-│   │       ├── fr.md
-│   │       ├── zh-hans.md
-│   │       └── zh-hant.md
+│   ├── tags/
 │   ├── scripts/
 │   ├── styles/
 │   ├── utils/
@@ -64,175 +53,189 @@ normco.re/
 └── deno.json
 ```
 
-## Rendering model
+## Content and routing model
 
-### Pages and layouts
+### Pages
 
-- Route-level pages remain `*.page.tsx`.
-- Layouts remain TSX under `src/_includes/layouts/`.
-- Components remain TSX under `src/_components/`.
-- Lume's JSX plugin renders these templates to static HTML.
+Route-level pages remain TSX modules. The primary routes are:
+
+- `/`
+- `/about/`
+- `/posts/`
+- `/tags/<slug>/`
+- `/offline/`
+- `/404.html`
+
+Localized variants are generated under `/fr/`, `/zh-hans/`, and `/zh-hant/`.
 
 ### Posts
 
-Each post is a directory:
+Each post is a directory under `src/posts/<slug>/`:
 
-- `src/posts/<slug>/_data.yml` Shared metadata for all languages.
-- `src/posts/<slug>/<lang>.md` Localized frontmatter and Markdown body.
+- `_data.yml` contains shared metadata for all languages
+- `en.md`, `fr.md`, `zh-hans.md`, and `zh-hant.md` contain localized frontmatter
+  and Markdown body content
 
-Shared defaults for all posts live in
-[`src/posts/_data.ts`](./src/posts/_data.ts):
+Shared post defaults live in `src/posts/_data.ts`, including `type = "post"`,
+the TSX post layout, and JSON-LD defaults.
 
-- `type = "post"`
-- `layout = "layouts/post.tsx"`
-- JSON-LD article data
+### Tags
 
-This keeps the editorial authoring surface simple while preserving TSX-based
-presentation and layout logic.
+Tag taxonomy pages are generated from the tags declared in post metadata. They
+live at `/tags/<slug>/` and localized equivalents, and they are rendered through
+their own TSX layout.
 
 ### Multilingual behavior
 
-The active build follows Lume's recommended `multilanguage` model for
-multilingual content:
+Lume's `multilanguage` plugin provides the routing model:
 
-- one file per language
-- same shared `id`
-- same canonical slug across languages
-- localized prefixes handled by the plugin
-
-Routes:
-
-- `/posts/<slug>/`
-- `/fr/posts/<slug>/`
-- `/zh-hans/posts/<slug>/`
-- `/zh-hant/posts/<slug>/`
+- the same canonical slug is preserved across languages
+- localized prefixes are applied at the route level
+- `lang`, `hreflang`, and page alternates are resolved centrally through
+  `src/utils/i18n.ts`
 
 ## Build pipeline
 
-1. `_config.ts` initializes the site with `src/` as source and `_site/` as
-   destination.
-2. `_config/plugins.ts` registers the Lume plugin set: JSX, multilanguage,
-   feeds, Pagefind, Prism, validation, JSON-LD, and other build helpers.
-3. `_config/assets.ts` registers scripts, styles, and editorial image
-   extensions.
-4. Markdown files under `src/posts/<slug>/` are rendered through the shared TSX
-   post layout.
-5. `_config/processors.ts` runs post-render processors such as editorial image
-   checks and font preload injection.
-6. `_config/feeds.ts` emits multilingual RSS and JSON feeds, using rendered
-   `children` HTML for feed content.
-7. Post-build scripts fingerprint assets and verify browser-safe imports.
+### Site bootstrap
 
-## Feeds and JSON contracts
+`_config.ts` instantiates the Lume site with `src/` as the source directory and
+`_site/` as the output directory. It also registers build hooks that:
 
-### Active outputs
+- prepare `_cache/quality/` before the build
+- fingerprint CSS and JavaScript assets after the build
+- verify browser-safe imports in generated output
+- run the final broken-link check against the rewritten output
 
-The active build emits localized feeds only:
+### Plugin registration
 
-- `/feed.xml` and `/feed.json`
-- `/fr/feed.xml` and `/fr/feed.json`
-- `/zh-hans/feed.xml` and `/zh-hans/feed.json`
-- `/zh-hant/feed.xml` and `/zh-hant/feed.json`
+`_config/plugins.ts` registers the main plugin stack:
 
-`content_html` is populated from rendered HTML, not raw Markdown or source code.
+- JSX rendering
+- Carbon Sass compilation
+- PostCSS and Lightning CSS
+- localized feeds
+- multilanguage routing
+- navigation helpers
+- Pagefind indexing
+- HTML validation
+- JSON-LD
+- Prism highlighting
+- OpenTelemetry debug instrumentation
 
-### Inactive but retained
+### Assets, feeds, and processors
 
-The repository still contains:
+- `_config/assets.ts` defines the asset surface
+- `_config/feeds.ts` emits localized RSS and JSON feeds
+- `_config/processors.ts` runs post-render processors, including editorial image
+  checks and font preload injection
 
-- `plugins/content-contract.ts`
-- `contracts/post.schema.json`
-- `contracts/validate.ts`
+### Quality reports
 
-These remain for a future native-app/iOS content pipeline, but the
-content-contract plugin is not registered in the active build.
+Quality artifacts are written to `_cache/quality/`, not the repository root. The
+notable reports are:
 
-`deno task validate-contracts` therefore validates:
+- `html-issues.json`
+- `broken-links-pre-fingerprint.json` for production builds
+- `broken-links.json`, the authoritative post-fingerprint link report
 
-- current JSON feeds
-- optional `/api/posts/*.json` output only if that plugin is re-enabled later
+## Styling architecture
 
-## LumeCMS model
+The site uses Carbon Design System v11 as its design-system foundation.
 
-`_cms.ts` is configured for direct Markdown editing:
+### Token model
 
-- `post-metadata`: shared `_data.yml` files
-- `posts-en`
-- `posts-fr`
-- `posts-zh-hans`
-- `posts-zh-hant`
+- `src/styles/carbon/_theme-tokens.scss` is the local token source of truth
+- `src/styles/editorial/_tokens.scss` provides project-level aliases layered on
+  top of Carbon tokens
+- raw values are not introduced in UI code
 
-Images uploaded from Markdown fields are stored under the corresponding post
-folder, typically `src/posts/<slug>/images/`, and referenced with relative
-paths.
+### Sass and npm integration
 
-The archetype in `src/_archetypes/post.ts` is the canonical way to scaffold a
-complete new post folder. The CMS is optimized for editing metadata and
-localized Markdown content.
+Carbon Sass is consumed from `@carbon/styles`. Because Dart Sass resolves bare
+package imports from a materialized `node_modules` tree, the repo uses:
 
-## CSS architecture
+- `nodeModulesDir: "auto"` in `deno.json`
+- `_config/materialize_sass_npm_packages.ts` to expose Carbon Sass load paths to
+  the Lume Sass plugin
 
-The design system is Carbon v11, expressed through Sass modules and CSS custom
-properties.
+This arrangement is intentional. It keeps Carbon as the source of truth while
+remaining compatible with Deno and Lume.
 
-Key layers:
+### CSS entrypoint
 
-- `src/styles/carbon/_theme-tokens.scss`
-- `src/styles/carbon/_grid.scss`
-- `src/styles/editorial/_tokens.scss`
-- `src/styles/_reset.scss`
-- `src/styles/_base.scss`
-- `src/styles/_layout.scss`
-- `src/styles/components/*.scss`
-- `src/styles/_utilities.scss`
+`src/style.scss` composes the styling layers in order:
 
-Global entrypoint: `src/style.scss`
+1. Carbon and editorial tokens
+2. reset and base styles
+3. layout styles
+4. component styles
+5. utilities
 
-Invariants:
+Fonts are served locally through the Lume `google_fonts` plugin and loaded from
+the generated `styles/fonts.css`.
 
-- no raw spacing/color values in UI code
-- Carbon tokens are the source of truth
-- project-specific aliases sit on top of Carbon tokens, not beside them
+## Client-side enhancements
 
-## Client-side JavaScript
+Client-side JavaScript is strictly additive. The site remains readable without
+it. The current enhancement layer includes:
 
-Client-side scripts are opt-in enhancements emitted as first-class assets:
-
-- theme bootstrap and toggle
-- disclosure/menu/search controls
+- theme initialization and theme switching
+- disclosure controls for the header, language menu, and search panel
 - language preference persistence
-- feed copy helper
-- intent-based link prefetch
 - Pagefind lazy initialization
+- code-block copy feedback
+- feed copy handling
+- intent-based link prefetching
 - service worker registration
-- code-block copy enhancement
 
-The site remains functional without JavaScript.
+## Search and feeds
 
-## Testing strategy
+Search is powered by Pagefind and initialized lazily through
+`src/scripts/pagefind-lazy-init.js`. The UI keeps the search status surface
+under project control so loading, empty, retry, and offline states can be
+announced accessibly.
 
-The test suite prioritizes:
+Feeds are emitted per language. Feed item HTML is sourced from rendered post
+content, not raw Markdown.
 
-- TSX rendering invariants
+## LumeCMS
+
+`_cms.ts` is configured for direct Markdown editing. The CMS edits:
+
+- shared `_data.yml` metadata files
+- localized Markdown post bodies
+
+The archetype in `src/_archetypes/post.ts` remains the canonical way to create a
+complete new post directory.
+
+## Testing and validation
+
+The test suite is designed around invariants, not snapshots. It focuses on:
+
+- TSX rendering contracts
 - accessibility semantics
-- utility behavior
+- utility functions
 - Markdown post structure
 - feed configuration
+- build and pipeline helper scripts
 
-The Markdown contract test ensures that:
+The recommended validation sequence for a meaningful change is:
 
-- every post lives in a slug directory
-- shared metadata exists in `_data.yml`
-- all four language Markdown files exist
-- no legacy `src/posts/*.page.tsx` post modules remain
+```sh
+deno task check
+deno task test
+deno task build
+deno run --allow-read --allow-write tools/carbon_repo_scanner.ts .
+```
 
 ## Architectural invariants
 
-1. Post content is Markdown, not TSX.
-2. Presentation remains TSX.
-3. Slugs and public URLs stay stable across languages.
-4. Carbon Sass tokens remain the UI source of truth.
-5. The active build emits feeds; the content-contract plugin is retained but
-   inactive.
-6. Lume only scans `src/`, so repo documentation outside `src/` is not part of
-   the published site.
+1. Editorial post bodies remain Markdown, not TSX.
+2. Pages, layouts, and reusable UI remain TSX.
+3. Carbon tokens remain the source of truth for UI styling.
+4. Public URLs remain language-aware and stable.
+5. Quality reports belong under `_cache/quality/`, not the repository root.
+6. The authoritative broken-link check runs against final output, after asset
+   fingerprinting.
+7. The build may retain dormant code for future pipelines, but only active
+   plugins should shape the published site.

@@ -7,6 +7,7 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../../utils/i18n.ts";
+import { getTagColor, getTagUrl } from "../../utils/tags.ts";
 import {
   resolvePostDate,
   resolveReadingMinutes,
@@ -152,124 +153,130 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     ? codeCopyFailedFeedback
     : undefined;
 
-  // Carbon tag color mapping based on tag name hash
-  const getTagColor = (tag: string): string => {
-    const colors = [
-      "blue",
-      "green",
-      "purple",
-      "red",
-      "teal",
-      "cyan",
-      "gray",
-    ] as const;
-    const hash = tag.split("").reduce(
-      (acc, char) => acc + char.charCodeAt(0),
-      0,
-    );
-    // Modulo always produces a valid index, but noUncheckedIndexedAccess requires handling
-    return colors[hash % colors.length] as string;
-  };
+  const hasRail = tags.length > 0 || prev !== undefined || next !== undefined;
 
   return (
-    <div class="site-page-shell site-page-shell--editorial">
-      <article
-        class="post-article"
-        data-code-copy-label={codeCopyLabelAttribute}
-        data-code-copy-feedback={codeCopyFeedbackAttribute}
-        data-code-copy-failed-feedback={codeCopyFailedFeedbackAttribute}
-      >
-        <header class="post-header pagehead post-pagehead">
-          <nav
-            class="cds--breadcrumb"
-            aria-label={translations.post.breadcrumbAriaLabel}
-          >
-            <ol class="cds--breadcrumb-list">
-              <li class="cds--breadcrumb-item">
-                <a href={homeUrl} class="cds--breadcrumb-link">
-                  {translations.navigation.home}
-                </a>
-              </li>
-              <li class="cds--breadcrumb-item">
-                <a href={postsBaseUrl} class="cds--breadcrumb-link">
-                  {translations.navigation.writing}
-                </a>
-              </li>
-              <li class="cds--breadcrumb-item">
-                <span class="cds--breadcrumb-current" aria-current="page">
-                  {currentTitle}
-                </span>
-              </li>
-            </ol>
-          </nav>
-          <h1 class="post-title">{data.title ?? ""}</h1>
-          <div class="post-meta">
-            <time
-              datetime={dateFormat(postDate, "ATOM", language) ??
-                postDate.toISOString()}
-            >
-              {dateFormat(postDate, "HUMAN_DATE", language) ??
-                postDate.toISOString()}
-            </time>
-            {minutes !== undefined && (
-              <>
-                <span class="post-meta-separator" aria-hidden="true">·</span>
-                <span>{formatReadingTime(minutes, language)}</span>
-              </>
-            )}
-          </div>
-          {tags.length > 0 && (
-            <ul class="post-tags">
-              {tags.map((tag, index) => {
-                const _color = getTagColor(String(tag));
-                return (
-                  <li
-                    key={`${tag}-${index}`}
-                    class={`cds--tag cds--tag--${_color}`}
-                  >
-                    <span class="cds--tag__label">{tag}</span>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </header>
-        <div class="post-content">
-          {data.children}
-        </div>
-        <nav
-          class="post-nav"
-          aria-label={translations.post.navigationAriaLabel}
+    <div class="site-page-shell site-page-shell--wide">
+      <div class={`feature-layout${hasRail ? " feature-layout--with-rail" : ""}`}>
+        <article
+          class="post-article feature-main"
+          data-code-copy-label={codeCopyLabelAttribute}
+          data-code-copy-feedback={codeCopyFeedbackAttribute}
+          data-code-copy-failed-feedback={codeCopyFailedFeedbackAttribute}
         >
-          {prev
-            ? (
-              <div class="post-nav-item">
-                <span class="post-nav-label">
-                  {translations.post.previousLabel}
-                </span>
-                <a href={prev.url ?? ""} class="post-nav-title">
-                  {prev.title ?? ""}
-                </a>
-              </div>
-            )
-            : <div class="post-nav-placeholder" aria-hidden="true"></div>}
-          {next
-            ? (
-              <div class="post-nav-item post-nav-item--next">
-                <span class="post-nav-label">
-                  {translations.post.nextLabel}
-                </span>
-                <a href={next.url ?? ""} class="post-nav-title">
-                  {next.title ?? ""}
-                </a>
-              </div>
-            )
-            : <div class="post-nav-placeholder" aria-hidden="true"></div>}
-        </nav>
-        {includeCodeCopyScript && (
-          <script src="/scripts/post-code-copy.js" defer></script>
+          <header class="post-header pagehead post-pagehead">
+            <nav
+              class="cds--breadcrumb"
+              aria-label={translations.post.breadcrumbAriaLabel}
+            >
+              <ol class="cds--breadcrumb-list">
+                <li class="cds--breadcrumb-item">
+                  <a href={homeUrl} class="cds--breadcrumb-link">
+                    {translations.navigation.home}
+                  </a>
+                </li>
+                <li class="cds--breadcrumb-item">
+                  <a href={postsBaseUrl} class="cds--breadcrumb-link">
+                    {translations.navigation.writing}
+                  </a>
+                </li>
+                <li class="cds--breadcrumb-item">
+                  <span class="cds--breadcrumb-current" aria-current="page">
+                    {currentTitle}
+                  </span>
+                </li>
+              </ol>
+            </nav>
+            <h1 class="post-title">{data.title ?? ""}</h1>
+            <div class="post-meta">
+              <time
+                datetime={dateFormat(postDate, "ATOM", language) ??
+                  postDate.toISOString()}
+              >
+                {dateFormat(postDate, "HUMAN_DATE", language) ??
+                  postDate.toISOString()}
+              </time>
+              {minutes !== undefined && (
+                <>
+                  <span class="post-meta-separator" aria-hidden="true">·</span>
+                  <span>{formatReadingTime(minutes, language)}</span>
+                </>
+              )}
+            </div>
+          </header>
+          <div class="post-content">
+            {data.children}
+          </div>
+          {includeCodeCopyScript && (
+            <script src="/scripts/post-code-copy.js" defer></script>
+          )}
+        </article>
+
+        {hasRail && (
+          <aside class="feature-rail post-rail" aria-label={translations.post.railAriaLabel}>
+            <div class="feature-rail-sticky">
+              {tags.length > 0 && (
+                <section class="feature-card">
+                  <h2 class="feature-card-title">{translations.post.tagsAriaLabel}</h2>
+                  <ul class="post-tags post-tags--rail">
+                    {tags.map((tag, index) => {
+                      const tagLabel = String(tag);
+                      const _color = getTagColor(tagLabel);
+                      return (
+                        <li
+                          key={`${tagLabel}-${index}`}
+                        >
+                          <a
+                            href={getTagUrl(tagLabel, language)}
+                            class={`cds--tag cds--tag--${_color}`}
+                          >
+                            <span class="cds--tag__label">{tagLabel}</span>
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              )}
+
+              {(prev !== undefined || next !== undefined) && (
+                <section class="feature-card">
+                  <h2 class="feature-card-title">{translations.post.navigationAriaLabel}</h2>
+                  <nav
+                    class="post-nav post-nav--rail"
+                    aria-label={translations.post.navigationAriaLabel}
+                  >
+                    {prev
+                      ? (
+                        <div class="post-nav-item">
+                          <span class="post-nav-label">
+                            {translations.post.previousLabel}
+                          </span>
+                          <a href={prev.url ?? ""} class="post-nav-title">
+                            {prev.title ?? ""}
+                          </a>
+                        </div>
+                      )
+                      : <div class="post-nav-placeholder" aria-hidden="true"></div>}
+                    {next
+                      ? (
+                        <div class="post-nav-item post-nav-item--next">
+                          <span class="post-nav-label">
+                            {translations.post.nextLabel}
+                          </span>
+                          <a href={next.url ?? ""} class="post-nav-title">
+                            {next.title ?? ""}
+                          </a>
+                        </div>
+                      )
+                      : <div class="post-nav-placeholder" aria-hidden="true"></div>}
+                  </nav>
+                </section>
+              )}
+            </div>
+          </aside>
         )}
-      </article>
+      </div>
     </div>
   );
 };

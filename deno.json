@@ -6,7 +6,6 @@
     "npm/carbon-icons": "npm:@carbon/icons@11.76.0",
     "npm/carbon-layout-package": "npm:@carbon/layout@11.49.0/package.json",
     "npm/carbon-motion-package": "npm:@carbon/motion@11.42.0/package.json",
-    "npm/carbon-styles": "npm:@carbon/styles@1.102.0",
     "npm/carbon-styles-package": "npm:@carbon/styles@1.102.0/package.json",
     "npm/carbon-themes-package": "npm:@carbon/themes@11.69.0/package.json",
     "npm/carbon-type-package": "npm:@carbon/type@11.55.0/package.json",
@@ -76,7 +75,7 @@
     },
     "serve": {
       "description": "Run and serve the site for development",
-      "command": "deno task lume -s"
+      "command": "LUME_SERVE=1 deno task lume -s"
     },
     "update-deps": {
       "description": "Update Lume and regenerate lock file",

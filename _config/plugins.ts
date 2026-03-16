@@ -27,8 +27,8 @@ import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns-locale";
 import "npm/prism-bash";
 import "npm/prism-typescript";
 import "npm/prism-yaml";
+import { CARBON_SASS_LOAD_PATHS } from "./materialize_sass_npm_packages.ts";
 import otelPlugin from "../plugins/otel.ts";
-import "./materialize_sass_npm_packages.ts";
 
 /** Register all Lume plugins in the correct cascade order. */
 export function registerPlugins(
@@ -73,7 +73,7 @@ export function registerPlugins(
   site.use(
     sass({
       options: {
-        loadPaths: ["node_modules"],
+        loadPaths: [...CARBON_SASS_LOAD_PATHS],
       },
     }),
   );
@@ -168,7 +168,7 @@ export function registerPlugins(
 
   site.use(
     validateHtml({
-      output: "_html-issues.json",
+      output: "_cache/quality/html-issues.json",
       rules: {
         "require-sri": "off",
         "heading-level": "off",
@@ -179,14 +179,19 @@ export function registerPlugins(
       },
     }),
   );
-  site.use(
-    checkUrls({
-      anchors: true,
-      throw: true,
-      ignore: ["/feed.xml", "/feed.json", "/sitemap.xml"],
-      output: "_broken_links.json",
-    }),
-  );
+  // The authoritative broken-link gate runs after fingerprinting in `_config.ts`.
+  // Skip the pre-fingerprint crawl in `serve` mode to avoid noisy false
+  // positives during incremental rebuilds while generated assets are in flux.
+  if (!options.isServeTask) {
+    site.use(
+      checkUrls({
+        anchors: true,
+        throw: true,
+        ignore: ["/feed.xml", "/feed.json", "/sitemap.xml"],
+        output: "_cache/quality/broken-links-pre-fingerprint.json",
+      }),
+    );
+  }
 
   // --- Structured data ---
 

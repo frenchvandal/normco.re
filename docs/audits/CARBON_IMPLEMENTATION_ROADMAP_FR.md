@@ -130,6 +130,27 @@ Fichiers de reference pour cette baseline:
 | 7     | CR-07 | Sticky nav archive    | P2 conditionnel | a faire seulement si le volume de contenu le justifie                  |
 | 8     | CR-08 | Rationalisation grid  | P3 differe      | a ouvrir uniquement avec une refonte layout plus large                 |
 
+### 5.1 Etat d'avancement au 2026-03-16
+
+| ID    | Etat                 | Notes                                                                   |
+| ----- | -------------------- | ----------------------------------------------------------------------- |
+| CR-01 | Termine              | recherche accessible, etats annonces, retry/focus, tests OK             |
+| CR-02 | Termine              | feedback `hover` et `focus-within` sur `PostCard`, tests OK             |
+| CR-03 | Non commence         | la carte dediee `StatePanel` reste a faire                              |
+| CR-04 | Termine              | rail article, prev/next plus lisible, copy code annonce, tests OK       |
+| CR-05 | Termine              | alternates `hreflang`, i18n shell/pages, tests OK                       |
+| CR-06 | Partiellement traite | archive clarifiee, taxonomie `/tags/{slug}/` ajoutee, dette a confirmer |
+| CR-07 | Differe              | toujours conditionnel au volume de contenu                              |
+| CR-08 | Differe              | non ouvert comme chantier dedie                                         |
+
+Travaux complementaires deja realises hors cartes strictes:
+
+- harmonisation desktop/mobile du shell et des largeurs editoriales
+- rail contextuelle sur `About` avec contenu de support et pictogramme Carbon
+- pages taxonomiques `/tags/{slug}/` avec variantes localisees
+- pipeline qualite deplacee vers `_cache/quality/`
+- check de liens final execute apres fingerprinting
+
 ## 6. Cartes de travail definitives
 
 ### CR-01 - Recherche accessible

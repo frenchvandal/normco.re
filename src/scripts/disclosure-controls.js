@@ -15,6 +15,23 @@
 
   /** @type {HTMLElement | null} */
   let lastTrigger = null;
+  let lastInteractionModality = "pointer";
+
+  globalThis.document.addEventListener("pointerdown", () => {
+    lastInteractionModality = "pointer";
+  }, true);
+
+  globalThis.document.addEventListener("mousedown", () => {
+    lastInteractionModality = "pointer";
+  }, true);
+
+  globalThis.document.addEventListener("keydown", (event) => {
+    if (event.metaKey || event.ctrlKey || event.altKey) {
+      return;
+    }
+
+    lastInteractionModality = "keyboard";
+  }, true);
 
   /**
    * @param {HTMLElement} control
@@ -99,6 +116,53 @@
     }
 
     items[normalizedIndex]?.focus({ preventScroll: true });
+  }
+
+  /**
+   * @returns {HTMLElement | null}
+   */
+  function getOpenLanguagePanel() {
+    const panel = document.querySelector(
+      '[data-language-panel]:not([hidden])',
+    );
+    return panel instanceof HTMLElement ? panel : null;
+  }
+
+  /**
+   * @param {HTMLElement} panel
+   * @param {"first" | "last" | "selected"} strategy
+   * @returns {boolean}
+   */
+  function focusLanguageMenuFromTrigger(panel, strategy) {
+    const menu = panel.querySelector("[data-language-menu]");
+
+    if (!(menu instanceof HTMLElement)) {
+      return false;
+    }
+
+    const items = getMenuItems(menu);
+
+    if (items.length === 0) {
+      return false;
+    }
+
+    if (strategy === "first") {
+      focusMenuItem(menu, 0);
+      return true;
+    }
+
+    if (strategy === "last") {
+      focusMenuItem(menu, items.length - 1);
+      return true;
+    }
+
+    const selectedIndex = items.findIndex((item) =>
+      item.getAttribute("aria-checked") === "true" ||
+      item.getAttribute("aria-current") === "page"
+    );
+
+    focusMenuItem(menu, selectedIndex >= 0 ? selectedIndex : 0);
+    return true;
   }
 
   /** Locks body scroll to prevent background scrolling when panels are open. */
@@ -238,6 +302,34 @@
   }
 
   globalThis.document.addEventListener("keydown", (event) => {
+    const openLanguagePanel = getOpenLanguagePanel();
+
+    if (
+      openLanguagePanel instanceof HTMLElement &&
+      (event.key === "ArrowDown" || event.key === "ArrowUp" ||
+        event.key === "Home" || event.key === "End")
+    ) {
+      const menu = openLanguagePanel.querySelector("[data-language-menu]");
+      const activeElement = document.activeElement;
+      const focusIsInLanguageMenu = menu instanceof HTMLElement &&
+        activeElement instanceof HTMLElement &&
+        menu.contains(activeElement);
+
+      if (!focusIsInLanguageMenu) {
+        event.preventDefault();
+
+        if (event.key === "ArrowUp" || event.key === "End") {
+          focusLanguageMenuFromTrigger(openLanguagePanel, "last");
+        } else {
+          focusLanguageMenuFromTrigger(
+            openLanguagePanel,
+            event.key === "Home" ? "first" : "selected",
+          );
+        }
+        return;
+      }
+    }
+
     if (event.key === "Escape") {
       if (closeCarbonChrome({ restoreFocus: true })) {
         event.preventDefault();
@@ -296,6 +388,25 @@
     const setupPanelToggle = (button, panel) => {
       if (!button || !panel) return;
 
+      button.addEventListener("keydown", (event) => {
+        const isExpanded = button.getAttribute("aria-expanded") === "true";
+
+        if (event.key === "ArrowDown") {
+          if (isExpanded) {
+            event.preventDefault();
+            focusLanguageMenuFromTrigger(panel, "selected");
+          }
+          return;
+        }
+
+        if (event.key === "ArrowUp") {
+          if (isExpanded) {
+            event.preventDefault();
+            focusLanguageMenuFromTrigger(panel, "last");
+          }
+        }
+      });
+
       button.addEventListener("click", () => {
         const isExpanded = button.getAttribute("aria-expanded") === "true";
         const newState = !isExpanded;
@@ -309,15 +420,18 @@
           lastTrigger = button;
           panel.removeAttribute("hidden");
           panel.setAttribute("expanded", "");
-          // Prefer the current item so the language panel reflects the active locale.
-          const preferredFocusable = panel.querySelector(
-            '[role="menuitemradio"][aria-checked="true"], [aria-current="page"]',
-          );
-          const firstFocusable = preferredFocusable instanceof HTMLElement
-            ? preferredFocusable
-            : panel.querySelector(FOCUSABLE_SELECTOR);
-          if (firstFocusable instanceof HTMLElement) {
-            setTimeout(() => firstFocusable.focus(), 50);
+
+          if (lastInteractionModality === "keyboard") {
+            // Prefer the current item so the language panel reflects the active locale.
+            const preferredFocusable = panel.querySelector(
+              '[role="menuitemradio"][aria-checked="true"], [aria-current="page"]',
+            );
+            const firstFocusable = preferredFocusable instanceof HTMLElement
+              ? preferredFocusable
+              : panel.querySelector(FOCUSABLE_SELECTOR);
+            if (firstFocusable instanceof HTMLElement) {
+              setTimeout(() => firstFocusable.focus(), 50);
+            }
           }
         } else {
           panel.setAttribute("hidden", "");

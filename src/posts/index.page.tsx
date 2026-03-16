@@ -171,15 +171,34 @@ export default async (
 
   const archiveBody = sections.length > 0
     ? `<section class="archive-activity" aria-label="${translations.archive.activityAriaLabel}">
-  ${archiveYearNav}
   <div class="archive-activity-main">
     ${sections.join("\n")}
   </div>
 </section>`
     : `<p class="blankslate">${translations.archive.emptyState}</p>`;
 
-  return `<div class="site-page-shell site-page-shell--editorial">
-${archiveIntro}
-${archiveBody}
+  const archiveLayoutClass = archiveYearNav
+    ? "feature-layout feature-layout--with-rail"
+    : "feature-layout";
+  const archiveRail = archiveYearNav
+    ? `<aside class="feature-rail archive-rail" aria-label="${translations.archive.railAriaLabel}">
+  <div class="feature-rail-sticky">
+    <section class="feature-card">
+      <h2 class="feature-card-title">${translations.archive.yearsAriaLabel}</h2>
+      <p class="feature-card-caption">${formatPostCount(posts.length, language)}</p>
+      ${archiveYearNav}
+    </section>
+  </div>
+</aside>`
+    : "";
+
+  return `<div class="site-page-shell site-page-shell--wide">
+<div class="${archiveLayoutClass}">
+  <div class="feature-main">
+    ${archiveIntro}
+    ${archiveBody}
+  </div>
+  ${archiveRail}
+</div>
 </div>`;
 };

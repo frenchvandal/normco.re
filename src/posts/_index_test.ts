@@ -77,11 +77,11 @@ function makePost(
 
 describe("posts/index.page.tsx", () => {
   describe("shell", () => {
-    it("wraps the archive in the editorial page shell", async () => {
+    it("wraps the archive in the wide listing shell", async () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(
         html,
-        'class="site-page-shell site-page-shell--editorial"',
+        'class="site-page-shell site-page-shell--wide"',
       );
     });
   });
@@ -221,6 +221,8 @@ describe("posts/index.page.tsx", () => {
         }),
       ];
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="feature-layout feature-layout--with-rail"');
+      assertStringIncludes(html, 'class="feature-rail archive-rail"');
       assertStringIncludes(html, 'class="archive-year-nav"');
       assertStringIncludes(html, 'href="#archive-year-2026"');
       assertStringIncludes(html, 'href="#archive-year-2025"');

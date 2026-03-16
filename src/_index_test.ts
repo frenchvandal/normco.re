@@ -65,11 +65,11 @@ function makePost(
 
 describe("index.page.tsx", () => {
   describe("hero section", () => {
-    it("wraps the page in the editorial shell", async () => {
+    it("wraps the page in the wide desktop shell", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(
         html,
-        'class="site-page-shell site-page-shell--editorial"',
+        'class="site-page-shell site-page-shell--wide"',
       );
     });
 
@@ -100,6 +100,15 @@ describe("index.page.tsx", () => {
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, firstPost.title);
       assertStringIncludes(html, secondPost.title);
+    });
+
+    it("wraps each rendered card in a home-posts-item list item", async () => {
+      const posts = [
+        makePost(404, { readingInfo: { minutes: 2 } }),
+      ];
+      const html = await indexPage(makeData(posts), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="home-posts-item"');
+      assertStringIncludes(html, 'class="post-card"');
     });
 
     it("handles posts that lack reading info", async () => {

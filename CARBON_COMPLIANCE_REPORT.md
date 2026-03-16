@@ -9,16 +9,15 @@ Scan date: 2026-03-16
 - Global compliance score: **100 / 100**
 - Critical findings: **0**
 - Important findings: **0**
-- Minor findings: **0**
+- Minor findings: **1**
 
 ## Carbon references
 
 - tokens: https://carbondesignsystem.com/guidelines/tokens/overview/
-- spacing: https://carbondesignsystem.com/guidelines/spacing/overview/
-- typography: https://carbondesignsystem.com/guidelines/typography/overview/
-- layout: https://carbondesignsystem.com/guidelines/layout/overview/
-- accessibility:
-  https://carbondesignsystem.com/guidelines/accessibility/overview/
+- spacing: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
+- typography: https://v10.carbondesignsystem.com/guidelines/typography/overview/
+- layout: https://v10.carbondesignsystem.com/guidelines/layout/overview/
+- accessibility: https://carbondesignsystem.com/guidelines/accessibility/overview/
 - uiShell: https://carbondesignsystem.com/components/ui-shell-header/usage/
 - sideNav: https://carbondesignsystem.com/components/side-nav/usage/
 - breadcrumb: https://carbondesignsystem.com/components/breadcrumb/usage/
@@ -34,10 +33,15 @@ None.
 
 ## Minor findings
 
-None.
+### Token naming should be explicit
+
+- File: `src/styles/editorial/_tokens.scss` line 38
+- Details: Found custom token --site-chrome-max.
+- Recommendation: Group tokens into Carbon base, semantic, or editorial layers.
+- Carbon guideline: https://carbondesignsystem.com/guidelines/tokens/overview/
 
 ## Next actions
 
-No findings. The repository is Carbon-aligned.
+3. Review minor findings for incremental improvements.
 
 4. Re-run the scanner after each refactor.

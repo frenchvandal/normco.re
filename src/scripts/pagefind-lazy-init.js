@@ -10,6 +10,7 @@
    *   readonly showImages: boolean;
    *   readonly showSubResults: boolean;
    *   readonly resetStyles: boolean;
+   *   readonly translations?: Record<string, string>;
    * }} PagefindUiOptions
    */
   /** @typedef {new (options: PagefindUiOptions) => unknown} PagefindUiConstructor */
@@ -66,15 +67,90 @@
    *   readonly unavailable: string;
    *   readonly offline: string;
    *   readonly retry: string;
+   *   readonly loading: string;
+   *   readonly noResults: string;
+   *   readonly oneResult: string;
+   *   readonly manyResults: string;
    * }}
    */
   function getSearchMessages(container) {
     return {
+      loading: container.dataset.searchLoadingLabel ??
+        "Loading search results.",
+      noResults: container.dataset.searchNoResultsLabel ?? "No results found.",
+      oneResult: container.dataset.searchOneResultLabel ?? "[COUNT] result",
+      manyResults: container.dataset.searchManyResultsLabel ??
+        "[COUNT] results",
       unavailable: container.dataset.searchUnavailableLabel ??
         "Search is temporarily unavailable.",
       offline: container.dataset.searchOfflineLabel ??
         "Search is unavailable while offline.",
       retry: container.dataset.searchRetryLabel ?? "Retry",
+    };
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {HTMLElement | null}
+   */
+  function getSearchStatusElement(container) {
+    const searchPanel = container.closest(SEARCH_PANEL_SELECTOR);
+
+    if (!(searchPanel instanceof HTMLElement)) {
+      return null;
+    }
+
+    const status = searchPanel.querySelector("[data-search-status]");
+    return status instanceof HTMLElement ? status : null;
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @param {string} message
+   * @param {"idle" | "loading" | "results" | "error"} [state]
+   * @returns {void}
+   */
+  function setSearchStatus(container, message, state = "idle") {
+    const status = getSearchStatusElement(container);
+
+    if (!(status instanceof HTMLElement)) {
+      return;
+    }
+
+    const text = message.trim();
+    status.textContent = text;
+    status.dataset.searchStatusState = state;
+
+    if (text.length === 0) {
+      status.setAttribute("hidden", "");
+      return;
+    }
+
+    status.removeAttribute("hidden");
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function clearSearchStatus(container) {
+    setSearchStatus(container, "");
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {Record<string, string>}
+   */
+  function getPagefindTranslations(container) {
+    const { loading, noResults, oneResult, manyResults } = getSearchMessages(
+      container,
+    );
+
+    return {
+      searching: loading,
+      zero_results: noResults,
+      one_result: oneResult,
+      many_results: manyResults,
     };
   }
 
@@ -94,24 +170,31 @@
    */
   function renderSearchFallback(container) {
     const { unavailable, offline, retry } = getSearchMessages(container);
+    const status = getSearchStatusElement(container);
     const fallback = globalThis.document.createElement("div");
     fallback.className = "pagefind-ui__drawer";
     fallback.dataset.pagefindFallback = "";
 
-    const message = globalThis.document.createElement("p");
-    message.className = "pagefind-ui__message";
-    message.setAttribute("role", "status");
-    message.textContent = globalThis.navigator.onLine === false
+    const message = globalThis.navigator.onLine === false
       ? offline
       : unavailable;
+    setSearchStatus(container, message, "error");
 
     const retryButton = globalThis.document.createElement("button");
     retryButton.type = "button";
     retryButton.className = "pagefind-ui__button";
     retryButton.textContent = retry;
+    if (status?.id) {
+      retryButton.setAttribute("aria-describedby", status.id);
+    }
 
     retryButton.addEventListener("click", () => {
       clearSearchFallback(container);
+      setSearchStatus(
+        container,
+        getSearchMessages(container).loading,
+        "loading",
+      );
       void ensurePagefindInitialized(container)
         .then(() => {
           focusSearchInput(container);
@@ -121,7 +204,7 @@
         });
     });
 
-    fallback.append(message, retryButton);
+    fallback.append(retryButton);
     container.replaceChildren(fallback);
     retryButton.focus({ preventScroll: true });
   }
@@ -162,6 +245,14 @@
 
     if (!(container instanceof HTMLElement)) {
       return;
+    }
+
+    if (container.dataset.pagefindReady !== "true") {
+      setSearchStatus(
+        container,
+        getSearchMessages(container).loading,
+        "loading",
+      );
     }
 
     focusSearchInput(container);
@@ -224,6 +315,7 @@
    */
   async function initializePagefind(container) {
     clearSearchFallback(container);
+    setSearchStatus(container, getSearchMessages(container).loading, "loading");
     ensurePagefindStylesheet();
     await loadPagefindScript();
     await yieldToMain();
@@ -243,9 +335,99 @@
       showImages: false,
       showSubResults: false,
       resetStyles: false,
+      translations: getPagefindTranslations(container),
     });
 
     container.dataset.pagefindReady = "true";
+    bindSearchStatus(container);
+  }
+
+  /**
+   * Keeps our adjacent status region in sync with Pagefind's internal messages.
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function bindSearchStatus(container) {
+    if (container.dataset.searchStatusBound === "true") {
+      syncSearchStatus(container);
+      return;
+    }
+
+    const searchInput = container.querySelector(".pagefind-ui__search-input");
+
+    if (!(searchInput instanceof HTMLInputElement)) {
+      return;
+    }
+
+    container.dataset.searchStatusBound = "true";
+    searchInput.addEventListener("input", () => {
+      if (searchInput.value.trim().length === 0) {
+        clearSearchStatus(container);
+        return;
+      }
+
+      setSearchStatus(
+        container,
+        getSearchMessages(container).loading,
+        "loading",
+      );
+    });
+
+    const messageObserver = new MutationObserver(() => {
+      syncSearchStatus(container);
+    });
+
+    messageObserver.observe(container, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
+    syncSearchStatus(container);
+  }
+
+  /**
+   * Mirrors Pagefind's visible message into the adjacent status region.
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function syncSearchStatus(container) {
+    const message = container.querySelector(".pagefind-ui__message");
+    const searchInput = container.querySelector(".pagefind-ui__search-input");
+
+    if (!(searchInput instanceof HTMLInputElement)) {
+      clearSearchStatus(container);
+      return;
+    }
+
+    if (searchInput.value.trim().length === 0) {
+      clearSearchStatus(container);
+      return;
+    }
+
+    if (!(message instanceof HTMLElement)) {
+      setSearchStatus(
+        container,
+        getSearchMessages(container).loading,
+        "loading",
+      );
+      return;
+    }
+
+    const text = message.textContent?.trim() ?? "";
+
+    if (text.length === 0) {
+      setSearchStatus(
+        container,
+        getSearchMessages(container).loading,
+        "loading",
+      );
+      return;
+    }
+
+    const { loading } = getSearchMessages(container);
+    const state = text === loading ? "loading" : "results";
+    setSearchStatus(container, text, state);
   }
 
   /**
