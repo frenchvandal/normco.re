@@ -14,9 +14,9 @@ Scan date: 2026-03-16
 ## Carbon references
 
 - tokens: https://carbondesignsystem.com/guidelines/tokens/overview/
-- spacing: https://v10.carbondesignsystem.com/guidelines/spacing/overview/
-- typography: https://v10.carbondesignsystem.com/guidelines/typography/overview/
-- layout: https://v10.carbondesignsystem.com/guidelines/layout/overview/
+- spacing: https://carbondesignsystem.com/guidelines/spacing/overview/
+- typography: https://carbondesignsystem.com/guidelines/typography/overview/
+- layout: https://carbondesignsystem.com/guidelines/layout/overview/
 - accessibility: https://carbondesignsystem.com/guidelines/accessibility/overview/
 - uiShell: https://carbondesignsystem.com/components/ui-shell-header/usage/
 - sideNav: https://carbondesignsystem.com/components/side-nav/usage/
