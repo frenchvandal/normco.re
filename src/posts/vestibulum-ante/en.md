@@ -31,9 +31,9 @@ Fusce suscipit varius mi. Cum sociis natoque penatibus et magnis dis parturient
 montes, nascetur ridiculus mus. Phasellus viverra nulla ut metus varius laoreet.
 
 I moved to Chengdu on a Tuesday in early autumn. The city was warm in a way that
-surprised me—not the heat of summer, but the warmth of a place that had
-already decided it liked you. The streets smelled of chilli oil and osmanthus,
-and everything felt slightly, pleasantly unfamiliar.
+surprised me—not the heat of summer, but the warmth of a place that had already
+decided it liked you. The streets smelled of chilli oil and osmanthus, and
+everything felt slightly, pleasantly unfamiliar.
 
 That is what a threshold feels like, I think. Not hostile. Not welcoming. Simply
 open—waiting to see what you will make of it.

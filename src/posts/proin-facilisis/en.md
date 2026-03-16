@@ -5,8 +5,8 @@ title: "Proin Facilisis: Making Things Easier"
 description: "On the philosophy of reducing friction—in code, in design, and in everyday life."
 ---
 
-_Proin facilisis_—Latin for "promoting ease." It appears in old botanical
-texts to describe a plant that aids digestion, smooths a passage, clears an
+_Proin facilisis_—Latin for "promoting ease." It appears in old botanical texts
+to describe a plant that aids digestion, smooths a passage, clears an
 obstruction. As a philosophy for building software, it translates remarkably
 well.
 
@@ -49,8 +49,8 @@ of the user, the context, and the failure modes. It demands more work from the
 builder so that less work falls on the user.
 
 This is why ease is a form of generosity. Every unnecessary step you remove from
-your user's path is time returned to them—time they can spend on the thing
-that actually matters.
+your user's path is time returned to them—time they can spend on the thing that
+actually matters.
 
 ## Facilisis in practice
 

@@ -1,12 +1,15 @@
 # Roadmap Carbon definitive - execution Codex
 
-Statut: document de reference unique  
-Date: 2026-03-16  
-Remplace: `docs/audits/CARBON_COMPONENT_REVIEW_FR.md`, `docs/audits/CARBON_COMPONENT_REVIEW_FR_v2.md`
+Statut: document de reference unique\
+Date: 2026-03-16\
+Remplace: `docs/audits/CARBON_COMPONENT_REVIEW_FR.md`,
+`docs/audits/CARBON_COMPONENT_REVIEW_FR_v2.md`
 
 ## 1. But
 
-Ce document definit la roadmap definitive pour les evolutions UX/UI Carbon du site. Il doit etre suffisamment precis pour qu'un agent Codex puisse executer les taches sans devoir reinterpretter les audits precedents.
+Ce document definit la roadmap definitive pour les evolutions UX/UI Carbon du
+site. Il doit etre suffisamment precis pour qu'un agent Codex puisse executer
+les taches sans devoir reinterpretter les audits precedents.
 
 Objectif principal:
 
@@ -24,7 +27,7 @@ Objectif principal:
 - aucune valeur CSS brute nouvelle dans le code UI
 - utiliser exclusivement les tokens Carbon et les variables deja exposees
 - source de verite des tokens: `src/styles/carbon/_theme-tokens.scss`
-- references Carbon du repo:
+- references locales obligatoires du repo:
   - `docs/tokens/CARBON_TOKEN_MAP.json`
   - `docs/migration/CARBON_GUIDELINE_INDEX.md`
 
@@ -35,16 +38,38 @@ Objectif principal:
 - si Carbon n'a pas de composant natif pour un cas, documenter l'adaptation
 - ne pas forcer une refonte "Carbon stricte" si le gain UX est faible
 
-### 2.3 Contraintes accessibilite
+### 2.3 Hierarchie des sources
+
+Ordre de priorite a respecter:
+
+1. documentation officielle Carbon en ligne pour les patterns, l'UX, l'a11y et
+   les guidelines
+2. packages npm Carbon utilises par le repo, en particulier `@carbon/styles`,
+   pour la realite technique des tokens, classes et modules Sass
+3. code existant du repo pour comprendre les conventions deja en place
+4. documents locaux du repo pour la gouvernance et le mapping:
+   - `docs/tokens/CARBON_TOKEN_MAP.json`
+   - `docs/migration/CARBON_GUIDELINE_INDEX.md`
+
+Interpretation attendue:
+
+- `CARBON_TOKEN_MAP.json` n'est pas la source de verite de Carbon
+- ce JSON sert de couche locale de mapping et d'aide de decision pour ce repo
+- en cas de conflit, la reference primaire reste Carbon officiel, puis
+  l'implementation effective du repo
+
+### 2.4 Contraintes accessibilite
 
 - tout element interactif doit avoir un focus visible
-- les controles de disclosure conservent `aria-expanded`, `aria-controls` et restore focus
+- les controles de disclosure conservent `aria-expanded`, `aria-controls` et
+  restore focus
 - les surfaces modal-like gardent focus trap si necessaire
 - toute annonce dynamique importante doit etre lisible par lecteur d'ecran
 
 ## 3. Baseline verifiee
 
-Les points suivants sont consideres comme deja solides et ne doivent pas etre refaits sans raison forte:
+Les points suivants sont consideres comme deja solides et ne doivent pas etre
+refaits sans raison forte:
 
 - `Header` et `Side Nav` Carbon deja robustes
 - skip link present
@@ -86,30 +111,32 @@ Fichiers de reference pour cette baseline:
 ### 4.3 A ne pas faire maintenant
 
 - ne pas migrer tout le site vers une grille Carbon 2x complete
-- ne pas remplacer le selecteur de langue par un `Select` ou `Dropdown` par principe
+- ne pas remplacer le selecteur de langue par un `Select` ou `Dropdown` par
+  principe
 - ne pas transformer la navigation annuelle en `Tabs`
 - ne pas "carboniser" le footer pour des raisons purement cosmetiques
 - ne pas introduire de CTA hero lourd si le besoin produit n'est pas explicite
 
 ## 5. Ordre d'execution recommande
 
-| Ordre | ID | Sujet | Priorite | Resultat attendu |
-|---|---|---|---|---|
-| 1 | CR-01 | Recherche accessible | P0 | recherche avec etats annonces, count/no-result/loading clairs |
-| 2 | CR-02 | PostCard feedback | P0 | cartes plus lisibles au hover et au clavier sans changer la semantique |
-| 3 | CR-03 | Etats systeme unifies | P0 | `404`, `offline` et `empty` harmonises par un pattern partage |
-| 4 | CR-04 | Page article | P1 | prev/next plus lisible et copy code annonce |
-| 5 | CR-05 | i18n et alternates | P1 | UI stable en 4 langues + `hreflang` de page |
-| 6 | CR-06 | Navigation archive | P1 | pattern annee clarifie, dette Carbon documentee |
-| 7 | CR-07 | Sticky nav archive | P2 conditionnel | a faire seulement si le volume de contenu le justifie |
-| 8 | CR-08 | Rationalisation grid | P3 differe | a ouvrir uniquement avec une refonte layout plus large |
+| Ordre | ID    | Sujet                 | Priorite        | Resultat attendu                                                       |
+| ----- | ----- | --------------------- | --------------- | ---------------------------------------------------------------------- |
+| 1     | CR-01 | Recherche accessible  | P0              | recherche avec etats annonces, count/no-result/loading clairs          |
+| 2     | CR-02 | PostCard feedback     | P0              | cartes plus lisibles au hover et au clavier sans changer la semantique |
+| 3     | CR-03 | Etats systeme unifies | P0              | `404`, `offline` et `empty` harmonises par un pattern partage          |
+| 4     | CR-04 | Page article          | P1              | prev/next plus lisible et copy code annonce                            |
+| 5     | CR-05 | i18n et alternates    | P1              | UI stable en 4 langues + `hreflang` de page                            |
+| 6     | CR-06 | Navigation archive    | P1              | pattern annee clarifie, dette Carbon documentee                        |
+| 7     | CR-07 | Sticky nav archive    | P2 conditionnel | a faire seulement si le volume de contenu le justifie                  |
+| 8     | CR-08 | Rationalisation grid  | P3 differe      | a ouvrir uniquement avec une refonte layout plus large                 |
 
 ## 6. Cartes de travail definitives
 
 ### CR-01 - Recherche accessible
 
-**Priorite:** P0  
-**But:** Faire de la recherche un pattern robuste Carbon-like sans casser Pagefind ni surcharger le site.
+**Priorite:** P0\
+**But:** Faire de la recherche un pattern robuste Carbon-like sans casser
+Pagefind ni surcharger le site.
 
 **Fichiers cibles:**
 
@@ -124,7 +151,8 @@ Fichiers de reference pour cette baseline:
 - conserver le lazy loading actuel
 - ajouter un etat explicite de chargement avant que Pagefind soit pret
 - ajouter un message `no results`
-- annoncer l'etat de recherche via une zone `aria-live="polite"` ou equivalent fiable
+- annoncer l'etat de recherche via une zone `aria-live="polite"` ou equivalent
+  fiable
 - exposer des libelles i18n pour:
   - loading
   - no results
@@ -135,7 +163,8 @@ Fichiers de reference pour cette baseline:
 
 - ne pas reimplementer un moteur de recherche custom
 - ne pas styler le DOM Pagefind avec des valeurs brutes
-- si le DOM genere par Pagefind est trop instable, privilegier un conteneur de statut adjacent et controle par notre JS
+- si le DOM genere par Pagefind est trop instable, privilegier un conteneur de
+  statut adjacent et controle par notre JS
 
 **Critere d'acceptation testable:**
 
@@ -154,8 +183,9 @@ Fichiers de reference pour cette baseline:
 
 ### CR-02 - PostCard feedback interactif
 
-**Priorite:** P0  
-**But:** Donner un feedback de survol et de focus coherent au composant le plus repete du site.
+**Priorite:** P0\
+**But:** Donner un feedback de survol et de focus coherent au composant le plus
+repete du site.
 
 **Fichiers cibles:**
 
@@ -170,7 +200,8 @@ Fichiers de reference pour cette baseline:
 - phase 1 uniquement: garder la structure semantique actuelle
 - ajouter un etat `hover`
 - ajouter un etat `focus-within`
-- faire apparaitre un contour/focus ring Carbon visible sur la carte quand le lien interne est focus
+- faire apparaitre un contour/focus ring Carbon visible sur la carte quand le
+  lien interne est focus
 - verifier le rendu sur home et archive
 
 **Contraintes d'implementation:**
@@ -194,8 +225,9 @@ Fichiers de reference pour cette baseline:
 
 ### CR-03 - Etats systeme unifies
 
-**Priorite:** P0  
-**But:** Remplacer les variantes disparates par un pattern partage simple et reutilisable.
+**Priorite:** P0\
+**But:** Remplacer les variantes disparates par un pattern partage simple et
+reutilisable.
 
 **Fichiers cibles:**
 
@@ -205,7 +237,8 @@ Fichiers de reference pour cette baseline:
 - `src/posts/index.page.tsx`
 - `src/styles/components/_error-pages.scss`
 - nouveau composant recommande: `src/_components/StatePanel.tsx`
-- tests associes: `src/_404_test.ts`, `src/_index_test.ts`, `src/posts/_index_test.ts`
+- tests associes: `src/_404_test.ts`, `src/_index_test.ts`,
+  `src/posts/_index_test.ts`
 
 **Travail a faire:**
 
@@ -221,10 +254,14 @@ Fichiers de reference pour cette baseline:
 
 **Contraintes d'implementation:**
 
-- Carbon ne fournit pas ici un composant natif unique a recopier tel quel: il faut appliquer un pattern local credibile
-- verifier si les styles de boutons Carbon existent deja avant d'utiliser `cds--btn`
-- si les styles de boutons Carbon ne sont pas disponibles, creer une action-link locale alignee Carbon au lieu d'introduire a moitie le composant bouton
-- `404`, `offline` et `empty` partagent une structure, mais pas le meme texte ni la meme priorite d'action
+- Carbon ne fournit pas ici un composant natif unique a recopier tel quel: il
+  faut appliquer un pattern local credibile
+- verifier si les styles de boutons Carbon existent deja avant d'utiliser
+  `cds--btn`
+- si les styles de boutons Carbon ne sont pas disponibles, creer une action-link
+  locale alignee Carbon au lieu d'introduire a moitie le composant bouton
+- `404`, `offline` et `empty` partagent une structure, mais pas le meme texte ni
+  la meme priorite d'action
 
 **Critere d'acceptation testable:**
 
@@ -241,7 +278,7 @@ Fichiers de reference pour cette baseline:
 
 ### CR-04 - Page article
 
-**Priorite:** P1  
+**Priorite:** P1\
 **But:** Ameliorer la navigation prev/next et le feedback du bouton copy code.
 
 **Fichiers cibles:**
@@ -262,7 +299,8 @@ Fichiers de reference pour cette baseline:
 **Contraintes d'implementation:**
 
 - ne pas creer un composant riche inutile pour prev/next
-- ne pas faire reposer l'annonce copy uniquement sur un changement visuel ou d'`aria-label`
+- ne pas faire reposer l'annonce copy uniquement sur un changement visuel ou
+  d'`aria-label`
 - privilegier une zone de statut dediee si necessaire
 
 **Critere d'acceptation testable:**
@@ -279,7 +317,7 @@ Fichiers de reference pour cette baseline:
 
 ### CR-05 - i18n et alternates
 
-**Priorite:** P1  
+**Priorite:** P1\
 **But:** Stabiliser le rendu multilingue et completer les metadonnees de langue.
 
 **Fichiers cibles:**
@@ -291,7 +329,8 @@ Fichiers de reference pour cette baseline:
 
 **Travail a faire:**
 
-- ajouter les balises `rel="alternate" hreflang="..."` pour les variantes de page quand l'information est disponible
+- ajouter les balises `rel="alternate" hreflang="..."` pour les variantes de
+  page quand l'information est disponible
 - tester tout le shell et les pages cles dans les 4 langues
 - corriger les debordements ou retours de ligne problematiques
 
@@ -314,8 +353,9 @@ Fichiers de reference pour cette baseline:
 
 ### CR-06 - Clarification de la navigation archive
 
-**Priorite:** P1  
-**But:** Clarifier la dette UX autour des tags utilises comme navigation annuelle.
+**Priorite:** P1\
+**But:** Clarifier la dette UX autour des tags utilises comme navigation
+annuelle.
 
 **Fichiers cibles:**
 
@@ -350,8 +390,9 @@ Fichiers de reference pour cette baseline:
 
 ### CR-07 - Sticky nav archive conditionnelle
 
-**Priorite:** P2 conditionnelle  
-**Declencheur:** uniquement si le nombre d'annees rend l'archive sensiblement longue a parcourir.
+**Priorite:** P2 conditionnelle\
+**Declencheur:** uniquement si le nombre d'annees rend l'archive sensiblement
+longue a parcourir.
 
 **Decision actuelle:**
 
@@ -359,15 +400,17 @@ Fichiers de reference pour cette baseline:
 
 ### CR-08 - Rationalisation 2x grid
 
-**Priorite:** P3 differee  
+**Priorite:** P3 differee\
 **Decision actuelle:**
 
 - ne pas ouvrir ce chantier dans les taches courtes
-- ne le traiter qu'avec une refonte layout plus large et un objectif produit clair
+- ne le traiter qu'avec une refonte layout plus large et un objectif produit
+  clair
 
 ## 7. Definition of done globale
 
-Une tache n'est pas terminee tant que les conditions suivantes ne sont pas remplies:
+Une tache n'est pas terminee tant que les conditions suivantes ne sont pas
+remplies:
 
 - le scope defini dans la carte est couvert
 - les tests existants lies au scope passent
@@ -389,13 +432,16 @@ Une tache n'est pas terminee tant que les conditions suivantes ne sont pas rempl
 ### 8.2 Principe de modification
 
 - etendre d'abord les composants et scripts existants
-- creer un nouveau composant partage seulement si la duplication actuelle le justifie
+- creer un nouveau composant partage seulement si la duplication actuelle le
+  justifie
 - preferer les tests existants du repo aux nouveaux frameworks de test
 
 ### 8.3 En cas d'incertitude
 
-- si Carbon n'offre pas de pattern univoque, choisir l'adaptation la plus simple et la documenter dans le code ou dans la PR
-- si un comportement browser-only est difficile a tester unitairement, ajouter un protocole de validation manuelle explicite
+- si Carbon n'offre pas de pattern univoque, choisir l'adaptation la plus simple
+  et la documenter dans le code ou dans la PR
+- si un comportement browser-only est difficile a tester unitairement, ajouter
+  un protocole de validation manuelle explicite
 
 ## 9. Commandes de validation
 
@@ -408,21 +454,34 @@ deno run --allow-read --allow-write tools/carbon_repo_scanner.ts .
 
 ## 10. References officielles a utiliser
 
+- references primaires:
 - Carbon home: https://carbondesignsystem.com/
 - Components: https://carbondesignsystem.com/components/
 - Guidelines: https://carbondesignsystem.com/guidelines/
-- Accessibility: https://carbondesignsystem.com/guidelines/accessibility/overview/
+- Accessibility:
+  https://carbondesignsystem.com/guidelines/accessibility/overview/
 - Search usage: https://carbondesignsystem.com/components/search/usage/
-- Search accessibility: https://carbondesignsystem.com/components/search/accessibility/
+- Search accessibility:
+  https://carbondesignsystem.com/components/search/accessibility/
 - Breadcrumb usage: https://carbondesignsystem.com/components/breadcrumb/usage/
 - Tag usage: https://carbondesignsystem.com/components/tag/usage/
 - Tile usage: https://carbondesignsystem.com/components/tile/usage/
-- Empty states pattern: https://carbondesignsystem.com/patterns/empty-states-pattern/
+- Empty states pattern:
+  https://carbondesignsystem.com/patterns/empty-states-pattern/
 - 2x Grid overview: https://carbondesignsystem.com/elements/2x-grid/overview/
+
+- references techniques a croiser dans le repo:
+  - `@carbon/styles`
+  - `src/styles/carbon/_theme-tokens.scss`
+
+- references locales de gouvernance:
+  - `docs/tokens/CARBON_TOKEN_MAP.json`
+  - `docs/migration/CARBON_GUIDELINE_INDEX.md`
 
 ## 11. Resume executif final
 
-La roadmap definitive ne demande pas une refonte generale. Elle demande une sequence courte et rationnelle:
+La roadmap definitive ne demande pas une refonte generale. Elle demande une
+sequence courte et rationnelle:
 
 1. rendre la recherche accessible
 2. rendre `PostCard` plus lisible au hover et au clavier
