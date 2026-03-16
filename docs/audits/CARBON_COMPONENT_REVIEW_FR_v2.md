@@ -354,7 +354,6 @@ Le rapport d'audit initial est **solide dans son diagnostic global** : le site e
 | Dimension | État actuel | Recommandation |
 |---|---|---|
 | Langues supportées | EN, FR, ZH-Hans, ZH-Hant | Aucune action structurelle |
-| Direction RTL | Non supporté | Ajouter `dir="auto"` si RTL envisagé (arabe, hébreu) |
 | Polices CJK | Noto Sans SC/TC en fallback | Vérifier le chargement (taille des fichiers) |
 | Longueur des labels | Variable selon langue | Tester tous les boutons/labels en FR (souvent plus long que EN) |
 | `lang` attribut | Dynamique sur `<html>` | Aucune action |
@@ -631,9 +630,8 @@ Le site atteint un **excellent niveau d'alignement Carbon v11** :
 
 1. **V3-1** — Grille Carbon 2x sur le layout global
 2. **V3-2** — Navigation sticky archive
-3. **V3-3** — Support RTL
-4. **V3-4** — `hreflang` alternatives SEO
-5. **V3-5** — Thème G100 high contrast en option
+3. **V3-4** — `hreflang` alternatives SEO
+4. **V3-5** — Thème G100 high contrast en option
 
 ---
 
