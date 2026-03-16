@@ -43,7 +43,7 @@ not detected as Deno Deploy.
 **Terminal output.** Two kinds of structured logs are emitted, both linked to
 the active OTEL span when `OTEL_DENO=true`:
 
-_Requests_ — one `console.table()` call per request:
+_Requests_—one `console.table()` call per request:
 
 ```
 ┌───────┬────────┬──────────────────┬────────┬────┐
@@ -53,18 +53,18 @@ _Requests_ — one `console.table()` call per request:
 └───────┴────────┴──────────────────┴────────┴────┘
 ```
 
-_Builds_ — one `console.groupCollapsed` entry after each build or hot-reload,
+_Builds_—one `console.groupCollapsed` entry after each build or hot-reload,
 including the `traceId` and `spanId` so you can locate the span in
 Grafana/Tempo:
 
 ```
-▶ [otel] update #3 — 87ms
+▶ [otel] update #3—87 ms
 ```
 
 **Debug bar.** Two tabs are added and refreshed on every hot-reload:
 
-- **OpenTelemetry** — active configuration summary
-- **Requests** — recent request list and per-route status counters
+- **OpenTelemetry**—active configuration summary
+- **Requests**—recent request list and per-route status counters
 
 **Recommended protocol for local OTEL.** If you run `OTEL_DENO=true` locally
 (for example with the

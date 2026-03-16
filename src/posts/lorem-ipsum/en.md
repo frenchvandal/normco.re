@@ -22,7 +22,7 @@ culpa qui officia deserunt mollit anim id est laborum.
 
 When you design a layout with real words, you design for those specific words.
 Placeholder text forces you to design for the structure, not the content. This
-is a valuable constraint — it reveals whether your design can accommodate the
+is a valuable constraint—it reveals whether your design can accommodate the
 unexpected: a headline that runs to three lines, a paragraph with no natural
 break, a word too long for its container.
 
@@ -55,6 +55,6 @@ quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
 
 ## Conclusion
 
-Lorem ipsum is more than filler. It is a mirror held up to the design — one that
+Lorem ipsum is more than filler. It is a mirror held up to the design—one that
 reflects structure stripped of meaning, form without content. That is precisely
 why it endures.
