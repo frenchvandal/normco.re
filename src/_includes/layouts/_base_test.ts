@@ -10,6 +10,10 @@ import baseLayout from "./base.tsx";
 // ---------------------------------------------------------------------------
 const MOCK_HELPERS = {} as unknown as Lume.Helpers;
 
+async function renderBase(data: Lume.Data): Promise<string> {
+  return await renderComponent(await baseLayout(data, MOCK_HELPERS));
+}
+
 function makeSentence(seed: number): string {
   faker.seed(seed);
   return faker.lorem.sentence({ min: 3, max: 7 });
@@ -62,46 +66,33 @@ function makeData(
 describe("base.tsx layout", () => {
   describe("page title", () => {
     it('renders "normco.re" when no title is provided', async () => {
-      const html = await renderComponent(
-        baseLayout(makeData({}), MOCK_HELPERS),
-      );
+      const html = await renderBase(makeData({}));
       assertStringIncludes(html, "<title>normco.re</title>");
     });
 
     it('formats title as "<title> - normco.re"', async () => {
       const randomTitle = makeSentence(601);
-      const html = await renderComponent(
-        baseLayout(makeData({ title: randomTitle }), MOCK_HELPERS),
-      );
+      const html = await renderBase(makeData({ title: randomTitle }));
       assertStringIncludes(html, `<title>${randomTitle} - normco.re</title>`);
     });
   });
 
   describe("meta description", () => {
     it("uses the default description when none is provided", async () => {
-      const html = await renderComponent(
-        baseLayout(makeData({}), MOCK_HELPERS),
-      );
+      const html = await renderBase(makeData({}));
       assertStringIncludes(html, "Personal blog by Phiphi");
     });
 
     it("uses the provided description", async () => {
       const randomDescription = makeSentence(602);
-      const html = await renderComponent(
-        baseLayout(
-          makeData({ description: randomDescription }),
-          MOCK_HELPERS,
-        ),
-      );
+      const html = await renderBase(makeData({ description: randomDescription }));
       assertStringIncludes(html, randomDescription);
     });
   });
 
   describe("structure", () => {
     it("renders a valid HTML5 document", async () => {
-      const html = await renderComponent(
-        baseLayout(makeData({}), MOCK_HELPERS),
-      );
+      const html = await renderBase(makeData({}));
       assertStringIncludes(html, "<!doctype html>");
       assertStringIncludes(
         html,
@@ -110,9 +101,7 @@ describe("base.tsx layout", () => {
     });
 
     it("includes core head and accessibility links", async () => {
-      const html = await renderComponent(
-        baseLayout(makeData({}), MOCK_HELPERS),
-      );
+      const html = await renderBase(makeData({}));
       assertStringIncludes(html, 'href="/style.css"');
       assertStringIncludes(
         html,
@@ -153,14 +142,9 @@ describe("base.tsx layout", () => {
     });
 
     it("passes service-worker debug level to the register script", async () => {
-      const html = await renderComponent(
-        baseLayout(
-          makeData({
-            build: { swDebugLevel: "verbose" },
-          }),
-          MOCK_HELPERS,
-        ),
-      );
+      const html = await renderBase(makeData({
+        build: { swDebugLevel: "verbose" },
+      }));
       assertStringIncludes(
         html,
         'src="/scripts/sw-register.js"',
@@ -176,68 +160,60 @@ describe("base.tsx layout", () => {
     });
 
     it("skips link-prefetch script on post detail routes", async () => {
-      const html = await renderComponent(
-        baseLayout(
-          makeData({
-            url: "/posts/sample-post/",
-          }),
-          MOCK_HELPERS,
-        ),
-      );
+      const html = await renderBase(makeData({
+        url: "/posts/sample-post/",
+      }));
       assertNotMatch(html, /src="\/scripts\/link-prefetch-intent\.js"/);
     });
 
     it("skips link-prefetch script on localized posts archive routes", async () => {
-      const html = await renderComponent(
-        baseLayout(
-          makeData({
-            url: "/fr/posts/",
-          }),
-          MOCK_HELPERS,
-        ),
-      );
+      const html = await renderBase(makeData({
+        url: "/fr/posts/",
+      }));
       assertNotMatch(html, /src="\/scripts\/link-prefetch-intent\.js"/);
     });
 
     it("injects the page content into <main>", async () => {
       const randomBody = makeSentence(603);
-      const html = await renderComponent(
-        baseLayout(
-          makeData({ children: { __html: `<p>${randomBody}</p>` } }),
-          MOCK_HELPERS,
-        ),
+      const html = await renderBase(
+        makeData({ children: { __html: `<p>${randomBody}</p>` } }),
       );
       assertStringIncludes(html, `<p>${randomBody}</p>`);
       assertStringIncludes(html, 'id="main-content" data-pagefind-body=""');
     });
 
     it("omits `data-pagefind-body` on unlisted pages", async () => {
-      const html = await renderComponent(
-        baseLayout(
-          makeData({ unlisted: true }),
-          MOCK_HELPERS,
-        ),
-      );
+      const html = await renderBase(makeData({ unlisted: true }));
       assertNotMatch(html, /data-pagefind-body=""/);
     });
 
     it("renders the mocked Header and Footer", async () => {
-      const html = await renderComponent(
-        baseLayout(makeData({}), MOCK_HELPERS),
-      );
+      const html = await renderBase(makeData({}));
       assertStringIncludes(html, "<header>mock</header>");
       assertStringIncludes(html, "<footer>mock</footer>");
     });
 
+    it("awaits async Header and Footer components", async () => {
+      const html = await renderBase(
+        {
+          ...makeData({}),
+          comp: {
+            Header: async (_props: unknown) => "<header>async mock</header>",
+            Footer: async (_props: unknown) => "<footer>async mock</footer>",
+          },
+        } as unknown as Lume.Data,
+      );
+
+      assertStringIncludes(html, "<header>async mock</header>");
+      assertStringIncludes(html, "<footer>async mock</footer>");
+    });
+
     it("falls back to an empty shell when Header and Footer are unavailable", async () => {
-      const html = await renderComponent(
-        baseLayout(
-          {
-            ...makeData({}),
-            comp: {},
-          } as unknown as Lume.Data,
-          MOCK_HELPERS,
-        ),
+      const html = await renderBase(
+        {
+          ...makeData({}),
+          comp: {},
+        } as unknown as Lume.Data,
       );
 
       assertStringIncludes(html, '<div class="site-wrapper">');
@@ -262,7 +238,7 @@ describe("base.tsx layout", () => {
         },
       } as unknown as Lume.Data;
 
-      await renderComponent(baseLayout(data, MOCK_HELPERS));
+      await renderBase(data);
       assertStringIncludes(receivedUrl, "/about/");
     });
 
@@ -282,7 +258,7 @@ describe("base.tsx layout", () => {
         },
       } as unknown as Lume.Data;
 
-      await renderComponent(baseLayout(data, MOCK_HELPERS));
+      await renderBase(data);
       assertStringIncludes(receivedUrl, "/");
     });
   });

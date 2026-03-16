@@ -43,6 +43,7 @@ type LayoutData = Lume.Data & {
 /** Return type of an ssx JSX element, used to type Lume component functions. */
 type SsxElement = ReturnType<typeof jsx>;
 type LayoutRenderable = SsxElement | string | number | boolean | null | undefined;
+type AwaitableLayoutRenderable = LayoutRenderable | Promise<LayoutRenderable>;
 
 /** Minimal typed interface for the components used in this layout. */
 type Comp = {
@@ -50,13 +51,13 @@ type Comp = {
     readonly currentUrl: string;
     readonly language: SiteLanguage;
     readonly languageAlternates?: Partial<Record<SiteLanguage, string>>;
-  }) => LayoutRenderable;
+  }) => AwaitableLayoutRenderable;
   Footer: (props: {
     readonly author: string;
     readonly language: SiteLanguage;
     readonly feedXmlUrl: string;
     readonly blogStartYear: number;
-  }) => LayoutRenderable;
+  }) => AwaitableLayoutRenderable;
 };
 
 /** Returns alternate URLs keyed by language for the current page. */
@@ -102,10 +103,8 @@ function resolveHeaderComponent(value: unknown): Comp["Header"] {
     const Header = Reflect.get(value, "Header");
 
     if (typeof Header === "function") {
-      return (props) => {
-        const rendered = Reflect.apply(Header, value, [props]);
-        return rendered instanceof Promise ? "" : rendered as LayoutRenderable;
-      };
+      return (props) => Reflect.apply(Header, value, [props]) as
+        AwaitableLayoutRenderable;
     }
   }
 
@@ -117,10 +116,8 @@ function resolveFooterComponent(value: unknown): Comp["Footer"] {
     const Footer = Reflect.get(value, "Footer");
 
     if (typeof Footer === "function") {
-      return (props) => {
-        const rendered = Reflect.apply(Footer, value, [props]);
-        return rendered instanceof Promise ? "" : rendered as LayoutRenderable;
-      };
+      return (props) => Reflect.apply(Footer, value, [props]) as
+        AwaitableLayoutRenderable;
     }
   }
 

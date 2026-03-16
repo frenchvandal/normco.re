@@ -121,6 +121,22 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, postWithoutReadingInfo.title);
     });
 
+    it("renders async PostCard components", async () => {
+      const post = makePost(405, { readingInfo: { minutes: 2 } });
+      const html = await indexPage({
+        search: {
+          pages: () => [post],
+        },
+        comp: {
+          PostCard: async (props: Record<string, unknown>) =>
+            `<article class="post-card"><h3>${props["title"]}</h3></article>`,
+        },
+      } as unknown as Lume.Data, MOCK_HELPERS);
+
+      assertStringIncludes(html, post.title);
+      assertStringIncludes(html, 'class="post-card"');
+    });
+
     it("renders the home-posts container even when no posts exist", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, 'class="home-posts"');

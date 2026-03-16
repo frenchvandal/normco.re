@@ -47,7 +47,7 @@ type Comp = {
     readonly dateStr: string;
     readonly dateIso: string;
     readonly readingLabel?: string;
-  }) => string;
+  }) => string | Promise<string>;
 };
 
 /** Typed helpers used in this page. */
@@ -66,7 +66,7 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
     if (typeof PostCard === "function") {
       return (props) => {
         const rendered = Reflect.apply(PostCard, value, [props]);
-        return rendered instanceof Promise ? "" : String(rendered);
+        return rendered instanceof Promise ? rendered : String(rendered);
       };
     }
   }
