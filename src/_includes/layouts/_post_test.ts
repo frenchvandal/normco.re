@@ -6,7 +6,7 @@ import {
 } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
-import { faker } from "npm/faker-js";
+import { faker, seedTestFaker } from "../../../test/faker.ts";
 
 import postLayout from "./post.tsx";
 
@@ -25,6 +25,11 @@ function makeSentence(seed: number): string {
 function makePostUrl(seed: number): string {
   faker.seed(seed);
   return `/posts/${faker.lorem.slug(3)}/`;
+}
+
+function makePostDate(seed: number): Date {
+  seedTestFaker(seed);
+  return faker.date.anytime();
 }
 
 // ---------------------------------------------------------------------------
@@ -63,7 +68,7 @@ function makeData(
     title: defaultTitle,
     children: { __html: `<p>${defaultBody}</p>` },
     url: defaultUrl,
-    date: new Date("2026-03-05"),
+    date: makePostDate(712),
     readingInfo: undefined,
     nav: makeNav(undefined, undefined),
     ...overrides,
@@ -133,7 +138,7 @@ describe("post.tsx layout", () => {
       const data = {
         title: "Test Post",
         children: { __html: "<p>Body.</p>" },
-        date: new Date("2026-03-05"),
+        date: makePostDate(713),
         readingInfo: undefined,
         nav: makeNav(undefined, undefined),
       } as unknown as Lume.Data;

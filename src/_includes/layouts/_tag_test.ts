@@ -1,6 +1,7 @@
 import { assertMatch, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
+import { faker, seedTestFaker } from "../../../test/faker.ts";
 
 import tagLayout from "./tag.tsx";
 
@@ -9,11 +10,13 @@ const MOCK_HELPERS = {
 } as unknown as Lume.Helpers;
 
 function makePost(seed: number, overrides: Partial<Lume.Data> = {}): Lume.Data {
+  seedTestFaker(seed);
+  const slug = faker.lorem.slug(3);
   return {
-    title: `Post ${seed}`,
-    url: `/posts/post-${seed}/`,
-    date: new Date(`2026-03-${String(seed).padStart(2, "0")}`),
-    readingInfo: { minutes: seed },
+    title: faker.lorem.sentence({ min: 2, max: 5 }),
+    url: `/posts/${slug}/`,
+    date: faker.date.past(),
+    readingInfo: { minutes: faker.number.int({ min: 1, max: 12 }) },
     ...overrides,
   } as unknown as Lume.Data;
 }
@@ -44,12 +47,13 @@ describe("tag.tsx layout", () => {
   });
 
   it("renders breadcrumb, post list, and archive return link", async () => {
+    const post = makePost(2);
     const html = await renderComponent(
       tagLayout(
         {
           lang: "fr",
           tagName: "design",
-          posts: [makePost(2)],
+          posts: [post],
           comp: {
             PostCard: ({ title, url }: { title: string; url: string }) =>
               `<article class="post-card"><h3><a href="${url}">${title}</a></h3></article>`,
@@ -64,7 +68,7 @@ describe("tag.tsx layout", () => {
     assertStringIncludes(html, "design");
     assertStringIncludes(html, 'href="/fr/posts/" class="feature-link"');
     assertStringIncludes(html, 'class="archive-list"');
-    assertStringIncludes(html, 'href="/posts/post-2/"');
+    assertStringIncludes(html, `href="${post.url}"`);
     assertMatch(html, /class="cds--tag cds--tag--[a-z]+ tag-page-current-tag"/);
   });
 
@@ -92,6 +96,7 @@ describe("tag.tsx layout", () => {
   });
 
   it("falls back to a safe default PostCard renderer and ignores invalid post entries", async () => {
+    const invalidDate = makePost(3).date as Date;
     const html = await renderComponent(
       tagLayout(
         {
@@ -99,7 +104,7 @@ describe("tag.tsx layout", () => {
           tagName: "devops",
           posts: [
             {
-              date: new Date("2026-03-03"),
+              date: invalidDate,
               readingInfo: { minutes: 3 },
               title: 42,
               url: 99,

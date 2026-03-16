@@ -1,20 +1,26 @@
 import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
-import { faker } from "npm/faker-js";
+import { faker, seedTestFaker } from "../../test/faker.ts";
 
 import PostCard from "./PostCard.tsx";
 
+const POST_CARD_DATE_FORMATTER = new Intl.DateTimeFormat("en", {
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
 /** Builds deterministic test props with realistic randomized values. */
 function makeBase(seed: number) {
-  faker.seed(seed);
+  seedTestFaker(seed);
   const slug = faker.lorem.slug(3);
   const postDate = faker.date.anytime();
 
   return {
     title: faker.lorem.sentence({ min: 3, max: 6 }),
     url: `/posts/${slug}/`,
-    dateStr: faker.date.month(),
+    dateStr: POST_CARD_DATE_FORMATTER.format(postDate),
     dateIso: postDate.toISOString(),
   } as const;
 }
@@ -75,12 +81,14 @@ describe("PostCard()", () => {
     });
 
     it("escapes title and URL values before interpolation", async () => {
+      seedTestFaker(307);
+      const unsafeDate = faker.date.anytime();
       const html = await renderComponent(
         PostCard({
           title: `<hello "world">`,
           url: `/posts/"unsafe"/`,
-          dateStr: "Mar 5",
-          dateIso: "2026-03-05T00:00:00Z",
+          dateStr: POST_CARD_DATE_FORMATTER.format(unsafeDate),
+          dateIso: unsafeDate.toISOString(),
         }),
       );
       assertStringIncludes(html, '&lt;hello "world"&gt;');

@@ -6,7 +6,7 @@ import {
   assertStringIncludes,
 } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import { faker } from "npm/faker-js";
+import { faker, seedTestFaker } from "../../test/faker.ts";
 
 import postsIndexPage from "./index.page.tsx";
 
@@ -57,7 +57,7 @@ function makePost(
   seed: number,
   overrides: Partial<MockPost> = {},
 ): MockPost {
-  faker.seed(seed);
+  seedTestFaker(seed);
   const includeReadingInfo = faker.datatype.boolean();
   const basePost: MockPost = {
     title: faker.lorem.sentence({ min: 2, max: 5 }),
@@ -236,12 +236,14 @@ describe("posts/index.page.tsx", () => {
     });
 
     it("falls back to a safe card renderer when PostCard is unavailable", async () => {
+      seedTestFaker(520);
+      const unsafeDate = faker.date.anytime();
       const html = await postsIndexPage({
         search: {
           pages: () => [{
             title: 'Unsafe <title>',
             url: '/posts/"unsafe"/',
-            date: new Date("2026-03-16T00:00:00.000Z"),
+            date: unsafeDate,
           }],
         },
         comp: {},

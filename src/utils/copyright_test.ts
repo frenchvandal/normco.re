@@ -1,12 +1,20 @@
 /** Tests for the copyright year formatter utility. */
 
 import { assert } from "jsr/assert";
+import { FakeTime } from "jsr:@std/testing/time";
 import { describe, it } from "jsr/testing-bdd";
-import { faker } from "npm/faker-js";
+import {
+  faker,
+  seedTestFaker,
+  TEST_FAKER_REF_DATE,
+} from "../../test/faker.ts";
 import { formatCopyrightYears } from "./copyright.ts";
 
-// Seed range: 801–899 (see AGENTS.md §5.10)
+// Seed range: 801–899 (see AGENTS.md "TypeScript Tests And Faker")
 const TEST_SEED = 801;
+const TEST_CURRENT_YEAR = TEST_FAKER_REF_DATE.getUTCFullYear();
+const STRICTLY_PAST_REF_DATE = new Date("2026-01-01T00:00:00.000Z");
+const STRICTLY_FUTURE_REF_DATE = new Date("2026-12-31T23:59:59.999Z");
 
 function captureConsoleWarning(run: () => void): string {
   const originalWarn = globalThis.console.warn;
@@ -26,27 +34,24 @@ function captureConsoleWarning(run: () => void): string {
 
 describe("formatCopyrightYears", () => {
   it("returns single year when start year equals current year", () => {
-    faker.seed(TEST_SEED);
-    const currentYear = new Date().getFullYear();
-    const result = formatCopyrightYears(currentYear, currentYear);
-    assert(result === String(currentYear));
+    seedTestFaker(TEST_SEED);
+    const result = formatCopyrightYears(TEST_CURRENT_YEAR, TEST_CURRENT_YEAR);
+    assert(result === String(TEST_CURRENT_YEAR));
   });
 
   it("returns year range when start year is less than current year", () => {
-    faker.seed(TEST_SEED + 1);
-    const currentYear = new Date().getFullYear();
-    const pastYear = currentYear - faker.number.int({ min: 1, max: 10 });
-    const result = formatCopyrightYears(pastYear, currentYear);
-    assert(result === `${pastYear}-${currentYear}`);
+    seedTestFaker(TEST_SEED + 1);
+    const pastYear = TEST_CURRENT_YEAR - faker.number.int({ min: 1, max: 10 });
+    const result = formatCopyrightYears(pastYear, TEST_CURRENT_YEAR);
+    assert(result === `${pastYear}-${TEST_CURRENT_YEAR}`);
   });
 
   it("logs warning and returns start year when start year is in the future", () => {
-    faker.seed(TEST_SEED + 2);
-    const currentYear = new Date().getFullYear();
-    const futureYear = currentYear + faker.number.int({ min: 1, max: 10 });
+    seedTestFaker(TEST_SEED + 2);
+    const futureYear = TEST_CURRENT_YEAR + faker.number.int({ min: 1, max: 10 });
 
     const warningMessage = captureConsoleWarning(() => {
-      const result = formatCopyrightYears(futureYear, currentYear);
+      const result = formatCopyrightYears(futureYear, TEST_CURRENT_YEAR);
       assert(result === String(futureYear));
     });
 
@@ -58,13 +63,12 @@ describe("formatCopyrightYears", () => {
   });
 
   it("logs warning and returns current year when start year is invalid string", () => {
-    faker.seed(TEST_SEED + 3);
-    const currentYear = new Date().getFullYear();
+    seedTestFaker(TEST_SEED + 3);
     const invalidYear = "not-a-year";
 
     const warningMessage = captureConsoleWarning(() => {
-      const result = formatCopyrightYears(invalidYear, currentYear);
-      assert(result === String(currentYear));
+      const result = formatCopyrightYears(invalidYear, TEST_CURRENT_YEAR);
+      assert(result === String(TEST_CURRENT_YEAR));
     });
 
     assert(
@@ -75,12 +79,11 @@ describe("formatCopyrightYears", () => {
   });
 
   it("logs warning and returns current year when start year is NaN", () => {
-    faker.seed(TEST_SEED + 4);
-    const currentYear = new Date().getFullYear();
+    seedTestFaker(TEST_SEED + 4);
 
     const warningMessage = captureConsoleWarning(() => {
-      const result = formatCopyrightYears(NaN, currentYear);
-      assert(result === String(currentYear));
+      const result = formatCopyrightYears(NaN, TEST_CURRENT_YEAR);
+      assert(result === String(TEST_CURRENT_YEAR));
     });
 
     assert(
@@ -91,45 +94,45 @@ describe("formatCopyrightYears", () => {
   });
 
   it("handles numeric string start year correctly", () => {
-    faker.seed(TEST_SEED + 5);
-    const currentYear = new Date().getFullYear();
-    const pastYear = currentYear - 5;
-    const result = formatCopyrightYears(String(pastYear), currentYear);
-    assert(result === `${pastYear}-${currentYear}`);
+    seedTestFaker(TEST_SEED + 5);
+    const pastYear = TEST_CURRENT_YEAR - faker.number.int({ min: 1, max: 10 });
+    const result = formatCopyrightYears(String(pastYear), TEST_CURRENT_YEAR);
+    assert(result === `${pastYear}-${TEST_CURRENT_YEAR}`);
   });
 
   it("uses current year from Date.now() when not provided", () => {
-    faker.seed(TEST_SEED + 6);
-    const currentYear = new Date().getFullYear();
-    const result = formatCopyrightYears(currentYear);
-    assert(result === String(currentYear));
+    seedTestFaker(TEST_SEED + 6);
+    const time = new FakeTime(TEST_FAKER_REF_DATE);
+
+    try {
+      const result = formatCopyrightYears(TEST_CURRENT_YEAR);
+      assert(result === String(TEST_CURRENT_YEAR));
+    } finally {
+      time.restore();
+    }
   });
 
   it("handles years generated by faker in the past", () => {
-    faker.seed(TEST_SEED + 7);
-    faker.setDefaultRefDate(new Date());
-    const currentYear = new Date().getFullYear();
-    const pastDate = faker.date.past({ years: 10 });
-    const pastYear = pastDate.getFullYear();
-    const result = formatCopyrightYears(pastYear, currentYear);
-    assert(result === `${pastYear}-${currentYear}`);
+    seedTestFaker(TEST_SEED + 7);
+    const pastDate = faker.date.past({
+      years: 10,
+      refDate: STRICTLY_PAST_REF_DATE,
+    });
+    const pastYear = pastDate.getUTCFullYear();
+    const result = formatCopyrightYears(pastYear, TEST_CURRENT_YEAR);
+    assert(result === `${pastYear}-${TEST_CURRENT_YEAR}`);
   });
 
   it("handles years generated by faker in the future", () => {
-    faker.seed(TEST_SEED + 8);
-    faker.setDefaultRefDate(new Date());
-    const currentYear = new Date().getFullYear();
-    // Ensure we generate a year strictly in the future by adding offset
-    const futureDate = faker.date.future({ years: 5 });
-    let futureYear = futureDate.getFullYear();
-
-    // If the generated year equals current year, force it to be in the future
-    if (futureYear <= currentYear) {
-      futureYear = currentYear + 1;
-    }
+    seedTestFaker(TEST_SEED + 8);
+    const futureDate = faker.date.future({
+      years: 5,
+      refDate: STRICTLY_FUTURE_REF_DATE,
+    });
+    const futureYear = futureDate.getUTCFullYear();
 
     const warningMessage = captureConsoleWarning(() => {
-      const result = formatCopyrightYears(futureYear, currentYear);
+      const result = formatCopyrightYears(futureYear, TEST_CURRENT_YEAR);
       assert(result === String(futureYear));
     });
 

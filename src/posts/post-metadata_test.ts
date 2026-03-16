@@ -1,18 +1,18 @@
 import { assertEquals } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import { faker } from "npm/faker-js";
+import { faker, seedTestFaker } from "../../test/faker.ts";
 
 import { resolvePostDate, resolveReadingMinutes } from "./post-metadata.ts";
 
 describe("resolvePostDate()", () => {
   it("returns the same Date when already valid", () => {
-    faker.seed(801);
+    seedTestFaker(801);
     const input = faker.date.past();
     assertEquals(resolvePostDate(input).toISOString(), input.toISOString());
   });
 
   it("parses ISO strings", () => {
-    faker.seed(802);
+    seedTestFaker(802);
     const date = faker.date.past();
     const iso = date.toISOString().slice(0, 10);
     const parsed = resolvePostDate(iso);
@@ -20,7 +20,7 @@ describe("resolvePostDate()", () => {
   });
 
   it("falls back when input is invalid", () => {
-    faker.seed(803);
+    seedTestFaker(803);
     const fallback = faker.date.past();
     assertEquals(
       resolvePostDate("not-a-date", fallback).toISOString(),
@@ -31,7 +31,7 @@ describe("resolvePostDate()", () => {
 
 describe("resolveReadingMinutes()", () => {
   it("rounds up reading minutes", () => {
-    faker.seed(804);
+    seedTestFaker(804);
     const base = faker.number.int({ min: 1, max: 10 });
     const fractional = base + 0.1;
     assertEquals(resolveReadingMinutes({ minutes: fractional }), base + 1);
