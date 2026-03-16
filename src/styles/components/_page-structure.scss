@@ -169,7 +169,7 @@
   .about-pictogram-frame {
     display: grid;
     place-items: center;
-    padding: var(--cds-spacing-07);
+    padding: var(--cds-spacing-06);
     border: 1px solid var(--cds-border-subtle);
     background: var(--cds-layer-hover);
   }
@@ -180,7 +180,8 @@
 
   .about-pictogram svg {
     display: block;
-    inline-size: calc(var(--cds-spacing-10) * 2);
+    inline-size: calc(var(--cds-spacing-10) * 3);
+    max-inline-size: 100%;
     block-size: auto;
     fill: currentColor;
   }

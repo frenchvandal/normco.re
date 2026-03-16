@@ -265,8 +265,7 @@ const SITE_TRANSLATIONS = {
       siteNoteTwo: "Multilingual on purpose.",
       siteNoteThree: "No comments, no analytics, no newsletter.",
       pictogramTitle: "Field note",
-      pictogramCaption:
-        "A small nod to the everyday textures behind the writing.",
+      pictogramCaption: "It’s all so tiresome…",
     },
     tagPage: {
       eyebrow: "Topic",
@@ -386,7 +385,7 @@ const SITE_TRANSLATIONS = {
       siteNoteThree: "Ni commentaires, ni analytics, ni newsletter.",
       pictogramTitle: "Repère",
       pictogramCaption:
-        "Un clin d'oeil aux détails du quotidien derrière les textes.",
+        "Un clin d’œil aux détails du quotidien derrière les textes.",
     },
     tagPage: {
       eyebrow: "Sujet",
@@ -502,7 +501,7 @@ const SITE_TRANSLATIONS = {
       siteNoteTwo: "多语言是有意为之。",
       siteNoteThree: "没有评论、没有统计分析，也没有邮件通讯。",
       pictogramTitle: "旁注",
-      pictogramCaption: "给这些文字背后的日常气息留一个小注脚。",
+      pictogramCaption: "哎呀！这事儿真难搞哇……",
     },
     tagPage: {
       eyebrow: "主题",
@@ -618,7 +617,7 @@ const SITE_TRANSLATIONS = {
       siteNoteTwo: "多語言是刻意為之。",
       siteNoteThree: "沒有留言、沒有分析追蹤，也沒有電子報。",
       pictogramTitle: "旁註",
-      pictogramCaption: "給這些文字背後的日常氣息留一個小註腳。",
+      pictogramCaption: "哎呀！這事兒真難搞哇……",
     },
     tagPage: {
       eyebrow: "主題",

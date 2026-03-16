@@ -35,6 +35,9 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, 'class="feature-rail about-rail"');
     assertStringIncludes(html, "At a glance");
     assertStringIncludes(html, 'class="about-pictogram-frame"');
+    assertStringIncludes(html, "<svg");
+    assertStringIncludes(html, "<path");
+    assertNotMatch(html, /data:image\/png;base64,/);
   });
 
   it("contains an RSS feed link", () => {
