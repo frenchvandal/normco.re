@@ -1,5 +1,5 @@
 import { describe, it } from "jsr/testing-bdd";
-import { assertEquals } from "jsr/assert";
+import { assertEquals, assertRejects } from "jsr/assert";
 
 import type Site from "lume/core/site.ts";
 
@@ -177,6 +177,18 @@ async function captureConsoleLogs(
   return entries;
 }
 
+function getRegisteredMiddleware(
+  env: ReturnType<typeof createStubSite>,
+): Middleware {
+  const middleware = env.middlewares[0];
+
+  if (!middleware) {
+    throw new Error("Expected middleware to be registered");
+  }
+
+  return middleware;
+}
+
 describe("otel()", () => {
   it("returns a site plugin function", () => {
     const plugin = otel();
@@ -283,11 +295,7 @@ describe("otel()", () => {
     plugin(env.site as unknown as Site);
     env.triggerServerStart();
 
-    const middleware = env.middlewares[0];
-
-    if (!middleware) {
-      throw new Error("Expected middleware to be registered");
-    }
+    const middleware = getRegisteredMiddleware(env);
 
     await middleware(
       new Request("https://example.test/posts/hello"),
@@ -308,6 +316,93 @@ describe("otel()", () => {
       env.collections.get("Requests")?.items?.[0]?.items?.[0]?.title,
       "GET /posts/hello",
     );
+  });
+
+  it("normalizes request routes with URLPattern definitions in development mode", async () => {
+    const env = createStubSite();
+    const plugin = otel({
+      ignore: [],
+      logRequests: false,
+      mode: "development",
+      routes: [new URLPattern({ pathname: "/posts/:slug" })],
+    });
+    plugin(env.site as unknown as Site);
+    env.triggerServerStart();
+
+    const middleware = getRegisteredMiddleware(env);
+
+    await middleware(
+      new Request("https://example.test/posts/hello-world"),
+      () => Promise.resolve(new Response("ok", { status: 200 })),
+      {} as Deno.ServeHandlerInfo,
+    );
+
+    assertEquals(
+      env.collections.get("Requests")?.items?.[0]?.items?.[0]?.title,
+      "GET /posts/:slug",
+    );
+    assertEquals(
+      env.collections.get("Requests")?.items?.[1]?.items?.[0]?.title,
+      "GET /posts/:slug",
+    );
+  });
+
+  it("skips ignored static asset requests from in-memory request tracking", async () => {
+    const env = createStubSite();
+    const plugin = otel({
+      logRequests: false,
+      mode: "development",
+    });
+    plugin(env.site as unknown as Site);
+    env.triggerServerStart();
+
+    const middleware = getRegisteredMiddleware(env);
+
+    await middleware(
+      new Request("https://example.test/style.css"),
+      () => Promise.resolve(new Response("body", { status: 200 })),
+      {} as Deno.ServeHandlerInfo,
+    );
+
+    assertEquals(env.collections.has("Requests"), false);
+  });
+
+  it("records thrown handler errors as 500 request entries in development mode", async () => {
+    const env = createStubSite();
+    const plugin = otel({
+      ignore: [],
+      logRequests: false,
+      mode: "development",
+      routes: [new URLPattern({ pathname: "/api/:resource" })],
+    });
+    plugin(env.site as unknown as Site);
+    env.triggerServerStart();
+
+    const middleware = getRegisteredMiddleware(env);
+
+    await assertRejects(
+      () =>
+        middleware(
+          new Request("https://example.test/api/failure"),
+          () => Promise.reject(new Error("boom")),
+          {} as Deno.ServeHandlerInfo,
+        ),
+      Error,
+      "boom",
+    );
+
+    const recentRequest = env.collections.get("Requests")?.items?.[0]?.items
+      ?.[0];
+    const routeCounter = env.collections.get("Requests")?.items?.[1]?.items
+      ?.[0];
+    const routeStatus = routeCounter?.items?.[0];
+
+    assertEquals(recentRequest?.title, "GET /api/:resource");
+    assertEquals(recentRequest?.context, "error");
+    assertEquals(recentRequest?.text, "boom");
+    assertEquals(routeCounter?.title, "GET /api/:resource");
+    assertEquals(routeStatus?.title, "500");
+    assertEquals(routeStatus?.context, "error");
   });
 
   it("logs missing OTEL_DENO when instrumentation is not enabled", async () => {

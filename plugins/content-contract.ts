@@ -179,6 +179,14 @@ function parsePostContent(document: Document): ReadonlyArray<ContentBlock> {
   return blocks;
 }
 
+/** Returns true when a page exposes a DOM-like document for content parsing. */
+function isDocumentLike(value: unknown): value is Document {
+  return typeof value === "object" &&
+    value !== null &&
+    "querySelector" in value &&
+    typeof value.querySelector === "function";
+}
+
 /** Resolves reading time from Lume's readingInfo data. */
 function resolveReadingTime(readingInfo: unknown): number | undefined {
   if (typeof readingInfo === "object" && readingInfo !== null) {
@@ -188,6 +196,18 @@ function resolveReadingTime(readingInfo: unknown): number | undefined {
     }
   }
   return undefined;
+}
+
+/** Filters arbitrary tag input down to the contract's string array shape. */
+function resolvePostTags(tags: unknown): ReadonlyArray<string> | undefined {
+  if (!Array.isArray(tags)) {
+    return undefined;
+  }
+
+  const stringTags = tags.filter((tag): tag is string =>
+    typeof tag === "string"
+  );
+  return stringTags.length > 0 ? stringTags : undefined;
 }
 
 /** Returns true when the page is a generated post contract JSON file. */
@@ -225,12 +245,21 @@ export function registerContentContract(site: Site): void {
       }
 
       const lang = typeof data.lang === "string" ? data.lang : "en";
-      const blocks = parsePostContent(page.document);
+      const document = isDocumentLike(page.document)
+        ? page.document
+        : undefined;
+
+      if (document === undefined) {
+        continue;
+      }
+
+      const blocks = parsePostContent(document);
 
       // Skip posts with no extractable content
       if (blocks.length === 0) continue;
 
       const readingTime = resolveReadingTime(data.readingInfo);
+      const tags = resolvePostTags(data.tags);
 
       const postJson: PostJson = {
         version: SCHEMA_VERSION,
@@ -242,7 +271,7 @@ export function registerContentContract(site: Site): void {
           ? { description: data.description }
           : {}),
         ...(readingTime !== undefined ? { readingTime } : {}),
-        ...(Array.isArray(data.tags) ? { tags: data.tags as string[] } : {}),
+        ...(tags !== undefined ? { tags } : {}),
         ...(typeof data.url === "string" ? { url: data.url } : {}),
         blocks,
       };

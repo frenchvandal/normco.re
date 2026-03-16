@@ -10,11 +10,16 @@ import { describe, it } from "jsr/testing-bdd";
 const POSTS_DIR = fromFileUrl(new URL(".", import.meta.url));
 const EXPECTED_LANGUAGES = ["en", "fr", "zh-hans", "zh-hant"] as const;
 
+function normalizeLineEndings(document: string): string {
+  return document.replace(/\r\n?/g, "\n");
+}
+
 function parseFrontmatter(document: string): {
   readonly body: string;
   readonly frontmatter: string;
 } {
-  const match = document.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  const normalizedDocument = normalizeLineEndings(document);
+  const match = normalizedDocument.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   assert(match, "Expected Markdown document with YAML frontmatter");
   const [, frontmatter, body] = match;
   assert(typeof frontmatter === "string");

@@ -264,6 +264,8 @@ interface RequestRecord {
   timestamp: number;
 }
 
+type SpanMetadata = Pick<RequestRecord, "traceId" | "spanId" | "sampled">;
+
 function readContentLength(headers: Headers): number | undefined {
   const value = headers.get("content-length");
 
@@ -285,6 +287,92 @@ function classifyLatency(durationMs: number): RequestRecord["latencyClass"] {
   }
 
   return undefined;
+}
+
+function createIgnorePathMatcher(
+  patterns: ReadonlyArray<RegExp>,
+): (pathname: string) => boolean {
+  if (patterns.length === 0) {
+    return () => false;
+  }
+
+  if (patterns.length === 1) {
+    const pattern = patterns[0];
+
+    if (!pattern) {
+      return () => false;
+    }
+
+    return (pathname) => pattern.test(pathname);
+  }
+
+  return (pathname) => {
+    for (const pattern of patterns) {
+      if (pattern.test(pathname)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+}
+
+function createSpanMetadata(span: Span | undefined): SpanMetadata {
+  const spanContext = span?.spanContext();
+  const sampled = spanContext
+    ? (spanContext.traceFlags & 0x01) === 0x01
+    : undefined;
+
+  return {
+    ...(spanContext?.traceId ? { traceId: spanContext.traceId } : {}),
+    ...(spanContext?.spanId ? { spanId: spanContext.spanId } : {}),
+    ...(sampled !== undefined ? { sampled } : {}),
+  };
+}
+
+function createRequestRecord(
+  options: {
+    method: string;
+    url: URL;
+    route: string;
+    status: number;
+    durationMs: number;
+    requestBytes?: number;
+    responseBytes?: number;
+    userAgent?: string;
+    error?: string;
+    spanMetadata: SpanMetadata;
+  },
+): RequestRecord {
+  const {
+    method,
+    url,
+    route,
+    status,
+    durationMs,
+    requestBytes,
+    responseBytes,
+    userAgent,
+    error,
+    spanMetadata,
+  } = options;
+  const latencyClass = classifyLatency(durationMs);
+
+  return {
+    method,
+    path: url.pathname,
+    protocol: url.protocol.replace(":", ""),
+    ...spanMetadata,
+    route,
+    status,
+    durationMs,
+    ...(latencyClass ? { latencyClass } : {}),
+    ...(requestBytes !== undefined ? { requestBytes } : {}),
+    ...(responseBytes !== undefined ? { responseBytes } : {}),
+    ...(userAgent ? { userAgent } : {}),
+    ...(error ? { error } : {}),
+    timestamp: Date.now(),
+  };
 }
 
 function colorizeConsoleText(
@@ -432,6 +520,7 @@ function createMiddleware(
   onRequest?: (record: RequestRecord) => void,
 ): Middleware {
   const ignorePatterns = options.ignore ?? defaultIgnorePatterns;
+  const shouldIgnorePath = createIgnorePathMatcher(ignorePatterns);
 
   // Deno already collects request duration, active requests, and body sizes
   // automatically. We only add error-specific counters to avoid duplication.
@@ -457,7 +546,7 @@ function createMiddleware(
     const userAgent = normalizeUserAgent(request.headers.get("user-agent"));
 
     // Skip tracing for requests matching ignore patterns (e.g. static assets).
-    if (ignorePatterns.some((re) => re.test(url.pathname))) {
+    if (shouldIgnorePath(url.pathname)) {
       return next(request);
     }
 
@@ -468,17 +557,7 @@ function createMiddleware(
     // Deno creates a span per request automatically, but does not add an
     // `http.route` attribute or set the span name to include the route.
     const span = trace.getActiveSpan();
-    const spanContext = span?.spanContext();
-    const traceId = spanContext?.traceId;
-    const spanId = spanContext?.spanId;
-    const sampled = spanContext
-      ? (spanContext.traceFlags & 0x01) === 0x01
-      : undefined;
-    const spanMetadata = {
-      ...(traceId ? { traceId } : {}),
-      ...(spanId ? { spanId } : {}),
-      ...(sampled !== undefined ? { sampled } : {}),
-    };
+    const spanMetadata = createSpanMetadata(span);
 
     if (span) {
       span.setAttribute("http.route", route);
@@ -505,22 +584,17 @@ function createMiddleware(
         span.setStatus({ code: SpanStatusCode.ERROR, message });
       }
       const durationMs = performance.now() - start;
-      const latencyClass = classifyLatency(durationMs);
-
-      const record: RequestRecord = {
+      const record = createRequestRecord({
         method,
-        path: url.pathname,
-        protocol: url.protocol.replace(":", ""),
-        ...spanMetadata,
+        url,
         route,
         status: 500,
         durationMs,
-        ...(latencyClass ? { latencyClass } : {}),
+        spanMetadata,
         ...(requestBytes !== undefined ? { requestBytes } : {}),
-        error: message,
         ...(userAgent ? { userAgent } : {}),
-        timestamp: Date.now(),
-      };
+        error: message,
+      });
       if (devMode && options.logRequests) {
         // Called inside the active span: OTEL links this log to the trace.
         console.table(
@@ -541,7 +615,6 @@ function createMiddleware(
     const { status } = response;
     const durationMs = performance.now() - start;
     const responseBytes = readContentLength(response.headers);
-    const latencyClass = classifyLatency(durationMs);
 
     // Deno does not set an error status on the span for 5xx responses.
     if (status >= 500 && span) {
@@ -563,20 +636,17 @@ function createMiddleware(
       });
     }
 
-    const record: RequestRecord = {
+    const record = createRequestRecord({
       method,
-      path: url.pathname,
-      protocol: url.protocol.replace(":", ""),
-      ...spanMetadata,
+      url,
       route,
       status,
       durationMs,
-      ...(latencyClass ? { latencyClass } : {}),
+      spanMetadata,
       ...(requestBytes !== undefined ? { requestBytes } : {}),
       ...(responseBytes !== undefined ? { responseBytes } : {}),
       ...(userAgent ? { userAgent } : {}),
-      timestamp: Date.now(),
-    };
+    });
 
     if (devMode && options.logRequests) {
       // Called inside the active span: OTEL links this log to the trace.
@@ -605,6 +675,22 @@ function matchRoute(url: URL, routes?: URLPattern[]): string {
     }
   }
   return url.pathname;
+}
+
+function resolveMode(
+  requestedMode: Options["mode"] | undefined,
+  deployRuntime: boolean,
+  hasDebugBar: boolean,
+): OTelMode {
+  if (requestedMode === "development" || requestedMode === "production") {
+    return requestedMode;
+  }
+
+  if (deployRuntime) {
+    return "production";
+  }
+
+  return hasDebugBar ? "development" : "production";
 }
 
 // ---------------------------------------------------------------------------
@@ -811,15 +897,11 @@ export function otel(userOptions?: Partial<Options>): (site: object) => void {
 
     // Resolve mode once, at plugin setup time.
     const deployRuntime = isDeployRuntime(readEnv);
-    const mode: OTelMode = options.mode === "development"
-      ? "development"
-      : options.mode === "production"
-      ? "production"
-      : deployRuntime
-      ? "production"
-      : typedSite.debugBar
-      ? "development"
-      : "production";
+    const mode = resolveMode(
+      options.mode,
+      deployRuntime,
+      typedSite.debugBar !== undefined,
+    );
 
     const isDev = mode === "development";
     logMissingExpectedOtelEnv(mode, readEnv);

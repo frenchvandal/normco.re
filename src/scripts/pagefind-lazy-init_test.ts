@@ -1,6 +1,6 @@
 import { assert, assertEquals } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import { JSDOM } from "npm:jsdom";
+import { JSDOM } from "npm:jsdom@29.0.0";
 
 const SCRIPT_SOURCE = await Deno.readTextFile(
   new URL("./pagefind-lazy-init.js", import.meta.url),

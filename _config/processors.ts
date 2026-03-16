@@ -11,6 +11,7 @@ import { selectCriticalFontUrls } from "../src/utils/font-preload.ts";
 
 const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
 const XML_PI_PATTERN = /^(<\?xml[^?]*\?>)/;
+const TEXT_DECODER = new TextDecoder();
 
 // Maps hyphenated Lume data keys (URL-style) to their camelCase TypeScript
 // equivalents used throughout the codebase. The multilanguage plugin resolves
@@ -20,6 +21,56 @@ const MULTILANGUAGE_DATA_ALIASES = {
   "zh-hans": "zhHans",
   "zh-hant": "zhHant",
 } as const;
+
+function isMutableRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+/** Applies camelCase-to-hyphenated language aliases onto mutable page data. */
+export function applyMultilanguageDataAliases(pageData: unknown): void {
+  if (!isMutableRecord(pageData)) {
+    return;
+  }
+
+  for (
+    const [languageCode, exportKey] of Object.entries(
+      MULTILANGUAGE_DATA_ALIASES,
+    )
+  ) {
+    if (pageData[languageCode] !== undefined) {
+      continue;
+    }
+
+    const aliasData = pageData[exportKey];
+
+    if (aliasData !== undefined) {
+      pageData[languageCode] = aliasData;
+    }
+  }
+}
+
+/** Normalizes Lume page content into a string for downstream text processors. */
+export function decodePageContent(content: unknown): string {
+  if (typeof content === "string") {
+    return content;
+  }
+
+  if (content instanceof Uint8Array) {
+    return TEXT_DECODER.decode(content);
+  }
+
+  if (ArrayBuffer.isView(content)) {
+    return TEXT_DECODER.decode(
+      new Uint8Array(content.buffer, content.byteOffset, content.byteLength),
+    );
+  }
+
+  if (content instanceof ArrayBuffer) {
+    return TEXT_DECODER.decode(new Uint8Array(content));
+  }
+
+  return String(content);
+}
 
 /** Register all HTML and XML processors. */
 export function registerProcessors(site: Site): void {
@@ -57,23 +108,7 @@ export function registerProcessors(site: Site): void {
   // Expose camelCase data aliases for multilanguage hyphenated codes.
   site.preprocess([".html"], (pages: Page[]) => {
     for (const page of pages) {
-      const pageData = page.data as Record<string, unknown>;
-
-      for (
-        const [languageCode, exportKey] of Object.entries(
-          MULTILANGUAGE_DATA_ALIASES,
-        )
-      ) {
-        if (pageData[languageCode] !== undefined) {
-          continue;
-        }
-
-        const aliasData = pageData[exportKey];
-
-        if (aliasData !== undefined) {
-          pageData[languageCode] = aliasData;
-        }
-      }
+      applyMultilanguageDataAliases(page.data);
     }
   });
 
@@ -132,7 +167,7 @@ export function registerProcessors(site: Site): void {
 
       if (xslHref === undefined) continue;
 
-      const content = String(page.content);
+      const content = decodePageContent(page.content);
       const pi = `<?xml-stylesheet type="text/xsl" href="${xslHref}"?>`;
 
       if (content.includes(pi)) {

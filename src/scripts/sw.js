@@ -194,6 +194,15 @@ function resolveLanguageByPathname(pathname) {
 }
 
 /**
+ * @param {string|null} cachedAtHeader
+ * @returns {number}
+ */
+function parseCachedAtHeader(cachedAtHeader) {
+  const parsed = Number(cachedAtHeader ?? "0");
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+/**
  * Cache-first strategy for static assets (CSS, JS, images, fonts).
  *
  * @param {Request} request
@@ -291,7 +300,7 @@ async function staleWhileRevalidateFeed(request) {
     .catch(() => undefined);
 
   if (cached !== undefined) {
-    const cachedAt = Number(cached.headers.get("x-sw-cached-at") ?? "0");
+    const cachedAt = parseCachedAtHeader(cached.headers.get("x-sw-cached-at"));
     const isFresh = Date.now() - cachedAt < FEED_TTL_MS;
 
     if (!isFresh) {

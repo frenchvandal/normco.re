@@ -5,6 +5,26 @@
   const PAGEFIND_SCRIPT_URL = "/pagefind/pagefind-ui.js";
   const PAGEFIND_STYLE_URL = "/pagefind/pagefind-ui.css";
   /**
+   * @typedef {"idle" | "loading" | "results" | "error"} SearchStatusState
+   */
+  /**
+   * @typedef {"idle" | "loading" | "ready" | "error"} PagefindState
+   */
+  /** @type {{ readonly IDLE: SearchStatusState; readonly LOADING: SearchStatusState; readonly RESULTS: SearchStatusState; readonly ERROR: SearchStatusState }} */
+  const SEARCH_STATUS_STATE = {
+    IDLE: "idle",
+    LOADING: "loading",
+    RESULTS: "results",
+    ERROR: "error",
+  };
+  /** @type {{ readonly IDLE: PagefindState; readonly LOADING: PagefindState; readonly READY: PagefindState; readonly ERROR: PagefindState }} */
+  const PAGEFIND_STATE = {
+    IDLE: "idle",
+    LOADING: "loading",
+    READY: "ready",
+    ERROR: "error",
+  };
+  /**
    * @typedef {{
    *   readonly element: string;
    *   readonly showImages: boolean;
@@ -124,10 +144,14 @@
   /**
    * @param {HTMLElement} container
    * @param {string} message
-   * @param {"idle" | "loading" | "results" | "error"} [state]
+   * @param {SearchStatusState} [state]
    * @returns {void}
    */
-  function setSearchStatus(container, message, state = "idle") {
+  function setSearchStatus(
+    container,
+    message,
+    state = SEARCH_STATUS_STATE.IDLE,
+  ) {
     const status = getSearchStatusElement(container);
 
     if (!(status instanceof HTMLElement)) {
@@ -137,7 +161,10 @@
     const text = message.trim();
     status.textContent = text;
     status.dataset.searchStatusState = state;
-    setSearchBusyState(container, text.length > 0 && state === "loading");
+    setSearchBusyState(
+      container,
+      text.length > 0 && state === SEARCH_STATUS_STATE.LOADING,
+    );
 
     if (text.length === 0) {
       status.setAttribute("hidden", "");
@@ -153,6 +180,64 @@
    */
   function clearSearchStatus(container) {
     setSearchStatus(container, "");
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {PagefindState}
+   */
+  function getPagefindState(container) {
+    return /** @type {PagefindState} */ (
+      container.dataset.pagefindState ?? PAGEFIND_STATE.IDLE
+    );
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @param {PagefindState} state
+   * @returns {void}
+   */
+  function setPagefindState(container, state) {
+    container.dataset.pagefindState = state;
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {boolean}
+   */
+  function isPagefindReady(container) {
+    return getPagefindState(container) === PAGEFIND_STATE.READY;
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function showPagefindLoading(container) {
+    setPagefindState(container, PAGEFIND_STATE.LOADING);
+    setSearchStatus(
+      container,
+      getSearchMessages(container).loading,
+      SEARCH_STATUS_STATE.LOADING,
+    );
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @param {string} message
+   * @returns {void}
+   */
+  function showPagefindError(container, message) {
+    setPagefindState(container, PAGEFIND_STATE.ERROR);
+    setSearchStatus(container, message, SEARCH_STATUS_STATE.ERROR);
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function markPagefindReady(container) {
+    setPagefindState(container, PAGEFIND_STATE.READY);
   }
 
   /**
@@ -196,7 +281,7 @@
     const message = globalThis.navigator.onLine === false
       ? offline
       : unavailable;
-    setSearchStatus(container, message, "error");
+    showPagefindError(container, message);
 
     const retryButton = globalThis.document.createElement("button");
     retryButton.type = "button";
@@ -208,11 +293,7 @@
 
     retryButton.addEventListener("click", () => {
       clearSearchFallback(container);
-      setSearchStatus(
-        container,
-        getSearchMessages(container).loading,
-        "loading",
-      );
+      showPagefindLoading(container);
       void ensurePagefindInitialized(container)
         .then(() => {
           focusSearchInput(container);
@@ -265,12 +346,8 @@
       return;
     }
 
-    if (container.dataset.pagefindReady !== "true") {
-      setSearchStatus(
-        container,
-        getSearchMessages(container).loading,
-        "loading",
-      );
+    if (!isPagefindReady(container)) {
+      showPagefindLoading(container);
     }
 
     focusSearchInput(container);
@@ -290,7 +367,7 @@
    * @returns {Promise<void>}
    */
   function ensurePagefindInitialized(container) {
-    if (container.dataset.pagefindReady === "true") {
+    if (isPagefindReady(container)) {
       return Promise.resolve();
     }
 
@@ -333,7 +410,7 @@
    */
   async function initializePagefind(container) {
     clearSearchFallback(container);
-    setSearchStatus(container, getSearchMessages(container).loading, "loading");
+    showPagefindLoading(container);
     ensurePagefindStylesheet();
     await loadPagefindScript();
     await yieldToMain();
@@ -343,7 +420,7 @@
       throw new Error("Pagefind UI constructor was not available.");
     }
 
-    if (container.dataset.pagefindReady === "true") {
+    if (isPagefindReady(container)) {
       return;
     }
 
@@ -356,7 +433,7 @@
       translations: getPagefindTranslations(container),
     });
 
-    container.dataset.pagefindReady = "true";
+    markPagefindReady(container);
     bindSearchStatus(container);
   }
 
@@ -387,7 +464,7 @@
       setSearchStatus(
         container,
         getSearchMessages(container).loading,
-        "loading",
+        SEARCH_STATUS_STATE.LOADING,
       );
     });
 
@@ -427,7 +504,7 @@
       setSearchStatus(
         container,
         getSearchMessages(container).loading,
-        "loading",
+        SEARCH_STATUS_STATE.LOADING,
       );
       return;
     }
@@ -438,13 +515,15 @@
       setSearchStatus(
         container,
         getSearchMessages(container).loading,
-        "loading",
+        SEARCH_STATUS_STATE.LOADING,
       );
       return;
     }
 
     const { loading } = getSearchMessages(container);
-    const state = text === loading ? "loading" : "results";
+    const state = text === loading
+      ? SEARCH_STATUS_STATE.LOADING
+      : SEARCH_STATUS_STATE.RESULTS;
     setSearchStatus(container, text, state);
   }
 

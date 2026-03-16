@@ -10,6 +10,7 @@ import {
   resolveSiteLanguage,
 } from "../utils/i18n.ts";
 import { resolvePostDate, resolveReadingMinutes } from "./post-metadata.ts";
+import { escapeHtml } from "../utils/html.ts";
 
 /** Typed component functions used on this page. */
 type Comp = {
@@ -26,6 +27,63 @@ type Comp = {
 type H = {
   date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
 };
+
+function isLumeData(value: unknown): value is Lume.Data {
+  return typeof value === "object" && value !== null;
+}
+
+function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
+  if (typeof value === "object" && value !== null) {
+    const PostCard = Reflect.get(value, "PostCard");
+
+    if (typeof PostCard === "function") {
+      return (props) => {
+        const rendered = Reflect.apply(PostCard, value, [props]);
+        return rendered instanceof Promise ? rendered : String(rendered);
+      };
+    }
+  }
+
+  return ({ title, url }) =>
+    `<article class="post-card"><h3><a href="${escapeHtml(url)}">${
+      escapeHtml(title)
+    }</a></h3></article>`;
+}
+
+function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
+  const date = Reflect.get(helpers, "date");
+
+  if (typeof date !== "function") {
+    return () => undefined;
+  }
+
+  return (value, pattern, lang) => {
+    const formatted = Reflect.apply(date, helpers, [value, pattern, lang]);
+    return typeof formatted === "string" ? formatted : undefined;
+  };
+}
+
+function resolveArchivePosts(
+  search: unknown,
+  languageDataCode: string,
+): Lume.Data[] {
+  if (typeof search !== "object" || search === null) {
+    return [];
+  }
+
+  const pages = Reflect.get(search, "pages");
+
+  if (typeof pages !== "function") {
+    return [];
+  }
+
+  const results = Reflect.apply(pages, search, [
+    `type=post lang=${languageDataCode}`,
+    "date=desc",
+  ]);
+
+  return Array.isArray(results) ? results.filter(isLumeData) : [];
+}
 
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
@@ -66,8 +124,8 @@ export default async (
   data: Lume.Data,
   helpers: Lume.Helpers,
 ): Promise<string> => {
-  const { PostCard } = data.comp as unknown as Comp;
-  const { date: dateFormat } = helpers as unknown as H;
+  const PostCard = resolvePostCardRenderer(data.comp);
+  const dateFormat = resolveDateHelper(helpers);
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
@@ -77,10 +135,7 @@ export default async (
     : language === "zhHans" || language === "zhHant"
     ? "M月d日"
     : "SHORT";
-  const posts = data.search.pages(
-    `type=post lang=${languageDataCode}`,
-    "date=desc",
-  ) as Lume.Data[];
+  const posts = resolveArchivePosts(data.search, languageDataCode);
 
   // Group posts by year.
   const currentYear = new Date().getFullYear();
@@ -105,7 +160,7 @@ export default async (
     return `<li class="archive-year-nav-item">
   <a href="#archive-year-${year}" class="archive-year-nav-link">
     <span class="archive-year-nav-link-label">${year}</span>
-    <span class="archive-year-nav-link-meta">${yearSummary}</span>
+    <span class="archive-year-nav-link-meta">${escapeHtml(yearSummary)}</span>
   </a>
 </li>`;
   }).join("\n");
@@ -118,8 +173,8 @@ export default async (
       const postDate = resolvePostDate(post.date, new Date(year, 0, 1));
       const minutes = resolveReadingMinutes(post.readingInfo);
       const card = await PostCard({
-        title: post.title as string,
-        url: post.url as string,
+        title: typeof post.title === "string" ? post.title : "",
+        url: typeof post.url === "string" ? post.url : "",
         dateStr: dateFormat(postDate, shortDatePattern, language) ??
           postDate.toISOString(),
         dateIso: dateFormat(postDate, "ATOM", language) ??
@@ -137,7 +192,7 @@ export default async (
     <div class="archive-year-heading-group">
       <h2 id="archive-year-heading-${year}" class="archive-year-heading">${year}</h2>
       <span class="cds--tag cds--tag--gray archive-year-summary">
-        <span class="cds--tag__label">${yearSummary}</span>
+        <span class="cds--tag__label">${escapeHtml(yearSummary)}</span>
       </span>
     </div>
   </header>
@@ -147,29 +202,34 @@ export default async (
 </section>`;
   }));
 
-  const archiveIntro =
-    `<nav class="cds--breadcrumb" aria-label="${translations.archive.breadcrumbAriaLabel}">
+  const archiveIntro = `<nav class="cds--breadcrumb" aria-label="${
+    escapeHtml(translations.archive.breadcrumbAriaLabel)
+  }">
   <ol class="cds--breadcrumb-list">
     <li class="cds--breadcrumb-item">
-      <a href="${homeUrl}" class="cds--breadcrumb-link">
-        ${translations.navigation.home}
+      <a href="${escapeHtml(homeUrl)}" class="cds--breadcrumb-link">
+        ${escapeHtml(translations.navigation.home)}
       </a>
     </li>
     <li class="cds--breadcrumb-item">
       <span class="cds--breadcrumb-current" aria-current="page">
-        ${translations.archive.title}
+        ${escapeHtml(translations.archive.title)}
       </span>
     </li>
   </ol>
 </nav>
 <section class="pagehead archive-pagehead" aria-labelledby="archive-title">
-  <p class="pagehead-eyebrow">${translations.archive.eyebrow}</p>
-  <h1 id="archive-title" class="archive-page-title">${translations.archive.title}</h1>
-  <p class="pagehead-lead">${translations.archive.lead}</p>
+  <p class="pagehead-eyebrow">${escapeHtml(translations.archive.eyebrow)}</p>
+  <h1 id="archive-title" class="archive-page-title">${
+    escapeHtml(translations.archive.title)
+  }</h1>
+  <p class="pagehead-lead">${escapeHtml(translations.archive.lead)}</p>
 </section>`;
 
   const archiveYearNav = years.length > 1
-    ? `<nav class="archive-year-nav" aria-label="${translations.archive.yearsAriaLabel}">
+    ? `<nav class="archive-year-nav" aria-label="${
+      escapeHtml(translations.archive.yearsAriaLabel)
+    }">
   <ol class="archive-year-nav-list">
     ${yearNavItems}
   </ol>
@@ -177,7 +237,9 @@ export default async (
     : "";
 
   const archiveBody = sections.length > 0
-    ? `<section class="archive-activity" aria-label="${translations.archive.activityAriaLabel}">
+    ? `<section class="archive-activity" aria-label="${
+      escapeHtml(translations.archive.activityAriaLabel)
+    }">
   <div class="archive-activity-main">
     ${sections.join("\n")}
   </div>
@@ -195,12 +257,16 @@ export default async (
     ? "feature-layout feature-layout--with-rail"
     : "feature-layout";
   const archiveRail = archiveYearNav
-    ? `<aside class="feature-rail archive-rail" aria-label="${translations.archive.railAriaLabel}">
+    ? `<aside class="feature-rail archive-rail" aria-label="${
+      escapeHtml(translations.archive.railAriaLabel)
+    }">
   <div class="feature-rail-sticky">
     <section class="feature-card archive-year-card">
-      <h2 class="feature-card-title">${translations.archive.yearsAriaLabel}</h2>
+      <h2 class="feature-card-title">${
+      escapeHtml(translations.archive.yearsAriaLabel)
+    }</h2>
       <p class="feature-card-caption">${
-      formatPostCount(posts.length, language)
+      escapeHtml(formatPostCount(posts.length, language))
     }</p>
       ${archiveYearNav}
     </section>
@@ -209,7 +275,7 @@ export default async (
     : "";
 
   return `<div class="site-page-shell site-page-shell--wide">
-<div class="${archiveLayoutClass}">
+<div class="${escapeHtml(archiveLayoutClass)}">
   <div class="feature-main">
     ${archiveIntro}
     ${archiveBody}

@@ -12,6 +12,7 @@ import {
   createPayloadReportMetadata,
   getPayloadDeltas,
   parsePayloadPolicy,
+  parsePayloadReport,
 } from "./payload-report.ts";
 
 type PayloadReportFixture = {
@@ -896,6 +897,70 @@ describe("payload baseline metadata coherence", () => {
         ),
       Error,
       "Baseline policy fingerprint mismatch",
+    );
+  });
+});
+
+describe("payload report parsing", () => {
+  it("accepts structurally valid reports", () => {
+    const report = createReport([
+      ["/index.html", 1000],
+      ["/posts/index.html", 1300],
+    ]);
+
+    assertEquals(
+      parsePayloadReport(report as Parameters<typeof parsePayloadReport>[0]),
+      report,
+    );
+  });
+
+  it("rejects reports with malformed route payload entries", () => {
+    const invalidReport = {
+      ...createReport([
+        ["/index.html", 1000],
+      ]),
+      routes: [
+        {
+          route: "/index.html",
+          jsBytes: 1000,
+          cssBytes: 0,
+          totalBytes: 1000,
+          assets: [
+            {
+              url: "/style.css",
+              kind: "image",
+              bytes: 1000,
+            },
+          ],
+        },
+      ],
+    };
+
+    assertThrows(
+      () => parsePayloadReport(invalidReport, "baseline report"),
+      Error,
+      "Invalid baseline report",
+    );
+  });
+
+  it("rejects reports whose totals disagree with route payload entries", () => {
+    const report = createReport([
+      ["/index.html", 1000],
+      ["/posts/index.html", 1300],
+    ]);
+    const invalidReport = {
+      ...report,
+      totals: {
+        jsBytes: 0,
+        cssBytes: 0,
+        totalBytes: 0,
+      },
+    };
+
+    assertThrows(
+      () => parsePayloadReport(invalidReport, "baseline report"),
+      Error,
+      "totals do not match route payload entries",
     );
   });
 });

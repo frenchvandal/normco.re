@@ -1,5 +1,4 @@
 import {
-  assert,
   assertEquals,
   assertMatch,
   assertNotMatch,
@@ -50,7 +49,7 @@ function makeData(
     children?: { __html: string };
     url?: string;
     lang?: string;
-    tags?: string[];
+    tags?: unknown;
     readingInfo?: { minutes?: number };
     nav?: ReturnType<typeof makeNav>;
     date?: Date;
@@ -173,6 +172,19 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'class="post-tags post-tags--rail"');
       assertStringIncludes(html, 'href="/tags/devops/"');
       assertStringIncludes(html, 'href="/tags/cdn/"');
+    });
+
+    it("ignores non-string tag entries before rendering the rail", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({ tags: ["devops", 42, { label: "ignored" }] }),
+          MOCK_HELPERS,
+        ),
+      );
+
+      assertStringIncludes(html, 'href="/tags/devops/"');
+      assertNotMatch(html, /href="\/tags\/42\/"/);
+      assertNotMatch(html, /ignored/);
     });
 
     it("renders h1 with the post title", async () => {

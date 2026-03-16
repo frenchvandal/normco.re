@@ -32,6 +32,10 @@ type AssetRewrite = {
   fingerprintedMapUrl?: string;
 };
 
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 function toOutputPath(rootDir: string, urlPath: string): string {
   return join(
     rootDir,
@@ -83,46 +87,56 @@ async function fingerprintAsset(
   sourceUrl: string,
 ): Promise<AssetRewrite> {
   const sourcePath = toOutputPath(rootDir, sourceUrl);
-  const sourceBytes = await Deno.readFile(sourcePath);
-  const hash = await hashContent(sourceBytes);
-  const fingerprintedUrl = toFingerprintedUrl(sourceUrl, hash);
-  const fingerprintedPath = toOutputPath(rootDir, fingerprintedUrl);
 
-  await Deno.rename(sourcePath, fingerprintedPath);
+  try {
+    const sourceBytes = await Deno.readFile(sourcePath);
+    const hash = await hashContent(sourceBytes);
+    const fingerprintedUrl = toFingerprintedUrl(sourceUrl, hash);
+    const fingerprintedPath = toOutputPath(rootDir, fingerprintedUrl);
 
-  const sourceMapPath = `${sourcePath}.map`;
-  const sourceMapExists = await fileExists(sourceMapPath);
+    await Deno.rename(sourcePath, fingerprintedPath);
 
-  if (!sourceMapExists) {
+    const sourceMapPath = `${sourcePath}.map`;
+    const sourceMapExists = await fileExists(sourceMapPath);
+
+    if (!sourceMapExists) {
+      return {
+        sourceUrl,
+        fingerprintedUrl,
+      };
+    }
+
+    const sourceMapUrl = `${sourceUrl}.map`;
+    const fingerprintedMapUrl = `${fingerprintedUrl}.map`;
+    const fingerprintedMapPath = `${fingerprintedPath}.map`;
+    const mapFileName = basename(fingerprintedMapPath);
+
+    await Deno.rename(sourceMapPath, fingerprintedMapPath);
+
+    const fingerprintedCode = await Deno.readTextFile(fingerprintedPath);
+    const codeWithUpdatedSourceMap = updateSourceMapReference(
+      fingerprintedCode,
+      mapFileName,
+    );
+
+    if (codeWithUpdatedSourceMap !== fingerprintedCode) {
+      await Deno.writeTextFile(fingerprintedPath, codeWithUpdatedSourceMap);
+    }
+
     return {
       sourceUrl,
       fingerprintedUrl,
+      sourceMapUrl,
+      fingerprintedMapUrl,
     };
+  } catch (error) {
+    throw new Error(
+      `Failed to fingerprint asset ${sourceUrl} (${sourcePath}): ${
+        getErrorMessage(error)
+      }`,
+      { cause: error },
+    );
   }
-
-  const sourceMapUrl = `${sourceUrl}.map`;
-  const fingerprintedMapUrl = `${fingerprintedUrl}.map`;
-  const fingerprintedMapPath = `${fingerprintedPath}.map`;
-  const mapFileName = basename(fingerprintedMapPath);
-
-  await Deno.rename(sourceMapPath, fingerprintedMapPath);
-
-  const fingerprintedCode = await Deno.readTextFile(fingerprintedPath);
-  const codeWithUpdatedSourceMap = updateSourceMapReference(
-    fingerprintedCode,
-    mapFileName,
-  );
-
-  if (codeWithUpdatedSourceMap !== fingerprintedCode) {
-    await Deno.writeTextFile(fingerprintedPath, codeWithUpdatedSourceMap);
-  }
-
-  return {
-    sourceUrl,
-    fingerprintedUrl,
-    sourceMapUrl,
-    fingerprintedMapUrl,
-  };
 }
 
 async function* walkFiles(rootDir: string): AsyncGenerator<string> {
@@ -232,4 +246,11 @@ async function main(): Promise<void> {
   console.info(`[fingerprint] service worker graph version -> ${swVersion}`);
 }
 
-await main();
+if (import.meta.main) {
+  try {
+    await main();
+  } catch (error) {
+    console.error(`[fingerprint] ${getErrorMessage(error)}`);
+    Deno.exit(1);
+  }
+}

@@ -20,6 +20,9 @@ export function getTagSlug(tag: string): string {
 
 /** Returns a deterministic display color for a tag label. */
 export function getTagColor(tag: string): TagColor {
+  // `charCodeAt()` hashes UTF-16 code units. That is intentional here: we only
+  // need a stable deterministic bucket for UI color assignment, not a
+  // linguistically normalized hash across equivalent grapheme clusters.
   const hash = tag.split("").reduce(
     (accumulator, character) => accumulator + character.charCodeAt(0),
     0,

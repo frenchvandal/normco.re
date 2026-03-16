@@ -413,6 +413,65 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === "string" && value.length > 0;
+}
+
+function isNonNegativeInteger(value: unknown): value is number {
+  return typeof value === "number" && Number.isInteger(value) && value >= 0;
+}
+
+function isRouteAssetKind(value: unknown): value is RouteAssetKind {
+  return value === "js" || value === "css";
+}
+
+function isRouteAsset(value: unknown): value is RouteAsset {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return isNonEmptyString(value.url) &&
+    isRouteAssetKind(value.kind) &&
+    isNonNegativeInteger(value.bytes);
+}
+
+function isRoutePayload(value: unknown): value is RoutePayload {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  if (
+    !isNonEmptyString(value.route) ||
+    !isNonNegativeInteger(value.jsBytes) ||
+    !isNonNegativeInteger(value.cssBytes) ||
+    !isNonNegativeInteger(value.totalBytes) ||
+    !Array.isArray(value.assets) ||
+    !value.assets.every(isRouteAsset)
+  ) {
+    return false;
+  }
+
+  return value.totalBytes === value.jsBytes + value.cssBytes;
+}
+
+function isPayloadTotals(
+  value: unknown,
+): value is PayloadReport["totals"] {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  if (
+    !isNonNegativeInteger(value.jsBytes) ||
+    !isNonNegativeInteger(value.cssBytes) ||
+    !isNonNegativeInteger(value.totalBytes)
+  ) {
+    return false;
+  }
+
+  return value.totalBytes === value.jsBytes + value.cssBytes;
+}
+
 function parsePolicyRoutes(value: unknown): ReadonlyArray<string> {
   if (!Array.isArray(value)) {
     throw new Error(
@@ -1214,9 +1273,70 @@ function renderMarkdownTable(
   return lines.join("\n");
 }
 
+export function parsePayloadReport(
+  rawReport: unknown,
+  sourceLabel = "payload report",
+): PayloadReport {
+  if (!isRecord(rawReport)) {
+    throw new Error(
+      `[payload-report] Invalid ${sourceLabel}: expected a JSON object`,
+    );
+  }
+
+  if (
+    !isNonEmptyString(rawReport.generatedAt) ||
+    !isNonEmptyString(rawReport.rootDir) ||
+    !isPayloadReportMetadata(rawReport.metadata) ||
+    !Array.isArray(rawReport.routes) ||
+    !rawReport.routes.every(isRoutePayload) ||
+    !isPayloadTotals(rawReport.totals)
+  ) {
+    throw new Error(
+      `[payload-report] Invalid ${sourceLabel}: expected generatedAt, rootDir, metadata, routes, and totals fields compatible with the current schema`,
+    );
+  }
+
+  const computedTotals = rawReport.routes.reduce(
+    (accumulator, route) => ({
+      jsBytes: accumulator.jsBytes + route.jsBytes,
+      cssBytes: accumulator.cssBytes + route.cssBytes,
+      totalBytes: accumulator.totalBytes + route.totalBytes,
+    }),
+    {
+      jsBytes: 0,
+      cssBytes: 0,
+      totalBytes: 0,
+    },
+  );
+
+  if (
+    rawReport.totals.jsBytes !== computedTotals.jsBytes ||
+    rawReport.totals.cssBytes !== computedTotals.cssBytes ||
+    rawReport.totals.totalBytes !== computedTotals.totalBytes
+  ) {
+    throw new Error(
+      `[payload-report] Invalid ${sourceLabel}: totals do not match route payload entries`,
+    );
+  }
+
+  return rawReport as PayloadReport;
+}
+
 async function readBaselineReport(path: string): Promise<PayloadReport> {
   const raw = await Deno.readTextFile(path);
-  return JSON.parse(raw) as PayloadReport;
+  let parsedReport: unknown;
+
+  try {
+    parsedReport = JSON.parse(raw);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `[payload-report] Failed to parse baseline report \`${path}\`: ${message}`,
+      { cause: error },
+    );
+  }
+
+  return parsePayloadReport(parsedReport, `baseline report \`${path}\``);
 }
 
 function renderMarkdownReport(

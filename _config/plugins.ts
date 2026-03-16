@@ -30,6 +30,27 @@ import "npm/prism-yaml";
 import { CARBON_SASS_LOAD_PATHS } from "./materialize_sass_npm_packages.ts";
 import otelPlugin from "../plugins/otel.ts";
 
+const GOOGLE_FONTS_STYLESHEET_URL =
+  "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Noto+Sans+SC:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&display=swap";
+
+/**
+ * Lightning CSS expects packed browser versions in the form 0xMMmmpp
+ * (`major << 16 | minor << 8 | patch`).
+ */
+function encodeLightningCssTarget(
+  major: number,
+  minor = 0,
+  patch = 0,
+): number {
+  return (major << 16) | (minor << 8) | patch;
+}
+
+const LIGHTNING_CSS_TARGETS = {
+  chrome: encodeLightningCssTarget(123),
+  firefox: encodeLightningCssTarget(120),
+  safari: encodeLightningCssTarget(17, 5),
+} as const;
+
 /** Register all Lume plugins in the correct cascade order. */
 export function registerPlugins(
   site: Site,
@@ -59,8 +80,7 @@ export function registerPlugins(
         "chinese-simplified",
         "chinese-traditional",
       ],
-      fonts:
-        "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Noto+Sans+SC:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&display=swap",
+      fonts: GOOGLE_FONTS_STYLESHEET_URL,
       cssFile: "styles/fonts.css",
       fontsFolder: "/fonts",
     }),
@@ -88,11 +108,7 @@ export function registerPlugins(
     lightningcss({
       options: {
         minify: false,
-        targets: {
-          chrome: 123 << 16,
-          firefox: 120 << 16,
-          safari: (17 << 16) | (5 << 8),
-        },
+        targets: LIGHTNING_CSS_TARGETS,
       },
     }),
   );

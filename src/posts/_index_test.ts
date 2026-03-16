@@ -115,6 +115,27 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(html, 'class="cds--breadcrumb-current"');
       assertNotMatch(html, /cds--breadcrumb-separator/);
     });
+
+    it("escapes localized apostrophes in French archive chrome", async () => {
+      const posts = [
+        makePost(901, {
+          date: new Date("2026-01-01"),
+          readingInfo: { minutes: 1 },
+        }),
+        makePost(902, {
+          date: new Date("2025-01-01"),
+          readingInfo: { minutes: 2 },
+        }),
+      ];
+      const html = await postsIndexPage(
+        { ...makeData(posts), lang: "fr" } as Lume.Data,
+        MOCK_HELPERS,
+      );
+
+      assertStringIncludes(html, "Fil d&#39;Ariane des archives");
+      assertStringIncludes(html, "Années d&#39;archives");
+      assertNotMatch(html, /Fil d'Ariane des archives/);
+    });
   });
 
   describe("year grouping", () => {
@@ -212,6 +233,22 @@ describe("posts/index.page.tsx", () => {
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, "<time");
       assertStringIncludes(html, 'class="post-card-date"');
+    });
+
+    it("falls back to a safe card renderer when PostCard is unavailable", async () => {
+      const html = await postsIndexPage({
+        search: {
+          pages: () => [{
+            title: 'Unsafe <title>',
+            url: '/posts/"unsafe"/',
+            date: new Date("2026-03-16T00:00:00.000Z"),
+          }],
+        },
+        comp: {},
+      } as unknown as Lume.Data, MOCK_HELPERS);
+
+      assertStringIncludes(html, "Unsafe &lt;title&gt;");
+      assertStringIncludes(html, 'href="/posts/&quot;unsafe&quot;/"');
     });
   });
 

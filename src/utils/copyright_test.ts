@@ -8,6 +8,22 @@ import { formatCopyrightYears } from "./copyright.ts";
 // Seed range: 801–899 (see AGENTS.md §5.10)
 const TEST_SEED = 801;
 
+function captureConsoleWarning(run: () => void): string {
+  const originalWarn = globalThis.console.warn;
+  let warningMessage = "";
+
+  globalThis.console.warn = (...args: unknown[]) => {
+    warningMessage = args.map(String).join(" ");
+  };
+
+  try {
+    run();
+    return warningMessage;
+  } finally {
+    globalThis.console.warn = originalWarn;
+  }
+}
+
 describe("formatCopyrightYears", () => {
   it("returns single year when start year equals current year", () => {
     faker.seed(TEST_SEED);
@@ -29,23 +45,16 @@ describe("formatCopyrightYears", () => {
     const currentYear = new Date().getFullYear();
     const futureYear = currentYear + faker.number.int({ min: 1, max: 10 });
 
-    const consoleWarnSpy = globalThis.console.warn;
-    let warningMessage = "";
-    globalThis.console.warn = (message: string) => {
-      warningMessage = message;
-    };
-
-    try {
+    const warningMessage = captureConsoleWarning(() => {
       const result = formatCopyrightYears(futureYear, currentYear);
       assert(result === String(futureYear));
-      assert(
-        warningMessage.includes(
-          `blogStartYear (${futureYear}) is set to a future year`,
-        ),
-      );
-    } finally {
-      globalThis.console.warn = consoleWarnSpy;
-    }
+    });
+
+    assert(
+      warningMessage.includes(
+        `blogStartYear (${futureYear}) is set to a future year`,
+      ),
+    );
   });
 
   it("logs warning and returns current year when start year is invalid string", () => {
@@ -53,46 +62,32 @@ describe("formatCopyrightYears", () => {
     const currentYear = new Date().getFullYear();
     const invalidYear = "not-a-year";
 
-    const consoleWarnSpy = globalThis.console.warn;
-    let warningMessage = "";
-    globalThis.console.warn = (message: string) => {
-      warningMessage = message;
-    };
-
-    try {
+    const warningMessage = captureConsoleWarning(() => {
       const result = formatCopyrightYears(invalidYear, currentYear);
       assert(result === String(currentYear));
-      assert(
-        warningMessage.includes(
-          `blogStartYear value "${invalidYear}" is not in a valid YYYY format`,
-        ),
-      );
-    } finally {
-      globalThis.console.warn = consoleWarnSpy;
-    }
+    });
+
+    assert(
+      warningMessage.includes(
+        `blogStartYear value "${invalidYear}" is not in a valid YYYY format`,
+      ),
+    );
   });
 
   it("logs warning and returns current year when start year is NaN", () => {
     faker.seed(TEST_SEED + 4);
     const currentYear = new Date().getFullYear();
 
-    const consoleWarnSpy = globalThis.console.warn;
-    let warningMessage = "";
-    globalThis.console.warn = (message: string) => {
-      warningMessage = message;
-    };
-
-    try {
+    const warningMessage = captureConsoleWarning(() => {
       const result = formatCopyrightYears(NaN, currentYear);
       assert(result === String(currentYear));
-      assert(
-        warningMessage.includes(
-          `blogStartYear value "NaN" is not in a valid YYYY format`,
-        ),
-      );
-    } finally {
-      globalThis.console.warn = consoleWarnSpy;
-    }
+    });
+
+    assert(
+      warningMessage.includes(
+        `blogStartYear value "NaN" is not in a valid YYYY format`,
+      ),
+    );
   });
 
   it("handles numeric string start year correctly", () => {
@@ -133,22 +128,15 @@ describe("formatCopyrightYears", () => {
       futureYear = currentYear + 1;
     }
 
-    const consoleWarnSpy = globalThis.console.warn;
-    let warningMessage = "";
-    globalThis.console.warn = (message: string) => {
-      warningMessage = message;
-    };
-
-    try {
+    const warningMessage = captureConsoleWarning(() => {
       const result = formatCopyrightYears(futureYear, currentYear);
       assert(result === String(futureYear));
-      assert(
-        warningMessage.includes(
-          `blogStartYear (${futureYear}) is set to a future year`,
-        ),
-      );
-    } finally {
-      globalThis.console.warn = consoleWarnSpy;
-    }
+    });
+
+    assert(
+      warningMessage.includes(
+        `blogStartYear (${futureYear}) is set to a future year`,
+      ),
+    );
   });
 });

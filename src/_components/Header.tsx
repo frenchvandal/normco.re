@@ -1,5 +1,7 @@
 /** Site header with Carbon UI Shell structure, navigation, and user controls. */
 
+import type { jsx } from "lume/jsx-runtime";
+
 import {
   CHECKMARK_ICON,
   DARK_ICON,
@@ -17,6 +19,8 @@ import {
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
 } from "../utils/i18n.ts";
+
+type SsxElement = ReturnType<typeof jsx>;
 
 const HOME_URLS = new Set(
   SUPPORTED_LANGUAGES.map((language) => getLocalizedUrl("/", language)),
@@ -58,7 +62,7 @@ export default (
     readonly language: SiteLanguage;
     readonly languageAlternates?: Partial<Record<SiteLanguage, string>>;
   },
-) => {
+): SsxElement => {
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
   const postsUrl = getLocalizedUrl("/posts/", language);

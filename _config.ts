@@ -1,6 +1,11 @@
 import lume from "lume/mod.ts";
 import type Site from "lume/core/site.ts";
 import { readConsoleDebugPolicy } from "./plugins/console_debug.ts";
+import {
+  POST_BUILD_TASKS,
+  PRE_BUILD_TASKS,
+  runBuildTasks,
+} from "./_config/build_tasks.ts";
 import { registerAssets } from "./_config/assets.ts";
 import { registerPlugins } from "./_config/plugins.ts";
 import { registerFeeds } from "./_config/feeds.ts";
@@ -96,6 +101,12 @@ const site: Site = lume({
   src: "./src",
   location: new URL("https://normco.re"),
   server: { debugBar: true },
+}, {
+  markdown: {
+    options: {
+      typographer: true,
+    },
+  },
 });
 
 const buildData = getBuildData();
@@ -114,16 +125,10 @@ registerProcessors(site);
 
 // Ensure generated quality reports are written under a dedicated ignored
 // directory instead of polluting the repository root.
-site.addEventListener(
-  "beforeBuild",
-  "deno run --allow-write scripts/ensure-dir.ts _cache/quality",
-);
+site.addEventListener("beforeBuild", () => runBuildTasks(PRE_BUILD_TASKS));
 
 // Post-build: fingerprint assets, verify browser imports, format HTML, then
 // validate local links against the final rewritten output.
-site.addEventListener(
-  "afterBuild",
-  "deno run --allow-read --allow-write scripts/fingerprint-assets.ts _site && deno run --allow-read scripts/check-browser-imports.ts _site && deno fmt _site/**/*.html && deno run --allow-read --allow-write scripts/check-output-links.ts _site _cache/quality/broken-links.json",
-);
+site.addEventListener("afterBuild", () => runBuildTasks(POST_BUILD_TASKS));
 
 export default site;

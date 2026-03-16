@@ -94,7 +94,8 @@
    * @returns {boolean}
    */
   function isDocumentPath(url) {
-    const lastSegment = url.pathname.split("/").at(-1) ?? "";
+    const pathSegments = url.pathname.split("/");
+    const lastSegment = pathSegments[pathSegments.length - 1] ?? "";
     const extensionMatch = /\.[a-z0-9]+$/i.exec(lastSegment);
 
     if (extensionMatch === null) {

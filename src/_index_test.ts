@@ -132,5 +132,21 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, "Nothing published yet.");
       assertStringIncludes(html, 'href="/about/"');
     });
+
+    it("falls back to a safe card renderer when PostCard is unavailable", async () => {
+      const html = await indexPage({
+        search: {
+          pages: () => [{
+            title: 'Unsafe <title>',
+            url: '/posts/"unsafe"/',
+            date: new Date("2026-03-16T00:00:00.000Z"),
+          }],
+        },
+        comp: {},
+      } as unknown as Lume.Data, MOCK_HELPERS);
+
+      assertStringIncludes(html, "Unsafe &lt;title&gt;");
+      assertStringIncludes(html, 'href="/posts/&quot;unsafe&quot;/"');
+    });
   });
 });

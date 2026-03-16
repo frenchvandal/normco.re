@@ -16,11 +16,6 @@ import {
 /** This layout is itself wrapped by the base layout. */
 export const layout = "layouts/base.tsx";
 
-/** Typed helpers used in this layout. */
-type H = {
-  date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
-};
-
 /**
  * Minimal interface for the nav helper injected by the nav plugin.
  * Only the methods used in this layout are declared.
@@ -31,26 +26,36 @@ type NavHelper = {
     base?: string,
     query?: string,
     sort?: string,
-  ) => Lume.Data | undefined;
+  ) => unknown;
   nextPage?: (
     url: string,
     base?: string,
     query?: string,
     sort?: string,
-  ) => Lume.Data | undefined;
+  ) => unknown;
 };
 
 /** Minimal interface for the search helper injected by Lume. */
 type SearchHelper = {
-  pages: (query: string, sort?: string) => Lume.Data[];
+  pages: (query: string, sort?: string) => ReadonlyArray<unknown>;
 };
+
+type DateHelper = (
+  value: unknown,
+  pattern?: string,
+  lang?: string,
+) => string | undefined;
+
+function isLumeData(value: unknown): value is Lume.Data {
+  return typeof value === "object" && value !== null;
+}
 
 /** Returns true when the candidate looks like a post URL in the expected base path. */
 function isPostCandidate(
-  candidate: Lume.Data | undefined,
+  candidate: unknown,
   postsBaseUrl: string,
-): boolean {
-  if (candidate === undefined) {
+): candidate is Lume.Data {
+  if (!isLumeData(candidate)) {
     return false;
   }
 
@@ -64,6 +69,70 @@ function isPostCandidate(
   }
 
   return true;
+}
+
+function resolveDateHelper(helpers: Lume.Helpers): DateHelper {
+  const helper = Reflect.get(helpers, "date");
+
+  if (typeof helper !== "function") {
+    return () => undefined;
+  }
+
+  return (value, pattern, lang) => {
+    const result = Reflect.apply(helper, helpers, [value, pattern, lang]);
+    return typeof result === "string" ? result : undefined;
+  };
+}
+
+function resolveNavHelper(value: unknown): NavHelper {
+  if (typeof value !== "object" || value === null) {
+    return {};
+  }
+
+  const previousPage = Reflect.get(value, "previousPage");
+  const nextPage = Reflect.get(value, "nextPage");
+
+  return {
+    ...(typeof previousPage === "function"
+      ? {
+        previousPage: (url, base, query, sort) =>
+          Reflect.apply(previousPage, value, [url, base, query, sort]),
+      }
+      : {}),
+    ...(typeof nextPage === "function"
+      ? {
+        nextPage: (url, base, query, sort) =>
+          Reflect.apply(nextPage, value, [url, base, query, sort]),
+      }
+      : {}),
+  };
+}
+
+function resolveSearchHelper(
+  value: unknown,
+): Partial<SearchHelper> | undefined {
+  if (typeof value !== "object" || value === null) {
+    return undefined;
+  }
+
+  const pages = Reflect.get(value, "pages");
+
+  if (typeof pages !== "function") {
+    return undefined;
+  }
+
+  return {
+    pages: (query, sort) => {
+      const result = Reflect.apply(pages, value, [query, sort]);
+      return Array.isArray(result) ? result : [];
+    },
+  };
+}
+
+function resolveStringTags(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((tag): tag is string => typeof tag === "string")
+    : [];
 }
 
 /** Returns true when the post body contains at least one `<pre><code>` block. */
@@ -88,23 +157,20 @@ function hasCodeBlocks(children: unknown): boolean {
 
 /** Renders the post page within the base layout. */
 export default (data: Lume.Data, helpers: Lume.Helpers) => {
-  const { date: dateFormat } = helpers as unknown as H;
-
-  // data.nav is typed as `unknown` by Lume; cast to the minimal NavHelper
-  // interface declared above (§5.4 - library boundary).
-  const n = data.nav as unknown as NavHelper;
+  const dateFormat = resolveDateHelper(helpers);
+  const n = resolveNavHelper(data.nav);
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
   const postQuery = `type=post lang=${languageDataCode}`;
-  const currentUrl = data.url ?? "/";
+  const currentUrl = typeof data.url === "string" ? data.url : "/";
   const postsBaseUrl = getLocalizedUrl("/posts/", language);
-  const search = data.search as Partial<SearchHelper> | undefined;
+  const search = resolveSearchHelper(data.search);
   let prev: Lume.Data | undefined;
   let next: Lume.Data | undefined;
 
   if (typeof search?.pages === "function") {
-    const posts = search.pages(postQuery, "date=asc");
+    const posts = search.pages(postQuery, "date=asc").filter(isLumeData);
     const currentIndex = posts.findIndex((post) => post.url === currentUrl);
 
     if (currentIndex > 0) {
@@ -135,7 +201,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const minutes = resolveReadingMinutes(data.readingInfo);
   const homeUrl = getLocalizedUrl("/", language);
   const currentTitle = typeof data.title === "string" ? data.title : "";
-  const tags = Array.isArray(data.tags) ? data.tags : [];
+  const tags = resolveStringTags(data.tags);
   const includeCodeCopyScript = hasCodeBlocks(data.children);
   const codeCopyLabel = translations.post.copyCodeLabel;
   const codeCopyFeedback = translations.post.copyCodeFeedback;

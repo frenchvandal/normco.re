@@ -13,6 +13,6 @@ describe("offline.page.tsx", () => {
   it("renders the localized home action for French data", () => {
     const html = offlinePage({ lang: "fr" } as Lume.Data);
     assertStringIncludes(html, 'href="/fr/"');
-    assertStringIncludes(html, "Retour à l'accueil");
+    assertStringIncludes(html, "Retour à l&#39;accueil");
   });
 });

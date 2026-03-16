@@ -13,6 +13,7 @@ import {
   resolvePostDate,
   resolveReadingMinutes,
 } from "./posts/post-metadata.ts";
+import { escapeHtml } from "./utils/html.ts";
 
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
@@ -54,14 +55,71 @@ type H = {
   date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
 };
 
+function isLumeData(value: unknown): value is Lume.Data {
+  return typeof value === "object" && value !== null;
+}
+
+function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
+  if (typeof value === "object" && value !== null) {
+    const PostCard = Reflect.get(value, "PostCard");
+
+    if (typeof PostCard === "function") {
+      return (props) => {
+        const rendered = Reflect.apply(PostCard, value, [props]);
+        return rendered instanceof Promise ? "" : String(rendered);
+      };
+    }
+  }
+
+  return ({ title, url }) =>
+    `<article class="post-card"><h3><a href="${escapeHtml(url)}">${
+      escapeHtml(title)
+    }</a></h3></article>`;
+}
+
+function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
+  const date = Reflect.get(helpers, "date");
+
+  if (typeof date !== "function") {
+    return () => undefined;
+  }
+
+  return (value, pattern, lang) => {
+    const formatted = Reflect.apply(date, helpers, [value, pattern, lang]);
+    return typeof formatted === "string" ? formatted : undefined;
+  };
+}
+
+function resolveRecentPosts(
+  search: unknown,
+  languageDataCode: string,
+): Lume.Data[] {
+  if (typeof search !== "object" || search === null) {
+    return [];
+  }
+
+  const pages = Reflect.get(search, "pages");
+
+  if (typeof pages !== "function") {
+    return [];
+  }
+
+  const results = Reflect.apply(pages, search, [
+    `type=post lang=${languageDataCode}`,
+    "date=desc",
+    5,
+  ]);
+
+  return Array.isArray(results) ? results.filter(isLumeData) : [];
+}
+
 /** Renders the home page body. */
 export default async (
   data: Lume.Data,
   helpers: Lume.Helpers,
 ): Promise<string> => {
-  // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 - library boundary).
-  const { PostCard } = data.comp as unknown as Comp;
-  const { date: dateFormat } = helpers as unknown as H;
+  const PostCard = resolvePostCardRenderer(data.comp);
+  const dateFormat = resolveDateHelper(helpers);
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
@@ -72,11 +130,7 @@ export default async (
     : "SHORT";
   const aboutUrl = getLocalizedUrl("/about/", language);
   const archiveUrl = getLocalizedUrl("/posts/", language);
-  const recent = data.search.pages(
-    `type=post lang=${languageDataCode}`,
-    "date=desc",
-    5,
-  ) as Lume.Data[];
+  const recent = resolveRecentPosts(data.search, languageDataCode);
 
   const postItems = await Promise.all(recent.map(async (post) => {
     const postDate = resolvePostDate(post.date);
@@ -84,8 +138,8 @@ export default async (
 
     // exactOptionalPropertyTypes: only include readingLabel when it has a value.
     const card = await PostCard({
-      title: post.title as string,
-      url: post.url as string,
+      title: typeof post.title === "string" ? post.title : "",
+      url: typeof post.url === "string" ? post.url : "",
       dateStr: dateFormat(postDate, shortDatePattern, language) ??
         postDate.toISOString(),
       dateIso: dateFormat(postDate, "ATOM", language) ?? postDate.toISOString(),
@@ -112,15 +166,21 @@ export default async (
 
   return `<div class="site-page-shell site-page-shell--wide">
 <section class="pagehead hero home-pagehead" aria-labelledby="home-title">
-  <p class="pagehead-eyebrow">${translations.home.eyebrow}</p>
-  <h1 id="home-title" class="hero-title">${translations.home.title}</h1>
-  <p class="hero-lead">${translations.home.lead}</p>
+  <p class="pagehead-eyebrow">${escapeHtml(translations.home.eyebrow)}</p>
+  <h1 id="home-title" class="hero-title">${
+    escapeHtml(translations.home.title)
+  }</h1>
+  <p class="hero-lead">${escapeHtml(translations.home.lead)}</p>
 </section>
 
 <section class="home-recent" aria-labelledby="home-recent-title">
   <div class="subhead">
-    <h2 id="home-recent-title" class="subhead-heading">${translations.home.recentHeading}</h2>
-    <a href="${archiveUrl}" class="home-all-posts">${translations.home.archiveLinkLabel}</a>
+    <h2 id="home-recent-title" class="subhead-heading">${
+    escapeHtml(translations.home.recentHeading)
+  }</h2>
+    <a href="${escapeHtml(archiveUrl)}" class="home-all-posts">${
+    escapeHtml(translations.home.archiveLinkLabel)
+  }</a>
   </div>
   <ul class="home-posts">
     ${recent.length > 0 ? postItems : emptyState}

@@ -5,6 +5,7 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "./utils/i18n.ts";
+import { escapeHtml } from "./utils/html.ts";
 
 const TAIPEI_BUBBLE_TEA_PICTOGRAM =
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
@@ -53,56 +54,82 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
 
   return `<div class="site-page-shell site-page-shell--wide">
 <section class="pagehead about-pagehead" aria-labelledby="about-title">
-  <p class="pagehead-eyebrow">${translations.about.eyebrow}</p>
-  <h1 id="about-title" class="about-title">${translations.about.title}</h1>
-  <p class="pagehead-lead">${translations.about.lead}</p>
+  <p class="pagehead-eyebrow">${escapeHtml(translations.about.eyebrow)}</p>
+  <h1 id="about-title" class="about-title">${
+    escapeHtml(translations.about.title)
+  }</h1>
+  <p class="pagehead-lead">${escapeHtml(translations.about.lead)}</p>
 </section>
 <div class="feature-layout feature-layout--with-rail">
   <div class="feature-main">
     <div class="about-content">
-      <p>${translations.about.intro}</p>
-      <p>${translations.about.body}</p>
+      <p>${escapeHtml(translations.about.intro)}</p>
+      <p>${escapeHtml(translations.about.body)}</p>
       <p>
-        ${translations.about.feedsIntro} <a href="${feedXmlUrl}">RSS</a> ${conjunction}
-        <a href="${feedJsonUrl}">JSON Feed</a>.
+        ${escapeHtml(translations.about.feedsIntro)} <a href="${
+    escapeHtml(feedXmlUrl)
+  }">RSS</a> ${escapeHtml(conjunction)}
+        <a href="${escapeHtml(feedJsonUrl)}">JSON Feed</a>.
       </p>
     </div>
   </div>
-  <aside class="feature-rail about-rail" aria-label="${translations.about.railAriaLabel}">
+  <aside class="feature-rail about-rail" aria-label="${
+    escapeHtml(translations.about.railAriaLabel)
+  }">
     <div class="feature-rail-sticky">
       <section class="feature-card">
-        <h2 class="feature-card-title">${translations.about.atAGlanceTitle}</h2>
+        <h2 class="feature-card-title">${
+    escapeHtml(translations.about.atAGlanceTitle)
+  }</h2>
         <dl class="about-facts">
           <div class="about-facts-row">
-            <dt class="about-facts-term">${translations.about.locationLabel}</dt>
-            <dd class="about-facts-description">${translations.about.locationValue}</dd>
+            <dt class="about-facts-term">${
+    escapeHtml(translations.about.locationLabel)
+  }</dt>
+            <dd class="about-facts-description">${
+    escapeHtml(translations.about.locationValue)
+  }</dd>
           </div>
           <div class="about-facts-row">
-            <dt class="about-facts-term">${translations.about.topicsLabel}</dt>
-            <dd class="about-facts-description">${translations.about.topicsValue}</dd>
+            <dt class="about-facts-term">${
+    escapeHtml(translations.about.topicsLabel)
+  }</dt>
+            <dd class="about-facts-description">${
+    escapeHtml(translations.about.topicsValue)
+  }</dd>
           </div>
           <div class="about-facts-row">
-            <dt class="about-facts-term">${translations.about.languagesLabel}</dt>
-            <dd class="about-facts-description">${translations.about.languagesValue}</dd>
+            <dt class="about-facts-term">${
+    escapeHtml(translations.about.languagesLabel)
+  }</dt>
+            <dd class="about-facts-description">${
+    escapeHtml(translations.about.languagesValue)
+  }</dd>
           </div>
         </dl>
       </section>
       <section class="feature-card">
-        <h2 class="feature-card-title">${translations.about.siteNotesTitle}</h2>
+        <h2 class="feature-card-title">${
+    escapeHtml(translations.about.siteNotesTitle)
+  }</h2>
         <ul class="about-notes">
-          <li>${translations.about.siteNoteOne}</li>
-          <li>${translations.about.siteNoteTwo}</li>
-          <li>${translations.about.siteNoteThree}</li>
+          <li>${escapeHtml(translations.about.siteNoteOne)}</li>
+          <li>${escapeHtml(translations.about.siteNoteTwo)}</li>
+          <li>${escapeHtml(translations.about.siteNoteThree)}</li>
         </ul>
       </section>
       <section class="feature-card about-pictogram-card">
-        <h2 class="feature-card-title">${translations.about.pictogramTitle}</h2>
+        <h2 class="feature-card-title">${
+    escapeHtml(translations.about.pictogramTitle)
+  }</h2>
         <div class="about-pictogram-frame" aria-hidden="true">
           <div class="about-pictogram">
             ${TAIPEI_BUBBLE_TEA_PICTOGRAM}
           </div>
         </div>
-        <p class="feature-card-caption">${translations.about.pictogramCaption}</p>
+        <p class="feature-card-caption">${
+    escapeHtml(translations.about.pictogramCaption)
+  }</p>
       </section>
     </div>
   </aside>

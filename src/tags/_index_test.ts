@@ -60,4 +60,87 @@ describe("tags/index.page.ts", () => {
     assertEquals(alternates[1]?.lang, "fr");
     assertEquals(alternates[1]?.url, "/fr/tags/design/");
   });
+
+  it("normalizes tag slugs, ignores blank tags, and aggregates posts by slug", () => {
+    const search = {
+      pages: (query: string) => {
+        if (query === "type=post lang=en") {
+          return [
+            makePost("/posts/alpha/", "en", [
+              "  Design Systems  ",
+              "",
+              "   ",
+            ]),
+            makePost("/posts/beta/", "en", ["design-systems", "Café Ops"]),
+          ];
+        }
+
+        if (query === "type=post lang=fr") {
+          return [
+            makePost("/fr/posts/alpha/", "fr", ["Design Systems"]),
+          ];
+        }
+
+        return [];
+      },
+    };
+
+    const pages = [...tagsPage({ search } as unknown as Lume.Data)];
+    const designSystemsPage = pages.find((page) =>
+      page.url === "/tags/design-systems/"
+    );
+    const cafeOpsPage = pages.find((page) => page.url === "/tags/cafe-ops/");
+
+    assert(designSystemsPage);
+    assert(cafeOpsPage);
+    assertEquals(designSystemsPage.tagName, "Design Systems");
+    assertEquals((designSystemsPage.posts as Lume.Data[]).length, 2);
+    assertEquals(cafeOpsPage.tagName, "Café Ops");
+    assertEquals((cafeOpsPage.posts as Lume.Data[]).length, 1);
+    assertEquals(
+      pages.some((page) => page.url === "/tags//"),
+      false,
+    );
+
+    const alternates = designSystemsPage.alternates as Array<{
+      lang: string;
+      url: string;
+    }>;
+    assertEquals(alternates, [
+      { lang: "en", url: "/tags/design-systems/" },
+      { lang: "fr", url: "/fr/tags/design-systems/" },
+    ]);
+  });
+
+  it("sorts generated tag pages alphabetically by display tag name inside each language", () => {
+    const search = {
+      pages: (query: string) => {
+        if (query === "type=post lang=en") {
+          return [
+            makePost("/posts/one/", "en", ["writing"]),
+            makePost("/posts/two/", "en", ["design"]),
+            makePost("/posts/three/", "en", ["alibaba cloud"]),
+          ];
+        }
+
+        return [];
+      },
+    };
+
+    const pages = [...tagsPage({ search } as unknown as Lume.Data)];
+    const englishTagUrls = pages
+      .filter((page) =>
+        typeof page.url === "string" && !page.url.startsWith("/fr/")
+      )
+      .filter((page) =>
+        typeof page.url === "string" && !page.url.startsWith("/zh-")
+      )
+      .map((page) => page.url);
+
+    assertEquals(englishTagUrls, [
+      "/tags/alibaba-cloud/",
+      "/tags/design/",
+      "/tags/writing/",
+    ]);
+  });
 });

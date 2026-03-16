@@ -1,4 +1,4 @@
-import { assertMatch, assertStringIncludes } from "jsr/assert";
+import { assertMatch, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 
@@ -66,5 +66,56 @@ describe("tag.tsx layout", () => {
     assertStringIncludes(html, 'class="archive-list"');
     assertStringIncludes(html, 'href="/posts/post-2/"');
     assertMatch(html, /class="cds--tag cds--tag--[a-z]+ tag-page-current-tag"/);
+  });
+
+  it("escapes tag labels before interpolating them into the page shell", async () => {
+    const html = await renderComponent(
+      tagLayout(
+        {
+          lang: "en",
+          tagName: '<script>alert("xss")</script>',
+          posts: [],
+          comp: {
+            PostCard: ({ title, url }: { title: string; url: string }) =>
+              `<article class="post-card"><h3><a href="${url}">${title}</a></h3></article>`,
+          },
+        } as unknown as Lume.Data,
+        MOCK_HELPERS,
+      ),
+    );
+
+    assertStringIncludes(
+      html,
+      "&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;",
+    );
+    assertNotMatch(html, /<script>alert\("xss"\)<\/script>/);
+  });
+
+  it("falls back to a safe default PostCard renderer and ignores invalid post entries", async () => {
+    const html = await renderComponent(
+      tagLayout(
+        {
+          lang: "en",
+          tagName: "devops",
+          posts: [
+            {
+              date: new Date("2026-03-03"),
+              readingInfo: { minutes: 3 },
+              title: 42,
+              url: 99,
+            } as unknown as Lume.Data,
+            null,
+            "not-a-post",
+          ],
+        } as unknown as Lume.Data,
+        {} as unknown as Lume.Helpers,
+      ),
+    );
+
+    assertStringIncludes(html, 'class="archive-list"');
+    assertStringIncludes(html, 'class="post-card"');
+    assertStringIncludes(html, '<a href=""></a>');
+    assertNotMatch(html, /not-a-post/);
+    assertNotMatch(html, />42</);
   });
 });

@@ -1,4 +1,5 @@
 import { slugify } from "../utils/slugify.ts";
+import { resolveCurrentDateIso } from "../utils/current-date.ts";
 
 /**
  * post — Lume archetype that scaffolds a new multilingual Markdown post.
@@ -21,7 +22,7 @@ import { slugify } from "../utils/slugify.ts";
 
 /** Returns today's date as an ISO `YYYY-MM-DD` string. */
 function today(): string {
-  return Temporal.Now.plainDateISO().toString();
+  return resolveCurrentDateIso();
 }
 
 /** Escapes double-quote characters for embedding in YAML string values. */

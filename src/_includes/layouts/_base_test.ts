@@ -229,6 +229,23 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, "<footer>mock</footer>");
     });
 
+    it("falls back to an empty shell when Header and Footer are unavailable", async () => {
+      const html = await renderComponent(
+        baseLayout(
+          {
+            ...makeData({}),
+            comp: {},
+          } as unknown as Lume.Data,
+          MOCK_HELPERS,
+        ),
+      );
+
+      assertStringIncludes(html, '<div class="site-wrapper">');
+      assertStringIncludes(html, "<main");
+      assertNotMatch(html, /<header>mock<\/header>/);
+      assertNotMatch(html, /<footer>mock<\/footer>/);
+    });
+
     it("passes the current URL to the Header component", async () => {
       let receivedUrl = "";
       const data = {

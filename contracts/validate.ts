@@ -14,7 +14,7 @@
 import { bold, green, red, yellow } from "jsr/fmt-colors";
 
 /** Minimal JSON Schema validator for the subset of features we use. */
-interface SchemaNode {
+export interface SchemaNode {
   readonly type?: string;
   readonly const?: unknown;
   readonly required?: ReadonlyArray<string>;
@@ -31,9 +31,17 @@ interface SchemaNode {
   readonly pattern?: string;
 }
 
-interface ValidationError {
+export interface ValidationError {
   readonly path: string;
   readonly message: string;
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /** Resolves a `$ref` pointer within the root schema. */
@@ -51,8 +59,22 @@ function resolveRef(
   return current as SchemaNode | undefined;
 }
 
+function createPatternMatcher(
+  pattern: string,
+  path: string,
+): RegExp | ValidationError {
+  try {
+    return new RegExp(pattern);
+  } catch (error) {
+    return {
+      path,
+      message: `Invalid schema pattern "${pattern}": ${getErrorMessage(error)}`,
+    };
+  }
+}
+
 /** Validates a value against a schema node, returning errors. */
-function validate(
+export function validate(
   value: unknown,
   schema: SchemaNode,
   root: SchemaNode,
@@ -120,13 +142,19 @@ function validate(
         message: `String too short (min ${schema.minLength})`,
       });
     }
-    if (
-      schema.pattern !== undefined && !new RegExp(schema.pattern).test(value)
-    ) {
-      errors.push({
-        path,
-        message: `Does not match pattern: ${schema.pattern}`,
-      });
+    if (schema.pattern !== undefined) {
+      const matcher = createPatternMatcher(schema.pattern, path);
+
+      if (matcher instanceof RegExp) {
+        if (!matcher.test(value)) {
+          errors.push({
+            path,
+            message: `Does not match pattern: ${schema.pattern}`,
+          });
+        }
+      } else {
+        errors.push(matcher);
+      }
     }
   }
 
@@ -178,6 +206,40 @@ function validate(
   return errors;
 }
 
+/** Reads and parses a JSON file with contextualized failures. */
+export async function readJsonFile(filePath: string): Promise<unknown> {
+  let content: string;
+
+  try {
+    content = await Deno.readTextFile(filePath);
+  } catch (error) {
+    throw new Error(
+      `Cannot read JSON file "${filePath}": ${getErrorMessage(error)}`,
+    );
+  }
+
+  try {
+    return JSON.parse(content) as unknown;
+  } catch (error) {
+    throw new Error(
+      `Cannot parse JSON file "${filePath}": ${getErrorMessage(error)}`,
+    );
+  }
+}
+
+/** Reads a JSON schema file and ensures the root value is an object. */
+export async function readSchemaFile(filePath: string): Promise<SchemaNode> {
+  const value = await readJsonFile(filePath);
+
+  if (!isRecord(value)) {
+    throw new Error(
+      `Schema file "${filePath}" must contain a JSON object at the root`,
+    );
+  }
+
+  return value as SchemaNode;
+}
+
 /** Finds JSON files matching a glob pattern in the site output directory. */
 async function findJsonFiles(
   dir: string,
@@ -207,11 +269,8 @@ async function main(): Promise<void> {
   console.log(bold("Generated JSON validation"));
   console.log(`Site directory: ${siteDir}\n`);
 
-  const postSchemaText = await Deno.readTextFile("contracts/post.schema.json");
-  const postSchema: SchemaNode = JSON.parse(postSchemaText);
-
-  const feedSchemaText = await Deno.readTextFile("contracts/feed.schema.json");
-  const feedSchema: SchemaNode = JSON.parse(feedSchemaText);
+  const postSchema = await readSchemaFile("contracts/post.schema.json");
+  const feedSchema = await readSchemaFile("contracts/feed.schema.json");
 
   let totalErrors = 0;
   let totalFiles = 0;
@@ -222,8 +281,7 @@ async function main(): Promise<void> {
 
   for (const filePath of postFiles) {
     totalFiles++;
-    const content = await Deno.readTextFile(filePath);
-    const data: unknown = JSON.parse(content);
+    const data = await readJsonFile(filePath);
     const errors = validate(data, postSchema, postSchema, "$");
 
     if (errors.length > 0) {
@@ -243,8 +301,7 @@ async function main(): Promise<void> {
 
   for (const filePath of feedFiles) {
     totalFiles++;
-    const content = await Deno.readTextFile(filePath);
-    const data: unknown = JSON.parse(content);
+    const data = await readJsonFile(filePath);
     const errors = validate(data, feedSchema, feedSchema, "$");
 
     if (errors.length > 0) {
@@ -267,4 +324,9 @@ async function main(): Promise<void> {
   }
 }
 
-main();
+if (import.meta.main) {
+  main().catch((error) => {
+    console.error(red(`Validation failed: ${getErrorMessage(error)}`));
+    Deno.exit(1);
+  });
+}

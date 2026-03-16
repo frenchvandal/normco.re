@@ -1,4 +1,4 @@
-import { assertStringIncludes } from "jsr/assert";
+import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
 import aboutPage from "./about.page.tsx";
@@ -53,5 +53,8 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, "À propos");
     assertStringIncludes(html, 'href="/fr/feed.xml"');
     assertStringIncludes(html, "En bref");
+    assertStringIncludes(html, "J&#39;écris");
+    assertStringIncludes(html, "C&#39;est juste un endroit");
+    assertNotMatch(html, /J'écris/);
   });
 });

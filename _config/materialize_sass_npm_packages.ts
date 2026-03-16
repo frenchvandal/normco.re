@@ -26,7 +26,7 @@ import carbonTypePackage from "npm/carbon-type-package" with {
   type: "json",
 };
 
-void [
+const MATERIALIZED_CARBON_PACKAGES = [
   carbonColorsPackage,
   carbonFeatureFlagsPackage,
   carbonGridPackage,
@@ -35,7 +35,12 @@ void [
   carbonStylesPackage,
   carbonThemesPackage,
   carbonTypePackage,
-];
+] as const;
+
+// These imports are intentionally side-effect-only: touching each package.json
+// forces Deno to materialize the Carbon dependency graph under top-level
+// node_modules so Dart Sass can resolve sibling package imports consistently.
+void MATERIALIZED_CARBON_PACKAGES;
 
 export const CARBON_SASS_LOAD_PATHS = [
   "node_modules",

@@ -249,12 +249,14 @@ export function lintCommit(input: string): LintReport {
 
 // ── Formatter ──────────────────────────────────────────────────────────────
 
-const RESET = "\x1b[0m";
-const RED = "\x1b[31m";
-const YELLOW = "\x1b[33m";
-const GREEN = "\x1b[32m";
-const DIM = "\x1b[2m";
-const BOLD = "\x1b[1m";
+const ANSI = {
+  reset: "\x1b[0m",
+  red: "\x1b[31m",
+  yellow: "\x1b[33m",
+  green: "\x1b[32m",
+  dim: "\x1b[2m",
+  bold: "\x1b[1m",
+} as const;
 
 /** Returns true when stdout is a real TTY (colors enabled). */
 function supportsColor(): boolean {
@@ -265,18 +267,18 @@ function supportsColor(): boolean {
 function printReport(report: LintReport): void {
   const color = supportsColor();
 
-  const c = (code: string, text: string) =>
-    color ? `${code}${text}${RESET}` : text;
+  const style = (text: string, ...codes: ReadonlyArray<string>) =>
+    color ? `${codes.join("")}${text}${ANSI.reset}` : text;
 
   console.log();
-  console.log(c(DIM, `  commit: ${report.input.split("\n")[0]}`));
+  console.log(style(`  commit: ${report.input.split("\n")[0]}`, ANSI.dim));
   console.log();
 
   for (const issue of [...report.errors, ...report.warnings]) {
     const prefix = issue.severity === "error"
-      ? c(RED, "  ✖ error")
-      : c(YELLOW, "  ⚠ warning");
-    const rule = c(DIM, `  [${issue.rule}]`);
+      ? style("  ✖ error", ANSI.red)
+      : style("  ⚠ warning", ANSI.yellow);
+    const rule = style(`  [${issue.rule}]`, ANSI.dim);
     console.log(`${prefix}  ${issue.message}`);
     console.log(`${rule}`);
     console.log();
@@ -286,16 +288,18 @@ function printReport(report: LintReport): void {
   const warningCount = report.warnings.length;
 
   if (report.valid) {
-    console.log(c(GREEN, `  ${BOLD}✔ commit message is valid${RESET}`));
+    console.log(
+      style("  ✔ commit message is valid", ANSI.green, ANSI.bold),
+    );
   } else {
     console.log(
-      c(
-        RED,
-        `  ${BOLD}✖ found ${errorCount} error${errorCount !== 1 ? "s" : ""}` +
+      style(
+        `  ✖ found ${errorCount} error${errorCount !== 1 ? "s" : ""}` +
           (warningCount > 0
             ? ` and ${warningCount} warning${warningCount !== 1 ? "s" : ""}`
-            : "") +
-          RESET,
+            : ""),
+        ANSI.red,
+        ANSI.bold,
       ),
     );
   }

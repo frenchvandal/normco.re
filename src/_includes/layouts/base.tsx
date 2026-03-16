@@ -42,6 +42,7 @@ type LayoutData = Lume.Data & {
 
 /** Return type of an ssx JSX element, used to type Lume component functions. */
 type SsxElement = ReturnType<typeof jsx>;
+type LayoutRenderable = SsxElement | string | number | boolean | null | undefined;
 
 /** Minimal typed interface for the components used in this layout. */
 type Comp = {
@@ -49,13 +50,13 @@ type Comp = {
     readonly currentUrl: string;
     readonly language: SiteLanguage;
     readonly languageAlternates?: Partial<Record<SiteLanguage, string>>;
-  }) => SsxElement;
+  }) => LayoutRenderable;
   Footer: (props: {
     readonly author: string;
     readonly language: SiteLanguage;
     readonly feedXmlUrl: string;
     readonly blogStartYear: number;
-  }) => SsxElement;
+  }) => LayoutRenderable;
 };
 
 /** Returns alternate URLs keyed by language for the current page. */
@@ -96,6 +97,36 @@ function isPostsArchiveUrl(currentUrl: string): boolean {
   return /\/posts\/$/.test(currentUrl);
 }
 
+function resolveHeaderComponent(value: unknown): Comp["Header"] {
+  if (typeof value === "object" && value !== null) {
+    const Header = Reflect.get(value, "Header");
+
+    if (typeof Header === "function") {
+      return (props) => {
+        const rendered = Reflect.apply(Header, value, [props]);
+        return rendered instanceof Promise ? "" : rendered as LayoutRenderable;
+      };
+    }
+  }
+
+  return () => "";
+}
+
+function resolveFooterComponent(value: unknown): Comp["Footer"] {
+  if (typeof value === "object" && value !== null) {
+    const Footer = Reflect.get(value, "Footer");
+
+    if (typeof Footer === "function") {
+      return (props) => {
+        const rendered = Reflect.apply(Footer, value, [props]);
+        return rendered instanceof Promise ? "" : rendered as LayoutRenderable;
+      };
+    }
+  }
+
+  return () => "";
+}
+
 /** Renders the full HTML document shell. */
 export default (
   {
@@ -133,9 +164,8 @@ export default (
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
-
-  // Lume.comp is loosely typed; cast to the minimal Comp interface (§5.4 - library boundary).
-  const { Header, Footer } = comp as unknown as Comp;
+  const Header = resolveHeaderComponent(comp);
+  const Footer = resolveFooterComponent(comp);
 
   return (
     <>
