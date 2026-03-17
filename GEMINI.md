@@ -104,11 +104,11 @@ Required practices:
 
 Date-specific rules:
 
-- For relative date helpers such as `faker.date.past()`,
-  `faker.date.future()`, `faker.date.anytime()`, `faker.date.recent()`, and
-  `faker.date.soon()`, also fix the reference date with
-  `faker.setDefaultRefDate(...)` or pass `refDate` explicitly. A seed alone is
-  not enough because these helpers otherwise depend on the current clock.
+- For relative date helpers such as `faker.date.past()`, `faker.date.future()`,
+  `faker.date.anytime()`, `faker.date.recent()`, and `faker.date.soon()`, also
+  fix the reference date with `faker.setDefaultRefDate(...)` or pass `refDate`
+  explicitly. A seed alone is not enough because these helpers otherwise depend
+  on the current clock.
 - When a test exposes the same date in multiple forms, derive every related
   field from one generated `Date` instance instead of making independent Faker
   calls. For example, generate one `Date`, then format its ISO string and human

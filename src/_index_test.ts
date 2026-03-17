@@ -128,7 +128,7 @@ describe("index.page.tsx", () => {
           pages: () => [post],
         },
         comp: {
-          PostCard: async (props: Record<string, unknown>) =>
+          PostCard: (props: Record<string, unknown>) =>
             `<article class="post-card"><h3>${props["title"]}</h3></article>`,
         },
       } as unknown as Lume.Data, MOCK_HELPERS);
@@ -155,7 +155,7 @@ describe("index.page.tsx", () => {
       const html = await indexPage({
         search: {
           pages: () => [{
-            title: 'Unsafe <title>',
+            title: "Unsafe <title>",
             url: '/posts/"unsafe"/',
             date: unsafeDate,
           }],

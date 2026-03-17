@@ -241,7 +241,7 @@ describe("posts/index.page.tsx", () => {
       const html = await postsIndexPage({
         search: {
           pages: () => [{
-            title: 'Unsafe <title>',
+            title: "Unsafe <title>",
             url: '/posts/"unsafe"/',
             date: unsafeDate,
           }],

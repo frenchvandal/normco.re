@@ -384,8 +384,7 @@ const SITE_TRANSLATIONS = {
       siteNoteTwo: "Multilingue par intention.",
       siteNoteThree: "Ni commentaires, ni analytics, ni newsletter.",
       pictogramTitle: "Repère",
-      pictogramCaption:
-        "C’est fatiguant…",
+      pictogramCaption: "C’est fatiguant…",
     },
     tagPage: {
       eyebrow: "Sujet",

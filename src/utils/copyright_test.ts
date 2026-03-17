@@ -1,13 +1,9 @@
 /** Tests for the copyright year formatter utility. */
 
 import { assert } from "jsr/assert";
-import { FakeTime } from "jsr:@std/testing/time";
+import { FakeTime } from "jsr:@std/testing/time@1";
 import { describe, it } from "jsr/testing-bdd";
-import {
-  faker,
-  seedTestFaker,
-  TEST_FAKER_REF_DATE,
-} from "../../test/faker.ts";
+import { faker, seedTestFaker, TEST_FAKER_REF_DATE } from "../../test/faker.ts";
 import { formatCopyrightYears } from "./copyright.ts";
 
 // Seed range: 801–899 (see AGENTS.md "TypeScript Tests And Faker")
@@ -48,7 +44,8 @@ describe("formatCopyrightYears", () => {
 
   it("logs warning and returns start year when start year is in the future", () => {
     seedTestFaker(TEST_SEED + 2);
-    const futureYear = TEST_CURRENT_YEAR + faker.number.int({ min: 1, max: 10 });
+    const futureYear = TEST_CURRENT_YEAR +
+      faker.number.int({ min: 1, max: 10 });
 
     const warningMessage = captureConsoleWarning(() => {
       const result = formatCopyrightYears(futureYear, TEST_CURRENT_YEAR);

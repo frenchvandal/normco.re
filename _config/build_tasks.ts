@@ -66,7 +66,9 @@ function formatCommand(command: string, args: ReadonlyArray<string>): string {
   return [command, ...args].join(" ");
 }
 
-async function collectHtmlFiles(rootDir: string): Promise<ReadonlyArray<string>> {
+async function collectHtmlFiles(
+  rootDir: string,
+): Promise<ReadonlyArray<string>> {
   const files: string[] = [];
 
   try {
@@ -93,7 +95,9 @@ async function collectHtmlFiles(rootDir: string): Promise<ReadonlyArray<string>>
   return files.sort();
 }
 
-async function resolveTaskArgs(task: BuildTask): Promise<ReadonlyArray<string>> {
+async function resolveTaskArgs(
+  task: BuildTask,
+): Promise<ReadonlyArray<string>> {
   if (task.command !== "deno" || task.args[0] !== "fmt") {
     return task.args;
   }
