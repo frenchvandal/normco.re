@@ -120,6 +120,8 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, 'href="/feed.xml"');
       assertStringIncludes(html, 'href="/atom.xml"');
       assertStringIncludes(html, 'href="/feed.json"');
+      assertStringIncludes(html, 'type="text/mf2+html"');
+      assertStringIncludes(html, 'href="/posts/"');
       assertStringIncludes(
         html,
         'src="/scripts/sw-register.js"',
@@ -201,8 +203,10 @@ describe("base.tsx layout", () => {
         {
           ...makeData({}),
           comp: {
-            Header: async (_props: unknown) => "<header>async mock</header>",
-            Footer: async (_props: unknown) => "<footer>async mock</footer>",
+            Header: (_props: unknown) =>
+              Promise.resolve("<header>async mock</header>"),
+            Footer: (_props: unknown) =>
+              Promise.resolve("<footer>async mock</footer>"),
           },
         } as unknown as Lume.Data,
       );

@@ -7,21 +7,41 @@
 
 /** Renders one post card row. */
 export default (
-  { title, url, dateStr, dateIso, readingLabel }: {
+  {
+    title,
+    url,
+    dateStr,
+    dateIso,
+    readingLabel,
+    summary,
+    authorName,
+    authorUrl,
+  }: {
     readonly title: string;
     readonly url: string;
     readonly dateStr: string;
     readonly dateIso: string;
     readonly readingLabel?: string;
+    readonly summary?: string;
+    readonly authorName?: string;
+    readonly authorUrl?: string;
   },
 ) => (
-  <article class="post-card">
-    <time class="post-card-date" datetime={dateIso}>{dateStr}</time>
-    <h3 class="post-card-title">
-      <a class="post-card-link" href={url}>{title}</a>
+  <article class="post-card h-entry">
+    <time class="post-card-date dt-published" datetime={dateIso}>
+      {dateStr}
+    </time>
+    <h3 class="post-card-title p-name">
+      <a class="post-card-link u-url u-uid" href={url}>{title}</a>
     </h3>
+    {summary !== undefined && <p class="p-summary sr-only">{summary}</p>}
     {readingLabel !== undefined && (
       <span class="post-card-reading-time">{readingLabel}</span>
+    )}
+    {authorName !== undefined && authorUrl !== undefined && (
+      <a class="p-author h-card sr-only" href={authorUrl}>
+        <span class="p-name">{authorName}</span>
+      </a>
     )}
   </article>
 );

@@ -1,11 +1,13 @@
 import { assertEquals } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import { JSDOM } from "npm:jsdom@29.0.0";
 
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
 
 import { registerContentContract } from "./content-contract.ts";
+import { getJSDOM } from "../test/jsdom.ts";
+
+const JSDOM = await getJSDOM();
 
 type Processor = (pages: Page[], allPages: Page[]) => void;
 

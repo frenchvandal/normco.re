@@ -7,6 +7,7 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../../utils/i18n.ts";
+import { getLocalizedAuthorHCard } from "../../utils/microformats.ts";
 import { getTagColor, getTagUrl } from "../../utils/tags.ts";
 import {
   resolvePostDate,
@@ -202,6 +203,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const homeUrl = getLocalizedUrl("/", language);
   const currentTitle = typeof data.title === "string" ? data.title : "";
   const tags = resolveStringTags(data.tags);
+  const author = getLocalizedAuthorHCard(language, data.author);
   const includeCodeCopyScript = hasCodeBlocks(data.children);
   const codeCopyLabel = translations.post.copyCodeLabel;
   const codeCopyFeedback = translations.post.copyCodeFeedback;
@@ -227,7 +229,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
         class={`feature-layout${hasRail ? " feature-layout--with-rail" : ""}`}
       >
         <article
-          class="post-article feature-main"
+          class="post-article feature-main h-entry"
           data-code-copy-label={codeCopyLabelAttribute}
           data-code-copy-feedback={codeCopyFeedbackAttribute}
           data-code-copy-failed-feedback={codeCopyFailedFeedbackAttribute}
@@ -255,9 +257,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                 </li>
               </ol>
             </nav>
-            <h1 class="post-title">{data.title ?? ""}</h1>
+            <h1 class="post-title p-name">{data.title ?? ""}</h1>
             <div class="post-meta">
               <time
+                class="dt-published"
                 datetime={dateFormat(postDate, "ATOM", language) ??
                   postDate.toISOString()}
               >
@@ -271,8 +274,19 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                 </>
               )}
             </div>
+            <a class="u-url u-uid sr-only" href={currentUrl}>{currentUrl}</a>
+            <a class="p-author h-card sr-only" href={author.url}>
+              <span class="p-name">{author.name}</span>
+            </a>
+            {typeof data.description === "string" &&
+              data.description.length > 0 && (
+              <p class="p-summary sr-only">{data.description}</p>
+            )}
+            {tags.map((tag) => (
+              <span key={tag} class="p-category sr-only">{tag}</span>
+            ))}
           </header>
-          <div class="post-content">
+          <div class="post-content e-content">
             {data.children}
           </div>
           {includeCodeCopyScript && (
@@ -301,7 +315,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                         >
                           <a
                             href={getTagUrl(tagLabel, language)}
-                            class={`cds--tag cds--tag--${_color}`}
+                            class={`cds--tag cds--tag--${_color} p-category`}
+                            rel="tag"
                           >
                             <span class="cds--tag__label">{tagLabel}</span>
                           </a>

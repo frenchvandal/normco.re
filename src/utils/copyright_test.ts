@@ -1,7 +1,7 @@
 /** Tests for the copyright year formatter utility. */
 
 import { assert } from "jsr/assert";
-import { FakeTime } from "jsr:@std/testing/time@1";
+import { FakeTime } from "jsr:@std/testing@^1.0.17/time";
 import { describe, it } from "jsr/testing-bdd";
 import { faker, seedTestFaker, TEST_FAKER_REF_DATE } from "../../test/faker.ts";
 import { formatCopyrightYears } from "./copyright.ts";

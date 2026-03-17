@@ -10,6 +10,11 @@ import {
   resolveSiteLanguage,
 } from "./utils/i18n.ts";
 import {
+  getLocalizedAuthorHCard,
+  renderHiddenHCard,
+  renderHiddenUrl,
+} from "./utils/microformats.ts";
+import {
   resolvePostDate,
   resolveReadingMinutes,
 } from "./posts/post-metadata.ts";
@@ -30,6 +35,9 @@ type Comp = {
     readonly dateStr: string;
     readonly dateIso: string;
     readonly readingLabel?: string;
+    readonly summary?: string;
+    readonly authorName?: string;
+    readonly authorUrl?: string;
   }) => string | Promise<string>;
 };
 
@@ -54,10 +62,20 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
     }
   }
 
-  return ({ title, url }) =>
-    `<article class="post-card"><h3><a href="${escapeHtml(url)}">${
-      escapeHtml(title)
-    }</a></h3></article>`;
+  return ({ title, url, dateStr, dateIso, summary, authorName, authorUrl }) =>
+    `<article class="post-card h-entry"><time class="post-card-date dt-published" datetime="${
+      escapeHtml(dateIso)
+    }">${
+      escapeHtml(dateStr)
+    }</time><h3 class="p-name"><a class="u-url u-uid" href="${
+      escapeHtml(url)
+    }">${escapeHtml(title)}</a></h3>${
+      summary ? `<p class="p-summary sr-only">${escapeHtml(summary)}</p>` : ""
+    }${
+      authorName && authorUrl
+        ? renderHiddenHCard({ name: authorName, url: authorUrl })
+        : ""
+    }</article>`;
 }
 
 function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
@@ -112,8 +130,10 @@ export default async (
     ? "M 月 d 日"
     : "SHORT";
   const aboutUrl = getLocalizedUrl("/about/", language);
+  const currentUrl = getLocalizedUrl("/", language);
   const archiveUrl = getLocalizedUrl("/posts/", language);
   const recent = resolveRecentPosts(data.search, languageDataCode);
+  const author = getLocalizedAuthorHCard(language, data.author);
 
   const postItems = await Promise.all(recent.map(async (post) => {
     const postDate = resolvePostDate(post.date);
@@ -126,6 +146,11 @@ export default async (
       dateStr: dateFormat(postDate, shortDatePattern, language) ??
         postDate.toISOString(),
       dateIso: dateFormat(postDate, "ATOM", language) ?? postDate.toISOString(),
+      ...(typeof post.description === "string" && post.description.length > 0
+        ? { summary: post.description }
+        : {}),
+      authorName: author.name,
+      authorUrl: author.url,
       ...(minutes !== undefined
         ? { readingLabel: formatReadingTime(minutes, language) }
         : {}),
@@ -156,15 +181,17 @@ export default async (
   <p class="hero-lead">${escapeHtml(translations.home.lead)}</p>
 </section>
 
-<section class="home-recent" aria-labelledby="home-recent-title">
+<section class="home-recent h-feed" aria-labelledby="home-recent-title">
   <div class="subhead">
-    <h2 id="home-recent-title" class="subhead-heading">${
+    <h2 id="home-recent-title" class="subhead-heading p-name">${
     escapeHtml(translations.home.recentHeading)
   }</h2>
     <a href="${escapeHtml(archiveUrl)}" class="home-all-posts">${
     escapeHtml(translations.home.archiveLinkLabel)
   }</a>
   </div>
+  ${renderHiddenUrl(currentUrl)}
+  ${renderHiddenHCard(author)}
   <ul class="home-posts">
     ${recent.length > 0 ? postItems : emptyState}
   </ul>

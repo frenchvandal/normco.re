@@ -36,7 +36,11 @@ function makeData(
     },
     comp: {
       PostCard: (props: Record<string, unknown>) =>
-        `<article class="post-card"><h3>${props["title"]}</h3></article>`,
+        `<article class="post-card h-entry"><time class="post-card-date dt-published" datetime="${
+          props["dateIso"]
+        }">${props["dateStr"]}</time><h3 class="p-name">${
+          props["title"]
+        }</h3></article>`,
     },
   } as unknown as Lume.Data;
 }
@@ -85,6 +89,15 @@ describe("index.page.tsx", () => {
   });
 
   describe("recent posts", () => {
+    it("marks the recent-writing section as an h-feed", async () => {
+      const html = await indexPage(makeData([]), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="home-recent h-feed"');
+      assertStringIncludes(html, 'class="subhead-heading p-name"');
+      assertStringIncludes(html, 'class="u-url sr-only" href="/"');
+      assertStringIncludes(html, 'class="p-author h-card sr-only"');
+      assertStringIncludes(html, 'href="/about/"');
+    });
+
     it("renders a link to the full archive", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, 'href="/posts/"');
@@ -108,7 +121,7 @@ describe("index.page.tsx", () => {
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, 'class="home-posts-item"');
-      assertStringIncludes(html, 'class="post-card"');
+      assertStringIncludes(html, 'class="post-card h-entry"');
     });
 
     it("handles posts that lack reading info", async () => {
@@ -129,12 +142,14 @@ describe("index.page.tsx", () => {
         },
         comp: {
           PostCard: (props: Record<string, unknown>) =>
-            `<article class="post-card"><h3>${props["title"]}</h3></article>`,
+            `<article class="post-card h-entry"><h3 class="p-name">${
+              props["title"]
+            }</h3></article>`,
         },
       } as unknown as Lume.Data, MOCK_HELPERS);
 
       assertStringIncludes(html, post.title);
-      assertStringIncludes(html, 'class="post-card"');
+      assertStringIncludes(html, 'class="post-card h-entry"');
     });
 
     it("renders the home-posts container even when no posts exist", async () => {

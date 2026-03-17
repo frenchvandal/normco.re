@@ -1,14 +1,13 @@
 import { assert, assertEquals } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import { JSDOM } from "npm:jsdom@29.0.0";
+import SCRIPT_SOURCE from "./header-tooltips.js" with { type: "text" };
+import { getJSDOM } from "../../test/jsdom.ts";
 
-const SCRIPT_SOURCE = await Deno.readTextFile(
-  new URL("./header-tooltips.js", import.meta.url),
-);
+const JSDOM = await getJSDOM();
 
-type TestWindow = JSDOM["window"];
+type TestWindow = InstanceType<typeof JSDOM>["window"];
 
-function createDom(): JSDOM {
+function createDom(): InstanceType<typeof JSDOM> {
   return new JSDOM(
     `<!doctype html>
     <html lang="en">

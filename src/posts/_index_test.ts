@@ -38,11 +38,13 @@ function makeData(
     },
     comp: {
       PostCard: (props: Record<string, unknown>) =>
-        `<article class="post-card"><time class="post-card-date">${
+        `<article class="post-card h-entry"><time class="post-card-date dt-published" datetime="${
+          props["dateIso"]
+        }">${
           props["dateStr"]
-        }</time><h3 class="post-card-title"><a href="${props["url"]}">${
-          props["title"]
-        }</a></h3>${
+        }</time><h3 class="post-card-title p-name"><a class="u-url u-uid" href="${
+          props["url"]
+        }">${props["title"]}</a></h3>${
           props["readingLabel"]
             ? `<span class="post-card-reading-time">${
               props["readingLabel"]
@@ -83,6 +85,14 @@ describe("posts/index.page.tsx", () => {
         html,
         'class="site-page-shell site-page-shell--wide"',
       );
+    });
+
+    it("marks the archive listing as the canonical h-feed", async () => {
+      const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="feature-main h-feed"');
+      assertStringIncludes(html, 'class="archive-page-title p-name"');
+      assertStringIncludes(html, 'class="u-url sr-only" href="/posts/"');
+      assertStringIncludes(html, 'class="p-author h-card sr-only"');
     });
   });
 
@@ -220,7 +230,7 @@ describe("posts/index.page.tsx", () => {
       ];
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, 'class="archive-list-item"');
-      assertStringIncludes(html, 'class="post-card"');
+      assertStringIncludes(html, 'class="post-card h-entry"');
     });
 
     it("renders a time element with the post-card date class", async () => {
@@ -232,7 +242,7 @@ describe("posts/index.page.tsx", () => {
       ];
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, "<time");
-      assertStringIncludes(html, 'class="post-card-date"');
+      assertStringIncludes(html, 'class="post-card-date dt-published"');
     });
 
     it("falls back to a safe card renderer when PostCard is unavailable", async () => {

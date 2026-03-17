@@ -7,6 +7,7 @@ import {
   runBuildTask,
   runBuildTasks,
 } from "./build_tasks.ts";
+import { createDirEntry, withPatchedDeno } from "../test/mock_deno.ts";
 
 describe("build task definitions", () => {
   it("defines the quality-cache pre-build step", () => {
@@ -40,9 +41,9 @@ describe("runBuildTask()", () => {
         command: "deno",
         args: ["fmt", "file.ts"],
       },
-      async (command, args) => {
+      (command, args) => {
         calls.push({ command, args });
-        return { code: 0, success: true };
+        return Promise.resolve({ code: 0, success: true });
       },
     );
 
@@ -66,7 +67,7 @@ describe("runBuildTask()", () => {
               "_site",
             ],
           },
-          async () => ({ code: 1, success: false }),
+          () => Promise.resolve({ code: 1, success: false }),
         ),
       Error,
       '[build-task] verify browser imports failed while running "deno run --allow-read scripts/check-browser-imports.ts _site": Command exited with code 1',
@@ -82,9 +83,7 @@ describe("runBuildTask()", () => {
             command: "deno",
             args: ["run", "--allow-read", "scripts/check-browser-imports.ts"],
           },
-          async () => {
-            throw new Error("deno executable not found");
-          },
+          () => Promise.reject(new Error("deno executable not found")),
         ),
       Error,
       '[build-task] verify browser imports failed while running "deno run --allow-read scripts/check-browser-imports.ts": deno executable not found',
@@ -92,30 +91,42 @@ describe("runBuildTask()", () => {
   });
 
   it("expands HTML glob arguments before invoking deno fmt", async () => {
-    const dir = await Deno.makeTempDir();
-    const htmlDir = `${dir}/site`;
+    const htmlDir = "/virtual/site";
     const nestedDir = `${htmlDir}/posts`;
     const calls: Array<{ command: string; args: ReadonlyArray<string> }> = [];
 
-    try {
-      await Deno.mkdir(nestedDir, { recursive: true });
-      await Deno.writeTextFile(`${htmlDir}/index.html`, "<html></html>");
-      await Deno.writeTextFile(`${nestedDir}/entry.html`, "<html></html>");
+    await withPatchedDeno({
+      readDir: (path: string | URL) => {
+        const directory = String(path);
 
+        if (directory === htmlDir) {
+          return (async function* () {
+            yield createDirEntry("index.html", "file");
+            yield createDirEntry("posts", "directory");
+          })();
+        }
+
+        if (directory === nestedDir) {
+          return (async function* () {
+            yield createDirEntry("entry.html", "file");
+          })();
+        }
+
+        return (async function* () {})();
+      },
+    }, async () => {
       await runBuildTask(
         {
           name: "format built HTML output",
           command: "deno",
           args: ["fmt", `${htmlDir}/**/*.html`],
         },
-        async (command, args) => {
+        (command, args) => {
           calls.push({ command, args });
-          return { code: 0, success: true };
+          return Promise.resolve({ code: 0, success: true });
         },
       );
-    } finally {
-      await Deno.remove(dir, { recursive: true });
-    }
+    });
 
     assertEquals(calls, [{
       command: "deno",
@@ -124,24 +135,23 @@ describe("runBuildTask()", () => {
   });
 
   it("skips deno fmt when the HTML glob matches no files", async () => {
-    const dir = await Deno.makeTempDir();
     let callCount = 0;
 
-    try {
+    await withPatchedDeno({
+      readDir: () => (async function* () {})(),
+    }, async () => {
       await runBuildTask(
         {
           name: "format built HTML output",
           command: "deno",
-          args: ["fmt", `${dir}/**/*.html`],
+          args: ["fmt", `/virtual/site/**/*.html`],
         },
-        async () => {
+        () => {
           callCount += 1;
-          return { code: 0, success: true };
+          return Promise.resolve({ code: 0, success: true });
         },
       );
-    } finally {
-      await Deno.remove(dir, { recursive: true });
-    }
+    });
 
     assertEquals(callCount, 0);
   });
@@ -159,15 +169,15 @@ describe("runBuildTasks()", () => {
             { name: "second", command: "deno", args: ["fmt", "b.ts"] },
             { name: "third", command: "deno", args: ["fmt", "c.ts"] },
           ],
-          async (_command, args) => {
+          (_command, args) => {
             const file = args[1];
             calls.push(String(file));
 
             if (file === "b.ts") {
-              return { code: 2, success: false };
+              return Promise.resolve({ code: 2, success: false });
             }
 
-            return { code: 0, success: true };
+            return Promise.resolve({ code: 0, success: true });
           },
         ),
       Error,

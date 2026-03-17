@@ -12,6 +12,10 @@ import {
   SUPPORTED_LANGUAGES,
   tryResolveSiteLanguage,
 } from "../../utils/i18n.ts";
+import {
+  getLocalizedHFeedUrl,
+  MF2_HTML_CONTENT_TYPE,
+} from "../../utils/microformats.ts";
 
 /** `<!doctype html>` prepended to the document before the `<html>` root. */
 const DOCTYPE = { __html: "<!doctype html>\n" } as const;
@@ -167,6 +171,7 @@ export default (
   const atomXmlUrl = getLocalizedUrl("/atom.xml", language);
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
+  const hFeedUrl = getLocalizedHFeedUrl(language);
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
   const Header = resolveHeaderComponent(comp);
   const Footer = resolveFooterComponent(comp);
@@ -223,6 +228,12 @@ export default (
             type="application/feed+json"
             title={`${resolvedSiteName} JSON feed`}
             href={feedJsonUrl}
+          />
+          <link
+            rel="alternate"
+            type={MF2_HTML_CONTENT_TYPE}
+            title={`${resolvedSiteName} h-feed`}
+            href={hFeedUrl}
           />
         </head>
         <body data-a11y-link-underlines="true" data-current-language={language}>

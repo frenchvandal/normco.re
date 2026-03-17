@@ -2,6 +2,7 @@ import { assert, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker } from "npm/faker-js";
+import layoutStyles from "../styles/_layout.scss" with { type: "text" };
 
 import Footer from "./Footer.tsx";
 
@@ -135,18 +136,14 @@ describe("Footer()", () => {
 });
 
 describe("Footer CSS contracts", () => {
-  it("has hover/focus styles for footer navigation links", async () => {
-    // Footer link styles live in the layout layer under .site-footer-nav a.
-    const cssContent = await Deno.readTextFile(
-      new URL("../styles/_layout.scss", import.meta.url),
-    );
+  it("has hover/focus styles for footer navigation links", () => {
     assertStringIncludes(
-      cssContent,
+      layoutStyles,
       ".site-footer-nav a:hover",
       "Missing hover style for footer navigation links",
     );
     assertStringIncludes(
-      cssContent,
+      layoutStyles,
       ".site-footer-nav a:focus-visible",
       "Missing focus-visible style for footer navigation links",
     );

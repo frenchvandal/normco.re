@@ -29,7 +29,6 @@ normco.re/
 │   └── processors.ts
 ├── _cms.ts
 ├── contracts/
-├── docs/
 ├── plugins/
 ├── scripts/
 ├── src/
@@ -211,8 +210,65 @@ under project control so loading, empty, retry, and offline states can be
 announced accessibly. The search container and panel also mirror busy state
 through `aria-busy`.
 
-Feeds are emitted per language. Feed item HTML is sourced from rendered post
-content, not raw Markdown.
+Feeds are emitted per language. RSS, Atom, and JSON outputs are generated in
+`_config/feeds.ts`. HTML feeds use Microformats2 directly in the TSX and string
+templates:
+
+- localized `/posts/` archives are the canonical `h-feed` routes
+- localized tag listings also expose `h-feed`
+- shared post cards emit `h-entry` for listing contexts
+- post detail pages emit a full `h-entry` with `e-content`
+
+Feed item HTML is sourced from rendered post content, not raw Markdown.
+
+### Microformats2 Mapping
+
+The homepage's recent-writing section also exposes an `h-feed`, but the
+discoverable and canonical HTML feed target remains the localized `/posts/`
+archive.
+
+`src/_includes/layouts/base.tsx` publishes the localized archive route with:
+
+```html
+<link rel="alternate" type="text/mf2+html" href="/posts/">
+```
+
+and the language-specific equivalent for the active page.
+
+Feed-level properties:
+
+- `h-feed`: route-level listing container
+- `p-name`: visible listing heading
+- `u-url`: canonical listing URL
+- `p-author h-card`: hidden localized author link to `/about/`
+
+Entry-level properties:
+
+- `h-entry`: shared post card and individual post layout
+- `p-name`: post title
+- `u-url u-uid`: canonical permalink
+- `dt-published`: published date
+- `p-summary`: localized frontmatter description
+- `e-content`: rendered post HTML on detail pages
+- `p-category`: post tags
+- `p-author h-card`: localized author link
+
+Implementation sources of truth:
+
+- site author and localization rules: `src/_data.ts` and `src/utils/i18n.ts`
+- shared mf2 helpers: `src/utils/microformats.ts`
+- shared list entry markup: `src/_components/PostCard.tsx`
+- feed containers: `src/index.page.tsx`, `src/posts/index.page.tsx`, and
+  `src/_includes/layouts/tag.tsx`
+- full entry markup: `src/_includes/layouts/post.tsx`
+
+Authoring implications:
+
+- keep `description` in each localized Markdown frontmatter because it is reused
+  as `p-summary`
+- keep shared post `url`, `date`, and `tags` in `src/posts/<slug>/_data.yml`
+- if the site starts tracking real modification times later, map that field to
+  `dt-updated` in the post layout instead of synthesizing it
 
 ## LumeCMS
 

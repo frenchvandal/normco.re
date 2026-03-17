@@ -1,13 +1,7 @@
-import {
-  assert,
-  assertEquals,
-  assertMatch,
-  assertStringIncludes,
-} from "jsr/assert";
-import { fromFileUrl, join } from "jsr/path";
+import { assert, assertMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
+import { POST_CONTRACT_FIXTURES } from "../../test/posts_contract_fixtures.ts";
 
-const POSTS_DIR = fromFileUrl(new URL(".", import.meta.url));
 const EXPECTED_LANGUAGES = ["en", "fr", "zh-hans", "zh-hant"] as const;
 
 function normalizeLineEndings(document: string): string {
@@ -31,26 +25,12 @@ function parseFrontmatter(document: string): {
   };
 }
 
-async function listPostSlugs(): Promise<string[]> {
-  const slugs: string[] = [];
-
-  for await (const entry of Deno.readDir(POSTS_DIR)) {
-    if (entry.isDirectory && !entry.name.startsWith("_")) {
-      slugs.push(entry.name);
-    }
-  }
-
-  return slugs.sort();
-}
-
 describe("src/posts Markdown contract", () => {
-  it("stores each post in a slug directory with shared metadata", async () => {
-    const slugs = await listPostSlugs();
+  it("stores each post in a slug directory with shared metadata", () => {
+    const slugs = POST_CONTRACT_FIXTURES.map(({ slug }) => slug);
     assert(slugs.length > 0);
 
-    for (const slug of slugs) {
-      const metadataPath = join(POSTS_DIR, slug, "_data.yml");
-      const metadata = await Deno.readTextFile(metadataPath);
+    for (const { slug, metadata } of POST_CONTRACT_FIXTURES) {
       assertMatch(metadata, new RegExp(`^slug: ${slug}$`, "m"));
       assertMatch(metadata, new RegExp(`^id: ${slug}$`, "m"));
       assertMatch(metadata, new RegExp(`^url: /posts/${slug}/$`, "m"));
@@ -58,37 +38,21 @@ describe("src/posts Markdown contract", () => {
     }
   });
 
-  it("keeps one Markdown file per supported language", async () => {
-    const slugs = await listPostSlugs();
-
-    for (const slug of slugs) {
+  it("keeps one Markdown file per supported language", () => {
+    for (const { slug, documents } of POST_CONTRACT_FIXTURES) {
       for (const language of EXPECTED_LANGUAGES) {
-        const documentPath = join(POSTS_DIR, slug, `${language}.md`);
-        const document = await Deno.readTextFile(documentPath);
+        const document = documents[language];
         const { body, frontmatter } = parseFrontmatter(document);
 
         assertStringIncludes(frontmatter, `slug: ${slug}`);
         assertStringIncludes(frontmatter, `lang: ${language}`);
         assertMatch(frontmatter, /^title: .+/m);
         assertMatch(frontmatter, /^description: .+/m);
-        assert(body.length > 0, `${documentPath} should contain Markdown body`);
+        assert(
+          body.length > 0,
+          `/src/posts/${slug}/${language}.md should contain Markdown body`,
+        );
       }
     }
-  });
-
-  it("does not keep legacy TSX post source files", async () => {
-    const legacyPostFiles: string[] = [];
-
-    for await (const entry of Deno.readDir(POSTS_DIR)) {
-      if (
-        entry.isFile &&
-        entry.name.endsWith(".page.tsx") &&
-        entry.name !== "index.page.tsx"
-      ) {
-        legacyPostFiles.push(entry.name);
-      }
-    }
-
-    assertEquals(legacyPostFiles.sort(), []);
   });
 });

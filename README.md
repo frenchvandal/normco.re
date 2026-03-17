@@ -13,8 +13,9 @@ official Carbon packages, and deployed as a static site to
 - Shared post metadata lives in `src/posts/<slug>/_data.yml`.
 - The site is localized in English, French, Simplified Chinese, and Traditional
   Chinese.
-- The UI is built on `@carbon/styles`; Carbon documentation and the installed
-  Carbon npm packages are the authoritative design-system references.
+- The UI is built on `@carbon/styles`.
+- Carbon documentation and the installed Carbon npm packages are the
+  authoritative design-system references.
 - `src/styles/carbon/_theme-tokens.scss` exposes the Carbon-backed custom
   properties consumed by the site.
 - The writing archive is grouped by year and exposes a server-rendered year jump
@@ -69,7 +70,6 @@ deno task build
 ├── _config/
 ├── _cms.ts
 ├── contracts/
-├── docs/
 ├── plugins/
 ├── scripts/
 ├── src/
@@ -134,12 +134,18 @@ than depending on a client-side enhancement.
 
 ### Feeds
 
-The site emits localized RSS, Atom, and JSON feeds:
+The site emits localized RSS, Atom, JSON Feed, and HTML Microformats2 feeds:
 
 - `/feed.xml`, `/atom.xml`, and `/feed.json`
 - `/fr/feed.xml`, `/fr/atom.xml`, and `/fr/feed.json`
 - `/zh-hans/feed.xml`, `/zh-hans/atom.xml`, and `/zh-hans/feed.json`
 - `/zh-hant/feed.xml`, `/zh-hant/atom.xml`, and `/zh-hant/feed.json`
+- `/posts/`, `/fr/posts/`, `/zh-hans/posts/`, and `/zh-hant/posts/` as the
+  canonical localized `h-feed` archive routes
+- `/tags/<slug>/` and localized tag routes as secondary `h-feed` listings
+
+`src/_includes/layouts/base.tsx` also publishes the localized archive route as a
+discoverable HTML feed with `rel="alternate"` and `type="text/mf2+html"`.
 
 ## Authoring Workflow
 
@@ -195,7 +201,7 @@ The production build runs several checks in sequence:
 
 - HTML validation
 - browser-safe import validation
-- final-output broken-link checking after asset fingerprinting
+- broken-link validation against final output after asset fingerprinting
 
 Generated quality artifacts live under `_cache/quality/`, which is ignored by
 Git. The key reports are:
@@ -207,7 +213,7 @@ Git. The key reports are:
 ## Deployment
 
 The `site` GitHub Actions workflow builds the site, assumes an Alibaba Cloud
-role through GitHub OIDC, syncs `_site/` to OSS, and refreshes or preloads CDN
+role using GitHub OIDC, syncs `_site/` to OSS, and refreshes or preloads CDN
 paths. The workflow inherits the build-time quality gates, so a failing build or
 link check blocks deployment.
 

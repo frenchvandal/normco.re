@@ -2,6 +2,9 @@ import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker, seedTestFaker } from "../../test/faker.ts";
+import postCardStyles from "../styles/components/_post-card.scss" with {
+  type: "text",
+};
 
 import PostCard from "./PostCard.tsx";
 
@@ -46,6 +49,35 @@ describe("PostCard()", () => {
     });
   });
 
+  describe("microformats2", () => {
+    it("renders an h-entry root with canonical name and URL properties", async () => {
+      const base = makeBase(307);
+      const html = await renderComponent(PostCard({ ...base }));
+      assertStringIncludes(html, 'class="post-card h-entry"');
+      assertStringIncludes(html, 'class="post-card-title p-name"');
+      assertStringIncludes(html, 'class="post-card-link u-url u-uid"');
+      assertStringIncludes(html, 'class="post-card-date dt-published"');
+    });
+
+    it("renders hidden summary and author data when provided", async () => {
+      const base = makeBase(308);
+      const html = await renderComponent(
+        PostCard({
+          ...base,
+          summary: "Summary copy",
+          authorName: "Phiphi",
+          authorUrl: "/about/",
+        }),
+      );
+
+      assertStringIncludes(html, 'class="p-summary sr-only"');
+      assertStringIncludes(html, "Summary copy");
+      assertStringIncludes(html, 'class="p-author h-card sr-only"');
+      assertStringIncludes(html, 'href="/about/"');
+      assertStringIncludes(html, '<span class="p-name">Phiphi</span>');
+    });
+  });
+
   describe("without readingLabel", () => {
     it("renders no reading-time badge", async () => {
       const base = makeBase(303);
@@ -60,7 +92,7 @@ describe("PostCard()", () => {
     it("wraps content in article.post-card", async () => {
       const base = makeBase(304);
       const html = await renderComponent(PostCard({ ...base }));
-      assertStringIncludes(html, '<article class="post-card">');
+      assertStringIncludes(html, 'class="post-card h-entry"');
     });
 
     it("renders a time element with the ISO datetime attribute", async () => {
@@ -77,11 +109,11 @@ describe("PostCard()", () => {
       assertStringIncludes(html, base.title);
       assertStringIncludes(html, "<h3");
       assertStringIncludes(html, "<a");
-      assertStringIncludes(html, 'class="post-card-link"');
+      assertStringIncludes(html, 'class="post-card-link u-url u-uid"');
     });
 
     it("escapes title and URL values before interpolation", async () => {
-      seedTestFaker(307);
+      seedTestFaker(309);
       const unsafeDate = faker.date.anytime();
       const html = await renderComponent(
         PostCard({
@@ -97,22 +129,16 @@ describe("PostCard()", () => {
   });
 
   describe("CSS contracts", () => {
-    it("defines Carbon-like hover and focus feedback on the card container", async () => {
-      const cssContent = await Deno.readTextFile(
-        new URL("../styles/components/_post-card.scss", import.meta.url),
-      );
-      assertStringIncludes(cssContent, ".post-card:hover");
-      assertStringIncludes(cssContent, ".post-card:focus-within");
-      assertStringIncludes(cssContent, "var(--cds-layer-hover)");
-      assertStringIncludes(cssContent, "var(--cds-focus)");
+    it("defines Carbon-like hover and focus feedback on the card container", () => {
+      assertStringIncludes(postCardStyles, ".post-card:hover");
+      assertStringIncludes(postCardStyles, ".post-card:focus-within");
+      assertStringIncludes(postCardStyles, "var(--cds-layer-hover)");
+      assertStringIncludes(postCardStyles, "var(--cds-focus)");
     });
 
-    it("keeps a dedicated class on the primary title link for shared styling", async () => {
-      const cssContent = await Deno.readTextFile(
-        new URL("../styles/components/_post-card.scss", import.meta.url),
-      );
-      assertStringIncludes(cssContent, ".post-card-link");
-      assertStringIncludes(cssContent, ".post-card-link:focus-visible");
+    it("keeps a dedicated class on the primary title link for shared styling", () => {
+      assertStringIncludes(postCardStyles, ".post-card-link");
+      assertStringIncludes(postCardStyles, ".post-card-link:focus-visible");
     });
   });
 });

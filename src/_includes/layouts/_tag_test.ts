@@ -31,7 +31,7 @@ describe("tag.tsx layout", () => {
           posts: [makePost(1)],
           comp: {
             PostCard: ({ title, url }: { title: string; url: string }) =>
-              `<article class="post-card"><h3><a href="${url}">${title}</a></h3></article>`,
+              `<article class="post-card h-entry"><h3 class="p-name"><a class="u-url u-uid" href="${url}">${title}</a></h3></article>`,
           },
         } as unknown as Lume.Data,
         MOCK_HELPERS,
@@ -43,7 +43,10 @@ describe("tag.tsx layout", () => {
       html,
       'class="feature-layout feature-layout--with-rail"',
     );
+    assertStringIncludes(html, 'class="feature-main h-feed"');
     assertStringIncludes(html, 'class="feature-rail tag-page-rail"');
+    assertStringIncludes(html, 'class="u-url sr-only" href="/posts/"');
+    assertStringIncludes(html, 'class="p-author h-card sr-only"');
   });
 
   it("renders breadcrumb, post list, and archive return link", async () => {
@@ -56,7 +59,7 @@ describe("tag.tsx layout", () => {
           posts: [post],
           comp: {
             PostCard: ({ title, url }: { title: string; url: string }) =>
-              `<article class="post-card"><h3><a href="${url}">${title}</a></h3></article>`,
+              `<article class="post-card h-entry"><h3 class="p-name"><a class="u-url u-uid" href="${url}">${title}</a></h3></article>`,
           },
         } as unknown as Lume.Data,
         MOCK_HELPERS,
@@ -81,7 +84,7 @@ describe("tag.tsx layout", () => {
           posts: [],
           comp: {
             PostCard: ({ title, url }: { title: string; url: string }) =>
-              `<article class="post-card"><h3><a href="${url}">${title}</a></h3></article>`,
+              `<article class="post-card h-entry"><h3 class="p-name"><a class="u-url u-uid" href="${url}">${title}</a></h3></article>`,
           },
         } as unknown as Lume.Data,
         MOCK_HELPERS,
@@ -118,8 +121,8 @@ describe("tag.tsx layout", () => {
     );
 
     assertStringIncludes(html, 'class="archive-list"');
-    assertStringIncludes(html, 'class="post-card"');
-    assertStringIncludes(html, '<a href=""></a>');
+    assertStringIncludes(html, 'class="post-card h-entry"');
+    assertStringIncludes(html, 'class="u-url u-uid" href=""');
     assertNotMatch(html, /not-a-post/);
     assertNotMatch(html, />42</);
   });

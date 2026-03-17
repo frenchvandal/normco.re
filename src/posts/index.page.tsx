@@ -9,6 +9,12 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../utils/i18n.ts";
+import {
+  getLocalizedAuthorHCard,
+  getLocalizedHFeedUrl,
+  renderHiddenHCard,
+  renderHiddenUrl,
+} from "../utils/microformats.ts";
 import { resolvePostDate, resolveReadingMinutes } from "./post-metadata.ts";
 import { escapeHtml } from "../utils/html.ts";
 
@@ -20,6 +26,9 @@ type Comp = {
     readonly dateStr: string;
     readonly dateIso: string;
     readonly readingLabel?: string;
+    readonly summary?: string;
+    readonly authorName?: string;
+    readonly authorUrl?: string;
   }) => string | Promise<string>;
 };
 
@@ -44,10 +53,20 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
     }
   }
 
-  return ({ title, url }) =>
-    `<article class="post-card"><h3><a href="${escapeHtml(url)}">${
-      escapeHtml(title)
-    }</a></h3></article>`;
+  return ({ title, url, dateStr, dateIso, summary, authorName, authorUrl }) =>
+    `<article class="post-card h-entry"><time class="post-card-date dt-published" datetime="${
+      escapeHtml(dateIso)
+    }">${
+      escapeHtml(dateStr)
+    }</time><h3 class="p-name"><a class="u-url u-uid" href="${
+      escapeHtml(url)
+    }">${escapeHtml(title)}</a></h3>${
+      summary ? `<p class="p-summary sr-only">${escapeHtml(summary)}</p>` : ""
+    }${
+      authorName && authorUrl
+        ? renderHiddenHCard({ name: authorName, url: authorUrl })
+        : ""
+    }</article>`;
 }
 
 function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
@@ -130,12 +149,14 @@ export default async (
   const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
+  const feedUrl = getLocalizedHFeedUrl(language);
   const shortDatePattern = language === "fr"
     ? "d MMM"
     : language === "zhHans" || language === "zhHant"
     ? "M月d日"
     : "SHORT";
   const posts = resolveArchivePosts(data.search, languageDataCode);
+  const author = getLocalizedAuthorHCard(language, data.author);
 
   // Group posts by year.
   const currentYear = new Date().getFullYear();
@@ -179,6 +200,11 @@ export default async (
           postDate.toISOString(),
         dateIso: dateFormat(postDate, "ATOM", language) ??
           postDate.toISOString(),
+        ...(typeof post.description === "string" && post.description.length > 0
+          ? { summary: post.description }
+          : {}),
+        authorName: author.name,
+        authorUrl: author.url,
         ...(minutes !== undefined
           ? { readingLabel: formatReadingTime(minutes, language) }
           : {}),
@@ -220,7 +246,7 @@ export default async (
 </nav>
 <section class="pagehead archive-pagehead" aria-labelledby="archive-title">
   <p class="pagehead-eyebrow">${escapeHtml(translations.archive.eyebrow)}</p>
-  <h1 id="archive-title" class="archive-page-title">${
+  <h1 id="archive-title" class="archive-page-title p-name">${
     escapeHtml(translations.archive.title)
   }</h1>
   <p class="pagehead-lead">${escapeHtml(translations.archive.lead)}</p>
@@ -276,7 +302,9 @@ export default async (
 
   return `<div class="site-page-shell site-page-shell--wide">
 <div class="${escapeHtml(archiveLayoutClass)}">
-  <div class="feature-main">
+  <div class="feature-main h-feed">
+    ${renderHiddenUrl(feedUrl)}
+    ${renderHiddenHCard(author)}
     ${archiveIntro}
     ${archiveBody}
   </div>

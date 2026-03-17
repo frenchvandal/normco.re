@@ -51,6 +51,7 @@ function makeNav(
 function makeData(
   overrides: {
     title?: string;
+    description?: string;
     children?: { __html: string };
     url?: string;
     lang?: string;
@@ -66,6 +67,7 @@ function makeData(
 
   return {
     title: defaultTitle,
+    description: undefined,
     children: { __html: `<p>${defaultBody}</p>` },
     url: defaultUrl,
     date: makePostDate(712),
@@ -163,6 +165,31 @@ describe("post.tsx layout", () => {
         postLayout(makeData({}), MOCK_HELPERS),
       );
       assertMatch(html, /class="[^"]*\bpost-article\b[^"]*"/);
+      assertMatch(html, /class="[^"]*\bh-entry\b[^"]*"/);
+    });
+
+    it("emits canonical h-entry properties for the article shell", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({
+            title: "Entry title",
+            description: "Entry summary",
+            tags: ["design", "systems"],
+            url: "/posts/entry-title/",
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+
+      assertStringIncludes(html, 'class="post-title p-name"');
+      assertStringIncludes(html, 'class="dt-published"');
+      assertStringIncludes(html, 'class="u-url u-uid sr-only"');
+      assertStringIncludes(html, 'href="/posts/entry-title/"');
+      assertStringIncludes(html, 'class="p-author h-card sr-only"');
+      assertStringIncludes(html, 'class="p-summary sr-only"');
+      assertStringIncludes(html, "Entry summary");
+      assertStringIncludes(html, 'class="p-category sr-only"');
+      assertStringIncludes(html, 'class="post-content e-content"');
     });
 
     it("renders the post rail when tags are present", async () => {
@@ -177,6 +204,8 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'class="post-tags post-tags--rail"');
       assertStringIncludes(html, 'href="/tags/devops/"');
       assertStringIncludes(html, 'href="/tags/cdn/"');
+      assertStringIncludes(html, 'rel="tag"');
+      assertStringIncludes(html, 'class="cds--tag cds--tag--');
     });
 
     it("ignores non-string tag entries before rendering the rail", async () => {
