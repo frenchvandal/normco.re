@@ -65,8 +65,8 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, 'href="/fr/feed.xml"');
     assertStringIncludes(html, 'href="/fr/atom.xml"');
     assertStringIncludes(html, "En bref");
-    assertStringIncludes(html, "J&#39;écris");
-    assertStringIncludes(html, "C&#39;est juste un endroit");
-    assertNotMatch(html, /J'écris/);
+    assertStringIncludes(html, "J’écris");
+    assertStringIncludes(html, "C’est juste un endroit");
+    assertNotMatch(html, /J&#39;écris/);
   });
 });

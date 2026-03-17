@@ -142,9 +142,9 @@ describe("posts/index.page.tsx", () => {
         MOCK_HELPERS,
       );
 
-      assertStringIncludes(html, "Fil d&#39;Ariane des archives");
-      assertStringIncludes(html, "Années d&#39;archives");
-      assertNotMatch(html, /Fil d'Ariane des archives/);
+      assertStringIncludes(html, "Fil d’Ariane des archives");
+      assertStringIncludes(html, "Années d’archives");
+      assertNotMatch(html, /Fil d&#39;Ariane des archives/);
     });
   });
 

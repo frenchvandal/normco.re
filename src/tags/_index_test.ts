@@ -49,7 +49,7 @@ describe("tags/index.page.ts", () => {
     assert(frenchDesignPage);
     assertEquals(designPage.type, "tag");
     assertEquals(designPage.title, "Tag: design");
-    assertEquals(frenchDesignPage.title, "Étiquette : design");
+    assertEquals(frenchDesignPage.title, "Étiquette\u00a0: design");
     const alternates = designPage.alternates as Array<{
       lang: string;
       url: string;

@@ -357,6 +357,29 @@ describe("Header()", () => {
       assertStringIncludes(html, 'data-carbon-icon="checkmark"');
     });
 
+    it("keeps language labels invariant on localized pages", async () => {
+      const html = await renderComponent(
+        Header({ currentUrl: "/zh-hans/", language: "zhHans" }),
+      );
+
+      assertStringIncludes(
+        html,
+        '<span class="cds--header__language-label">English</span>',
+      );
+      assertStringIncludes(
+        html,
+        '<span class="cds--header__language-label">Français</span>',
+      );
+      assertStringIncludes(
+        html,
+        '<span class="cds--header__language-label">简体中文</span>',
+      );
+      assertStringIncludes(
+        html,
+        '<span class="cds--header__language-label">繁體中文</span>',
+      );
+    });
+
     it("uses page alternates for language links when available", async () => {
       const html = await renderComponent(
         Header({
@@ -458,19 +481,19 @@ describe("Header()", () => {
       assertStringIncludes(html, 'aria-label="Recherche"');
       assertStringIncludes(
         html,
-        'data-search-loading-label="Chargement des resultats de recherche."',
+        'data-search-loading-label="Chargement des résultats de recherche."',
       );
       assertStringIncludes(
         html,
-        'data-search-no-results-label="Aucun resultat."',
+        'data-search-no-results-label="Aucun résultat."',
       );
       assertStringIncludes(
         html,
-        'data-search-one-result-label="[COUNT] resultat"',
+        'data-search-one-result-label="[COUNT] résultat"',
       );
       assertStringIncludes(
         html,
-        'data-search-many-results-label="[COUNT] resultats"',
+        'data-search-many-results-label="[COUNT] résultats"',
       );
     });
 

@@ -454,7 +454,7 @@ const SITE_TRANSLATIONS = {
       en: "English",
       fr: "Français",
       zhHans: "简体中文",
-      zhHant: "繁体中文",
+      zhHant: "繁體中文",
     },
     home: {
       eyebrow: "个人博客",
@@ -570,7 +570,7 @@ const SITE_TRANSLATIONS = {
     languageNames: {
       en: "English",
       fr: "Français",
-      zhHans: "簡體中文",
+      zhHans: "简体中文",
       zhHant: "繁體中文",
     },
     home: {

@@ -9,6 +9,7 @@ import {
   getLanguagePrefix,
   getLanguageTag,
   getLocalizedUrl,
+  getSiteTranslations,
   isSiteLanguage,
   LANGUAGE_DATA_CODE,
   LANGUAGE_PREFIX,
@@ -201,6 +202,24 @@ describe("getLocalizedUrl()", () => {
   it("normalizes paths that lack a leading slash", () => {
     assertStrictEquals(getLocalizedUrl("posts/", "fr"), "/fr/posts/");
     assertStrictEquals(getLocalizedUrl("about/", "en"), "/about/");
+  });
+});
+
+describe("getSiteTranslations()", () => {
+  it("keeps language selector labels invariant across locales", () => {
+    const expectedLanguageNames = {
+      en: "English",
+      fr: "Français",
+      zhHans: "简体中文",
+      zhHant: "繁體中文",
+    };
+
+    for (const language of SUPPORTED_LANGUAGES) {
+      assertEquals(
+        getSiteTranslations(language).languageNames,
+        expectedLanguageNames,
+      );
+    }
   });
 });
 
