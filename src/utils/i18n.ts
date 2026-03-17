@@ -250,7 +250,7 @@ const SITE_TRANSLATIONS = {
       intro:
         "Hi, I’m Phiphi. I’m a software person living in Chengdu, China—a city known for its pandas, spicy food, and unhurried pace of life.",
       body:
-        "I write about software, tools, language, and whatever else catches my attention. This site has no comments, no analytics, and no newsletter. It's just a place to think out loud.",
+        "I write about software, tools, language, and whatever else catches my attention. This site has no comments, no analytics, and no newsletter. It’s just a place to think out loud.",
       feedsIntro: "You can follow along via",
       railAriaLabel: "About details",
       contactTitle: "Contact",
@@ -309,10 +309,10 @@ const SITE_TRANSLATIONS = {
       siteLinksAriaLabel: "Liens du site",
       menuToggleLabel: "Ouvrir le menu de navigation",
       searchLabel: "Recherche",
-      searchLoadingLabel: "Chargement des resultats de recherche.",
-      searchNoResultsLabel: "Aucun resultat.",
-      searchOneResultLabel: "[COUNT] resultat",
-      searchManyResultsLabel: "[COUNT] resultats",
+      searchLoadingLabel: "Chargement des résultats de recherche.",
+      searchNoResultsLabel: "Aucun résultat.",
+      searchOneResultLabel: "[COUNT] résultat",
+      searchManyResultsLabel: "[COUNT] résultats",
       searchUnavailableLabel: "La recherche est temporairement indisponible.",
       searchOfflineLabel: "La recherche est indisponible hors ligne.",
       searchRetryLabel: "Réessayer",
@@ -343,7 +343,7 @@ const SITE_TRANSLATIONS = {
         "Un blog personnel de Phiphi — logiciel, culture et vie quotidienne depuis Chengdu.",
       recentHeading: "Articles récents",
       archiveLinkLabel: "Voir les archives",
-      emptyStateTitle: "Rien n'est encore publié.",
+      emptyStateTitle: "Rien n’est encore publié.",
       emptyState: "Aucun article publié pour le moment.",
     },
     archive: {
@@ -352,10 +352,10 @@ const SITE_TRANSLATIONS = {
       lead:
         "Tous les articles, regroupés par année, du plus récent au plus ancien.",
       activityAriaLabel: "Activité des articles",
-      yearsAriaLabel: "Années d'archives",
+      yearsAriaLabel: "Années d’archives",
       emptyStateTitle: "Les archives sont vides.",
       emptyState: "Aucun article publié pour le moment.",
-      breadcrumbAriaLabel: "Fil d'Ariane des archives",
+      breadcrumbAriaLabel: "Fil d’Ariane des archives",
       railAriaLabel: "Outils des archives",
       paginationAriaLabel: "Pagination des archives",
       paginationItemsRange: "{start}–{end} sur {total} éléments",
@@ -377,7 +377,7 @@ const SITE_TRANSLATIONS = {
       atAGlanceTitle: "En bref",
       locationLabel: "Basé à",
       locationValue: "Chengdu, Chine",
-      topicsLabel: "J'écris sur",
+      topicsLabel: "J’écris sur",
       topicsValue: "logiciel, langue, culture et vie quotidienne",
       languagesLabel: "Disponible en",
       languagesValue:
@@ -391,19 +391,19 @@ const SITE_TRANSLATIONS = {
     },
     tagPage: {
       eyebrow: "Sujet",
-      breadcrumbAriaLabel: "Fil d'Ariane des étiquettes",
+      breadcrumbAriaLabel: "Fil d’Ariane des étiquettes",
       railAriaLabel: "Outils des étiquettes",
       postsAriaLabel: "Articles étiquetés",
       postsHeading: "Articles",
       archiveLinkLabel: "Retour aux archives",
     },
     post: {
-      breadcrumbAriaLabel: "Fil d'Ariane de l'article",
+      breadcrumbAriaLabel: "Fil d’Ariane de l’article",
       navigationAriaLabel: "Navigation entre articles",
-      railAriaLabel: "Outils de l'article",
+      railAriaLabel: "Outils de l’article",
       previousLabel: "Précédent",
       nextLabel: "Suivant",
-      tagsAriaLabel: "Étiquettes de l'article",
+      tagsAriaLabel: "Étiquettes de l’article",
       copyCodeLabel: "Copier le code",
       copyCodeFeedback: "Code copié",
       copyCodeFailedFeedback: "Impossible de copier le code",
@@ -411,15 +411,15 @@ const SITE_TRANSLATIONS = {
     offline: {
       ariaLabel: "Page hors ligne",
       title: "Vous êtes hors ligne.",
-      lead: "La dernière page n'a pas pu être chargée pour le moment.",
-      backToHome: "Retour à l'accueil",
+      lead: "La dernière page n’a pas pu être chargée pour le moment.",
+      backToHome: "Retour à l’accueil",
     },
     notFound: {
       title: "Page introuvable",
-      description: "La page demandée n'existe pas.",
+      description: "La page demandée n’existe pas.",
       heading: "Page introuvable",
-      message: "La page demandée n'existe pas.",
-      backToHome: "Retour à l'accueil",
+      message: "La page demandée n’existe pas.",
+      backToHome: "Retour à l’accueil",
     },
   },
   zhHans: {
@@ -454,7 +454,7 @@ const SITE_TRANSLATIONS = {
       en: "English",
       fr: "Français",
       zhHans: "简体中文",
-      zhHant: "繁體中文",
+      zhHant: "繁体中文",
     },
     home: {
       eyebrow: "个人博客",
@@ -570,7 +570,7 @@ const SITE_TRANSLATIONS = {
     languageNames: {
       en: "English",
       fr: "Français",
-      zhHans: "简体中文",
+      zhHans: "簡體中文",
       zhHant: "繁體中文",
     },
     home: {
@@ -735,7 +735,7 @@ const POST_COUNT_FORMAT = {
 
 const TAG_PAGE_TITLE_FORMAT = {
   en: (tag: string) => `Tag: ${tag}`,
-  fr: (tag: string) => `Étiquette : ${tag}`,
+  fr: (tag: string) => `Étiquette\u00a0: ${tag}`,
   zhHans: (tag: string) => `标签：${tag}`,
   zhHant: (tag: string) => `標籤：${tag}`,
 } as const satisfies Record<SiteLanguage, (tag: string) => string>;
@@ -744,7 +744,7 @@ const TAG_PAGE_DESCRIPTION_FORMAT = {
   en: (tag: string, count: number) =>
     `${POST_COUNT_FORMAT.en(count)} filed under ${tag}.`,
   fr: (tag: string, count: number) =>
-    `${POST_COUNT_FORMAT.fr(count)} sous l'étiquette ${tag}.`,
+    `${POST_COUNT_FORMAT.fr(count)} sous l’étiquette ${tag}.`,
   zhHans: (tag: string, count: number) =>
     `${tag} 主题下的 ${POST_COUNT_FORMAT.zhHans(count)}。`,
   zhHant: (tag: string, count: number) =>
