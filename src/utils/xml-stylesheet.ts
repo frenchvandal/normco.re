@@ -4,6 +4,10 @@ const XML_STYLESHEET_RULES = [
     href: "/feed.xsl",
   },
   {
+    suffix: "/atom.xml",
+    href: "/feed.xsl",
+  },
+  {
     suffix: "/sitemap.xml",
     href: "/sitemap.xsl",
   },

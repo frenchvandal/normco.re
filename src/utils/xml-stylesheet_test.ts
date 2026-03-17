@@ -19,8 +19,13 @@ describe("getXmlStylesheetHref()", () => {
     assertEquals(getXmlStylesheetHref("/fr/sitemap.xml"), "/sitemap.xsl");
   });
 
+  it("returns the feed stylesheet for default and localized Atom URLs", () => {
+    assertEquals(getXmlStylesheetHref("/atom.xml"), "/feed.xsl");
+    assertEquals(getXmlStylesheetHref("/fr/atom.xml"), "/feed.xsl");
+  });
+
   it("returns undefined for unrelated XML files", () => {
     assertEquals(getXmlStylesheetHref("/feed.json"), undefined);
-    assertEquals(getXmlStylesheetHref("/fr/atom.xml"), undefined);
+    assertEquals(getXmlStylesheetHref("/data.xml"), undefined);
   });
 });

@@ -160,6 +160,7 @@ export default (
   const includePagefindBody = unlisted !== true;
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
+  const atomXmlUrl = getLocalizedUrl("/atom.xml", language);
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
   const Header = resolveHeaderComponent(comp);
   const Footer = resolveFooterComponent(comp);
@@ -204,6 +205,12 @@ export default (
             type="application/rss+xml"
             title={resolvedSiteName}
             href={feedXmlUrl}
+          />
+          <link
+            rel="alternate"
+            type="application/atom+xml"
+            title={`${resolvedSiteName} Atom feed`}
+            href={atomXmlUrl}
           />
           <link
             rel="alternate"

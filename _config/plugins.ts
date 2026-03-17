@@ -203,7 +203,7 @@ export function registerPlugins(
       checkUrls({
         anchors: true,
         throw: true,
-        ignore: ["/feed.xml", "/feed.json", "/sitemap.xml"],
+        ignore: ["/feed.xml", "/feed.json", "/atom.xml", "/sitemap.xml"],
         output: "_cache/quality/broken-links-pre-fingerprint.json",
       }),
     );

@@ -1,4 +1,4 @@
-/** HTML processors — image dimensions, XML stylesheets, font preloads, and multilanguage aliases. */
+/** HTML processors — image dimensions, XML stylesheets, font preloads, multilanguage aliases, and JSON Feed normalization. */
 
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
@@ -8,6 +8,12 @@ import {
 } from "../src/utils/editorial-image-dimensions.ts";
 import { getXmlStylesheetHref } from "../src/utils/xml-stylesheet.ts";
 import { selectCriticalFontUrls } from "../src/utils/font-preload.ts";
+import {
+  JSON_FEED_PATH_PATTERN,
+  normalizeJsonFeed,
+} from "../src/utils/json-feed.ts";
+import { FEED_VARIANTS } from "./feeds.ts";
+import { getLanguageTag, type SiteLanguage } from "../src/utils/i18n.ts";
 
 const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
 const XML_PI_PATTERN = /^(<\?xml[^?]*\?>)/;
@@ -177,6 +183,41 @@ export function registerProcessors(site: Site): void {
       page.content = XML_PI_PATTERN.test(content)
         ? content.replace(XML_PI_PATTERN, `$1\n${pi}`)
         : `${pi}\n${content}`;
+    }
+  });
+
+  // Normalize JSON Feed outputs to conform to JSON Feed 1.1.
+  // Lume's feed plugin emits version 1.0, RFC 2822 dates, and no language
+  // field. This processor patches those gaps after generation.
+  const feedLanguageMap = new Map<string, SiteLanguage>(
+    FEED_VARIANTS.map((v) => [`${v.pathPrefix}/feed.json`, v.language]),
+  );
+
+  site.process([".json"], (pages: Page[]) => {
+    for (const page of pages) {
+      const pageUrl = typeof page.data.url === "string"
+        ? page.data.url
+        : page.outputPath;
+
+      if (typeof pageUrl !== "string" || !JSON_FEED_PATH_PATTERN.test(pageUrl)) {
+        continue;
+      }
+
+      const content = decodePageContent(page.content);
+      let feed: Record<string, unknown>;
+
+      try {
+        feed = JSON.parse(content) as Record<string, unknown>;
+      } catch {
+        continue;
+      }
+
+      const variantLanguage = feedLanguageMap.get(pageUrl);
+      const langTag = variantLanguage
+        ? getLanguageTag(variantLanguage)
+        : undefined;
+
+      page.content = JSON.stringify(normalizeJsonFeed(feed, langTag));
     }
   });
 }
