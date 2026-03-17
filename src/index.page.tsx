@@ -1,7 +1,7 @@
 /** Home page - hero + five most recent posts. */
 
 import StatePanel from "./_components/StatePanel.tsx";
-import { metas, siteName } from "./_data.ts";
+import { siteName } from "./_data.ts";
 import {
   formatReadingTime,
   getLanguageDataCode,
@@ -21,23 +21,6 @@ export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/";
 /** Page title - same as the site name for the home page. */
 export const title: string = siteName;
-/** Page meta description - mirrors the site-wide default. */
-export const description: string = metas.description;
-
-/** French-only metadata overrides used by the multilanguage plugin. */
-export const fr = {
-  description: "Blog personnel de Phiphi, base a Chengdu, en Chine.",
-} as const;
-
-/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
-export const zhHans = {
-  description: "Phiphi 的个人博客，写于中国成都。",
-} as const;
-
-/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
-export const zhHant = {
-  description: "Phiphi 的個人部落格，寫於中國成都。",
-} as const;
 
 /** Typed component functions used on this page. */
 type Comp = {

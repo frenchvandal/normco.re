@@ -27,6 +27,11 @@
   "permissions": {
     "lume": {
       "all": true
+    },
+    "tests": {
+      "read": true,
+      "write": true,
+      "env": true
     }
   },
   "tasks": {
@@ -48,15 +53,11 @@
     },
     "check": {
       "description": "Type-check the entire project",
-      "command": "deno check **/*.ts **/*.tsx"
+      "command": "deno check _cms.ts _cms_test.ts _config.ts _config/**/*.ts contracts/**/*.ts plugins/**/*.ts scripts/**/*.ts src/**/*.ts src/**/*.tsx test/**/*.ts"
     },
     "test": {
       "description": "Run unit and integration tests with the configured test permission set",
       "command": "deno test -P"
-    },
-    "lint:doc": {
-      "description": "Lint documentation comments (src, scripts, and plugins; root config files are excluded — they reference private Lume types by framework requirement)",
-      "command": "deno doc --lint src/**/*.ts src/**/*.tsx scripts/**/*.ts plugins/**/*.ts"
     },
     "test:doc": {
       "description": "Run documentation tests from inline JSDoc examples in source files",
@@ -113,7 +114,17 @@
     "noImplicitReturns": true
   },
   "unstable": [
-    "temporal"
+    "bare-node-builtins",
+    "broadcast-channel",
+    "cron",
+    "detect-cjs",
+    "kv",
+    "net",
+    "node-globals",
+    "sloppy-imports",
+    "unsafe-proto",
+    "webgpu",
+    "worker-options"
   ],
   "nodeModulesDir": "auto",
   "test": {
@@ -139,11 +150,8 @@
   },
   "allowScripts": {
     "allow": [
-      "npm:@carbon/icons@11.76.0",
-      "npm:@carbon/styles@1.102.0",
       "npm:@parcel/watcher@2.5.6",
-      "npm:esbuild@0.27.3",
-      "npm:lightningcss-cli@1.32.0"
+      "npm:esbuild@0.27.3"
     ]
   }
 }
