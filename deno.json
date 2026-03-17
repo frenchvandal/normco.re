@@ -24,20 +24,10 @@
     "npm/prism-typescript": "npm:prismjs@1.30.0/components/prism-typescript.js",
     "npm/prism-yaml": "npm:prismjs@1.30.0/components/prism-yaml.js"
   },
-  "permissions": {
-    "lume": {
-      "all": true
-    },
-    "tests": {
-      "read": true,
-      "write": true,
-      "env": true
-    }
-  },
   "tasks": {
     "lume": {
       "description": "Run Lume command",
-      "command": "deno run -P=lume lume/cli.ts"
+      "command": "deno run -A lume/cli.ts"
     },
     "build": {
       "description": "Build the site for production",
@@ -56,12 +46,12 @@
       "command": "deno check _cms.ts _cms_test.ts _config.ts _config/**/*.ts contracts/**/*.ts plugins/**/*.ts scripts/**/*.ts src/**/*.ts src/**/*.tsx test/**/*.ts"
     },
     "test": {
-      "description": "Run unit and integration tests with the configured test permission set",
-      "command": "deno test -P"
+      "description": "Run unit and integration tests",
+      "command": "deno test"
     },
     "test:doc": {
       "description": "Run documentation tests from inline JSDoc examples in source files",
-      "command": "deno test -P --doc src/**/*.ts src/**/*.tsx plugins/**/*.ts"
+      "command": "deno test --doc src/**/*.ts src/**/*.tsx plugins/**/*.ts"
     },
     "payload:report": {
       "description": "Report route-level JS/CSS payload from generated output (`_site` by default)",
@@ -121,6 +111,7 @@
     "kv",
     "net",
     "node-globals",
+    "raw-imports",
     "sloppy-imports",
     "unsafe-proto",
     "webgpu",
@@ -130,8 +121,7 @@
   "test": {
     "exclude": [
       "**/*.md"
-    ],
-    "permissions": "tests"
+    ]
   },
   "fmt": {
     "exclude": [
