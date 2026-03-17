@@ -44,7 +44,6 @@ const STATIC_ASSETS = [
   "/",
   "/style.css",
   "/scripts/theme-toggle.js",
-  "/scripts/anti-flash.js",
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
   "/scripts/post-code-copy.js",

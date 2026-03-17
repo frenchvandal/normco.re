@@ -19,6 +19,12 @@ import {
 
 /** `<!doctype html>` prepended to the document before the `<html>` root. */
 const DOCTYPE = { __html: "<!doctype html>\n" } as const;
+// Keep the theme bootstrap inline to avoid an extra render-blocking fetch on
+// first paint while still setting the resolved color mode before CSS applies.
+const THEME_BOOTSTRAP = {
+  __html:
+    '(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{const s=localStorage.getItem("color-mode");if(s==="light"||s==="dark"||s==="system")v=s;else{const l=localStorage.getItem("color-scheme");v=l==="light"||l==="dark"?l:null}}catch{v=null}const p=v??"system",t=p==="light"||p==="dark"?p:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-theme-preference",p);r.setAttribute("data-color-scheme",t);document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("theme-toggle");if(e){const l=e.getAttribute("data-label-switch-light")??"Switch to light theme",d=e.getAttribute("data-label-switch-dark")??"Switch to dark theme",s=e.getAttribute("data-label-follow-system")??"Follow system theme",n=p==="light"?d:p==="dark"?s:l;e.setAttribute("aria-label",n);e.setAttribute("title",n)}})})()',
+} as const;
 
 type BuildData = {
   swDebugLevel?: "off" | "summary" | "verbose";
@@ -201,7 +207,7 @@ export default (
             href="/style.css"
             fetchpriority="high"
           />
-          <script src="/scripts/anti-flash.js"></script>
+          <script>{THEME_BOOTSTRAP}</script>
           <script
             src="/scripts/language-preference.js"
             data-supported-languages={SUPPORTED_LANGUAGES.join(",")}

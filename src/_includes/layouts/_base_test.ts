@@ -115,7 +115,7 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
-        '<script src="/scripts/anti-flash.js"></script>',
+        '<script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");',
       );
       assertStringIncludes(html, 'href="/feed.xml"');
       assertStringIncludes(html, 'href="/atom.xml"');

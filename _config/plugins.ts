@@ -107,7 +107,7 @@ export function registerPlugins(
   site.use(
     lightningcss({
       options: {
-        minify: false,
+        minify: !options.isServeTask,
         targets: LIGHTNING_CSS_TARGETS,
       },
     }),
