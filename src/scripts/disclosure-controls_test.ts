@@ -341,6 +341,58 @@ describe("disclosure-controls.js", () => {
     assertEquals(window.document.activeElement, toggle);
   });
 
+  it("keeps focus on the menu toggle when the side nav is opened with a pointer", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    evaluateScript(window);
+
+    const toggle = getNavToggle(window);
+    const sideNav = getSideNav(window);
+
+    toggle.focus();
+    toggle.dispatchEvent(
+      new window.MouseEvent("pointerdown", { bubbles: true }),
+    );
+    toggle.click();
+    await waitForTimers(window);
+
+    assertEquals(toggle.getAttribute("aria-expanded"), "true");
+    assertEquals(sideNav.hasAttribute("hidden"), false);
+    assertEquals(window.document.activeElement, toggle);
+    assertEquals(
+      window.document.documentElement.dataset.interactionModality,
+      "pointer",
+    );
+  });
+
+  it("moves focus into the side nav when it is opened from the keyboard", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    evaluateScript(window);
+
+    const toggle = getNavToggle(window);
+    const firstLink = getSideNav(window).querySelector(
+      "a.cds--side-nav__link",
+    );
+    assert(firstLink instanceof window.HTMLAnchorElement);
+
+    toggle.focus();
+    toggle.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Enter",
+        bubbles: true,
+      }),
+    );
+    toggle.click();
+    await waitForTimers(window);
+
+    assertEquals(window.document.activeElement, firstLink);
+    assertEquals(
+      window.document.documentElement.dataset.interactionModality,
+      "keyboard",
+    );
+  });
+
   it("does not focus a language option after the panel closes before the deferred timer runs", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
@@ -387,8 +439,12 @@ describe("disclosure-controls.js", () => {
       throw new Error("removed side-nav link should not receive focus");
     };
 
+    toggle.focus();
     toggle.dispatchEvent(
-      new window.MouseEvent("pointerdown", { bubbles: true }),
+      new window.KeyboardEvent("keydown", {
+        key: "Enter",
+        bubbles: true,
+      }),
     );
     toggle.click();
     firstLink.remove();

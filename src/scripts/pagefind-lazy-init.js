@@ -82,6 +82,16 @@
   let generatedContainerId = 0;
 
   /**
+   * Returns whether the active interaction modality is keyboard-driven.
+   * disclosure-controls.js keeps this attribute in sync on <html>.
+   * @returns {boolean}
+   */
+  function shouldMoveFocusForOpen() {
+    return globalThis.document.documentElement.dataset.interactionModality ===
+      "keyboard";
+  }
+
+  /**
    * @param {HTMLElement} container
    * @returns {{
    *   readonly unavailable: string;
@@ -274,6 +284,7 @@
   function renderSearchFallback(container) {
     const { unavailable, offline, retry } = getSearchMessages(container);
     const status = getSearchStatusElement(container);
+    const shouldMoveFocus = shouldMoveFocusForOpen();
     const fallback = globalThis.document.createElement("div");
     fallback.className = "pagefind-ui__drawer";
     fallback.dataset.pagefindFallback = "";
@@ -292,11 +303,14 @@
     }
 
     retryButton.addEventListener("click", () => {
+      const shouldMoveFocusAfterRetry = shouldMoveFocusForOpen();
       clearSearchFallback(container);
       showPagefindLoading(container);
       void ensurePagefindInitialized(container)
         .then(() => {
-          focusSearchInput(container);
+          if (shouldMoveFocusAfterRetry) {
+            focusSearchInput(container);
+          }
         })
         .catch(() => {
           renderSearchFallback(container);
@@ -305,7 +319,9 @@
 
     fallback.append(retryButton);
     container.replaceChildren(fallback);
-    retryButton.focus({ preventScroll: true });
+    if (shouldMoveFocus) {
+      retryButton.focus({ preventScroll: true });
+    }
   }
 
   const panelObserver = new MutationObserver((mutationList) => {
@@ -341,6 +357,7 @@
    */
   function handleSearchPanelOpened(searchPanel) {
     const container = searchPanel.querySelector(SEARCH_CONTAINER_SELECTOR);
+    const shouldMoveFocus = shouldMoveFocusForOpen();
 
     if (!(container instanceof HTMLElement)) {
       return;
@@ -350,11 +367,15 @@
       showPagefindLoading(container);
     }
 
-    focusSearchInput(container);
+    if (shouldMoveFocus) {
+      focusSearchInput(container);
+    }
 
     void ensurePagefindInitialized(container)
       .then(() => {
-        focusSearchInput(container);
+        if (shouldMoveFocus) {
+          focusSearchInput(container);
+        }
       })
       .catch(() => {
         renderSearchFallback(container);

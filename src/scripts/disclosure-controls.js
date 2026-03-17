@@ -39,6 +39,9 @@
     lastInteractionModality: "pointer",
   };
 
+  globalThis.document.documentElement.dataset.interactionModality =
+    state.lastInteractionModality;
+
   let hasBoundDisclosureControls = false;
 
   /**
@@ -47,6 +50,7 @@
    */
   function setInteractionModality(modality) {
     state.lastInteractionModality = modality;
+    globalThis.document.documentElement.dataset.interactionModality = modality;
   }
 
   /**
@@ -379,10 +383,12 @@
     setSurfaceExpanded(sideNav, true);
     setOverlayVisible(true);
     syncBodyScrollLock();
-    scheduleDeferredFocus(
-      sideNav,
-      () => sideNav.querySelector(SIDE_NAV_LINK_SELECTOR),
-    );
+    if (isKeyboardInteraction()) {
+      scheduleDeferredFocus(
+        sideNav,
+        () => sideNav.querySelector(SIDE_NAV_LINK_SELECTOR),
+      );
+    }
   }
 
   /**

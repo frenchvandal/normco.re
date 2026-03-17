@@ -149,8 +149,8 @@
   .cds--header__search-root
     .pagefind-ui
     .pagefind-ui__search-clear.pagefind-ui__search-clear:focus-visible {
-    outline: var(--focus-ring-width) solid var(--cds-focus);
-    outline-offset: var(--focus-ring-offset);
+    outline: 2px solid var(--cds-focus);
+    outline-offset: -2px;
   }
 
   .cds--header__search-root .pagefind-ui__drawer {
@@ -199,8 +199,8 @@
   }
 
   .cds--header__search-root .pagefind-ui__search-input:focus-visible {
-    outline: var(--focus-ring-width) solid var(--cds-focus);
-    outline-offset: var(--focus-ring-offset);
+    outline: 2px solid var(--cds-focus);
+    outline-offset: -2px;
   }
 
   .site-language-action-icon {

@@ -120,7 +120,7 @@
   .cds--header__menu-item[aria-current="page"] {
     color: var(--cds-text-primary);
     font-weight: var(--cds-font-weight-semibold);
-    border-block-end-color: var(--cds-focus);
+    border-block-end-color: var(--cds-border-interactive, var(--cds-focus));
   }
 
   .cds--header__menu-item:focus-visible {
@@ -332,8 +332,11 @@
   .cds--side-nav__link[aria-current="page"] {
     color: var(--cds-text-primary);
     font-weight: var(--cds-font-weight-semibold);
-    background: var(--cds-layer-active);
-    border-inline-start-color: var(--cds-focus);
+    background: var(
+      --cds-background-selected,
+      var(--cds-layer-selected, var(--cds-layer-active))
+    );
+    border-inline-start-color: var(--cds-border-interactive, var(--cds-focus));
   }
 
   .cds--side-nav__link:focus-visible {

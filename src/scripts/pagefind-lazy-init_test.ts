@@ -173,9 +173,10 @@ function evaluateScript(window: TestWindow) {
 }
 
 describe("pagefind-lazy-init.js", () => {
-  it("shows loading before Pagefind is ready, then focuses the input and mirrors result states", async () => {
+  it("shows loading before Pagefind is ready, then focuses the input for keyboard opens and mirrors result states", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
+    window.document.documentElement.dataset.interactionModality = "keyboard";
     evaluateScript(window);
 
     const panel = getSearchPanel(window);
@@ -222,9 +223,37 @@ describe("pagefind-lazy-init.js", () => {
     assertEquals(status.textContent, "No results found.");
   });
 
+  it("does not autofocus the search input when the panel is opened from a pointer interaction", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.document.documentElement.dataset.interactionModality = "pointer";
+    evaluateScript(window);
+
+    const panel = getSearchPanel(window);
+    panel.removeAttribute("hidden");
+    panel.setAttribute("expanded", "");
+
+    await flush(window, 1);
+
+    const runtimeScript = window.document.querySelector(
+      'script[src="/pagefind/pagefind-ui.js"]',
+    );
+    assert(runtimeScript instanceof window.HTMLScriptElement);
+
+    installFakePagefind(window);
+    runtimeScript.dispatchEvent(new window.Event("load"));
+
+    await flush(window);
+
+    const input = getSearchInput(window);
+    assertEquals(window.document.activeElement, window.document.body);
+    assertEquals(input.matches(":focus"), false);
+  });
+
   it("keeps the retry action keyboard usable after an initialization failure", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
+    window.document.documentElement.dataset.interactionModality = "keyboard";
     evaluateScript(window);
 
     const panel = getSearchPanel(window);
