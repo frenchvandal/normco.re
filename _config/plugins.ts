@@ -11,6 +11,8 @@ import jsx from "lume/plugins/jsx.ts";
 import inline from "lume/plugins/inline.ts";
 import resolveUrls from "lume/plugins/resolve_urls.ts";
 import imageSize from "lume/plugins/image_size.ts";
+import picture from "lume/plugins/picture.ts";
+import transformImages from "lume/plugins/transform_images.ts";
 import date from "lume/plugins/date.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
 import icons from "lume/plugins/icons.ts";
@@ -122,6 +124,13 @@ export function registerPlugins(
 
   site.use(attributes());
   site.use(jsx());
+  site.use(imageSize());
+  site.use(
+    picture({
+      order: ["avif", "webp", "jpg"],
+    }),
+  );
+  site.use(transformImages());
   site.use(
     inline({
       copyAttributes: [/^data-/, /^aria-/, "focusable", "role"],
@@ -131,7 +140,6 @@ export function registerPlugins(
 
   // --- Content processing ---
 
-  site.use(imageSize());
   site.use(
     date({
       locales: {

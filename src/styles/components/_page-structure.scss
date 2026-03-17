@@ -168,6 +168,7 @@
     place-items: center;
     inline-size: 2rem;
     block-size: 2rem;
+    --about-contact-icon-glyph-scale: 1;
     color: var(--cds-icon-primary, var(--cds-text-primary));
     flex: 0 0 auto;
     background: var(--cds-layer-accent, var(--cds-layer-hover));
@@ -178,16 +179,20 @@
     inline-size: 1rem;
     block-size: 1rem;
     background: currentColor;
+    transform: scale(var(--about-contact-icon-glyph-scale));
+    transform-origin: center;
     -webkit-mask: var(--about-contact-icon) center / contain no-repeat;
     mask: var(--about-contact-icon) center / contain no-repeat;
   }
 
   .about-contact-icon--wechat {
     --about-contact-icon: url("/icons/simpleicons/wechat.svg");
+    --about-contact-icon-glyph-scale: 0.94;
   }
 
   .about-contact-icon--telegram {
     --about-contact-icon: url("/icons/simpleicons/telegram.svg");
+    --about-contact-icon-glyph-scale: 0.86;
   }
 
   .about-contact-label {
@@ -246,6 +251,19 @@
     max-inline-size: 100%;
     block-size: auto;
     fill: currentColor;
+  }
+
+  :root[data-color-mode="dark"] .about-pictogram-frame {
+    background: var(--cds-text-primary);
+    border-color: var(--cds-background);
+  }
+
+  :root[data-color-mode="dark"] .about-pictogram {
+    color: var(--cds-text-primary);
+  }
+
+  :root[data-color-mode="dark"] .about-pictogram svg {
+    filter: invert(1) grayscale(1) contrast(1.05);
   }
 
   @include breakpoint-up(lg) {

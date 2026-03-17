@@ -29,6 +29,7 @@ export function registerAssets(site: Site): void {
   site.add("/scripts/theme-toggle.js");
   site.add("/scripts/disclosure-controls.js");
   site.add("/scripts/header-tooltips.js");
+  site.add("/scripts/about-contact-toggletips.js");
   site.add("/scripts/language-preference.js");
   site.add("/scripts/feed-copy.js");
   site.add("/scripts/post-code-copy.js");

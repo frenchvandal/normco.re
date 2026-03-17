@@ -334,6 +334,12 @@ export default (
           >
           </script>
           <script
+            src="/scripts/about-contact-toggletips.js"
+            fetchpriority="low"
+            defer
+          >
+          </script>
+          <script
             src="/scripts/theme-toggle.js"
             fetchpriority="low"
             defer

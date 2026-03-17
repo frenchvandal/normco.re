@@ -134,6 +134,13 @@ export type SiteTranslations = {
     readonly feedsIntro: string;
     readonly railAriaLabel: string;
     readonly contactTitle: string;
+    readonly contactOpenQrLabel: string;
+    readonly contactDownloadJpgLabel: string;
+    readonly contactCloseLabel: string;
+    readonly contactTelegramLabel: string;
+    readonly contactWechatLabel: string;
+    readonly contactTelegramQrAlt: string;
+    readonly contactWechatQrAlt: string;
     readonly atAGlanceTitle: string;
     readonly locationLabel: string;
     readonly locationValue: string;
@@ -254,6 +261,13 @@ const SITE_TRANSLATIONS = {
       feedsIntro: "You can follow along via",
       railAriaLabel: "About details",
       contactTitle: "Contact",
+      contactOpenQrLabel: "View QR code",
+      contactDownloadJpgLabel: "Download QR Code",
+      contactCloseLabel: "Close",
+      contactTelegramLabel: "Telegram",
+      contactWechatLabel: "WeChat",
+      contactTelegramQrAlt: "Telegram QR code",
+      contactWechatQrAlt: "WeChat QR code",
       atAGlanceTitle: "At a glance",
       locationLabel: "Based in",
       locationValue: "Chengdu, China",
@@ -374,6 +388,13 @@ const SITE_TRANSLATIONS = {
       feedsIntro: "Vous pouvez suivre les publications via",
       railAriaLabel: "Détails à propos",
       contactTitle: "Contact",
+      contactOpenQrLabel: "Afficher le code QR",
+      contactDownloadJpgLabel: "Télécharger le code QR",
+      contactCloseLabel: "Fermer",
+      contactTelegramLabel: "Telegram",
+      contactWechatLabel: "WeChat",
+      contactTelegramQrAlt: "Code QR Telegram",
+      contactWechatQrAlt: "Code QR WeChat",
       atAGlanceTitle: "En bref",
       locationLabel: "Basé à",
       locationValue: "Chengdu, Chine",
@@ -492,6 +513,13 @@ const SITE_TRANSLATIONS = {
       feedsIntro: "你可以通过以下方式订阅",
       railAriaLabel: "关于页面侧栏",
       contactTitle: "联系",
+      contactOpenQrLabel: "显示二维码",
+      contactDownloadJpgLabel: "下载二维码",
+      contactCloseLabel: "关闭",
+      contactTelegramLabel: "电报",
+      contactWechatLabel: "微信",
+      contactTelegramQrAlt: "电报二维码",
+      contactWechatQrAlt: "微信二维码",
       atAGlanceTitle: "快速了解",
       locationLabel: "所在地",
       locationValue: "中国成都",
@@ -609,6 +637,13 @@ const SITE_TRANSLATIONS = {
       feedsIntro: "你可以透過以下方式訂閱",
       railAriaLabel: "關於頁面側欄",
       contactTitle: "聯絡",
+      contactOpenQrLabel: "顯示 QR 碼",
+      contactDownloadJpgLabel: "下載 QR 碼",
+      contactCloseLabel: "關閉",
+      contactTelegramLabel: "Telegram",
+      contactWechatLabel: "微信",
+      contactTelegramQrAlt: "Telegram QR 碼",
+      contactWechatQrAlt: "微信 QR 碼",
       atAGlanceTitle: "快速了解",
       locationLabel: "所在地",
       locationValue: "中國成都",

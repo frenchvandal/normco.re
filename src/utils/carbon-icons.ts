@@ -2,6 +2,8 @@
 
 import {
   Checkmark16,
+  Close16,
+  Download16,
   LogoGithub20,
   Menu20,
   Moon16,
@@ -16,6 +18,8 @@ export const SEARCH_ICON = Search20;
 export const MENU_ICON = Menu20;
 export const TRANSLATE_ICON = Translate20;
 export const CHECKMARK_ICON = Checkmark16;
+export const CLOSE_ICON = Close16;
+export const DOWNLOAD_ICON = Download16;
 export const LIGHT_ICON = Sun16;
 export const DARK_ICON = Moon16;
 export const SYSTEM_ICON = Screen16;

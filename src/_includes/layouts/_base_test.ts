@@ -192,6 +192,10 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
+        'src="/scripts/about-contact-toggletips.js"',
+      );
+      assertStringIncludes(
+        html,
         'data-sw-url="/sw.js"',
       );
       assertStringIncludes(
