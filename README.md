@@ -134,12 +134,12 @@ than depending on a client-side enhancement.
 
 ### Feeds
 
-The site emits localized RSS and JSON feeds:
+The site emits localized RSS, Atom, and JSON feeds:
 
-- `/feed.xml` and `/feed.json`
-- `/fr/feed.xml` and `/fr/feed.json`
-- `/zh-hans/feed.xml` and `/zh-hans/feed.json`
-- `/zh-hant/feed.xml` and `/zh-hant/feed.json`
+- `/feed.xml`, `/atom.xml`, and `/feed.json`
+- `/fr/feed.xml`, `/fr/atom.xml`, and `/fr/feed.json`
+- `/zh-hans/feed.xml`, `/zh-hans/atom.xml`, and `/zh-hans/feed.json`
+- `/zh-hant/feed.xml`, `/zh-hant/atom.xml`, and `/zh-hant/feed.json`
 
 ## Authoring Workflow
 

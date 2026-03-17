@@ -42,7 +42,13 @@ type LayoutData = Lume.Data & {
 
 /** Return type of an ssx JSX element, used to type Lume component functions. */
 type SsxElement = ReturnType<typeof jsx>;
-type LayoutRenderable = SsxElement | string | number | boolean | null | undefined;
+type LayoutRenderable =
+  | SsxElement
+  | string
+  | number
+  | boolean
+  | null
+  | undefined;
 type AwaitableLayoutRenderable = LayoutRenderable | Promise<LayoutRenderable>;
 
 /** Minimal typed interface for the components used in this layout. */
@@ -103,8 +109,8 @@ function resolveHeaderComponent(value: unknown): Comp["Header"] {
     const Header = Reflect.get(value, "Header");
 
     if (typeof Header === "function") {
-      return (props) => Reflect.apply(Header, value, [props]) as
-        AwaitableLayoutRenderable;
+      return (props) =>
+        Reflect.apply(Header, value, [props]) as AwaitableLayoutRenderable;
     }
   }
 
@@ -116,8 +122,8 @@ function resolveFooterComponent(value: unknown): Comp["Footer"] {
     const Footer = Reflect.get(value, "Footer");
 
     if (typeof Footer === "function") {
-      return (props) => Reflect.apply(Footer, value, [props]) as
-        AwaitableLayoutRenderable;
+      return (props) =>
+        Reflect.apply(Footer, value, [props]) as AwaitableLayoutRenderable;
     }
   }
 
@@ -158,6 +164,7 @@ export default (
     !isPostsArchiveUrl(currentUrl);
   const swDebugLevel = build?.swDebugLevel ?? "off";
   const includePagefindBody = unlisted !== true;
+  const atomXmlUrl = getLocalizedUrl("/atom.xml", language);
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
@@ -207,7 +214,13 @@ export default (
           />
           <link
             rel="alternate"
-            type="application/json"
+            type="application/atom+xml"
+            title={`${resolvedSiteName} Atom feed`}
+            href={atomXmlUrl}
+          />
+          <link
+            rel="alternate"
+            type="application/feed+json"
             title={`${resolvedSiteName} JSON feed`}
             href={feedJsonUrl}
           />

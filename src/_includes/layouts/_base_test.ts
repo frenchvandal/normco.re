@@ -85,7 +85,9 @@ describe("base.tsx layout", () => {
 
     it("uses the provided description", async () => {
       const randomDescription = makeSentence(602);
-      const html = await renderBase(makeData({ description: randomDescription }));
+      const html = await renderBase(
+        makeData({ description: randomDescription }),
+      );
       assertStringIncludes(html, randomDescription);
     });
   });
@@ -116,6 +118,7 @@ describe("base.tsx layout", () => {
         '<script src="/scripts/anti-flash.js"></script>',
       );
       assertStringIncludes(html, 'href="/feed.xml"');
+      assertStringIncludes(html, 'href="/atom.xml"');
       assertStringIncludes(html, 'href="/feed.json"');
       assertStringIncludes(
         html,

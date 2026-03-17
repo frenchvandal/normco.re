@@ -125,7 +125,7 @@ Lume's `multilanguage` plugin provides the routing model:
 ### Assets, Feeds, and Processors
 
 - `_config/assets.ts` defines the asset surface
-- `_config/feeds.ts` emits localized RSS and JSON feeds
+- `_config/feeds.ts` emits localized RSS, Atom, and JSON feeds
 - `_config/processors.ts` runs post-render processors, including editorial image
   checks and font preload injection
 

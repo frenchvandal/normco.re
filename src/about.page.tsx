@@ -42,13 +42,17 @@ export const zhHant = {
 export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
   const language = resolveSiteLanguage(data.lang);
   const translations = getSiteTranslations(language);
+  const atomXmlUrl = getLocalizedUrl("/atom.xml", language);
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
-  const conjunction = language === "fr"
+  const finalSeparator = language === "fr"
     ? "ou"
     : language === "zhHans" || language === "zhHant"
     ? "或"
     : "or";
+  const listSeparator = language === "zhHans" || language === "zhHant"
+    ? "、"
+    : ", ";
 
   return `<div class="site-page-shell site-page-shell--wide">
 <section class="pagehead about-pagehead" aria-labelledby="about-title">
@@ -66,7 +70,9 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
       <p>
         ${escapeHtml(translations.about.feedsIntro)} <a href="${
     escapeHtml(feedXmlUrl)
-  }">RSS</a> ${escapeHtml(conjunction)}
+  }">RSS</a>${escapeHtml(listSeparator)}<a href="${
+    escapeHtml(atomXmlUrl)
+  }">Atom</a> ${escapeHtml(finalSeparator)}
         <a href="${escapeHtml(feedJsonUrl)}">JSON Feed</a>.
       </p>
     </div>

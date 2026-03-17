@@ -1,4 +1,4 @@
-/** HTML processors — image dimensions, XML stylesheets, font preloads, and multilanguage aliases. */
+/** HTML processors — image dimensions, font preloads, multilanguage aliases, and JSON Feed normalization. */
 
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
@@ -6,11 +6,15 @@ import {
   assertEditorialImageDimensions,
   type EditorialImagePageSnapshot,
 } from "../src/utils/editorial-image-dimensions.ts";
-import { getXmlStylesheetHref } from "../src/utils/xml-stylesheet.ts";
 import { selectCriticalFontUrls } from "../src/utils/font-preload.ts";
+import {
+  JSON_FEED_PATH_PATTERN,
+  normalizeJsonFeed,
+} from "../src/utils/json-feed.ts";
+import { FEED_VARIANTS } from "./feeds.ts";
+import { getLanguageTag, type SiteLanguage } from "../src/utils/i18n.ts";
 
 const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
-const XML_PI_PATTERN = /^(<\?xml[^?]*\?>)/;
 const TEXT_DECODER = new TextDecoder();
 
 // Maps hyphenated Lume data keys (URL-style) to their camelCase TypeScript
@@ -152,31 +156,43 @@ export function registerProcessors(site: Site): void {
     }
   });
 
-  // Inject <?xml-stylesheet?> processing instructions into XML outputs.
-  site.process([".xml"], (pages: Page[]) => {
+  const feedLanguageMap = new Map<string, SiteLanguage>(
+    FEED_VARIANTS.map((
+      variant,
+    ) => [`${variant.pathPrefix}/feed.json`, variant.language]),
+  );
+
+  // Normalize generated feed JSON files to JSON Feed 1.1 conventions.
+  site.process([".json"], (pages: Page[]) => {
     for (const page of pages) {
       const pageUrl = typeof page.data.url === "string"
         ? page.data.url
         : page.outputPath;
 
-      if (typeof pageUrl !== "string") {
+      if (
+        typeof pageUrl !== "string" ||
+        !JSON_FEED_PATH_PATTERN.test(pageUrl)
+      ) {
         continue;
       }
 
-      const xslHref = getXmlStylesheetHref(pageUrl);
-
-      if (xslHref === undefined) continue;
-
-      const content = decodePageContent(page.content);
-      const pi = `<?xml-stylesheet type="text/xsl" href="${xslHref}"?>`;
-
-      if (content.includes(pi)) {
+      let feed: Record<string, unknown>;
+      try {
+        feed = JSON.parse(decodePageContent(page.content)) as Record<
+          string,
+          unknown
+        >;
+      } catch {
         continue;
       }
 
-      page.content = XML_PI_PATTERN.test(content)
-        ? content.replace(XML_PI_PATTERN, `$1\n${pi}`)
-        : `${pi}\n${content}`;
+      const language = feedLanguageMap.get(pageUrl);
+      page.content = JSON.stringify(
+        normalizeJsonFeed(
+          feed,
+          language ? getLanguageTag(language) : undefined,
+        ),
+      );
     }
   });
 }

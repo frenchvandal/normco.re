@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  feed.xsl — RSS 2.0 feed browser stylesheet.
-  Transforms /feed.xml into a styled HTML page using the site design system.
+  feed.xsl — RSS 2.0 and Atom 1.0 feed browser stylesheet.
+  Transforms /feed.xml and /atom.xml into styled HTML using the site design system.
   Applied client-side by the browser via the <?xml-stylesheet?> PI.
 
   IMPORTANT: This file replicates the site header, footer, and page structure
@@ -16,13 +16,98 @@
   <xsl:output method="html" encoding="UTF-8"/>
 
   <xsl:template match="/">
-    <html lang="en" data-color-mode="light" data-light-theme="light" data-dark-theme="dark">
+    <xsl:variable name="is-atom" select="count(/atom:feed) &gt; 0"/>
+    <xsl:variable name="feed-title">
+      <xsl:choose>
+        <xsl:when test="$is-atom">
+          <xsl:value-of select="/atom:feed/atom:title"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="/rss/channel/title"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="feed-description">
+      <xsl:choose>
+        <xsl:when test="$is-atom">
+          <xsl:value-of select="/atom:feed/atom:subtitle"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="/rss/channel/description"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="page-language">
+      <xsl:choose>
+        <xsl:when test="$is-atom">
+          <xsl:value-of select="/atom:feed/@xml:lang"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="/rss/channel/language"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="self-href">
+      <xsl:choose>
+        <xsl:when test="$is-atom">
+          <xsl:value-of select="/atom:feed/atom:link[@rel='self'][1]/@href"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="/rss/channel/atom:link[@rel='self'][1]/@href"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="feed-prefix">
+      <xsl:choose>
+        <xsl:when test="contains($self-href, '/atom.xml')">
+          <xsl:value-of select="substring-before($self-href, '/atom.xml')"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="substring-before($self-href, '/feed.xml')"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="home-href">
+      <xsl:choose>
+        <xsl:when test="$is-atom">
+          <xsl:value-of select="/atom:feed/atom:link[@rel='alternate'][1]/@href"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="/rss/channel/link"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="posts-href">
+      <xsl:value-of select="concat($feed-prefix, '/posts/')"/>
+    </xsl:variable>
+    <xsl:variable name="about-href">
+      <xsl:value-of select="concat($feed-prefix, '/about/')"/>
+    </xsl:variable>
+    <xsl:variable name="rss-href">
+      <xsl:value-of select="concat($feed-prefix, '/feed.xml')"/>
+    </xsl:variable>
+    <xsl:variable name="atom-href">
+      <xsl:value-of select="concat($feed-prefix, '/atom.xml')"/>
+    </xsl:variable>
+    <xsl:variable name="json-href">
+      <xsl:value-of select="concat($feed-prefix, '/feed.json')"/>
+    </xsl:variable>
+    <xsl:variable name="feed-format-label">
+      <xsl:choose>
+        <xsl:when test="$is-atom">Atom</xsl:when>
+        <xsl:otherwise>RSS</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <html data-color-mode="light" data-light-theme="light" data-dark-theme="dark">
+      <xsl:attribute name="lang">
+        <xsl:value-of select="$page-language"/>
+      </xsl:attribute>
       <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta name="color-scheme" content="light dark"/>
         <title>
-          <xsl:value-of select="/rss/channel/title"/>
+          <xsl:value-of select="$feed-title"/>
           <xsl:text> — Feed</xsl:text>
         </title>
         <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{const s=localStorage.getItem("color-mode");if(s==="light"||s==="dark"||s==="system")v=s;else{const l=localStorage.getItem("color-scheme");v=l==="light"||l==="dark"?l:null}}catch{v=null}const p=v??"system",t=p==="light"||p==="dark"?p:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-theme-preference",p);r.setAttribute("data-color-scheme",t)})()</script>
@@ -40,13 +125,31 @@
                     <path d="M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z"/>
                   </svg>
                 </button>
-                <a href="/" class="cds--header__name">
+                <a class="cds--header__name">
+                  <xsl:attribute name="href">
+                    <xsl:value-of select="$home-href"/>
+                  </xsl:attribute>
                   <span class="cds--header__name--prefix">normco</span>.re
                 </a>
                 <nav class="cds--header__nav" aria-label="Main navigation">
-                  <a href="/" class="cds--header__menu-item">Home</a>
-                  <a href="/posts/" class="cds--header__menu-item">Writing</a>
-                  <a href="/about/" class="cds--header__menu-item">About</a>
+                  <a class="cds--header__menu-item">
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$home-href"/>
+                    </xsl:attribute>
+                    <xsl:text>Home</xsl:text>
+                  </a>
+                  <a class="cds--header__menu-item">
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$posts-href"/>
+                    </xsl:attribute>
+                    <xsl:text>Writing</xsl:text>
+                  </a>
+                  <a class="cds--header__menu-item">
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$about-href"/>
+                    </xsl:attribute>
+                    <xsl:text>About</xsl:text>
+                  </a>
                 </nav>
               </div>
               <div class="cds--header__global">
@@ -136,17 +239,26 @@
             <nav class="cds--side-nav__navigation">
               <ul class="cds--side-nav__items">
                 <li class="cds--side-nav__item">
-                  <a href="/" class="cds--side-nav__link">
+                  <a class="cds--side-nav__link">
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$home-href"/>
+                    </xsl:attribute>
                     <span class="cds--side-nav__link-text">Home</span>
                   </a>
                 </li>
                 <li class="cds--side-nav__item">
-                  <a href="/posts/" class="cds--side-nav__link">
+                  <a class="cds--side-nav__link">
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$posts-href"/>
+                    </xsl:attribute>
                     <span class="cds--side-nav__link-text">Writing</span>
                   </a>
                 </li>
                 <li class="cds--side-nav__item">
-                  <a href="/about/" class="cds--side-nav__link">
+                  <a class="cds--side-nav__link">
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$about-href"/>
+                    </xsl:attribute>
                     <span class="cds--side-nav__link-text">About</span>
                   </a>
                 </li>
@@ -161,20 +273,42 @@
               <header class="pagehead feed-pagehead">
                 <p class="pagehead-eyebrow">Syndication</p>
                 <h1 id="feed-title" class="archive-page-title">
-                  <xsl:value-of select="/rss/channel/title"/>
+                  <xsl:value-of select="$feed-title"/>
                 </h1>
                 <p class="pagehead-lead">
-                  <xsl:value-of select="/rss/channel/description"/>
+                  <xsl:value-of select="$feed-description"/>
                 </p>
 
                 <div class="subhead feed-subhead">
                   <nav class="feed-page-actions" aria-label="Machine-readable URLs">
-                    <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="Feed XML">
-                      <a href="https://normco.re/feed.xml" class="feed-copy-link" aria-label="Open feed XML URL">
-                        <span class="feed-copy-link-title">Feed XML</span>
-                        <span class="feed-copy-link-url">https://normco.re/feed.xml</span>
+                    <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="RSS Feed">
+                      <a class="feed-copy-link" aria-label="Open RSS feed URL">
+                        <xsl:attribute name="href">
+                          <xsl:value-of select="$rss-href"/>
+                        </xsl:attribute>
+                        <span class="feed-copy-link-title">RSS Feed</span>
+                        <span class="feed-copy-link-url"><xsl:value-of select="$rss-href"/></span>
                       </a>
-                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="https://normco.re/feed.xml" data-copy-title="Copy feed XML URL" title="Copy feed XML URL" aria-label="Copy feed XML URL">
+                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="{$rss-href}" data-copy-title="Copy RSS feed URL" title="Copy RSS feed URL" aria-label="Copy RSS feed URL">
+                        <svg class="icon-svg feed-copy-icon feed-copy-icon--copy" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                          <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
+                          <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
+                        </svg>
+                        <svg class="icon-svg feed-copy-icon feed-copy-icon--success" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
+                          <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/>
+                        </svg>
+                      </button>
+                      <span class="sr-only" data-copy-status="" aria-live="polite"></span>
+                    </div>
+                    <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="Atom Feed">
+                      <a class="feed-copy-link" aria-label="Open Atom feed URL">
+                        <xsl:attribute name="href">
+                          <xsl:value-of select="$atom-href"/>
+                        </xsl:attribute>
+                        <span class="feed-copy-link-title">Atom Feed</span>
+                        <span class="feed-copy-link-url"><xsl:value-of select="$atom-href"/></span>
+                      </a>
+                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="{$atom-href}" data-copy-title="Copy Atom feed URL" title="Copy Atom feed URL" aria-label="Copy Atom feed URL">
                         <svg class="icon-svg feed-copy-icon feed-copy-icon--copy" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
                           <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
                           <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
@@ -186,11 +320,14 @@
                       <span class="sr-only" data-copy-status="" aria-live="polite"></span>
                     </div>
                     <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="JSON Feed">
-                      <a href="https://normco.re/feed.json" class="feed-copy-link" aria-label="Open JSON Feed URL">
+                      <a class="feed-copy-link" aria-label="Open JSON Feed URL">
+                        <xsl:attribute name="href">
+                          <xsl:value-of select="$json-href"/>
+                        </xsl:attribute>
                         <span class="feed-copy-link-title">JSON Feed</span>
-                        <span class="feed-copy-link-url">https://normco.re/feed.json</span>
+                        <span class="feed-copy-link-url"><xsl:value-of select="$json-href"/></span>
                       </a>
-                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="https://normco.re/feed.json" data-copy-title="Copy JSON Feed URL" title="Copy JSON Feed URL" aria-label="Copy JSON Feed URL">
+                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="{$json-href}" data-copy-title="Copy JSON Feed URL" title="Copy JSON Feed URL" aria-label="Copy JSON Feed URL">
                         <svg class="icon-svg feed-copy-icon feed-copy-icon--copy" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
                           <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
                           <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
@@ -205,7 +342,7 @@
                 </div>
 
                 <p class="feed-page-count">
-                  <xsl:value-of select="count(/rss/channel/item)"/>
+                  <xsl:value-of select="count(/rss/channel/item | /atom:feed/atom:entry)"/>
                   <xsl:text> entries in this feed</xsl:text>
                 </p>
               </header>
@@ -218,21 +355,56 @@
                       <p class="archive-year-summary">Sorted by publication date</p>
                     </header>
                     <ol class="archive-list feed-entry-list">
-                      <xsl:for-each select="/rss/channel/item">
+                      <xsl:for-each select="/rss/channel/item | /atom:feed/atom:entry">
+                        <xsl:variable name="entry-link">
+                          <xsl:choose>
+                            <xsl:when test="$is-atom">
+                              <xsl:value-of select="atom:link[@rel='alternate'][1]/@href"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="link"/>
+                            </xsl:otherwise>
+                          </xsl:choose>
+                        </xsl:variable>
+                        <xsl:variable name="entry-date">
+                          <xsl:choose>
+                            <xsl:when test="$is-atom and string-length(atom:published) &gt; 0">
+                              <xsl:value-of select="atom:published"/>
+                            </xsl:when>
+                            <xsl:when test="$is-atom">
+                              <xsl:value-of select="atom:updated"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                              <xsl:value-of select="pubDate"/>
+                            </xsl:otherwise>
+                          </xsl:choose>
+                        </xsl:variable>
                         <li class="archive-item feed-entry-item">
                           <time class="archive-date feed-entry-date">
-                            <xsl:attribute name="datetime">
-                              <xsl:value-of select="pubDate"/>
-                            </xsl:attribute>
-                            <xsl:value-of select="substring(pubDate, 6, 11)"/>
+                            <xsl:attribute name="datetime"><xsl:value-of select="$entry-date"/></xsl:attribute>
+                            <xsl:choose>
+                              <xsl:when test="$is-atom">
+                                <xsl:value-of select="substring($entry-date, 1, 10)"/>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                <xsl:value-of select="substring($entry-date, 6, 11)"/>
+                              </xsl:otherwise>
+                            </xsl:choose>
                           </time>
                           <a class="archive-title feed-entry-link">
                             <xsl:attribute name="href">
-                              <xsl:value-of select="link"/>
+                              <xsl:value-of select="$entry-link"/>
                             </xsl:attribute>
-                            <xsl:value-of select="title"/>
+                            <xsl:choose>
+                              <xsl:when test="$is-atom">
+                                <xsl:value-of select="atom:title"/>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                <xsl:value-of select="title"/>
+                              </xsl:otherwise>
+                            </xsl:choose>
                           </a>
-                          <span class="archive-reading-time feed-entry-type">RSS</span>
+                          <span class="archive-reading-time feed-entry-type"><xsl:value-of select="$feed-format-label"/></span>
                         </li>
                       </xsl:for-each>
                     </ol>
@@ -252,7 +424,10 @@
                     <path d="M16 2a14 14 0 0 0-4.43 27.28c.7.13 1-.3 1-.67s0-1.21 0-2.38c-3.89.84-4.71-1.88-4.71-1.88A3.71 3.71 0 0 0 6.24 22.3c-1.27-.86.1-.85.1-.85A2.94 2.94 0 0 1 8.48 22.9a3 3 0 0 0 4.08 1.16 2.93 2.93 0 0 1 .88-1.87c-3.1-.36-6.37-1.56-6.37-6.92a5.4 5.4 0 0 1 1.44-3.76 5 5 0 0 1 .14-3.7s1.17-.38 3.85 1.43a13.3 13.3 0 0 1 7 0c2.67-1.81 3.84-1.43 3.84-1.43a5 5 0 0 1 .14 3.7 5.4 5.4 0 0 1 1.44 3.76c0 5.38-3.27 6.56-6.39 6.91a3.33 3.33 0 0 1 .95 2.59c0 1.87 0 3.38 0 3.84s.25.81 1 .67A14 14 0 0 0 16 2Z"/>
                   </svg>
                 </a>
-                <a href="/feed.xml" aria-label="Open RSS feed">
+                <a aria-label="Open RSS feed">
+                  <xsl:attribute name="href">
+                    <xsl:value-of select="$rss-href"/>
+                  </xsl:attribute>
                   <svg class="site-footer-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M8 18c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6C14 20.7 11.3 18 8 18zM8 28c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4C12 26.2 10.2 28 8 28z"/>
                     <path d="M30 24h-2C28 13 19 4 8 4V2C20.1 2 30 11.9 30 24z"/>

@@ -1,7 +1,15 @@
-import { assertEquals } from "jsr/assert";
+import { assertEquals, assertMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import { createFeedOptions, FEED_ITEMS, FEED_VARIANTS } from "./feeds.ts";
+import {
+  createAtomFeedContent,
+  createFeedOptions,
+  FEED_ITEMS,
+  FEED_LIMIT,
+  FEED_SORT,
+  FEED_STYLESHEET,
+  FEED_VARIANTS,
+} from "./feeds.ts";
 
 describe("_config/feeds.ts", () => {
   it("maps feed content to rendered HTML children", () => {
@@ -22,6 +30,9 @@ describe("_config/feeds.ts", () => {
         {
           output: ["/feed.xml", "/feed.json"],
           query: "type=post lang=en",
+          sort: FEED_SORT,
+          limit: FEED_LIMIT,
+          stylesheet: FEED_STYLESHEET,
           info: {
             title: "normco.re",
             description: "Personal blog by Phiphi, based in Chengdu, China.",
@@ -33,6 +44,9 @@ describe("_config/feeds.ts", () => {
         {
           output: ["/fr/feed.xml", "/fr/feed.json"],
           query: "type=post lang=fr",
+          sort: FEED_SORT,
+          limit: FEED_LIMIT,
+          stylesheet: FEED_STYLESHEET,
           info: {
             title: "normco.re (fr)",
             description: "Blog personnel de Phiphi, basé à Chengdu, en Chine.",
@@ -44,6 +58,9 @@ describe("_config/feeds.ts", () => {
         {
           output: ["/zh-hans/feed.xml", "/zh-hans/feed.json"],
           query: "type=post lang=zh-hans",
+          sort: FEED_SORT,
+          limit: FEED_LIMIT,
+          stylesheet: FEED_STYLESHEET,
           info: {
             title: "normco.re (简体中文)",
             description: "Phiphi 的个人博客，写于中国成都。",
@@ -55,6 +72,9 @@ describe("_config/feeds.ts", () => {
         {
           output: ["/zh-hant/feed.xml", "/zh-hant/feed.json"],
           query: "type=post lang=zh-hant",
+          sort: FEED_SORT,
+          limit: FEED_LIMIT,
+          stylesheet: FEED_STYLESHEET,
           info: {
             title: "normco.re (繁體中文)",
             description: "Phiphi 的個人部落格，寫於中國成都。",
@@ -64,6 +84,53 @@ describe("_config/feeds.ts", () => {
           items: FEED_ITEMS,
         },
       ],
+    );
+  });
+
+  it("renders Atom 1.0 output with a stylesheet, author, and escaped HTML", () => {
+    const siteStub = {
+      url(path: string, _absolute: boolean): string {
+        return `https://normco.re${path}`;
+      },
+      source: {
+        data: {
+          get(path: string) {
+            return path === "/" ? { author: "Phiphi" } : undefined;
+          },
+        },
+      },
+    };
+
+    const xml = createAtomFeedContent(
+      siteStub as unknown as import("lume/core/site.ts").default,
+      FEED_VARIANTS[0],
+      [
+        {
+          url: "/posts/hello/",
+          title: "Hello",
+          description: "Summary",
+          children: '<p><a href="/about/">Body</a></p>',
+          date: new Date("2026-03-11T00:00:00Z"),
+        } as unknown as import("lume/core/file.ts").Data,
+      ],
+    );
+
+    assertStringIncludes(
+      xml,
+      '<?xml-stylesheet type="text/xsl" href="/feed.xsl"?>',
+    );
+    assertMatch(
+      xml,
+      /<feed xmlns="http:\/\/www\.w3\.org\/2005\/Atom" xml:lang="en">/,
+    );
+    assertStringIncludes(xml, "<name>Phiphi</name>");
+    assertStringIncludes(
+      xml,
+      '<link rel="self" type="application/atom+xml" href="https://normco.re/atom.xml"/>',
+    );
+    assertStringIncludes(
+      xml,
+      '<content type="html">&lt;p&gt;&lt;a href=&quot;https://normco.re/about/&quot;&gt;Body&lt;/a&gt;&lt;/p&gt;</content>',
     );
   });
 });

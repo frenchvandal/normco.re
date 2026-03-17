@@ -7,6 +7,8 @@ import {
   resolveSlug,
 } from "./_cms.ts";
 
+const LOCAL_NOON = new Date(2026, 2, 16, 12, 0, 0, 0);
+
 describe("resolveSlug", () => {
   it("normalizes valid slugs through slugify", () => {
     assertEquals(resolveSlug("Crème brûlée"), "creme-brulee");
@@ -29,7 +31,7 @@ describe("resolveCurrentDateIso", () => {
   it("prefers Temporal when available", () => {
     assertEquals(
       resolveCurrentDateIso(
-        new Date("2026-03-16T12:00:00.000Z"),
+        LOCAL_NOON,
         {
           Now: {
             plainDateISO: () => ({ toString: () => "2026-03-20" }),
@@ -42,7 +44,7 @@ describe("resolveCurrentDateIso", () => {
 
   it("falls back to the local Date components when Temporal is unavailable", () => {
     assertEquals(
-      resolveCurrentDateIso(new Date("2026-03-16T12:00:00.000Z"), undefined),
+      resolveCurrentDateIso(LOCAL_NOON, {}),
       "2026-03-16",
     );
   });

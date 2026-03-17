@@ -148,7 +148,11 @@ export function registerPlugins(
 
   // --- Navigation and discovery ---
 
-  site.use(sitemap());
+  site.use(
+    sitemap({
+      stylesheet: "/sitemap.xsl",
+    }),
+  );
   site.use(
     robots({
       rules: [
@@ -203,7 +207,7 @@ export function registerPlugins(
       checkUrls({
         anchors: true,
         throw: true,
-        ignore: ["/feed.xml", "/feed.json", "/sitemap.xml"],
+        ignore: ["/feed.xml", "/feed.json", "/atom.xml", "/sitemap.xml"],
         output: "_cache/quality/broken-links-pre-fingerprint.json",
       }),
     );

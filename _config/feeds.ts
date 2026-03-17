@@ -1,5 +1,6 @@
-/** Multilingual RSS and JSON Feed configurations. */
+/** Multilingual RSS, Atom, and JSON Feed configurations. */
 
+import { type Data, Page } from "lume/core/file.ts";
 import feed from "lume/plugins/feed.ts";
 import type Site from "lume/core/site.ts";
 import {
@@ -7,6 +8,19 @@ import {
   LANGUAGE_DATA_CODE,
   type SiteLanguage,
 } from "../src/utils/i18n.ts";
+import {
+  absolutizeHtmlUrls,
+  type AtomFeedData,
+  type AtomFeedEntry,
+  generateAtomXml,
+} from "../src/utils/atom-feed.ts";
+
+/** Sort order shared by all feed outputs. */
+export const FEED_SORT = "date=desc";
+/** Maximum number of items emitted per feed. */
+export const FEED_LIMIT = 10;
+/** Browser stylesheet applied to XML feed outputs. */
+export const FEED_STYLESHEET = "/feed.xsl";
 
 /** Shared item mapping for all feed variants. */
 export const FEED_ITEMS = {
@@ -59,6 +73,9 @@ export function createFeedOptions(variant: FeedVariant) {
       `${variant.pathPrefix}/feed.json`,
     ],
     query: `type=post lang=${LANGUAGE_DATA_CODE[variant.language]}`,
+    sort: FEED_SORT,
+    limit: FEED_LIMIT,
+    stylesheet: FEED_STYLESHEET,
     info: {
       title: variant.title,
       description: variant.description,
@@ -69,9 +86,118 @@ export function createFeedOptions(variant: FeedVariant) {
   };
 }
 
+function toDate(value: unknown): Date | undefined {
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? undefined : value;
+  }
+
+  if (typeof value === "string" || typeof value === "number") {
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? undefined : date;
+  }
+
+  return undefined;
+}
+
+function getStringValue(value: unknown): string | undefined {
+  return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+function getAtomAuthor(site: Site) {
+  const rootData = site.source.data.get("/") ?? {};
+  const authorName = getStringValue(rootData.author) ?? "Phiphi";
+
+  return {
+    name: authorName,
+  };
+}
+
+function buildAtomEntry(
+  site: Site,
+  page: Data,
+  fallbackDate: Date,
+): AtomFeedEntry | undefined {
+  const pagePath = getStringValue(page.url);
+  const title = getStringValue(page.title);
+
+  if (!pagePath || !title) {
+    return undefined;
+  }
+
+  const absoluteUrl = site.url(pagePath, true);
+  const published = toDate(page.date);
+  const updated = toDate(page.update_date) ?? published ?? fallbackDate;
+  const summary = getStringValue(page.description);
+  const contentHtml = getStringValue(page.children);
+
+  return {
+    id: absoluteUrl,
+    title,
+    url: absoluteUrl,
+    updated,
+    ...(published ? { published } : {}),
+    ...(summary ? { summary } : {}),
+    ...(contentHtml
+      ? { contentHtml: absolutizeHtmlUrls(absoluteUrl, contentHtml) }
+      : {}),
+  };
+}
+
+/** Generates the Atom XML content for a localized feed variant. */
+export function createAtomFeedContent(
+  site: Site,
+  variant: FeedVariant,
+  pages: ReadonlyArray<Data>,
+): string {
+  const fallbackDate = new Date();
+  const entries = pages
+    .map((page) => buildAtomEntry(site, page, fallbackDate))
+    .filter((entry): entry is AtomFeedEntry => entry !== undefined);
+  const atomPath = `${variant.pathPrefix}/atom.xml`;
+  const updated = entries.reduce<Date>(
+    (latest, entry) => entry.updated > latest ? entry.updated : latest,
+    fallbackDate,
+  );
+
+  const atomFeed: AtomFeedData = {
+    id: site.url(atomPath, true),
+    title: variant.title,
+    subtitle: variant.description,
+    siteUrl: site.url(
+      variant.pathPrefix ? `${variant.pathPrefix}/` : "/",
+      true,
+    ),
+    feedUrl: site.url(atomPath, true),
+    language: getLanguageTag(variant.language),
+    updated,
+    author: getAtomAuthor(site),
+    entries,
+    stylesheetHref: FEED_STYLESHEET,
+  };
+
+  return generateAtomXml(atomFeed);
+}
+
 /** Register all multilingual feed outputs. */
 export function registerFeeds(site: Site): void {
   for (const variant of FEED_VARIANTS) {
     site.use(feed(createFeedOptions(variant)));
   }
+
+  site.process(function processAtomFeeds() {
+    for (const variant of FEED_VARIANTS) {
+      const pages = site.search.pages(
+        `type=post lang=${LANGUAGE_DATA_CODE[variant.language]}`,
+        FEED_SORT,
+        FEED_LIMIT,
+      ) as Data[];
+
+      site.pages.push(
+        Page.create({
+          url: `${variant.pathPrefix}/atom.xml`,
+          content: createAtomFeedContent(site, variant, pages),
+        }),
+      );
+    }
+  });
 }

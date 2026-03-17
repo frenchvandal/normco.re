@@ -45,6 +45,11 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, 'href="/feed.xml"');
   });
 
+  it("contains an Atom feed link", () => {
+    const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
+    assertStringIncludes(html, 'href="/atom.xml"');
+  });
+
   it("contains a JSON Feed link", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
     assertStringIncludes(html, 'href="/feed.json"');
@@ -55,6 +60,7 @@ describe("about.page.tsx", () => {
     const html = aboutPage(frenchData, MOCK_HELPERS);
     assertStringIncludes(html, "À propos");
     assertStringIncludes(html, 'href="/fr/feed.xml"');
+    assertStringIncludes(html, 'href="/fr/atom.xml"');
     assertStringIncludes(html, "En bref");
     assertStringIncludes(html, "J&#39;écris");
     assertStringIncludes(html, "C&#39;est juste un endroit");
