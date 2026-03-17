@@ -105,6 +105,42 @@ function logSw(event, details = {}) {
 // Lifecycle: install → activate → message
 // ---------------------------------------------------------------------------
 
+/**
+ * Populates the static cache without aborting installation if one request
+ * fails transiently. `Cache.addAll()` rejects the whole batch on the first
+ * network error, which makes service worker installation unnecessarily brittle.
+ *
+ * @returns {Promise<void>}
+ */
+async function precacheStaticAssets() {
+  const cache = await caches.open(STATIC_CACHE);
+  const failures = [];
+
+  await Promise.all(
+    STATIC_ASSETS.map(async (url) => {
+      try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        await cache.put(url, response.clone());
+      } catch (error) {
+        failures.push({
+          url,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }),
+  );
+
+  logSw("install: precache complete", {
+    cachedAssets: STATIC_ASSETS.length - failures.length,
+    failedAssets: failures,
+  });
+}
+
 sw.addEventListener(
   "install",
   /** @param {ExtendableEvent} event */ (event) => {
@@ -114,8 +150,7 @@ sw.addEventListener(
     });
 
     event.waitUntil((async () => {
-      const cache = await caches.open(STATIC_CACHE);
-      await cache.addAll(STATIC_ASSETS);
+      await precacheStaticAssets();
       await sw.skipWaiting();
     })());
   },

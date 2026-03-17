@@ -126,7 +126,7 @@ Lume's `multilanguage` plugin provides the routing model:
 - `_config/assets.ts` defines the asset surface
 - `_config/feeds.ts` emits localized RSS, Atom, and JSON feeds
 - `_config/processors.ts` runs post-render processors, including editorial image
-  checks and font preload injection
+  checks, multilanguage data aliasing, and JSON Feed normalization
 
 ### Quality Reports
 
@@ -183,8 +183,9 @@ compatible with Deno and Lume.
 4. component styles
 5. utilities
 
-Fonts are served locally through the Lume `google_fonts` plugin and loaded from
-the generated `styles/fonts.css`.
+IBM Plex webfonts are served locally through the Lume `google_fonts` plugin and
+loaded from the generated `styles/fonts.css`. Chinese pages rely on
+language-targeted system fallback stacks rather than bundled CJK webfonts.
 
 ## Client-Side Enhancements
 

@@ -13,6 +13,8 @@ const CANONICAL_ASSET_URLS = [
   "/style.css",
   "/scripts/theme-toggle.js",
   "/scripts/disclosure-controls.js",
+  "/scripts/header-tooltips.js",
+  "/scripts/about-contact-toggletips.js",
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
   "/scripts/post-code-copy.js",

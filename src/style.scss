@@ -43,7 +43,9 @@
 // Layer 6: Utilities
 @use "./styles/utilities";
 
-// IBM Plex + Noto Sans CJK — Carbon Design System typefaces (served locally).
+// IBM Plex webfonts — Carbon Design System typefaces served locally for Latin.
+// Chinese content uses language-targeted system fallback stacks from the theme
+// token layer instead of bundled CJK webfonts.
 // This file is auto-generated at build time by the Lume google_fonts plugin
 // (configured in _config/plugins.ts). It does not exist in the repository;
 // the plugin downloads fonts and emits both fonts.css and /fonts/*.woff2.

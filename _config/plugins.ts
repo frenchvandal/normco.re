@@ -33,8 +33,8 @@ import "npm/prism-yaml";
 import { CARBON_SASS_LOAD_PATHS } from "./materialize_sass_npm_packages.ts";
 import otelPlugin from "../plugins/otel.ts";
 
-const GOOGLE_FONTS_STYLESHEET_URL =
-  "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Noto+Sans+SC:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;600&display=swap";
+const GOOGLE_FONTS_IBM_PLEX_STYLESHEET_URL =
+  "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap";
 
 /**
  * Lightning CSS expects packed browser versions in the form 0xMMmmpp
@@ -70,20 +70,14 @@ export function registerPlugins(
     }),
   );
 
-  // Download IBM Plex and Noto CJK fonts locally instead of loading from
-  // Google Fonts CDN. Must run before postcss so generated CSS is processed.
-  // Strategy: IBM Plex (primary) → Noto Sans SC/TC (CJK fallback) → system fonts.
-  // IBM Plex has no CJK glyphs; Noto Sans provides coherent humanist coverage
-  // for Simplified and Traditional Chinese with similar x-height and weight axis.
+  // Download IBM Plex locally instead of loading it from Google Fonts CDN.
+  // Must run before postcss so generated CSS is processed.
+  // Chinese content relies on language-targeted system fallback stacks defined
+  // in theme tokens, which avoids shipping heavyweight CJK webfonts.
   site.use(
     googleFonts({
-      subsets: [
-        "latin",
-        "latin-ext",
-        "chinese-simplified",
-        "chinese-traditional",
-      ],
-      fonts: GOOGLE_FONTS_STYLESHEET_URL,
+      subsets: ["latin", "latin-ext"],
+      fonts: GOOGLE_FONTS_IBM_PLEX_STYLESHEET_URL,
       cssFile: "styles/fonts.css",
       fontsFolder: "/fonts",
     }),
