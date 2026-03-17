@@ -13,6 +13,7 @@ import resolveUrls from "lume/plugins/resolve_urls.ts";
 import imageSize from "lume/plugins/image_size.ts";
 import date from "lume/plugins/date.ts";
 import readingInfo from "lume/plugins/reading_info.ts";
+import icons from "lume/plugins/icons.ts";
 import sitemap from "lume/plugins/sitemap.ts";
 import robots from "lume/plugins/robots.ts";
 import multilanguage from "lume/plugins/multilanguage.ts";
@@ -145,6 +146,7 @@ export function registerPlugins(
     }),
   );
   site.use(readingInfo());
+  site.use(icons());
 
   // --- Navigation and discovery ---
 

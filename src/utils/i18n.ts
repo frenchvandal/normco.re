@@ -133,6 +133,7 @@ export type SiteTranslations = {
     readonly body: string;
     readonly feedsIntro: string;
     readonly railAriaLabel: string;
+    readonly contactTitle: string;
     readonly atAGlanceTitle: string;
     readonly locationLabel: string;
     readonly locationValue: string;
@@ -252,6 +253,7 @@ const SITE_TRANSLATIONS = {
         "I write about software, tools, language, and whatever else catches my attention. This site has no comments, no analytics, and no newsletter. It's just a place to think out loud.",
       feedsIntro: "You can follow along via",
       railAriaLabel: "About details",
+      contactTitle: "Contact",
       atAGlanceTitle: "At a glance",
       locationLabel: "Based in",
       locationValue: "Chengdu, China",
@@ -371,6 +373,7 @@ const SITE_TRANSLATIONS = {
         "J'écris sur le logiciel, les outils, la langue, et tout ce qui attire mon attention. Ce site n'a ni commentaires, ni analytics, ni newsletter. C'est juste un endroit pour penser à voix haute.",
       feedsIntro: "Tu peux suivre les publications via",
       railAriaLabel: "Détails à propos",
+      contactTitle: "Contact",
       atAGlanceTitle: "En bref",
       locationLabel: "Basé à",
       locationValue: "Chengdu, Chine",
@@ -488,6 +491,7 @@ const SITE_TRANSLATIONS = {
         "我会写软件、工具、语言，以及任何吸引我注意的主题。这里没有评论、没有统计分析、也没有 newsletter。这里只是我公开思考的地方。",
       feedsIntro: "你可以通过以下方式订阅",
       railAriaLabel: "关于页面侧栏",
+      contactTitle: "联系",
       atAGlanceTitle: "快速了解",
       locationLabel: "所在地",
       locationValue: "中国成都",
@@ -604,6 +608,7 @@ const SITE_TRANSLATIONS = {
         "我會寫軟體、工具、語言，以及任何吸引我注意的主題。這裡沒有留言、沒有分析追蹤、也沒有電子報。這裡只是我公開思考的地方。",
       feedsIntro: "你可以透過以下方式訂閱",
       railAriaLabel: "關於頁面側欄",
+      contactTitle: "聯絡",
       atAGlanceTitle: "快速了解",
       locationLabel: "所在地",
       locationValue: "中國成都",

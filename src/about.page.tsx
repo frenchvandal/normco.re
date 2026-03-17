@@ -39,12 +39,17 @@ export const zhHant = {
 } as const;
 
 /** Renders the About page body. */
-export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
+export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const language = resolveSiteLanguage(data.lang);
   const translations = getSiteTranslations(language);
   const atomXmlUrl = getLocalizedUrl("/atom.xml", language);
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
+  const icon = helpers.icon?.bind(helpers) ??
+    ((key: string, catalogId: string): string =>
+      `/icons/${catalogId}/${key}.svg`);
+  icon("wechat", "simpleicons");
+  icon("telegram", "simpleicons");
   const finalSeparator = language === "fr"
     ? "ou"
     : language === "zhHans" || language === "zhHant"
@@ -81,6 +86,27 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
     escapeHtml(translations.about.railAriaLabel)
   }">
     <div class="feature-rail-sticky">
+      <section class="feature-card about-contact-card">
+        <h2 class="feature-card-title">${
+    escapeHtml(translations.about.contactTitle)
+  }</h2>
+        <ul class="about-contact-list">
+          <li class="about-contact-item">
+            <span
+              class="about-contact-icon about-contact-icon--wechat"
+              aria-hidden="true"
+            ></span>
+            <span class="about-contact-label">WeChat</span>
+          </li>
+          <li class="about-contact-item">
+            <span
+              class="about-contact-icon about-contact-icon--telegram"
+              aria-hidden="true"
+            ></span>
+            <span class="about-contact-label">Telegram</span>
+          </li>
+        </ul>
+      </section>
       <section class="feature-card">
         <h2 class="feature-card-title">${
     escapeHtml(translations.about.atAGlanceTitle)

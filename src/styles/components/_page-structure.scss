@@ -133,6 +133,55 @@
     margin: 0;
   }
 
+  .about-contact-card {
+    background: var(--cds-layer-hover);
+  }
+
+  .about-contact-list {
+    display: grid;
+    gap: var(--cds-spacing-03);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about-contact-item {
+    display: flex;
+    align-items: center;
+    gap: var(--cds-spacing-03);
+    min-block-size: 2.5rem;
+    padding: var(--cds-spacing-03) var(--cds-spacing-04);
+    border: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer);
+    color: var(--cds-text-primary);
+  }
+
+  .about-contact-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    color: var(--cds-icon-primary, var(--cds-text-primary));
+    flex: 0 0 auto;
+    background: currentColor;
+    -webkit-mask: var(--about-contact-icon) center / contain no-repeat;
+    mask: var(--about-contact-icon) center / contain no-repeat;
+  }
+
+  .about-contact-icon--wechat {
+    --about-contact-icon: url("/icons/simpleicons/wechat.svg");
+  }
+
+  .about-contact-icon--telegram {
+    --about-contact-icon: url("/icons/simpleicons/telegram.svg");
+  }
+
+  .about-contact-label {
+    font: var(--cds-productive-body-01);
+    font-weight: var(--cds-font-weight-semibold);
+  }
+
   .about-facts-row {
     display: grid;
     gap: var(--cds-spacing-02);

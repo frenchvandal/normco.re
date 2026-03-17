@@ -33,6 +33,9 @@ describe("about.page.tsx", () => {
       'class="feature-layout feature-layout--with-rail"',
     );
     assertStringIncludes(html, 'class="feature-rail about-rail"');
+    assertStringIncludes(html, 'class="feature-card about-contact-card"');
+    assertStringIncludes(html, "about-contact-icon--wechat");
+    assertStringIncludes(html, "about-contact-icon--telegram");
     assertStringIncludes(html, "At a glance");
     assertStringIncludes(html, 'class="about-pictogram-frame"');
     assertStringIncludes(html, "<svg");
