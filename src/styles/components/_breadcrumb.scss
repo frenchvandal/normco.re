@@ -40,14 +40,19 @@
 
   .cds--breadcrumb-link:hover {
     color: var(--cds-link-primary-hover);
-    text-decoration: underline;
+    text-decoration-line: underline;
     text-decoration-thickness: max(1px, 0.08em);
     text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
   }
 
   .cds--breadcrumb-link:focus-visible {
     outline: var(--focus-ring-width) solid var(--cds-focus);
     outline-offset: var(--focus-ring-offset);
+    text-decoration-line: underline;
+    text-decoration-thickness: max(1px, 0.08em);
+    text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
   }
 
   .cds--breadcrumb-current {

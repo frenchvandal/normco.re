@@ -242,7 +242,7 @@ export default (
             href={hFeedUrl}
           />
         </head>
-        <body data-a11y-link-underlines="true" data-current-language={language}>
+        <body data-current-language={language}>
           <a class="skip-link" href="#main-content">
             {translations.site.skipToContent}
           </a>

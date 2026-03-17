@@ -57,6 +57,16 @@
 
   .post-card-link {
     color: var(--cds-text-primary);
+    text-decoration: none;
+  }
+
+  .post-card-link:hover,
+  .post-card-link:focus-visible,
+  .post-card-link:active {
+    text-decoration-line: underline;
+    text-decoration-thickness: max(1px, 0.08em);
+    text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
   }
 
   .post-card-link:focus-visible {

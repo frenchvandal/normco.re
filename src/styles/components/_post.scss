@@ -200,8 +200,14 @@
     transition: color 0.15s ease;
   }
 
-  .post-nav-title:hover {
+  .post-nav-title:hover,
+  .post-nav-title:focus-visible,
+  .post-nav-title:active {
     color: var(--cds-link-primary);
+    text-decoration-line: underline;
+    text-decoration-thickness: max(1px, 0.08em);
+    text-underline-offset: 0.15em;
+    text-decoration-skip-ink: auto;
   }
 
   .post-tags--rail {

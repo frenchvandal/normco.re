@@ -24,7 +24,7 @@
         <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{const s=localStorage.getItem("color-mode");if(s==="light"||s==="dark"||s==="system")v=s;else{const l=localStorage.getItem("color-scheme");v=l==="light"||l==="dark"?l:null}}catch{v=null}const p=v??"system",t=p==="light"||p==="dark"?p:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-theme-preference",p);r.setAttribute("data-color-scheme",t)})()</script>
         <link rel="stylesheet" href="/style.css"/>
       </head>
-      <body data-a11y-link-underlines="true">
+      <body>
         <a class="skip-link" href="#main-content">Skip to content</a>
         <div class="site-wrapper">
           <!-- Carbon UI Shell Header (mirrors Header.tsx structure) -->

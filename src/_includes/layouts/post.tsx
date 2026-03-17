@@ -315,10 +315,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                         >
                           <a
                             href={getTagUrl(tagLabel, language)}
-                            class={`cds--tag cds--tag--${_color} p-category`}
+                            class={`tag-link tag-link--${_color} p-category`}
                             rel="tag"
                           >
-                            <span class="cds--tag__label">{tagLabel}</span>
+                            <span class="tag-link__label">{tagLabel}</span>
                           </a>
                         </li>
                       );

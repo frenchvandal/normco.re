@@ -205,7 +205,8 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'href="/tags/devops/"');
       assertStringIncludes(html, 'href="/tags/cdn/"');
       assertStringIncludes(html, 'rel="tag"');
-      assertStringIncludes(html, 'class="cds--tag cds--tag--');
+      assertStringIncludes(html, 'class="tag-link tag-link--');
+      assertNotMatch(html, /class="cds--tag cds--tag--/);
     });
 
     it("ignores non-string tag entries before rendering the rail", async () => {
