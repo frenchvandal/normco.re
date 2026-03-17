@@ -12,6 +12,13 @@ import { selectCriticalFontUrls } from "../src/utils/font-preload.ts";
 const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
 const XML_PI_PATTERN = /^(<\?xml[^?]*\?>)/;
 const TEXT_DECODER = new TextDecoder();
+const FEED_DATE_KEYS = ["date_published", "date_modified"] as const;
+
+const FEED_LANGUAGE_BY_PREFIX: ReadonlyArray<readonly [string, string]> = [
+  ["/fr/", "fr"],
+  ["/zh-hans/", "zh-Hans"],
+  ["/zh-hant/", "zh-Hant"],
+];
 
 // Maps hyphenated Lume data keys (URL-style) to their camelCase TypeScript
 // equivalents used throughout the codebase. The multilanguage plugin resolves
@@ -70,6 +77,76 @@ export function decodePageContent(content: unknown): string {
   }
 
   return String(content);
+}
+
+function getFeedLanguage(pageUrl: string): string {
+  for (const [prefix, languageTag] of FEED_LANGUAGE_BY_PREFIX) {
+    if (pageUrl.startsWith(prefix)) {
+      return languageTag;
+    }
+  }
+
+  return "en";
+}
+
+function toIsoDate(value: unknown): string | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const parsedDate = new Date(value);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return undefined;
+  }
+
+  return parsedDate.toISOString();
+}
+
+/** Upgrades generated JSON feeds to JSON Feed 1.1 metadata conventions. */
+export function normalizeJsonFeedDocument(
+  content: string,
+  pageUrl: string,
+): string {
+  let parsed: Record<string, unknown>;
+
+  try {
+    const parsedValue = JSON.parse(content) as unknown;
+
+    if (typeof parsedValue !== "object" || parsedValue === null) {
+      return content;
+    }
+
+    parsed = parsedValue as Record<string, unknown>;
+  } catch {
+    return content;
+  }
+
+  parsed.version = "https://jsonfeed.org/version/1.1";
+
+  if (typeof parsed.language !== "string" || parsed.language.length === 0) {
+    parsed.language = getFeedLanguage(pageUrl);
+  }
+
+  if (Array.isArray(parsed.items)) {
+    for (const item of parsed.items) {
+      if (typeof item !== "object" || item === null) {
+        continue;
+      }
+
+      const itemRecord = item as Record<string, unknown>;
+
+      for (const key of FEED_DATE_KEYS) {
+        const isoDate = toIsoDate(itemRecord[key]);
+
+        if (isoDate !== undefined) {
+          itemRecord[key] = isoDate;
+        }
+      }
+    }
+  }
+
+  return JSON.stringify(parsed);
 }
 
 /** Register all HTML and XML processors. */
@@ -177,6 +254,24 @@ export function registerProcessors(site: Site): void {
       page.content = XML_PI_PATTERN.test(content)
         ? content.replace(XML_PI_PATTERN, `$1\n${pi}`)
         : `${pi}\n${content}`;
+    }
+  });
+
+  // Normalize generated feed JSON files to strict JSON Feed 1.1 fields.
+  site.process([".json"], (pages: Page[]) => {
+    for (const page of pages) {
+      const pageUrl = typeof page.data.url === "string"
+        ? page.data.url
+        : page.outputPath;
+
+      if (typeof pageUrl !== "string" || !pageUrl.endsWith("/feed.json")) {
+        continue;
+      }
+
+      page.content = normalizeJsonFeedDocument(
+        decodePageContent(page.content),
+        pageUrl,
+      );
     }
   });
 }

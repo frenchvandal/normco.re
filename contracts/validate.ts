@@ -240,8 +240,101 @@ export async function readSchemaFile(filePath: string): Promise<SchemaNode> {
   return value as SchemaNode;
 }
 
-/** Finds JSON files matching a glob pattern in the site output directory. */
-async function findJsonFiles(
+/** Reads a text file with contextualized failures. */
+async function readTextFile(filePath: string): Promise<string> {
+  try {
+    return await Deno.readTextFile(filePath);
+  } catch (error) {
+    throw new Error(
+      `Cannot read text file "${filePath}": ${getErrorMessage(error)}`,
+    );
+  }
+}
+
+function isIsoDate(value: string): boolean {
+  return !Number.isNaN(new Date(value).getTime()) && value.includes("T");
+}
+
+function validateAtomFeed(content: string): ReadonlyArray<ValidationError> {
+  const errors: ValidationError[] = [];
+
+  if (!/^\s*<\?xml\s+version="1\.0"\s+encoding="UTF-8"\?>/m.test(content)) {
+    errors.push({
+      path: "$.xml",
+      message: "Missing XML declaration with UTF-8 encoding",
+    });
+  }
+
+  if (!/<feed\b[^>]*xmlns="http:\/\/www\.w3\.org\/2005\/Atom"/m.test(content)) {
+    errors.push({
+      path: "$.feed",
+      message: "Root element must declare the Atom namespace",
+    });
+  }
+
+  const getTagValue = (tagName: string): string | undefined => {
+    const match = content.match(
+      new RegExp(`<${tagName}>([\\s\\S]*?)<\/${tagName}>`, "m"),
+    );
+    const value = match?.[1]?.trim();
+    return value && value.length > 0 ? value : undefined;
+  };
+
+  for (const tagName of ["id", "title", "updated"]) {
+    if (!getTagValue(tagName)) {
+      errors.push({
+        path: `$.feed.${tagName}`,
+        message: "Required element missing or empty",
+      });
+    }
+  }
+
+  const updated = getTagValue("updated");
+
+  if (updated && !isIsoDate(updated)) {
+    errors.push({
+      path: "$.feed.updated",
+      message: "Must be a valid RFC 3339 date-time",
+    });
+  }
+
+  const entryPattern = /<entry>([\s\S]*?)<\/entry>/g;
+  const entries = Array.from(content.matchAll(entryPattern));
+
+  for (const [index, match] of entries.entries()) {
+    const entryXml = match[1] ?? "";
+
+    for (const tagName of ["id", "title", "updated"]) {
+      const tagPattern = new RegExp(
+        `<${tagName}>([\\s\\S]*?)<\/${tagName}>`,
+        "m",
+      );
+      const tagMatch = entryXml.match(tagPattern);
+
+      if (!tagMatch?.[1]?.trim()) {
+        errors.push({
+          path: `$.feed.entry[${index}].${tagName}`,
+          message: "Required element missing or empty",
+        });
+      }
+    }
+
+    const updatedMatch = entryXml.match(/<updated>([\s\S]*?)<\/updated>/m);
+    const entryUpdated = updatedMatch?.[1]?.trim();
+
+    if (entryUpdated && !isIsoDate(entryUpdated)) {
+      errors.push({
+        path: `$.feed.entry[${index}].updated`,
+        message: "Must be a valid RFC 3339 date-time",
+      });
+    }
+  }
+
+  return errors;
+}
+
+/** Finds output files matching a regex pattern in the site output directory. */
+async function findOutputFiles(
   dir: string,
   pattern: RegExp,
 ): Promise<ReadonlyArray<string>> {
@@ -266,7 +359,7 @@ async function main(): Promise<void> {
   const siteDir = Deno.args.find((a) => a.startsWith("--site-dir="))
     ?.split("=")[1] ?? "_site";
 
-  console.log(bold("Generated JSON validation"));
+  console.log(bold("Generated feed/content validation"));
   console.log(`Site directory: ${siteDir}\n`);
 
   const postSchema = await readSchemaFile("contracts/post.schema.json");
@@ -276,7 +369,10 @@ async function main(): Promise<void> {
   let totalFiles = 0;
 
   // Validate post JSON files
-  const postFiles = await findJsonFiles(siteDir, /\/api\/posts\/[^/]+\.json$/);
+  const postFiles = await findOutputFiles(
+    siteDir,
+    /\/api\/posts\/[^/]+\.json$/,
+  );
   console.log(bold(`Post files: ${postFiles.length}`));
 
   for (const filePath of postFiles) {
@@ -296,13 +392,33 @@ async function main(): Promise<void> {
   }
 
   // Validate feed JSON files
-  const feedFiles = await findJsonFiles(siteDir, /\/feed\.json$/);
+  const feedFiles = await findOutputFiles(siteDir, /\/feed\.json$/);
   console.log(bold(`\nFeed files: ${feedFiles.length}`));
 
   for (const filePath of feedFiles) {
     totalFiles++;
     const data = await readJsonFile(filePath);
     const errors = validate(data, feedSchema, feedSchema, "$");
+
+    if (errors.length > 0) {
+      console.log(red(`  FAIL ${filePath}`));
+      for (const error of errors) {
+        console.log(`    ${yellow(error.path)}: ${error.message}`);
+      }
+      totalErrors += errors.length;
+    } else {
+      console.log(green(`  OK   ${filePath}`));
+    }
+  }
+
+  // Validate Atom XML feed files
+  const atomFiles = await findOutputFiles(siteDir, /\/atom\.xml$/);
+  console.log(bold(`\nAtom feed files: ${atomFiles.length}`));
+
+  for (const filePath of atomFiles) {
+    totalFiles++;
+    const content = await readTextFile(filePath);
+    const errors = validateAtomFeed(content);
 
     if (errors.length > 0) {
       console.log(red(`  FAIL ${filePath}`));

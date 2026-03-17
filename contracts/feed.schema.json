@@ -4,11 +4,17 @@
   "title": "JSON Feed",
   "description": "JSON Feed 1.1 output contract for normco.re feeds.",
   "type": "object",
-  "required": ["version", "title", "items"],
+  "required": [
+    "version",
+    "title",
+    "home_page_url",
+    "feed_url",
+    "language",
+    "items"
+  ],
   "properties": {
     "version": {
-      "type": "string",
-      "pattern": "^https://jsonfeed\\.org/version/1"
+      "const": "https://jsonfeed.org/version/1.1"
     },
     "title": {
       "type": "string",
@@ -33,17 +39,36 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "title"],
+        "required": [
+          "id",
+          "title"
+        ],
         "properties": {
-          "id": { "type": "string" },
-          "url": { "type": "string" },
-          "title": { "type": "string", "minLength": 1 },
-          "summary": { "type": "string" },
-          "content_html": { "type": "string" },
-          "date_published": { "type": "string", "format": "date-time" },
+          "id": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "summary": {
+            "type": "string"
+          },
+          "content_html": {
+            "type": "string"
+          },
+          "date_published": {
+            "type": "string",
+            "format": "date-time"
+          },
           "tags": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           }
         }
       }

@@ -4,6 +4,7 @@ import { describe, it } from "jsr/testing-bdd";
 import {
   applyMultilanguageDataAliases,
   decodePageContent,
+  normalizeJsonFeedDocument,
 } from "./processors.ts";
 
 describe("decodePageContent", () => {
@@ -61,5 +62,29 @@ describe("applyMultilanguageDataAliases", () => {
     applyMultilanguageDataAliases(42);
 
     assertEquals(true, true);
+  });
+});
+
+
+describe("normalizeJsonFeedDocument", () => {
+  it("upgrades feeds to JSON Feed 1.1 with language and ISO dates", () => {
+    const input = JSON.stringify({
+      version: "https://jsonfeed.org/version/1",
+      title: "normco.re",
+      items: [{
+        id: "https://normco.re/posts/demo/",
+        date_published: "Tue, 10 Mar 2026 00:00:00 GMT",
+      }],
+    });
+
+    const output = JSON.parse(
+      normalizeJsonFeedDocument(input, "/zh-hans/feed.json"),
+    ) as Record<string, unknown>;
+
+    assertEquals(output.version, "https://jsonfeed.org/version/1.1");
+    assertEquals(output.language, "zh-Hans");
+
+    const items = output.items as Array<Record<string, unknown>>;
+    assertEquals(items[0]?.date_published, "2026-03-10T00:00:00.000Z");
   });
 });
