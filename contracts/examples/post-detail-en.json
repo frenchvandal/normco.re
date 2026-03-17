@@ -1,0 +1,61 @@
+{
+  "version": "1",
+  "id": "alibaba-cloud-oss-cdn-deployment",
+  "slug": "alibaba-cloud-oss-cdn-deployment",
+  "lang": "en",
+  "title": "How This Blog Deploys to Alibaba Cloud OSS and CDN",
+  "summary": "A practical walkthrough of my GitHub Actions pipeline: Lume build, OIDC role assumption, OSS sync, CDN refresh/preload, and automatic cleanup.",
+  "publishedAt": "2026-03-10T00:00:00Z",
+  "updatedAt": "2026-03-10T00:00:00Z",
+  "readingTime": 6,
+  "tags": [
+    "devops",
+    "github-actions",
+    "alibaba-cloud"
+  ],
+  "alternates": [
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/fr/posts/alibaba-cloud-oss-cdn-deployment/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/zh-hans/posts/alibaba-cloud-oss-cdn-deployment/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/zh-hant/posts/alibaba-cloud-oss-cdn-deployment/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/posts/alibaba-cloud-oss-cdn-deployment/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "This site is built with Lume and deployed to Alibaba Cloud OSS, fronted by Alibaba Cloud CDN."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Pipeline at a glance"
+    },
+    {
+      "type": "list",
+      "ordered": true,
+      "items": [
+        "Checks out the repository.",
+        "Installs Deno with the pinned version.",
+        "Builds the site into _site.",
+        "Runs the OSS/CDN sync action."
+      ]
+    },
+    {
+      "type": "code",
+      "language": "yaml",
+      "content": "name: Deploy static content to OSS"
+    }
+  ]
+}

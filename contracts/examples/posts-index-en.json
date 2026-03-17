@@ -1,0 +1,23 @@
+{
+  "version": "1",
+  "lang": "en",
+  "items": [
+    {
+      "id": "alibaba-cloud-oss-cdn-deployment",
+      "slug": "alibaba-cloud-oss-cdn-deployment",
+      "title": "How This Blog Deploys to Alibaba Cloud OSS and CDN",
+      "summary": "A practical walkthrough of my GitHub Actions pipeline: Lume build, OIDC role assumption, OSS sync, CDN refresh/preload, and automatic cleanup.",
+      "publishedAt": "2026-03-10T00:00:00Z",
+      "updatedAt": "2026-03-10T00:00:00Z",
+      "readingTime": 6,
+      "tags": [
+        "devops",
+        "github-actions",
+        "alibaba-cloud"
+      ],
+      "heroImage": null,
+      "detailApiUrl": "/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/posts/alibaba-cloud-oss-cdn-deployment/"
+    }
+  ]
+}

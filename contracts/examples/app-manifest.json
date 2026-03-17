@@ -1,0 +1,29 @@
+{
+  "version": "1",
+  "generatedAt": "2026-03-17T10:00:00Z",
+  "defaultLanguage": "en",
+  "languages": [
+    "en",
+    "fr",
+    "zh-hans",
+    "zh-hant"
+  ],
+  "postsIndex": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/index.json"
+    },
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/index.json"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/index.json"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/index.json"
+    }
+  ]
+}

@@ -227,6 +227,8 @@ documents the infrastructure in more detail.
 - [AGENTS.md](./AGENTS.md)
 - [CLAUDE.md](./CLAUDE.md)
 - [GEMINI.md](./GEMINI.md)
+- [docs/mobile-clients.md](./docs/mobile-clients.md)
+- [docs/mobile-content-api.md](./docs/mobile-content-api.md)
 - [plugins/README.md](./plugins/README.md)
 
 ## License

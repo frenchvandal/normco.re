@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://normco.re/schemas/posts-index.json",
+  "title": "Posts Index",
+  "description": "Summary list of localized posts for native home and archive screens.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "lang",
+    "items"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lang": {
+      "$ref": "#/$defs/languageCode"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/postSummary"
+      }
+    }
+  },
+  "$defs": {
+    "languageCode": {
+      "type": "string",
+      "enum": [
+        "en",
+        "fr",
+        "zh-hans",
+        "zh-hant"
+      ]
+    },
+    "remoteImage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "alt"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "alt": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "postSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "slug",
+        "title",
+        "summary",
+        "publishedAt",
+        "updatedAt",
+        "detailApiUrl",
+        "webUrl"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "readingTime": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "heroImage": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/remoteImage"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "detailApiUrl": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "webUrl": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    }
+  }
+}
