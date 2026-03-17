@@ -221,7 +221,7 @@ const SITE_TRANSLATIONS = {
       eyebrow: "Personal blog",
       title: "Writing about things that matter.",
       lead:
-        "A personal blog by Phiphi - software, culture, and everyday life from Chengdu.",
+        "A personal blog by Phiphi—software, culture, and everyday life from Chengdu.",
       recentHeading: "Recent writing",
       archiveLinkLabel: "View archive",
       emptyStateTitle: "Nothing published yet.",
@@ -248,7 +248,7 @@ const SITE_TRANSLATIONS = {
       title: "About",
       lead: "Notes on who I am and why this blog exists.",
       intro:
-        "Hi, I'm Phiphi. I'm a software person living in Chengdu, China - a city known for its pandas, spicy food, and unhurried pace of life.",
+        "Hi, I’m Phiphi. I’m a software person living in Chengdu, China—a city known for its pandas, spicy food, and unhurried pace of life.",
       body:
         "I write about software, tools, language, and whatever else catches my attention. This site has no comments, no analytics, and no newsletter. It's just a place to think out loud.",
       feedsIntro: "You can follow along via",
@@ -340,7 +340,7 @@ const SITE_TRANSLATIONS = {
       eyebrow: "Blog personnel",
       title: "Écrire sur ce qui compte.",
       lead:
-        "Un blog personnel de Phiphi - logiciel, culture et vie quotidienne depuis Chengdu.",
+        "Un blog personnel de Phiphi — logiciel, culture et vie quotidienne depuis Chengdu.",
       recentHeading: "Articles récents",
       archiveLinkLabel: "Voir les archives",
       emptyStateTitle: "Rien n'est encore publié.",
@@ -368,10 +368,10 @@ const SITE_TRANSLATIONS = {
       title: "À propos",
       lead: "Qui je suis et pourquoi ce blog existe.",
       intro:
-        "Salut, moi c'est Phiphi. Je vis à Chengdu, en Chine - une ville connue pour ses pandas, sa cuisine épicée et son rythme de vie plus calme.",
+        "Salut, moi, c’est Phiphi. Je vis à Chengdu, en Chine — une ville connue pour ses pandas, sa cuisine épicée et son rythme de vie plus calme.",
       body:
-        "J'écris sur le logiciel, les outils, la langue, et tout ce qui attire mon attention. Ce site n'a ni commentaires, ni analytics, ni newsletter. C'est juste un endroit pour penser à voix haute.",
-      feedsIntro: "Tu peux suivre les publications via",
+        "J’écris sur le logiciel, les outils, la langue et tout ce qui attire mon attention. Ce site n’a ni commentaires, ni analytics ni newsletter. C’est juste un endroit pour penser à voix haute.",
+      feedsIntro: "Vous pouvez suivre les publications via",
       railAriaLabel: "Détails à propos",
       contactTitle: "Contact",
       atAGlanceTitle: "En bref",
