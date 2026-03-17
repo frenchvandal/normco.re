@@ -42,6 +42,15 @@ const OFFLINE_FALLBACK_HTML = `<!doctype html>
 
 const STATIC_ASSETS = [
   "/",
+  "/manifest.webmanifest",
+  "/favicon.ico",
+  "/favicon.svg",
+  "/apple-touch-icon-120x120.png",
+  "/apple-touch-icon-152x152.png",
+  "/apple-touch-icon-167x167.png",
+  "/apple-touch-icon.png",
+  "/android-chrome-192x192.png",
+  "/android-chrome-512x512.png",
   "/style.css",
   "/scripts/theme-toggle.js",
   "/scripts/language-preference.js",

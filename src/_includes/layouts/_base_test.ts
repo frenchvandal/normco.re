@@ -34,6 +34,17 @@ function makeData(
     siteName?: string;
     author?: string;
     metas?: { site?: string; description?: string };
+    siteChrome?: {
+      faviconIcoUrl?: string;
+      faviconSvgUrl?: string;
+      appleTouchIconUrl?: string;
+      appleTouchIconLinks?: ReadonlyArray<{
+        href: string;
+        sizes: string;
+      }>;
+      themeColorLight?: string;
+      themeColorDark?: string;
+    };
     build?: {
       swDebugLevel?: "off" | "summary" | "verbose";
     };
@@ -50,6 +61,19 @@ function makeData(
     metas: {
       site: "normco.re",
       description: "Personal blog by Phiphi, based in Chengdu, China.",
+    },
+    siteChrome: {
+      faviconIcoUrl: "/favicon.ico",
+      faviconSvgUrl: "/favicon.svg",
+      appleTouchIconUrl: "/apple-touch-icon.png",
+      appleTouchIconLinks: [
+        { href: "/apple-touch-icon-120x120.png", sizes: "120x120" },
+        { href: "/apple-touch-icon-152x152.png", sizes: "152x152" },
+        { href: "/apple-touch-icon-167x167.png", sizes: "167x167" },
+        { href: "/apple-touch-icon.png", sizes: "180x180" },
+      ],
+      themeColorLight: "#ffffff",
+      themeColorDark: "#262626",
     },
     comp: {
       Header: (_props: unknown) => "<header>mock</header>",
@@ -108,6 +132,42 @@ describe("base.tsx layout", () => {
       assertStringIncludes(
         html,
         '<meta name="color-scheme" content="light dark">',
+      );
+      assertStringIncludes(
+        html,
+        'name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)"',
+      );
+      assertStringIncludes(
+        html,
+        'name="theme-color" content="#262626" media="(prefers-color-scheme: dark)"',
+      );
+      assertStringIncludes(
+        html,
+        'rel="manifest" href="/manifest.webmanifest" type="application/manifest+json"',
+      );
+      assertStringIncludes(
+        html,
+        'rel="icon" href="/favicon.ico" sizes="48x48"',
+      );
+      assertStringIncludes(
+        html,
+        'rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any"',
+      );
+      assertStringIncludes(
+        html,
+        'rel="apple-touch-icon" href="/apple-touch-icon-120x120.png" sizes="120x120"',
+      );
+      assertStringIncludes(
+        html,
+        'rel="apple-touch-icon" href="/apple-touch-icon-152x152.png" sizes="152x152"',
+      );
+      assertStringIncludes(
+        html,
+        'rel="apple-touch-icon" href="/apple-touch-icon-167x167.png" sizes="167x167"',
+      );
+      assertStringIncludes(
+        html,
+        'rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180"',
       );
       assertStringIncludes(
         html,

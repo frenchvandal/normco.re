@@ -1,5 +1,12 @@
 /** Site-wide data available to all pages and layouts. */
 
+import { g90, white } from "npm:@carbon/themes@11.69.0";
+
+import {
+  type SiteChromeData,
+  type SiteManifestData,
+} from "./utils/site-manifest.ts";
+
 /** Primary language of the site. */
 export const lang = "en";
 
@@ -24,6 +31,77 @@ export const metas = {
   description: `Personal blog by ${author}, based in Chengdu, China.`,
   lang: "en",
 } as const satisfies Record<string, string>;
+
+/** Browser chrome assets and colors shared by the layout and manifest. */
+export const siteChrome = {
+  faviconIcoUrl: "/favicon.ico",
+  faviconSvgUrl: "/favicon.svg",
+  appleTouchIconUrl: "/apple-touch-icon.png",
+  appleTouchIconLinks: [
+    {
+      href: "/apple-touch-icon-120x120.png",
+      sizes: "120x120",
+    },
+    {
+      href: "/apple-touch-icon-152x152.png",
+      sizes: "152x152",
+    },
+    {
+      href: "/apple-touch-icon-167x167.png",
+      sizes: "167x167",
+    },
+    {
+      href: "/apple-touch-icon.png",
+      sizes: "180x180",
+    },
+  ],
+  themeColorLight: white.background,
+  themeColorDark: g90.background,
+} as const satisfies SiteChromeData;
+
+/**
+ * Core W3C Web App Manifest members.
+ * Storefront-style metadata such as description/screenshots lives outside the
+ * core manifest processing model, so it is intentionally omitted here.
+ */
+export const siteManifest = {
+  dir: "ltr",
+  lang,
+  name: siteName,
+  shortName: siteName,
+  startUrl: "/",
+  id: "/",
+  scope: "/",
+  display: "standalone",
+  themeColor: siteChrome.themeColorLight,
+  backgroundColor: siteChrome.themeColorLight,
+  icons: [
+    {
+      src: "/android-chrome-192x192.png",
+      sizes: "192x192",
+      type: "image/png",
+    },
+    {
+      src: "/android-chrome-512x512.png",
+      sizes: "512x512",
+      type: "image/png",
+    },
+  ],
+  shortcuts: [
+    {
+      name: "Posts",
+      shortName: "Posts",
+      description: "Browse the post archive.",
+      url: "/posts/",
+    },
+    {
+      name: "About",
+      shortName: "About",
+      description: "Read the author profile and contact links.",
+      url: "/about/",
+    },
+  ],
+} as const satisfies SiteManifestData;
 
 /** French-only global data overrides merged by the multilanguage plugin. */
 export const fr = {

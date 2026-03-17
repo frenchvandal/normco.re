@@ -3,6 +3,11 @@
 import type { jsx } from "lume/jsx-runtime";
 
 import {
+  APP_MANIFEST_MIME_TYPE,
+  APP_MANIFEST_PATH,
+  type SiteChromeData,
+} from "../../utils/site-manifest.ts";
+import {
   DEFAULT_LANGUAGE,
   getLanguageTag,
   getLocalizedUrl,
@@ -40,6 +45,7 @@ type LayoutData = Lume.Data & {
   lang?: string;
   unlisted?: boolean;
   alternates?: ReadonlyArray<AlternateData>;
+  siteChrome?: SiteChromeData;
   /** Injected by `src/_data.ts` - canonical site name / domain. */
   siteName?: string;
   /** Injected by `src/_data.ts` - primary author name. */
@@ -152,6 +158,7 @@ export default (
     lang,
     unlisted,
     alternates,
+    siteChrome,
     siteName,
     author,
     metas,
@@ -163,6 +170,19 @@ export default (
   // a safety net for test environments that omit them.
   const resolvedSiteName = siteName ?? "normco.re";
   const resolvedAuthor = author ?? "Phiphi";
+  const resolvedSiteChrome: SiteChromeData = {
+    faviconIcoUrl: siteChrome?.faviconIcoUrl ?? "/favicon.ico",
+    faviconSvgUrl: siteChrome?.faviconSvgUrl ?? "/favicon.svg",
+    appleTouchIconUrl: siteChrome?.appleTouchIconUrl ?? "/apple-touch-icon.png",
+    appleTouchIconLinks: siteChrome?.appleTouchIconLinks ?? [
+      {
+        href: siteChrome?.appleTouchIconUrl ?? "/apple-touch-icon.png",
+        sizes: "180x180",
+      },
+    ],
+    themeColorLight: siteChrome?.themeColorLight ?? "#ffffff",
+    themeColorDark: siteChrome?.themeColorDark ?? "#262626",
+  };
   const pageTitle = title ? `${title} - ${resolvedSiteName}` : resolvedSiteName;
   const language = resolveSiteLanguage(lang);
   const translations = getSiteTranslations(language);
@@ -197,6 +217,41 @@ export default (
           <title>{pageTitle}</title>
           <meta name="description" content={metaDescription} />
           <meta name="color-scheme" content="light dark" />
+          <meta
+            name="theme-color"
+            content={resolvedSiteChrome.themeColorLight}
+            media="(prefers-color-scheme: light)"
+          />
+          <meta
+            name="theme-color"
+            content={resolvedSiteChrome.themeColorDark}
+            media="(prefers-color-scheme: dark)"
+          />
+          <meta name="application-name" content={resolvedSiteName} />
+          <meta name="apple-mobile-web-app-title" content={resolvedSiteName} />
+          <link
+            rel="manifest"
+            href={APP_MANIFEST_PATH}
+            type={APP_MANIFEST_MIME_TYPE}
+          />
+          <link
+            rel="icon"
+            href={resolvedSiteChrome.faviconIcoUrl}
+            sizes="48x48"
+          />
+          <link
+            rel="icon"
+            href={resolvedSiteChrome.faviconSvgUrl}
+            type="image/svg+xml"
+            sizes="any"
+          />
+          {resolvedSiteChrome.appleTouchIconLinks?.map((icon) => (
+            <link
+              rel="apple-touch-icon"
+              href={icon.href}
+              sizes={icon.sizes}
+            />
+          ))}
           {
             /* Font preload links are injected dynamically by the
               font preload processor in _config/processors.ts based on

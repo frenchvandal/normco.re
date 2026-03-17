@@ -4,6 +4,13 @@ import type Site from "lume/core/site.ts";
 
 /** Register all site assets so Lume discovers them before processors run. */
 export function registerAssets(site: Site): void {
+  // Pure static files (favicons, PWA icons, QR codes, etc.) live under
+  // /src/static and are copied verbatim to the site root. Ignore the source
+  // folder during the normal scan so the extension-based image add below does
+  // not emit duplicate /static/* copies.
+  site.ignore("/static");
+  site.copy("/static", ".");
+
   // Editorial images referenced from Markdown posts.
   site.add([
     ".png",

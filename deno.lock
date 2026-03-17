@@ -64,6 +64,7 @@
     "npm:@carbon/layout@11.49.0": "11.49.0",
     "npm:@carbon/motion@11.42.0": "11.42.0",
     "npm:@carbon/styles@1.102.0": "1.102.0_sass@1.98.0",
+    "npm:@carbon/themes@*": "11.69.0",
     "npm:@carbon/themes@11.69.0": "11.69.0",
     "npm:@carbon/type@11.55.0": "11.55.0",
     "npm:@faker-js/faker@10.3.0": "10.3.0",

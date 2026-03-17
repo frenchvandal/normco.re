@@ -5,7 +5,8 @@ const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
 
 /**
  * Canonical asset URLs to fingerprint.
- * Must match the paths registered via site.add() in _config.ts.
+ * Must match the canonical asset paths emitted by the Lume asset pipeline in
+ * _config/assets.ts, whether they originate from site.add() or site.copy().
  * Service worker files are excluded — they use internal versioning instead.
  */
 const CANONICAL_ASSET_URLS = [
