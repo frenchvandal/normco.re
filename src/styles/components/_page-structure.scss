@@ -134,7 +134,7 @@
   }
 
   .about-contact-card {
-    background: var(--cds-layer-hover);
+    background: var(--cds-layer);
   }
 
   .about-contact-list {
@@ -152,18 +152,24 @@
     min-block-size: 2.5rem;
     padding: var(--cds-spacing-03) var(--cds-spacing-04);
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
+    background: transparent;
     color: var(--cds-text-primary);
   }
 
   .about-contact-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 1.5rem;
-    block-size: 1.5rem;
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2rem;
+    block-size: 2rem;
     color: var(--cds-icon-primary, var(--cds-text-primary));
     flex: 0 0 auto;
+    background: var(--cds-layer-accent, var(--cds-layer-hover));
+  }
+
+  .about-contact-icon::before {
+    content: "";
+    inline-size: 1rem;
+    block-size: 1rem;
     background: currentColor;
     -webkit-mask: var(--about-contact-icon) center / contain no-repeat;
     mask: var(--about-contact-icon) center / contain no-repeat;
@@ -220,7 +226,7 @@
     place-items: center;
     padding: var(--cds-spacing-06);
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer-hover);
+    background: var(--cds-layer-accent, var(--cds-layer-hover));
   }
 
   .about-pictogram {
