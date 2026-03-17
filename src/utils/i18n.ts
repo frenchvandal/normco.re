@@ -385,7 +385,7 @@ const SITE_TRANSLATIONS = {
       siteNoteThree: "Ni commentaires, ni analytics, ni newsletter.",
       pictogramTitle: "Repère",
       pictogramCaption:
-        "Un clin d’œil aux détails du quotidien derrière les textes.",
+        "C’est fatiguant…",
     },
     tagPage: {
       eyebrow: "Sujet",
