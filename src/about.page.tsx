@@ -18,7 +18,7 @@ export const url = "/about/";
 export const title = "About";
 /** Page meta description. */
 export const description =
-  "About Phiphi - a software person writing from Chengdu, China.";
+  "About Phiphi—a software person writing from Chengdu, China.";
 
 /** French-only metadata overrides used by the multilanguage plugin. */
 export const fr = {
