@@ -67,7 +67,6 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
     renderComponent(
       HEntryShell({
         className: "post-card h-entry",
-        ...(summary !== undefined ? { summary } : {}),
         ...(authorName && authorUrl
           ? { author: { name: authorName, url: authorUrl } }
           : {}),
@@ -76,9 +75,15 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
             escapeHtml(dateIso)
           }">${
             escapeHtml(dateStr)
-          }</time><h3 class="p-name"><a class="u-url u-uid" href="${
+          }</time><h3 class="post-card-title p-name"><a class="post-card-link u-url u-uid" href="${
             escapeHtml(url)
           }">${escapeHtml(title)}</a></h3>${
+            summary
+              ? `<p class="post-card-summary p-summary">${
+                escapeHtml(summary)
+              }</p>`
+              : ""
+          }${
             readingLabel
               ? `<span class="post-card-reading-time">${
                 escapeHtml(readingLabel)
@@ -195,12 +200,15 @@ export default async (
 
   // Keep archive navigation distinct from editorial taxonomy tags by using a
   // dedicated secondary-nav pattern for in-page year jumps.
-  const yearNavItems = years.map((year) => {
+  const yearNavItems = years.map((year, index) => {
     const postCount = (byYear.get(year) ?? []).length;
     const yearSummary = formatPostCount(postCount, language);
+    const targetId = `archive-year-${year}`;
 
     return `<li class="archive-year-nav-item">
-  <a href="#archive-year-${year}" class="archive-year-nav-link">
+  <a href="#${targetId}" class="archive-year-nav-link" data-archive-year-link=""${
+      index === 0 ? ' aria-current="location"' : ""
+    }>
     <span class="archive-year-nav-link-label">${year}</span>
     <span class="archive-year-nav-link-meta">${escapeHtml(yearSummary)}</span>
   </a>
@@ -234,7 +242,7 @@ export default async (
       return `<li class="archive-list-item">${card}</li>`;
     })).then((cards) => cards.join("\n"));
 
-    return `<section class="archive-year" id="archive-year-${year}" aria-labelledby="archive-year-heading-${year}">
+    return `<section class="archive-year" id="archive-year-${year}" data-archive-year-section="" aria-labelledby="archive-year-heading-${year}">
   <header class="archive-year-header">
     <div class="archive-year-heading-group">
       <h2 id="archive-year-heading-${year}" class="archive-year-heading">${year}</h2>
@@ -303,6 +311,9 @@ export default async (
   const archiveLayoutClass = archiveYearNav
     ? "feature-layout feature-layout--with-rail"
     : "feature-layout";
+  const archiveYearNavScript = archiveYearNav
+    ? '<script src="/scripts/archive-year-nav.js" defer></script>'
+    : "";
   const archiveRail = archiveYearNav
     ? `<aside class="feature-rail archive-rail" aria-label="${
       escapeHtml(translations.archive.railAriaLabel)
@@ -338,5 +349,6 @@ export default async (
   ${archiveFeed}
   ${archiveRail}
 </div>
-</div>`;
+</div>
+${archiveYearNavScript}`;
 };

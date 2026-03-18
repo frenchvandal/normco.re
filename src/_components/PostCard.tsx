@@ -31,7 +31,6 @@ export default (
 ) => (
   <HEntryShell
     className="post-card h-entry"
-    {...(summary !== undefined ? { summary } : {})}
     {...(authorName !== undefined && authorUrl !== undefined
       ? { author: { name: authorName, url: authorUrl } }
       : {})}
@@ -42,6 +41,9 @@ export default (
     <h3 class="post-card-title p-name">
       <a class="post-card-link u-url u-uid" href={url}>{title}</a>
     </h3>
+    {summary !== undefined && (
+      <p class="post-card-summary p-summary">{summary}</p>
+    )}
     {readingLabel !== undefined && (
       <span class="post-card-reading-time">{readingLabel}</span>
     )}

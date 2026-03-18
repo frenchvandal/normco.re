@@ -3,13 +3,25 @@
 /* Archive page — editorial archive with grouped year navigation. */
 @layer components {
   .archive-page-title {
-    margin-block-end: var(--space-s);
+    margin: 0;
+  }
+
+  .archive-pagehead .pagehead-lead {
+    margin: 0;
+  }
+
+  .archive-pagehead .pagehead-eyebrow {
+    margin: 0;
   }
 
   .archive-pagehead {
+    display: grid;
+    gap: var(--space-m);
     padding: var(--cds-spacing-07);
+    padding-block-start: calc(var(--cds-spacing-07) + var(--cds-spacing-02));
     border: 1px solid var(--cds-border-subtle);
     background: var(--cds-layer);
+    box-shadow: inset 0 0.25rem 0 var(--cds-link-primary), var(--cds-shadow-sm);
   }
 
   .archive-pagehead .pagehead-eyebrow {
@@ -154,13 +166,15 @@
     transition:
       background-color var(--cds-transition-default),
       border-color var(--cds-transition-default),
-      color var(--cds-transition-default);
+      color var(--cds-transition-default),
+      box-shadow var(--cds-transition-default);
   }
 
   .archive-year-nav-link:hover {
     background: var(--cds-layer-hover);
     border-color: var(--cds-border-strong);
     color: var(--cds-text-primary);
+    box-shadow: var(--cds-shadow-sm);
     text-decoration: none;
   }
 
@@ -169,15 +183,32 @@
     outline-offset: var(--focus-ring-offset);
   }
 
+  .archive-year-nav-link[aria-current="location"] {
+    background: var(
+      --cds-layer-selected,
+      var(--cds-layer-active)
+    );
+    border-color: var(--cds-border-interactive, var(--cds-focus));
+    box-shadow: inset 0.25rem 0 0 var(--cds-link-primary), var(--cds-shadow-sm);
+  }
+
   .archive-year-nav-link-label {
     font: var(--cds-productive-heading-02);
     color: var(--cds-link-visited);
+  }
+
+  .archive-year-nav-link[aria-current="location"] .archive-year-nav-link-label {
+    color: var(--cds-link-primary);
   }
 
   .archive-year-nav-link-meta {
     color: var(--cds-text-secondary);
     font: var(--cds-productive-body-01);
     text-align: end;
+  }
+
+  .archive-year-nav-link[aria-current="location"] .archive-year-nav-link-meta {
+    color: var(--cds-text-primary);
   }
 
   .archive-rail .archive-year-nav {

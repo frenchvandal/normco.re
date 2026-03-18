@@ -286,6 +286,8 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(html, 'class="archive-year-nav"');
       assertStringIncludes(html, 'href="#archive-year-2026"');
       assertStringIncludes(html, 'href="#archive-year-2025"');
+      assertStringIncludes(html, 'data-archive-year-link=""');
+      assertStringIncludes(html, 'data-archive-year-section=""');
       assertMatch(html, /class="archive-year-nav-link"/);
       assertStringIncludes(html, 'class="archive-year-nav-link-label"');
       assertStringIncludes(html, 'class="archive-year-nav-link-meta"');
@@ -295,7 +297,7 @@ describe("posts/index.page.tsx", () => {
       );
     });
 
-    it("does not render a runtime script for year navigation", async () => {
+    it("loads a runtime script for active year highlighting", async () => {
       const posts = [
         makePost(515, {
           date: new Date("2026-01-01"),
@@ -307,7 +309,11 @@ describe("posts/index.page.tsx", () => {
         }),
       ];
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
-      assertNotMatch(html, /archive-year-nav\.js/);
+      assertMatch(html, /archive-year-nav\.js/);
+      assertMatch(
+        html,
+        /href="#archive-year-2026"[^>]*aria-current="location"|aria-current="location"[^>]*href="#archive-year-2026"/,
+      );
     });
 
     it("hides the year jump navigation when a single year is present", async () => {
@@ -324,11 +330,13 @@ describe("posts/index.page.tsx", () => {
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
 
       assertNotMatch(html, /class="archive-year-nav"/);
+      assertNotMatch(html, /archive-year-nav\.js/);
     });
 
     it("does not render the year jump navigation when no posts are available", async () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertNotMatch(html, /class="archive-year-nav"/);
+      assertNotMatch(html, /archive-year-nav\.js/);
     });
 
     it("renders year jump links as hash anchors", async () => {

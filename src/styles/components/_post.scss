@@ -38,11 +38,19 @@
     margin-block-end: var(--space-s);
   }
 
+  .post-dek {
+    margin: 0;
+    max-inline-size: 42ch;
+    color: var(--cds-text-secondary);
+    font: var(--cds-expressive-paragraph-01);
+    text-wrap: pretty;
+  }
+
   .post-meta {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-s) var(--space-m);
-    font-size: var(--text-sm);
+    font: var(--cds-productive-body-01);
     color: var(--cds-text-secondary);
     align-items: center;
   }

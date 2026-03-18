@@ -203,6 +203,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const minutes = resolveReadingMinutes(data.readingInfo);
   const homeUrl = getLocalizedUrl("/", language);
   const currentTitle = typeof data.title === "string" ? data.title : "";
+  const description = typeof data.description === "string" &&
+      data.description.length > 0
+    ? data.description
+    : undefined;
   const tags = resolveStringTags(data.tags);
   const author = getAuthorIdentity(language, data.author);
   const includeCodeCopyScript = hasCodeBlocks(data.children);
@@ -239,10 +243,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           url={currentUrl}
           author={author}
           categories={tags}
-          {...(typeof data.description === "string" &&
-              data.description.length > 0
-            ? { summary: data.description }
-            : {})}
         >
           <header class="post-header pagehead post-pagehead">
             <nav
@@ -268,6 +268,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               </ol>
             </nav>
             <h1 class="post-title p-name">{data.title ?? ""}</h1>
+            {description !== undefined && (
+              <p class="post-dek p-summary">{description}</p>
+            )}
             <div class="post-meta">
               <time
                 class="dt-published"

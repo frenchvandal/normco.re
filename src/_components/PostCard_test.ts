@@ -70,7 +70,7 @@ describe("PostCard()", () => {
         }),
       );
 
-      assertStringIncludes(html, 'class="p-summary sr-only"');
+      assertStringIncludes(html, 'class="post-card-summary p-summary"');
       assertStringIncludes(html, "Summary copy");
       assertStringIncludes(html, 'class="p-author h-card sr-only"');
       assertStringIncludes(html, 'href="/about/"');

@@ -186,7 +186,7 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'class="u-url u-uid sr-only"');
       assertStringIncludes(html, 'href="/posts/entry-title/"');
       assertStringIncludes(html, 'class="p-author h-card sr-only"');
-      assertStringIncludes(html, 'class="p-summary sr-only"');
+      assertStringIncludes(html, 'class="post-dek p-summary"');
       assertStringIncludes(html, "Entry summary");
       assertStringIncludes(html, 'class="p-category sr-only"');
       assertStringIncludes(html, 'class="post-content e-content"');

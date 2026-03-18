@@ -91,7 +91,9 @@ export type SiteTranslations = {
     readonly switchToLightThemeLabel: string;
     readonly switchToDarkThemeLabel: string;
     readonly followSystemThemeLabel: string;
+    readonly repositoryLinkLabel: string;
     readonly repositoryLinkAriaLabel: string;
+    readonly syndicationPageLinkLabel: string;
     readonly rssLinkAriaLabel: string;
     readonly syndicationPageLinkAriaLabel: string;
   };
@@ -232,7 +234,9 @@ const SITE_TRANSLATIONS = {
       switchToLightThemeLabel: "Switch to light theme",
       switchToDarkThemeLabel: "Switch to dark theme",
       followSystemThemeLabel: "Follow system theme",
+      repositoryLinkLabel: "GitHub",
       repositoryLinkAriaLabel: "Open GitHub repository",
+      syndicationPageLinkLabel: "Feeds",
       rssLinkAriaLabel: "Open RSS feed",
       syndicationPageLinkAriaLabel: "Open syndication page",
     },
@@ -385,7 +389,9 @@ const SITE_TRANSLATIONS = {
       switchToLightThemeLabel: "Passer au thème clair",
       switchToDarkThemeLabel: "Passer au thème sombre",
       followSystemThemeLabel: "Suivre le thème du système",
+      repositoryLinkLabel: "GitHub",
       repositoryLinkAriaLabel: "Ouvrir le dépôt GitHub",
+      syndicationPageLinkLabel: "Flux",
       rssLinkAriaLabel: "Ouvrir le flux RSS",
       syndicationPageLinkAriaLabel: "Ouvrir la page de syndication",
     },
@@ -540,7 +546,9 @@ const SITE_TRANSLATIONS = {
       switchToLightThemeLabel: "切换到浅色主题",
       switchToDarkThemeLabel: "切换到深色主题",
       followSystemThemeLabel: "跟随系统主题",
+      repositoryLinkLabel: "GitHub",
       repositoryLinkAriaLabel: "打开 GitHub 仓库",
+      syndicationPageLinkLabel: "订阅",
       rssLinkAriaLabel: "打开 RSS 订阅",
       syndicationPageLinkAriaLabel: "打开聚合页面",
     },
@@ -687,7 +695,9 @@ const SITE_TRANSLATIONS = {
       switchToLightThemeLabel: "切換到淺色主題",
       switchToDarkThemeLabel: "切換到深色主題",
       followSystemThemeLabel: "跟隨系統主題",
+      repositoryLinkLabel: "GitHub",
       repositoryLinkAriaLabel: "開啟 GitHub 儲存庫",
+      syndicationPageLinkLabel: "訂閱",
       rssLinkAriaLabel: "開啟 RSS 訂閱",
       syndicationPageLinkAriaLabel: "開啟聚合頁面",
     },

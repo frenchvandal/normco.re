@@ -50,6 +50,9 @@ export default (
               width={16}
               height={16}
             />
+            <span class="site-footer-link-label">
+              {translations.site.repositoryLinkLabel}
+            </span>
           </a>
           <a
             href={syndicationPageUrl}
@@ -61,6 +64,9 @@ export default (
               width={16}
               height={16}
             />
+            <span class="site-footer-link-label">
+              {translations.site.syndicationPageLinkLabel}
+            </span>
           </a>
         </nav>
       </div>

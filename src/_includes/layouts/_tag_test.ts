@@ -122,7 +122,7 @@ describe("tag.tsx layout", () => {
 
     assertStringIncludes(html, 'class="archive-list"');
     assertStringIncludes(html, 'class="post-card h-entry"');
-    assertStringIncludes(html, 'class="u-url u-uid" href=""');
+    assertStringIncludes(html, 'class="post-card-link u-url u-uid" href=""');
     assertNotMatch(html, /not-a-post/);
     assertNotMatch(html, />42</);
   });

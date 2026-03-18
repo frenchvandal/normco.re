@@ -38,6 +38,8 @@ describe("Footer()", () => {
     assertStringIncludes(html, 'href="/syndication/"');
     assertStringIncludes(html, 'aria-label="Open syndication page"');
     assertStringIncludes(html, 'class="site-footer-icon"');
+    assertStringIncludes(html, 'class="site-footer-link-label"');
+    assertStringIncludes(html, 'class="site-footer-link-label">Feeds</span>');
     assertStringIncludes(html, 'data-carbon-icon="rss"');
   });
 
@@ -59,6 +61,7 @@ describe("Footer()", () => {
     assertStringIncludes(html, 'rel="noopener noreferrer"');
     assertStringIncludes(html, 'aria-label="Open GitHub repository"');
     assertStringIncludes(html, 'class="site-footer-icon"');
+    assertStringIncludes(html, 'class="site-footer-link-label">GitHub</span>');
     assertStringIncludes(html, 'data-carbon-icon="logo--github"');
   });
 

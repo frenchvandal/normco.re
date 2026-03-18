@@ -2,14 +2,19 @@
    Source: https://carbondesignsystem.com/elements/typography/overview/ */
 @layer components {
   .home-pagehead {
+    display: grid;
+    gap: var(--space-m);
     padding: var(--cds-spacing-07);
+    padding-block-start: calc(var(--cds-spacing-07) + var(--cds-spacing-02));
     border: 1px solid var(--cds-border-subtle);
     background: var(--cds-layer);
+    box-shadow: inset 0 0.25rem 0 var(--cds-link-primary), var(--cds-shadow-sm);
   }
 
   .home-pagehead .pagehead-eyebrow {
     display: inline-flex;
     inline-size: fit-content;
+    margin: 0;
     padding: var(--cds-spacing-01) var(--cds-spacing-03);
     border: 1px solid var(--cds-border-subtle);
     background: var(--cds-layer);
@@ -18,7 +23,7 @@
   .hero-title {
     font-size: var(--text-2xl);
     max-inline-size: 20ch;
-    margin-block-end: var(--space-m);
+    margin: 0;
     line-height: var(--leading-tight);
   }
 
@@ -27,6 +32,7 @@
     color: var(--cds-text-secondary);
     max-inline-size: 48ch;
     line-height: 1.5;
+    margin: 0;
     text-wrap: pretty;
   }
 
@@ -34,7 +40,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--cds-spacing-03);
-    margin-block-start: var(--cds-spacing-06);
+    margin-block-start: var(--cds-spacing-02);
     padding: 0;
     list-style: none;
   }

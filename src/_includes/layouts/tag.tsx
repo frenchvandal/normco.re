@@ -73,7 +73,6 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
     renderComponent(
       HEntryShell({
         className: "post-card h-entry",
-        ...(summary !== undefined ? { summary } : {}),
         ...(authorName && authorUrl
           ? { author: { name: authorName, url: authorUrl } }
           : {}),
@@ -82,9 +81,15 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
             escapeHtml(dateIso)
           }">${
             escapeHtml(dateStr)
-          }</time><h3 class="p-name"><a class="u-url u-uid" href="${
+          }</time><h3 class="post-card-title p-name"><a class="post-card-link u-url u-uid" href="${
             escapeHtml(url)
           }">${escapeHtml(title)}</a></h3>${
+            summary
+              ? `<p class="post-card-summary p-summary">${
+                escapeHtml(summary)
+              }</p>`
+              : ""
+          }${
             readingLabel
               ? `<span class="post-card-reading-time">${
                 escapeHtml(readingLabel)
