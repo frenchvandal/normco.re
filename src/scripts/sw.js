@@ -57,21 +57,21 @@ const STATIC_ASSETS = [
   "/scripts/feed-copy.js",
   "/scripts/post-code-copy.js",
   "/scripts/link-prefetch-intent.js",
-  "/atom.xml",
-  "/feed.xml",
+  "/feed.atom",
+  "/feed.rss",
   "/feed.json",
   "/discovery/",
   "/sitemap.xml",
-  "/fr/atom.xml",
-  "/fr/feed.xml",
+  "/fr/feed.atom",
+  "/fr/feed.rss",
   "/fr/feed.json",
   "/fr/discovery/",
-  "/zh-hans/atom.xml",
-  "/zh-hans/feed.xml",
+  "/zh-hans/feed.atom",
+  "/zh-hans/feed.rss",
   "/zh-hans/feed.json",
   "/zh-hans/discovery/",
-  "/zh-hant/atom.xml",
-  "/zh-hant/feed.xml",
+  "/zh-hant/feed.atom",
+  "/zh-hant/feed.rss",
   "/zh-hant/feed.json",
   "/zh-hant/discovery/",
   OFFLINE_URL_BY_LANGUAGE.en,
@@ -400,8 +400,8 @@ sw.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
     return;
   }
 
-  const isFeedRoute = url.pathname.endsWith("/atom.xml") ||
-    url.pathname.endsWith("/feed.xml") ||
+  const isFeedRoute = url.pathname.endsWith("/feed.atom") ||
+    url.pathname.endsWith("/feed.rss") ||
     url.pathname.endsWith("/feed.json");
 
   if (isFeedRoute) {

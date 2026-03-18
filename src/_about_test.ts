@@ -78,12 +78,12 @@ describe("about.page.tsx", () => {
 
   it("contains an RSS feed link", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
-    assertStringIncludes(html, 'href="/feed.xml"');
+    assertStringIncludes(html, 'href="/feed.rss"');
   });
 
   it("contains an Atom feed link", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
-    assertStringIncludes(html, 'href="/atom.xml"');
+    assertStringIncludes(html, 'href="/feed.atom"');
   });
 
   it("contains a JSON Feed link", () => {
@@ -98,8 +98,8 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, 'aria-label="Fil d’Ariane À propos"');
     assertStringIncludes(html, 'href="/fr/" class="cds--breadcrumb-link"');
     assertStringIncludes(html, 'aria-label="Télécharger le code QR"');
-    assertStringIncludes(html, 'href="/fr/feed.xml"');
-    assertStringIncludes(html, 'href="/fr/atom.xml"');
+    assertStringIncludes(html, 'href="/fr/feed.rss"');
+    assertStringIncludes(html, 'href="/fr/feed.atom"');
     assertStringIncludes(html, "En bref");
     assertStringIncludes(html, "J’écris");
     assertStringIncludes(html, "C’est juste un endroit");

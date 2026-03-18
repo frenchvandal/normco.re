@@ -93,7 +93,7 @@ describe("extractHtmlLocalReferences()", () => {
     const source = `
       <link rel="stylesheet" href="/style.123.css">
       <script src="/scripts/app.456.js"></script>
-      <a href="./feed.xml?lang=en#top">Feed</a>
+      <a href="./feed.rss?lang=en#top">Feed</a>
       <a href="https://example.com">External</a>
       <a href="#content">Skip</a>
     `;
@@ -101,7 +101,7 @@ describe("extractHtmlLocalReferences()", () => {
     assertEquals(extractHtmlLocalReferences(source), [
       "/style.123.css",
       "/scripts/app.456.js",
-      "./feed.xml",
+      "./feed.rss",
     ]);
   });
 });

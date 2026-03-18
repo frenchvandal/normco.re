@@ -628,7 +628,7 @@ async function main(): Promise<void> {
   }
 
   // Validate RSS feed XML files
-  const rssFiles = await findOutputFiles(siteDir, /\/feed\.xml$/);
+  const rssFiles = await findOutputFiles(siteDir, /\/feed\.rss$/);
   console.log(bold(`\nRSS feed files: ${rssFiles.length}`));
 
   for (const filePath of rssFiles) {
@@ -648,7 +648,7 @@ async function main(): Promise<void> {
   }
 
   // Validate Atom feed XML files
-  const atomFiles = await findOutputFiles(siteDir, /\/atom\.xml$/);
+  const atomFiles = await findOutputFiles(siteDir, /\/feed\.atom$/);
   console.log(bold(`\nAtom feed files: ${atomFiles.length}`));
 
   for (const filePath of atomFiles) {

@@ -1,3 +1,8 @@
+import { renderComponent } from "lume/jsx-runtime";
+
+import HEntryShell from "../../mf2/components/HEntryShell.tsx";
+import HFeedShell from "../../mf2/components/HFeedShell.tsx";
+import { getAuthorIdentity } from "../../mf2/extractors.ts";
 import {
   formatPostCount,
   formatReadingTime,
@@ -5,11 +10,6 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../../utils/i18n.ts";
-import {
-  getLocalizedAuthorHCard,
-  renderHiddenHCard,
-  renderHiddenUrl,
-} from "../../utils/microformats.ts";
 import {
   resolvePostDate,
   resolveReadingMinutes,
@@ -58,20 +58,42 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
     }
   }
 
-  return ({ title, url, dateStr, dateIso, summary, authorName, authorUrl }) =>
-    `<article class="post-card h-entry"><time class="post-card-date dt-published" datetime="${
-      escapeHtml(dateIso)
-    }">${
-      escapeHtml(dateStr)
-    }</time><h3 class="p-name"><a class="u-url u-uid" href="${
-      escapeHtml(url)
-    }">${escapeHtml(title)}</a></h3>${
-      summary ? `<p class="p-summary sr-only">${escapeHtml(summary)}</p>` : ""
-    }${
-      authorName && authorUrl
-        ? renderHiddenHCard({ name: authorName, url: authorUrl })
-        : ""
-    }</article>`;
+  return (
+    {
+      title,
+      url,
+      dateStr,
+      dateIso,
+      readingLabel,
+      summary,
+      authorName,
+      authorUrl,
+    },
+  ) =>
+    renderComponent(
+      HEntryShell({
+        className: "post-card h-entry",
+        ...(summary !== undefined ? { summary } : {}),
+        ...(authorName && authorUrl
+          ? { author: { name: authorName, url: authorUrl } }
+          : {}),
+        children: {
+          __html: `<time class="post-card-date dt-published" datetime="${
+            escapeHtml(dateIso)
+          }">${
+            escapeHtml(dateStr)
+          }</time><h3 class="p-name"><a class="u-url u-uid" href="${
+            escapeHtml(url)
+          }">${escapeHtml(title)}</a></h3>${
+            readingLabel
+              ? `<span class="post-card-reading-time">${
+                escapeHtml(readingLabel)
+              }</span>`
+              : ""
+          }`,
+        },
+      }),
+    );
 }
 
 function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
@@ -111,7 +133,7 @@ export default async (
     : language === "zhHans" || language === "zhHant"
     ? "M月d日"
     : "SHORT";
-  const author = getLocalizedAuthorHCard(language, data.author);
+  const author = getAuthorIdentity(language, data.author);
 
   const items = await Promise.all(posts.map(async (post) => {
     const postDate = resolvePostDate(post.date);
@@ -139,59 +161,68 @@ export default async (
     escapeHtml(translations.archive.emptyState)
   }</p>`;
 
-  return `<div class="site-page-shell site-page-shell--wide">
-<div class="feature-layout feature-layout--with-rail">
-  <div class="feature-main h-feed">
-    ${renderHiddenUrl(currentUrl)}
-    ${renderHiddenHCard(author)}
-    <nav class="cds--breadcrumb" aria-label="${
-    escapeHtml(translations.tagPage.breadcrumbAriaLabel)
-  }">
+  const tagFeed = await renderComponent(
+    HFeedShell({
+      className: "feature-main h-feed",
+      url: currentUrl,
+      author,
+      children: {
+        __html: `<nav class="cds--breadcrumb" aria-label="${
+          escapeHtml(translations.tagPage.breadcrumbAriaLabel)
+        }">
       <ol class="cds--breadcrumb-list">
         <li class="cds--breadcrumb-item">
           <a href="${escapeHtml(homeUrl)}" class="cds--breadcrumb-link">${
-    escapeHtml(translations.navigation.home)
-  }</a>
+          escapeHtml(translations.navigation.home)
+        }</a>
         </li>
         <li class="cds--breadcrumb-item">
           <a href="${escapeHtml(archiveUrl)}" class="cds--breadcrumb-link">${
-    escapeHtml(translations.navigation.writing)
-  }</a>
+          escapeHtml(translations.navigation.writing)
+        }</a>
         </li>
         <li class="cds--breadcrumb-item">
           <span class="cds--breadcrumb-current" aria-current="page">${
-    escapeHtml(tagName)
-  }</span>
+          escapeHtml(tagName)
+        }</span>
         </li>
       </ol>
     </nav>
     <section class="pagehead tag-pagehead" aria-labelledby="tag-page-title">
       <p class="pagehead-eyebrow">${
-    escapeHtml(translations.tagPage.eyebrow)
-  }</p>
+          escapeHtml(translations.tagPage.eyebrow)
+        }</p>
       <h1 id="tag-page-title" class="tag-page-title p-name">${
-    escapeHtml(tagName)
-  }</h1>
+          escapeHtml(tagName)
+        }</h1>
       <p class="pagehead-lead">${
-    escapeHtml(formatPostCount(posts.length, language))
-  }</p>
+          escapeHtml(formatPostCount(posts.length, language))
+        }</p>
     </section>
     <section class="tag-page-results" aria-label="${
-    escapeHtml(translations.tagPage.postsAriaLabel)
-  }">
+          escapeHtml(translations.tagPage.postsAriaLabel)
+        }">
       <div class="subhead">
         <h2 class="subhead-heading">${
-    escapeHtml(translations.tagPage.postsHeading)
-  }</h2>
+          escapeHtml(translations.tagPage.postsHeading)
+        }</h2>
         <a href="${escapeHtml(archiveUrl)}" class="feature-link">${
-    escapeHtml(translations.tagPage.archiveLinkLabel)
-  }</a>
+          escapeHtml(translations.tagPage.archiveLinkLabel)
+        }</a>
       </div>
       ${
-    posts.length > 0 ? `<ul class="archive-list">${items}</ul>` : emptyState
-  }
-    </section>
-  </div>
+          posts.length > 0
+            ? `<ul class="archive-list">${items}</ul>`
+            : emptyState
+        }
+    </section>`,
+      },
+    }),
+  );
+
+  return `<div class="site-page-shell site-page-shell--wide">
+<div class="feature-layout feature-layout--with-rail">
+  ${tagFeed}
   <aside class="feature-rail tag-page-rail" aria-label="${
     escapeHtml(translations.tagPage.railAriaLabel)
   }">

@@ -1,7 +1,12 @@
 /** Home page - hero + five most recent posts. */
 
+import { renderComponent } from "lume/jsx-runtime";
+
 import StatePanel from "./_components/StatePanel.tsx";
 import { siteName } from "./_data.ts";
+import HEntryShell from "./mf2/components/HEntryShell.tsx";
+import HFeedShell from "./mf2/components/HFeedShell.tsx";
+import { getAuthorIdentity } from "./mf2/extractors.ts";
 import {
   formatReadingTime,
   getLanguageDataCode,
@@ -9,11 +14,6 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "./utils/i18n.ts";
-import {
-  getLocalizedAuthorHCard,
-  renderHiddenHCard,
-  renderHiddenUrl,
-} from "./utils/microformats.ts";
 import {
   resolvePostDate,
   resolveReadingMinutes,
@@ -63,20 +63,42 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
     }
   }
 
-  return ({ title, url, dateStr, dateIso, summary, authorName, authorUrl }) =>
-    `<article class="post-card h-entry"><time class="post-card-date dt-published" datetime="${
-      escapeHtml(dateIso)
-    }">${
-      escapeHtml(dateStr)
-    }</time><h3 class="p-name"><a class="u-url u-uid" href="${
-      escapeHtml(url)
-    }">${escapeHtml(title)}</a></h3>${
-      summary ? `<p class="p-summary sr-only">${escapeHtml(summary)}</p>` : ""
-    }${
-      authorName && authorUrl
-        ? renderHiddenHCard({ name: authorName, url: authorUrl })
-        : ""
-    }</article>`;
+  return (
+    {
+      title,
+      url,
+      dateStr,
+      dateIso,
+      readingLabel,
+      summary,
+      authorName,
+      authorUrl,
+    },
+  ) =>
+    renderComponent(
+      HEntryShell({
+        className: "post-card h-entry",
+        ...(summary !== undefined ? { summary } : {}),
+        ...(authorName && authorUrl
+          ? { author: { name: authorName, url: authorUrl } }
+          : {}),
+        children: {
+          __html: `<time class="post-card-date dt-published" datetime="${
+            escapeHtml(dateIso)
+          }">${
+            escapeHtml(dateStr)
+          }</time><h3 class="p-name"><a class="u-url u-uid" href="${
+            escapeHtml(url)
+          }">${escapeHtml(title)}</a></h3>${
+            readingLabel
+              ? `<span class="post-card-reading-time">${
+                escapeHtml(readingLabel)
+              }</span>`
+              : ""
+          }`,
+        },
+      }),
+    );
 }
 
 function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
@@ -148,7 +170,7 @@ export default async (
   const archiveUrl = getLocalizedUrl("/posts/", language);
   const recent = resolveRecentPosts(data.search, languageDataCode);
   const featuredTags = resolveFeaturedTags(recent);
-  const author = getLocalizedAuthorHCard(language, data.author);
+  const author = getAuthorIdentity(language, data.author);
   const featuredTagItems = featuredTags.map((tag) => {
     const tagUrl = getTagUrl(tag, language);
     const tagColor = getTagColor(tag);
@@ -199,6 +221,29 @@ export default async (
   }
   </li>`;
 
+  const recentSection = await renderComponent(
+    HFeedShell({
+      tagName: "section",
+      className: "home-recent h-feed",
+      rootAttributes: { "aria-labelledby": "home-recent-title" },
+      url: currentUrl,
+      author,
+      children: {
+        __html: `<div class="subhead">
+    <h2 id="home-recent-title" class="subhead-heading p-name">${
+          escapeHtml(translations.home.recentHeading)
+        }</h2>
+    <a href="${escapeHtml(archiveUrl)}" class="home-all-posts">${
+          escapeHtml(translations.home.archiveLinkLabel)
+        }</a>
+  </div>
+  <ul class="home-posts">
+    ${recent.length > 0 ? postItems : emptyState}
+  </ul>`,
+      },
+    }),
+  );
+
   return `<div class="site-page-shell site-page-shell--wide">
 <section class="pagehead hero home-pagehead" aria-labelledby="home-title">
   <p class="pagehead-eyebrow">${escapeHtml(translations.home.eyebrow)}</p>
@@ -215,20 +260,6 @@ export default async (
   }
 </section>
 
-<section class="home-recent h-feed" aria-labelledby="home-recent-title">
-  <div class="subhead">
-    <h2 id="home-recent-title" class="subhead-heading p-name">${
-    escapeHtml(translations.home.recentHeading)
-  }</h2>
-    <a href="${escapeHtml(archiveUrl)}" class="home-all-posts">${
-    escapeHtml(translations.home.archiveLinkLabel)
-  }</a>
-  </div>
-  ${renderHiddenUrl(currentUrl)}
-  ${renderHiddenHCard(author)}
-  <ul class="home-posts">
-    ${recent.length > 0 ? postItems : emptyState}
-  </ul>
-</section>
+${recentSection}
 </div>`;
 };

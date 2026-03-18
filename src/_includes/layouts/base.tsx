@@ -17,10 +17,12 @@ import {
   SUPPORTED_LANGUAGES,
   tryResolveSiteLanguage,
 } from "../../utils/i18n.ts";
+import DiscoveryLinks from "../../mf2/components/DiscoveryLinks.tsx";
 import {
-  getLocalizedHFeedUrl,
-  MF2_HTML_CONTENT_TYPE,
-} from "../../utils/microformats.ts";
+  getLocalizedAtomFeedUrl,
+  getLocalizedJsonFeedUrl,
+  getLocalizedRssFeedUrl,
+} from "../../utils/feed-paths.ts";
 
 /** `<!doctype html>` prepended to the document before the `<html>` root. */
 const DOCTYPE = { __html: "<!doctype html>\n" } as const;
@@ -194,11 +196,10 @@ export default (
     !isPostsArchiveUrl(currentUrl);
   const swDebugLevel = build?.swDebugLevel ?? "off";
   const includePagefindBody = unlisted !== true;
-  const atomXmlUrl = getLocalizedUrl("/atom.xml", language);
-  const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
-  const feedJsonUrl = getLocalizedUrl("/feed.json", language);
+  const atomXmlUrl = getLocalizedAtomFeedUrl(language);
+  const feedXmlUrl = getLocalizedRssFeedUrl(language);
+  const feedJsonUrl = getLocalizedJsonFeedUrl(language);
   const syndicationPageUrl = getLocalizedUrl("/syndication/", language);
-  const hFeedUrl = getLocalizedHFeedUrl(language);
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
   const Header = resolveHeaderComponent(comp);
   const Footer = resolveFooterComponent(comp);
@@ -273,29 +274,12 @@ export default (
             defer
           >
           </script>
-          <link
-            rel="alternate"
-            type="application/rss+xml"
-            title={resolvedSiteName}
-            href={feedXmlUrl}
-          />
-          <link
-            rel="alternate"
-            type="application/atom+xml"
-            title={`${resolvedSiteName} Atom feed`}
-            href={atomXmlUrl}
-          />
-          <link
-            rel="alternate"
-            type="application/feed+json"
-            title={`${resolvedSiteName} JSON feed`}
-            href={feedJsonUrl}
-          />
-          <link
-            rel="alternate"
-            type={MF2_HTML_CONTENT_TYPE}
-            title={`${resolvedSiteName} h-feed`}
-            href={hFeedUrl}
+          <DiscoveryLinks
+            language={language}
+            siteName={resolvedSiteName}
+            rssUrl={feedXmlUrl}
+            atomUrl={atomXmlUrl}
+            jsonFeedUrl={feedJsonUrl}
           />
         </head>
         <body data-current-language={language}>

@@ -11,6 +11,11 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "./utils/i18n.ts";
+import {
+  getLocalizedAtomFeedUrl,
+  getLocalizedJsonFeedUrl,
+  getLocalizedRssFeedUrl,
+} from "./utils/feed-paths.ts";
 import { escapeHtml } from "./utils/html.ts";
 
 const SYNDICATION_PICTOGRAM =
@@ -161,21 +166,21 @@ export default (data: Lume.Data): string => {
       id: "rss",
       title: translations.feeds.rssTitle,
       description: translations.feeds.rssDescription,
-      path: getLocalizedUrl("/feed.xml", language),
+      path: getLocalizedRssFeedUrl(language),
       mime: "application/rss+xml",
     },
     {
       id: "atom",
       title: translations.feeds.atomTitle,
       description: translations.feeds.atomDescription,
-      path: getLocalizedUrl("/atom.xml", language),
+      path: getLocalizedAtomFeedUrl(language),
       mime: "application/atom+xml",
     },
     {
       id: "json",
       title: translations.feeds.jsonTitle,
       description: translations.feeds.jsonDescription,
-      path: getLocalizedUrl("/feed.json", language),
+      path: getLocalizedJsonFeedUrl(language),
       mime: "application/feed+json",
     },
     {

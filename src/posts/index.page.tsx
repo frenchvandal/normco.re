@@ -1,6 +1,11 @@
 /** Posts archive - all posts grouped by year, newest first. */
 
+import { renderComponent } from "lume/jsx-runtime";
+
 import StatePanel from "../_components/StatePanel.tsx";
+import HEntryShell from "../mf2/components/HEntryShell.tsx";
+import HFeedShell from "../mf2/components/HFeedShell.tsx";
+import { getAuthorIdentity, getCanonicalFeedUrl } from "../mf2/extractors.ts";
 import {
   formatPostCount,
   formatReadingTime,
@@ -9,12 +14,6 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../utils/i18n.ts";
-import {
-  getLocalizedAuthorHCard,
-  getLocalizedHFeedUrl,
-  renderHiddenHCard,
-  renderHiddenUrl,
-} from "../utils/microformats.ts";
 import { resolvePostDate, resolveReadingMinutes } from "./post-metadata.ts";
 import { escapeHtml } from "../utils/html.ts";
 
@@ -53,20 +52,42 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
     }
   }
 
-  return ({ title, url, dateStr, dateIso, summary, authorName, authorUrl }) =>
-    `<article class="post-card h-entry"><time class="post-card-date dt-published" datetime="${
-      escapeHtml(dateIso)
-    }">${
-      escapeHtml(dateStr)
-    }</time><h3 class="p-name"><a class="u-url u-uid" href="${
-      escapeHtml(url)
-    }">${escapeHtml(title)}</a></h3>${
-      summary ? `<p class="p-summary sr-only">${escapeHtml(summary)}</p>` : ""
-    }${
-      authorName && authorUrl
-        ? renderHiddenHCard({ name: authorName, url: authorUrl })
-        : ""
-    }</article>`;
+  return (
+    {
+      title,
+      url,
+      dateStr,
+      dateIso,
+      readingLabel,
+      summary,
+      authorName,
+      authorUrl,
+    },
+  ) =>
+    renderComponent(
+      HEntryShell({
+        className: "post-card h-entry",
+        ...(summary !== undefined ? { summary } : {}),
+        ...(authorName && authorUrl
+          ? { author: { name: authorName, url: authorUrl } }
+          : {}),
+        children: {
+          __html: `<time class="post-card-date dt-published" datetime="${
+            escapeHtml(dateIso)
+          }">${
+            escapeHtml(dateStr)
+          }</time><h3 class="p-name"><a class="u-url u-uid" href="${
+            escapeHtml(url)
+          }">${escapeHtml(title)}</a></h3>${
+            readingLabel
+              ? `<span class="post-card-reading-time">${
+                escapeHtml(readingLabel)
+              }</span>`
+              : ""
+          }`,
+        },
+      }),
+    );
 }
 
 function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
@@ -149,14 +170,14 @@ export default async (
   const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
-  const feedUrl = getLocalizedHFeedUrl(language);
+  const feedUrl = getCanonicalFeedUrl(language);
   const shortDatePattern = language === "fr"
     ? "d MMM"
     : language === "zhHans" || language === "zhHant"
     ? "M月d日"
     : "SHORT";
   const posts = resolveArchivePosts(data.search, languageDataCode);
-  const author = getLocalizedAuthorHCard(language, data.author);
+  const author = getAuthorIdentity(language, data.author);
 
   // Group posts by year.
   const currentYear = new Date().getFullYear();
@@ -300,14 +321,21 @@ export default async (
 </aside>`
     : "";
 
+  const archiveFeed = await renderComponent(
+    HFeedShell({
+      className: "feature-main h-feed",
+      url: feedUrl,
+      author,
+      children: {
+        __html: `${archiveIntro}
+    ${archiveBody}`,
+      },
+    }),
+  );
+
   return `<div class="site-page-shell site-page-shell--wide">
 <div class="${escapeHtml(archiveLayoutClass)}">
-  <div class="feature-main h-feed">
-    ${renderHiddenUrl(feedUrl)}
-    ${renderHiddenHCard(author)}
-    ${archiveIntro}
-    ${archiveBody}
-  </div>
+  ${archiveFeed}
   ${archiveRail}
 </div>
 </div>`;

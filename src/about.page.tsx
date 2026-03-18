@@ -6,6 +6,11 @@ import {
   resolveSiteLanguage,
 } from "./utils/i18n.ts";
 import {
+  getLocalizedAtomFeedUrl,
+  getLocalizedJsonFeedUrl,
+  getLocalizedRssFeedUrl,
+} from "./utils/feed-paths.ts";
+import {
   type CarbonIconDescriptor,
   CLOSE_ICON as CARBON_CLOSE_ICON,
   DOWNLOAD_ICON as CARBON_DOWNLOAD_ICON,
@@ -75,9 +80,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const language = resolveSiteLanguage(data.lang);
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
-  const atomXmlUrl = getLocalizedUrl("/atom.xml", language);
-  const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
-  const feedJsonUrl = getLocalizedUrl("/feed.json", language);
+  const atomXmlUrl = getLocalizedAtomFeedUrl(language);
+  const feedXmlUrl = getLocalizedRssFeedUrl(language);
+  const feedJsonUrl = getLocalizedJsonFeedUrl(language);
   const closeIconMarkup = renderCarbonIconMarkup(
     CARBON_CLOSE_ICON,
     "about-contact-action-icon-svg",

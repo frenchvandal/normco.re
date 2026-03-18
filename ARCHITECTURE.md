@@ -257,7 +257,7 @@ Entry-level properties:
 Implementation sources of truth:
 
 - site author and localization rules: `src/_data.ts` and `src/utils/i18n.ts`
-- shared mf2 helpers: `src/utils/microformats.ts`
+- shared mf2 modules: `src/mf2/`
 - shared list entry markup: `src/_components/PostCard.tsx`
 - feed containers: `src/index.page.tsx`, `src/posts/index.page.tsx`, and
   `src/_includes/layouts/tag.tsx`

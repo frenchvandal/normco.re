@@ -28,7 +28,7 @@ describe("_config/feeds.ts", () => {
       FEED_VARIANTS.map((variant) => createFeedOptions(variant)),
       [
         {
-          output: ["/feed.xml", "/feed.json"],
+          output: ["/feed.rss", "/feed.json"],
           query: "type=post lang=en",
           sort: FEED_SORT,
           limit: FEED_LIMIT,
@@ -42,7 +42,7 @@ describe("_config/feeds.ts", () => {
           items: FEED_ITEMS,
         },
         {
-          output: ["/fr/feed.xml", "/fr/feed.json"],
+          output: ["/fr/feed.rss", "/fr/feed.json"],
           query: "type=post lang=fr",
           sort: FEED_SORT,
           limit: FEED_LIMIT,
@@ -56,7 +56,7 @@ describe("_config/feeds.ts", () => {
           items: FEED_ITEMS,
         },
         {
-          output: ["/zh-hans/feed.xml", "/zh-hans/feed.json"],
+          output: ["/zh-hans/feed.rss", "/zh-hans/feed.json"],
           query: "type=post lang=zh-hans",
           sort: FEED_SORT,
           limit: FEED_LIMIT,
@@ -70,7 +70,7 @@ describe("_config/feeds.ts", () => {
           items: FEED_ITEMS,
         },
         {
-          output: ["/zh-hant/feed.xml", "/zh-hant/feed.json"],
+          output: ["/zh-hant/feed.rss", "/zh-hant/feed.json"],
           query: "type=post lang=zh-hant",
           sort: FEED_SORT,
           limit: FEED_LIMIT,
@@ -113,6 +113,7 @@ describe("_config/feeds.ts", () => {
           date: new Date("2026-03-11T00:00:00Z"),
         } as unknown as import("lume/core/file.ts").Data,
       ],
+      true,
     );
 
     assertStringIncludes(
@@ -121,12 +122,13 @@ describe("_config/feeds.ts", () => {
     );
     assertMatch(
       xml,
-      /<feed xmlns="http:\/\/www\.w3\.org\/2005\/Atom" xml:lang="en">/,
+      /<feed xmlns="http:\/\/www\.w3\.org\/2005\/Atom" xmlns:fh="http:\/\/purl\.org\/syndication\/history\/1\.0" xml:lang="en">/,
     );
+    assertStringIncludes(xml, "<fh:complete/>");
     assertStringIncludes(xml, "<name>Phiphi</name>");
     assertStringIncludes(
       xml,
-      '<link rel="self" type="application/atom+xml" href="https://normco.re/atom.xml"/>',
+      '<link rel="self" type="application/atom+xml" href="https://normco.re/feed.atom"/>',
     );
     assertStringIncludes(
       xml,

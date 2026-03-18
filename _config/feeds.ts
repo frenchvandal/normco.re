@@ -14,13 +14,19 @@ import {
   type AtomFeedEntry,
   generateAtomXml,
 } from "../src/utils/atom-feed.ts";
+import {
+  ATOM_FEED_PATH,
+  FEED_STYLESHEET_PATH,
+  JSON_FEED_PATH,
+  RSS_FEED_PATH,
+} from "../src/utils/feed-paths.ts";
 
 /** Sort order shared by all feed outputs. */
 export const FEED_SORT = "date=desc";
 /** Maximum number of items emitted per feed. */
 export const FEED_LIMIT = 10;
 /** Browser stylesheet applied to XML feed outputs. */
-export const FEED_STYLESHEET = "/feed.xsl";
+export const FEED_STYLESHEET = FEED_STYLESHEET_PATH;
 
 /** Shared item mapping for all feed variants. */
 export const FEED_ITEMS = {
@@ -69,8 +75,8 @@ export const FEED_VARIANTS = [
 export function createFeedOptions(variant: FeedVariant) {
   return {
     output: [
-      `${variant.pathPrefix}/feed.xml`,
-      `${variant.pathPrefix}/feed.json`,
+      `${variant.pathPrefix}${RSS_FEED_PATH}`,
+      `${variant.pathPrefix}${JSON_FEED_PATH}`,
     ],
     query: `type=post lang=${LANGUAGE_DATA_CODE[variant.language]}`,
     sort: FEED_SORT,
@@ -148,12 +154,13 @@ export function createAtomFeedContent(
   site: Site,
   variant: FeedVariant,
   pages: ReadonlyArray<Data>,
+  isComplete: boolean = false,
 ): string {
   const fallbackDate = new Date();
   const entries = pages
     .map((page) => buildAtomEntry(site, page, fallbackDate))
     .filter((entry): entry is AtomFeedEntry => entry !== undefined);
-  const atomPath = `${variant.pathPrefix}/atom.xml`;
+  const atomPath = `${variant.pathPrefix}${ATOM_FEED_PATH}`;
   const updated = entries.reduce<Date>(
     (latest, entry) => entry.updated > latest ? entry.updated : latest,
     fallbackDate,
@@ -169,6 +176,7 @@ export function createAtomFeedContent(
     ),
     feedUrl: site.url(atomPath, true),
     language: getLanguageTag(variant.language),
+    complete: isComplete,
     updated,
     author: getAtomAuthor(site),
     entries,
@@ -186,16 +194,21 @@ export function registerFeeds(site: Site): void {
 
   site.process(function processAtomFeeds() {
     for (const variant of FEED_VARIANTS) {
-      const pages = site.search.pages(
+      const allPages = site.search.pages(
         `type=post lang=${LANGUAGE_DATA_CODE[variant.language]}`,
         FEED_SORT,
-        FEED_LIMIT,
       ) as Data[];
+      const pages = allPages.slice(0, FEED_LIMIT);
 
       site.pages.push(
         Page.create({
-          url: `${variant.pathPrefix}/atom.xml`,
-          content: createAtomFeedContent(site, variant, pages),
+          url: `${variant.pathPrefix}${ATOM_FEED_PATH}`,
+          content: createAtomFeedContent(
+            site,
+            variant,
+            pages,
+            allPages.length <= FEED_LIMIT,
+          ),
         }),
       );
     }

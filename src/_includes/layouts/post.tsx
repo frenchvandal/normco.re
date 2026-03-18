@@ -7,7 +7,8 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../../utils/i18n.ts";
-import { getLocalizedAuthorHCard } from "../../utils/microformats.ts";
+import HEntryShell from "../../mf2/components/HEntryShell.tsx";
+import { getAuthorIdentity } from "../../mf2/extractors.ts";
 import { getTagColor, getTagUrl } from "../../utils/tags.ts";
 import {
   resolvePostDate,
@@ -203,7 +204,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const homeUrl = getLocalizedUrl("/", language);
   const currentTitle = typeof data.title === "string" ? data.title : "";
   const tags = resolveStringTags(data.tags);
-  const author = getLocalizedAuthorHCard(language, data.author);
+  const author = getAuthorIdentity(language, data.author);
   const includeCodeCopyScript = hasCodeBlocks(data.children);
   const codeCopyLabel = translations.post.copyCodeLabel;
   const codeCopyFeedback = translations.post.copyCodeFeedback;
@@ -228,11 +229,20 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
       <div
         class={`feature-layout${hasRail ? " feature-layout--with-rail" : ""}`}
       >
-        <article
-          class="post-article feature-main h-entry"
-          data-code-copy-label={codeCopyLabelAttribute}
-          data-code-copy-feedback={codeCopyFeedbackAttribute}
-          data-code-copy-failed-feedback={codeCopyFailedFeedbackAttribute}
+        <HEntryShell
+          className="post-article feature-main h-entry"
+          rootAttributes={{
+            "data-code-copy-label": codeCopyLabelAttribute,
+            "data-code-copy-feedback": codeCopyFeedbackAttribute,
+            "data-code-copy-failed-feedback": codeCopyFailedFeedbackAttribute,
+          }}
+          url={currentUrl}
+          author={author}
+          categories={tags}
+          {...(typeof data.description === "string" &&
+              data.description.length > 0
+            ? { summary: data.description }
+            : {})}
         >
           <header class="post-header pagehead post-pagehead">
             <nav
@@ -274,17 +284,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                 </>
               )}
             </div>
-            <a class="u-url u-uid sr-only" href={currentUrl}>{currentUrl}</a>
-            <a class="p-author h-card sr-only" href={author.url}>
-              <span class="p-name">{author.name}</span>
-            </a>
-            {typeof data.description === "string" &&
-              data.description.length > 0 && (
-              <p class="p-summary sr-only">{data.description}</p>
-            )}
-            {tags.map((tag) => (
-              <span key={tag} class="p-category sr-only">{tag}</span>
-            ))}
           </header>
           <div class="post-content e-content">
             {data.children}
@@ -292,7 +291,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           {includeCodeCopyScript && (
             <script src="/scripts/post-code-copy.js" defer></script>
           )}
-        </article>
+        </HEntryShell>
 
         {hasRail && (
           <aside

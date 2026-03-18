@@ -5,6 +5,8 @@
  * passing them in, keeping this component free of locale logic.
  */
 
+import HEntryShell from "../mf2/components/HEntryShell.tsx";
+
 /** Renders one post card row. */
 export default (
   {
@@ -27,21 +29,21 @@ export default (
     readonly authorUrl?: string;
   },
 ) => (
-  <article class="post-card h-entry">
+  <HEntryShell
+    className="post-card h-entry"
+    {...(summary !== undefined ? { summary } : {})}
+    {...(authorName !== undefined && authorUrl !== undefined
+      ? { author: { name: authorName, url: authorUrl } }
+      : {})}
+  >
     <time class="post-card-date dt-published" datetime={dateIso}>
       {dateStr}
     </time>
     <h3 class="post-card-title p-name">
       <a class="post-card-link u-url u-uid" href={url}>{title}</a>
     </h3>
-    {summary !== undefined && <p class="p-summary sr-only">{summary}</p>}
     {readingLabel !== undefined && (
       <span class="post-card-reading-time">{readingLabel}</span>
     )}
-    {authorName !== undefined && authorUrl !== undefined && (
-      <a class="p-author h-card sr-only" href={authorUrl}>
-        <span class="p-name">{authorName}</span>
-      </a>
-    )}
-  </article>
+  </HEntryShell>
 );

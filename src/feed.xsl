@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   feed.xsl — RSS 2.0 and Atom 1.0 feed browser stylesheet.
-  Transforms /feed.xml and /atom.xml into a site-aligned HTML view.
+  Transforms /feed.rss and /feed.atom into a site-aligned HTML view.
 -->
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -70,11 +70,11 @@
     </xsl:variable>
     <xsl:variable name="feed-prefix">
       <xsl:choose>
-        <xsl:when test="contains($self-path, '/atom.xml')">
-          <xsl:value-of select="substring-before($self-path, '/atom.xml')"/>
+        <xsl:when test="contains($self-path, '/feed.atom')">
+          <xsl:value-of select="substring-before($self-path, '/feed.atom')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="substring-before($self-path, '/feed.xml')"/>
+          <xsl:value-of select="substring-before($self-path, '/feed.rss')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -110,26 +110,26 @@
     </xsl:variable>
     <xsl:variable name="en-feed-href">
       <xsl:choose>
-        <xsl:when test="$is-atom">/atom.xml</xsl:when>
-        <xsl:otherwise>/feed.xml</xsl:otherwise>
+        <xsl:when test="$is-atom">/feed.atom</xsl:when>
+        <xsl:otherwise>/feed.rss</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="fr-feed-href">
       <xsl:choose>
-        <xsl:when test="$is-atom">/fr/atom.xml</xsl:when>
-        <xsl:otherwise>/fr/feed.xml</xsl:otherwise>
+        <xsl:when test="$is-atom">/fr/feed.atom</xsl:when>
+        <xsl:otherwise>/fr/feed.rss</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="zh-hans-feed-href">
       <xsl:choose>
-        <xsl:when test="$is-atom">/zh-hans/atom.xml</xsl:when>
-        <xsl:otherwise>/zh-hans/feed.xml</xsl:otherwise>
+        <xsl:when test="$is-atom">/zh-hans/feed.atom</xsl:when>
+        <xsl:otherwise>/zh-hans/feed.rss</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="zh-hant-feed-href">
       <xsl:choose>
-        <xsl:when test="$is-atom">/zh-hant/atom.xml</xsl:when>
-        <xsl:otherwise>/zh-hant/feed.xml</xsl:otherwise>
+        <xsl:when test="$is-atom">/zh-hant/feed.atom</xsl:when>
+        <xsl:otherwise>/zh-hant/feed.rss</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="skip-label">

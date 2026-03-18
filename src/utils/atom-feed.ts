@@ -22,6 +22,7 @@ export type AtomFeedData = {
   readonly siteUrl: string;
   readonly feedUrl: string;
   readonly language?: string;
+  readonly complete?: boolean;
   readonly updated: Date;
   readonly author: AtomFeedAuthor;
   readonly entries: ReadonlyArray<AtomFeedEntry>;
@@ -101,8 +102,8 @@ export function generateAtomXml(data: AtomFeedData): string {
 
   lines.push(
     `<feed xmlns="http://www.w3.org/2005/Atom"${
-      data.language ? ` xml:lang="${escapeXml(data.language)}"` : ""
-    }>`,
+      data.complete ? ' xmlns:fh="http://purl.org/syndication/history/1.0"' : ""
+    }${data.language ? ` xml:lang="${escapeXml(data.language)}"` : ""}>`,
     `  <id>${escapeXml(data.id)}</id>`,
     `  <title>${escapeXml(data.title)}</title>`,
     `  <link rel="self" type="application/atom+xml" href="${
@@ -111,6 +112,7 @@ export function generateAtomXml(data: AtomFeedData): string {
     `  <link rel="alternate" type="text/html" href="${
       escapeXml(data.siteUrl)
     }"/>`,
+    ...(data.complete ? ["  <fh:complete/>"] : []),
     `  <updated>${data.updated.toISOString()}</updated>`,
   );
 
