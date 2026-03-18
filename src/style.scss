@@ -6,8 +6,6 @@
 // Grid: Carbon 2x CSS Grid
 // Prefix: cds-- (Carbon v11 default)
 
-@use "sass:meta";
-
 // Layer 1: Tokens — Carbon theme generates CSS custom properties
 @use "./styles/carbon/theme-tokens";
 @use "./styles/editorial/tokens";
@@ -43,10 +41,5 @@
 // Layer 6: Utilities
 @use "./styles/utilities";
 
-// IBM Plex webfonts — Carbon Design System typefaces served locally for Latin.
-// Chinese content uses language-targeted system fallback stacks from the theme
-// token layer instead of bundled CJK webfonts.
-// This file is auto-generated at build time by the Lume google_fonts plugin
-// (configured in _config/plugins.ts). It does not exist in the repository;
-// the plugin downloads fonts and emits both fonts.css and /fonts/*.woff2.
-@include meta.load-css("./styles/fonts.css");
+// Typography relies on the system font stacks exposed by the Carbon-backed
+// theme token layer, so no webfont stylesheet is loaded here.
