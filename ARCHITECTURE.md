@@ -183,9 +183,10 @@ compatible with Deno and Lume.
 4. component styles
 5. utilities
 
-IBM Plex webfonts are served locally through the Lume `google_fonts` plugin and
-loaded from the generated `styles/fonts.css`. Chinese pages rely on
-language-targeted system fallback stacks rather than bundled CJK webfonts.
+Typography relies on the Carbon-backed system font stacks exposed through
+`src/styles/carbon/_theme-tokens.scss`. Chinese pages use language-targeted
+system CJK fallback stacks instead of bundled webfonts, and the build no longer
+generates `styles/fonts.css` or `/fonts/*` assets.
 
 ## Client-Side Enhancements
 

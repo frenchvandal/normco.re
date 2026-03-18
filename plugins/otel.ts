@@ -146,7 +146,7 @@ export interface Options {
  *
  * assertEquals(STATIC_ASSETS_RE.test("/styles.css"), true);
  * assertEquals(STATIC_ASSETS_RE.test("/bundle.js?v=abc"), true);
- * assertEquals(STATIC_ASSETS_RE.test("/fonts/sans.woff2"), true);
+ * assertEquals(STATIC_ASSETS_RE.test("/images/card.avif"), true);
  * assertEquals(STATIC_ASSETS_RE.test("/posts/hello"), false);
  * assertEquals(STATIC_ASSETS_RE.test("/"), false);
  * ```
