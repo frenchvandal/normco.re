@@ -1,7 +1,6 @@
 /** Lume plugin configuration — all plugin registrations in correct order. */
 
 import terser from "lume/plugins/terser.ts";
-import googleFonts from "lume/plugins/google_fonts.ts";
 import sass from "lume/plugins/sass.ts";
 import postcss from "lume/plugins/postcss.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
@@ -32,9 +31,6 @@ import "npm/prism-typescript";
 import "npm/prism-yaml";
 import { CARBON_SASS_LOAD_PATHS } from "./materialize_sass_npm_packages.ts";
 import otelPlugin from "../plugins/otel.ts";
-
-const GOOGLE_FONTS_IBM_PLEX_STYLESHEET_URL =
-  "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap";
 
 /**
  * Lightning CSS expects packed browser versions in the form 0xMMmmpp
@@ -70,18 +66,9 @@ export function registerPlugins(
     }),
   );
 
-  // Download IBM Plex locally instead of loading it from Google Fonts CDN.
-  // Must run before postcss so generated CSS is processed.
-  // Chinese content relies on language-targeted system fallback stacks defined
-  // in theme tokens, which avoids shipping heavyweight CJK webfonts.
-  site.use(
-    googleFonts({
-      subsets: ["latin", "latin-ext"],
-      fonts: GOOGLE_FONTS_IBM_PLEX_STYLESHEET_URL,
-      cssFile: "styles/fonts.css",
-      fontsFolder: "/fonts",
-    }),
-  );
+  // Typography now relies entirely on system font stacks exposed through the
+  // theme token layer, so there is no webfont download or generated font CSS
+  // step in the asset pipeline.
 
   // Compile Carbon Sass → CSS before PostCSS/LightningCSS processing.
   // The imported package.json modules above force Deno to materialize the
