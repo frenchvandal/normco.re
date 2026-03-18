@@ -229,6 +229,7 @@ documents the infrastructure in more detail.
 - [GEMINI.md](./GEMINI.md)
 - [docs/mobile-clients.md](./docs/mobile-clients.md)
 - [docs/mobile-content-api.md](./docs/mobile-content-api.md)
+- [docs/mobile-phase-0.md](./docs/mobile-phase-0.md)
 - [plugins/README.md](./plugins/README.md)
 
 ## License
