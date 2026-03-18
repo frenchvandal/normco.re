@@ -25,12 +25,13 @@ Unless a later decision explicitly overrides them, use these defaults.
 - iOS v1 is the first shipping target
 - start implementation with iOS, not Android
 - Android and HarmonyOS remain planned follow-on clients
-- iOS v1 includes: home, archive, post detail, settings, offline reading for
-  cached or saved posts, bookmarks, reading progress, language switching, share,
-  and "Open in Browser"
+- iOS v1 includes: home, archive, post detail, settings, cached indexes, cached
+  opened posts, explicit "Save for Offline" on post detail, bookmarks, reading
+  progress, language switching, share, and "Open in Browser"
 - iOS v1 excludes: push notifications, widgets, account sync, comments,
-  server-side search, analytics-specific product features, and social/community
-  features
+  server-side search, local search in the first release, analytics-specific
+  product features, and social/community features
+- bookmarks and reading progress are per-device only in v1
 
 ### Contract Defaults
 
@@ -38,12 +39,17 @@ Unless a later decision explicitly overrides them, use these defaults.
   `contracts/post-detail.schema.json` remain the target app-contract family
 - `contracts/post.schema.json` is legacy and should not define the future app
   pipeline
-- `updatedAt` should be optional in v1 unless the editorial workflow gains a
-  real update field before implementation
+- `updatedAt` is optional in v1
+- when `updatedAt` is absent, generators must omit it rather than copy
+  `publishedAt`
 - `heroImage` should stay optional in v1
 - app-facing media URLs should be emitted as absolute HTTPS URLs
 - post body content should stay block-based and gain explicit inline rich-text
   support instead of falling back to raw HTML
+- `paragraph`, `heading`, and `quote` blocks should use `content` as the
+  canonical rich-text field in v1
+- list items should be rich-text capable too and should no longer be plain
+  strings in the target v1 shape
 
 ### Platform Defaults
 
@@ -61,24 +67,82 @@ Unless a later decision explicitly overrides them, use these defaults.
 - keep JSON generation inside the current web build for the first app version
 - do not extract a dedicated `content-api` package during Phase 0
 
+## Locked Decisions
+
+These decisions are now considered chosen for Phase 0 unless a new explicit
+decision reopens them.
+
+### 1. iOS v1 Product Scope
+
+The first app implementation starts on iOS.
+
+Locked v1 scope:
+
+- home screen from localized `posts-index`
+- archive screen from localized `posts-index`
+- native post detail from structured `post-detail`
+- settings screen with language preference and data controls
+- opportunistic offline cache for the last successful localized indexes
+- opportunistic cache for opened post details
+- explicit "Save for Offline" action on post detail
+- per-device bookmarks
+- per-device reading progress
+- share sheet
+- "Open in Browser"
+
+Explicitly out of scope for iOS v1:
+
+- local search
+- remote search
+- account sync
+- push notifications
+- widgets
+- comments or community features
+
+### 2. `updatedAt`
+
+`updatedAt` is optional in v1.
+
+Rules:
+
+- emit `publishedAt` for every item and detail payload
+- emit `updatedAt` only when the editorial source has a true update timestamp
+- do not synthesize `updatedAt` by copying `publishedAt`
+- clients should treat missing `updatedAt` as "no separate update date"
+
+### 3. Rich Text For `post-detail`
+
+The target v1 direction is block-based content with explicit inline nodes.
+
+Locked rules:
+
+- `paragraph`, `heading`, and `quote` blocks use `content`
+- list items are objects with their own `content`
+- canonical inline node families in v1: `text`, `link`, `lineBreak`
+- `text` can carry `marks`
+- canonical v1 marks: `emphasis`, `strong`, `code`
+
+This model is intentionally small. It covers the inline features already present
+in the repository's Markdown without forcing the apps to parse raw HTML.
+
 ## Preparation Backlog
 
 ### 1. Product Decisions
 
-- [ ] Confirm the iOS v1 feature floor
-- [ ] Confirm what "offline reading" means operationally: cached-only,
-      explicitly saved posts, or both
-- [ ] Decide whether local on-device search is in iOS v1 or later
-- [ ] Decide whether bookmarks remain per-device only in v1
+- [x] Confirm the iOS v1 feature floor
+- [x] Confirm what "offline reading" means operationally: cached indexes and
+      opened posts, plus explicit saved posts from post detail
+- [x] Decide whether local on-device search is in iOS v1 or later
+- [x] Decide whether bookmarks remain per-device only in v1
 - [ ] Decide whether HarmonyOS stays a later exploration track or a planned
       near-term track after Android
 
 ### 2. Contract Decisions
 
-- [ ] Finalize the inline rich-text model for `post-detail`
-- [ ] Decide whether heading blocks use `text` or `content` as the canonical
+- [x] Finalize the inline rich-text model for `post-detail`
+- [x] Decide whether heading blocks use `text` or `content` as the canonical
       field once rich text is added
-- [ ] Make `updatedAt` optional or add true editorial support for it
+- [x] Make `updatedAt` optional or add true editorial support for it
 - [ ] Decide whether `app-manifest` needs `contentOrigin`
 - [ ] Decide whether `contentHash` is needed in v1 or deferred
 - [ ] Decide whether future editorial features need placeholders now: tables,
@@ -126,10 +190,6 @@ alone.
 - What is the final Apple bundle identifier?
 - What is the final Android application ID?
 - What is the final HarmonyOS application identifier?
-- Is the first offline mode cache-based only, or does it also support explicit
-  saved downloads from day one?
-- Should search in the first app be browse-first only, or include local search?
-- Is `updatedAt` a true editorial field worth maintaining going forward?
 
 ## Exit Criteria
 

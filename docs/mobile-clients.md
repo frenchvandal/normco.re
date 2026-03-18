@@ -64,10 +64,11 @@ The iOS app should be a native reading client for the blog, not a website shell.
 Recommended first-release value:
 
 - native home and archive screens
-- native post detail rendering
-- offline reading for cached or explicitly saved posts
-- bookmarks / favorites
-- reading progress per post
+- native post detail rendering from structured blocks plus inline rich text
+- cached localized indexes
+- cached opened posts plus explicit "Save for Offline" from post detail
+- per-device bookmarks
+- per-device reading progress
 - language preference and alternate-language switching
 - share sheet plus "Open in Safari"
 

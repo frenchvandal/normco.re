@@ -73,27 +73,22 @@ Reasons:
 - feeds do not provide a stable screen-oriented model
 - feeds are awkward for alternates, offline state, and future pagination
 
-## Contract Gaps To Close Before Freeze
+## Phase 0 Decisions Locked For V1
 
 ### Rich Inline Content
 
-The current `post-detail` study captures block structure, but text-bearing
-blocks still flatten inline content to plain strings.
+The `post-detail` contract should remain block-based, but text-bearing blocks
+must preserve inline meaning explicitly.
 
-That is not sufficient for this blog because the Markdown already contains:
+Locked v1 direction:
 
-- inline links
-- inline code
-- emphasis / strong emphasis
+- `paragraph`, `heading`, and `quote` blocks use `content`
+- list items are rich-text capable objects and no longer plain strings
+- canonical inline node families in v1: `text`, `link`, `lineBreak`
+- `text` nodes may carry `marks`
+- canonical v1 marks: `emphasis`, `strong`, `code`
 
-Before the iOS app starts, extend the contract so paragraph-like content can
-preserve inline semantics. Recommended direction:
-
-- keep block-level structure for layout
-- add inline children for paragraph, heading, list item, and quote text
-- keep code blocks as dedicated block nodes
-
-Example direction:
+Example:
 
 ```json
 {
@@ -117,15 +112,15 @@ HTML.
 
 ### `updatedAt` Provenance
 
-The current editorial model has a published date, but no separate shared
-`updatedAt` field in post metadata.
+`updatedAt` is optional in v1.
 
-Before freezing v1, make one explicit decision:
+Locked rules:
 
-- `updatedAt` is optional until the editorial workflow supports it, or
-- `updatedAt` becomes required and shared post metadata is extended to author it
-
-Do not silently rely on `publishedAt === updatedAt` forever.
+- `publishedAt` is always present
+- `updatedAt` is emitted only when the editorial source has a true update
+  timestamp
+- generators must not copy `publishedAt` into `updatedAt` as a defaulting rule
+- clients should treat absent `updatedAt` as "no distinct update date"
 
 ### Asset URL Policy
 
@@ -133,11 +128,10 @@ Native apps should not guess how to resolve relative asset paths. The contract
 should define this clearly:
 
 - `webUrl` stays absolute
-- media URLs in `heroImage` and content blocks should be emitted as absolute
-  HTTPS URLs, or
-- the manifest should define one explicit origin clients must resolve against
+- media URLs in `heroImage` and content blocks are emitted as absolute HTTPS
+  URLs
 
-The simpler and safer rule for mobile clients is to emit absolute asset URLs.
+This is the locked v1 rule for mobile clients.
 
 ## Initial Contracts
 
@@ -198,7 +192,6 @@ Suggested shape:
       "title": "How This Blog Deploys to Alibaba Cloud OSS and CDN",
       "summary": "A practical walkthrough...",
       "publishedAt": "2026-03-10T00:00:00Z",
-      "updatedAt": "2026-03-10T00:00:00Z",
       "readingTime": 6,
       "tags": ["devops", "github-actions", "alibaba-cloud"],
       "heroImage": null,
@@ -209,11 +202,11 @@ Suggested shape:
 }
 ```
 
-Recommendation:
+Locked v1 rules:
 
-- keep `updatedAt` optional until editorial data supports it
-- keep `heroImage` optional
-- keep search server-side out of scope for v1
+- `updatedAt` is optional
+- `heroImage` is optional
+- server-side search stays out of scope for v1
 
 ### `post-detail`
 
@@ -235,7 +228,6 @@ Suggested shape:
   "title": "How This Blog Deploys to Alibaba Cloud OSS and CDN",
   "summary": "A practical walkthrough...",
   "publishedAt": "2026-03-10T00:00:00Z",
-  "updatedAt": "2026-03-10T00:00:00Z",
   "readingTime": 6,
   "tags": ["devops", "github-actions", "alibaba-cloud"],
   "alternates": [
@@ -260,6 +252,15 @@ Suggested shape:
       "type": "heading",
       "level": 2,
       "content": [{ "type": "text", "text": "Pipeline at a glance" }]
+    },
+    {
+      "type": "list",
+      "ordered": true,
+      "items": [
+        {
+          "content": [{ "type": "text", "text": "Checks out the repository." }]
+        }
+      ]
     },
     {
       "type": "code",
@@ -300,6 +301,12 @@ Recommended initial inline families:
 
 If richer editorial features appear later, extend the contract explicitly
 instead of leaking raw HTML requirements into every client.
+
+Canonical v1 note:
+
+- `paragraph`, `heading`, and `quote` use `content`
+- list items use `content`
+- `code` blocks keep `content` as raw code text
 
 ## Search Strategy
 
