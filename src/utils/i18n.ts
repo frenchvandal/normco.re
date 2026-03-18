@@ -93,6 +93,7 @@ export type SiteTranslations = {
     readonly followSystemThemeLabel: string;
     readonly repositoryLinkAriaLabel: string;
     readonly rssLinkAriaLabel: string;
+    readonly syndicationPageLinkAriaLabel: string;
   };
   readonly navigation: {
     readonly home: string;
@@ -126,6 +127,7 @@ export type SiteTranslations = {
     readonly paginationPage: string;
   };
   readonly about: {
+    readonly breadcrumbAriaLabel: string;
     readonly eyebrow: string;
     readonly title: string;
     readonly lead: string;
@@ -154,6 +156,26 @@ export type SiteTranslations = {
     readonly siteNoteThree: string;
     readonly pictogramTitle: string;
     readonly pictogramCaption: string;
+  };
+  readonly feeds: {
+    readonly breadcrumbAriaLabel: string;
+    readonly eyebrow: string;
+    readonly title: string;
+    readonly lead: string;
+    readonly intro: string;
+    readonly cardsAriaLabel: string;
+    readonly openAction: string;
+    readonly copyAction: string;
+    readonly copiedAction: string;
+    readonly errorAction: string;
+    readonly rssTitle: string;
+    readonly rssDescription: string;
+    readonly atomTitle: string;
+    readonly atomDescription: string;
+    readonly jsonTitle: string;
+    readonly jsonDescription: string;
+    readonly sitemapTitle: string;
+    readonly sitemapDescription: string;
   };
   readonly tagPage: {
     readonly eyebrow: string;
@@ -212,6 +234,7 @@ const SITE_TRANSLATIONS = {
       followSystemThemeLabel: "Follow system theme",
       repositoryLinkAriaLabel: "Open GitHub repository",
       rssLinkAriaLabel: "Open RSS feed",
+      syndicationPageLinkAriaLabel: "Open syndication page",
     },
     navigation: {
       home: "Home",
@@ -251,6 +274,7 @@ const SITE_TRANSLATIONS = {
       paginationPage: "Page",
     },
     about: {
+      breadcrumbAriaLabel: "About breadcrumb",
       eyebrow: "Profile",
       title: "About",
       lead: "Notes on who I am and why this blog exists.",
@@ -282,6 +306,31 @@ const SITE_TRANSLATIONS = {
       siteNoteThree: "No comments, no analytics, no newsletter.",
       pictogramTitle: "Field note",
       pictogramCaption: "It’s all so tiresome…",
+    },
+    feeds: {
+      breadcrumbAriaLabel: "Syndication breadcrumb",
+      eyebrow: "Endpoints",
+      title: "Syndication",
+      lead: "Structured endpoints for feeds and site indexing on normco.re.",
+      intro:
+        "Open a format directly or copy its URL for a reader, crawler, or script. Feed autodiscovery remains enabled in the site head.",
+      cardsAriaLabel: "Syndication endpoints",
+      openAction: "View",
+      copyAction: "Copy",
+      copiedAction: "Copied",
+      errorAction: "Cannot copy",
+      rssTitle: "RSS feed",
+      rssDescription:
+        "Classic XML feed for feed readers and broad client compatibility.",
+      atomTitle: "Atom feed",
+      atomDescription:
+        "Structured XML feed with richer metadata and self links.",
+      jsonTitle: "JSON Feed",
+      jsonDescription:
+        "JSON Feed 1.1 output for modern apps, scripts, and custom tooling.",
+      sitemapTitle: "Sitemap",
+      sitemapDescription:
+        "Canonical URL inventory for crawlers, validators, and indexing workflows.",
     },
     tagPage: {
       eyebrow: "Topic",
@@ -338,6 +387,7 @@ const SITE_TRANSLATIONS = {
       followSystemThemeLabel: "Suivre le thème du système",
       repositoryLinkAriaLabel: "Ouvrir le dépôt GitHub",
       rssLinkAriaLabel: "Ouvrir le flux RSS",
+      syndicationPageLinkAriaLabel: "Ouvrir la page de syndication",
     },
     navigation: {
       home: "Accueil",
@@ -378,6 +428,7 @@ const SITE_TRANSLATIONS = {
       paginationPage: "Page",
     },
     about: {
+      breadcrumbAriaLabel: "Fil d’Ariane À propos",
       eyebrow: "Profil",
       title: "À propos",
       lead: "Qui je suis et pourquoi ce blog existe.",
@@ -409,6 +460,32 @@ const SITE_TRANSLATIONS = {
       siteNoteThree: "Ni commentaires, ni analytics, ni newsletter.",
       pictogramTitle: "Repère",
       pictogramCaption: "C’est fatiguant…",
+    },
+    feeds: {
+      breadcrumbAriaLabel: "Fil d’Ariane Syndication",
+      eyebrow: "Points d’accès",
+      title: "Syndication",
+      lead:
+        "Points d’accès structurés pour les flux et l’indexation de normco.re.",
+      intro:
+        "Ouvrez le format voulu directement ou copiez son URL pour un lecteur, un robot ou un script. L’autodécouverte des flux reste activée dans l’en-tête du site.",
+      cardsAriaLabel: "Points d’accès de syndication",
+      openAction: "Consulter",
+      copyAction: "Copier",
+      copiedAction: "Copié",
+      errorAction: "Échec",
+      rssTitle: "Flux RSS",
+      rssDescription:
+        "Flux XML classique pour les lecteurs RSS et la compatibilité la plus large.",
+      atomTitle: "Flux Atom",
+      atomDescription:
+        "Flux XML structuré avec des métadonnées plus riches et des liens self.",
+      jsonTitle: "JSON Feed",
+      jsonDescription:
+        "Sortie JSON Feed 1.1 pour les apps modernes, les scripts et l’outillage.",
+      sitemapTitle: "Plan du site",
+      sitemapDescription:
+        "Inventaire canonique des URL pour les robots, validateurs et workflows d’indexation.",
     },
     tagPage: {
       eyebrow: "Sujet",
@@ -465,6 +542,7 @@ const SITE_TRANSLATIONS = {
       followSystemThemeLabel: "跟随系统主题",
       repositoryLinkAriaLabel: "打开 GitHub 仓库",
       rssLinkAriaLabel: "打开 RSS 订阅",
+      syndicationPageLinkAriaLabel: "打开聚合页面",
     },
     navigation: {
       home: "首页",
@@ -503,6 +581,7 @@ const SITE_TRANSLATIONS = {
       paginationPage: "第",
     },
     about: {
+      breadcrumbAriaLabel: "关于页面面包屑导航",
       eyebrow: "个人简介",
       title: "关于",
       lead: "关于我，以及这个博客为何存在。",
@@ -533,6 +612,27 @@ const SITE_TRANSLATIONS = {
       siteNoteThree: "没有评论、没有统计分析，也没有邮件通讯。",
       pictogramTitle: "旁注",
       pictogramCaption: "哎呀！这事儿真难搞哇……",
+    },
+    feeds: {
+      breadcrumbAriaLabel: "聚合页面包屑导航",
+      eyebrow: "端点",
+      title: "聚合",
+      lead: "用于访问 normco.re 订阅与索引入口的结构化端点。",
+      intro:
+        "可以直接打开所需格式，或复制其地址给阅读器、爬虫或脚本使用。站点头部中的 feed 自动发现仍然保留。",
+      cardsAriaLabel: "聚合端点",
+      openAction: "查看",
+      copyAction: "复制",
+      copiedAction: "已复制",
+      errorAction: "无法复制",
+      rssTitle: "RSS 订阅",
+      rssDescription: "经典 XML feed，兼容各类阅读器与聚合器。",
+      atomTitle: "Atom 订阅",
+      atomDescription: "带有更丰富元数据与 self 链接的 XML feed。",
+      jsonTitle: "JSON Feed",
+      jsonDescription: "面向现代应用、脚本与工具的 JSON Feed 1.1 输出。",
+      sitemapTitle: "站点地图",
+      sitemapDescription: "供爬虫、校验器与索引流程使用的规范 URL 清单。",
     },
     tagPage: {
       eyebrow: "主题",
@@ -589,6 +689,7 @@ const SITE_TRANSLATIONS = {
       followSystemThemeLabel: "跟隨系統主題",
       repositoryLinkAriaLabel: "開啟 GitHub 儲存庫",
       rssLinkAriaLabel: "開啟 RSS 訂閱",
+      syndicationPageLinkAriaLabel: "開啟聚合頁面",
     },
     navigation: {
       home: "首頁",
@@ -627,6 +728,7 @@ const SITE_TRANSLATIONS = {
       paginationPage: "第",
     },
     about: {
+      breadcrumbAriaLabel: "關於頁面麵包屑導覽",
       eyebrow: "個人簡介",
       title: "關於",
       lead: "關於我是誰，以及這個部落格為何存在。",
@@ -657,6 +759,27 @@ const SITE_TRANSLATIONS = {
       siteNoteThree: "沒有留言、沒有分析追蹤，也沒有電子報。",
       pictogramTitle: "旁註",
       pictogramCaption: "哎呀！這事兒真難搞哇……",
+    },
+    feeds: {
+      breadcrumbAriaLabel: "聚合頁麵包屑導覽",
+      eyebrow: "端點",
+      title: "聚合",
+      lead: "用於存取 normco.re 訂閱與索引入口的結構化端點。",
+      intro:
+        "可以直接開啟所需格式，或複製其位址給閱讀器、爬蟲或腳本使用。站點頭部中的 feed 自動發現仍然保留。",
+      cardsAriaLabel: "聚合端點",
+      openAction: "查看",
+      copyAction: "複製",
+      copiedAction: "已複製",
+      errorAction: "無法複製",
+      rssTitle: "RSS 訂閱",
+      rssDescription: "經典 XML feed，相容各類閱讀器與聚合器。",
+      atomTitle: "Atom 訂閱",
+      atomDescription: "帶有更豐富中繼資料與 self 連結的 XML feed。",
+      jsonTitle: "JSON Feed",
+      jsonDescription: "面向現代應用、腳本與工具的 JSON Feed 1.1 輸出。",
+      sitemapTitle: "網站地圖",
+      sitemapDescription: "供爬蟲、驗證器與索引流程使用的規範 URL 清單。",
     },
     tagPage: {
       eyebrow: "主題",

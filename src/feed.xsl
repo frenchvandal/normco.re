@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   feed.xsl — RSS 2.0 and Atom 1.0 feed browser stylesheet.
-  Transforms /feed.xml and /atom.xml into styled HTML using the site design system.
-  Applied client-side by the browser via the <?xml-stylesheet?> PI.
-
-  IMPORTANT: This file replicates the site header, footer, and page structure
-  from Header.tsx, Footer.tsx, and base.tsx. When the site layout or CSS
-  classes change, this file MUST be updated to match. See CLAUDE.md §7.6.
+  Transforms /feed.xml and /atom.xml into a site-aligned HTML view.
 -->
 <xsl:stylesheet version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -39,12 +34,13 @@
     </xsl:variable>
     <xsl:variable name="page-language">
       <xsl:choose>
-        <xsl:when test="$is-atom">
+        <xsl:when test="$is-atom and string-length(/atom:feed/@xml:lang) &gt; 0">
           <xsl:value-of select="/atom:feed/@xml:lang"/>
         </xsl:when>
-        <xsl:otherwise>
+        <xsl:when test="string-length(/rss/channel/language) &gt; 0">
           <xsl:value-of select="/rss/channel/language"/>
-        </xsl:otherwise>
+        </xsl:when>
+        <xsl:otherwise>en</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="self-href">
@@ -57,25 +53,33 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+    <xsl:variable name="after-scheme">
+      <xsl:value-of select="substring-after($self-href, '://')"/>
+    </xsl:variable>
+    <xsl:variable name="self-path">
+      <xsl:choose>
+        <xsl:when test="starts-with($self-href, '/')">
+          <xsl:value-of select="$self-href"/>
+        </xsl:when>
+        <xsl:when test="contains($after-scheme, '/')">
+          <xsl:text>/</xsl:text>
+          <xsl:value-of select="substring-after($after-scheme, '/')"/>
+        </xsl:when>
+        <xsl:otherwise>/</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:variable name="feed-prefix">
       <xsl:choose>
-        <xsl:when test="contains($self-href, '/atom.xml')">
-          <xsl:value-of select="substring-before($self-href, '/atom.xml')"/>
+        <xsl:when test="contains($self-path, '/atom.xml')">
+          <xsl:value-of select="substring-before($self-path, '/atom.xml')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="substring-before($self-href, '/feed.xml')"/>
+          <xsl:value-of select="substring-before($self-path, '/feed.xml')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="home-href">
-      <xsl:choose>
-        <xsl:when test="$is-atom">
-          <xsl:value-of select="/atom:feed/atom:link[@rel='alternate'][1]/@href"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="/rss/channel/link"/>
-        </xsl:otherwise>
-      </xsl:choose>
+      <xsl:value-of select="concat($feed-prefix, '/')"/>
     </xsl:variable>
     <xsl:variable name="posts-href">
       <xsl:value-of select="concat($feed-prefix, '/posts/')"/>
@@ -83,365 +87,665 @@
     <xsl:variable name="about-href">
       <xsl:value-of select="concat($feed-prefix, '/about/')"/>
     </xsl:variable>
-    <xsl:variable name="rss-href">
-      <xsl:value-of select="concat($feed-prefix, '/feed.xml')"/>
+    <xsl:variable name="syndication-href">
+      <xsl:value-of select="concat($feed-prefix, '/syndication/')"/>
     </xsl:variable>
-    <xsl:variable name="atom-href">
-      <xsl:value-of select="concat($feed-prefix, '/atom.xml')"/>
-    </xsl:variable>
-    <xsl:variable name="json-href">
-      <xsl:value-of select="concat($feed-prefix, '/feed.json')"/>
-    </xsl:variable>
+    <xsl:variable name="entry-count" select="count(/rss/channel/item | /atom:feed/atom:entry)"/>
     <xsl:variable name="feed-format-label">
       <xsl:choose>
         <xsl:when test="$is-atom">Atom</xsl:when>
         <xsl:otherwise>RSS</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+    <xsl:variable name="is-fr" select="starts-with($page-language, 'fr')"/>
+    <xsl:variable name="is-zh-hans" select="contains($page-language, 'zh-Hans') or contains($page-language, 'zh-hans')"/>
+    <xsl:variable name="is-zh-hant" select="contains($page-language, 'zh-Hant') or contains($page-language, 'zh-hant')"/>
+    <xsl:variable name="page-language-key">
+      <xsl:choose>
+        <xsl:when test="$is-fr">fr</xsl:when>
+        <xsl:when test="$is-zh-hans">zhHans</xsl:when>
+        <xsl:when test="$is-zh-hant">zhHant</xsl:when>
+        <xsl:otherwise>en</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="en-feed-href">
+      <xsl:choose>
+        <xsl:when test="$is-atom">/atom.xml</xsl:when>
+        <xsl:otherwise>/feed.xml</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="fr-feed-href">
+      <xsl:choose>
+        <xsl:when test="$is-atom">/fr/atom.xml</xsl:when>
+        <xsl:otherwise>/fr/feed.xml</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="zh-hans-feed-href">
+      <xsl:choose>
+        <xsl:when test="$is-atom">/zh-hans/atom.xml</xsl:when>
+        <xsl:otherwise>/zh-hans/feed.xml</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="zh-hant-feed-href">
+      <xsl:choose>
+        <xsl:when test="$is-atom">/zh-hant/atom.xml</xsl:when>
+        <xsl:otherwise>/zh-hant/feed.xml</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="skip-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Aller au contenu</xsl:when>
+        <xsl:when test="$is-zh-hans">跳转到内容</xsl:when>
+        <xsl:when test="$is-zh-hant">跳至內容</xsl:when>
+        <xsl:otherwise>Skip to content</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="main-navigation-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Navigation principale</xsl:when>
+        <xsl:when test="$is-zh-hans">主导航</xsl:when>
+        <xsl:when test="$is-zh-hant">主要導覽</xsl:when>
+        <xsl:otherwise>Main navigation</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="menu-toggle-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Ouvrir le menu de navigation</xsl:when>
+        <xsl:when test="$is-zh-hans">打开导航菜单</xsl:when>
+        <xsl:when test="$is-zh-hant">開啟導覽選單</xsl:when>
+        <xsl:otherwise>Open navigation menu</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="search-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Recherche</xsl:when>
+        <xsl:when test="$is-zh-hans">搜索</xsl:when>
+        <xsl:when test="$is-zh-hant">搜尋</xsl:when>
+        <xsl:otherwise>Search</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="search-loading-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Chargement des résultats de recherche.</xsl:when>
+        <xsl:when test="$is-zh-hans">正在加载搜索结果。</xsl:when>
+        <xsl:when test="$is-zh-hant">正在載入搜尋結果。</xsl:when>
+        <xsl:otherwise>Loading search results.</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="search-no-results-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Aucun résultat.</xsl:when>
+        <xsl:when test="$is-zh-hans">未找到结果。</xsl:when>
+        <xsl:when test="$is-zh-hant">未找到結果。</xsl:when>
+        <xsl:otherwise>No results found.</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="search-one-result-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">[COUNT] résultat</xsl:when>
+        <xsl:when test="$is-zh-hans">[COUNT] 个结果</xsl:when>
+        <xsl:when test="$is-zh-hant">[COUNT] 個結果</xsl:when>
+        <xsl:otherwise>[COUNT] result</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="search-many-results-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">[COUNT] résultats</xsl:when>
+        <xsl:when test="$is-zh-hans">[COUNT] 个结果</xsl:when>
+        <xsl:when test="$is-zh-hant">[COUNT] 個結果</xsl:when>
+        <xsl:otherwise>[COUNT] results</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="search-unavailable-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">La recherche est temporairement indisponible.</xsl:when>
+        <xsl:when test="$is-zh-hans">搜索暂时不可用。</xsl:when>
+        <xsl:when test="$is-zh-hant">搜尋暫時無法使用。</xsl:when>
+        <xsl:otherwise>Search is temporarily unavailable.</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="search-offline-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">La recherche est indisponible hors ligne.</xsl:when>
+        <xsl:when test="$is-zh-hans">离线时无法使用搜索。</xsl:when>
+        <xsl:when test="$is-zh-hant">離線時無法使用搜尋。</xsl:when>
+        <xsl:otherwise>Search is unavailable while offline.</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="search-retry-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Réessayer</xsl:when>
+        <xsl:when test="$is-zh-hans">重试</xsl:when>
+        <xsl:when test="$is-zh-hant">重試</xsl:when>
+        <xsl:otherwise>Retry</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="language-select-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Langue</xsl:when>
+        <xsl:when test="$is-zh-hans">语言</xsl:when>
+        <xsl:when test="$is-zh-hant">語言</xsl:when>
+        <xsl:otherwise>Language</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="language-select-aria-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Choisir la langue</xsl:when>
+        <xsl:when test="$is-zh-hans">选择语言</xsl:when>
+        <xsl:when test="$is-zh-hant">選擇語言</xsl:when>
+        <xsl:otherwise>Select language</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="theme-toggle-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Basculer le thème de couleur</xsl:when>
+        <xsl:when test="$is-zh-hans">切换颜色主题</xsl:when>
+        <xsl:when test="$is-zh-hant">切換色彩主題</xsl:when>
+        <xsl:otherwise>Toggle color theme</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="switch-light-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Passer au thème clair</xsl:when>
+        <xsl:when test="$is-zh-hans">切换到浅色主题</xsl:when>
+        <xsl:when test="$is-zh-hant">切換到淺色主題</xsl:when>
+        <xsl:otherwise>Switch to light theme</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="switch-dark-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Passer au thème sombre</xsl:when>
+        <xsl:when test="$is-zh-hans">切换到深色主题</xsl:when>
+        <xsl:when test="$is-zh-hant">切換到深色主題</xsl:when>
+        <xsl:otherwise>Switch to dark theme</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="follow-system-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Suivre le thème du système</xsl:when>
+        <xsl:when test="$is-zh-hans">跟随系统主题</xsl:when>
+        <xsl:when test="$is-zh-hant">跟隨系統主題</xsl:when>
+        <xsl:otherwise>Follow system theme</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="home-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Accueil</xsl:when>
+        <xsl:when test="$is-zh-hans">首页</xsl:when>
+        <xsl:when test="$is-zh-hant">首頁</xsl:when>
+        <xsl:otherwise>Home</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="writing-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Articles</xsl:when>
+        <xsl:when test="$is-zh-hans">文章</xsl:when>
+        <xsl:when test="$is-zh-hant">文章</xsl:when>
+        <xsl:otherwise>Writing</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="about-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">À propos</xsl:when>
+        <xsl:when test="$is-zh-hans">关于</xsl:when>
+        <xsl:when test="$is-zh-hant">關於</xsl:when>
+        <xsl:otherwise>About</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="site-links-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Liens du site</xsl:when>
+        <xsl:when test="$is-zh-hans">站点链接</xsl:when>
+        <xsl:when test="$is-zh-hant">網站連結</xsl:when>
+        <xsl:otherwise>Site links</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="repository-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Ouvrir le dépôt GitHub</xsl:when>
+        <xsl:when test="$is-zh-hans">打开 GitHub 仓库</xsl:when>
+        <xsl:when test="$is-zh-hant">開啟 GitHub 儲存庫</xsl:when>
+        <xsl:otherwise>Open GitHub repository</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="syndication-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Ouvrir la page de syndication</xsl:when>
+        <xsl:when test="$is-zh-hans">打开聚合页面</xsl:when>
+        <xsl:when test="$is-zh-hant">開啟聚合頁面</xsl:when>
+        <xsl:otherwise>Open syndication page</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="latest-entries-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Derniers articles</xsl:when>
+        <xsl:when test="$is-zh-hans">最新文章</xsl:when>
+        <xsl:when test="$is-zh-hant">最新文章</xsl:when>
+        <xsl:otherwise>Latest entries</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="sorted-note-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Triés par date de publication</xsl:when>
+        <xsl:when test="$is-zh-hans">按发布日期排序</xsl:when>
+        <xsl:when test="$is-zh-hant">依發佈日期排序</xsl:when>
+        <xsl:otherwise>Sorted by publication date</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="no-entries-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Aucun article n’a été trouvé.</xsl:when>
+        <xsl:when test="$is-zh-hans">未找到条目。</xsl:when>
+        <xsl:when test="$is-zh-hant">未找到條目。</xsl:when>
+        <xsl:otherwise>No entries were found.</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="structured-endpoint-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Point d’entrée structuré</xsl:when>
+        <xsl:when test="$is-zh-hans">结构化端点</xsl:when>
+        <xsl:when test="$is-zh-hant">結構化端點</xsl:when>
+        <xsl:otherwise>Structured endpoint</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="entry-count-suffix">
+      <xsl:choose>
+        <xsl:when test="$is-fr">articles disponibles.</xsl:when>
+        <xsl:when test="$is-zh-hans">篇条目。</xsl:when>
+        <xsl:when test="$is-zh-hant">篇條目。</xsl:when>
+        <xsl:otherwise>entries available.</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
     <html data-color-mode="light" data-light-theme="light" data-dark-theme="dark">
-      <xsl:attribute name="lang">
-        <xsl:value-of select="$page-language"/>
-      </xsl:attribute>
+      <xsl:attribute name="lang"><xsl:value-of select="$page-language"/></xsl:attribute>
       <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <meta name="color-scheme" content="light dark"/>
-        <title>
-          <xsl:value-of select="$feed-title"/>
-          <xsl:text> — Feed</xsl:text>
-        </title>
-        <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{const s=localStorage.getItem("color-mode");if(s==="light"||s==="dark"||s==="system")v=s;else{const l=localStorage.getItem("color-scheme");v=l==="light"||l==="dark"?l:null}}catch{v=null}const p=v??"system",t=p==="light"||p==="dark"?p:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-theme-preference",p);r.setAttribute("data-color-scheme",t)})()</script>
+        <title><xsl:value-of select="$feed-title"/> — <xsl:value-of select="$feed-format-label"/></title>
         <link rel="stylesheet" href="/style.css"/>
+        <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{const s=localStorage.getItem("color-mode");if(s==="light"||s==="dark"||s==="system")v=s;else{const l=localStorage.getItem("color-scheme");v=l==="light"||l==="dark"?l:null}}catch{v=null}const p=v??"system",t=p==="light"||p==="dark"?p:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-theme-preference",p);r.setAttribute("data-color-scheme",t);document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("theme-toggle");if(e){const l=e.getAttribute("data-label-switch-light")??"Switch to light theme",d=e.getAttribute("data-label-switch-dark")??"Switch to dark theme",s=e.getAttribute("data-label-follow-system")??"Follow system theme",n=p==="light"?d:p==="dark"?s:l;e.setAttribute("aria-label",n);e.setAttribute("title",n)}})})()</script>
+        <script src="/scripts/language-preference.js" data-supported-languages="en,fr,zhHans,zhHant" data-default-language="en" defer="defer">
+          <xsl:attribute name="data-current-language"><xsl:value-of select="$page-language-key"/></xsl:attribute>
+          <xsl:attribute name="data-language-alternates">
+            <xsl:text>{"en":"</xsl:text><xsl:value-of select="$en-feed-href"/><xsl:text>","fr":"</xsl:text><xsl:value-of select="$fr-feed-href"/><xsl:text>","zhHans":"</xsl:text><xsl:value-of select="$zh-hans-feed-href"/><xsl:text>","zhHant":"</xsl:text><xsl:value-of select="$zh-hant-feed-href"/><xsl:text>"}</xsl:text>
+          </xsl:attribute>
+        </script>
       </head>
-      <body>
-        <a class="skip-link" href="#main-content">Skip to content</a>
+      <body class="feed-document">
+        <xsl:attribute name="data-current-language"><xsl:value-of select="$page-language-key"/></xsl:attribute>
+        <a class="skip-link" href="#main-content"><xsl:value-of select="$skip-label"/></a>
         <div class="site-wrapper">
-          <!-- Carbon UI Shell Header (mirrors Header.tsx structure) -->
           <header class="cds--header">
             <div class="cds--header__wrapper">
               <div class="cds--header__left">
-                <button type="button" class="cds--header__action cds--header__menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="site-side-nav">
-                  <svg class="cds--header__menu-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
-                    <path d="M4 6H28V8H4zM4 15H28V17H4zM4 24H28V26H4z"/>
+                <button
+                  type="button"
+                  class="cds--header__action cds--header__menu-toggle"
+                  aria-expanded="false"
+                  aria-controls="site-side-nav"
+                >
+                  <xsl:attribute name="aria-label"><xsl:value-of select="$menu-toggle-label"/></xsl:attribute>
+                  <svg class="cds--header__menu-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="menu">
+                    <path d="M2 14.8H18V16H2z"/>
+                    <path d="M2 11.2H18V12.399999999999999H2z"/>
+                    <path d="M2 7.6H18V8.799999999999999H2z"/>
+                    <path d="M2 4H18V5.2H2z"/>
                   </svg>
                 </button>
                 <a class="cds--header__name">
-                  <xsl:attribute name="href">
-                    <xsl:value-of select="$home-href"/>
-                  </xsl:attribute>
-                  <span class="cds--header__name--prefix">normco</span>.re
+                  <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                  <span class="cds--header__name--prefix">normco</span>
+                  <xsl:text>.re</xsl:text>
                 </a>
-                <nav class="cds--header__nav" aria-label="Main navigation">
+                <nav class="cds--header__nav" aria-label="{$main-navigation-label}">
                   <a class="cds--header__menu-item">
-                    <xsl:attribute name="href">
-                      <xsl:value-of select="$home-href"/>
-                    </xsl:attribute>
-                    <xsl:text>Home</xsl:text>
+                    <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                    <xsl:value-of select="$home-label"/>
                   </a>
                   <a class="cds--header__menu-item">
-                    <xsl:attribute name="href">
-                      <xsl:value-of select="$posts-href"/>
-                    </xsl:attribute>
-                    <xsl:text>Writing</xsl:text>
+                    <xsl:attribute name="href"><xsl:value-of select="$posts-href"/></xsl:attribute>
+                    <xsl:value-of select="$writing-label"/>
                   </a>
                   <a class="cds--header__menu-item">
-                    <xsl:attribute name="href">
-                      <xsl:value-of select="$about-href"/>
-                    </xsl:attribute>
-                    <xsl:text>About</xsl:text>
+                    <xsl:attribute name="href"><xsl:value-of select="$about-href"/></xsl:attribute>
+                    <xsl:value-of select="$about-label"/>
                   </a>
                 </nav>
               </div>
               <div class="cds--header__global">
-                <!-- Search action -->
-                <button type="button" class="cds--header__action" aria-label="Search" aria-expanded="false" aria-controls="site-search-panel">
-                  <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
-                    <path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/>
-                  </svg>
-                </button>
-                <!-- Language selector action -->
-                <button type="button" class="cds--header__action cds--header__language-toggle" aria-label="Select language" aria-expanded="false" aria-controls="site-language-panel" aria-haspopup="menu">
-                  <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
-                    <path d="M27.85 29H30L24 14H21.65l-6 15H17.8l1.6-4h6.85zM20.2 23l2.62-6.56L25.45 23zM18 7V5H11V2H9V5H2V7H12.74a14.71 14.71 0 0 1-3.19 6.18A13.5 13.5 0 0 1 7.26 9H5.16a16.47 16.47 0 0 0 3 5.58A16.84 16.84 0 0 1 3 18l.75 1.86A18.47 18.47 0 0 0 9.53 16a16.92 16.92 0 0 0 5.76 3.84L16 18a14.48 14.48 0 0 1-5.12-3.37A17.64 17.64 0 0 0 14.8 7z"/>
-                  </svg>
-                </button>
-                <!-- Theme toggle action -->
-                <button id="theme-toggle" type="button" class="cds--header__action" aria-label="Toggle color theme" data-label-switch-light="Switch to light theme" data-label-switch-dark="Switch to dark theme" data-label-follow-system="Follow system theme">
-                  <svg class="cds--header__action-icon theme-icon theme-icon--sun" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-                    <path d="M7.5 1H8.5V3.5H7.5z"/>
-                    <path d="M10.8 3.4H13.3V4.4H10.8z" transform="rotate(-45 12.041 3.923)"/>
-                    <path d="M12.5 7.5H15V8.5H12.5z"/>
-                    <path d="M11.6 10.8H12.6V13.3H11.6z" transform="rotate(-45 12.075 12.04)"/>
-                    <path d="M7.5 12.5H8.5V15H7.5z"/>
-                    <path d="M2.7 11.6H5.2V12.6H2.7z" transform="rotate(-45 3.96 12.078)"/>
-                    <path d="M1 7.5H3.5V8.5H1z"/>
-                    <path d="M3.4 2.7H4.4V5.2H3.4z" transform="rotate(-45 3.925 3.961)"/>
-                    <path d="M8,6c1.1,0,2,0.9,2,2s-0.9,2-2,2S6,9.1,6,8S6.9,6,8,6 M8,5C6.3,5,5,6.3,5,8s1.3,3,3,3s3-1.3,3-3S9.7,5,8,5z"/>
-                  </svg>
-                  <svg class="cds--header__action-icon theme-icon theme-icon--moon" width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-                    <path d="M7.2,2.3c-1,4.4,1.7,8.7,6.1,9.8c0.1,0,0.1,0,0.2,0c-1.1,1.2-2.7,1.8-4.3,1.8c-0.1,0-0.2,0-0.2,0C5.6,13.8,3,11,3.2,7.7 C3.2,5.3,4.8,3.1,7.2,2.3"/>
-                    <path d="M8,1L8,1C4.1,1.6,1.5,5.3,2.1,9.1c0.6,3.3,3.4,5.8,6.8,5.9c0.1,0,0.2,0,0.3,0c2.3,0,4.4-1.1,5.8-3 c0.2-0.2,0.1-0.6-0.1-0.7c-0.1-0.1-0.2-0.1-0.3-0.1c-3.9-0.3-6.7-3.8-6.4-7.6C8.3,3,8.4,2.4,8.6,1.8c0.1-0.3,0-0.6-0.3-0.7 C8.1,1,8.1,1,8,1z"/>
-                  </svg>
-                  <svg class="cds--header__action-icon theme-icon theme-icon--system" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
-                    <path d="M28,4H4A2,2,0,0,0,2,6V22a2,2,0,0,0,2,2h8v4H8v2H24V28H20V24h8a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM18,28H14V24h4Zm10-6H4V6H28Z"/>
-                  </svg>
-                </button>
+                <div class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip" data-header-tooltip="">
+                  <button
+                    type="button"
+                    class="cds--header__action"
+                    aria-expanded="false"
+                    aria-controls="site-search-panel"
+                    data-header-tooltip-trigger=""
+                  >
+                    <xsl:attribute name="aria-label"><xsl:value-of select="$search-label"/></xsl:attribute>
+                    <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="search">
+                      <path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/>
+                    </svg>
+                  </button>
+                  <div class="cds--popover" aria-hidden="true">
+                    <span class="cds--popover-caret"></span>
+                    <div class="cds--popover-content">
+                      <span class="cds--tooltip-content"><xsl:value-of select="$search-label"/></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip" data-header-tooltip="">
+                  <button
+                    type="button"
+                    class="cds--header__action cds--header__language-toggle"
+                    aria-expanded="false"
+                    aria-controls="site-language-panel"
+                    aria-haspopup="menu"
+                    data-header-tooltip-trigger=""
+                  >
+                    <xsl:attribute name="aria-label"><xsl:value-of select="$language-select-aria-label"/></xsl:attribute>
+                    <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="translate">
+                      <path d="M27.85,29H30L24,14H21.65l-6,15H17.8l1.6-4h6.85ZM20.2,23l2.62-6.56L25.45,23Z"/>
+                      <path d="M18,7V5H11V2H9V5H2V7H12.74a14.71,14.71,0,0,1-3.19,6.18A13.5,13.5,0,0,1,7.26,9H5.16a16.47,16.47,0,0,0,3,5.58A16.84,16.84,0,0,1,3,18l.75,1.86A18.47,18.47,0,0,0,9.53,16a16.92,16.92,0,0,0,5.76,3.84L16,18a14.48,14.48,0,0,1-5.12-3.37A17.64,17.64,0,0,0,14.8,7Z"/>
+                    </svg>
+                  </button>
+                  <div class="cds--popover" aria-hidden="true">
+                    <span class="cds--popover-caret"></span>
+                    <div class="cds--popover-content">
+                      <span class="cds--tooltip-content"><xsl:value-of select="$language-select-label"/></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip" data-header-tooltip="">
+                  <button
+                    id="theme-toggle"
+                    type="button"
+                    class="cds--header__action"
+                    data-label-switch-light="{$switch-light-label}"
+                    data-label-switch-dark="{$switch-dark-label}"
+                    data-label-follow-system="{$follow-system-label}"
+                    data-header-tooltip-trigger=""
+                  >
+                    <xsl:attribute name="aria-label"><xsl:value-of select="$theme-toggle-label"/></xsl:attribute>
+                    <svg class="cds--header__action-icon theme-icon theme-icon--sun" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="sun">
+                      <path d="M16,12a4,4,0,1,1-4,4,4.0045,4.0045,0,0,1,4-4m0-2a6,6,0,1,0,6,6,6,6,0,0,0-6-6Z" transform="translate(0 .005)"/>
+                      <path d="M6.854 5.375H8.854V10.333H6.854z" transform="rotate(-45 7.86 7.856)"/>
+                      <path d="M2 15.005H7V17.005000000000003H2z"/>
+                      <path d="M5.375 23.147H10.333V25.147H5.375z" transform="rotate(-45 7.86 24.149)"/>
+                      <path d="M15 25.005H17V30.005H15z"/>
+                      <path d="M23.147 21.668H25.147V26.625999999999998H23.147z" transform="rotate(-45 24.152 24.149)"/>
+                      <path d="M25 15.005H30V17.005000000000003H25z"/>
+                      <path d="M21.668 6.854H26.625999999999998V8.854H21.668z" transform="rotate(-45 24.152 7.856)"/>
+                      <path d="M15 2.005H17V7.005H15z"/>
+                    </svg>
+                    <svg class="cds--header__action-icon theme-icon theme-icon--moon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="moon">
+                      <path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/>
+                    </svg>
+                    <svg class="cds--header__action-icon theme-icon theme-icon--system" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="screen">
+                      <path d="M28,4H4A2,2,0,0,0,2,6V22a2,2,0,0,0,2,2h8v4H8v2H24V28H20V24h8a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM18,28H14V24h4Zm10-6H4V6H28Z"/>
+                    </svg>
+                  </button>
+                  <div class="cds--popover" aria-hidden="true">
+                    <span class="cds--popover-caret"></span>
+                    <div class="cds--popover-content">
+                      <span class="cds--tooltip-content"><xsl:value-of select="$theme-toggle-label"/></span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </header>
-
-          <!-- Language selector menu (mirrors Header.tsx language menu) -->
-          <section id="site-language-panel" class="cds--header__panel cds--header__language-panel" aria-label="Language" data-language-panel="" hidden="">
-            <div class="cds--header__panel-content cds--header__language-menu" role="menu" aria-label="Language" data-language-menu="">
-              <a href="/" class="cds--header__language-option" data-language-option="en" hreflang="en" lang="en" role="menuitemradio" aria-checked="true" tabindex="0">
+          <section
+            id="site-language-panel"
+            class="cds--header__panel cds--header__language-panel"
+            data-language-panel=""
+            hidden=""
+          >
+            <xsl:attribute name="aria-label"><xsl:value-of select="$language-select-label"/></xsl:attribute>
+            <div
+              class="cds--header__panel-content cds--header__language-menu"
+              role="menu"
+              data-language-menu=""
+            >
+              <xsl:attribute name="aria-label"><xsl:value-of select="$language-select-label"/></xsl:attribute>
+              <a class="cds--header__language-option" data-language-option="en" hreflang="en" lang="en" role="menuitemradio">
+                <xsl:attribute name="href"><xsl:value-of select="$en-feed-href"/></xsl:attribute>
+                <xsl:attribute name="aria-checked"><xsl:choose><xsl:when test="$page-language-key='en'">true</xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose></xsl:attribute>
+                <xsl:attribute name="tabindex"><xsl:choose><xsl:when test="$page-language-key='en'">0</xsl:when><xsl:otherwise>-1</xsl:otherwise></xsl:choose></xsl:attribute>
                 <span class="cds--header__language-label">English</span>
                 <span class="cds--header__language-check" aria-hidden="true">
-                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" focusable="false">
+                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="checkmark">
                     <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
                   </svg>
                 </span>
               </a>
-              <a href="/fr/" class="cds--header__language-option" data-language-option="fr" hreflang="fr" lang="fr" role="menuitemradio" aria-checked="false" tabindex="-1">
+              <a class="cds--header__language-option" data-language-option="fr" hreflang="fr" lang="fr" role="menuitemradio">
+                <xsl:attribute name="href"><xsl:value-of select="$fr-feed-href"/></xsl:attribute>
+                <xsl:attribute name="aria-checked"><xsl:choose><xsl:when test="$page-language-key='fr'">true</xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose></xsl:attribute>
+                <xsl:attribute name="tabindex"><xsl:choose><xsl:when test="$page-language-key='fr'">0</xsl:when><xsl:otherwise>-1</xsl:otherwise></xsl:choose></xsl:attribute>
                 <span class="cds--header__language-label">Français</span>
                 <span class="cds--header__language-check" aria-hidden="true">
-                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" focusable="false">
+                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="checkmark">
                     <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
                   </svg>
                 </span>
               </a>
-              <a href="/zh-hans/" class="cds--header__language-option" data-language-option="zhHans" hreflang="zh-Hans" lang="zh-Hans" role="menuitemradio" aria-checked="false" tabindex="-1">
+              <a class="cds--header__language-option" data-language-option="zhHans" hreflang="zh-Hans" lang="zh-Hans" role="menuitemradio">
+                <xsl:attribute name="href"><xsl:value-of select="$zh-hans-feed-href"/></xsl:attribute>
+                <xsl:attribute name="aria-checked"><xsl:choose><xsl:when test="$page-language-key='zhHans'">true</xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose></xsl:attribute>
+                <xsl:attribute name="tabindex"><xsl:choose><xsl:when test="$page-language-key='zhHans'">0</xsl:when><xsl:otherwise>-1</xsl:otherwise></xsl:choose></xsl:attribute>
                 <span class="cds--header__language-label">简体中文</span>
                 <span class="cds--header__language-check" aria-hidden="true">
-                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" focusable="false">
+                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="checkmark">
                     <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
                   </svg>
                 </span>
               </a>
-              <a href="/zh-hant/" class="cds--header__language-option" data-language-option="zhHant" hreflang="zh-Hant" lang="zh-Hant" role="menuitemradio" aria-checked="false" tabindex="-1">
+              <a class="cds--header__language-option" data-language-option="zhHant" hreflang="zh-Hant" lang="zh-Hant" role="menuitemradio">
+                <xsl:attribute name="href"><xsl:value-of select="$zh-hant-feed-href"/></xsl:attribute>
+                <xsl:attribute name="aria-checked"><xsl:choose><xsl:when test="$page-language-key='zhHant'">true</xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose></xsl:attribute>
+                <xsl:attribute name="tabindex"><xsl:choose><xsl:when test="$page-language-key='zhHant'">0</xsl:when><xsl:otherwise>-1</xsl:otherwise></xsl:choose></xsl:attribute>
                 <span class="cds--header__language-label">繁體中文</span>
                 <span class="cds--header__language-check" aria-hidden="true">
-                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" focusable="false">
+                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="checkmark">
                     <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
                   </svg>
                 </span>
               </a>
             </div>
           </section>
-
-          <!-- Search panel (mirrors Header.tsx search panel) -->
-          <div id="site-search-panel" class="cds--header__panel cds--header__search-panel" role="search" aria-label="Search" hidden="" data-search-panel="">
+          <div
+            id="site-search-panel"
+            class="cds--header__panel cds--header__search-panel"
+            role="search"
+            data-search-panel=""
+            hidden=""
+          >
+            <xsl:attribute name="aria-label"><xsl:value-of select="$search-label"/></xsl:attribute>
             <div class="cds--header__panel-content">
-              <div id="search" class="cds--header__search-root" data-search-root=""></div>
+              <p
+                id="site-search-status"
+                class="cds--header__search-status"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+                data-search-status=""
+                hidden=""
+              ></p>
+              <div
+                id="search"
+                class="cds--header__search-root"
+                data-search-root=""
+                aria-busy="false"
+              >
+                <xsl:attribute name="data-search-loading-label"><xsl:value-of select="$search-loading-label"/></xsl:attribute>
+                <xsl:attribute name="data-search-no-results-label"><xsl:value-of select="$search-no-results-label"/></xsl:attribute>
+                <xsl:attribute name="data-search-one-result-label"><xsl:value-of select="$search-one-result-label"/></xsl:attribute>
+                <xsl:attribute name="data-search-many-results-label"><xsl:value-of select="$search-many-results-label"/></xsl:attribute>
+                <xsl:attribute name="data-search-unavailable-label"><xsl:value-of select="$search-unavailable-label"/></xsl:attribute>
+                <xsl:attribute name="data-search-offline-label"><xsl:value-of select="$search-offline-label"/></xsl:attribute>
+                <xsl:attribute name="data-search-retry-label"><xsl:value-of select="$search-retry-label"/></xsl:attribute>
+              </div>
             </div>
           </div>
 
-          <aside id="site-side-nav" class="cds--side-nav" aria-label="Main navigation" hidden="">
+          <aside
+            id="site-side-nav"
+            class="cds--side-nav"
+            aria-label="{$main-navigation-label}"
+            hidden=""
+          >
             <nav class="cds--side-nav__navigation">
               <ul class="cds--side-nav__items">
                 <li class="cds--side-nav__item">
                   <a class="cds--side-nav__link">
-                    <xsl:attribute name="href">
-                      <xsl:value-of select="$home-href"/>
-                    </xsl:attribute>
-                    <span class="cds--side-nav__link-text">Home</span>
+                    <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                    <span class="cds--side-nav__link-text"><xsl:value-of select="$home-label"/></span>
                   </a>
                 </li>
                 <li class="cds--side-nav__item">
                   <a class="cds--side-nav__link">
-                    <xsl:attribute name="href">
-                      <xsl:value-of select="$posts-href"/>
-                    </xsl:attribute>
-                    <span class="cds--side-nav__link-text">Writing</span>
+                    <xsl:attribute name="href"><xsl:value-of select="$posts-href"/></xsl:attribute>
+                    <span class="cds--side-nav__link-text"><xsl:value-of select="$writing-label"/></span>
                   </a>
                 </li>
                 <li class="cds--side-nav__item">
                   <a class="cds--side-nav__link">
-                    <xsl:attribute name="href">
-                      <xsl:value-of select="$about-href"/>
-                    </xsl:attribute>
-                    <span class="cds--side-nav__link-text">About</span>
+                    <xsl:attribute name="href"><xsl:value-of select="$about-href"/></xsl:attribute>
+                    <span class="cds--side-nav__link-text"><xsl:value-of select="$about-label"/></span>
                   </a>
                 </li>
               </ul>
             </nav>
           </aside>
-
           <div class="cds--side-nav__overlay" aria-hidden="true"></div>
 
-          <main class="site-main" id="main-content" data-pagefind-ignore="">
-            <section class="feed-page site-page-shell site-page-shell--editorial" aria-labelledby="feed-title">
-              <header class="pagehead feed-pagehead">
-                <p class="pagehead-eyebrow">Syndication</p>
-                <h1 id="feed-title" class="archive-page-title">
-                  <xsl:value-of select="$feed-title"/>
-                </h1>
-                <p class="pagehead-lead">
-                  <xsl:value-of select="$feed-description"/>
-                </p>
+          <main class="site-main" id="main-content" data-pagefind-body="">
+            <div class="site-page-shell site-page-shell--wide feed-page-shell">
+              <nav class="cds--breadcrumb" aria-label="Breadcrumb">
+                <ol class="cds--breadcrumb-list">
+                  <li class="cds--breadcrumb-item">
+                    <a class="cds--breadcrumb-link">
+                      <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                      <xsl:value-of select="$home-label"/>
+                    </a>
+                  </li>
+                  <li class="cds--breadcrumb-item">
+                    <span class="cds--breadcrumb-current" aria-current="page"><xsl:value-of select="$feed-format-label"/></span>
+                  </li>
+                </ol>
+              </nav>
 
-                <div class="subhead feed-subhead">
-                  <nav class="feed-page-actions" aria-label="Machine-readable URLs">
-                    <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="RSS Feed">
-                      <a class="feed-copy-link" aria-label="Open RSS feed URL">
-                        <xsl:attribute name="href">
-                          <xsl:value-of select="$rss-href"/>
-                        </xsl:attribute>
-                        <span class="feed-copy-link-title">RSS Feed</span>
-                        <span class="feed-copy-link-url"><xsl:value-of select="$rss-href"/></span>
-                      </a>
-                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="{$rss-href}" data-copy-title="Copy RSS feed URL" title="Copy RSS feed URL" aria-label="Copy RSS feed URL">
-                        <svg class="icon-svg feed-copy-icon feed-copy-icon--copy" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-                          <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
-                          <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
-                        </svg>
-                        <svg class="icon-svg feed-copy-icon feed-copy-icon--success" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-                          <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/>
-                        </svg>
-                      </button>
-                      <span class="sr-only" data-copy-status="" aria-live="polite"></span>
-                    </div>
-                    <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="Atom Feed">
-                      <a class="feed-copy-link" aria-label="Open Atom feed URL">
-                        <xsl:attribute name="href">
-                          <xsl:value-of select="$atom-href"/>
-                        </xsl:attribute>
-                        <span class="feed-copy-link-title">Atom Feed</span>
-                        <span class="feed-copy-link-url"><xsl:value-of select="$atom-href"/></span>
-                      </a>
-                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="{$atom-href}" data-copy-title="Copy Atom feed URL" title="Copy Atom feed URL" aria-label="Copy Atom feed URL">
-                        <svg class="icon-svg feed-copy-icon feed-copy-icon--copy" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-                          <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
-                          <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
-                        </svg>
-                        <svg class="icon-svg feed-copy-icon feed-copy-icon--success" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-                          <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/>
-                        </svg>
-                      </button>
-                      <span class="sr-only" data-copy-status="" aria-live="polite"></span>
-                    </div>
-                    <div class="feed-copy-control" data-copy-control="" data-copy-state="idle" data-copy-label="JSON Feed">
-                      <a class="feed-copy-link" aria-label="Open JSON Feed URL">
-                        <xsl:attribute name="href">
-                          <xsl:value-of select="$json-href"/>
-                        </xsl:attribute>
-                        <span class="feed-copy-link-title">JSON Feed</span>
-                        <span class="feed-copy-link-url"><xsl:value-of select="$json-href"/></span>
-                      </a>
-                      <button type="button" class="feed-copy-trigger" data-copy-button="" data-copy-path="{$json-href}" data-copy-title="Copy JSON Feed URL" title="Copy JSON Feed URL" aria-label="Copy JSON Feed URL">
-                        <svg class="icon-svg feed-copy-icon feed-copy-icon--copy" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-                          <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
-                          <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
-                        </svg>
-                        <svg class="icon-svg feed-copy-icon feed-copy-icon--success" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
-                          <path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/>
-                        </svg>
-                      </button>
-                      <span class="sr-only" data-copy-status="" aria-live="polite"></span>
-                    </div>
-                  </nav>
-                </div>
+              <section class="feed-page" aria-labelledby="feed-title">
+                <header class="pagehead" aria-labelledby="feed-title">
+                  <p class="pagehead-eyebrow"><xsl:value-of select="$structured-endpoint-label"/></p>
+                  <h1 id="feed-title" class="feeds-page-title"><xsl:value-of select="$feed-format-label"/></h1>
+                  <p class="pagehead-lead feeds-page-lead"><xsl:value-of select="$feed-description"/></p>
+                  <p class="feed-page-count">
+                    <xsl:value-of select="$entry-count"/>
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$entry-count-suffix"/>
+                  </p>
+                </header>
 
-                <p class="feed-page-count">
-                  <xsl:value-of select="count(/rss/channel/item | /atom:feed/atom:entry)"/>
-                  <xsl:text> entries in this feed</xsl:text>
-                </p>
-              </header>
-
-              <section class="archive-activity feed-activity" aria-label="Feed entries">
-                <div class="archive-activity-main">
-                  <section class="archive-year" aria-labelledby="feed-entries-title">
-                    <header class="archive-year-header">
-                      <h2 id="feed-entries-title" class="archive-year-heading">Latest entries</h2>
-                      <p class="archive-year-summary">Sorted by publication date</p>
-                    </header>
-                    <ol class="archive-list feed-entry-list">
-                      <xsl:for-each select="/rss/channel/item | /atom:feed/atom:entry">
-                        <xsl:variable name="entry-link">
-                          <xsl:choose>
-                            <xsl:when test="$is-atom">
-                              <xsl:value-of select="atom:link[@rel='alternate'][1]/@href"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                              <xsl:value-of select="link"/>
-                            </xsl:otherwise>
-                          </xsl:choose>
-                        </xsl:variable>
-                        <xsl:variable name="entry-date">
-                          <xsl:choose>
-                            <xsl:when test="$is-atom and string-length(atom:published) &gt; 0">
-                              <xsl:value-of select="atom:published"/>
-                            </xsl:when>
-                            <xsl:when test="$is-atom">
-                              <xsl:value-of select="atom:updated"/>
-                            </xsl:when>
-                            <xsl:otherwise>
-                              <xsl:value-of select="pubDate"/>
-                            </xsl:otherwise>
-                          </xsl:choose>
-                        </xsl:variable>
-                        <li class="archive-item feed-entry-item">
-                          <time class="archive-date feed-entry-date">
-                            <xsl:attribute name="datetime"><xsl:value-of select="$entry-date"/></xsl:attribute>
+                <section class="cds--tile feed-document-panel" aria-labelledby="feed-entries-title">
+                  <div class="feed-document-panel-head">
+                    <h2 id="feed-entries-title" class="feed-document-panel-title"><xsl:value-of select="$latest-entries-label"/></h2>
+                    <p class="feed-document-panel-note"><xsl:value-of select="$sorted-note-label"/></p>
+                  </div>
+                  <xsl:choose>
+                    <xsl:when test="$entry-count &gt; 0">
+                      <ol class="feed-entry-list">
+                        <xsl:for-each select="/rss/channel/item | /atom:feed/atom:entry">
+                          <xsl:variable name="entry-link">
                             <xsl:choose>
                               <xsl:when test="$is-atom">
-                                <xsl:value-of select="substring($entry-date, 1, 10)"/>
+                                <xsl:value-of select="atom:link[@rel='alternate'][1]/@href"/>
                               </xsl:when>
                               <xsl:otherwise>
-                                <xsl:value-of select="substring($entry-date, 6, 11)"/>
+                                <xsl:value-of select="link"/>
                               </xsl:otherwise>
                             </xsl:choose>
-                          </time>
-                          <a class="archive-title feed-entry-link">
-                            <xsl:attribute name="href">
-                              <xsl:value-of select="$entry-link"/>
-                            </xsl:attribute>
+                          </xsl:variable>
+                          <xsl:variable name="entry-date">
                             <xsl:choose>
+                              <xsl:when test="$is-atom and string-length(atom:published) &gt; 0">
+                                <xsl:value-of select="atom:published"/>
+                              </xsl:when>
                               <xsl:when test="$is-atom">
-                                <xsl:value-of select="atom:title"/>
+                                <xsl:value-of select="atom:updated"/>
                               </xsl:when>
                               <xsl:otherwise>
-                                <xsl:value-of select="title"/>
+                                <xsl:value-of select="pubDate"/>
                               </xsl:otherwise>
                             </xsl:choose>
-                          </a>
-                          <span class="archive-reading-time feed-entry-type"><xsl:value-of select="$feed-format-label"/></span>
-                        </li>
-                      </xsl:for-each>
-                    </ol>
-                  </section>
-                </div>
+                          </xsl:variable>
+                          <li class="feed-entry-item">
+                            <time class="feed-entry-date">
+                              <xsl:attribute name="datetime"><xsl:value-of select="$entry-date"/></xsl:attribute>
+                              <xsl:choose>
+                                <xsl:when test="$is-atom">
+                                  <xsl:value-of select="substring($entry-date, 1, 10)"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <xsl:value-of select="substring($entry-date, 6, 11)"/>
+                                </xsl:otherwise>
+                              </xsl:choose>
+                            </time>
+                            <a class="feed-entry-link">
+                              <xsl:attribute name="href"><xsl:value-of select="$entry-link"/></xsl:attribute>
+                              <xsl:choose>
+                                <xsl:when test="$is-atom">
+                                  <xsl:value-of select="atom:title"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <xsl:value-of select="title"/>
+                                </xsl:otherwise>
+                              </xsl:choose>
+                            </a>
+                            <span class="feed-entry-type"><xsl:value-of select="$feed-format-label"/></span>
+                          </li>
+                        </xsl:for-each>
+                      </ol>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <p class="feed-entry-empty"><xsl:value-of select="$no-entries-label"/></p>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </section>
               </section>
-            </section>
+            </div>
           </main>
 
-          <!-- Footer (mirrors Footer.tsx structure) -->
           <footer class="site-footer">
             <div class="site-footer-inner">
-              <span>&#169; 2024&#8211;<script>document.write(new Date().getFullYear())</script> Phiphi</span>
-              <nav class="site-footer-nav" aria-label="Site links">
-                <a href="https://github.com/frenchvandal/normco.re" target="_blank" rel="noopener noreferrer" aria-label="Open GitHub repository">
-                  <svg class="site-footer-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
-                    <path d="M16 2a14 14 0 0 0-4.43 27.28c.7.13 1-.3 1-.67s0-1.21 0-2.38c-3.89.84-4.71-1.88-4.71-1.88A3.71 3.71 0 0 0 6.24 22.3c-1.27-.86.1-.85.1-.85A2.94 2.94 0 0 1 8.48 22.9a3 3 0 0 0 4.08 1.16 2.93 2.93 0 0 1 .88-1.87c-3.1-.36-6.37-1.56-6.37-6.92a5.4 5.4 0 0 1 1.44-3.76 5 5 0 0 1 .14-3.7s1.17-.38 3.85 1.43a13.3 13.3 0 0 1 7 0c2.67-1.81 3.84-1.43 3.84-1.43a5 5 0 0 1 .14 3.7 5.4 5.4 0 0 1 1.44 3.76c0 5.38-3.27 6.56-6.39 6.91a3.33 3.33 0 0 1 .95 2.59c0 1.87 0 3.38 0 3.84s.25.81 1 .67A14 14 0 0 0 16 2Z"/>
+              <span>© <span id="site-footer-years">2022</span> Phiphi</span>
+              <nav class="site-footer-nav" aria-label="{$site-links-label}">
+                <a target="_blank" rel="noopener noreferrer" aria-label="{$repository-label}">
+                  <xsl:attribute name="href">https://github.com/frenchvandal/normco.re</xsl:attribute>
+                  <svg class="site-footer-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="logo--github">
+                    <path fill-rule="evenodd" d="M16,2a14,14,0,0,0-4.43,27.28c.7.13,1-.3,1-.67s0-1.21,0-2.38c-3.89.84-4.71-1.88-4.71-1.88A3.71,3.71,0,0,0,6.24,22.3c-1.27-.86.1-.85.1-.85A2.94,2.94,0,0,1,8.48,22.9a3,3,0,0,0,4.08,1.16,2.93,2.93,0,0,1,.88-1.87c-3.1-.36-6.37-1.56-6.37-6.92a5.4,5.4,0,0,1,1.44-3.76,5,5,0,0,1,.14-3.7s1.17-.38,3.85,1.43a13.3,13.3,0,0,1,7,0c2.67-1.81,3.84-1.43,3.84-1.43a5,5,0,0,1,.14,3.7,5.4,5.4,0,0,1,1.44,3.76c0,5.38-3.27,6.56-6.39,6.91a3.33,3.33,0,0,1,.95,2.59c0,1.87,0,3.38,0,3.84s.25.81,1,.67A14,14,0,0,0,16,2Z"/>
                   </svg>
                 </a>
-                <a aria-label="Open RSS feed">
-                  <xsl:attribute name="href">
-                    <xsl:value-of select="$rss-href"/>
-                  </xsl:attribute>
-                  <svg class="site-footer-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false">
-                    <path d="M8 18c-3.3 0-6 2.7-6 6s2.7 6 6 6 6-2.7 6-6C14 20.7 11.3 18 8 18zM8 28c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4C12 26.2 10.2 28 8 28z"/>
-                    <path d="M30 24h-2C28 13 19 4 8 4V2C20.1 2 30 11.9 30 24z"/>
-                    <path d="M22 24h-2c0-6.6-5.4-12-12-12v-2C15.7 10 22 16.3 22 24z"/>
+                <a aria-label="{$syndication-label}">
+                  <xsl:attribute name="href"><xsl:value-of select="$syndication-href"/></xsl:attribute>
+                  <svg class="site-footer-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="rss">
+                    <path d="M8,18c-3.3,0-6,2.7-6,6s2.7,6,6,6s6-2.7,6-6C14,20.7,11.3,18,8,18z M8,28c-2.2,0-4-1.8-4-4s1.8-4,4-4s4,1.8,4,4	C12,26.2,10.2,28,8,28z"/>
+                    <path d="M30,24h-2C28,13,19,4,8,4V2C20.1,2,30,11.9,30,24z"/>
+                    <path d="M22,24h-2c0-6.6-5.4-12-12-12v-2C15.7,10,22,16.3,22,24z"/>
                   </svg>
                 </a>
               </nav>
             </div>
           </footer>
         </div>
-        <script src="/scripts/disclosure-controls.js"/>
-        <script src="/scripts/theme-toggle.js"/>
-        <script src="/scripts/pagefind-lazy-init.js"/>
-        <script src="/scripts/feed-copy.js"/>
+
+        <script>(()=>{const e=document.getElementById("site-footer-years");if(!e)return;const s=2022,y=new Date().getFullYear();e.textContent=y>s?String(s)+"-"+String(y):String(s)})()</script>
+        <script src="/scripts/disclosure-controls.js" defer="defer"></script>
+        <script src="/scripts/header-tooltips.js" defer="defer"></script>
+        <script src="/scripts/theme-toggle.js" defer="defer"></script>
+        <script src="/scripts/pagefind-lazy-init.js" defer="defer"></script>
       </body>
     </html>
   </xsl:template>

@@ -21,6 +21,14 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, "About");
   });
 
+  it("renders a breadcrumb", () => {
+    const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
+
+    assertStringIncludes(html, 'class="cds--breadcrumb"');
+    assertStringIncludes(html, 'aria-label="About breadcrumb"');
+    assertStringIncludes(html, 'href="/" class="cds--breadcrumb-link"');
+  });
+
   it("contains the about-content wrapper", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
     assertStringIncludes(html, 'class="about-content"');
@@ -87,6 +95,8 @@ describe("about.page.tsx", () => {
     const frenchData = { lang: "fr" } as unknown as Lume.Data;
     const html = aboutPage(frenchData, MOCK_HELPERS);
     assertStringIncludes(html, "À propos");
+    assertStringIncludes(html, 'aria-label="Fil d’Ariane À propos"');
+    assertStringIncludes(html, 'href="/fr/" class="cds--breadcrumb-link"');
     assertStringIncludes(html, 'aria-label="Télécharger le code QR"');
     assertStringIncludes(html, 'href="/fr/feed.xml"');
     assertStringIncludes(html, 'href="/fr/atom.xml"');

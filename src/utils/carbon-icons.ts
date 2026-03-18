@@ -1,8 +1,10 @@
 /** Official Carbon icons consumed from the published `@carbon/icons` package. */
 
 import {
+  ArrowRight16,
   Checkmark16,
   Close16,
+  Copy16,
   Download16,
   Location20,
   LogoGithub20,
@@ -19,8 +21,10 @@ import {
 export const SEARCH_ICON = Search20;
 export const MENU_ICON = Menu20;
 export const TRANSLATE_ICON = Translate20;
+export const ARROW_RIGHT_ICON = ArrowRight16;
 export const CHECKMARK_ICON = Checkmark16;
 export const CLOSE_ICON = Close16;
+export const COPY_ICON = Copy16;
 export const DOWNLOAD_ICON = Download16;
 export const LOCATION_ICON = Location20;
 export const NOTEBOOK_ICON = Notebook20;

@@ -39,6 +39,39 @@
   }
 
   /**
+   * @param {HTMLButtonElement} copyButton
+   * @returns {string}
+   */
+  function getDefaultButtonLabel(copyButton) {
+    return copyButton.dataset.copyDefaultLabel ?? "Copy";
+  }
+
+  /**
+   * @param {HTMLButtonElement} copyButton
+   * @returns {HTMLElement | null}
+   */
+  function getButtonLabelElement(copyButton) {
+    const labelElement = copyButton.querySelector("[data-copy-button-label]");
+    return labelElement instanceof HTMLElement ? labelElement : null;
+  }
+
+  /**
+   * @param {HTMLButtonElement} copyButton
+   * @returns {string}
+   */
+  function getCopiedButtonLabel(copyButton) {
+    return copyButton.dataset.copyCopiedLabel ?? "Copied";
+  }
+
+  /**
+   * @param {HTMLButtonElement} copyButton
+   * @returns {string}
+   */
+  function getErrorButtonLabel(copyButton) {
+    return copyButton.dataset.copyErrorLabel ?? "Cannot copy";
+  }
+
+  /**
    * @param {HTMLElement} control
    * @returns {string}
    */
@@ -83,13 +116,30 @@
     setStatusMessage(control, statusMessage);
 
     if (copyButton !== null) {
+      const nextLabel = isCopied
+        ? getCopiedButtonLabel(copyButton)
+        : isError
+        ? getErrorButtonLabel(copyButton)
+        : getDefaultButtonLabel(copyButton);
+      const labelElement = getButtonLabelElement(copyButton);
+
+      if (labelElement !== null) {
+        labelElement.textContent = nextLabel;
+      } else {
+        copyButton.textContent = nextLabel;
+      }
+
       copyButton.setAttribute(
         "aria-label",
         state === "idle" ? defaultLabel : statusMessage,
       );
       copyButton.setAttribute(
         "title",
-        isCopied ? "Copied" : getCopyTitle(copyButton),
+        isCopied
+          ? statusMessage
+          : isError
+          ? statusMessage
+          : getCopyTitle(copyButton),
       );
     }
   }
@@ -128,15 +178,54 @@
   async function copyText(text) {
     const clipboard = globalThis.navigator.clipboard;
 
-    if (clipboard === undefined || typeof clipboard.writeText !== "function") {
-      return false;
+    if (clipboard !== undefined && typeof clipboard.writeText === "function") {
+      try {
+        await clipboard.writeText(text);
+        return true;
+      } catch {
+        // Fall back to a manual copy path when the async clipboard API
+        // is unavailable for the current browser context.
+      }
     }
 
+    const selection = globalThis.getSelection();
+    const activeElement = globalThis.document.activeElement;
+    const textArea = globalThis.document.createElement("textarea");
+
+    textArea.value = text;
+    textArea.setAttribute("readonly", "");
+    textArea.setAttribute("aria-hidden", "true");
+    textArea.style.position = "fixed";
+    textArea.style.insetBlockStart = "0";
+    textArea.style.insetInlineStart = "0";
+    textArea.style.inlineSize = "1px";
+    textArea.style.blockSize = "1px";
+    textArea.style.padding = "0";
+    textArea.style.border = "0";
+    textArea.style.opacity = "0";
+    textArea.style.pointerEvents = "none";
+    textArea.style.whiteSpace = "pre";
+    globalThis.document.body.append(textArea);
+    textArea.focus();
+    textArea.select();
+
     try {
-      await clipboard.writeText(text);
-      return true;
+      return globalThis.document.execCommand("copy");
     } catch {
       return false;
+    } finally {
+      textArea.remove();
+
+      if (selection !== null) {
+        selection.removeAllRanges();
+      }
+
+      if (
+        activeElement instanceof HTMLElement ||
+        activeElement instanceof SVGElement
+      ) {
+        activeElement.focus();
+      }
     }
   }
 

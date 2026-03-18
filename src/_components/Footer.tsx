@@ -15,12 +15,12 @@ export default (
   {
     author,
     language,
-    feedXmlUrl,
+    syndicationPageUrl,
     blogStartYear,
   }: {
     readonly author: string;
     readonly language: SiteLanguage;
-    readonly feedXmlUrl: string;
+    readonly syndicationPageUrl: string;
     readonly blogStartYear: number;
   },
 ): SsxElement => {
@@ -51,7 +51,10 @@ export default (
               height={16}
             />
           </a>
-          <a href={feedXmlUrl} aria-label={translations.site.rssLinkAriaLabel}>
+          <a
+            href={syndicationPageUrl}
+            aria-label={translations.site.syndicationPageLinkAriaLabel}
+          >
             <CarbonIcon
               icon={RSS_ICON}
               className="site-footer-icon"

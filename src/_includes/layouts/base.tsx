@@ -77,7 +77,7 @@ type Comp = {
   Footer: (props: {
     readonly author: string;
     readonly language: SiteLanguage;
-    readonly feedXmlUrl: string;
+    readonly syndicationPageUrl: string;
     readonly blogStartYear: number;
   }) => AwaitableLayoutRenderable;
 };
@@ -197,6 +197,7 @@ export default (
   const atomXmlUrl = getLocalizedUrl("/atom.xml", language);
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
+  const syndicationPageUrl = getLocalizedUrl("/syndication/", language);
   const hFeedUrl = getLocalizedHFeedUrl(language);
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
   const Header = resolveHeaderComponent(comp);
@@ -317,7 +318,7 @@ export default (
             <Footer
               author={resolvedAuthor}
               language={language}
-              feedXmlUrl={feedXmlUrl}
+              syndicationPageUrl={syndicationPageUrl}
               blogStartYear={blogStartYear ?? new Date().getFullYear()}
             />
           </div>

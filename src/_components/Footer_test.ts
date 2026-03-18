@@ -18,25 +18,25 @@ describe("Footer()", () => {
       Footer({
         author: author,
         language: "en",
-        feedXmlUrl: "/feed.xml",
+        syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
       }),
     );
     assertStringIncludes(html, 'class="site-footer"');
   });
 
-  it("contains an RSS feed link", async () => {
+  it("contains a syndication page link", async () => {
     const author = makeAuthor(102);
     const html = await renderComponent(
       Footer({
         author: author,
         language: "en",
-        feedXmlUrl: "/feed.xml",
+        syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
       }),
     );
-    assertStringIncludes(html, 'href="/feed.xml"');
-    assertStringIncludes(html, 'aria-label="Open RSS feed"');
+    assertStringIncludes(html, 'href="/syndication/"');
+    assertStringIncludes(html, 'aria-label="Open syndication page"');
     assertStringIncludes(html, 'class="site-footer-icon"');
     assertStringIncludes(html, 'data-carbon-icon="rss"');
   });
@@ -47,7 +47,7 @@ describe("Footer()", () => {
       Footer({
         author: author,
         language: "en",
-        feedXmlUrl: "/feed.xml",
+        syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
       }),
     );
@@ -68,12 +68,12 @@ describe("Footer()", () => {
       Footer({
         author: author,
         language: "en",
-        feedXmlUrl: "/feed.xml",
+        syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
       }),
     );
     const githubIndex = html.indexOf('aria-label="Open GitHub repository"');
-    const rssIndex = html.indexOf('aria-label="Open RSS feed"');
+    const rssIndex = html.indexOf('aria-label="Open syndication page"');
     assert(githubIndex > -1 && rssIndex > -1);
     assert(githubIndex < rssIndex);
   });
@@ -84,7 +84,7 @@ describe("Footer()", () => {
       Footer({
         author: author,
         language: "en",
-        feedXmlUrl: "/feed.xml",
+        syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
       }),
     );
@@ -99,7 +99,7 @@ describe("Footer()", () => {
       Footer({
         author: author,
         language: "en",
-        feedXmlUrl: "/feed.xml",
+        syndicationPageUrl: "/syndication/",
         blogStartYear: currentYear,
       }),
     );
@@ -114,24 +114,24 @@ describe("Footer()", () => {
       Footer({
         author: author,
         language: "en",
-        feedXmlUrl: "/feed.xml",
+        syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
       }),
     );
     assertStringIncludes(html, author);
   });
 
-  it("uses localized feed URLs when rendered in French", async () => {
+  it("uses localized syndication page URLs when rendered in French", async () => {
     const author = makeAuthor(108);
     const html = await renderComponent(
       Footer({
         author: author,
         language: "fr",
-        feedXmlUrl: "/fr/feed.xml",
+        syndicationPageUrl: "/fr/syndication/",
         blogStartYear: 2022,
       }),
     );
-    assertStringIncludes(html, 'href="/fr/feed.xml"');
+    assertStringIncludes(html, 'href="/fr/syndication/"');
   });
 });
 

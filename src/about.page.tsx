@@ -74,6 +74,7 @@ export const zhHant = {
 export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const language = resolveSiteLanguage(data.lang);
   const translations = getSiteTranslations(language);
+  const homeUrl = getLocalizedUrl("/", language);
   const atomXmlUrl = getLocalizedUrl("/atom.xml", language);
   const feedXmlUrl = getLocalizedUrl("/feed.xml", language);
   const feedJsonUrl = getLocalizedUrl("/feed.json", language);
@@ -281,6 +282,22 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   ).join("");
 
   return `<div class="site-page-shell site-page-shell--wide">
+<nav class="cds--breadcrumb" aria-label="${
+    escapeHtml(translations.about.breadcrumbAriaLabel)
+  }">
+  <ol class="cds--breadcrumb-list">
+    <li class="cds--breadcrumb-item">
+      <a href="${escapeHtml(homeUrl)}" class="cds--breadcrumb-link">${
+    escapeHtml(translations.navigation.home)
+  }</a>
+    </li>
+    <li class="cds--breadcrumb-item">
+      <span class="cds--breadcrumb-current" aria-current="page">${
+    escapeHtml(translations.about.title)
+  }</span>
+    </li>
+  </ol>
+</nav>
 <section class="pagehead about-pagehead" aria-labelledby="about-title">
   <p class="pagehead-eyebrow">${escapeHtml(translations.about.eyebrow)}</p>
   <h1 id="about-title" class="about-title">${
