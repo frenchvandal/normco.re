@@ -31,12 +31,7 @@ describe("src/_data.ts", () => {
 
   it("defines shared browser chrome and manifest metadata", () => {
     assertEquals(siteChrome.faviconIcoUrl, "/favicon.ico");
-    assertEquals(siteChrome.appleTouchIconLinks?.map((icon) => icon.sizes), [
-      "120x120",
-      "152x152",
-      "167x167",
-      "180x180",
-    ]);
+    assertEquals(siteChrome.appleTouchIconUrl, "/apple-touch-icon.png");
     assertEquals(siteManifest.startUrl, "/");
     assertEquals(siteManifest.id, "/");
     assertEquals(siteManifest.scope, "/");

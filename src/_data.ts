@@ -37,24 +37,6 @@ export const siteChrome = {
   faviconIcoUrl: "/favicon.ico",
   faviconSvgUrl: "/favicon.svg",
   appleTouchIconUrl: "/apple-touch-icon.png",
-  appleTouchIconLinks: [
-    {
-      href: "/apple-touch-icon-120x120.png",
-      sizes: "120x120",
-    },
-    {
-      href: "/apple-touch-icon-152x152.png",
-      sizes: "152x152",
-    },
-    {
-      href: "/apple-touch-icon-167x167.png",
-      sizes: "167x167",
-    },
-    {
-      href: "/apple-touch-icon.png",
-      sizes: "180x180",
-    },
-  ],
   themeColorLight: white.background,
   themeColorDark: g90.background,
 } as const satisfies SiteChromeData;

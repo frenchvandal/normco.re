@@ -1,16 +1,10 @@
 export const APP_MANIFEST_MIME_TYPE = "application/manifest+json" as const;
 export const APP_MANIFEST_PATH = "/manifest.webmanifest" as const;
 
-export type SiteChromeIconLink = {
-  readonly href: string;
-  readonly sizes: string;
-};
-
 export type SiteChromeData = {
   readonly faviconIcoUrl: string;
   readonly faviconSvgUrl: string;
   readonly appleTouchIconUrl: string;
-  readonly appleTouchIconLinks?: ReadonlyArray<SiteChromeIconLink>;
   readonly themeColorLight: string;
   readonly themeColorDark: string;
 };

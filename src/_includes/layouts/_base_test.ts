@@ -38,10 +38,6 @@ function makeData(
       faviconIcoUrl?: string;
       faviconSvgUrl?: string;
       appleTouchIconUrl?: string;
-      appleTouchIconLinks?: ReadonlyArray<{
-        href: string;
-        sizes: string;
-      }>;
       themeColorLight?: string;
       themeColorDark?: string;
     };
@@ -66,12 +62,6 @@ function makeData(
       faviconIcoUrl: "/favicon.ico",
       faviconSvgUrl: "/favicon.svg",
       appleTouchIconUrl: "/apple-touch-icon.png",
-      appleTouchIconLinks: [
-        { href: "/apple-touch-icon-120x120.png", sizes: "120x120" },
-        { href: "/apple-touch-icon-152x152.png", sizes: "152x152" },
-        { href: "/apple-touch-icon-167x167.png", sizes: "167x167" },
-        { href: "/apple-touch-icon.png", sizes: "180x180" },
-      ],
       themeColorLight: "#ffffff",
       themeColorDark: "#262626",
     },
@@ -98,6 +88,11 @@ describe("base.tsx layout", () => {
       const randomTitle = makeSentence(601);
       const html = await renderBase(makeData({ title: randomTitle }));
       assertStringIncludes(html, `<title>${randomTitle} - normco.re</title>`);
+    });
+
+    it("does not duplicate the site name when title already matches it", async () => {
+      const html = await renderBase(makeData({ title: "normco.re" }));
+      assertStringIncludes(html, "<title>normco.re</title>");
     });
   });
 
@@ -147,23 +142,15 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
+        'rel="canonical" href="https://normco.re/"',
+      );
+      assertStringIncludes(
+        html,
         'rel="icon" href="/favicon.ico" sizes="48x48"',
       );
       assertStringIncludes(
         html,
         'rel="icon" href="/favicon.svg" type="image/svg+xml" sizes="any"',
-      );
-      assertStringIncludes(
-        html,
-        'rel="apple-touch-icon" href="/apple-touch-icon-120x120.png" sizes="120x120"',
-      );
-      assertStringIncludes(
-        html,
-        'rel="apple-touch-icon" href="/apple-touch-icon-152x152.png" sizes="152x152"',
-      );
-      assertStringIncludes(
-        html,
-        'rel="apple-touch-icon" href="/apple-touch-icon-167x167.png" sizes="167x167"',
       );
       assertStringIncludes(
         html,
@@ -254,6 +241,12 @@ describe("base.tsx layout", () => {
     it("omits `data-pagefind-body` on unlisted pages", async () => {
       const html = await renderBase(makeData({ unlisted: true }));
       assertNotMatch(html, /data-pagefind-body=""/);
+    });
+
+    it("adds a noindex robots meta to unlisted pages and omits canonical", async () => {
+      const html = await renderBase(makeData({ unlisted: true }));
+      assertStringIncludes(html, 'name="robots" content="noindex"');
+      assertNotMatch(html, /rel="canonical"/);
     });
 
     it("renders the mocked Header and Footer", async () => {

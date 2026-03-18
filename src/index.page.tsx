@@ -3,7 +3,6 @@
 import { renderComponent } from "lume/jsx-runtime";
 
 import StatePanel from "./_components/StatePanel.tsx";
-import { siteName } from "./_data.ts";
 import HEntryShell from "./mf2/components/HEntryShell.tsx";
 import HFeedShell from "./mf2/components/HFeedShell.tsx";
 import { getAuthorIdentity } from "./mf2/extractors.ts";
@@ -25,8 +24,8 @@ import { getTagColor, getTagUrl } from "./utils/tags.ts";
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Page URL. */
 export const url = "/";
-/** Page title - same as the site name for the home page. */
-export const title: string = siteName;
+/** Page title - left undefined so the base layout emits the bare site name. */
+export const title: string | undefined = undefined;
 
 /** Typed component functions used on this page. */
 type Comp = {

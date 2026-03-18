@@ -176,26 +176,26 @@ export default (
     faviconIcoUrl: siteChrome?.faviconIcoUrl ?? "/favicon.ico",
     faviconSvgUrl: siteChrome?.faviconSvgUrl ?? "/favicon.svg",
     appleTouchIconUrl: siteChrome?.appleTouchIconUrl ?? "/apple-touch-icon.png",
-    appleTouchIconLinks: siteChrome?.appleTouchIconLinks ?? [
-      {
-        href: siteChrome?.appleTouchIconUrl ?? "/apple-touch-icon.png",
-        sizes: "180x180",
-      },
-    ],
     themeColorLight: siteChrome?.themeColorLight ?? "#ffffff",
     themeColorDark: siteChrome?.themeColorDark ?? "#262626",
   };
-  const pageTitle = title ? `${title} - ${resolvedSiteName}` : resolvedSiteName;
+  const pageTitle = title && title !== resolvedSiteName
+    ? `${title} - ${resolvedSiteName}`
+    : resolvedSiteName;
   const language = resolveSiteLanguage(lang);
   const translations = getSiteTranslations(language);
   const metaDescription = description ?? metas?.description ??
     "Personal blog by Phiphi, based in Chengdu, China.";
   const documentLanguage = getLanguageTag(language);
   const currentUrl = typeof url === "string" && url.length > 0 ? url : "/";
+  const isIndexable = unlisted !== true;
+  const canonicalUrl = isIndexable
+    ? new URL(currentUrl, `https://${resolvedSiteName}`).href
+    : undefined;
   const includeLinkPrefetch = !isPostDetailUrl(currentUrl) &&
     !isPostsArchiveUrl(currentUrl);
   const swDebugLevel = build?.swDebugLevel ?? "off";
-  const includePagefindBody = unlisted !== true;
+  const includePagefindBody = isIndexable;
   const atomXmlUrl = getLocalizedAtomFeedUrl(language);
   const feedXmlUrl = getLocalizedRssFeedUrl(language);
   const feedJsonUrl = getLocalizedJsonFeedUrl(language);
@@ -218,6 +218,8 @@ export default (
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <title>{pageTitle}</title>
           <meta name="description" content={metaDescription} />
+          {!isIndexable && <meta name="robots" content="noindex" />}
+          {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
           <meta name="color-scheme" content="light dark" />
           <meta
             name="theme-color"
@@ -229,8 +231,6 @@ export default (
             content={resolvedSiteChrome.themeColorDark}
             media="(prefers-color-scheme: dark)"
           />
-          <meta name="application-name" content={resolvedSiteName} />
-          <meta name="apple-mobile-web-app-title" content={resolvedSiteName} />
           <link
             rel="manifest"
             href={APP_MANIFEST_PATH}
@@ -247,13 +247,11 @@ export default (
             type="image/svg+xml"
             sizes="any"
           />
-          {resolvedSiteChrome.appleTouchIconLinks?.map((icon) => (
-            <link
-              rel="apple-touch-icon"
-              href={icon.href}
-              sizes={icon.sizes}
-            />
-          ))}
+          <link
+            rel="apple-touch-icon"
+            href={resolvedSiteChrome.appleTouchIconUrl}
+            sizes="180x180"
+          />
           {
             /* Font faces are loaded from the generated stylesheet bundle.
               Explicit font preloads were removed to avoid noisy unused-preload
