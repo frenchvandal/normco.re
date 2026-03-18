@@ -19,6 +19,7 @@ import {
   resolveReadingMinutes,
 } from "./posts/post-metadata.ts";
 import { escapeHtml } from "./utils/html.ts";
+import { getTagColor, getTagUrl } from "./utils/tags.ts";
 
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
@@ -114,6 +115,19 @@ function resolveRecentPosts(
   return Array.isArray(results) ? results.filter(isLumeData) : [];
 }
 
+function resolvePostTags(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((tag): tag is string =>
+      typeof tag === "string" && tag.length > 0
+    )
+    : [];
+}
+
+function resolveFeaturedTags(posts: readonly Lume.Data[]): string[] {
+  const tags = posts.flatMap((post) => resolvePostTags(post.tags));
+  return [...new Set(tags)].slice(0, 4);
+}
+
 /** Renders the home page body. */
 export default async (
   data: Lume.Data,
@@ -133,7 +147,20 @@ export default async (
   const currentUrl = getLocalizedUrl("/", language);
   const archiveUrl = getLocalizedUrl("/posts/", language);
   const recent = resolveRecentPosts(data.search, languageDataCode);
+  const featuredTags = resolveFeaturedTags(recent);
   const author = getLocalizedAuthorHCard(language, data.author);
+  const featuredTagItems = featuredTags.map((tag) => {
+    const tagUrl = getTagUrl(tag, language);
+    const tagColor = getTagColor(tag);
+
+    return `<li class="home-topics-item">
+      <a href="${escapeHtml(tagUrl)}" class="tag-link tag-link--${
+      escapeHtml(tagColor)
+    }">
+        <span class="tag-link__label">${escapeHtml(tag)}</span>
+      </a>
+    </li>`;
+  }).join("\n");
 
   const postItems = await Promise.all(recent.map(async (post) => {
     const postDate = resolvePostDate(post.date);
@@ -179,6 +206,13 @@ export default async (
     escapeHtml(translations.home.title)
   }</h1>
   <p class="hero-lead">${escapeHtml(translations.home.lead)}</p>
+  ${
+    featuredTags.length > 0
+      ? `<ul class="home-topics">
+    ${featuredTagItems}
+  </ul>`
+      : ""
+  }
 </section>
 
 <section class="home-recent h-feed" aria-labelledby="home-recent-title">

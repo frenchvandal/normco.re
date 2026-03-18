@@ -47,6 +47,11 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, 'height="1605"');
     assertStringIncludes(html, 'aria-label="Download QR Code"');
     assertStringIncludes(html, "At a glance");
+    assertStringIncludes(
+      html,
+      'class="about-fact-icon about-fact-icon--location"',
+    );
+    assertStringIncludes(html, 'class="about-fact-icon-svg"');
     assertStringIncludes(html, 'class="about-pictogram-frame"');
     assertStringIncludes(html, "<svg");
     assertStringIncludes(html, "<path");

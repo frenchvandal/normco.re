@@ -1,6 +1,24 @@
 /* Home page hero and Carbon editorial hero.
    Source: https://carbondesignsystem.com/elements/typography/overview/ */
 @layer components {
+  .home-pagehead {
+    padding: var(--cds-spacing-07);
+    border: 1px solid var(--cds-border-subtle);
+    background: linear-gradient(
+      135deg,
+      var(--cds-layer-accent, var(--cds-layer-hover)) 0%,
+      var(--cds-background) 72%
+    );
+  }
+
+  .home-pagehead .pagehead-eyebrow {
+    display: inline-flex;
+    inline-size: fit-content;
+    padding: var(--cds-spacing-01) var(--cds-spacing-03);
+    border: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer);
+  }
+
   .hero-title {
     font-size: var(--text-2xl);
     max-inline-size: 20ch;
@@ -14,6 +32,19 @@
     max-inline-size: 48ch;
     line-height: 1.5;
     text-wrap: pretty;
+  }
+
+  .home-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--cds-spacing-03);
+    margin-block-start: var(--cds-spacing-06);
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-topics-item {
+    display: flex;
   }
 
   .home-recent {

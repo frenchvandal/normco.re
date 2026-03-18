@@ -9,6 +9,9 @@ import {
   type CarbonIconDescriptor,
   CLOSE_ICON as CARBON_CLOSE_ICON,
   DOWNLOAD_ICON as CARBON_DOWNLOAD_ICON,
+  LOCATION_ICON as CARBON_LOCATION_ICON,
+  NOTEBOOK_ICON as CARBON_NOTEBOOK_ICON,
+  TRANSLATE_ICON as CARBON_TRANSLATE_ICON,
 } from "./utils/carbon-icons.ts";
 import { escapeHtml } from "./utils/html.ts";
 
@@ -82,6 +85,18 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     CARBON_DOWNLOAD_ICON,
     "about-contact-action-icon-svg",
   );
+  const locationIconMarkup = renderCarbonIconMarkup(
+    CARBON_LOCATION_ICON,
+    "about-fact-icon-svg",
+  );
+  const notebookIconMarkup = renderCarbonIconMarkup(
+    CARBON_NOTEBOOK_ICON,
+    "about-fact-icon-svg",
+  );
+  const translateIconMarkup = renderCarbonIconMarkup(
+    CARBON_TRANSLATE_ICON,
+    "about-fact-icon-svg",
+  );
   const qrImageSizes =
     "(min-width: 66rem) 16rem, (min-width: 42rem) 14rem, calc(100vw - 6rem)";
   const qrImageTransforms = "avif webp jpg 240 360 512";
@@ -126,6 +141,26 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
       downloadName: `contact-wechat-${localizedWechatAssetLanguage}.jpg`,
       width: 1224,
       height: 1605,
+    },
+  ] as const;
+  const facts = [
+    {
+      iconMarkup: locationIconMarkup,
+      iconClass: "about-fact-icon--location",
+      term: translations.about.locationLabel,
+      value: translations.about.locationValue,
+    },
+    {
+      iconMarkup: notebookIconMarkup,
+      iconClass: "about-fact-icon--topics",
+      term: translations.about.topicsLabel,
+      value: translations.about.topicsValue,
+    },
+    {
+      iconMarkup: translateIconMarkup,
+      iconClass: "about-fact-icon--languages",
+      term: translations.about.languagesLabel,
+      value: translations.about.languagesValue,
     },
   ] as const;
   const contactItems = contacts.map((contact) => {
@@ -231,6 +266,19 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
             </div>
           </li>`;
   }).join("");
+  const factItems = facts.map((fact) =>
+    `<div class="about-facts-row">
+      <dt class="about-facts-term">
+        <span class="about-fact-icon ${
+      escapeHtml(fact.iconClass)
+    }" aria-hidden="true">
+          ${fact.iconMarkup}
+        </span>
+        <span class="about-facts-term-label">${escapeHtml(fact.term)}</span>
+      </dt>
+      <dd class="about-facts-description">${escapeHtml(fact.value)}</dd>
+    </div>`
+  ).join("");
 
   return `<div class="site-page-shell site-page-shell--wide">
 <section class="pagehead about-pagehead" aria-labelledby="about-title">
@@ -272,30 +320,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     escapeHtml(translations.about.atAGlanceTitle)
   }</h2>
         <dl class="about-facts">
-          <div class="about-facts-row">
-            <dt class="about-facts-term">${
-    escapeHtml(translations.about.locationLabel)
-  }</dt>
-            <dd class="about-facts-description">${
-    escapeHtml(translations.about.locationValue)
-  }</dd>
-          </div>
-          <div class="about-facts-row">
-            <dt class="about-facts-term">${
-    escapeHtml(translations.about.topicsLabel)
-  }</dt>
-            <dd class="about-facts-description">${
-    escapeHtml(translations.about.topicsValue)
-  }</dd>
-          </div>
-          <div class="about-facts-row">
-            <dt class="about-facts-term">${
-    escapeHtml(translations.about.languagesLabel)
-  }</dt>
-            <dd class="about-facts-description">${
-    escapeHtml(translations.about.languagesValue)
-  }</dd>
-          </div>
+          ${factItems}
         </dl>
       </section>
       <section class="feature-card">

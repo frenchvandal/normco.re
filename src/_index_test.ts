@@ -21,6 +21,7 @@ type MockPost = {
   url: string;
   date: Date;
   readingInfo?: { minutes?: number };
+  tags?: string[];
 };
 
 function makeData(
@@ -85,6 +86,19 @@ describe("index.page.tsx", () => {
     it("renders an h1 in the hero", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, "<h1");
+    });
+
+    it("renders featured topic links when recent posts provide tags", async () => {
+      const posts = [
+        makePost(407, { tags: ["design", "writing"] }),
+        makePost(408, { tags: ["design", "life"] }),
+      ];
+      const html = await indexPage(makeData(posts), MOCK_HELPERS);
+
+      assertStringIncludes(html, 'class="home-topics"');
+      assertStringIncludes(html, 'href="/tags/design/"');
+      assertStringIncludes(html, 'href="/tags/writing/"');
+      assertStringIncludes(html, 'href="/tags/life/"');
     });
   });
 
