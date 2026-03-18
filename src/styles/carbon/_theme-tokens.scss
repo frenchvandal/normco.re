@@ -69,10 +69,9 @@
       --cds-motion-easing-standard
     );
 
-    // Font families — IBM Plex is served locally for Latin and latin-ext.
-    // Chinese pages keep IBM Plex first in the stack for Latin copy, then fall
-    // back to locale-appropriate system CJK fonts to avoid shipping large
-    // Simplified/Traditional webfont bundles.
+    // Font families — system-ui for all scripts.
+    // Chinese pages add locale-appropriate CJK system fonts before the
+    // generic system-ui fallback.
     --cds-font-family-system-sans:
       system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       "Helvetica Neue", Arial, sans-serif;
@@ -82,9 +81,9 @@
     --cds-font-family-system-zh-hant:
       "PingFang TC", "Microsoft JhengHei", "Noto Sans CJK TC",
       "Source Han Sans TC", var(--cds-font-family-system-sans);
-    --cds-font-family-sans: "IBM Plex Sans", var(--cds-font-family-system-sans);
+    --cds-font-family-sans: var(--cds-font-family-system-sans);
     --cds-font-family-mono:
-      "IBM Plex Mono", ui-monospace, SFMono-Regular, "SF Mono", Consolas,
+      ui-monospace, SFMono-Regular, "SF Mono", Consolas,
       "Liberation Mono", Menlo, monospace;
 
     // Productive type scale (UI elements) — shorthand tokens
@@ -197,12 +196,10 @@
   }
 
   :root:lang(zh-Hans) {
-    --cds-font-family-sans:
-      "IBM Plex Sans", var(--cds-font-family-system-zh-hans);
+    --cds-font-family-sans: var(--cds-font-family-system-zh-hans);
   }
 
   :root:lang(zh-Hant) {
-    --cds-font-family-sans:
-      "IBM Plex Sans", var(--cds-font-family-system-zh-hant);
+    --cds-font-family-sans: var(--cds-font-family-system-zh-hant);
   }
 }
