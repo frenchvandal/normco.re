@@ -4,11 +4,7 @@
   .home-pagehead {
     padding: var(--cds-spacing-07);
     border: 1px solid var(--cds-border-subtle);
-    background: linear-gradient(
-      135deg,
-      var(--cds-layer-accent, var(--cds-layer-hover)) 0%,
-      var(--cds-background) 72%
-    );
+    background: var(--cds-layer);
   }
 
   .home-pagehead .pagehead-eyebrow {

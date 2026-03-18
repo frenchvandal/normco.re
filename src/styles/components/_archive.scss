@@ -6,6 +6,20 @@
     margin-block-end: var(--space-s);
   }
 
+  .archive-pagehead {
+    padding: var(--cds-spacing-07);
+    border: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer);
+  }
+
+  .archive-pagehead .pagehead-eyebrow {
+    display: inline-flex;
+    inline-size: fit-content;
+    padding: var(--cds-spacing-01) var(--cds-spacing-03);
+    border: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer);
+  }
+
   .archive-activity {
     display: flex;
     flex-direction: column;
@@ -133,6 +147,7 @@
     padding-inline: var(--cds-spacing-04);
     border: 1px solid var(--cds-border-subtle);
     background: var(--cds-layer);
+    box-shadow: inset 0.25rem 0 0 var(--cds-link-visited);
     color: var(--cds-text-primary);
     font-variant-numeric: tabular-nums;
     text-decoration: none;
@@ -156,7 +171,7 @@
 
   .archive-year-nav-link-label {
     font: var(--cds-productive-heading-02);
-    color: inherit;
+    color: var(--cds-link-visited);
   }
 
   .archive-year-nav-link-meta {
@@ -171,6 +186,8 @@
 
   .archive-year-card {
     gap: var(--space-s);
+    background: var(--cds-layer);
+    box-shadow: inset 0.25rem 0 0 var(--cds-link-visited);
   }
 
   .archive-rail {
