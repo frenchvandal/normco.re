@@ -107,6 +107,8 @@ export type SiteTranslations = {
     readonly eyebrow: string;
     readonly title: string;
     readonly lead: string;
+    readonly primaryCtaLabel: string;
+    readonly topicsLabel: string;
     readonly recentHeading: string;
     readonly archiveLinkLabel: string;
     readonly emptyStateTitle: string;
@@ -256,6 +258,8 @@ const SITE_TRANSLATIONS = {
       title: "Writing about things that matter.",
       lead:
         "A personal blog by Phiphi—software, culture, and everyday life from Chengdu.",
+      primaryCtaLabel: "Read the articles",
+      topicsLabel: "Explore topics",
       recentHeading: "Recent writing",
       archiveLinkLabel: "View archive",
       emptyStateTitle: "Nothing published yet.",
@@ -411,6 +415,8 @@ const SITE_TRANSLATIONS = {
       title: "Écrire sur ce qui compte.",
       lead:
         "Un blog personnel de Phiphi — logiciel, culture et vie quotidienne depuis Chengdu.",
+      primaryCtaLabel: "Lire les articles",
+      topicsLabel: "Explorer les sujets",
       recentHeading: "Articles récents",
       archiveLinkLabel: "Voir les archives",
       emptyStateTitle: "Rien n’est encore publié.",
@@ -567,6 +573,8 @@ const SITE_TRANSLATIONS = {
       eyebrow: "个人博客",
       title: "写下真正重要的事。",
       lead: "Phiphi 的个人博客，记录软件、文化与在成都的日常生活。",
+      primaryCtaLabel: "阅读文章",
+      topicsLabel: "浏览主题",
       recentHeading: "最新文章",
       archiveLinkLabel: "查看归档",
       emptyStateTitle: "还没有发布内容。",
@@ -716,6 +724,8 @@ const SITE_TRANSLATIONS = {
       eyebrow: "個人部落格",
       title: "寫下真正重要的事。",
       lead: "Phiphi 的個人部落格，記錄軟體、文化與在成都的日常生活。",
+      primaryCtaLabel: "閱讀文章",
+      topicsLabel: "瀏覽主題",
       recentHeading: "最新文章",
       archiveLinkLabel: "查看彙整",
       emptyStateTitle: "還沒有發佈內容。",

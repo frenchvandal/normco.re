@@ -255,11 +255,24 @@ export default async (
     escapeHtml(translations.home.title)
   }</h1>
   <p class="hero-lead">${escapeHtml(translations.home.lead)}</p>
+  <div class="hero-actions">
+    <a href="${escapeHtml(archiveUrl)}" class="hero-primary-action">${
+    escapeHtml(translations.home.primaryCtaLabel)
+  }</a>
+    <a href="${escapeHtml(aboutUrl)}" class="hero-secondary-action">${
+    escapeHtml(translations.navigation.about)
+  }</a>
+  </div>
   ${
     featuredTags.length > 0
-      ? `<ul class="home-topics">
-    ${featuredTagItems}
-  </ul>`
+      ? `<div class="home-topics-block">
+    <p class="home-topics-label">${
+        escapeHtml(translations.home.topicsLabel)
+      }</p>
+    <ul class="home-topics">
+      ${featuredTagItems}
+    </ul>
+  </div>`
       : ""
   }
 </section>

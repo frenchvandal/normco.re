@@ -2,7 +2,11 @@
 
 import type { jsx } from "lume/jsx-runtime";
 
-import { getSiteTranslations, type SiteLanguage } from "../utils/i18n.ts";
+import {
+  getLocalizedUrl,
+  getSiteTranslations,
+  type SiteLanguage,
+} from "../utils/i18n.ts";
 import { formatCopyrightYears } from "../utils/copyright.ts";
 import { GITHUB_ICON, RSS_ICON } from "../utils/carbon-icons.ts";
 import CarbonIcon from "./CarbonIcon.tsx";
@@ -27,6 +31,8 @@ export default (
   const year = new Date().getFullYear();
   const copyrightYears = formatCopyrightYears(blogStartYear, year);
   const translations = getSiteTranslations(language);
+  const archivePageUrl = getLocalizedUrl("/posts/", language);
+  const aboutPageUrl = getLocalizedUrl("/about/", language);
 
   return (
     <footer class="site-footer">
@@ -38,6 +44,22 @@ export default (
           class="site-footer-nav"
           aria-label={translations.site.siteLinksAriaLabel}
         >
+          <a
+            href={archivePageUrl}
+            class="site-footer-link site-footer-link--text"
+          >
+            <span class="site-footer-link-label">
+              {translations.navigation.writing}
+            </span>
+          </a>
+          <a
+            href={aboutPageUrl}
+            class="site-footer-link site-footer-link--text"
+          >
+            <span class="site-footer-link-label">
+              {translations.navigation.about}
+            </span>
+          </a>
           <a
             href={repositoryUrl}
             class="site-footer-link"

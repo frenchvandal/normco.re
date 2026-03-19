@@ -43,6 +43,28 @@ describe("Footer()", () => {
     assertStringIncludes(html, 'data-carbon-icon="rss"');
   });
 
+  it("contains localized internal navigation links", async () => {
+    const author = makeAuthor(110);
+    const html = await renderComponent(
+      Footer({
+        author: author,
+        language: "fr",
+        syndicationPageUrl: "/fr/syndication/",
+        blogStartYear: 2022,
+      }),
+    );
+    assertStringIncludes(html, 'href="/fr/posts/"');
+    assertStringIncludes(
+      html,
+      'class="site-footer-link-label">Articles</span>',
+    );
+    assertStringIncludes(html, 'href="/fr/about/"');
+    assertStringIncludes(
+      html,
+      'class="site-footer-link-label">À propos</span>',
+    );
+  });
+
   it("contains a GitHub repository link", async () => {
     const author = makeAuthor(106);
     const html = await renderComponent(

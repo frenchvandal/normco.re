@@ -238,7 +238,7 @@
     letter-spacing: -0.01em;
     text-decoration: none;
     color: var(--cds-text-primary);
-    transition: color 0.15s ease;
+    transition: color var(--cds-transition-default);
   }
 
   .site-name:hover {

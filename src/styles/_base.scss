@@ -25,7 +25,9 @@
   a {
     color: var(--cds-link-primary);
     text-decoration: none;
-    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+    transition:
+      color var(--cds-transition-default),
+      text-decoration-color var(--cds-transition-default);
   }
 
   a:hover {
