@@ -1,8 +1,10 @@
 import { assert, assertMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
+import { SHIKI_OPTIONS } from "../../_config/code_highlighting.ts";
 import { POST_CONTRACT_FIXTURES } from "../../test/posts_contract_fixtures.ts";
 
 const EXPECTED_LANGUAGES = ["en", "fr", "zh-hans", "zh-hant"] as const;
+const SHIKI_LANGUAGE_SET = new Set<string>(SHIKI_OPTIONS.languages);
 
 function normalizeLineEndings(document: string): string {
   return document.replace(/\r\n?/g, "\n");
@@ -23,6 +25,20 @@ function parseFrontmatter(document: string): {
     frontmatter,
     body: body.trim(),
   };
+}
+
+function extractFenceLanguages(markdownBody: string): string[] {
+  const languages = new Set<string>();
+
+  for (const match of markdownBody.matchAll(/^```([^\s`]+).*$/gmu)) {
+    const language = match[1]?.trim();
+
+    if (language) {
+      languages.add(language);
+    }
+  }
+
+  return [...languages];
 }
 
 describe("src/posts Markdown contract", () => {
@@ -52,6 +68,22 @@ describe("src/posts Markdown contract", () => {
           body.length > 0,
           `/src/posts/${slug}/${language}.md should contain Markdown body`,
         );
+      }
+    }
+  });
+
+  it("limits fenced code blocks to languages loaded by the Shiki config", () => {
+    for (const { documents, slug } of POST_CONTRACT_FIXTURES) {
+      for (const language of EXPECTED_LANGUAGES) {
+        const document = documents[language];
+        const { body } = parseFrontmatter(document);
+
+        for (const fenceLanguage of extractFenceLanguages(body)) {
+          assert(
+            SHIKI_LANGUAGE_SET.has(fenceLanguage),
+            `/src/posts/${slug}/${language}.md uses \`${fenceLanguage}\`, which is missing from SHIKI_OPTIONS.languages`,
+          );
+        }
       }
     }
   });

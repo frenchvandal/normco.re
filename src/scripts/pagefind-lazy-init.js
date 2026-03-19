@@ -305,16 +305,7 @@
     retryButton.addEventListener("click", () => {
       const shouldMoveFocusAfterRetry = shouldMoveFocusForOpen();
       clearSearchFallback(container);
-      showPagefindLoading(container);
-      void ensurePagefindInitialized(container)
-        .then(() => {
-          if (shouldMoveFocusAfterRetry) {
-            focusSearchInput(container);
-          }
-        })
-        .catch(() => {
-          renderSearchFallback(container);
-        });
+      void startSearchInitialization(container, shouldMoveFocusAfterRetry);
     });
 
     fallback.append(retryButton);
@@ -357,29 +348,12 @@
    */
   function handleSearchPanelOpened(searchPanel) {
     const container = searchPanel.querySelector(SEARCH_CONTAINER_SELECTOR);
-    const shouldMoveFocus = shouldMoveFocusForOpen();
 
     if (!(container instanceof HTMLElement)) {
       return;
     }
 
-    if (!isPagefindReady(container)) {
-      showPagefindLoading(container);
-    }
-
-    if (shouldMoveFocus) {
-      focusSearchInput(container);
-    }
-
-    void ensurePagefindInitialized(container)
-      .then(() => {
-        if (shouldMoveFocus) {
-          focusSearchInput(container);
-        }
-      })
-      .catch(() => {
-        renderSearchFallback(container);
-      });
+    void startSearchInitialization(container, shouldMoveFocusForOpen());
   }
 
   /**
@@ -405,6 +379,33 @@
 
     initPromiseByContainer.set(container, initPromise);
     return initPromise;
+  }
+
+  /**
+   * Coordinates the status UI, runtime initialization, and optional focus move
+   * for both panel opens and manual retry actions.
+   * @param {HTMLElement} container
+   * @param {boolean} shouldMoveFocus
+   * @returns {Promise<void>}
+   */
+  function startSearchInitialization(container, shouldMoveFocus) {
+    if (!isPagefindReady(container)) {
+      showPagefindLoading(container);
+    }
+
+    if (shouldMoveFocus) {
+      focusSearchInput(container);
+    }
+
+    return ensurePagefindInitialized(container)
+      .then(() => {
+        if (shouldMoveFocus) {
+          focusSearchInput(container);
+        }
+      })
+      .catch(() => {
+        renderSearchFallback(container);
+      });
   }
 
   /**
@@ -605,21 +606,7 @@
           return;
         }
 
-        pagefindRuntimePromise = waitForScriptLoad(existingScript)
-          .then(() => {
-            existingScript.dataset.loaded = "true";
-            existingScript.dataset.loadState = "loaded";
-          })
-          .catch((error) => {
-            existingScript.dataset.loadState = "error";
-            existingScript.remove();
-            throw error;
-          })
-          .finally(() => {
-            pagefindRuntimePromise = undefined;
-          });
-
-        await pagefindRuntimePromise;
+        await trackRuntimeScriptLoad(existingScript);
         return;
       }
     }
@@ -630,21 +617,7 @@
     script.dataset.loadState = "pending";
     globalThis.document.body.append(script);
 
-    pagefindRuntimePromise = waitForScriptLoad(script)
-      .then(() => {
-        script.dataset.loaded = "true";
-        script.dataset.loadState = "loaded";
-      })
-      .catch((error) => {
-        script.dataset.loadState = "error";
-        script.remove();
-        throw error;
-      })
-      .finally(() => {
-        pagefindRuntimePromise = undefined;
-      });
-
-    await pagefindRuntimePromise;
+    await trackRuntimeScriptLoad(script);
   }
 
   /**
@@ -690,5 +663,29 @@
       script.addEventListener("load", handleLoad, { once: true });
       script.addEventListener("error", handleError, { once: true });
     });
+  }
+
+  /**
+   * Shares the promise bookkeeping for both reused and freshly injected
+   * Pagefind runtime scripts.
+   * @param {HTMLScriptElement} script
+   * @returns {Promise<void>}
+   */
+  function trackRuntimeScriptLoad(script) {
+    pagefindRuntimePromise = waitForScriptLoad(script)
+      .then(() => {
+        script.dataset.loaded = "true";
+        script.dataset.loadState = "loaded";
+      })
+      .catch((error) => {
+        script.dataset.loadState = "error";
+        script.remove();
+        throw error;
+      })
+      .finally(() => {
+        pagefindRuntimePromise = undefined;
+      });
+
+    return pagefindRuntimePromise;
   }
 })();

@@ -14,13 +14,15 @@ import {
 } from "../utils/carbon-icons.ts";
 import CarbonIcon from "./CarbonIcon.tsx";
 import {
-  getLanguageTag,
   getLocalizedUrl,
   getSiteTranslations,
   type SiteLanguage,
-  SUPPORTED_LANGUAGES,
 } from "../utils/i18n.ts";
 import { buildHeaderNavigation } from "./header-navigation.ts";
+import {
+  HEADER_IDS,
+  HEADER_LANGUAGE_OPTIONS,
+} from "../utils/header-language-menu.ts";
 
 type SsxElement = ReturnType<typeof jsx>;
 type HeaderActionButtonAttributes = Readonly<Record<string, string>>;
@@ -75,11 +77,6 @@ export default (
 ): SsxElement => {
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
-  const searchContainerId = "search";
-  const searchPanelId = "site-search-panel";
-  const searchStatusId = "site-search-status";
-  const languagePanelId = "site-language-panel";
-  const sideNavId = "site-side-nav";
   const navigationItems = buildHeaderNavigation({ currentUrl, language });
 
   return (
@@ -95,7 +92,7 @@ export default (
               class="cds--header__action cds--header__menu-toggle"
               aria-label={translations.site.menuToggleLabel}
               aria-expanded="false"
-              aria-controls={sideNavId}
+              aria-controls={HEADER_IDS.sideNav}
             >
               <CarbonIcon
                 icon={MENU_ICON}
@@ -146,7 +143,7 @@ export default (
               buttonAttributes: {
                 "aria-label": translations.site.searchLabel,
                 "aria-expanded": "false",
-                "aria-controls": searchPanelId,
+                "aria-controls": HEADER_IDS.searchPanel,
               },
               iconMarkup: (
                 <CarbonIcon
@@ -164,7 +161,7 @@ export default (
               buttonAttributes: {
                 "aria-label": translations.site.languageSelectAriaLabel,
                 "aria-expanded": "false",
-                "aria-controls": languagePanelId,
+                "aria-controls": HEADER_IDS.languagePanel,
                 "aria-haspopup": "menu",
               },
               buttonClassName:
@@ -191,7 +188,7 @@ export default (
                 "data-label-follow-system": translations.site
                   .followSystemThemeLabel,
               },
-              buttonId: "theme-toggle",
+              buttonId: HEADER_IDS.themeToggle,
               iconMarkup: (
                 <>
                   <CarbonIcon
@@ -222,7 +219,7 @@ export default (
 
       {/* Language selector dropdown menu */}
       <section
-        id={languagePanelId}
+        id={HEADER_IDS.languagePanel}
         class="cds--header__panel cds--header__language-panel"
         aria-label={translations.site.languageSelectLabel}
         data-language-panel=""
@@ -234,42 +231,42 @@ export default (
           aria-label={translations.site.languageSelectLabel}
           data-language-menu=""
         >
-          {SUPPORTED_LANGUAGES.map((optionLanguage) => {
-            const optionUrl = languageAlternates[optionLanguage] ??
-              getLocalizedUrl("/", optionLanguage);
-            const isSelected = optionLanguage === language;
-            return (
-              <a
-                key={optionLanguage}
-                href={optionUrl}
-                class="cds--header__language-option"
-                data-language-option={optionLanguage}
-                hreflang={getLanguageTag(optionLanguage)}
-                lang={getLanguageTag(optionLanguage)}
-                role="menuitemradio"
-                aria-checked={isSelected ? "true" : "false"}
-                tabindex={isSelected ? "0" : "-1"}
-              >
-                <span class="cds--header__language-label">
-                  {translations.languageNames[optionLanguage]}
-                </span>
-                <span class="cds--header__language-check" aria-hidden="true">
-                  <CarbonIcon
-                    icon={CHECKMARK_ICON}
-                    className="cds--header__language-check-icon"
-                    width={16}
-                    height={16}
-                  />
-                </span>
-              </a>
-            );
-          })}
+          {HEADER_LANGUAGE_OPTIONS.map(
+            ({ label, language: optionLanguage, tag }) => {
+              const optionUrl = languageAlternates[optionLanguage] ??
+                getLocalizedUrl("/", optionLanguage);
+              const isSelected = optionLanguage === language;
+              return (
+                <a
+                  key={optionLanguage}
+                  href={optionUrl}
+                  class="cds--header__language-option"
+                  data-language-option={optionLanguage}
+                  hreflang={tag}
+                  lang={tag}
+                  role="menuitemradio"
+                  aria-checked={isSelected ? "true" : "false"}
+                  tabindex={isSelected ? "0" : "-1"}
+                >
+                  <span class="cds--header__language-label">{label}</span>
+                  <span class="cds--header__language-check" aria-hidden="true">
+                    <CarbonIcon
+                      icon={CHECKMARK_ICON}
+                      className="cds--header__language-check-icon"
+                      width={16}
+                      height={16}
+                    />
+                  </span>
+                </a>
+              );
+            },
+          )}
         </div>
       </section>
 
       {/* Search panel */}
       <div
-        id={searchPanelId}
+        id={HEADER_IDS.searchPanel}
         class="cds--header__panel cds--header__search-panel"
         role="search"
         aria-label={translations.site.searchLabel}
@@ -278,7 +275,7 @@ export default (
       >
         <div class="cds--header__panel-content">
           <p
-            id={searchStatusId}
+            id={HEADER_IDS.searchStatus}
             class="cds--header__search-status"
             role="status"
             aria-live="polite"
@@ -288,7 +285,7 @@ export default (
           >
           </p>
           <div
-            id={searchContainerId}
+            id={HEADER_IDS.searchContainer}
             class="cds--header__search-root"
             data-search-root=""
             aria-busy="false"
@@ -310,7 +307,7 @@ export default (
 
       {/* Carbon UI Shell Left Panel (SideNav) */}
       <aside
-        id={sideNavId}
+        id={HEADER_IDS.sideNav}
         class="cds--side-nav"
         aria-label={translations.site.mainNavigationAriaLabel}
         hidden

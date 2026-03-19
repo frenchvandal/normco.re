@@ -20,7 +20,7 @@
     "npm/faker-js": "npm:@faker-js/faker@^10.3.0",
     "npm/opentelemetry-api": "npm:@opentelemetry/api@^1.9.0",
     "npm/date-fns-locale": "npm:date-fns@4.1.0/locale",
-    "npm/shiki": "npm:shiki@3.8.1"
+    "npm/shiki": "npm:shiki@4.0.2"
   },
   "tasks": {
     "lume": {

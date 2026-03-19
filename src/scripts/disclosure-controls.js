@@ -5,8 +5,6 @@
     "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
   const CONTROL_SELECTOR =
     ".cds--header__action[aria-controls], .cds--header__menu-toggle";
-  const HEADER_PANEL_TOGGLE_SELECTOR =
-    ".cds--header__action[aria-controls]:not(.cds--header__menu-toggle)";
   const LANGUAGE_PANEL_SELECTOR = "[data-language-panel]:not([hidden])";
   const LANGUAGE_MENU_SELECTOR = "[data-language-menu]";
   const LANGUAGE_OPTION_SELECTOR =
@@ -127,9 +125,7 @@
    * @returns {HTMLElement | null}
    */
   function getOpenSideNav() {
-    const sideNav = globalThis.document.querySelector(
-      ".cds--side-nav:not([hidden])",
-    );
+    const sideNav = globalThis.document.querySelector(SIDE_NAV_SELECTOR);
     return sideNav instanceof HTMLElement ? sideNav : null;
   }
 
@@ -323,6 +319,26 @@
     return panel.querySelector(FOCUSABLE_SELECTOR);
   }
 
+  /**
+   * @param {HTMLElement} surface
+   * @returns {boolean}
+   */
+  function isSideNavSurface(surface) {
+    return surface.matches(".cds--side-nav");
+  }
+
+  /**
+   * @param {HTMLElement} surface
+   * @returns {Element | null}
+   */
+  function resolveSurfaceInitialFocusTarget(surface) {
+    if (isSideNavSurface(surface)) {
+      return surface.querySelector(SIDE_NAV_LINK_SELECTOR);
+    }
+
+    return resolvePanelInitialFocusTarget(surface);
+  }
+
   /** Locks body scroll to prevent background scrolling when panels are open. */
   function lockScroll() {
     globalThis.document.body.style.overflow = "hidden";
@@ -345,60 +361,41 @@
 
   /**
    * @param {HTMLElement} button
-   * @param {HTMLElement} panel
+   * @param {HTMLElement} surface
    * @returns {void}
    */
-  function openHeaderPanel(button, panel) {
+  function openDisclosureSurface(button, surface) {
     rememberTrigger(button);
     setControlExpanded(button, true);
-    setSurfaceExpanded(panel, true);
+    setSurfaceExpanded(surface, true);
 
-    if (isKeyboardInteraction()) {
-      scheduleDeferredFocus(panel, () => resolvePanelInitialFocusTarget(panel));
+    if (isSideNavSurface(surface)) {
+      setOverlayVisible(true);
+      syncBodyScrollLock();
     }
-  }
 
-  /**
-   * @param {HTMLElement} button
-   * @param {HTMLElement} panel
-   * @returns {void}
-   */
-  function closeHeaderPanel(button, panel) {
-    setControlExpanded(button, false);
-    setSurfaceExpanded(panel, false);
-    button.focus({ preventScroll: true });
-    rememberTrigger(null);
-  }
-
-  /**
-   * @param {HTMLElement} button
-   * @param {HTMLElement} sideNav
-   * @returns {void}
-   */
-  function openSideNav(button, sideNav) {
-    rememberTrigger(button);
-    setControlExpanded(button, true);
-    setSurfaceExpanded(sideNav, true);
-    setOverlayVisible(true);
-    syncBodyScrollLock();
     if (isKeyboardInteraction()) {
       scheduleDeferredFocus(
-        sideNav,
-        () => sideNav.querySelector(SIDE_NAV_LINK_SELECTOR),
+        surface,
+        () => resolveSurfaceInitialFocusTarget(surface),
       );
     }
   }
 
   /**
    * @param {HTMLElement} button
-   * @param {HTMLElement} sideNav
+   * @param {HTMLElement} surface
    * @returns {void}
    */
-  function closeSideNav(button, sideNav) {
+  function closeDisclosureSurface(button, surface) {
     setControlExpanded(button, false);
-    setSurfaceExpanded(sideNav, false);
-    setOverlayVisible(false);
-    syncBodyScrollLock();
+    setSurfaceExpanded(surface, false);
+
+    if (isSideNavSurface(surface)) {
+      setOverlayVisible(false);
+      syncBodyScrollLock();
+    }
+
     button.focus({ preventScroll: true });
     rememberTrigger(null);
   }
@@ -596,33 +593,6 @@
    * @param {HTMLElement | null} panel
    * @returns {void}
    */
-  function setupHeaderPanelToggle(button, panel) {
-    if (!(button instanceof HTMLElement) || !(panel instanceof HTMLElement)) {
-      return;
-    }
-
-    if (panel.matches("[data-language-panel]")) {
-      bindPanelTriggerKeyboard(button, panel);
-      setupMenuKeyboardNavigation(panel);
-    }
-
-    button.addEventListener("click", () => {
-      const isExpanded = button.getAttribute("aria-expanded") === "true";
-      closeCarbonChrome({ exceptControl: button });
-
-      if (isExpanded) {
-        closeHeaderPanel(button, panel);
-        return;
-      }
-
-      openHeaderPanel(button, panel);
-    });
-  }
-
-  /**
-   * @param {HTMLElement | null} panel
-   * @returns {void}
-   */
   function setupMenuKeyboardNavigation(panel) {
     if (!(panel instanceof HTMLElement)) {
       return;
@@ -703,12 +673,17 @@
 
   /**
    * @param {HTMLElement | null} button
-   * @param {HTMLElement | null} sideNav
+   * @param {HTMLElement | null} surface
    * @returns {void}
    */
-  function setupSideNavToggle(button, sideNav) {
-    if (!(button instanceof HTMLElement) || !(sideNav instanceof HTMLElement)) {
+  function setupDisclosureToggle(button, surface) {
+    if (!(button instanceof HTMLElement) || !(surface instanceof HTMLElement)) {
       return;
+    }
+
+    if (surface.matches("[data-language-panel]")) {
+      bindPanelTriggerKeyboard(button, surface);
+      setupMenuKeyboardNavigation(surface);
     }
 
     button.addEventListener("click", () => {
@@ -716,11 +691,11 @@
       closeCarbonChrome({ exceptControl: button });
 
       if (isExpanded) {
-        closeSideNav(button, sideNav);
+        closeDisclosureSurface(button, surface);
         return;
       }
 
-      openSideNav(button, sideNav);
+      openDisclosureSurface(button, surface);
     });
   }
 
@@ -788,26 +763,10 @@
 
     hasBoundDisclosureControls = true;
 
-    const navToggle = globalThis.document.querySelector(
-      ".cds--header__menu-toggle",
-    );
-    const sideNav = navToggle instanceof HTMLElement
-      ? getLinkedPanel(navToggle)
-      : null;
     const overlay = getOverlay();
 
-    setupSideNavToggle(
-      navToggle instanceof HTMLElement ? navToggle : null,
-      sideNav,
-    );
-
     for (const control of controls) {
-      if (!control.matches(HEADER_PANEL_TOGGLE_SELECTOR)) {
-        continue;
-      }
-
-      const panel = getLinkedPanel(control);
-      setupHeaderPanelToggle(control, panel);
+      setupDisclosureToggle(control, getLinkedPanel(control));
     }
 
     setupOverlayDismiss(overlay);
