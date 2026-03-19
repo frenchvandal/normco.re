@@ -71,6 +71,11 @@ function createDom(): InstanceType<typeof JSDOM> {
             </li>
           </ol>
         </nav>
+        <label for="archive-year-select">Jump to year</label>
+        <select id="archive-year-select" data-archive-year-select="">
+          <option value="archive-year-2026" selected="">2026</option>
+          <option value="archive-year-2025">2025</option>
+        </select>
         <section id="archive-year-2026" data-archive-year-section=""></section>
         <section id="archive-year-2025" data-archive-year-section=""></section>
       </body>
@@ -107,16 +112,38 @@ describe("archive-year-nav.js", () => {
 
     const link2026 = getYearLink(window, "2026");
     const link2025 = getYearLink(window, "2025");
+    const select = window.document.getElementById("archive-year-select");
+    assert(select instanceof window.HTMLSelectElement);
     const observer = FakeIntersectionObserver.latest;
     assert(observer instanceof FakeIntersectionObserver);
 
     assertEquals(link2026.getAttribute("aria-current"), "location");
     assertEquals(link2025.hasAttribute("aria-current"), false);
+    assertEquals(select.value, "archive-year-2026");
 
     const section2025 = window.document.getElementById("archive-year-2025");
     assert(section2025 instanceof window.HTMLElement);
     observer.trigger([{ target: section2025, isIntersecting: true }]);
 
+    assertEquals(link2026.hasAttribute("aria-current"), false);
+    assertEquals(link2025.getAttribute("aria-current"), "location");
+    assertEquals(select.value, "archive-year-2025");
+  });
+
+  it("updates the hash and current year when the compact picker changes", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    evaluateScript(window);
+
+    const link2026 = getYearLink(window, "2026");
+    const link2025 = getYearLink(window, "2025");
+    const select = window.document.getElementById("archive-year-select");
+    assert(select instanceof window.HTMLSelectElement);
+
+    select.value = "archive-year-2025";
+    select.dispatchEvent(new window.Event("change", { bubbles: true }));
+
+    assertEquals(window.location.hash, "#archive-year-2025");
     assertEquals(link2026.hasAttribute("aria-current"), false);
     assertEquals(link2025.getAttribute("aria-current"), "location");
   });

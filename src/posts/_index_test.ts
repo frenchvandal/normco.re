@@ -284,8 +284,12 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(html, 'class="feature-rail archive-rail"');
       assertStringIncludes(html, 'class="feature-card archive-year-card"');
       assertStringIncludes(html, 'class="archive-year-nav"');
+      assertStringIncludes(html, 'class="archive-year-jump"');
+      assertStringIncludes(html, 'class="archive-year-jump-select"');
       assertStringIncludes(html, 'href="#archive-year-2026"');
       assertStringIncludes(html, 'href="#archive-year-2025"');
+      assertStringIncludes(html, 'value="archive-year-2026"');
+      assertStringIncludes(html, 'value="archive-year-2025"');
       assertStringIncludes(html, 'data-archive-year-link=""');
       assertStringIncludes(html, 'data-archive-year-section=""');
       assertMatch(html, /class="archive-year-nav-link"/);
@@ -330,12 +334,14 @@ describe("posts/index.page.tsx", () => {
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
 
       assertNotMatch(html, /class="archive-year-nav"/);
+      assertNotMatch(html, /class="archive-year-jump"/);
       assertNotMatch(html, /archive-year-nav\.js/);
     });
 
     it("does not render the year jump navigation when no posts are available", async () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertNotMatch(html, /class="archive-year-nav"/);
+      assertNotMatch(html, /class="archive-year-jump"/);
       assertNotMatch(html, /archive-year-nav\.js/);
     });
 

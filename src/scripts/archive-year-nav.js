@@ -1,6 +1,7 @@
 (() => {
   const LINK_SELECTOR = "[data-archive-year-link]";
   const SECTION_SELECTOR = "[data-archive-year-section]";
+  const SELECT_SELECTOR = "[data-archive-year-select]";
   const CURRENT_VALUE = "location";
 
   /**
@@ -36,6 +37,24 @@
     }
   }
 
+  /**
+   * @param {HTMLSelectElement | undefined} select
+   * @param {string} targetId
+   */
+  function setSelected(select, targetId) {
+    if (!(select instanceof HTMLSelectElement) || targetId.length === 0) {
+      return;
+    }
+
+    const hasOption = [...select.options].some((option) =>
+      option.value === targetId
+    );
+
+    if (hasOption) {
+      select.value = targetId;
+    }
+  }
+
   function init() {
     const links = [...document.querySelectorAll(LINK_SELECTOR)].filter((node) =>
       node instanceof HTMLAnchorElement
@@ -43,6 +62,7 @@
     const sections = [...document.querySelectorAll(SECTION_SELECTOR)].filter((
       node,
     ) => node instanceof HTMLElement);
+    const select = document.querySelector(SELECT_SELECTOR);
 
     if (links.length === 0 || sections.length === 0) {
       return;
@@ -56,8 +76,16 @@
 
       if (hashId.length > 0) {
         setCurrent(links, hashId);
+        setSelected(
+          select instanceof HTMLSelectElement ? select : undefined,
+          hashId,
+        );
       } else if (defaultId.length > 0) {
         setCurrent(links, defaultId);
+        setSelected(
+          select instanceof HTMLSelectElement ? select : undefined,
+          defaultId,
+        );
       }
     };
 
@@ -68,6 +96,20 @@
     }
 
     globalThis.addEventListener("hashchange", syncFromHash);
+
+    if (select instanceof HTMLSelectElement) {
+      select.addEventListener("change", () => {
+        const targetId = select.value;
+
+        if (targetId.length === 0) {
+          return;
+        }
+
+        setCurrent(links, targetId);
+        globalThis.location.hash = targetId;
+      });
+    }
+
     syncFromHash();
 
     if (!("IntersectionObserver" in globalThis)) {
@@ -78,6 +120,10 @@
       for (const section of sections) {
         if (visibleSectionIds.has(section.id)) {
           setCurrent(links, section.id);
+          setSelected(
+            select instanceof HTMLSelectElement ? select : undefined,
+            section.id,
+          );
           return;
         }
       }

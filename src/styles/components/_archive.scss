@@ -38,6 +38,42 @@
     gap: var(--space-xl);
   }
 
+  .archive-year-jump {
+    position: sticky;
+    top: calc(3rem + var(--cds-spacing-04));
+    z-index: 3;
+    display: grid;
+    gap: var(--cds-spacing-03);
+    padding: var(--cds-spacing-04);
+    border: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer);
+    box-shadow: var(--cds-shadow-sm);
+  }
+
+  .archive-year-jump-label {
+    margin: 0;
+    font: var(--cds-productive-heading-01);
+    font-weight: var(--cds-font-weight-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cds-text-secondary);
+  }
+
+  .archive-year-jump-select {
+    inline-size: 100%;
+    min-block-size: 2.5rem;
+    padding-inline: var(--cds-spacing-04);
+    border: 1px solid var(--cds-border-subtle);
+    background: var(--cds-layer);
+    color: var(--cds-text-primary);
+    font: var(--cds-productive-body-02);
+  }
+
+  .archive-year-jump-select:focus-visible {
+    outline: var(--focus-ring-width) solid var(--cds-focus);
+    outline-offset: var(--focus-ring-offset);
+  }
+
   .archive-activity-main {
     display: flex;
     flex-direction: column;
@@ -248,6 +284,16 @@
   @include breakpoint-up(lg) {
     .archive-rail {
       order: 0;
+    }
+
+    .archive-year-jump {
+      display: none;
+    }
+
+    .archive-year-card {
+      max-block-size: calc(100dvh - (3rem + 2 * var(--cds-spacing-07)));
+      overflow: auto;
+      scrollbar-gutter: stable;
     }
   }
 }

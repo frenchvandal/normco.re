@@ -101,13 +101,13 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, 'href="/tags/life/"');
     });
 
-    it("renders primary and secondary hero actions", async () => {
-      const html = await indexPage(makeData([]), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="hero-primary-action"');
-      assertStringIncludes(html, 'href="/posts/"');
-      assertStringIncludes(html, "Read the articles");
-      assertStringIncludes(html, 'class="hero-secondary-action"');
-      assertStringIncludes(html, 'href="/about/"');
+    it("renders a labeled topics module when featured tags exist", async () => {
+      const posts = [
+        makePost(409, { tags: ["design", "writing"] }),
+      ];
+      const html = await indexPage(makeData(posts), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="home-topics-label"');
+      assertStringIncludes(html, "Explore topics");
     });
   });
 

@@ -107,7 +107,6 @@ export type SiteTranslations = {
     readonly eyebrow: string;
     readonly title: string;
     readonly lead: string;
-    readonly primaryCtaLabel: string;
     readonly topicsLabel: string;
     readonly recentHeading: string;
     readonly archiveLinkLabel: string;
@@ -120,6 +119,7 @@ export type SiteTranslations = {
     readonly lead: string;
     readonly activityAriaLabel: string;
     readonly yearsAriaLabel: string;
+    readonly jumpToYearLabel: string;
     readonly emptyStateTitle: string;
     readonly emptyState: string;
     readonly breadcrumbAriaLabel: string;
@@ -258,7 +258,6 @@ const SITE_TRANSLATIONS = {
       title: "Writing about things that matter.",
       lead:
         "A personal blog by Phiphi—software, culture, and everyday life from Chengdu.",
-      primaryCtaLabel: "Read the articles",
       topicsLabel: "Explore topics",
       recentHeading: "Recent writing",
       archiveLinkLabel: "View archive",
@@ -271,6 +270,7 @@ const SITE_TRANSLATIONS = {
       lead: "All posts grouped by year, newest first.",
       activityAriaLabel: "Writing activity",
       yearsAriaLabel: "Archive years",
+      jumpToYearLabel: "Jump to year",
       emptyStateTitle: "Archive is empty.",
       emptyState: "No posts published yet.",
       breadcrumbAriaLabel: "Archive breadcrumb",
@@ -415,7 +415,6 @@ const SITE_TRANSLATIONS = {
       title: "Écrire sur ce qui compte.",
       lead:
         "Un blog personnel de Phiphi — logiciel, culture et vie quotidienne depuis Chengdu.",
-      primaryCtaLabel: "Lire les articles",
       topicsLabel: "Explorer les sujets",
       recentHeading: "Articles récents",
       archiveLinkLabel: "Voir les archives",
@@ -429,6 +428,7 @@ const SITE_TRANSLATIONS = {
         "Tous les articles, regroupés par année, du plus récent au plus ancien.",
       activityAriaLabel: "Activité des articles",
       yearsAriaLabel: "Années d’archives",
+      jumpToYearLabel: "Aller à l’année",
       emptyStateTitle: "Les archives sont vides.",
       emptyState: "Aucun article publié pour le moment.",
       breadcrumbAriaLabel: "Fil d’Ariane des archives",
@@ -573,7 +573,6 @@ const SITE_TRANSLATIONS = {
       eyebrow: "个人博客",
       title: "写下真正重要的事。",
       lead: "Phiphi 的个人博客，记录软件、文化与在成都的日常生活。",
-      primaryCtaLabel: "阅读文章",
       topicsLabel: "浏览主题",
       recentHeading: "最新文章",
       archiveLinkLabel: "查看归档",
@@ -586,6 +585,7 @@ const SITE_TRANSLATIONS = {
       lead: "所有文章按年份分组，最新优先。",
       activityAriaLabel: "文章活动",
       yearsAriaLabel: "归档年份",
+      jumpToYearLabel: "跳转到年份",
       emptyStateTitle: "归档目前还是空的。",
       emptyState: "暂时还没有已发布的文章。",
       breadcrumbAriaLabel: "归档面包屑导航",
@@ -724,7 +724,6 @@ const SITE_TRANSLATIONS = {
       eyebrow: "個人部落格",
       title: "寫下真正重要的事。",
       lead: "Phiphi 的個人部落格，記錄軟體、文化與在成都的日常生活。",
-      primaryCtaLabel: "閱讀文章",
       topicsLabel: "瀏覽主題",
       recentHeading: "最新文章",
       archiveLinkLabel: "查看彙整",
@@ -737,6 +736,7 @@ const SITE_TRANSLATIONS = {
       lead: "所有文章依年份分組，最新優先。",
       activityAriaLabel: "文章活動",
       yearsAriaLabel: "彙整年份",
+      jumpToYearLabel: "跳至年份",
       emptyStateTitle: "彙整目前是空的。",
       emptyState: "目前尚無已發佈文章。",
       breadcrumbAriaLabel: "彙整麵包屑導覽",

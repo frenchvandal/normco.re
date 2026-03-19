@@ -48,12 +48,17 @@
   }
 
   .syndication-pagehead {
+    display: grid;
+    gap: var(--space-m);
     padding: var(--cds-spacing-07);
+    padding-block-start: calc(var(--cds-spacing-07) + var(--cds-spacing-02));
     border: 1px solid var(--cds-border-subtle);
     background: var(--cds-layer);
+    box-shadow: inset 0 0.25rem 0 var(--cds-link-primary), var(--cds-shadow-sm);
   }
 
   .syndication-pagehead .pagehead-eyebrow {
+    margin: 0;
     display: inline-flex;
     inline-size: fit-content;
     padding: var(--cds-spacing-01) var(--cds-spacing-03);
@@ -71,7 +76,7 @@
 
   .feeds-page-title {
     max-inline-size: 12ch;
-    margin-block-end: 0;
+    margin: 0;
   }
 
   .feeds-page-lead {

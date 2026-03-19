@@ -38,61 +38,6 @@
     text-wrap: pretty;
   }
 
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--cds-spacing-03);
-    margin: 0;
-  }
-
-  .hero-primary-action,
-  .hero-secondary-action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-block-size: 2.75rem;
-    padding-inline: var(--cds-spacing-05);
-    border: 1px solid transparent;
-    text-decoration: none;
-    font: var(--cds-productive-heading-01);
-    font-weight: var(--cds-font-weight-semibold);
-    transition:
-      background-color var(--cds-transition-default),
-      border-color var(--cds-transition-default),
-      color var(--cds-transition-default),
-      box-shadow var(--cds-transition-default);
-  }
-
-  .hero-primary-action {
-    background: var(--cds-link-primary);
-    border-color: var(--cds-link-primary);
-    color: var(--cds-background);
-  }
-
-  .hero-primary-action:hover {
-    background: var(--cds-link-primary-hover);
-    border-color: var(--cds-link-primary-hover);
-    color: var(--cds-background);
-  }
-
-  .hero-primary-action:focus-visible,
-  .hero-secondary-action:focus-visible {
-    outline: 2px solid var(--cds-focus);
-    outline-offset: 2px;
-  }
-
-  .hero-secondary-action {
-    background: var(--cds-layer);
-    border-color: var(--cds-border-subtle);
-    color: var(--cds-text-primary);
-  }
-
-  .hero-secondary-action:hover {
-    background: var(--cds-layer-hover);
-    border-color: var(--cds-border-strong);
-    color: var(--cds-text-primary);
-  }
-
   .home-topics-block {
     display: grid;
     gap: var(--cds-spacing-03);

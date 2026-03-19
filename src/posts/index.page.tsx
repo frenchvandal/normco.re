@@ -214,6 +214,15 @@ export default async (
   </a>
 </li>`;
   }).join("\n");
+  const yearJumpOptions = years.map((year, index) => {
+    const postCount = (byYear.get(year) ?? []).length;
+    const yearSummary = formatPostCount(postCount, language);
+    const selected = index === 0 ? ' selected=""' : "";
+
+    return `<option value="archive-year-${year}"${selected}>${
+      escapeHtml(`${year} — ${yearSummary}`)
+    }</option>`;
+  }).join("\n");
 
   const sections = await Promise.all(years.map(async (year) => {
     const yearPosts = byYear.get(year) ?? [];
@@ -295,6 +304,22 @@ export default async (
     ? `<section class="archive-activity" aria-label="${
       escapeHtml(translations.archive.activityAriaLabel)
     }">
+  ${
+      archiveYearNav
+        ? `<div class="archive-year-jump">
+    <label for="archive-year-select" class="archive-year-jump-label">${
+          escapeHtml(translations.archive.jumpToYearLabel)
+        }</label>
+    <select
+      id="archive-year-select"
+      class="archive-year-jump-select"
+      data-archive-year-select=""
+    >
+      ${yearJumpOptions}
+    </select>
+  </div>`
+        : ""
+    }
   <div class="archive-activity-main">
     ${sections.join("\n")}
   </div>
