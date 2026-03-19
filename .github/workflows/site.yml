@@ -1,4 +1,4 @@
-# Build and deploy static content to Alibaba Cloud OSS
+# Build and deploy static content to Aliyun OSS
 name: Deploy static content to OSS
 
 on:
@@ -45,13 +45,19 @@ jobs:
           deno-version-file: .tool-versions
           cache: true
 
-      - name: Deploy to Alibaba Cloud OSS
+      - name: Deploy to Aliyun OSS
         uses: frenchvandal/aliyun-oss-cdn-sync-action@master
         with:
           role-oidc-arn: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}
           oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}
           role-session-name: ${{ github.run_id }}
           role-session-expiration: 3600
+          cache-enabled: true
+          cache-key: >-
+            lume-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('deno.lock') }}-${{ hashFiles('_cache/**/*') || 'empty' }}
+          cache-restore-keys: |
+            lume-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('deno.lock') }}-
+            lume-cache-${{ runner.os }}-${{ runner.arch }}-
           input-dir: _site
           bucket: ${{ secrets.OSS_BUCKET }}
           region: ${{ secrets.OSS_REGION }}
