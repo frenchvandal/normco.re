@@ -47,6 +47,158 @@ function renderCarbonIconMarkup(
   }">${paths}</svg>`;
 }
 
+type AboutContact = Readonly<{
+  key: string;
+  iconClass: string;
+  label: string;
+  alt: string;
+  originalSrc: string;
+  downloadName: string;
+  width: number;
+  height: number;
+}>;
+
+type AboutFact = Readonly<{
+  iconMarkup: string;
+  iconClass: string;
+  term: string;
+  value: string;
+}>;
+
+function renderContactItem(
+  {
+    closeIconMarkup,
+    contact,
+    downloadIconMarkup,
+    qrImageSizes,
+    qrImageTransforms,
+    translations,
+  }: {
+    readonly closeIconMarkup: string;
+    readonly contact: AboutContact;
+    readonly downloadIconMarkup: string;
+    readonly qrImageSizes: string;
+    readonly qrImageTransforms: string;
+    readonly translations: ReturnType<typeof getSiteTranslations>;
+  },
+): string {
+  const panelId = `contact-qr-${contact.key}`;
+  const titleId = `${panelId}-title`;
+  const triggerLabel =
+    `${contact.label}: ${translations.about.contactOpenQrLabel}`;
+
+  return `<li class="about-contact-item">
+            <div
+              class="cds--popover-container cds--popover--bottom cds--popover--align-left cds--popover--drop-shadow cds--popover--caret cds--toggletip about-contact-toggletip"
+              data-contact-toggletip=""
+            >
+              <button
+                type="button"
+                class="about-contact-trigger cds--toggletip-button"
+                aria-controls="${escapeHtml(panelId)}"
+                aria-expanded="false"
+                aria-haspopup="dialog"
+                aria-label="${escapeHtml(triggerLabel)}"
+                data-contact-toggletip-trigger=""
+              >
+                <span class="about-contact-trigger-content">
+                  <span
+                    class="about-contact-icon ${escapeHtml(contact.iconClass)}"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="about-contact-label">${
+    escapeHtml(contact.label)
+  }</span>
+                </span>
+              </button>
+	              <div class="cds--popover" hidden>
+                <span class="cds--popover-caret"></span>
+                <div
+                  id="${escapeHtml(panelId)}"
+                  class="cds--popover-content cds--toggletip-content about-contact-popover"
+                  role="dialog"
+                  aria-modal="false"
+                  aria-labelledby="${escapeHtml(titleId)}"
+                  tabindex="-1"
+                  data-contact-toggletip-panel=""
+                >
+                  <div class="about-contact-popover-header">
+                    <div class="about-contact-popover-brand">
+                      <span
+                        class="about-contact-icon about-contact-popover-app ${
+    escapeHtml(contact.iconClass)
+  }"
+                        aria-hidden="true"
+                      ></span>
+                      <span id="${escapeHtml(titleId)}" class="sr-only">${
+    escapeHtml(contact.label)
+  }</span>
+                    </div>
+                    <div class="about-contact-popover-toolbar">
+                      <a
+                        class="cds--btn cds--btn--ghost about-contact-action about-contact-download"
+                        href="${escapeHtml(contact.originalSrc)}"
+                        download="${escapeHtml(contact.downloadName)}"
+                        aria-label="${
+    escapeHtml(translations.about.contactDownloadJpgLabel)
+  }"
+                        title="${
+    escapeHtml(translations.about.contactDownloadJpgLabel)
+  }"
+                      >
+                        <span class="about-contact-action-icon" aria-hidden="true">
+                          ${downloadIconMarkup}
+                        </span>
+                      </a>
+                      <button
+                        type="button"
+                        class="cds--btn cds--btn--ghost about-contact-action about-contact-close"
+                        aria-label="${
+    escapeHtml(translations.about.contactCloseLabel)
+  }"
+                        title="${
+    escapeHtml(translations.about.contactCloseLabel)
+  }"
+                        data-contact-toggletip-close=""
+                      >
+                        <span class="about-contact-action-icon" aria-hidden="true">
+                          ${closeIconMarkup}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <figure class="about-contact-qr">
+                    <img
+                      src="${escapeHtml(contact.originalSrc)}"
+                      alt="${escapeHtml(contact.alt)}"
+                      width="${contact.width}"
+                      height="${contact.height}"
+                      loading="lazy"
+                      decoding="async"
+                      sizes="${escapeHtml(qrImageSizes)}"
+                      transform-images="${escapeHtml(qrImageTransforms)}"
+                    />
+                  </figure>
+                </div>
+              </div>
+            </div>
+          </li>`;
+}
+
+function renderFactItem(fact: AboutFact): string {
+  return `<div class="about-facts-row">
+      <dt class="about-facts-term">
+        <span class="about-fact-icon ${
+    escapeHtml(fact.iconClass)
+  }" aria-hidden="true">
+          ${fact.iconMarkup}
+        </span>
+        <span class="about-facts-term-label">${escapeHtml(fact.term)}</span>
+      </dt>
+      <dd class="about-facts-description">${escapeHtml(fact.value)}</dd>
+    </div>`;
+}
+
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Page URL. */
@@ -126,7 +278,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     : language === "zhHant"
     ? "zh-hant"
     : "en";
-  const contacts = [
+  const contacts: readonly AboutContact[] = [
     {
       key: "telegram",
       iconClass: "about-contact-icon--telegram",
@@ -149,7 +301,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
       height: 1605,
     },
   ] as const;
-  const facts = [
+  const facts: readonly AboutFact[] = [
     {
       iconMarkup: locationIconMarkup,
       iconClass: "about-fact-icon--location",
@@ -169,122 +321,17 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
       value: translations.about.languagesValue,
     },
   ] as const;
-  const contactItems = contacts.map((contact) => {
-    const panelId = `contact-qr-${contact.key}`;
-    const titleId = `${panelId}-title`;
-    const triggerLabel =
-      `${contact.label}: ${translations.about.contactOpenQrLabel}`;
-
-    return `<li class="about-contact-item">
-            <div
-              class="cds--popover-container cds--popover--bottom cds--popover--align-left cds--popover--drop-shadow cds--popover--caret cds--toggletip about-contact-toggletip"
-              data-contact-toggletip=""
-            >
-              <button
-                type="button"
-                class="about-contact-trigger cds--toggletip-button"
-                aria-controls="${escapeHtml(panelId)}"
-                aria-expanded="false"
-                aria-haspopup="dialog"
-                aria-label="${escapeHtml(triggerLabel)}"
-                data-contact-toggletip-trigger=""
-              >
-                <span class="about-contact-trigger-content">
-                  <span
-                    class="about-contact-icon ${escapeHtml(contact.iconClass)}"
-                    aria-hidden="true"
-                  ></span>
-                  <span class="about-contact-label">${
-      escapeHtml(contact.label)
-    }</span>
-                </span>
-              </button>
-	              <div class="cds--popover" hidden>
-                <span class="cds--popover-caret"></span>
-                <div
-                  id="${escapeHtml(panelId)}"
-                  class="cds--popover-content cds--toggletip-content about-contact-popover"
-                  role="dialog"
-                  aria-modal="false"
-                  aria-labelledby="${escapeHtml(titleId)}"
-                  tabindex="-1"
-                  data-contact-toggletip-panel=""
-                >
-                  <div class="about-contact-popover-header">
-                    <div class="about-contact-popover-brand">
-                      <span
-                        class="about-contact-icon about-contact-popover-app ${
-      escapeHtml(contact.iconClass)
-    }"
-                        aria-hidden="true"
-                      ></span>
-                      <span id="${escapeHtml(titleId)}" class="sr-only">${
-      escapeHtml(contact.label)
-    }</span>
-                    </div>
-                    <div class="about-contact-popover-toolbar">
-                      <a
-                        class="cds--btn cds--btn--ghost about-contact-action about-contact-download"
-                        href="${escapeHtml(contact.originalSrc)}"
-                        download="${escapeHtml(contact.downloadName)}"
-                        aria-label="${
-      escapeHtml(translations.about.contactDownloadJpgLabel)
-    }"
-                        title="${
-      escapeHtml(translations.about.contactDownloadJpgLabel)
-    }"
-                      >
-                        <span class="about-contact-action-icon" aria-hidden="true">
-                          ${downloadIconMarkup}
-                        </span>
-                      </a>
-                      <button
-                        type="button"
-                        class="cds--btn cds--btn--ghost about-contact-action about-contact-close"
-                        aria-label="${
-      escapeHtml(translations.about.contactCloseLabel)
-    }"
-                        title="${
-      escapeHtml(translations.about.contactCloseLabel)
-    }"
-                        data-contact-toggletip-close=""
-                      >
-                        <span class="about-contact-action-icon" aria-hidden="true">
-                          ${closeIconMarkup}
-                        </span>
-                      </button>
-                    </div>
-                  </div>
-                  <figure class="about-contact-qr">
-                    <img
-                      src="${escapeHtml(contact.originalSrc)}"
-                      alt="${escapeHtml(contact.alt)}"
-                      width="${contact.width}"
-                      height="${contact.height}"
-                      loading="lazy"
-                      decoding="async"
-                      sizes="${escapeHtml(qrImageSizes)}"
-                      transform-images="${escapeHtml(qrImageTransforms)}"
-                    />
-                  </figure>
-                </div>
-              </div>
-            </div>
-          </li>`;
-  }).join("");
-  const factItems = facts.map((fact) =>
-    `<div class="about-facts-row">
-      <dt class="about-facts-term">
-        <span class="about-fact-icon ${
-      escapeHtml(fact.iconClass)
-    }" aria-hidden="true">
-          ${fact.iconMarkup}
-        </span>
-        <span class="about-facts-term-label">${escapeHtml(fact.term)}</span>
-      </dt>
-      <dd class="about-facts-description">${escapeHtml(fact.value)}</dd>
-    </div>`
+  const contactItems = contacts.map((contact) =>
+    renderContactItem({
+      closeIconMarkup,
+      contact,
+      downloadIconMarkup,
+      qrImageSizes,
+      qrImageTransforms,
+      translations,
+    })
   ).join("");
+  const factItems = facts.map(renderFactItem).join("");
 
   return `<div class="site-page-shell site-page-shell--wide">
 <nav class="cds--breadcrumb" aria-label="${

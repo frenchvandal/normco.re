@@ -23,14 +23,12 @@ import pagefind from "lume/plugins/pagefind.ts";
 import validateHtml from "lume/plugins/validate_html.ts";
 import checkUrls from "lume/plugins/check_urls.ts";
 import jsonLd from "lume/plugins/json_ld.ts";
-import prism from "lume/plugins/prism.ts";
 import type Site from "lume/core/site.ts";
 import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns-locale";
-import "npm/prism-bash";
-import "npm/prism-typescript";
-import "npm/prism-yaml";
 import { CARBON_SASS_LOAD_PATHS } from "./materialize_sass_npm_packages.ts";
+import { SHIKI_OPTIONS } from "./code_highlighting.ts";
 import otelPlugin from "../plugins/otel.ts";
+import shiki from "../plugins/shiki.ts";
 
 /**
  * Lightning CSS expects packed browser versions in the form 0xMMmmpp
@@ -206,6 +204,6 @@ export function registerPlugins(
   // --- Structured data ---
 
   site.use(jsonLd());
-  site.use(prism());
+  site.use(shiki(SHIKI_OPTIONS));
   site.use(otelPlugin());
 }

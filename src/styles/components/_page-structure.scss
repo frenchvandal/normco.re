@@ -33,7 +33,7 @@
     margin: 0;
     font: var(--cds-productive-heading-01);
     font-weight: var(--cds-font-weight-semibold);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--site-ui-kicker-letter-spacing);
     text-transform: uppercase;
     color: var(--cds-text-secondary);
   }
@@ -76,8 +76,13 @@
   }
 
   .pagehead-eyebrow {
+    display: inline-flex;
+    inline-size: fit-content;
+    padding: var(--cds-spacing-01) var(--cds-spacing-03);
+    border: var(--site-border-width-thin) solid var(--cds-border-subtle);
+    background: var(--site-surface-panel);
     font-size: var(--cds-font-size-body-01);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--site-ui-kicker-letter-spacing);
     text-transform: uppercase;
     color: var(--cds-text-secondary);
     font-weight: var(--cds-font-weight-semibold);
@@ -151,7 +156,7 @@
     gap: var(--cds-spacing-03);
     min-block-size: 2.5rem;
     padding: var(--cds-spacing-03) var(--cds-spacing-04);
-    border: 1px solid var(--cds-border-subtle);
+    border: var(--site-border-width-thin) solid var(--cds-border-subtle);
     background: transparent;
     color: var(--cds-text-primary);
   }
@@ -224,7 +229,7 @@
     inline-size: 2rem;
     block-size: 2rem;
     flex: 0 0 auto;
-    border: 1px solid var(--cds-border-subtle);
+    border: var(--site-border-width-thin) solid var(--cds-border-subtle);
     background: var(--site-surface-accent);
     color: var(--cds-link-primary);
   }
@@ -302,7 +307,7 @@
 
     .feature-rail-sticky {
       position: sticky;
-      top: calc(3rem + var(--cds-spacing-07));
+      top: calc(var(--site-shell-size) + var(--cds-spacing-07));
     }
   }
 }

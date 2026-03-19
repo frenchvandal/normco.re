@@ -130,24 +130,6 @@
     }
   }
 
-  @media (prefers-contrast: more) {
-    :root {
-      --cds-background: #ffffff;
-      --cds-text-primary: #000000;
-      --cds-link-primary: #005fcc;
-      --cds-border-strong: #000000;
-      --cds-focus: #005fcc;
-    }
-
-    :root[data-color-mode="dark"] {
-      --cds-background: #000000;
-      --cds-text-primary: #ffffff;
-      --cds-link-primary: #79c0ff;
-      --cds-border-strong: #ffffff;
-      --cds-focus: #79c0ff;
-    }
-  }
-
   @media (forced-colors: active) {
     a {
       color: LinkText;

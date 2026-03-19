@@ -11,14 +11,6 @@
     padding: var(--cds-spacing-07);
   }
 
-  .archive-pagehead .pagehead-eyebrow {
-    display: inline-flex;
-    inline-size: fit-content;
-    padding: var(--cds-spacing-01) var(--cds-spacing-03);
-    border: 1px solid var(--cds-border-subtle);
-    background: var(--site-surface-panel);
-  }
-
   .archive-activity {
     display: flex;
     flex-direction: column;
@@ -33,7 +25,8 @@
 
   .archive-year {
     padding-block-start: var(--space-m);
-    border-block-start: 1px solid var(--cds-border-subtle);
+    border-block-start: var(--site-border-width-thin) solid
+      var(--cds-border-subtle);
     content-visibility: auto;
     contain-intrinsic-size: auto 20rem;
     scroll-margin-top: calc(var(--cds-spacing-09) + var(--space-s));
@@ -82,7 +75,7 @@
     gap: var(--space-s);
     align-items: center;
     padding: var(--cds-spacing-03) var(--cds-spacing-04);
-    border: 1px solid var(--cds-border-subtle);
+    border: var(--site-border-width-thin) solid var(--cds-border-subtle);
     border-radius: var(--cds-radius-none);
     background: var(--site-surface-page);
     transition:

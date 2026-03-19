@@ -1,7 +1,7 @@
 _site
 _cache
-.env
-.DS_Store
-coverage
 .deno_cache
+.DS_Store
+.env
+coverage
 node_modules

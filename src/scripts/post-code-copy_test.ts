@@ -126,4 +126,29 @@ describe("post-code-copy.js", () => {
     assertEquals(button.getAttribute("aria-label"), "Code copied");
     timers.runAll();
   });
+
+  it("falls back to execCommand when the async clipboard API is unavailable", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    installFakeTimers(window);
+    const executedCommands: string[] = [];
+    (
+      window.document as Document & {
+        execCommand(command: string): boolean;
+      }
+    ).execCommand = (command: string) => {
+      executedCommands.push(command);
+      return command === "copy";
+    };
+
+    evaluateScript(window);
+
+    const [button] = getCopyButtons(window);
+    assert(button);
+    button.click();
+    await flushMicrotasks();
+
+    assertEquals(executedCommands, ["copy"]);
+    assertEquals(button.textContent, "Code copied");
+  });
 });

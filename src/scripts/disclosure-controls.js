@@ -1,20 +1,18 @@
 // @ts-check
 (() => {
-  const DEFERRED_FOCUS_DELAY_MS = 50;
+  const DEFERRED_FOCUS_DELAY_MS = 16;
   const FOCUSABLE_SELECTOR =
     "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
   const CONTROL_SELECTOR =
-    "cds-header-global-action[panel-id], cds-header-menu-button, .cds--header__language-toggle, .cds--header__menu-toggle, .cds--header__action[aria-controls]";
+    ".cds--header__action[aria-controls], .cds--header__menu-toggle";
   const HEADER_PANEL_TOGGLE_SELECTOR =
     ".cds--header__action[aria-controls]:not(.cds--header__menu-toggle)";
   const LANGUAGE_PANEL_SELECTOR = "[data-language-panel]:not([hidden])";
   const LANGUAGE_MENU_SELECTOR = "[data-language-menu]";
   const LANGUAGE_OPTION_SELECTOR =
     '[data-language-option][role="menuitemradio"]';
-  const HEADER_PANEL_SELECTOR =
-    "cds-header-panel[expanded], .cds--header__panel:not([hidden])";
-  const SIDE_NAV_SELECTOR =
-    "cds-side-nav[expanded], .cds--side-nav:not([hidden])";
+  const HEADER_PANEL_SELECTOR = ".cds--header__panel:not([hidden])";
+  const SIDE_NAV_SELECTOR = ".cds--side-nav:not([hidden])";
   const SIDE_NAV_LINK_SELECTOR = "a.cds--side-nav__link";
   const OVERLAY_SELECTOR = ".cds--side-nav__overlay";
   const DISCLOSURE_SURFACE_SELECTOR = ".cds--header__panel, .cds--side-nav";
@@ -85,21 +83,13 @@
   function getLinkedPanelId(control) {
     if (
       control.matches(
-        ".cds--header__language-toggle, .cds--header__action[aria-controls]",
+        ".cds--header__action[aria-controls], .cds--header__menu-toggle",
       )
     ) {
       return control.getAttribute("aria-controls");
     }
 
-    if (control.matches(".cds--header__menu-toggle")) {
-      return control.getAttribute("aria-controls");
-    }
-
-    if (!control.matches("cds-header-global-action[panel-id]")) {
-      return null;
-    }
-
-    return control.getAttribute("panel-id");
+    return null;
   }
 
   /**
@@ -294,7 +284,7 @@
    * @returns {void}
    */
   function scheduleDeferredFocus(container, resolveTarget) {
-    globalThis.setTimeout(() => {
+    const focusWhenReady = () => {
       if (!container.isConnected || container.hasAttribute("hidden")) {
         return;
       }
@@ -306,7 +296,15 @@
       }
 
       target.focus({ preventScroll: true });
-    }, DEFERRED_FOCUS_DELAY_MS);
+    };
+    const requestFrame = globalThis.requestAnimationFrame;
+
+    if (typeof requestFrame === "function") {
+      requestFrame(() => requestFrame(focusWhenReady));
+      return;
+    }
+
+    globalThis.setTimeout(focusWhenReady, DEFERRED_FOCUS_DELAY_MS);
   }
 
   /**
@@ -478,11 +476,6 @@
         continue;
       }
 
-      if (control.hasAttribute("active")) {
-        control.removeAttribute("active");
-        closed = true;
-      }
-
       if (control.getAttribute("aria-expanded") === "true") {
         setControlExpanded(control, false);
         closed = true;
@@ -608,7 +601,10 @@
       return;
     }
 
-    bindPanelTriggerKeyboard(button, panel);
+    if (panel.matches("[data-language-panel]")) {
+      bindPanelTriggerKeyboard(button, panel);
+      setupMenuKeyboardNavigation(panel);
+    }
 
     button.addEventListener("click", () => {
       const isExpanded = button.getAttribute("aria-expanded") === "true";
@@ -762,31 +758,6 @@
     });
   }
 
-  /** Observe native Carbon controls toggling their `active` attribute. */
-  function observeNativeControlActivation() {
-    const activeObserver = new MutationObserver((mutationList) => {
-      for (const mutation of mutationList) {
-        if (
-          mutation.type !== "attributes" ||
-          mutation.attributeName !== "active" ||
-          !(mutation.target instanceof HTMLElement) ||
-          !mutation.target.hasAttribute("active")
-        ) {
-          continue;
-        }
-
-        closeCarbonChrome({ exceptControl: mutation.target });
-      }
-    });
-
-    for (const control of controls) {
-      activeObserver.observe(control, {
-        attributes: true,
-        attributeFilter: ["active"],
-      });
-    }
-  }
-
   /** Track whether the last interaction came from a pointer or keyboard. */
   function setupInteractionModalityTracking() {
     globalThis.document.addEventListener("pointerdown", () => {
@@ -807,8 +778,8 @@
   }
 
   /**
-   * Handle native UI shell toggles (navigation, search, language)
-   * Replaces functionality previously provided by Carbon Web Components
+   * Wire the native header disclosures (navigation, search, language)
+   * and their associated dismissal / focus behavior.
    */
   function setupDisclosureControls() {
     if (hasBoundDisclosureControls) {
@@ -836,7 +807,6 @@
       }
 
       const panel = getLinkedPanel(control);
-      setupMenuKeyboardNavigation(panel);
       setupHeaderPanelToggle(control, panel);
     }
 
@@ -845,7 +815,6 @@
   }
 
   setupInteractionModalityTracking();
-  observeNativeControlActivation();
   globalThis.document.addEventListener("keydown", handleGlobalKeydown);
 
   if (globalThis.document.readyState === "loading") {

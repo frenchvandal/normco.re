@@ -23,6 +23,47 @@ import {
 import { buildHeaderNavigation } from "./header-navigation.ts";
 
 type SsxElement = ReturnType<typeof jsx>;
+type HeaderActionButtonAttributes = Readonly<Record<string, string>>;
+
+function renderHeaderAction(
+  {
+    buttonAttributes,
+    buttonClassName = "cds--header__action",
+    buttonId,
+    iconMarkup,
+    tooltipLabel,
+  }: {
+    readonly buttonAttributes: HeaderActionButtonAttributes;
+    readonly buttonClassName?: string;
+    readonly buttonId?: string;
+    readonly iconMarkup: SsxElement;
+    readonly tooltipLabel: string;
+  },
+): SsxElement {
+  const mergedButtonAttributes = {
+    ...(buttonId ? { id: buttonId } : {}),
+    class: buttonClassName,
+    "data-header-tooltip-trigger": "",
+    ...buttonAttributes,
+  };
+
+  return (
+    <div
+      class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
+      data-header-tooltip=""
+    >
+      <button type="button" {...mergedButtonAttributes}>
+        {iconMarkup}
+      </button>
+      <div class="cds--popover" aria-hidden="true">
+        <span class="cds--popover-caret"></span>
+        <div class="cds--popover-content">
+          <span class="cds--tooltip-content">{tooltipLabel}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /** Renders the Carbon UI Shell header with navigation and user controls. */
 export default (
@@ -101,112 +142,80 @@ export default (
           {/* Right section: global actions */}
           <div class="cds--header__global">
             {/* Search action */}
-            <div
-              class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
-              data-header-tooltip=""
-            >
-              <button
-                type="button"
-                class="cds--header__action"
-                aria-label={translations.site.searchLabel}
-                aria-expanded="false"
-                aria-controls={searchPanelId}
-                data-header-tooltip-trigger=""
-              >
+            {renderHeaderAction({
+              buttonAttributes: {
+                "aria-label": translations.site.searchLabel,
+                "aria-expanded": "false",
+                "aria-controls": searchPanelId,
+              },
+              iconMarkup: (
                 <CarbonIcon
                   icon={SEARCH_ICON}
                   className="cds--header__action-icon"
                   width={20}
                   height={20}
                 />
-              </button>
-              <div class="cds--popover" aria-hidden="true">
-                <span class="cds--popover-caret"></span>
-                <div class="cds--popover-content">
-                  <span class="cds--tooltip-content">
-                    {translations.site.searchLabel}
-                  </span>
-                </div>
-              </div>
-            </div>
+              ),
+              tooltipLabel: translations.site.searchLabel,
+            })}
 
             {/* Language selector action */}
-            <div
-              class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
-              data-header-tooltip=""
-            >
-              <button
-                type="button"
-                class="cds--header__action cds--header__language-toggle"
-                aria-label={translations.site.languageSelectAriaLabel}
-                aria-expanded="false"
-                aria-controls={languagePanelId}
-                aria-haspopup="menu"
-                data-header-tooltip-trigger=""
-              >
+            {renderHeaderAction({
+              buttonAttributes: {
+                "aria-label": translations.site.languageSelectAriaLabel,
+                "aria-expanded": "false",
+                "aria-controls": languagePanelId,
+                "aria-haspopup": "menu",
+              },
+              buttonClassName:
+                "cds--header__action cds--header__language-toggle",
+              iconMarkup: (
                 <CarbonIcon
                   icon={TRANSLATE_ICON}
                   className="cds--header__action-icon"
                   width={20}
                   height={20}
                 />
-              </button>
-              <div class="cds--popover" aria-hidden="true">
-                <span class="cds--popover-caret"></span>
-                <div class="cds--popover-content">
-                  <span class="cds--tooltip-content">
-                    {translations.site.languageSelectLabel}
-                  </span>
-                </div>
-              </div>
-            </div>
+              ),
+              tooltipLabel: translations.site.languageSelectLabel,
+            })}
 
             {/* Theme toggle action */}
-            <div
-              class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
-              data-header-tooltip=""
-            >
-              <button
-                id="theme-toggle"
-                type="button"
-                class="cds--header__action"
-                aria-label={translations.site.themeToggleLabel}
-                data-label-switch-light={translations.site
-                  .switchToLightThemeLabel}
-                data-label-switch-dark={translations.site
-                  .switchToDarkThemeLabel}
-                data-label-follow-system={translations.site
-                  .followSystemThemeLabel}
-                data-header-tooltip-trigger=""
-              >
-                <CarbonIcon
-                  icon={LIGHT_ICON}
-                  className="cds--header__action-icon theme-icon theme-icon--sun"
-                  width={20}
-                  height={20}
-                />
-                <CarbonIcon
-                  icon={DARK_ICON}
-                  className="cds--header__action-icon theme-icon theme-icon--moon"
-                  width={20}
-                  height={20}
-                />
-                <CarbonIcon
-                  icon={SYSTEM_ICON}
-                  className="cds--header__action-icon theme-icon theme-icon--system"
-                  width={20}
-                  height={20}
-                />
-              </button>
-              <div class="cds--popover" aria-hidden="true">
-                <span class="cds--popover-caret"></span>
-                <div class="cds--popover-content">
-                  <span class="cds--tooltip-content">
-                    {translations.site.themeToggleLabel}
-                  </span>
-                </div>
-              </div>
-            </div>
+            {renderHeaderAction({
+              buttonAttributes: {
+                "aria-label": translations.site.themeToggleLabel,
+                "data-label-switch-light": translations.site
+                  .switchToLightThemeLabel,
+                "data-label-switch-dark": translations.site
+                  .switchToDarkThemeLabel,
+                "data-label-follow-system": translations.site
+                  .followSystemThemeLabel,
+              },
+              buttonId: "theme-toggle",
+              iconMarkup: (
+                <>
+                  <CarbonIcon
+                    icon={LIGHT_ICON}
+                    className="cds--header__action-icon theme-icon theme-icon--sun"
+                    width={20}
+                    height={20}
+                  />
+                  <CarbonIcon
+                    icon={DARK_ICON}
+                    className="cds--header__action-icon theme-icon theme-icon--moon"
+                    width={20}
+                    height={20}
+                  />
+                  <CarbonIcon
+                    icon={SYSTEM_ICON}
+                    className="cds--header__action-icon theme-icon theme-icon--system"
+                    width={20}
+                    height={20}
+                  />
+                </>
+              ),
+              tooltipLabel: translations.site.themeToggleLabel,
+            })}
           </div>
         </div>
       </header>

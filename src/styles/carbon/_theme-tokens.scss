@@ -171,10 +171,17 @@
     --focus-ring-inset-offset: calc(var(--focus-ring-width) * -1);
 
     // Site semantic tokens backed by Carbon primitives
+    --site-border-width-thin: 1px;
+    --site-ui-kicker-letter-spacing: 0.08em;
     --site-shell-size: 3rem;
     --site-search-field-size: 2.25rem;
     --site-search-icon-offset: 0.625rem;
     --site-search-icon-size: var(--cds-font-size-body-01);
+    --site-search-input-padding-inline: var(--cds-spacing-07);
+    --site-search-clear-icon-size: var(--cds-spacing-05);
+    --site-header-panel-width: 18rem;
+    --site-header-language-panel-width: 14rem;
+    --site-side-nav-width: 16rem;
     --site-inline-copy-control-size: 2.375rem;
     --site-link-underline-thickness: max(1px, 0.08em);
     --site-link-underline-offset: 0.15em;
@@ -310,7 +317,12 @@
   // High contrast mode
   @media (prefers-contrast: more) {
     :root {
+      --cds-background: #{map.get(themes.$white, "background")};
+      --cds-text-primary: #{map.get(themes.$white, "text-primary")};
+      --cds-link-primary: #{map.get(themes.$white, "link-primary")};
       --cds-border-subtle: #{map.get(themes.$white, "border-strong-01")};
+      --cds-border-strong: #{map.get(themes.$white, "border-strong-01")};
+      --cds-focus: #{map.get(themes.$white, "focus")};
       --cds-text-secondary: #{map.get(themes.$white, "text-primary")};
       --site-tag-blue-border: #{colors.$blue-70};
       --site-tag-green-border: #{colors.$green-70};
@@ -328,6 +340,11 @@
 
     [data-color-mode="dark"],
     [data-color-mode="gray-100"] {
+      --cds-background: #{map.get(themes.$g100, "background")};
+      --cds-text-primary: #{map.get(themes.$g100, "text-primary")};
+      --cds-link-primary: #{map.get(themes.$g100, "link-primary")};
+      --cds-border-strong: #{map.get(themes.$g100, "border-strong-01")};
+      --cds-focus: #{map.get(themes.$g100, "focus")};
       --site-tag-blue-border: #{colors.$blue-40};
       --site-tag-green-border: #{colors.$green-40};
       --site-tag-purple-border: #{colors.$purple-40};
@@ -344,6 +361,11 @@
 
     @media (prefers-color-scheme: dark) {
       :root:not([data-color-mode]) {
+        --cds-background: #{map.get(themes.$g100, "background")};
+        --cds-text-primary: #{map.get(themes.$g100, "text-primary")};
+        --cds-link-primary: #{map.get(themes.$g100, "link-primary")};
+        --cds-border-strong: #{map.get(themes.$g100, "border-strong-01")};
+        --cds-focus: #{map.get(themes.$g100, "focus")};
         --site-tag-blue-border: #{colors.$blue-40};
         --site-tag-green-border: #{colors.$green-40};
         --site-tag-purple-border: #{colors.$purple-40};

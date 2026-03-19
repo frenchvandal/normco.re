@@ -52,14 +52,6 @@
     padding: var(--cds-spacing-07);
   }
 
-  .syndication-pagehead .pagehead-eyebrow {
-    display: inline-flex;
-    inline-size: fit-content;
-    padding: var(--cds-spacing-01) var(--cds-spacing-03);
-    border: 1px solid var(--cds-border-subtle);
-    background: var(--site-surface-panel);
-  }
-
   .feeds-hero-panel {
     display: grid;
     gap: var(--space-s);
@@ -132,7 +124,7 @@
     color: var(--cds-text-secondary);
     font: var(--cds-productive-heading-01);
     font-weight: var(--cds-font-weight-semibold);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--site-ui-kicker-letter-spacing);
     text-transform: uppercase;
   }
 

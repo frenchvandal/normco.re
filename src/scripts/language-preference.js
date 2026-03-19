@@ -1,6 +1,9 @@
 // @ts-check
 (() => {
   const currentScript = globalThis.document.currentScript;
+  const LANGUAGE_OPTION_SELECTOR = "[data-language-option]";
+  const HEADER_ACTION_SELECTOR =
+    ".cds--header__action[aria-controls], .cds--header__menu-toggle";
 
   if (!(currentScript instanceof HTMLScriptElement)) {
     return;
@@ -258,22 +261,6 @@
     globalThis.location.replace(targetUrl);
   }
 
-  /**
-   * @param {string} language
-   * @returns {void}
-   */
-  function navigateToLanguage(language) {
-    const targetUrl = resolveTargetUrl(language);
-
-    persistLanguage(language);
-
-    if (getCurrentPath() === getTargetPath(targetUrl)) {
-      return;
-    }
-
-    assignLocation(targetUrl);
-  }
-
   const currentLanguage = normalizeLanguage(currentLanguageCandidate) ??
     defaultLanguage;
   const preferredLanguage = resolvePreferredLanguage();
@@ -287,22 +274,6 @@
       replaceLocation(targetUrl);
       return;
     }
-  }
-
-  function initializeLanguageSelector() {
-    const selector = globalThis.document.getElementById("language-select");
-
-    if (!(selector instanceof HTMLSelectElement)) {
-      return;
-    }
-
-    selector.value = currentLanguage;
-
-    selector.addEventListener("change", () => {
-      const selectedLanguage = normalizeLanguage(selector.value) ??
-        defaultLanguage;
-      navigateToLanguage(selectedLanguage);
-    });
   }
 
   /**
@@ -332,12 +303,6 @@
    * @returns {void}
    */
   function closeLanguageSurface(menuOption) {
-    const detailsMenu = menuOption.closest("details");
-
-    if (detailsMenu instanceof HTMLDetailsElement) {
-      detailsMenu.removeAttribute("open");
-    }
-
     const languagePanel = menuOption.closest("[data-language-panel]");
 
     if (!(languagePanel instanceof HTMLElement)) {
@@ -355,7 +320,7 @@
 
     for (
       const action of globalThis.document.querySelectorAll(
-        ".cds--header__action[aria-controls], .cds--header__menu-toggle, cds-header-global-action[panel-id]",
+        HEADER_ACTION_SELECTOR,
       )
     ) {
       if (!(action instanceof HTMLElement)) {
@@ -367,7 +332,6 @@
         action.getAttribute("panel-id") === panelId
       ) {
         action.setAttribute("aria-expanded", "false");
-        action.removeAttribute("active");
         action.focus({ preventScroll: true });
       }
     }
@@ -375,7 +339,7 @@
 
   function initializeLanguageMenuOptions() {
     const menuOptions = globalThis.document.querySelectorAll(
-      "[data-language-option]",
+      LANGUAGE_OPTION_SELECTOR,
     );
 
     for (const menuOption of menuOptions) {
@@ -440,17 +404,8 @@
   }
 
   function initializeLanguageControls() {
-    initializeLanguageSelector();
     initializeLanguageMenuOptions();
   }
 
-  if (globalThis.document.readyState === "loading") {
-    globalThis.document.addEventListener(
-      "DOMContentLoaded",
-      initializeLanguageControls,
-      { once: true },
-    );
-  } else {
-    initializeLanguageControls();
-  }
+  initializeLanguageControls();
 })();

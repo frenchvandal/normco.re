@@ -1,0 +1,41 @@
+@layer components {
+  .shiki,
+  .shiki span {
+    color: var(--shiki-light);
+    background-color: var(--shiki-light-bg);
+    font-style: var(--shiki-light-font-style, inherit);
+    font-weight: var(--shiki-light-font-weight, inherit);
+    text-decoration: var(--shiki-light-text-decoration, inherit);
+  }
+
+  :root[data-color-mode="dark"] .shiki,
+  :root[data-color-mode="dark"] .shiki span,
+  :root[data-color-mode="gray-100"] .shiki,
+  :root[data-color-mode="gray-100"] .shiki span {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+    font-style: var(--shiki-dark-font-style, inherit);
+    font-weight: var(--shiki-dark-font-weight, inherit);
+    text-decoration: var(--shiki-dark-text-decoration, inherit);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-color-mode]) .shiki,
+    :root:not([data-color-mode]) .shiki span {
+      color: var(--shiki-dark);
+      background-color: var(--shiki-dark-bg);
+      font-style: var(--shiki-dark-font-style, inherit);
+      font-weight: var(--shiki-dark-font-weight, inherit);
+      text-decoration: var(--shiki-dark-text-decoration, inherit);
+    }
+  }
+
+  .shiki code {
+    display: block;
+    min-inline-size: max-content;
+  }
+
+  .shiki .line {
+    display: block;
+  }
+}
