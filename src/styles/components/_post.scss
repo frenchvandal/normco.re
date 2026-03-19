@@ -1,4 +1,6 @@
 /* Individual post page — article, breadcrumb shell, content prose, prev/next nav. */
+@use "@carbon/styles/scss/breakpoint" as *;
+
 @layer components {
   .post-breadcrumb-shell {
     display: flex;
@@ -171,6 +173,10 @@
   .post-nav {
     display: grid;
     gap: var(--cds-spacing-03);
+
+    @include breakpoint-up(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   .post-nav-item {

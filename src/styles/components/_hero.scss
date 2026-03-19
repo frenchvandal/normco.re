@@ -1,9 +1,12 @@
 /* Home page hero and Carbon editorial hero.
    Source: https://carbondesignsystem.com/elements/typography/overview/ */
+@use "@carbon/styles/scss/breakpoint" as *;
+
 @layer components {
   .home-pagehead {
     padding: var(--cds-spacing-07);
     border: 1px solid var(--cds-border-subtle);
+    border-block-start: 3px solid var(--cds-border-interactive, var(--cds-focus));
     background: var(--cds-layer);
   }
 
@@ -53,6 +56,16 @@
     gap: var(--space-l);
     margin: 0;
     padding: 0;
+  }
+
+  @include breakpoint-up(md) {
+    .home-posts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .home-posts-item:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
   }
 
   .home-all-posts {
