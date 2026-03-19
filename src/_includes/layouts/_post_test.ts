@@ -7,23 +7,29 @@ import {
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker, seedTestFaker } from "../../../test/faker.ts";
+import {
+  asLumeData,
+  asLumeHelpers,
+  asOptionalLumeData,
+} from "../../../test/lume.ts";
+import tagStyles from "../../styles/components/_tag.scss" with { type: "text" };
 
 import postLayout from "./post.tsx";
 
 // ---------------------------------------------------------------------------
 // Minimal mock helpers satisfying the `H` interface used inside post.tsx.
 // ---------------------------------------------------------------------------
-const MOCK_HELPERS = {
+const MOCK_HELPERS = asLumeHelpers({
   date: (_value: unknown, _format: string): string => "2026-03-05",
-} as unknown as Lume.Helpers;
+});
 
 function makeSentence(seed: number): string {
-  faker.seed(seed);
+  seedTestFaker(seed);
   return faker.lorem.sentence({ min: 3, max: 6 });
 }
 
 function makePostUrl(seed: number): string {
-  faker.seed(seed);
+  seedTestFaker(seed);
   return `/posts/${faker.lorem.slug(3)}/`;
 }
 
@@ -42,8 +48,8 @@ function makeNav(
   next: { url: string; title: string } | undefined,
 ) {
   return {
-    previousPage: () => prev as unknown as Lume.Data | undefined,
-    nextPage: () => next as unknown as Lume.Data | undefined,
+    previousPage: () => asOptionalLumeData(prev),
+    nextPage: () => asOptionalLumeData(next),
   };
 }
 
@@ -65,7 +71,7 @@ function makeData(
   const defaultBody = makeSentence(702);
   const defaultUrl = makePostUrl(703);
 
-  return {
+  return asLumeData({
     title: defaultTitle,
     description: undefined,
     children: { __html: `<p>${defaultBody}</p>` },
@@ -74,7 +80,7 @@ function makeData(
     readingInfo: undefined,
     nav: makeNav(undefined, undefined),
     ...overrides,
-  } as unknown as Lume.Data;
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -137,13 +143,13 @@ describe("post.tsx layout", () => {
   describe("URL fallback", () => {
     it("falls back to '/' when url is absent from data", async () => {
       // Construct data directly without a `url` key to test the `?? "/"` branch.
-      const data = {
+      const data = asLumeData({
         title: "Test Post",
         children: { __html: "<p>Body.</p>" },
         date: makePostDate(713),
         readingInfo: undefined,
         nav: makeNav(undefined, undefined),
-      } as unknown as Lume.Data;
+      });
       const html = await renderComponent(postLayout(data, MOCK_HELPERS));
       assertStringIncludes(html, "<article");
     });
@@ -205,6 +211,8 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'href="/tags/devops/"');
       assertStringIncludes(html, 'href="/tags/cdn/"');
       assertStringIncludes(html, 'rel="tag"');
+      assertStringIncludes(html, 'title="devops"');
+      assertStringIncludes(html, 'title="cdn"');
       assertStringIncludes(html, 'class="tag-link tag-link--');
       assertNotMatch(html, /class="cds--tag cds--tag--/);
     });
@@ -349,5 +357,18 @@ describe("post.tsx layout", () => {
       assertNotMatch(html, /src="\/scripts\/post-code-copy\.js"/);
       assertNotMatch(html, /data-code-copy-label=/);
     });
+  });
+});
+
+describe("tag-link CSS contracts", () => {
+  it("keeps navigational tag links distinct from Carbon tags", () => {
+    assertStringIncludes(tagStyles, ".tag-link::after");
+    assertStringIncludes(
+      tagStyles,
+      "font-weight: var(--cds-font-weight-medium);",
+    );
+    assertStringIncludes(tagStyles, ".tag-link:hover .tag-link__label");
+    assertStringIncludes(tagStyles, "var(--site-tag-blue-bg)");
+    assertNotMatch(tagStyles, /oklch\(/);
   });
 });

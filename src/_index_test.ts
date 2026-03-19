@@ -1,15 +1,16 @@
 import { assertMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { faker, seedTestFaker } from "../test/faker.ts";
+import { asLumeData, asLumeHelpers } from "../test/lume.ts";
 
 import indexPage from "./index.page.tsx";
 
 // ---------------------------------------------------------------------------
 // Mock helpers
 // ---------------------------------------------------------------------------
-const MOCK_HELPERS = {
+const MOCK_HELPERS = asLumeHelpers({
   date: (_value: unknown, _format: string): string => "Mar 5",
-} as unknown as Lume.Helpers;
+});
 
 // ---------------------------------------------------------------------------
 // Helper factory
@@ -27,7 +28,7 @@ type MockPost = {
 function makeData(
   posts: MockPost[],
 ): Lume.Data {
-  return {
+  return asLumeData({
     search: {
       pages: (
         _query: string,
@@ -43,7 +44,7 @@ function makeData(
           props["title"]
         }</h3></article>`,
     },
-  } as unknown as Lume.Data;
+  });
 }
 
 function makePost(
@@ -81,6 +82,10 @@ describe("index.page.tsx", () => {
     it("renders the hero section", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertMatch(html, /class="[^"]*\bhero\b[^"]*"/);
+      assertStringIncludes(
+        html,
+        'class="cds--tile pagehead hero home-pagehead"',
+      );
     });
 
     it("renders an h1 in the hero", async () => {
@@ -97,6 +102,7 @@ describe("index.page.tsx", () => {
 
       assertStringIncludes(html, 'class="home-topics"');
       assertStringIncludes(html, 'href="/tags/design/"');
+      assertStringIncludes(html, 'title="design"');
       assertStringIncludes(html, 'href="/tags/writing/"');
       assertStringIncludes(html, 'href="/tags/life/"');
     });
@@ -150,17 +156,20 @@ describe("index.page.tsx", () => {
 
     it("renders async PostCard components", async () => {
       const post = makePost(405, { readingInfo: { minutes: 2 } });
-      const html = await indexPage({
-        search: {
-          pages: () => [post],
-        },
-        comp: {
-          PostCard: (props: Record<string, unknown>) =>
-            `<article class="post-card h-entry"><h3 class="p-name">${
-              props["title"]
-            }</h3></article>`,
-        },
-      } as unknown as Lume.Data, MOCK_HELPERS);
+      const html = await indexPage(
+        asLumeData({
+          search: {
+            pages: () => [post],
+          },
+          comp: {
+            PostCard: (props: Record<string, unknown>) =>
+              `<article class="post-card h-entry"><h3 class="p-name">${
+                props["title"]
+              }</h3></article>`,
+          },
+        }),
+        MOCK_HELPERS,
+      );
 
       assertStringIncludes(html, post.title);
       assertStringIncludes(html, 'class="post-card h-entry"');
@@ -181,16 +190,19 @@ describe("index.page.tsx", () => {
     it("falls back to a safe card renderer when PostCard is unavailable", async () => {
       seedTestFaker(406);
       const unsafeDate = faker.date.anytime();
-      const html = await indexPage({
-        search: {
-          pages: () => [{
-            title: "Unsafe <title>",
-            url: '/posts/"unsafe"/',
-            date: unsafeDate,
-          }],
-        },
-        comp: {},
-      } as unknown as Lume.Data, MOCK_HELPERS);
+      const html = await indexPage(
+        asLumeData({
+          search: {
+            pages: () => [{
+              title: "Unsafe <title>",
+              url: '/posts/"unsafe"/',
+              date: unsafeDate,
+            }],
+          },
+          comp: {},
+        }),
+        MOCK_HELPERS,
+      );
 
       assertStringIncludes(html, "Unsafe &lt;title&gt;");
       assertStringIncludes(html, 'href="/posts/&quot;unsafe&quot;/"');

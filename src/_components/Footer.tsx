@@ -17,15 +17,16 @@ export default (
     language,
     syndicationPageUrl,
     blogStartYear,
+    currentYear = new Date().getFullYear(),
   }: {
     readonly author: string;
     readonly language: SiteLanguage;
     readonly syndicationPageUrl: string;
     readonly blogStartYear: number;
+    readonly currentYear?: number;
   },
 ): SsxElement => {
-  const year = new Date().getFullYear();
-  const copyrightYears = formatCopyrightYears(blogStartYear, year);
+  const copyrightYears = formatCopyrightYears(blogStartYear, currentYear);
   const translations = getSiteTranslations(language);
 
   return (

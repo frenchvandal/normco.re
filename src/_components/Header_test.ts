@@ -6,116 +6,67 @@ import {
 } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
+import layoutStyles from "../styles/_layout.scss" with { type: "text" };
 
 import Header from "./Header.tsx";
+import { ariaCurrent, buildHeaderNavigation } from "./header-navigation.ts";
+
+describe("header-navigation.ts", () => {
+  describe("ariaCurrent()", () => {
+    it("marks exact matches as current", () => {
+      assertEquals(ariaCurrent("/posts/", "/posts/"), {
+        "aria-current": "page",
+      });
+      assertEquals(ariaCurrent("/about/", "/about"), {
+        "aria-current": "page",
+      });
+    });
+
+    it("keeps home inactive on child routes", () => {
+      assertEquals(ariaCurrent("/", "/posts/"), {});
+      assertEquals(ariaCurrent("/fr/", "/fr/about/"), {});
+    });
+
+    it("marks child routes under non-home sections", () => {
+      assertEquals(ariaCurrent("/posts/", "/posts/my-post/"), {
+        "aria-current": "page",
+      });
+    });
+  });
+
+  describe("buildHeaderNavigation()", () => {
+    it("marks writing current for tag taxonomy routes", () => {
+      const navigationItems = buildHeaderNavigation({
+        currentUrl: "/tags/design/",
+        language: "en",
+      });
+
+      assertEquals(navigationItems.map((item) => item.isCurrent), [
+        false,
+        true,
+        false,
+      ]);
+      assertEquals(navigationItems[1]?.href, "/posts/");
+    });
+
+    it("keeps localized home inactive on localized child routes", () => {
+      const navigationItems = buildHeaderNavigation({
+        currentUrl: "/fr/posts/instructions/",
+        language: "fr",
+      });
+
+      assertEquals(navigationItems.map((item) => item.isCurrent), [
+        false,
+        true,
+        false,
+      ]);
+      assertEquals(navigationItems[0]?.href, "/fr/");
+      assertEquals(navigationItems[2]?.href, "/fr/about/");
+    });
+  });
+});
 
 describe("Header()", () => {
-  describe("ariaCurrent — home menu link '/'", () => {
-    it('marks "/" as current when currentUrl is "/"', async () => {
-      const html = await renderComponent(
-        Header({ currentUrl: "/", language: "en" }),
-      );
-      assertMatch(
-        html,
-        /<a[^>]*href="\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-      );
-    });
-
-    it('does not mark "/" as current on /posts/', async () => {
-      const html = await renderComponent(
-        Header({ currentUrl: "/posts/", language: "en" }),
-      );
-      assertNotMatch(
-        html,
-        /<a[^>]*href="\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-      );
-    });
-
-    it('does not mark "/" as current on /about/', async () => {
-      const html = await renderComponent(
-        Header({ currentUrl: "/about/", language: "en" }),
-      );
-      assertNotMatch(
-        html,
-        /<a[^>]*href="\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-      );
-    });
-  });
-
-  describe("ariaCurrent — /posts/ link", () => {
-    it('marks /posts/ as current when currentUrl is "/posts/"', async () => {
-      const html = await renderComponent(
-        Header({ currentUrl: "/posts/", language: "en" }),
-      );
-      assertMatch(
-        html,
-        /<a[^>]*href="\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-      );
-    });
-
-    it("marks /posts/ as current for a child URL /posts/my-post/", async () => {
-      const html = await renderComponent(
-        Header({
-          currentUrl: "/posts/my-post/",
-          language: "en",
-        }),
-      );
-      assertMatch(
-        html,
-        /<a[^>]*href="\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-      );
-    });
-
-    it("marks /posts/ as current for a tag taxonomy URL", async () => {
-      const html = await renderComponent(
-        Header({
-          currentUrl: "/tags/design/",
-          language: "en",
-        }),
-      );
-      assertMatch(
-        html,
-        /<a[^>]*href="\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-      );
-      assertMatch(
-        html,
-        /<a[^>]*href="\/posts\/"[^>]*class="cds--side-nav__link"[^>]*aria-current="page"/,
-      );
-    });
-
-    it('does not mark /posts/ as current on "/"', async () => {
-      const html = await renderComponent(
-        Header({ currentUrl: "/", language: "en" }),
-      );
-      assertNotMatch(
-        html,
-        /<a[^>]*href="\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-      );
-    });
-  });
-
-  describe("ariaCurrent — /about/ link", () => {
-    it('marks /about/ as current when currentUrl is "/about/"', async () => {
-      const html = await renderComponent(
-        Header({ currentUrl: "/about/", language: "en" }),
-      );
-      assertMatch(
-        html,
-        /<a[^>]*href="\/about\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-      );
-    });
-
-    it('does not mark /about/ as current on "/"', async () => {
-      const html = await renderComponent(
-        Header({ currentUrl: "/", language: "en" }),
-      );
-      assertNotMatch(
-        html,
-        /<a[^>]*href="\/about\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-      );
-    });
-  });
-
   describe("Carbon UI Shell structure", () => {
     it("renders Carbon UI Shell header with cds--header class", async () => {
       const html = await renderComponent(
@@ -168,12 +119,13 @@ describe("Header()", () => {
       );
     });
 
-    it("renders hamburger menu icon SVG", async () => {
+    it("renders hamburger and close icons for the mobile menu toggle", async () => {
       const html = await renderComponent(
         Header({ currentUrl: "/", language: "en" }),
       );
-      assertMatch(html, /<svg[^>]*class="cds--header__menu-icon"/);
+      assertMatch(html, /<svg[^>]*class="[^"]*cds--header__menu-icon[^"]*"/);
       assertStringIncludes(html, 'data-carbon-icon="menu"');
+      assertStringIncludes(html, 'data-carbon-icon="close"');
     });
   });
 
@@ -552,5 +504,18 @@ describe("Header()", () => {
       );
       assertNotMatch(html, /<cds-header-global-action/);
     });
+  });
+});
+
+describe("Header CSS contracts", () => {
+  it("uses shared focus tokens for inset shell controls", () => {
+    assertStringIncludes(
+      layoutStyles,
+      ".cds--header__menu-toggle:focus-visible",
+    );
+    assertStringIncludes(
+      layoutStyles,
+      "outline-offset: var(--focus-ring-inset-offset);",
+    );
   });
 });

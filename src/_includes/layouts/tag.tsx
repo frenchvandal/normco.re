@@ -72,7 +72,7 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
   ) =>
     renderComponent(
       HEntryShell({
-        className: "post-card h-entry",
+        className: "cds--tile post-card h-entry",
         ...(summary !== undefined ? { summary } : {}),
         ...(authorName && authorUrl
           ? { author: { name: authorName, url: authorUrl } }
@@ -188,7 +188,7 @@ export default async (
         </li>
       </ol>
     </nav>
-    <section class="pagehead tag-pagehead" aria-labelledby="tag-page-title">
+    <section class="cds--tile pagehead tag-pagehead" aria-labelledby="tag-page-title">
       <p class="pagehead-eyebrow">${
           escapeHtml(translations.tagPage.eyebrow)
         }</p>
@@ -227,13 +227,13 @@ export default async (
     escapeHtml(translations.tagPage.railAriaLabel)
   }">
     <div class="feature-rail-sticky">
-      <section class="feature-card">
+      <section class="cds--tile feature-card">
         <h2 class="feature-card-title">${
     escapeHtml(translations.tagPage.eyebrow)
   }</h2>
         <span class="cds--tag cds--tag--${
     getTagColor(tagName)
-  } tag-page-current-tag">
+  } tag-page-current-tag" title="${escapeHtml(tagName)}">
           <span class="cds--tag__label">${escapeHtml(tagName)}</span>
         </span>
         <p class="feature-card-caption">${

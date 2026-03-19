@@ -303,7 +303,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     </li>
   </ol>
 </nav>
-<section class="pagehead about-pagehead" aria-labelledby="about-title">
+<section class="cds--tile pagehead about-pagehead" aria-labelledby="about-title">
   <p class="pagehead-eyebrow">${escapeHtml(translations.about.eyebrow)}</p>
   <h1 id="about-title" class="about-title">${
     escapeHtml(translations.about.title)
@@ -329,7 +329,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     escapeHtml(translations.about.railAriaLabel)
   }">
     <div class="feature-rail-sticky">
-      <section class="feature-card about-contact-card">
+      <section class="cds--tile feature-card about-contact-card">
         <h2 class="feature-card-title">${
     escapeHtml(translations.about.contactTitle)
   }</h2>
@@ -337,7 +337,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
           ${contactItems}
         </ul>
       </section>
-      <section class="feature-card">
+      <section class="cds--tile feature-card">
         <h2 class="feature-card-title">${
     escapeHtml(translations.about.atAGlanceTitle)
   }</h2>
@@ -345,7 +345,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
           ${factItems}
         </dl>
       </section>
-      <section class="feature-card">
+      <section class="cds--tile feature-card">
         <h2 class="feature-card-title">${
     escapeHtml(translations.about.siteNotesTitle)
   }</h2>
@@ -355,7 +355,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
           <li>${escapeHtml(translations.about.siteNoteThree)}</li>
         </ul>
       </section>
-      <section class="feature-card about-pictogram-card">
+      <section class="cds--tile feature-card about-pictogram-card">
         <h2 class="feature-card-title">${
     escapeHtml(translations.about.pictogramTitle)
   }</h2>

@@ -1,13 +1,15 @@
 import { assert, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
-import { faker } from "npm/faker-js";
+import { faker, seedTestFaker } from "../../test/faker.ts";
 import layoutStyles from "../styles/_layout.scss" with { type: "text" };
 
 import Footer from "./Footer.tsx";
 
+const FIXED_CURRENT_YEAR = 2026;
+
 function makeAuthor(seed: number): string {
-  faker.seed(seed);
+  seedTestFaker(seed);
   return faker.person.fullName();
 }
 
@@ -20,6 +22,7 @@ describe("Footer()", () => {
         language: "en",
         syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
+        currentYear: FIXED_CURRENT_YEAR,
       }),
     );
     assertStringIncludes(html, 'class="site-footer"');
@@ -33,6 +36,7 @@ describe("Footer()", () => {
         language: "en",
         syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
+        currentYear: FIXED_CURRENT_YEAR,
       }),
     );
     assertStringIncludes(html, 'href="/syndication/"');
@@ -49,6 +53,7 @@ describe("Footer()", () => {
         language: "en",
         syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
+        currentYear: FIXED_CURRENT_YEAR,
       }),
     );
     assertStringIncludes(
@@ -70,6 +75,7 @@ describe("Footer()", () => {
         language: "en",
         syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
+        currentYear: FIXED_CURRENT_YEAR,
       }),
     );
     const githubIndex = html.indexOf('aria-label="Open GitHub repository"');
@@ -86,25 +92,25 @@ describe("Footer()", () => {
         language: "en",
         syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
+        currentYear: FIXED_CURRENT_YEAR,
       }),
     );
-    const currentYear = new Date().getFullYear();
-    assertStringIncludes(html, `2022-${currentYear}`);
+    assertStringIncludes(html, `2022-${FIXED_CURRENT_YEAR}`);
   });
 
   it("contains only the current year when start year equals current year", async () => {
     const author = makeAuthor(109);
-    const currentYear = new Date().getFullYear();
     const html = await renderComponent(
       Footer({
         author: author,
         language: "en",
         syndicationPageUrl: "/syndication/",
-        blogStartYear: currentYear,
+        blogStartYear: FIXED_CURRENT_YEAR,
+        currentYear: FIXED_CURRENT_YEAR,
       }),
     );
     // Should contain the year only once (not as a range)
-    const yearMatches = html.match(new RegExp(String(currentYear), "g"));
+    const yearMatches = html.match(new RegExp(String(FIXED_CURRENT_YEAR), "g"));
     assert(yearMatches !== null && yearMatches.length === 1);
   });
 
@@ -116,6 +122,7 @@ describe("Footer()", () => {
         language: "en",
         syndicationPageUrl: "/syndication/",
         blogStartYear: 2022,
+        currentYear: FIXED_CURRENT_YEAR,
       }),
     );
     assertStringIncludes(html, author);
@@ -129,6 +136,7 @@ describe("Footer()", () => {
         language: "fr",
         syndicationPageUrl: "/fr/syndication/",
         blogStartYear: 2022,
+        currentYear: FIXED_CURRENT_YEAR,
       }),
     );
     assertStringIncludes(html, 'href="/fr/syndication/"');

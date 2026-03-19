@@ -3,6 +3,7 @@
 @use "@carbon/styles/scss/components/code-snippet";
 @use "@carbon/styles/scss/components/tag";
 @use "@carbon/styles/scss/components/tile";
+@use "../editorial/mixins" as editorial;
 
 /* Syndication page and XML browser views. */
 @layer components {
@@ -19,7 +20,7 @@
     place-items: center;
     padding: var(--cds-spacing-06);
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer-accent, var(--cds-layer-hover));
+    background: var(--site-surface-accent);
   }
 
   .syndication-pictogram {
@@ -49,8 +50,6 @@
 
   .syndication-pagehead {
     padding: var(--cds-spacing-07);
-    border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
   }
 
   .syndication-pagehead .pagehead-eyebrow {
@@ -58,7 +57,7 @@
     inline-size: fit-content;
     padding: var(--cds-spacing-01) var(--cds-spacing-03);
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
+    background: var(--site-surface-panel);
   }
 
   .feeds-hero-panel {
@@ -66,7 +65,7 @@
     gap: var(--space-s);
     padding: var(--cds-spacing-07);
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
+    background: var(--site-surface-panel);
   }
 
   .feeds-page-title {
@@ -110,7 +109,7 @@
     align-content: start;
     min-block-size: 100%;
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
+    background: var(--site-surface-panel);
   }
 
   .feeds-card-head {
@@ -161,7 +160,7 @@
     min-inline-size: 0;
     inline-size: 100%;
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer-hover);
+    background: var(--site-surface-panel-hover);
     overflow: hidden;
   }
 
@@ -177,14 +176,14 @@
   }
 
   .feeds-endpoint-link:hover {
-    background: var(--cds-layer);
+    background: var(--site-surface-panel);
     color: var(--cds-text-primary);
     text-decoration: none;
   }
 
   .feeds-endpoint-link:focus-visible {
     outline: var(--focus-ring-width) solid var(--cds-focus);
-    outline-offset: calc(var(--focus-ring-width) * -1);
+    outline-offset: var(--focus-ring-inset-offset);
     position: relative;
     z-index: 1;
   }
@@ -208,32 +207,32 @@
     display: grid;
     place-items: center;
     align-self: stretch;
-    inline-size: 2.375rem;
-    min-inline-size: 2.375rem;
+    inline-size: var(--site-inline-copy-control-size);
+    min-inline-size: var(--site-inline-copy-control-size);
     padding: 0;
     border: 0;
     border-inline-start: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
+    background: var(--site-surface-panel);
     color: var(--cds-text-secondary);
     cursor: pointer;
     transition:
-      background-color 0.15s ease,
-      color 0.15s ease,
-      border-color 0.15s ease;
+      background-color var(--cds-transition-fast),
+      color var(--cds-transition-fast),
+      border-color var(--cds-transition-fast);
   }
 
   .feeds-endpoint-copy-button:hover {
-    background: var(--cds-layer-hover);
+    background: var(--site-surface-panel-hover);
     color: var(--cds-text-primary);
   }
 
   .feeds-endpoint-copy-button:active {
-    background: var(--cds-layer-active);
+    background: var(--site-surface-panel-active);
   }
 
   .feeds-endpoint-copy-button:focus-visible {
     outline: var(--focus-ring-width) solid var(--cds-focus);
-    outline-offset: -2px;
+    outline-offset: var(--focus-ring-inset-offset);
     z-index: 1;
   }
 
@@ -246,7 +245,7 @@
     inline-size: 100%;
     padding-inline-end: 0;
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer-hover);
+    background: var(--site-surface-panel-hover);
     overflow: hidden;
   }
 
@@ -284,34 +283,34 @@
     place-items: center;
     align-self: stretch;
     flex: 0 0 auto;
-    inline-size: 2.375rem;
-    min-inline-size: 2.375rem;
+    inline-size: var(--site-inline-copy-control-size);
+    min-inline-size: var(--site-inline-copy-control-size);
     block-size: auto;
     padding: 0;
     border: 0;
     border-inline-start: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
+    background: var(--site-surface-panel);
     color: var(--cds-text-secondary);
     cursor: pointer;
     z-index: 1;
     transition:
-      background-color 0.15s ease,
-      color 0.15s ease,
-      border-color 0.15s ease;
+      background-color var(--cds-transition-fast),
+      color var(--cds-transition-fast),
+      border-color var(--cds-transition-fast);
   }
 
   .feeds-snippet-copy-button.cds--copy-btn:hover {
-    background: var(--cds-layer-hover);
+    background: var(--site-surface-panel-hover);
     color: var(--cds-text-primary);
   }
 
   .feeds-snippet-copy-button.cds--copy-btn:active {
-    background: var(--cds-layer-active);
+    background: var(--site-surface-panel-active);
   }
 
   .feeds-snippet-copy-button.cds--copy-btn:focus-visible {
     outline: var(--focus-ring-width) solid var(--cds-focus);
-    outline-offset: -2px;
+    outline-offset: var(--focus-ring-inset-offset);
     z-index: 1;
   }
 
@@ -321,7 +320,9 @@
     inset-inline-start: 50%;
     display: block;
     pointer-events: none;
-    transition: opacity 120ms ease, transform 120ms ease;
+    transition:
+      opacity var(--cds-transition-fast),
+      transform var(--cds-transition-fast);
   }
 
   .feeds-copy-icon--default {
@@ -377,7 +378,7 @@
 
   .feed-document {
     min-block-size: 100dvh;
-    background: var(--cds-background);
+    background: var(--site-surface-page);
     color: var(--cds-text-primary);
   }
 
@@ -452,7 +453,7 @@
     gap: var(--space-l);
     padding: var(--cds-spacing-07);
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
+    background: var(--site-surface-panel);
   }
 
   .feed-document-panel-head {
@@ -500,10 +501,7 @@
     color: var(--cds-link-primary);
     font-weight: var(--cds-font-weight-semibold);
     overflow-wrap: anywhere;
-    text-decoration-line: underline;
-    text-decoration-thickness: max(1px, 0.08em);
-    text-decoration-skip-ink: auto;
-    text-underline-offset: 0.15em;
+    @include editorial.editorial-link-underline;
   }
 
   .feed-entry-link:hover {
@@ -540,13 +538,13 @@
     }
 
     .feeds-snippet-copy-button.cds--copy-btn {
-      inline-size: 2.375rem;
-      min-inline-size: 2.375rem;
+      inline-size: var(--site-inline-copy-control-size);
+      min-inline-size: var(--site-inline-copy-control-size);
     }
 
     .feeds-endpoint-copy-button {
-      inline-size: 2.375rem;
-      min-inline-size: 2.375rem;
+      inline-size: var(--site-inline-copy-control-size);
+      min-inline-size: var(--site-inline-copy-control-size);
     }
 
     .feed-document-shell {

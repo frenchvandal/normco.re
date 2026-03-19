@@ -30,7 +30,7 @@ export default (
   },
 ) => (
   <HEntryShell
-    className="post-card h-entry"
+    className="cds--tile post-card h-entry"
     {...(summary !== undefined ? { summary } : {})}
     {...(authorName !== undefined && authorUrl !== undefined
       ? { author: { name: authorName, url: authorUrl } }

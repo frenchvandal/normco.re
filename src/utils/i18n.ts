@@ -168,6 +168,8 @@ export type SiteTranslations = {
     readonly copyAction: string;
     readonly copiedAction: string;
     readonly errorAction: string;
+    readonly copiedStatusMessage: string;
+    readonly errorStatusMessage: string;
     readonly rssTitle: string;
     readonly rssDescription: string;
     readonly atomTitle: string;
@@ -319,6 +321,8 @@ const SITE_TRANSLATIONS = {
       copyAction: "Copy",
       copiedAction: "Copied",
       errorAction: "Cannot copy",
+      copiedStatusMessage: "[LABEL] URL copied",
+      errorStatusMessage: "Cannot copy [LABEL] URL",
       rssTitle: "RSS feed",
       rssDescription:
         "Classic XML feed for feed readers and broad client compatibility.",
@@ -474,6 +478,8 @@ const SITE_TRANSLATIONS = {
       copyAction: "Copier",
       copiedAction: "Copié",
       errorAction: "Échec",
+      copiedStatusMessage: "URL de [LABEL] copiée",
+      errorStatusMessage: "Impossible de copier l’URL de [LABEL]",
       rssTitle: "Flux RSS",
       rssDescription:
         "Flux XML classique pour les lecteurs RSS et la compatibilité la plus large.",
@@ -625,6 +631,8 @@ const SITE_TRANSLATIONS = {
       copyAction: "复制",
       copiedAction: "已复制",
       errorAction: "无法复制",
+      copiedStatusMessage: "已复制 [LABEL] URL",
+      errorStatusMessage: "无法复制 [LABEL] URL",
       rssTitle: "RSS 订阅",
       rssDescription: "经典 XML feed，兼容各类阅读器与聚合器。",
       atomTitle: "Atom 订阅",
@@ -772,6 +780,8 @@ const SITE_TRANSLATIONS = {
       copyAction: "複製",
       copiedAction: "已複製",
       errorAction: "無法複製",
+      copiedStatusMessage: "已複製 [LABEL] URL",
+      errorStatusMessage: "無法複製 [LABEL] URL",
       rssTitle: "RSS 訂閱",
       rssDescription: "經典 XML feed，相容各類閱讀器與聚合器。",
       atomTitle: "Atom 訂閱",

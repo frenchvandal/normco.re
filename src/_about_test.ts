@@ -1,10 +1,12 @@
 import { assert, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
+import aboutStyles from "./styles/components/_about.scss" with { type: "text" };
+import { asLumeData, asLumeHelpers } from "../test/lume.ts";
 
 import aboutPage from "./about.page.tsx";
 
-const MOCK_DATA = {} as unknown as Lume.Data;
-const MOCK_HELPERS = {} as unknown as Lume.Helpers;
+const MOCK_DATA = asLumeData({});
+const MOCK_HELPERS = asLumeHelpers({});
 
 describe("about.page.tsx", () => {
   it("wraps the content in the wide page shell", () => {
@@ -17,6 +19,7 @@ describe("about.page.tsx", () => {
 
   it("renders an h1 heading", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
+    assertStringIncludes(html, 'class="cds--tile pagehead about-pagehead"');
     assertStringIncludes(html, "<h1");
     assertStringIncludes(html, "About");
   });
@@ -41,7 +44,7 @@ describe("about.page.tsx", () => {
       'class="feature-layout feature-layout--with-rail"',
     );
     assertStringIncludes(html, 'class="feature-rail about-rail"');
-    assertStringIncludes(html, 'class="feature-card about-contact-card"');
+    assertStringIncludes(html, "feature-card about-contact-card");
     assertStringIncludes(html, "about-contact-icon--wechat");
     assertStringIncludes(html, "about-contact-icon--telegram");
     assertStringIncludes(html, 'data-contact-toggletip=""');
@@ -92,7 +95,7 @@ describe("about.page.tsx", () => {
   });
 
   it("renders localized French content when `lang` is `fr`", () => {
-    const frenchData = { lang: "fr" } as unknown as Lume.Data;
+    const frenchData = asLumeData({ lang: "fr" });
     const html = aboutPage(frenchData, MOCK_HELPERS);
     assertStringIncludes(html, "À propos");
     assertStringIncludes(html, 'aria-label="Fil d’Ariane À propos"');
@@ -107,7 +110,7 @@ describe("about.page.tsx", () => {
   });
 
   it("renders localized Simplified Chinese contact labels", () => {
-    const simplifiedChineseData = { lang: "zh-hans" } as unknown as Lume.Data;
+    const simplifiedChineseData = asLumeData({ lang: "zh-hans" });
     const html = aboutPage(simplifiedChineseData, MOCK_HELPERS);
 
     assertStringIncludes(html, ">电报</span>");
@@ -120,7 +123,7 @@ describe("about.page.tsx", () => {
   });
 
   it("renders localized Traditional Chinese WeChat and keeps Telegram in English", () => {
-    const traditionalChineseData = { lang: "zh-hant" } as unknown as Lume.Data;
+    const traditionalChineseData = asLumeData({ lang: "zh-hant" });
     const html = aboutPage(traditionalChineseData, MOCK_HELPERS);
 
     assertStringIncludes(html, ">Telegram</span>");
@@ -129,6 +132,28 @@ describe("about.page.tsx", () => {
     assertStringIncludes(
       html,
       'href="/contact/wechat/contact-wechat-zh-hant.jpg"',
+    );
+  });
+});
+
+describe("about page CSS contracts", () => {
+  it("uses the shared scrim token instead of raw overlay color literals", () => {
+    assertStringIncludes(
+      aboutStyles,
+      "background: var(--site-surface-scrim) !important;",
+    );
+    assertNotMatch(aboutStyles, /rgb\(/);
+  });
+
+  it("keeps the contact action controls on shared panel surfaces", () => {
+    assertStringIncludes(aboutStyles, ".about-contact-action.cds--btn");
+    assertStringIncludes(
+      aboutStyles,
+      "background: var(--site-surface-panel-hover) !important;",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "background: var(--site-surface-panel-selected-hover) !important;",
     );
   });
 });

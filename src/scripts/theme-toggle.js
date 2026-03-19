@@ -13,6 +13,12 @@
   }
 
   const themeToggleButton = button;
+
+  if (themeToggleButton.dataset.themeToggleBound === "true") {
+    return;
+  }
+
+  themeToggleButton.dataset.themeToggleBound = "true";
   const switchToLightLabel = themeToggleButton.dataset.labelSwitchLight ??
     "Switch to light theme";
   const switchToDarkLabel = themeToggleButton.dataset.labelSwitchDark ??
@@ -108,6 +114,7 @@
       : followSystemLabel;
 
     themeToggleButton.setAttribute("aria-label", nextLabel);
+    themeToggleButton.setAttribute("title", nextLabel);
   }
 
   const currentPreference = getCurrentPreference();

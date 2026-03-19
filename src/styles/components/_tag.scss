@@ -1,9 +1,11 @@
+@use "../editorial/mixins" as editorial;
+
 /* Carbon tag (filter pattern) plus local tag-archive links.
    Source: https://carbondesignsystem.com/components/tag/usage/
 
-   Tag colors follow Carbon's semantic color palette using oklch().
-   Light theme uses Carbon 70 text on 10% tint backgrounds.
-   Dark theme uses Carbon 40 text on 15% tint backgrounds. */
+   Tag colors are bridged from the official Carbon palette through
+   `src/styles/carbon/_theme-tokens.scss` so the component stays free of local
+   color literals. */
 @layer components {
   .cds--tag,
   .tag-link {
@@ -12,134 +14,157 @@
     gap: var(--cds-spacing-02);
     padding-block: var(--cds-spacing-01);
     padding-inline: var(--cds-spacing-03);
-    border-radius: 1rem; /* Carbon tags are fully rounded */
     font: var(--cds-productive-heading-01);
-    font-weight: 600;
     border: 1px solid transparent;
     transition:
-      background-color 0.15s ease,
-      border-color 0.15s ease,
-      color 0.15s ease;
+      background-color var(--cds-transition-fast),
+      border-color var(--cds-transition-fast),
+      color var(--cds-transition-fast);
     max-inline-size: 100%;
   }
 
-  /* Carbon tags stay non-interactive; use tag-link for archive navigation. */
-  button.cds--tag,
-  a.tag-link {
-    cursor: pointer;
+  .cds--tag {
+    border-radius: var(--cds-radius-round);
+    font-weight: var(--cds-font-weight-semibold);
   }
 
   .tag-link {
+    position: relative;
+    border-radius: var(--cds-radius-round);
+    font-weight: var(--cds-font-weight-medium);
     text-decoration: none;
+    cursor: pointer;
+  }
+
+  .tag-link::after {
+    content: "";
+    inline-size: 0.375rem;
+    block-size: 0.375rem;
+    flex: 0 0 auto;
+    border-inline-end: 1.5px solid currentColor;
+    border-block-end: 1.5px solid currentColor;
+    opacity: 0.72;
+    transform: rotate(-45deg);
+    transform-origin: center;
+    transition:
+      transform var(--cds-transition-fast),
+      opacity var(--cds-transition-fast);
+  }
+
+  .tag-link:hover .tag-link__label,
+  .tag-link:focus-visible .tag-link__label,
+  .tag-link:active .tag-link__label {
+    @include editorial.editorial-link-underline;
+  }
+
+  .tag-link:hover::after,
+  .tag-link:focus-visible::after,
+  .tag-link:active::after {
+    opacity: 1;
+    transform: translateX(var(--cds-spacing-01)) rotate(-45deg);
   }
 
   .cds--tag--default,
   .tag-link--default {
-    background-color: var(--cds-layer);
+    background-color: var(--site-surface-panel);
     color: var(--cds-text-primary);
     border-color: var(--cds-border-subtle);
   }
 
   .cds--tag--default:hover,
   .tag-link--default:hover {
-    background-color: var(--cds-layer-hover);
+    background-color: var(--site-surface-panel-hover);
     border-color: var(--cds-border-strong);
   }
 
-  /* Blue — Carbon Blue 70 (#0043ce) / Blue 60 (#0f62fe) */
   .cds--tag--blue,
   .tag-link--blue {
-    background-color: oklch(55.65% 0.243 262 / 10%);
-    color: oklch(45.4% 0.221 263); /* Blue 70 */
-    border-color: oklch(55.65% 0.243 262 / 20%);
+    background-color: var(--site-tag-blue-bg);
+    color: var(--site-tag-blue-color);
+    border-color: var(--site-tag-blue-border);
   }
 
   .cds--tag--blue:hover,
   .tag-link--blue:hover {
-    background-color: oklch(55.65% 0.243 262 / 20%);
-    border-color: oklch(45.4% 0.221 263);
+    background-color: var(--site-tag-blue-bg-hover);
+    border-color: var(--site-tag-blue-border-hover);
   }
 
-  /* Green — Carbon Green 70 (#146c2e) / Green 50 (#24a148) */
   .cds--tag--green,
   .tag-link--green {
-    background-color: oklch(62.34% 0.166 148 / 10%);
-    color: oklch(42.2% 0.122 150); /* Green 70 */
-    border-color: oklch(62.34% 0.166 148 / 20%);
+    background-color: var(--site-tag-green-bg);
+    color: var(--site-tag-green-color);
+    border-color: var(--site-tag-green-border);
   }
 
   .cds--tag--green:hover,
   .tag-link--green:hover {
-    background-color: oklch(62.34% 0.166 148 / 20%);
-    border-color: oklch(42.2% 0.122 150);
+    background-color: var(--site-tag-green-bg-hover);
+    border-color: var(--site-tag-green-border-hover);
   }
 
-  /* Purple — Carbon Purple 60 (#8a3ffc) */
   .cds--tag--purple,
   .tag-link--purple {
-    background-color: oklch(57.37% 0.258 295 / 10%);
-    color: oklch(57.37% 0.258 295); /* Purple 60 */
-    border-color: oklch(57.37% 0.258 295 / 20%);
+    background-color: var(--site-tag-purple-bg);
+    color: var(--site-tag-purple-color);
+    border-color: var(--site-tag-purple-border);
   }
 
   .cds--tag--purple:hover,
   .tag-link--purple:hover {
-    background-color: oklch(57.37% 0.258 295 / 20%);
-    border-color: oklch(57.37% 0.258 295);
+    background-color: var(--site-tag-purple-bg-hover);
+    border-color: var(--site-tag-purple-border-hover);
   }
 
-  /* Red — Carbon Red 70 (#a2191f) / Red 60 (#da1e28) */
   .cds--tag--red,
   .tag-link--red {
-    background-color: oklch(56.92% 0.217 26 / 10%);
-    color: oklch(44.3% 0.168 25); /* Red 70 */
-    border-color: oklch(56.92% 0.217 26 / 20%);
+    background-color: var(--site-tag-red-bg);
+    color: var(--site-tag-red-color);
+    border-color: var(--site-tag-red-border);
   }
 
   .cds--tag--red:hover,
   .tag-link--red:hover {
-    background-color: oklch(56.92% 0.217 26 / 20%);
-    border-color: oklch(44.3% 0.168 25);
+    background-color: var(--site-tag-red-bg-hover);
+    border-color: var(--site-tag-red-border-hover);
   }
 
-  /* Teal — Carbon Teal 70 (#005d5d) / Teal 50 (#009d9a) */
   .cds--tag--teal,
   .tag-link--teal {
-    background-color: oklch(61.8% 0.089 194 / 10%);
-    color: oklch(42.5% 0.065 194); /* Teal 70 */
-    border-color: oklch(61.8% 0.089 194 / 20%);
+    background-color: var(--site-tag-teal-bg);
+    color: var(--site-tag-teal-color);
+    border-color: var(--site-tag-teal-border);
   }
 
   .cds--tag--teal:hover,
   .tag-link--teal:hover {
-    background-color: oklch(61.8% 0.089 194 / 20%);
-    border-color: oklch(42.5% 0.065 194);
+    background-color: var(--site-tag-teal-bg-hover);
+    border-color: var(--site-tag-teal-border-hover);
   }
 
-  /* Cyan — Carbon Cyan 70 (#00539a) / Cyan 50 (#1192e8) */
   .cds--tag--cyan,
   .tag-link--cyan {
-    background-color: oklch(59.9% 0.158 240 / 10%);
-    color: oklch(43.2% 0.122 241); /* Cyan 70 */
-    border-color: oklch(59.9% 0.158 240 / 20%);
+    background-color: var(--site-tag-cyan-bg);
+    color: var(--site-tag-cyan-color);
+    border-color: var(--site-tag-cyan-border);
   }
 
   .cds--tag--cyan:hover,
   .tag-link--cyan:hover {
-    background-color: oklch(59.9% 0.158 240 / 20%);
-    border-color: oklch(43.2% 0.122 241);
+    background-color: var(--site-tag-cyan-bg-hover);
+    border-color: var(--site-tag-cyan-border-hover);
   }
 
   .cds--tag--gray,
   .tag-link--gray {
-    background-color: var(--cds-layer);
+    background-color: var(--site-surface-panel);
     color: var(--cds-text-secondary);
     border-color: var(--cds-border-subtle);
   }
 
   .cds--tag--gray:hover,
   .tag-link--gray:hover {
-    background-color: var(--cds-layer-hover);
+    background-color: var(--site-surface-panel-hover);
     color: var(--cds-text-primary);
     border-color: var(--cds-border-strong);
   }
@@ -152,6 +177,7 @@
 
   .cds--tag__label,
   .tag-link__label {
+    min-inline-size: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -173,82 +199,20 @@
     margin-block-start: var(--cds-spacing-05);
   }
 
-  /* Dark mode tag color adjustments — use Carbon 40 shades for readability */
-  :root[data-color-mode="dark"] .cds--tag--blue,
-  :root[data-color-mode="dark"] .tag-link--blue {
-    background-color: oklch(64.7% 0.189 261 / 15%); /* Blue 50 */
-    color: oklch(73.65% 0.136 261); /* Blue 40 */
-    border-color: oklch(64.7% 0.189 261 / 30%);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--blue:hover,
-  :root[data-color-mode="dark"] .tag-link--blue:hover {
-    background-color: oklch(64.7% 0.189 261 / 25%);
-    border-color: oklch(73.65% 0.136 261);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--green,
-  :root[data-color-mode="dark"] .tag-link--green {
-    background-color: oklch(71.2% 0.168 149 / 15%); /* Green 40 */
-    color: oklch(71.2% 0.168 149);
-    border-color: oklch(71.2% 0.168 149 / 30%);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--green:hover,
-  :root[data-color-mode="dark"] .tag-link--green:hover {
-    background-color: oklch(71.2% 0.168 149 / 25%);
-    border-color: oklch(71.2% 0.168 149);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--purple,
-  :root[data-color-mode="dark"] .tag-link--purple {
-    background-color: oklch(74.93% 0.153 301 / 15%); /* Purple 40 */
-    color: oklch(74.93% 0.153 301);
-    border-color: oklch(74.93% 0.153 301 / 30%);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--purple:hover,
-  :root[data-color-mode="dark"] .tag-link--purple:hover {
-    background-color: oklch(74.93% 0.153 301 / 25%);
-    border-color: oklch(74.93% 0.153 301);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--red,
-  :root[data-color-mode="dark"] .tag-link--red {
-    background-color: oklch(75.08% 0.151 18 / 15%); /* Red 40 */
-    color: oklch(75.08% 0.151 18);
-    border-color: oklch(75.08% 0.151 18 / 30%);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--red:hover,
-  :root[data-color-mode="dark"] .tag-link--red:hover {
-    background-color: oklch(75.08% 0.151 18 / 25%);
-    border-color: oklch(75.08% 0.151 18);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--teal,
-  :root[data-color-mode="dark"] .tag-link--teal {
-    background-color: oklch(72.1% 0.075 194 / 15%); /* Teal 40 */
-    color: oklch(72.1% 0.075 194);
-    border-color: oklch(72.1% 0.075 194 / 30%);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--teal:hover,
-  :root[data-color-mode="dark"] .tag-link--teal:hover {
-    background-color: oklch(72.1% 0.075 194 / 25%);
-    border-color: oklch(72.1% 0.075 194);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--cyan,
-  :root[data-color-mode="dark"] .tag-link--cyan {
-    background-color: oklch(73.5% 0.107 237 / 15%); /* Cyan 40 */
-    color: oklch(73.5% 0.107 237);
-    border-color: oklch(73.5% 0.107 237 / 30%);
-  }
-
-  :root[data-color-mode="dark"] .cds--tag--cyan:hover,
-  :root[data-color-mode="dark"] .tag-link--cyan:hover {
-    background-color: oklch(73.5% 0.107 237 / 25%);
-    border-color: oklch(73.5% 0.107 237);
+  @media (prefers-contrast: more) {
+    .cds--tag--blue,
+    .tag-link--blue,
+    .cds--tag--green,
+    .tag-link--green,
+    .cds--tag--purple,
+    .tag-link--purple,
+    .cds--tag--red,
+    .tag-link--red,
+    .cds--tag--teal,
+    .tag-link--teal,
+    .cds--tag--cyan,
+    .tag-link--cyan {
+      border-color: currentColor;
+    }
   }
 }

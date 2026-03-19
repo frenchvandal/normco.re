@@ -12,26 +12,4 @@
     white-space: nowrap;
     border: 0;
   }
-
-  /* Skip to main content link */
-  .skip-link {
-    position: absolute;
-    inset-block-start: var(--space-s);
-    inset-inline-start: var(--space-s);
-    padding: var(--space-s) var(--space-m);
-    background: var(--color-bg);
-    color: var(--cds-link-primary);
-    font-weight: 700;
-    font-size: var(--text-sm);
-    border: var(--focus-ring-width) solid var(--cds-link-primary);
-    border-radius: var(--borderRadius-medium);
-    text-decoration: none;
-    z-index: 999;
-    transform: translateY(-200%);
-    transition: transform 0.15s ease;
-  }
-
-  .skip-link:focus-visible {
-    transform: translateY(0);
-  }
 }

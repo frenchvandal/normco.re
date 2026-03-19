@@ -40,12 +40,17 @@
   }
 
   for (const container of tooltipContainers) {
+    if (container.dataset.headerTooltipBound === "true") {
+      continue;
+    }
+
     const trigger = getTrigger(container);
 
     if (trigger === null) {
       continue;
     }
 
+    container.dataset.headerTooltipBound = "true";
     container.addEventListener("pointerenter", () => {
       openTooltip(container);
     });

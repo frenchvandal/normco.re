@@ -95,10 +95,17 @@ function renderCard(
     readonly copyAction: string;
     readonly copiedAction: string;
     readonly errorAction: string;
+    readonly copiedStatusMessage: string;
+    readonly errorStatusMessage: string;
   },
 ): string {
   const absoluteUrl = new URL(card.path, siteOrigin).href;
   const copyTitle = `${actions.copyAction} ${card.title}`;
+  const copiedStatus = actions.copiedStatusMessage.replace(
+    "[LABEL]",
+    card.title,
+  );
+  const errorStatus = actions.errorStatusMessage.replace("[LABEL]", card.title);
   const formatLabel = card.mime.includes("json") ? "JSON" : "XML";
   const formatTone = card.mime.includes("json") ? "teal" : "gray";
 
@@ -107,7 +114,9 @@ function renderCard(
   }">
   <div class="feeds-card-head">
     <div class="feeds-card-badges">
-      <span class="cds--tag cds--tag--${escapeHtml(formatTone)} feeds-card-tag">
+      <span class="cds--tag cds--tag--${
+    escapeHtml(formatTone)
+  } feeds-card-tag" title="${escapeHtml(formatLabel)}">
         <span class="cds--tag__label">${escapeHtml(formatLabel)}</span>
       </span>
     </div>
@@ -120,6 +129,8 @@ function renderCard(
     data-copy-control=""
     data-copy-state="idle"
     data-copy-label="${escapeHtml(card.title)}"
+    data-copy-copied-status="${escapeHtml(copiedStatus)}"
+    data-copy-error-status="${escapeHtml(errorStatus)}"
   >
     <div class="feeds-endpoint-row">
       <a
@@ -198,6 +209,8 @@ export default (data: Lume.Data): string => {
       copyAction: translations.feeds.copyAction,
       copiedAction: translations.feeds.copiedAction,
       errorAction: translations.feeds.errorAction,
+      copiedStatusMessage: translations.feeds.copiedStatusMessage,
+      errorStatusMessage: translations.feeds.errorStatusMessage,
     })
   ).join("\n");
 
@@ -218,7 +231,7 @@ export default (data: Lume.Data): string => {
       </li>
     </ol>
   </nav>
-  <section class="pagehead syndication-pagehead" aria-labelledby="syndication-title">
+  <section class="cds--tile pagehead syndication-pagehead" aria-labelledby="syndication-title">
     <p class="pagehead-eyebrow">${escapeHtml(translations.feeds.eyebrow)}</p>
     <h1 id="syndication-title" class="feeds-page-title">${
     escapeHtml(translations.feeds.title)
@@ -245,7 +258,7 @@ export default (data: Lume.Data): string => {
     </div>
     <aside class="feature-rail syndication-rail" aria-hidden="true">
       <div class="feature-rail-sticky">
-        <section class="feature-card syndication-pictogram-card">
+        <section class="cds--tile feature-card syndication-pictogram-card">
           <div class="syndication-pictogram-frame" aria-hidden="true">
             <div class="syndication-pictogram">
               ${SYNDICATION_PICTOGRAM}

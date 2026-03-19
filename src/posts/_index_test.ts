@@ -7,15 +7,16 @@ import {
 } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { faker, seedTestFaker } from "../../test/faker.ts";
+import { asLumeData, asLumeHelpers } from "../../test/lume.ts";
 
 import postsIndexPage from "./index.page.tsx";
 
 // ---------------------------------------------------------------------------
 // Mock helpers
 // ---------------------------------------------------------------------------
-const MOCK_HELPERS = {
+const MOCK_HELPERS = asLumeHelpers({
   date: (_value: unknown, _format: string): string => "Mar 5",
-} as unknown as Lume.Helpers;
+});
 
 // ---------------------------------------------------------------------------
 // Helper factory
@@ -32,7 +33,7 @@ type MockPost = {
 function makeData(
   posts: MockPost[],
 ): Lume.Data {
-  return {
+  return asLumeData({
     search: {
       pages: (_query: string, _sort: string) => posts,
     },
@@ -52,7 +53,7 @@ function makeData(
             : ""
         }</article>`,
     },
-  } as unknown as Lume.Data;
+  });
 }
 
 function makePost(
@@ -138,7 +139,7 @@ describe("posts/index.page.tsx", () => {
         }),
       ];
       const html = await postsIndexPage(
-        { ...makeData(posts), lang: "fr" } as Lume.Data,
+        asLumeData({ ...makeData(posts), lang: "fr" }),
         MOCK_HELPERS,
       );
 
@@ -190,9 +191,11 @@ describe("posts/index.page.tsx", () => {
       const posts = [
         { title: "Strange", url: "/posts/s/", date: "not-a-date" },
       ];
-      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
-      const currentYear = new Date().getFullYear().toString();
-      assertStringIncludes(html, currentYear);
+      const html = await postsIndexPage(
+        asLumeData({ ...makeData(posts), currentYear: 2032 }),
+        MOCK_HELPERS,
+      );
+      assertStringIncludes(html, "2032");
     });
   });
 
@@ -230,7 +233,7 @@ describe("posts/index.page.tsx", () => {
       ];
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, 'class="archive-list-item"');
-      assertStringIncludes(html, 'class="post-card h-entry"');
+      assertStringIncludes(html, "post-card h-entry");
     });
 
     it("renders a time element with the post-card date class", async () => {
@@ -248,16 +251,19 @@ describe("posts/index.page.tsx", () => {
     it("falls back to a safe card renderer when PostCard is unavailable", async () => {
       seedTestFaker(520);
       const unsafeDate = faker.date.anytime();
-      const html = await postsIndexPage({
-        search: {
-          pages: () => [{
-            title: "Unsafe <title>",
-            url: '/posts/"unsafe"/',
-            date: unsafeDate,
-          }],
-        },
-        comp: {},
-      } as unknown as Lume.Data, MOCK_HELPERS);
+      const html = await postsIndexPage(
+        asLumeData({
+          search: {
+            pages: () => [{
+              title: "Unsafe <title>",
+              url: '/posts/"unsafe"/',
+              date: unsafeDate,
+            }],
+          },
+          comp: {},
+        }),
+        MOCK_HELPERS,
+      );
 
       assertStringIncludes(html, "Unsafe &lt;title&gt;");
       assertStringIncludes(html, 'href="/posts/&quot;unsafe&quot;/"');
@@ -282,7 +288,7 @@ describe("posts/index.page.tsx", () => {
         'class="feature-layout feature-layout--with-rail"',
       );
       assertStringIncludes(html, 'class="feature-rail archive-rail"');
-      assertStringIncludes(html, 'class="feature-card archive-year-card"');
+      assertStringIncludes(html, "feature-card archive-year-card");
       assertStringIncludes(html, 'class="archive-year-nav"');
       assertStringIncludes(html, 'href="#archive-year-2026"');
       assertStringIncludes(html, 'href="#archive-year-2025"');
@@ -365,7 +371,10 @@ describe("posts/index.page.tsx", () => {
       ];
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
 
-      assertMatch(html, /class="cds--tag cds--tag--gray archive-year-summary"/);
+      assertMatch(
+        html,
+        /class="cds--tag cds--tag--gray archive-year-summary" title="1 post published"/,
+      );
       assertNotMatch(html, /archive-year-nav-count/);
     });
 

@@ -4,6 +4,7 @@ import type { jsx } from "lume/jsx-runtime";
 
 import {
   CHECKMARK_ICON,
+  CLOSE_ICON,
   DARK_ICON,
   LIGHT_ICON,
   MENU_ICON,
@@ -19,41 +20,9 @@ import {
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
 } from "../utils/i18n.ts";
+import { buildHeaderNavigation } from "./header-navigation.ts";
 
 type SsxElement = ReturnType<typeof jsx>;
-
-const HOME_URLS = new Set(
-  SUPPORTED_LANGUAGES.map((language) => getLocalizedUrl("/", language)),
-);
-
-function normalizeUrlPath(path: string): string {
-  const pathname = path.split(/[?#]/, 1)[0] || "/";
-  return pathname.endsWith("/") ? pathname : `${pathname}/`;
-}
-
-/**
- * Returns `{ "aria-current": "page" }` when the link matches the active URL,
- * otherwise an empty object, for safe spreading into JSX props.
- */
-function ariaCurrent(
-  href: string,
-  currentUrl: string,
-): { readonly "aria-current"?: "page" } {
-  const normalizedHref = normalizeUrlPath(href);
-  const normalizedCurrentUrl = normalizeUrlPath(currentUrl);
-
-  if (normalizedHref === normalizedCurrentUrl) {
-    return { "aria-current": "page" };
-  }
-
-  if (HOME_URLS.has(normalizedHref)) return {};
-
-  if (normalizedCurrentUrl.startsWith(normalizedHref)) {
-    return { "aria-current": "page" };
-  }
-
-  return {};
-}
 
 /** Renders the Carbon UI Shell header with navigation and user controls. */
 export default (
@@ -65,33 +34,12 @@ export default (
 ): SsxElement => {
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
-  const postsUrl = getLocalizedUrl("/posts/", language);
-  const tagsUrl = getLocalizedUrl("/tags/", language);
-  const aboutUrl = getLocalizedUrl("/about/", language);
   const searchContainerId = "search";
   const searchPanelId = "site-search-panel";
   const searchStatusId = "site-search-status";
   const languagePanelId = "site-language-panel";
   const sideNavId = "site-side-nav";
-
-  const navigationItems = [
-    {
-      href: homeUrl,
-      label: translations.navigation.home,
-      isCurrent: ariaCurrent(homeUrl, currentUrl)["aria-current"] === "page",
-    },
-    {
-      href: postsUrl,
-      label: translations.navigation.writing,
-      isCurrent: ariaCurrent(postsUrl, currentUrl)["aria-current"] === "page" ||
-        ariaCurrent(tagsUrl, currentUrl)["aria-current"] === "page",
-    },
-    {
-      href: aboutUrl,
-      label: translations.navigation.about,
-      isCurrent: ariaCurrent(aboutUrl, currentUrl)["aria-current"] === "page",
-    },
-  ] as const;
+  const navigationItems = buildHeaderNavigation({ currentUrl, language });
 
   return (
     <>
@@ -110,7 +58,13 @@ export default (
             >
               <CarbonIcon
                 icon={MENU_ICON}
-                className="cds--header__menu-icon"
+                className="cds--header__menu-icon site-menu-icon site-menu-icon--menu"
+                width={20}
+                height={20}
+              />
+              <CarbonIcon
+                icon={CLOSE_ICON}
+                className="cds--header__menu-icon site-menu-icon site-menu-icon--close"
                 width={20}
                 height={20}
               />

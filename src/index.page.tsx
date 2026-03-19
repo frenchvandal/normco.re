@@ -76,7 +76,7 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
   ) =>
     renderComponent(
       HEntryShell({
-        className: "post-card h-entry",
+        className: "cds--tile post-card h-entry",
         ...(summary !== undefined ? { summary } : {}),
         ...(authorName && authorUrl
           ? { author: { name: authorName, url: authorUrl } }
@@ -177,7 +177,7 @@ export default async (
     return `<li class="home-topics-item">
       <a href="${escapeHtml(tagUrl)}" class="tag-link tag-link--${
       escapeHtml(tagColor)
-    }">
+    }" title="${escapeHtml(tag)}">
         <span class="tag-link__label">${escapeHtml(tag)}</span>
       </a>
     </li>`;
@@ -244,7 +244,7 @@ export default async (
   );
 
   return `<div class="site-page-shell site-page-shell--wide">
-<section class="pagehead hero home-pagehead" aria-labelledby="home-title">
+<section class="cds--tile pagehead hero home-pagehead" aria-labelledby="home-title">
   <p class="pagehead-eyebrow">${escapeHtml(translations.home.eyebrow)}</p>
   <h1 id="home-title" class="hero-title">${
     escapeHtml(translations.home.title)

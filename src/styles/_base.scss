@@ -13,7 +13,9 @@
     color: var(--cds-text-primary);
     background-color: var(--cds-background);
     scroll-behavior: smooth;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+      background-color var(--cds-transition-default),
+      color var(--cds-transition-default);
   }
 
   body {
@@ -25,7 +27,9 @@
   a {
     color: var(--cds-link-primary);
     text-decoration: none;
-    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+    transition:
+      color var(--cds-transition-fast),
+      text-decoration-color var(--cds-transition-fast);
   }
 
   a:hover {
@@ -92,7 +96,7 @@
     border-radius: 0;
     overflow-x: auto;
     font: var(--cds-productive-code-02);
-    line-height: 1.6;
+    line-height: var(--cds-line-height-loose);
   }
 
   pre code {

@@ -220,6 +220,45 @@
   }
 
   /**
+   * @param {"assign" | "replace"} kind
+   * @param {string} targetUrl
+   * @returns {boolean}
+   */
+  function dispatchNavigationEvent(kind, targetUrl) {
+    const navigationEvent = new CustomEvent("site:language-navigation", {
+      bubbles: false,
+      cancelable: true,
+      detail: { kind, targetUrl },
+    });
+
+    return globalThis.document.dispatchEvent(navigationEvent);
+  }
+
+  /**
+   * @param {string} targetUrl
+   * @returns {void}
+   */
+  function assignLocation(targetUrl) {
+    if (!dispatchNavigationEvent("assign", targetUrl)) {
+      return;
+    }
+
+    globalThis.location.assign(targetUrl);
+  }
+
+  /**
+   * @param {string} targetUrl
+   * @returns {void}
+   */
+  function replaceLocation(targetUrl) {
+    if (!dispatchNavigationEvent("replace", targetUrl)) {
+      return;
+    }
+
+    globalThis.location.replace(targetUrl);
+  }
+
+  /**
    * @param {string} language
    * @returns {void}
    */
@@ -232,7 +271,7 @@
       return;
     }
 
-    globalThis.location.assign(targetUrl);
+    assignLocation(targetUrl);
   }
 
   const currentLanguage = normalizeLanguage(currentLanguageCandidate) ??
@@ -245,7 +284,7 @@
     const targetUrl = resolveTargetUrl(preferredLanguage);
 
     if (getCurrentPath() !== getTargetPath(targetUrl)) {
-      globalThis.location.replace(targetUrl);
+      replaceLocation(targetUrl);
       return;
     }
   }
@@ -394,7 +433,7 @@
             return;
           }
 
-          globalThis.location.assign(targetUrl);
+          assignLocation(targetUrl);
         },
       );
     }

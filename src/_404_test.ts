@@ -1,10 +1,14 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
+import errorPageStyles from "./styles/components/_error-pages.scss" with {
+  type: "text",
+};
+import { asLumeData, asLumeHelpers } from "../test/lume.ts";
 
 import page404 from "./404.page.tsx";
 
-const MOCK_DATA = {} as unknown as Lume.Data;
-const MOCK_HELPERS = {} as unknown as Lume.Helpers;
+const MOCK_DATA = asLumeData({});
+const MOCK_HELPERS = asLumeHelpers({});
 
 describe("404.page.tsx", () => {
   it("renders the shared state panel shell", () => {
@@ -35,9 +39,19 @@ describe("404.page.tsx", () => {
   });
 
   it("localizes message and home link for French data", () => {
-    const frenchData = { lang: "fr" } as unknown as Lume.Data;
+    const frenchData = asLumeData({ lang: "fr" });
     const html = page404(frenchData, MOCK_HELPERS);
     assertStringIncludes(html, "Page introuvable");
     assertStringIncludes(html, 'href="/fr/"');
+  });
+});
+
+describe("state panel CSS contracts", () => {
+  it("gives the page action an inset focus ring", () => {
+    assertStringIncludes(errorPageStyles, ".state-panel-action:focus-visible");
+    assertStringIncludes(
+      errorPageStyles,
+      "outline-offset: var(--focus-ring-inset-offset);",
+    );
   });
 });

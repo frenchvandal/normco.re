@@ -9,8 +9,6 @@
 
   .about-pagehead {
     padding: var(--cds-spacing-07);
-    border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
   }
 
   .about-pagehead .pagehead-eyebrow {
@@ -18,7 +16,7 @@
     inline-size: fit-content;
     padding: var(--cds-spacing-01) var(--cds-spacing-03);
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
+    background: var(--site-surface-panel);
   }
 
   .about-contact-item {
@@ -46,11 +44,11 @@
   }
 
   .about-contact-trigger:hover {
-    background: var(--cds-layer-hover);
+    background: var(--site-surface-panel-hover);
   }
 
   .about-contact-toggletip.cds--toggletip--open > .about-contact-trigger {
-    background: var(--cds-layer-hover) !important;
+    background: var(--site-surface-panel-hover) !important;
     color: var(--cds-text-primary) !important;
   }
 
@@ -97,16 +95,10 @@
     align-content: start !important;
     overflow: auto !important;
     padding: var(--cds-spacing-07) !important;
-    background: rgb(22 22 22 / 12%) !important;
+    background: var(--site-surface-scrim) !important;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     pointer-events: auto;
-  }
-
-  :root[data-color-mode="dark"]
-    .about-contact-toggletip.cds--popover--open
-    > .cds--popover {
-    background: rgb(244 244 244 / 6%) !important;
   }
 
   .about-contact-toggletip.cds--popover--open
@@ -187,14 +179,13 @@
     flex: 0 0 auto;
     box-sizing: border-box;
     border: 1px solid var(--cds-border-subtle) !important;
-    background: var(--cds-layer-hover) !important;
+    background: var(--site-surface-panel-hover) !important;
     color: var(--cds-text-secondary) !important;
     text-decoration: none !important;
   }
 
   .about-contact-action.cds--btn:hover {
-    background: var(--cds-layer-selected-hover, var(--cds-layer-hover))
-      !important;
+    background: var(--site-surface-panel-selected-hover) !important;
     color: var(--cds-text-primary) !important;
   }
 
@@ -230,7 +221,7 @@
     margin: 0;
     padding: var(--cds-spacing-03);
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer-accent, var(--cds-layer-hover));
+    background: var(--site-surface-accent);
     box-sizing: border-box;
     overflow: hidden;
   }
