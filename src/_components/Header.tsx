@@ -12,6 +12,7 @@ import {
   TRANSLATE_ICON,
 } from "../utils/carbon-icons.ts";
 import CarbonIcon from "./CarbonIcon.tsx";
+import BrandMark from "./BrandMark.tsx";
 import {
   getLanguageTag,
   getLocalizedUrl,
@@ -118,8 +119,15 @@ export default (
 
             {/* Product/brand name */}
             <a href={homeUrl} class="cds--header__name">
-              <span class="cds--header__name--prefix">normco</span>
-              .re
+              <span class="site-brand-lockup">
+                <span class="site-brand-mark-wrap" aria-hidden="true">
+                  <BrandMark className="site-brand-mark site-brand-mark--header" />
+                </span>
+                <span class="site-brand-wordmark">
+                  <span class="cds--header__name--prefix">normco</span>
+                  .re
+                </span>
+              </span>
             </a>
 
             {/* Header navigation (desktop) */}
