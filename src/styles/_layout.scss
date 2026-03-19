@@ -120,6 +120,7 @@
   .cds--header__menu-item[aria-current="page"] {
     color: var(--cds-text-primary);
     font-weight: var(--cds-font-weight-semibold);
+    background: var(--cds-layer-hover);
     border-block-end-color: var(--cds-border-interactive, var(--cds-focus));
   }
 
@@ -433,7 +434,12 @@
   .site-footer {
     padding-block: var(--cds-spacing-06);
     border-block-start: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
+    background:
+      linear-gradient(
+        180deg,
+        var(--cds-layer-background) 0%,
+        var(--cds-layer) 100%
+      );
   }
 
   .site-footer-inner {
@@ -445,6 +451,8 @@
     max-width: var(--site-chrome-max);
     margin-inline: auto;
     padding-inline: var(--page-shell-gutter);
+    color: var(--cds-text-secondary);
+    font: var(--cds-productive-body-01);
   }
 
   .site-footer-nav {
@@ -453,28 +461,32 @@
     gap: var(--cds-spacing-05);
   }
 
-  .site-footer-nav a {
+  .site-footer-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 2.5rem;
+    min-block-size: 2.5rem;
+    border: 1px solid transparent;
     color: var(--cds-text-secondary);
     text-decoration: none;
-    font: var(--cds-productive-heading-01);
-    transition: color 150ms ease;
+    transition:
+      color var(--cds-transition-default),
+      background-color var(--cds-transition-default),
+      border-color var(--cds-transition-default);
   }
 
-  .site-footer-nav a:hover {
+  .site-footer-link:hover {
     color: var(--cds-text-primary);
-    text-decoration-line: underline;
-    text-decoration-thickness: max(1px, 0.08em);
-    text-underline-offset: 0.15em;
-    text-decoration-skip-ink: auto;
+    background: var(--cds-layer-hover);
+    border-color: var(--cds-border-subtle);
   }
 
-  .site-footer-nav a:focus-visible {
+  .site-footer-link:focus-visible {
     outline: 2px solid var(--cds-focus);
-    outline-offset: 2px;
-    text-decoration-line: underline;
-    text-decoration-thickness: max(1px, 0.08em);
-    text-underline-offset: 0.15em;
-    text-decoration-skip-ink: auto;
+    outline-offset: -2px;
+    background: var(--cds-layer-hover);
+    border-color: var(--cds-focus);
   }
 
   .site-footer-icon {

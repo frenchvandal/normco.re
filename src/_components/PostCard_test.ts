@@ -55,7 +55,10 @@ describe("PostCard()", () => {
       const html = await renderComponent(PostCard({ ...base }));
       assertStringIncludes(html, 'class="post-card h-entry"');
       assertStringIncludes(html, 'class="post-card-title p-name"');
-      assertStringIncludes(html, 'class="post-card-link u-url u-uid"');
+      assertStringIncludes(
+        html,
+        'class="post-card-link link-inline link-inline--strong u-url u-uid"',
+      );
       assertStringIncludes(html, 'class="post-card-date dt-published"');
     });
 
@@ -109,7 +112,10 @@ describe("PostCard()", () => {
       assertStringIncludes(html, base.title);
       assertStringIncludes(html, "<h3");
       assertStringIncludes(html, "<a");
-      assertStringIncludes(html, 'class="post-card-link u-url u-uid"');
+      assertStringIncludes(
+        html,
+        'class="post-card-link link-inline link-inline--strong u-url u-uid"',
+      );
     });
 
     it("escapes title and URL values before interpolation", async () => {

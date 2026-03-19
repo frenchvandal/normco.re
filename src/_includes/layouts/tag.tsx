@@ -206,7 +206,9 @@ export default async (
         <h2 class="subhead-heading">${
           escapeHtml(translations.tagPage.postsHeading)
         }</h2>
-        <a href="${escapeHtml(archiveUrl)}" class="feature-link">${
+        <a href="${
+          escapeHtml(archiveUrl)
+        }" class="feature-link link-inline link-inline--strong">${
           escapeHtml(translations.tagPage.archiveLinkLabel)
         }</a>
       </div>
@@ -239,7 +241,9 @@ export default async (
         <p class="feature-card-caption">${
     escapeHtml(formatPostCount(posts.length, language))
   }</p>
-        <a href="${escapeHtml(archiveUrl)}" class="feature-link">${
+        <a href="${
+    escapeHtml(archiveUrl)
+  }" class="feature-link link-inline link-inline--strong">${
     escapeHtml(translations.tagPage.archiveLinkLabel)
   }</a>
       </section>

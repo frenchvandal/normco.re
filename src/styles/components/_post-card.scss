@@ -13,18 +13,23 @@
     transition:
       background-color var(--cds-transition-default),
       border-color var(--cds-transition-default),
-      outline-color var(--cds-transition-default);
+      outline-color var(--cds-transition-default),
+      transform var(--cds-transition-default),
+      box-shadow var(--cds-transition-default);
   }
 
   .post-card:hover {
     background-color: var(--cds-layer-hover);
     border-color: var(--cds-border-strong);
+    transform: translateY(calc(var(--cds-spacing-01) * -1));
+    box-shadow: var(--cds-shadow-sm);
   }
 
   .post-card:focus-within {
     background-color: var(--cds-layer-hover);
     border-color: var(--cds-focus);
     outline-color: var(--cds-focus);
+    box-shadow: var(--cds-shadow-sm);
   }
 
   @supports selector(.post-card:has(.post-card-link:focus-visible)) {
@@ -32,12 +37,14 @@
       background-color: var(--cds-layer);
       border-color: var(--cds-border-subtle);
       outline-color: transparent;
+      box-shadow: none;
     }
 
     .post-card:has(.post-card-link:focus-visible) {
       background-color: var(--cds-layer-hover);
       border-color: var(--cds-focus);
       outline-color: var(--cds-focus);
+      box-shadow: var(--cds-shadow-sm);
     }
   }
 
@@ -50,23 +57,39 @@
   }
 
   .post-card-title {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--cds-spacing-03);
     min-inline-size: 0;
     font: var(--cds-productive-heading-02);
     text-wrap: balance;
   }
 
+  .post-card-title::after {
+    content: "→";
+    flex: 0 0 auto;
+    color: var(--cds-link-primary);
+    opacity: 0;
+    transform: translateX(calc(var(--cds-spacing-02) * -1));
+    transition:
+      opacity var(--cds-transition-default),
+      transform var(--cds-transition-default);
+  }
+
+  .post-card:hover .post-card-title::after,
+  .post-card:focus-within .post-card-title::after {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
   .post-card-link {
     color: var(--cds-text-primary);
-    text-decoration: none;
   }
 
   .post-card-link:hover,
   .post-card-link:focus-visible,
   .post-card-link:active {
-    text-decoration-line: underline;
-    text-decoration-thickness: max(1px, 0.08em);
-    text-underline-offset: 0.15em;
-    text-decoration-skip-ink: auto;
+    color: var(--cds-link-primary-hover);
   }
 
   .post-card-link:focus-visible {
@@ -77,5 +100,21 @@
     grid-column: 2;
     font: var(--cds-productive-body-01);
     color: var(--cds-text-secondary);
+  }
+
+  @media (max-width: 42rem) {
+    .post-card {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--cds-spacing-03);
+    }
+
+    .post-card-date,
+    .post-card-reading-time {
+      grid-column: auto;
+    }
+
+    .post-card-date {
+      padding-block-start: 0;
+    }
   }
 }

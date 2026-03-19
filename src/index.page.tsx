@@ -232,7 +232,9 @@ export default async (
     <h2 id="home-recent-title" class="subhead-heading p-name">${
           escapeHtml(translations.home.recentHeading)
         }</h2>
-    <a href="${escapeHtml(archiveUrl)}" class="home-all-posts">${
+    <a href="${
+          escapeHtml(archiveUrl)
+        }" class="home-all-posts link-inline link-inline--strong">${
           escapeHtml(translations.home.archiveLinkLabel)
         }</a>
   </div>
@@ -245,16 +247,33 @@ export default async (
 
   return `<div class="site-page-shell site-page-shell--wide">
 <section class="pagehead hero home-pagehead" aria-labelledby="home-title">
-  <p class="pagehead-eyebrow">${escapeHtml(translations.home.eyebrow)}</p>
-  <h1 id="home-title" class="hero-title">${
+  <div class="home-hero-copy">
+    <p class="pagehead-eyebrow">${escapeHtml(translations.home.eyebrow)}</p>
+    <h1 id="home-title" class="hero-title">${
     escapeHtml(translations.home.title)
   }</h1>
-  <p class="hero-lead">${escapeHtml(translations.home.lead)}</p>
+    <p class="hero-lead">${escapeHtml(translations.home.lead)}</p>
+    <div class="home-hero-actions">
+      <a href="${
+    escapeHtml(archiveUrl)
+  }" class="link-inline link-inline--strong">
+        ${escapeHtml(translations.home.archiveLinkLabel)}
+      </a>
+      <a href="${escapeHtml(aboutUrl)}" class="link-inline">
+        ${escapeHtml(translations.navigation.about)}
+      </a>
+    </div>
+  </div>
   ${
     featuredTags.length > 0
-      ? `<ul class="home-topics">
-    ${featuredTagItems}
-  </ul>`
+      ? `<div class="home-topics-shell">
+    <p class="home-topics-label">${
+        escapeHtml(translations.home.recentHeading)
+      }</p>
+    <ul class="home-topics">
+      ${featuredTagItems}
+    </ul>
+  </div>`
       : ""
   }
 </section>

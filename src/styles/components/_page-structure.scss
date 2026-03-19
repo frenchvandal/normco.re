@@ -54,26 +54,7 @@
   }
 
   .feature-link {
-    color: var(--cds-link-primary);
-    text-decoration: none;
     font-weight: var(--cds-font-weight-semibold);
-  }
-
-  .feature-link:hover {
-    color: var(--cds-link-primary-hover);
-    text-decoration-line: underline;
-    text-decoration-thickness: max(1px, 0.08em);
-    text-underline-offset: 0.15em;
-    text-decoration-skip-ink: auto;
-  }
-
-  .feature-link:focus-visible {
-    outline: 2px solid var(--cds-focus);
-    outline-offset: 2px;
-    text-decoration-line: underline;
-    text-decoration-thickness: max(1px, 0.08em);
-    text-underline-offset: 0.15em;
-    text-decoration-skip-ink: auto;
   }
 
   .pagehead {
@@ -109,6 +90,13 @@
   .subhead-heading {
     font-size: var(--text-sm);
     font-weight: 600;
+  }
+
+  @media (max-width: 42rem) {
+    .subhead {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 
   .blankslate {

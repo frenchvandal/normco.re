@@ -40,7 +40,12 @@ export default (
       {dateStr}
     </time>
     <h3 class="post-card-title p-name">
-      <a class="post-card-link u-url u-uid" href={url}>{title}</a>
+      <a
+        class="post-card-link link-inline link-inline--strong u-url u-uid"
+        href={url}
+      >
+        {title}
+      </a>
     </h3>
     {readingLabel !== undefined && (
       <span class="post-card-reading-time">{readingLabel}</span>
