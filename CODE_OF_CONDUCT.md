@@ -20,7 +20,6 @@ We will not:
 - Apply any form of social or ideological enforcement.
 - Maintain a list of prohibited behaviours beyond what GitHub already prohibits.
 
-If you cannot work within these extremely light expectations, you are welcome to
-fork the project or simply not participate.
+Participation in this project implies acceptance of these expectations.
 
 Thank you for contributing.
