@@ -2,6 +2,7 @@
 
 import { renderComponent } from "lume/jsx-runtime";
 
+import BrandMark from "./_components/BrandMark.tsx";
 import StatePanel from "./_components/StatePanel.tsx";
 import HEntryShell from "./mf2/components/HEntryShell.tsx";
 import HFeedShell from "./mf2/components/HFeedShell.tsx";
@@ -267,6 +268,9 @@ export default async (
   </div>`
       : ""
   }
+  <div class="home-brand-panel" aria-hidden="true">
+    ${renderComponent(BrandMark({ className: "site-brand-mark site-brand-mark--hero" }))}
+  </div>
 </section>
 
 ${recentSection}

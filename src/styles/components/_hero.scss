@@ -84,7 +84,52 @@
     white-space: nowrap;
   }
 
+
+  .home-brand-panel {
+    display: grid;
+    gap: var(--cds-spacing-03);
+    padding: var(--cds-spacing-05);
+    border: 1px solid var(--cds-border-subtle);
+    background:
+      linear-gradient(
+        180deg,
+        var(--cds-layer-hover),
+        var(--cds-layer)
+      );
+  }
+
+  .site-brand-mark {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    color: var(--cds-text-primary);
+  }
+
+  .site-brand-mark--hero {
+    max-inline-size: 100%;
+    justify-self: end;
+  }
+
+
   @include breakpoint-up(md) {
+    .home-pagehead {
+      grid-template-columns: minmax(0, 1.5fr) minmax(16rem, 0.9fr);
+      align-items: end;
+    }
+
+    .pagehead-eyebrow,
+    .hero-title,
+    .hero-lead,
+    .home-topics-block {
+      grid-column: 1;
+    }
+
+    .home-brand-panel {
+      grid-column: 2;
+      grid-row: 1 / span 4;
+      align-self: stretch;
+    }
+
     .home-posts {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }

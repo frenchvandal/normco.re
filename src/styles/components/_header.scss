@@ -245,9 +245,39 @@
     color: var(--cds-link-primary);
   }
 
+
+  .site-brand-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--cds-spacing-03);
+  }
+
+  .site-brand-mark-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 3rem;
+    block-size: 1.5rem;
+    overflow: hidden;
+    color: var(--cds-text-primary);
+  }
+
+  .site-brand-mark--header {
+    inline-size: 3rem;
+    min-inline-size: 3rem;
+    transform: translateY(0.02rem);
+  }
+
+  .site-brand-wordmark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0;
+  }
+
   @keyframes site-search-status-spin {
     to {
       transform: rotate(1turn);
     }
   }
 }
+
