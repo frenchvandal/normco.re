@@ -45,11 +45,6 @@ jobs:
           deno-version-file: .tool-versions
           cache: true
 
-      - name: Run build task
-        shell: bash
-        run:
-          deno task build
-
       - name: Deploy to Alibaba Cloud OSS
         uses: frenchvandal/aliyun-oss-cdn-sync-action@master
         with:
@@ -64,3 +59,4 @@ jobs:
           cdn-enabled: true
           cdn-base-url: ${{ secrets.OSS_CDN_BASE_URL }}
           cdn-actions: refresh
+          build-command: deno task build
