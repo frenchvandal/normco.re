@@ -139,16 +139,16 @@ describe("Footer()", () => {
 });
 
 describe("Footer CSS contracts", () => {
-  it("has hover/focus styles for footer navigation links", () => {
+  it("has hover/focus styles for footer links", () => {
     assertStringIncludes(
       layoutStyles,
-      ".site-footer-nav a:hover",
-      "Missing hover style for footer navigation links",
+      ".site-footer-link:hover",
+      "Missing hover style for footer links",
     );
     assertStringIncludes(
       layoutStyles,
-      ".site-footer-nav a:focus-visible",
-      "Missing focus-visible style for footer navigation links",
+      ".site-footer-link:focus-visible",
+      "Missing focus-visible style for footer links",
     );
   });
 });

@@ -110,6 +110,16 @@
   .subhead-heading {
     font-size: var(--text-sm);
     font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cds-text-secondary);
+  }
+
+  @include breakpoint-down(md) {
+    .subhead {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 
   .blankslate {

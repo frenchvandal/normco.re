@@ -40,6 +40,7 @@ export default (
         >
           <a
             href={repositoryUrl}
+            class="site-footer-link"
             target="_blank"
             rel="noopener noreferrer"
             aria-label={translations.site.repositoryLinkAriaLabel}
@@ -56,6 +57,7 @@ export default (
           </a>
           <a
             href={syndicationPageUrl}
+            class="site-footer-link"
             aria-label={translations.site.syndicationPageLinkAriaLabel}
           >
             <CarbonIcon

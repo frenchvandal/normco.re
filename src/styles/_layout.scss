@@ -120,6 +120,7 @@
   .cds--header__menu-item[aria-current="page"] {
     color: var(--cds-text-primary);
     font-weight: var(--cds-font-weight-semibold);
+    background: var(--cds-layer-hover);
     border-block-end-color: var(--cds-border-interactive, var(--cds-focus));
   }
 
@@ -457,7 +458,7 @@
     gap: var(--cds-spacing-05);
   }
 
-  .site-footer-nav a {
+  .site-footer-link {
     display: inline-flex;
     align-items: center;
     gap: var(--cds-spacing-03);
@@ -467,7 +468,7 @@
     transition: color 150ms ease;
   }
 
-  .site-footer-nav a:hover {
+  .site-footer-link:hover {
     color: var(--cds-text-primary);
     text-decoration-line: underline;
     text-decoration-thickness: max(1px, 0.08em);
@@ -475,7 +476,7 @@
     text-decoration-skip-ink: auto;
   }
 
-  .site-footer-nav a:focus-visible {
+  .site-footer-link:focus-visible {
     outline: 2px solid var(--cds-focus);
     outline-offset: 2px;
     text-decoration-line: underline;
