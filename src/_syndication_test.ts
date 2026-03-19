@@ -1,9 +1,11 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
+import feedsStyles from "./styles/components/_feeds.scss" with { type: "text" };
+import { asLumeData } from "../test/lume.ts";
 
 import syndicationPage from "./syndication.page.tsx";
 
-const MOCK_DATA = {} as unknown as Lume.Data;
+const MOCK_DATA = asLumeData({});
 
 describe("syndication.page.tsx", () => {
   it("renders the wide page shell and heading", () => {
@@ -12,6 +14,10 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(
       html,
       'class="site-page-shell site-page-shell--wide feeds-page"',
+    );
+    assertStringIncludes(
+      html,
+      'class="cds--tile pagehead syndication-pagehead"',
     );
     assertStringIncludes(html, 'class="cds--breadcrumb"');
     assertStringIncludes(html, 'aria-label="Syndication breadcrumb"');
@@ -38,10 +44,26 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(html, 'href="/feed.atom"');
     assertStringIncludes(html, 'href="/feed.json"');
     assertStringIncludes(html, 'href="/sitemap.xml"');
+    assertStringIncludes(
+      html,
+      'class="cds--tag cds--tag--gray feeds-card-tag" title="XML"',
+    );
+    assertStringIncludes(
+      html,
+      'class="cds--tag cds--tag--teal feeds-card-tag" title="JSON"',
+    );
     assertStringIncludes(html, "application/rss+xml");
     assertStringIncludes(html, "application/atom+xml");
     assertStringIncludes(html, "application/feed+json");
     assertStringIncludes(html, "application/xml");
+    assertStringIncludes(
+      html,
+      'data-copy-copied-status="RSS feed URL copied"',
+    );
+    assertStringIncludes(
+      html,
+      'data-copy-error-status="Cannot copy RSS feed URL"',
+    );
   });
 
   it("loads the feed copy enhancement script", () => {
@@ -51,7 +73,7 @@ describe("syndication.page.tsx", () => {
   });
 
   it("localizes routes and copy labels in French", () => {
-    const html = syndicationPage({ lang: "fr" } as unknown as Lume.Data);
+    const html = syndicationPage(asLumeData({ lang: "fr" }));
 
     assertStringIncludes(
       html,
@@ -64,5 +86,31 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(html, 'href="/fr/feed.json"');
     assertStringIncludes(html, 'href="/sitemap.xml"');
     assertStringIncludes(html, 'data-copy-default-label="Copier"');
+    assertStringIncludes(
+      html,
+      'data-copy-copied-status="URL de Flux RSS copiée"',
+    );
+  });
+});
+
+describe("syndication CSS contracts", () => {
+  it("keeps shared inline copy controls and inset focus tokens", () => {
+    assertStringIncludes(feedsStyles, ".feeds-endpoint-copy-button");
+    assertStringIncludes(
+      feedsStyles,
+      "inline-size: var(--site-inline-copy-control-size);",
+    );
+    assertStringIncludes(
+      feedsStyles,
+      "outline-offset: var(--focus-ring-inset-offset);",
+    );
+  });
+
+  it("keeps endpoint rows on shared panel surfaces", () => {
+    assertStringIncludes(
+      feedsStyles,
+      "background: var(--site-surface-panel-hover);",
+    );
+    assertStringIncludes(feedsStyles, "background: var(--site-surface-panel);");
   });
 });

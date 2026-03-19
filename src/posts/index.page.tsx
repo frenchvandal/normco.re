@@ -66,7 +66,7 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
   ) =>
     renderComponent(
       HEntryShell({
-        className: "post-card h-entry",
+        className: "cds--tile post-card h-entry",
         ...(summary !== undefined ? { summary } : {}),
         ...(authorName && authorUrl
           ? { author: { name: authorName, url: authorUrl } }
@@ -125,6 +125,12 @@ function resolveArchivePosts(
   return Array.isArray(results) ? results.filter(isLumeData) : [];
 }
 
+function resolveCurrentYear(value: unknown): number {
+  return typeof value === "number" && Number.isInteger(value)
+    ? value
+    : new Date().getFullYear();
+}
+
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Archive page URL. */
@@ -180,7 +186,7 @@ export default async (
   const author = getAuthorIdentity(language, data.author);
 
   // Group posts by year.
-  const currentYear = new Date().getFullYear();
+  const currentYear = resolveCurrentYear(Reflect.get(data, "currentYear"));
   const byYear = new Map<number, Lume.Data[]>();
 
   for (const post of posts) {
@@ -238,7 +244,9 @@ export default async (
   <header class="archive-year-header">
     <div class="archive-year-heading-group">
       <h2 id="archive-year-heading-${year}" class="archive-year-heading">${year}</h2>
-      <span class="cds--tag cds--tag--gray archive-year-summary">
+      <span class="cds--tag cds--tag--gray archive-year-summary" title="${
+      escapeHtml(yearSummary)
+    }">
         <span class="cds--tag__label">${escapeHtml(yearSummary)}</span>
       </span>
     </div>
@@ -265,7 +273,7 @@ export default async (
     </li>
   </ol>
 </nav>
-<section class="pagehead archive-pagehead" aria-labelledby="archive-title">
+<section class="cds--tile pagehead archive-pagehead" aria-labelledby="archive-title">
   <p class="pagehead-eyebrow">${escapeHtml(translations.archive.eyebrow)}</p>
   <h1 id="archive-title" class="archive-page-title p-name">${
     escapeHtml(translations.archive.title)
@@ -308,7 +316,7 @@ export default async (
       escapeHtml(translations.archive.railAriaLabel)
     }">
   <div class="feature-rail-sticky">
-    <section class="feature-card archive-year-card">
+    <section class="cds--tile feature-card archive-year-card">
       <h2 class="feature-card-title">${
       escapeHtml(translations.archive.yearsAriaLabel)
     }</h2>

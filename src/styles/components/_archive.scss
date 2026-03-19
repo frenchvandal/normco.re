@@ -1,4 +1,5 @@
 @use "@carbon/styles/scss/breakpoint" as *;
+@use "../editorial/mixins" as editorial;
 
 /* Archive page — editorial archive with grouped year navigation. */
 @layer components {
@@ -8,8 +9,6 @@
 
   .archive-pagehead {
     padding: var(--cds-spacing-07);
-    border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
   }
 
   .archive-pagehead .pagehead-eyebrow {
@@ -17,7 +16,7 @@
     inline-size: fit-content;
     padding: var(--cds-spacing-01) var(--cds-spacing-03);
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
+    background: var(--site-surface-panel);
   }
 
   .archive-activity {
@@ -52,11 +51,11 @@
   }
 
   .archive-year-heading {
-    font-size: var(--text-lg);
+    font-size: var(--cds-font-size-heading-03);
     letter-spacing: 0;
     text-transform: none;
     color: var(--cds-text-primary);
-    font-weight: 600;
+    font-weight: var(--cds-font-weight-semibold);
     margin: 0;
   }
 
@@ -82,31 +81,33 @@
     grid-template-columns: 5.5ch 1fr auto;
     gap: var(--space-s);
     align-items: center;
-    padding: 0.5rem 0.625rem;
+    padding: var(--cds-spacing-03) var(--cds-spacing-04);
     border: 1px solid var(--cds-border-subtle);
-    border-radius: var(--borderRadius-medium);
-    background: var(--cds-background);
-    transition: border-color 0.15s ease, background-color 0.15s ease;
+    border-radius: var(--cds-radius-none);
+    background: var(--site-surface-page);
+    transition:
+      border-color var(--cds-transition-fast),
+      background-color var(--cds-transition-fast);
   }
 
   .archive-item:hover {
     border-color: var(--cds-border-strong);
-    background: var(--cds-layer);
+    background: var(--site-surface-panel);
   }
 
   .archive-date {
-    font-size: var(--text-sm);
+    font-size: var(--cds-font-size-body-01);
     color: var(--cds-text-secondary);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
 
   .archive-title {
-    font-size: var(--text-base);
-    font-weight: 500;
+    font-size: var(--cds-font-size-body-02);
+    font-weight: var(--cds-font-weight-medium);
     text-decoration: none;
     color: var(--cds-text-primary);
-    transition: color 0.15s ease;
+    transition: color var(--cds-transition-fast);
   }
 
   .archive-title:hover {
@@ -114,7 +115,7 @@
   }
 
   .archive-reading-time {
-    font-size: var(--text-sm);
+    font-size: var(--cds-font-size-body-01);
     color: var(--cds-text-secondary);
     white-space: nowrap;
   }
@@ -146,8 +147,8 @@
     padding-block: var(--cds-spacing-03);
     padding-inline: var(--cds-spacing-04);
     border: 1px solid var(--cds-border-subtle);
-    background: var(--cds-layer);
-    box-shadow: inset 0.25rem 0 0 var(--cds-link-visited);
+    background: var(--site-surface-panel);
+    @include editorial.accent-rail;
     color: var(--cds-text-primary);
     font-variant-numeric: tabular-nums;
     text-decoration: none;
@@ -158,7 +159,7 @@
   }
 
   .archive-year-nav-link:hover {
-    background: var(--cds-layer-hover);
+    background: var(--site-surface-panel-hover);
     border-color: var(--cds-border-strong);
     color: var(--cds-text-primary);
     text-decoration: none;
@@ -186,8 +187,8 @@
 
   .archive-year-card {
     gap: var(--space-s);
-    background: var(--cds-layer);
-    box-shadow: inset 0.25rem 0 0 var(--cds-link-visited);
+    background: var(--site-surface-panel);
+    @include editorial.accent-rail;
   }
 
   .archive-rail {

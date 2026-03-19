@@ -75,7 +75,7 @@
 
   .token.important,
   .token.bold {
-    font-weight: 700;
+    font-weight: var(--cds-font-weight-bold);
   }
 
   .token.italic {

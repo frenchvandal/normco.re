@@ -300,7 +300,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           >
             <div class="feature-rail-sticky">
               {tags.length > 0 && (
-                <section class="feature-card">
+                <section class="cds--tile feature-card">
                   <h2 class="feature-card-title">
                     {translations.post.tagsAriaLabel}
                   </h2>
@@ -316,6 +316,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                             href={getTagUrl(tagLabel, language)}
                             class={`tag-link tag-link--${_color} p-category`}
                             rel="tag"
+                            title={tagLabel}
                           >
                             <span class="tag-link__label">{tagLabel}</span>
                           </a>
@@ -327,7 +328,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               )}
 
               {(prev !== undefined || next !== undefined) && (
-                <section class="feature-card">
+                <section class="cds--tile feature-card">
                   <h2 class="feature-card-title">
                     {translations.post.navigationAriaLabel}
                   </h2>

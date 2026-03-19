@@ -81,6 +81,24 @@
 
   /**
    * @param {HTMLElement} control
+   * @returns {string}
+   */
+  function getCopiedStatusMessage(control) {
+    return control.dataset.copyCopiedStatus ??
+      `${getCopyLabel(control)} URL copied`;
+  }
+
+  /**
+   * @param {HTMLElement} control
+   * @returns {string}
+   */
+  function getErrorStatusMessage(control) {
+    return control.dataset.copyErrorStatus ??
+      `Cannot copy ${getCopyLabel(control)} URL`;
+  }
+
+  /**
+   * @param {HTMLElement} control
    * @param {string} message
    * @returns {void}
    */
@@ -100,15 +118,13 @@
    */
   function setCopyState(control, state) {
     const copyButton = getCopyButton(control);
-    const copyLabel = getCopyLabel(control);
     const isCopied = state === "copied";
     const isError = state === "error";
     const statusMessage = isCopied
-      ? `${copyLabel} URL copied`
+      ? getCopiedStatusMessage(control)
       : isError
-      ? `Cannot copy ${copyLabel} URL`
+      ? getErrorStatusMessage(control)
       : "";
-    const defaultLabel = `Copy ${copyLabel} URL`;
 
     control.dataset.copyState = state;
     control.classList.toggle("feed-copy-control--copied", isCopied);
@@ -131,7 +147,7 @@
 
       copyButton.setAttribute(
         "aria-label",
-        state === "idle" ? defaultLabel : statusMessage,
+        state === "idle" ? getCopyTitle(copyButton) : statusMessage,
       );
       copyButton.setAttribute(
         "title",
@@ -247,6 +263,11 @@
     }
 
     const control = candidate;
+
+    if (control.dataset.copyBound === "true") {
+      continue;
+    }
+
     const copyButton = getCopyButton(control);
 
     if (copyButton === null) {
@@ -259,6 +280,7 @@
       continue;
     }
 
+    control.dataset.copyBound = "true";
     copyButton.addEventListener("click", () => {
       void handleCopy(control, copyPath);
     });

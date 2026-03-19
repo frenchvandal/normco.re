@@ -49,6 +49,14 @@
       "description": "Run unit and integration tests",
       "command": "deno test"
     },
+    "validate": {
+      "description": "Run the full local validation suite",
+      "command": "deno task design:guard && deno task check && deno task test && deno task build"
+    },
+    "design:guard": {
+      "description": "Fail when normalized UI literals reappear outside the token bridge or explicit allowlists",
+      "command": "deno run --allow-read scripts/design-token-guard.ts"
+    },
     "test:doc": {
       "description": "Run documentation tests from inline JSDoc examples in source files",
       "command": "deno test --doc src/**/*.ts src/**/*.tsx plugins/**/*.ts"

@@ -8,11 +8,17 @@
     return;
   }
 
+  if (article.dataset.codeCopyBound === "true") {
+    return;
+  }
+
   const codeBlocks = article.querySelectorAll(".post-content pre > code");
 
   if (codeBlocks.length === 0) {
     return;
   }
+
+  article.dataset.codeCopyBound = "true";
 
   const copyLabel = article.dataset.codeCopyLabel ?? "Copy code";
   const copyFeedback = article.dataset.codeCopyFeedback ?? "Code copied";

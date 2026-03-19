@@ -53,7 +53,7 @@ describe("PostCard()", () => {
     it("renders an h-entry root with canonical name and URL properties", async () => {
       const base = makeBase(307);
       const html = await renderComponent(PostCard({ ...base }));
-      assertStringIncludes(html, 'class="post-card h-entry"');
+      assertStringIncludes(html, "post-card h-entry");
       assertStringIncludes(html, 'class="post-card-title p-name"');
       assertStringIncludes(html, 'class="post-card-link u-url u-uid"');
       assertStringIncludes(html, 'class="post-card-date dt-published"');
@@ -92,7 +92,8 @@ describe("PostCard()", () => {
     it("wraps content in article.post-card", async () => {
       const base = makeBase(304);
       const html = await renderComponent(PostCard({ ...base }));
-      assertStringIncludes(html, 'class="post-card h-entry"');
+      assertStringIncludes(html, "post-card h-entry");
+      assertStringIncludes(html, "cds--tile");
     });
 
     it("renders a time element with the ISO datetime attribute", async () => {

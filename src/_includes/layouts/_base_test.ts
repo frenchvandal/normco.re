@@ -1,21 +1,22 @@
 import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
-import { faker } from "npm/faker-js";
+import { faker, seedTestFaker } from "../../../test/faker.ts";
+import { asLumeData, asLumeHelpers } from "../../../test/lume.ts";
 
 import baseLayout from "./base.tsx";
 
 // ---------------------------------------------------------------------------
 // No helpers are used by base.tsx after JSX migration.
 // ---------------------------------------------------------------------------
-const MOCK_HELPERS = {} as unknown as Lume.Helpers;
+const MOCK_HELPERS = asLumeHelpers({});
 
 async function renderBase(data: Lume.Data): Promise<string> {
   return await renderComponent(await baseLayout(data, MOCK_HELPERS));
 }
 
 function makeSentence(seed: number): string {
-  faker.seed(seed);
+  seedTestFaker(seed);
   return faker.lorem.sentence({ min: 3, max: 7 });
 }
 
@@ -46,7 +47,7 @@ function makeData(
     };
   },
 ): Lume.Data {
-  return {
+  return asLumeData({
     title: undefined,
     description: undefined,
     children: { __html: "<p>Page body.</p>" },
@@ -70,7 +71,7 @@ function makeData(
       Footer: (_props: unknown) => "<footer>mock</footer>",
     },
     ...overrides,
-  } as unknown as Lume.Data;
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -257,7 +258,7 @@ describe("base.tsx layout", () => {
 
     it("awaits async Header and Footer components", async () => {
       const html = await renderBase(
-        {
+        asLumeData({
           ...makeData({}),
           comp: {
             Header: (_props: unknown) =>
@@ -265,7 +266,7 @@ describe("base.tsx layout", () => {
             Footer: (_props: unknown) =>
               Promise.resolve("<footer>async mock</footer>"),
           },
-        } as unknown as Lume.Data,
+        }),
       );
 
       assertStringIncludes(html, "<header>async mock</header>");
@@ -274,10 +275,10 @@ describe("base.tsx layout", () => {
 
     it("falls back to an empty shell when Header and Footer are unavailable", async () => {
       const html = await renderBase(
-        {
+        asLumeData({
           ...makeData({}),
           comp: {},
-        } as unknown as Lume.Data,
+        }),
       );
 
       assertStringIncludes(html, '<div class="site-wrapper">');
@@ -288,7 +289,7 @@ describe("base.tsx layout", () => {
 
     it("passes the current URL to the Header component", async () => {
       let receivedUrl = "";
-      const data = {
+      const data = asLumeData({
         title: undefined,
         description: undefined,
         children: { __html: "" },
@@ -300,7 +301,7 @@ describe("base.tsx layout", () => {
           },
           Footer: (_props: unknown) => "",
         },
-      } as unknown as Lume.Data;
+      });
 
       await renderBase(data);
       assertStringIncludes(receivedUrl, "/about/");
@@ -309,7 +310,7 @@ describe("base.tsx layout", () => {
     it('falls back to "/" when url is absent from data', async () => {
       let receivedUrl = "";
       // Omit `url` from the data object to exercise the `url ?? "/"` branch.
-      const data = {
+      const data = asLumeData({
         title: undefined,
         description: undefined,
         children: { __html: "" },
@@ -320,7 +321,7 @@ describe("base.tsx layout", () => {
           },
           Footer: (_props: unknown) => "",
         },
-      } as unknown as Lume.Data;
+      });
 
       await renderBase(data);
       assertStringIncludes(receivedUrl, "/");

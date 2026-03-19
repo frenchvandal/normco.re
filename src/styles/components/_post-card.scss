@@ -1,3 +1,5 @@
+@use "../editorial/mixins" as editorial;
+
 /* Post card component — used on home and archive pages. */
 @layer components {
   .post-card {
@@ -6,10 +8,8 @@
     gap: var(--cds-spacing-02) var(--space-m);
     align-items: start;
     padding: var(--cds-spacing-05);
-    border: 1px solid var(--cds-border-subtle);
-    background-color: var(--cds-layer);
     outline: var(--focus-ring-width) solid transparent;
-    outline-offset: calc(var(--focus-ring-width) * -1);
+    outline-offset: var(--focus-ring-inset-offset);
     transition:
       background-color var(--cds-transition-default),
       border-color var(--cds-transition-default),
@@ -63,10 +63,7 @@
   .post-card-link:hover,
   .post-card-link:focus-visible,
   .post-card-link:active {
-    text-decoration-line: underline;
-    text-decoration-thickness: max(1px, 0.08em);
-    text-underline-offset: 0.15em;
-    text-decoration-skip-ink: auto;
+    @include editorial.editorial-link-underline;
   }
 
   .post-card-link:focus-visible {

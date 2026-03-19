@@ -10,6 +10,7 @@
 
 @use "sass:map";
 @use "../carbon/config";
+@use "@carbon/colors" as colors;
 @use "@carbon/styles/scss/theme" as theme;
 @use "@carbon/styles/scss/themes" as themes;
 @use "@carbon/styles/scss/spacing" as spacing;
@@ -65,6 +66,9 @@
     --cds-motion-easing-standard: #{motion.$standard-easing};
     --cds-motion-easing-enter: #{motion.$ease-out};
     --cds-motion-easing-exit: #{motion.$ease-in};
+    --cds-transition-fast: var(--cds-motion-duration-fast) var(
+      --cds-motion-easing-standard
+    );
     --cds-transition-default: var(--cds-motion-duration-moderate) var(
       --cds-motion-easing-standard
     );
@@ -85,6 +89,13 @@
     --cds-font-family-mono:
       ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono",
       Menlo, monospace;
+
+    // Typography scalars for CSS-only composition
+    --cds-font-size-body-01: 0.875rem;
+    --cds-font-size-body-02: 1rem;
+    --cds-font-size-heading-03: 1.25rem;
+    --cds-font-size-heading-04: 1.75rem;
+    --cds-font-size-heading-05: 2rem;
 
     // Productive type scale (UI elements) — shorthand tokens
     --cds-productive-heading-01: 400 0.875rem/1.29 var(--cds-font-family-sans);
@@ -157,6 +168,75 @@
     // Focus ring tokens
     --focus-ring-width: 0.1875rem;
     --focus-ring-offset: 0.125rem;
+    --focus-ring-inset-offset: calc(var(--focus-ring-width) * -1);
+
+    // Site semantic tokens backed by Carbon primitives
+    --site-shell-size: 3rem;
+    --site-search-field-size: 2.25rem;
+    --site-search-icon-offset: 0.625rem;
+    --site-search-icon-size: var(--cds-font-size-body-01);
+    --site-inline-copy-control-size: 2.375rem;
+    --site-link-underline-thickness: max(1px, 0.08em);
+    --site-link-underline-offset: 0.15em;
+    --site-surface-page: var(--cds-background);
+    --site-surface-panel: var(--cds-layer);
+    --site-surface-panel-hover: var(--cds-layer-hover);
+    --site-surface-panel-active: var(--cds-layer-active);
+    --site-surface-panel-selected: var(
+      --cds-layer-selected,
+      var(--cds-layer-active, var(--cds-layer))
+    );
+    --site-surface-panel-selected-hover: var(
+      --cds-layer-selected-hover,
+      var(--cds-layer-hover)
+    );
+    --site-surface-accent: var(--cds-layer-accent, var(--cds-layer-hover));
+    --site-surface-scrim: #{rgba(colors.$gray-100, 0.12)};
+    --site-accent-rail-width: var(--cds-spacing-02);
+    --site-accent-rail-color: var(--cds-link-visited);
+    --site-accent-rail-shadow: inset var(--site-accent-rail-width) 0 0 var(
+      --site-accent-rail-color
+    );
+    --site-radius-soft: 0.25rem;
+    --site-radius-prominent: 0.75rem;
+
+    // Tag color bridge — Carbon palette values expressed as site custom
+    // properties so component styles stay free of hard-coded color literals.
+    --site-tag-blue-bg: #{rgba(colors.$blue-70, 0.1)};
+    --site-tag-blue-border: #{rgba(colors.$blue-70, 0.2)};
+    --site-tag-blue-color: #{colors.$blue-70};
+    --site-tag-blue-bg-hover: #{rgba(colors.$blue-70, 0.18)};
+    --site-tag-blue-border-hover: #{colors.$blue-70};
+
+    --site-tag-green-bg: #{rgba(colors.$green-70, 0.1)};
+    --site-tag-green-border: #{rgba(colors.$green-70, 0.2)};
+    --site-tag-green-color: #{colors.$green-70};
+    --site-tag-green-bg-hover: #{rgba(colors.$green-70, 0.18)};
+    --site-tag-green-border-hover: #{colors.$green-70};
+
+    --site-tag-purple-bg: #{rgba(colors.$purple-60, 0.1)};
+    --site-tag-purple-border: #{rgba(colors.$purple-60, 0.2)};
+    --site-tag-purple-color: #{colors.$purple-60};
+    --site-tag-purple-bg-hover: #{rgba(colors.$purple-60, 0.18)};
+    --site-tag-purple-border-hover: #{colors.$purple-60};
+
+    --site-tag-red-bg: #{rgba(colors.$red-70, 0.1)};
+    --site-tag-red-border: #{rgba(colors.$red-70, 0.2)};
+    --site-tag-red-color: #{colors.$red-70};
+    --site-tag-red-bg-hover: #{rgba(colors.$red-70, 0.18)};
+    --site-tag-red-border-hover: #{colors.$red-70};
+
+    --site-tag-teal-bg: #{rgba(colors.$teal-70, 0.1)};
+    --site-tag-teal-border: #{rgba(colors.$teal-70, 0.2)};
+    --site-tag-teal-color: #{colors.$teal-70};
+    --site-tag-teal-bg-hover: #{rgba(colors.$teal-70, 0.18)};
+    --site-tag-teal-border-hover: #{colors.$teal-70};
+
+    --site-tag-cyan-bg: #{rgba(colors.$cyan-70, 0.1)};
+    --site-tag-cyan-border: #{rgba(colors.$cyan-70, 0.2)};
+    --site-tag-cyan-color: #{colors.$cyan-70};
+    --site-tag-cyan-bg-hover: #{rgba(colors.$cyan-70, 0.18)};
+    --site-tag-cyan-border-hover: #{colors.$cyan-70};
   }
 
   // Dark theme — Gray 90
@@ -177,6 +257,46 @@
     @include theme.theme(themes.$g100);
   }
 
+  [data-color-mode="dark"],
+  [data-color-mode="gray-100"] {
+    --site-surface-scrim: #{rgba(colors.$gray-10, 0.06)};
+    --site-tag-blue-bg: #{rgba(colors.$blue-40, 0.15)};
+    --site-tag-blue-border: #{rgba(colors.$blue-40, 0.3)};
+    --site-tag-blue-color: #{colors.$blue-40};
+    --site-tag-blue-bg-hover: #{rgba(colors.$blue-40, 0.25)};
+    --site-tag-blue-border-hover: #{colors.$blue-40};
+
+    --site-tag-green-bg: #{rgba(colors.$green-40, 0.15)};
+    --site-tag-green-border: #{rgba(colors.$green-40, 0.3)};
+    --site-tag-green-color: #{colors.$green-40};
+    --site-tag-green-bg-hover: #{rgba(colors.$green-40, 0.25)};
+    --site-tag-green-border-hover: #{colors.$green-40};
+
+    --site-tag-purple-bg: #{rgba(colors.$purple-40, 0.15)};
+    --site-tag-purple-border: #{rgba(colors.$purple-40, 0.3)};
+    --site-tag-purple-color: #{colors.$purple-40};
+    --site-tag-purple-bg-hover: #{rgba(colors.$purple-40, 0.25)};
+    --site-tag-purple-border-hover: #{colors.$purple-40};
+
+    --site-tag-red-bg: #{rgba(colors.$red-40, 0.15)};
+    --site-tag-red-border: #{rgba(colors.$red-40, 0.3)};
+    --site-tag-red-color: #{colors.$red-40};
+    --site-tag-red-bg-hover: #{rgba(colors.$red-40, 0.25)};
+    --site-tag-red-border-hover: #{colors.$red-40};
+
+    --site-tag-teal-bg: #{rgba(colors.$teal-40, 0.15)};
+    --site-tag-teal-border: #{rgba(colors.$teal-40, 0.3)};
+    --site-tag-teal-color: #{colors.$teal-40};
+    --site-tag-teal-bg-hover: #{rgba(colors.$teal-40, 0.25)};
+    --site-tag-teal-border-hover: #{colors.$teal-40};
+
+    --site-tag-cyan-bg: #{rgba(colors.$cyan-40, 0.15)};
+    --site-tag-cyan-border: #{rgba(colors.$cyan-40, 0.3)};
+    --site-tag-cyan-color: #{colors.$cyan-40};
+    --site-tag-cyan-bg-hover: #{rgba(colors.$cyan-40, 0.25)};
+    --site-tag-cyan-border-hover: #{colors.$cyan-40};
+  }
+
   // Reduced motion
   @media (prefers-reduced-motion: reduce) {
     :root {
@@ -192,6 +312,92 @@
     :root {
       --cds-border-subtle: #{map.get(themes.$white, "border-strong-01")};
       --cds-text-secondary: #{map.get(themes.$white, "text-primary")};
+      --site-tag-blue-border: #{colors.$blue-70};
+      --site-tag-green-border: #{colors.$green-70};
+      --site-tag-purple-border: #{colors.$purple-60};
+      --site-tag-red-border: #{colors.$red-70};
+      --site-tag-teal-border: #{colors.$teal-70};
+      --site-tag-cyan-border: #{colors.$cyan-70};
+      --site-tag-blue-border-hover: #{colors.$blue-70};
+      --site-tag-green-border-hover: #{colors.$green-70};
+      --site-tag-purple-border-hover: #{colors.$purple-60};
+      --site-tag-red-border-hover: #{colors.$red-70};
+      --site-tag-teal-border-hover: #{colors.$teal-70};
+      --site-tag-cyan-border-hover: #{colors.$cyan-70};
+    }
+
+    [data-color-mode="dark"],
+    [data-color-mode="gray-100"] {
+      --site-tag-blue-border: #{colors.$blue-40};
+      --site-tag-green-border: #{colors.$green-40};
+      --site-tag-purple-border: #{colors.$purple-40};
+      --site-tag-red-border: #{colors.$red-40};
+      --site-tag-teal-border: #{colors.$teal-40};
+      --site-tag-cyan-border: #{colors.$cyan-40};
+      --site-tag-blue-border-hover: #{colors.$blue-40};
+      --site-tag-green-border-hover: #{colors.$green-40};
+      --site-tag-purple-border-hover: #{colors.$purple-40};
+      --site-tag-red-border-hover: #{colors.$red-40};
+      --site-tag-teal-border-hover: #{colors.$teal-40};
+      --site-tag-cyan-border-hover: #{colors.$cyan-40};
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-color-mode]) {
+        --site-tag-blue-border: #{colors.$blue-40};
+        --site-tag-green-border: #{colors.$green-40};
+        --site-tag-purple-border: #{colors.$purple-40};
+        --site-tag-red-border: #{colors.$red-40};
+        --site-tag-teal-border: #{colors.$teal-40};
+        --site-tag-cyan-border: #{colors.$cyan-40};
+        --site-tag-blue-border-hover: #{colors.$blue-40};
+        --site-tag-green-border-hover: #{colors.$green-40};
+        --site-tag-purple-border-hover: #{colors.$purple-40};
+        --site-tag-red-border-hover: #{colors.$red-40};
+        --site-tag-teal-border-hover: #{colors.$teal-40};
+        --site-tag-cyan-border-hover: #{colors.$cyan-40};
+      }
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-color-mode]) {
+      --site-surface-scrim: #{rgba(colors.$gray-10, 0.06)};
+      --site-tag-blue-bg: #{rgba(colors.$blue-40, 0.15)};
+      --site-tag-blue-border: #{rgba(colors.$blue-40, 0.3)};
+      --site-tag-blue-color: #{colors.$blue-40};
+      --site-tag-blue-bg-hover: #{rgba(colors.$blue-40, 0.25)};
+      --site-tag-blue-border-hover: #{colors.$blue-40};
+
+      --site-tag-green-bg: #{rgba(colors.$green-40, 0.15)};
+      --site-tag-green-border: #{rgba(colors.$green-40, 0.3)};
+      --site-tag-green-color: #{colors.$green-40};
+      --site-tag-green-bg-hover: #{rgba(colors.$green-40, 0.25)};
+      --site-tag-green-border-hover: #{colors.$green-40};
+
+      --site-tag-purple-bg: #{rgba(colors.$purple-40, 0.15)};
+      --site-tag-purple-border: #{rgba(colors.$purple-40, 0.3)};
+      --site-tag-purple-color: #{colors.$purple-40};
+      --site-tag-purple-bg-hover: #{rgba(colors.$purple-40, 0.25)};
+      --site-tag-purple-border-hover: #{colors.$purple-40};
+
+      --site-tag-red-bg: #{rgba(colors.$red-40, 0.15)};
+      --site-tag-red-border: #{rgba(colors.$red-40, 0.3)};
+      --site-tag-red-color: #{colors.$red-40};
+      --site-tag-red-bg-hover: #{rgba(colors.$red-40, 0.25)};
+      --site-tag-red-border-hover: #{colors.$red-40};
+
+      --site-tag-teal-bg: #{rgba(colors.$teal-40, 0.15)};
+      --site-tag-teal-border: #{rgba(colors.$teal-40, 0.3)};
+      --site-tag-teal-color: #{colors.$teal-40};
+      --site-tag-teal-bg-hover: #{rgba(colors.$teal-40, 0.25)};
+      --site-tag-teal-border-hover: #{colors.$teal-40};
+
+      --site-tag-cyan-bg: #{rgba(colors.$cyan-40, 0.15)};
+      --site-tag-cyan-border: #{rgba(colors.$cyan-40, 0.3)};
+      --site-tag-cyan-color: #{colors.$cyan-40};
+      --site-tag-cyan-bg-hover: #{rgba(colors.$cyan-40, 0.25)};
+      --site-tag-cyan-border-hover: #{colors.$cyan-40};
     }
   }
 

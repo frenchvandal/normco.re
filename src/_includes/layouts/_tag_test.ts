@@ -2,30 +2,31 @@ import { assertMatch, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker, seedTestFaker } from "../../../test/faker.ts";
+import { asLumeData, asLumeHelpers } from "../../../test/lume.ts";
 
 import tagLayout from "./tag.tsx";
 
-const MOCK_HELPERS = {
+const MOCK_HELPERS = asLumeHelpers({
   date: (_value: unknown, _format: string): string => "2026-03-05",
-} as unknown as Lume.Helpers;
+});
 
 function makePost(seed: number, overrides: Partial<Lume.Data> = {}): Lume.Data {
   seedTestFaker(seed);
   const slug = faker.lorem.slug(3);
-  return {
+  return asLumeData({
     title: faker.lorem.sentence({ min: 2, max: 5 }),
     url: `/posts/${slug}/`,
     date: faker.date.past(),
     readingInfo: { minutes: faker.number.int({ min: 1, max: 12 }) },
     ...overrides,
-  } as unknown as Lume.Data;
+  });
 }
 
 describe("tag.tsx layout", () => {
   it("wraps the tag page in the wide shell and feature rail layout", async () => {
     const html = await renderComponent(
       tagLayout(
-        {
+        asLumeData({
           lang: "en",
           tagName: "design",
           posts: [makePost(1)],
@@ -33,7 +34,7 @@ describe("tag.tsx layout", () => {
             PostCard: ({ title, url }: { title: string; url: string }) =>
               `<article class="post-card h-entry"><h3 class="p-name"><a class="u-url u-uid" href="${url}">${title}</a></h3></article>`,
           },
-        } as unknown as Lume.Data,
+        }),
         MOCK_HELPERS,
       ),
     );
@@ -53,7 +54,7 @@ describe("tag.tsx layout", () => {
     const post = makePost(2);
     const html = await renderComponent(
       tagLayout(
-        {
+        asLumeData({
           lang: "fr",
           tagName: "design",
           posts: [post],
@@ -61,24 +62,26 @@ describe("tag.tsx layout", () => {
             PostCard: ({ title, url }: { title: string; url: string }) =>
               `<article class="post-card h-entry"><h3 class="p-name"><a class="u-url u-uid" href="${url}">${title}</a></h3></article>`,
           },
-        } as unknown as Lume.Data,
+        }),
         MOCK_HELPERS,
       ),
     );
 
     assertStringIncludes(html, 'href="/fr/"');
     assertStringIncludes(html, 'href="/fr/posts/"');
+    assertStringIncludes(html, 'class="cds--tile pagehead tag-pagehead"');
     assertStringIncludes(html, "design");
     assertStringIncludes(html, 'href="/fr/posts/" class="feature-link"');
     assertStringIncludes(html, 'class="archive-list"');
     assertStringIncludes(html, `href="${post.url}"`);
     assertMatch(html, /class="cds--tag cds--tag--[a-z]+ tag-page-current-tag"/);
+    assertStringIncludes(html, 'title="design"');
   });
 
   it("escapes tag labels before interpolating them into the page shell", async () => {
     const html = await renderComponent(
       tagLayout(
-        {
+        asLumeData({
           lang: "en",
           tagName: '<script>alert("xss")</script>',
           posts: [],
@@ -86,7 +89,7 @@ describe("tag.tsx layout", () => {
             PostCard: ({ title, url }: { title: string; url: string }) =>
               `<article class="post-card h-entry"><h3 class="p-name"><a class="u-url u-uid" href="${url}">${title}</a></h3></article>`,
           },
-        } as unknown as Lume.Data,
+        }),
         MOCK_HELPERS,
       ),
     );
@@ -102,26 +105,26 @@ describe("tag.tsx layout", () => {
     const invalidDate = makePost(3).date as Date;
     const html = await renderComponent(
       tagLayout(
-        {
+        asLumeData({
           lang: "en",
           tagName: "devops",
           posts: [
-            {
+            asLumeData({
               date: invalidDate,
               readingInfo: { minutes: 3 },
               title: 42,
               url: 99,
-            } as unknown as Lume.Data,
+            }),
             null,
             "not-a-post",
           ],
-        } as unknown as Lume.Data,
-        {} as unknown as Lume.Helpers,
+        }),
+        asLumeHelpers({}),
       ),
     );
 
     assertStringIncludes(html, 'class="archive-list"');
-    assertStringIncludes(html, 'class="post-card h-entry"');
+    assertStringIncludes(html, "post-card h-entry");
     assertStringIncludes(html, 'class="u-url u-uid" href=""');
     assertNotMatch(html, /not-a-post/);
     assertNotMatch(html, />42</);
