@@ -3,6 +3,7 @@ _quality
 _site
 .deno_cache
 .DS_Store
+/**/.DS_Store
 .env
 coverage
 node_modules
