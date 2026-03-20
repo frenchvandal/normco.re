@@ -56,6 +56,7 @@
   <string name="post_retry">重試</string>
   <string name="post_refresh_failed">文章重新整理失敗。正在顯示上一版內容。</string>
   <string name="post_updated_at">更新於 %1$s</string>
+  <string name="post_contents_title">本頁內容</string>
   <string name="post_languages_title">可用語言</string>
   <string name="post_copy_code">複製程式碼</string>
   <string name="post_save_bookmark">儲存收藏</string>

@@ -56,6 +56,7 @@
   <string name="post_retry">Réessayer</string>
   <string name="post_refresh_failed">Impossible d’actualiser l’article. Affichage de la version précédente.</string>
   <string name="post_updated_at">Mis à jour %1$s</string>
+  <string name="post_contents_title">Dans cette page</string>
   <string name="post_languages_title">Langues disponibles</string>
   <string name="post_copy_code">Copier le code</string>
   <string name="post_save_bookmark">Enregistrer le favori</string>
