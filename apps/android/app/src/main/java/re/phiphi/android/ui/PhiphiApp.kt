@@ -1,7 +1,10 @@
 package re.phiphi.android.ui
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -16,6 +19,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import re.phiphi.android.R
+import re.phiphi.android.ui.navigation.AppRoutes
 import re.phiphi.android.ui.navigation.PhiphiNavHost
 import re.phiphi.android.ui.navigation.TopLevelDestination
 
@@ -25,26 +29,55 @@ fun PhiphiApp() {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
+    val currentTopLevelDestination =
+        TopLevelDestination.entries.firstOrNull { destination ->
+            currentDestination.isTopLevelDestinationInHierarchy(destination)
+        }
+    val showBottomBar = currentTopLevelDestination != null
+    val topBarTitleRes =
+        when (currentDestination?.route) {
+            AppRoutes.POST_PATTERN -> R.string.post_title
+            else -> R.string.app_name
+        }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = stringResource(id = R.string.app_name)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = topBarTitleRes)) },
+                navigationIcon = {
+                    if (!showBottomBar && navController.previousBackStackEntry != null) {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(id = R.string.nav_back),
+                            )
+                        }
+                    }
+                },
+            )
+        },
         bottomBar = {
-            NavigationBar {
-                TopLevelDestination.entries.forEach { destination ->
-                    NavigationBarItem(
-                        selected = currentDestination.isTopLevelDestinationInHierarchy(destination),
-                        onClick = {
-                            navController.navigate(destination.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+            if (showBottomBar) {
+                NavigationBar {
+                    TopLevelDestination.entries.forEach { destination ->
+                        NavigationBarItem(
+                            selected =
+                                currentDestination.isTopLevelDestinationInHierarchy(destination),
+                            onClick = {
+                                navController.navigate(destination.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        },
-                        icon = { Icon(imageVector = destination.icon, contentDescription = null) },
-                        label = { Text(text = stringResource(id = destination.labelRes)) },
-                    )
+                            },
+                            icon = {
+                                Icon(imageVector = destination.icon, contentDescription = null)
+                            },
+                            label = { Text(text = stringResource(id = destination.labelRes)) },
+                        )
+                    }
                 }
             }
         },

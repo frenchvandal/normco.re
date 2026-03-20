@@ -16,6 +16,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -151,11 +152,13 @@ private fun LanguageRow(language: String, selected: Boolean, onSelectLanguage: (
                 .clickable { onSelectLanguage(language) }
                 .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(selected = selected, onClick = { onSelectLanguage(language) })
         Text(
             text = languageDisplayName(language = language),
             style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f),
         )
     }
 }
@@ -197,6 +200,7 @@ private fun TogglePreferenceRow(
                 .clickable { onCheckedChange(!checked) }
                 .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(text = title, style = MaterialTheme.typography.bodyLarge)

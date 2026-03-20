@@ -1,12 +1,15 @@
 package re.phiphi.android.feature.archive
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,9 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import java.text.Normalizer
-import java.util.Locale
 import re.phiphi.android.R
+import re.phiphi.android.core.model.PostSummary
 import re.phiphi.android.ui.components.PostSummaryCard
 
 @Composable
@@ -53,15 +55,20 @@ private fun ArchiveSuccessScreen(
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     var bookmarkedOnly by rememberSaveable { mutableStateOf(false) }
-
+    var selectedTag by rememberSaveable { mutableStateOf<String?>(null) }
+    val filters =
+        ArchiveFiltersModel(
+            query = query,
+            bookmarkedOnly = bookmarkedOnly,
+            availableTags = rememberArchiveTags(items = uiState.items),
+            selectedTag = selectedTag,
+        )
     val visibleItems =
-        remember(uiState.items, uiState.bookmarkedSlugs, query, bookmarkedOnly) {
-            uiState.items.filter { post ->
-                val matchesBookmark = !bookmarkedOnly || post.slug in uiState.bookmarkedSlugs
-                val matchesQuery = query.isBlank() || post.matchesArchiveQuery(query = query)
-                matchesBookmark && matchesQuery
-            }
-        }
+        rememberArchiveVisibleItems(
+            items = uiState.items,
+            bookmarkedSlugs = uiState.bookmarkedSlugs,
+            filters = filters,
+        )
 
     LazyColumn(
         modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
@@ -70,42 +77,73 @@ private fun ArchiveSuccessScreen(
         item { ArchiveFeedHeading(count = visibleItems.size) }
         item {
             ArchiveFilters(
-                query = query,
+                filters = filters,
                 onQueryChange = { value -> query = value },
-                bookmarkedOnly = bookmarkedOnly,
                 onToggleBookmarkedOnly = { bookmarkedOnly = !bookmarkedOnly },
+                onSelectTag = { tag -> selectedTag = tag },
             )
         }
+        archiveContentItems(
+            visibleItems = visibleItems,
+            bookmarkedSlugs = uiState.bookmarkedSlugs,
+            showDefaultEmptyState = query.isBlank() && !bookmarkedOnly,
+            onOpenPost = onOpenPost,
+        )
+    }
+}
 
-        if (visibleItems.isEmpty()) {
-            item {
-                Text(
-                    text =
-                        stringResource(
-                            id =
-                                if (query.isBlank() && !bookmarkedOnly) {
-                                    R.string.archive_empty
-                                } else {
-                                    R.string.archive_empty_filtered
-                                }
-                        ),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-            }
-        } else {
-            items(
-                items = visibleItems,
-                key = { post -> post.id },
-                contentType = { "post_summary" },
-            ) { post ->
-                PostSummaryCard(
-                    post = post,
-                    isBookmarked = post.slug in uiState.bookmarkedSlugs,
-                    showHeroImage = false,
-                    onOpenPost = onOpenPost,
-                )
-            }
+@Composable
+private fun rememberArchiveTags(items: List<PostSummary>): List<String> =
+    remember(items) { items.flatMap { post -> post.tags }.distinct().sorted() }
+
+@Composable
+private fun rememberArchiveVisibleItems(
+    items: List<PostSummary>,
+    bookmarkedSlugs: Set<String>,
+    filters: ArchiveFiltersModel,
+): List<PostSummary> =
+    remember(items, bookmarkedSlugs, filters) {
+        items.filter { post ->
+            val matchesBookmark = !filters.bookmarkedOnly || post.slug in bookmarkedSlugs
+            val matchesQuery =
+                filters.query.isBlank() || post.matchesArchiveQuery(query = filters.query)
+            val matchesTag = filters.selectedTag == null || filters.selectedTag in post.tags
+            matchesBookmark && matchesQuery && matchesTag
         }
+    }
+
+private fun androidx.compose.foundation.lazy.LazyListScope.archiveContentItems(
+    visibleItems: List<PostSummary>,
+    bookmarkedSlugs: Set<String>,
+    showDefaultEmptyState: Boolean,
+    onOpenPost: (String) -> Unit,
+) {
+    if (visibleItems.isEmpty()) {
+        item {
+            Text(
+                text =
+                    stringResource(
+                        id =
+                            if (showDefaultEmptyState) {
+                                R.string.archive_empty
+                            } else {
+                                R.string.archive_empty_filtered
+                            }
+                    ),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+        return
+    }
+
+    items(items = visibleItems, key = { post -> post.id }, contentType = { "post_summary" }) { post
+        ->
+        PostSummaryCard(
+            post = post,
+            isBookmarked = post.slug in bookmarkedSlugs,
+            showHeroImage = false,
+            onOpenPost = onOpenPost,
+        )
     }
 }
 
@@ -122,10 +160,10 @@ private fun ArchiveFeedHeading(count: Int) {
 
 @Composable
 private fun ArchiveFilters(
-    query: String,
+    filters: ArchiveFiltersModel,
     onQueryChange: (String) -> Unit,
-    bookmarkedOnly: Boolean,
     onToggleBookmarkedOnly: () -> Unit,
+    onSelectTag: (String?) -> Unit,
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -133,7 +171,7 @@ private fun ArchiveFilters(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             OutlinedTextField(
-                value = query,
+                value = filters.query,
                 onValueChange = onQueryChange,
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
@@ -143,13 +181,48 @@ private fun ArchiveFilters(
                 },
             )
             FilterChip(
-                selected = bookmarkedOnly,
+                selected = filters.bookmarkedOnly,
                 onClick = onToggleBookmarkedOnly,
                 label = { Text(text = stringResource(id = R.string.archive_filter_bookmarked)) },
             )
+            if (filters.availableTags.isNotEmpty()) {
+                Text(
+                    text = stringResource(id = R.string.archive_filter_topics),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    FilterChip(
+                        selected = filters.selectedTag == null,
+                        onClick = { onSelectTag(null) },
+                        label = {
+                            Text(text = stringResource(id = R.string.archive_filter_all_topics))
+                        },
+                    )
+                    filters.availableTags.forEach { tag ->
+                        FilterChip(
+                            selected = filters.selectedTag == tag,
+                            onClick = {
+                                onSelectTag(if (filters.selectedTag == tag) null else tag)
+                            },
+                            label = { Text(text = tag) },
+                        )
+                    }
+                }
+            }
         }
     }
 }
+
+private data class ArchiveFiltersModel(
+    val query: String,
+    val bookmarkedOnly: Boolean,
+    val availableTags: List<String>,
+    val selectedTag: String?,
+)
 
 @Composable
 private fun ArchiveLoadingCard(modifier: Modifier = Modifier) {
@@ -182,22 +255,3 @@ private fun ArchiveErrorCard(message: String, onRetry: () -> Unit, modifier: Mod
         }
     }
 }
-
-private fun re.phiphi.android.core.model.PostSummary.matchesArchiveQuery(query: String): Boolean {
-    val normalizedQuery = query.normalizeArchiveSearch()
-    if (normalizedQuery.isBlank()) {
-        return true
-    }
-
-    val haystack =
-        listOf(title, summary, tags.joinToString(separator = " "))
-            .joinToString(separator = " ")
-            .normalizeArchiveSearch()
-
-    return normalizedQuery in haystack
-}
-
-private fun String.normalizeArchiveSearch(): String =
-    Normalizer.normalize(this, Normalizer.Form.NFD)
-        .replace("\\p{Mn}+".toRegex(), "")
-        .lowercase(Locale.getDefault())
