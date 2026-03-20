@@ -6,18 +6,68 @@
       "id": "alibaba-cloud-oss-cdn-deployment",
       "slug": "alibaba-cloud-oss-cdn-deployment",
       "title": "How This Blog Deploys to Alibaba Cloud OSS and CDN",
-      "summary": "A practical walkthrough of my GitHub Actions pipeline: Lume build, OIDC role assumption, OSS sync, CDN refresh/preload, and automatic cleanup.",
+      "summary": "A practical walkthrough of my GitHub Actions pipeline: warmed Lume builds, OIDC role assumption, OSS sync, CDN refresh, and automatic cleanup.",
       "publishedAt": "2026-03-10T00:00:00Z",
-      "updatedAt": "2026-03-10T00:00:00Z",
-      "readingTime": 6,
+      "readingTime": 4,
       "tags": [
         "devops",
         "github-actions",
         "alibaba-cloud"
       ],
-      "heroImage": null,
       "detailApiUrl": "/api/posts/alibaba-cloud-oss-cdn-deployment.json",
       "webUrl": "https://normco.re/posts/alibaba-cloud-oss-cdn-deployment/"
+    },
+    {
+      "id": "lorem-ipsum",
+      "slug": "lorem-ipsum",
+      "title": "Lorem Ipsum and the Art of Placeholder Text",
+      "summary": "A meditation on placeholder text, its history, and why it still matters in modern design workflows.",
+      "publishedAt": "2026-02-18T00:00:00Z",
+      "readingTime": 2,
+      "tags": [
+        "design",
+        "writing"
+      ],
+      "detailApiUrl": "/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/posts/lorem-ipsum/"
+    },
+    {
+      "id": "vestibulum-ante",
+      "slug": "vestibulum-ante",
+      "title": "Vestibulum Ante: On Thresholds and New Beginnings",
+      "summary": "Reflections on transitions, the in-between spaces of life, and what it means to stand at a threshold.",
+      "publishedAt": "2025-09-04T00:00:00Z",
+      "readingTime": 2,
+      "tags": [
+        "life",
+        "essay"
+      ],
+      "detailApiUrl": "/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/posts/vestibulum-ante/"
+    },
+    {
+      "id": "proin-facilisis",
+      "slug": "proin-facilisis",
+      "title": "Proin Facilisis: Making Things Easier",
+      "summary": "On the philosophy of reducing friction—in code, in design, and in everyday life.",
+      "publishedAt": "2025-04-12T00:00:00Z",
+      "readingTime": 2,
+      "tags": [
+        "software",
+        "design"
+      ],
+      "detailApiUrl": "/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/posts/proin-facilisis/"
+    },
+    {
+      "id": "instructions",
+      "slug": "instructions",
+      "title": "How to install this theme?",
+      "summary": "A quick guide to setting up the Simple Blog theme for Lume.",
+      "publishedAt": "2022-06-12T00:00:00Z",
+      "readingTime": 1,
+      "detailApiUrl": "/api/posts/instructions.json",
+      "webUrl": "https://normco.re/posts/instructions/"
     }
   ]
 }

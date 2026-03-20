@@ -69,7 +69,6 @@
         "title",
         "summary",
         "publishedAt",
-        "updatedAt",
         "detailApiUrl",
         "webUrl"
       ],

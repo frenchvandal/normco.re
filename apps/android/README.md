@@ -10,7 +10,12 @@ Current status:
 - dependency catalog aligned with current Google guidance
 - provisional app name set to `phiphi`
 - Gradle wrapper committed
-- first Home slice wired to bundled `app-manifest` and `posts-index` fixtures
+- first Home slice wired to bundled `app-manifest` and `posts-index` contracts
+- Android bootstrap assets can now be refreshed from the generated site
+  contracts
+- Hilt installed for app wiring and `ViewModel` injection
+- `kotlinx.serialization` installed for contract parsing
+- Coil installed for Compose image loading
 - Spotless + ktfmt, Detekt, and Android lint wired as the local quality gate
 
 ## Repository Role
@@ -24,10 +29,13 @@ Current status:
 - Kotlin
 - Jetpack Compose
 - Material 3
-- ViewModel
+- Hilt
+- ViewModel + StateFlow
 - Navigation Compose
-- Room, DataStore, and WorkManager reserved in the version catalog for the next
-  data-layer phase
+- kotlinx.serialization
+- Coil
+- Room, Paging 3, DataStore, and WorkManager reserved in the version catalog for
+  the next data-layer phase
 
 ## What To Install On The MacBook
 
@@ -71,6 +79,13 @@ Use the Gradle wrapper from `apps/android`:
 ./gradlew detekt
 ./gradlew lintDebug
 ./gradlew quality
+./gradlew assembleDebug
+```
+
+Refresh the bundled fallback assets from the generated site contracts:
+
+```sh
+deno task android:sync-contract-assets
 ```
 
 ## Structure

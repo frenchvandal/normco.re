@@ -100,6 +100,10 @@
       "description": "Validate generated JSON feeds and any optional content-contract output against schemas",
       "command": "deno run --allow-read contracts/validate.ts"
     },
+    "android:sync-contract-assets": {
+      "description": "Build the site contracts and mirror app-manifest/posts-index outputs into the Android bootstrap assets",
+      "command": "deno task build && deno run --allow-read --allow-write scripts/sync-android-contract-assets.ts"
+    },
     "lefthook:install": {
       "description": "Install Lefthook git hooks non-interactively via deno x (no global install or Node.js required)",
       "command": "DENO_NO_PROMPT=1 deno x lefthook install"

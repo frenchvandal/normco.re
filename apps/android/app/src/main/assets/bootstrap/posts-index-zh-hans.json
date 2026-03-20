@@ -1,0 +1,73 @@
+{
+  "version": "1",
+  "lang": "zh-hans",
+  "items": [
+    {
+      "id": "alibaba-cloud-oss-cdn-deployment",
+      "slug": "alibaba-cloud-oss-cdn-deployment",
+      "title": "这个博客如何部署到阿里云 OSS 与 CDN",
+      "summary": "一份实践向说明：我的 GitHub Actions 流水线如何完成带缓存的 Lume 构建、OIDC 角色临时授权、OSS 同步、CDN 刷新，以及自动清理。",
+      "publishedAt": "2026-03-10T00:00:00Z",
+      "readingTime": 5,
+      "tags": [
+        "devops",
+        "github-actions",
+        "alibaba-cloud"
+      ],
+      "detailApiUrl": "/zh-hans/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/zh-hans/posts/alibaba-cloud-oss-cdn-deployment/"
+    },
+    {
+      "id": "lorem-ipsum",
+      "slug": "lorem-ipsum",
+      "title": "Lorem Ipsum 与占位文本的艺术",
+      "summary": "关于占位文本的历史、价值，以及它为何仍在现代设计流程中有效。",
+      "publishedAt": "2026-02-18T00:00:00Z",
+      "readingTime": 2,
+      "tags": [
+        "design",
+        "writing"
+      ],
+      "detailApiUrl": "/zh-hans/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/zh-hans/posts/lorem-ipsum/"
+    },
+    {
+      "id": "vestibulum-ante",
+      "slug": "vestibulum-ante",
+      "title": "Vestibulum Ante：关于门槛与新的开始",
+      "summary": "关于过渡、人生中的中间地带，以及站在门槛上的意义。",
+      "publishedAt": "2025-09-04T00:00:00Z",
+      "readingTime": 2,
+      "tags": [
+        "life",
+        "essay"
+      ],
+      "detailApiUrl": "/zh-hans/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/zh-hans/posts/vestibulum-ante/"
+    },
+    {
+      "id": "proin-facilisis",
+      "slug": "proin-facilisis",
+      "title": "Proin Facilisis：让事情更轻松",
+      "summary": "关于降低摩擦的哲学：在代码、设计和日常生活中。",
+      "publishedAt": "2025-04-12T00:00:00Z",
+      "readingTime": 2,
+      "tags": [
+        "software",
+        "design"
+      ],
+      "detailApiUrl": "/zh-hans/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/zh-hans/posts/proin-facilisis/"
+    },
+    {
+      "id": "instructions",
+      "slug": "instructions",
+      "title": "如何安装这个主题？",
+      "summary": "一份快速指南，帮助你为 Lume 配置 Simple Blog 主题。",
+      "publishedAt": "2022-06-12T00:00:00Z",
+      "readingTime": 1,
+      "detailApiUrl": "/zh-hans/api/posts/instructions.json",
+      "webUrl": "https://normco.re/zh-hans/posts/instructions/"
+    }
+  ]
+}

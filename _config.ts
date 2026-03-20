@@ -10,6 +10,7 @@ import {
 import { registerAssets } from "./_config/assets.ts";
 import { registerPlugins } from "./_config/plugins.ts";
 import { registerFeeds } from "./_config/feeds.ts";
+import { registerMobileContentApi } from "./_config/mobile_content_api.ts";
 import { registerSiteManifest } from "./_config/site_manifest.ts";
 import { registerProcessors } from "./_config/processors.ts";
 import { registerXslStylesheets } from "./_config/xsl_stylesheets.ts";
@@ -128,6 +129,7 @@ site.addEventListener("beforeSave", () => {
 registerAssets(site);
 registerPlugins(site, { isServeTask });
 registerFeeds(site);
+registerMobileContentApi(site);
 registerSiteManifest(site);
 registerProcessors(site);
 registerXslStylesheets(site);

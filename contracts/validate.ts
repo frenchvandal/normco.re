@@ -1,12 +1,16 @@
 /**
- * Validates generated JSON files against their schemas.
+ * Validates generated feed and mobile-contract files against their schemas.
  *
  * Usage: `deno task validate-contracts [--site-dir=_site]`
  *
  * Validates:
  * - `/feed.json` (and localized variants) against `contracts/feed.schema.json`
- * - optional `/api/posts/*.json` files against `contracts/post.schema.json`
- *   when the content-contract plugin is enabled
+ * - `/api/app-manifest.json` against `contracts/app-manifest.schema.json`
+ * - localized `/api/posts/index.json` files against
+ *   `contracts/posts-index.schema.json`
+ * - example app-contract fixtures under `contracts/examples/`
+ * - optional legacy `/api/posts/*.json` files against `contracts/post.schema.json`
+ *   when the older content-contract plugin is enabled
  *
  * Exits with code 1 if any validation error is found.
  */
@@ -661,6 +665,15 @@ async function main(): Promise<void> {
   console.log(bold("Generated feed/content validation"));
   console.log(`Site directory: ${siteDir}\n`);
 
+  const appManifestSchema = await readSchemaFile(
+    new URL("./app-manifest.schema.json", import.meta.url),
+  );
+  const postsIndexSchema = await readSchemaFile(
+    new URL("./posts-index.schema.json", import.meta.url),
+  );
+  const postDetailSchema = await readSchemaFile(
+    new URL("./post-detail.schema.json", import.meta.url),
+  );
   const postSchema = await readSchemaFile(
     new URL("./post.schema.json", import.meta.url),
   );
@@ -671,48 +684,73 @@ async function main(): Promise<void> {
   let totalErrors = 0;
   let totalFiles = 0;
 
+  async function validateJsonFiles(
+    label: string,
+    filePaths: ReadonlyArray<FilePath>,
+    schema: SchemaNode,
+  ): Promise<void> {
+    console.log(bold(`\n${label}: ${filePaths.length}`));
+
+    for (const filePath of filePaths) {
+      totalFiles++;
+      const data = await readJsonFile(filePath);
+      const errors = validate(data, schema, schema, "$");
+
+      if (errors.length > 0) {
+        console.log(red(`  FAIL ${filePath}`));
+        for (const error of errors) {
+          console.log(`    ${yellow(error.path)}: ${error.message}`);
+        }
+        totalErrors += errors.length;
+      } else {
+        console.log(green(`  OK   ${filePath}`));
+      }
+    }
+  }
+
+  await validateJsonFiles(
+    "App manifest files",
+    await findOutputFiles(siteDir, /\/api\/app-manifest\.json$/),
+    appManifestSchema,
+  );
+
+  await validateJsonFiles(
+    "Posts index files",
+    await findOutputFiles(siteDir, /\/api\/posts\/index\.json$/),
+    postsIndexSchema,
+  );
+
   // Validate post JSON files
   const postFiles = await findOutputFiles(
     siteDir,
-    /\/api\/posts\/[^/]+\.json$/,
+    /\/api\/posts\/(?!index\.json$)[^/]+\.json$/,
   );
-  console.log(bold(`Post files: ${postFiles.length}`));
-
-  for (const filePath of postFiles) {
-    totalFiles++;
-    const data = await readJsonFile(filePath);
-    const errors = validate(data, postSchema, postSchema, "$");
-
-    if (errors.length > 0) {
-      console.log(red(`  FAIL ${filePath}`));
-      for (const error of errors) {
-        console.log(`    ${yellow(error.path)}: ${error.message}`);
-      }
-      totalErrors += errors.length;
-    } else {
-      console.log(green(`  OK   ${filePath}`));
-    }
-  }
+  await validateJsonFiles("Legacy post files", postFiles, postSchema);
 
   // Validate feed JSON files
-  const feedFiles = await findOutputFiles(siteDir, /\/feed\.json$/);
-  console.log(bold(`\nFeed files: ${feedFiles.length}`));
+  await validateJsonFiles(
+    "Feed files",
+    await findOutputFiles(siteDir, /\/feed\.json$/),
+    feedSchema,
+  );
 
-  for (const filePath of feedFiles) {
-    totalFiles++;
-    const data = await readJsonFile(filePath);
-    const errors = validate(data, feedSchema, feedSchema, "$");
+  await validateJsonFiles(
+    "Example app manifest files",
+    [new URL("./examples/app-manifest.json", import.meta.url)],
+    appManifestSchema,
+  );
 
-    if (errors.length > 0) {
-      console.log(red(`  FAIL ${filePath}`));
-      for (const error of errors) {
-        console.log(`    ${yellow(error.path)}: ${error.message}`);
-      }
-      totalErrors += errors.length;
-    } else {
-      console.log(green(`  OK   ${filePath}`));
-    }
-  }
+  await validateJsonFiles(
+    "Example posts-index files",
+    [new URL("./examples/posts-index-en.json", import.meta.url)],
+    postsIndexSchema,
+  );
+
+  await validateJsonFiles(
+    "Example post-detail files",
+    [new URL("./examples/post-detail-en.json", import.meta.url)],
+    postDetailSchema,
+  );
 
   // Validate RSS feed XML files
   const rssFiles = await findOutputFiles(siteDir, /\/feed\.rss$/);

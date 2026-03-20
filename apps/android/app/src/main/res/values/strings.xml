@@ -6,7 +6,7 @@
   <string name="nav_settings">Settings</string>
   <string name="home_title">phiphi</string>
   <string name="home_body">Latest writing, loaded through the mobile content contracts bootstrap.</string>
-  <string name="home_source">Source: bundled app-manifest and posts-index fixtures</string>
+  <string name="home_source">Source: bundled generated app contracts</string>
   <string name="home_feed_title">Latest writing (%1$s)</string>
   <string name="home_loading">Loading posts…</string>
   <string name="home_empty">No posts are available yet.</string>

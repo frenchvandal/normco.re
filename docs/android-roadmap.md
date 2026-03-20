@@ -22,8 +22,15 @@ force.
   - `app-manifest` fixture in app assets
   - `posts-index` fixture in app assets
   - repository-driven loading
+  - Hilt-backed app wiring
   - `ViewModel` + `StateFlow`
-  - Compose rendering of real post summaries
+  - `kotlinx.serialization` contract parsing
+  - Compose rendering of real post summaries and hero images through Coil
+- The site build now generates:
+  - `/api/app-manifest.json`
+  - localized `/api/posts/index.json`
+- Android fallback bootstrap assets can be refreshed from generated site output
+  through `deno task android:sync-contract-assets`
 - The next contract milestone is replacing bundled fixtures with JSON generated
   by the Deno site build.
 
@@ -36,11 +43,14 @@ force.
   - Kotlin
   - Jetpack Compose
   - Material 3
+  - Hilt
   - ViewModel
   - coroutines and Flow
   - repository-driven data layer
+  - `kotlinx.serialization` for JSON contracts
+  - Coil for remote images
   - offline-first local source of truth
-  - Room, DataStore, and WorkManager when the data layer lands
+  - Room, Paging 3, DataStore, and WorkManager when the data layer lands
 - Keep mobile clients bound to the JSON contracts in `contracts/`, not to HTML
   pages, feeds, or Lume internals.
 
@@ -101,13 +111,19 @@ repo/
 - `AGP`: `9.1.0`
 - `Gradle wrapper target`: `9.4.1`
 - `Kotlin`: `2.3.20`
+- `KSP`: `2.3.4`
 - `Compose BOM`: `2026.03.00`
 - `Material 3`: latest stable through the Compose BOM
 - `Activity Compose`: `1.13.0`
 - `Core KTX`: `1.18.0`
+- `Hilt`: `2.59.2`
+- `AndroidX Hilt Compose`: `1.3.0`
 - `Lifecycle`: `2.10.0`
 - `Navigation Compose`: `2.9.7`
+- `kotlinx.serialization-json`: `1.10.0`
+- `Coil 3`: `3.4.0`
 - `Room`: `2.8.4`
+- `Paging 3`: reserved for the first persistent feed slice
 - `DataStore`: `1.2.1`
 - `WorkManager`: `2.11.1`
 - `Spotless`: `8.4.0`
@@ -129,6 +145,9 @@ Google's architecture guidance is the baseline for this app:
 - repositories as the app-facing data boundary
 - unidirectional data flow
 - ViewModels exposing `StateFlow` UI state
+- Hilt managing app wiring and `ViewModel` construction
+- JSON contract parsing through `kotlinx.serialization`
+- Coil loading post hero images in Compose
 - local storage as the source of truth for offline-first features
 - network writes and sync orchestrated through repositories and WorkManager
 
@@ -210,8 +229,9 @@ Goal:
 Status:
 
 - in progress
-- current bridge step: bundled contract fixtures in app assets power the Home
-  feed while the Deno generator path is still being wired
+- current bridge step: bundled contract assets in app assets are mirrored from
+  the generated site contracts and power the Home feed through Hilt-injected
+  repository code while post detail is still being wired
 
 Deliverables:
 
@@ -239,6 +259,7 @@ Deliverables:
 
 - repository interfaces for manifest, index, and detail payloads
 - local persistence with Room
+- list paging with Paging 3 where the feed size justifies it
 - preferences with DataStore
 - sync scheduling with WorkManager
 - cache policy for manifest, indexes, and detail payloads
@@ -282,8 +303,10 @@ Deliverables:
 
 - Android App Links
 - accessibility pass
+- screenshot coverage for critical Compose surfaces
 - navigation tests
 - repository and ViewModel tests
+- baseline profile and startup/scroll performance verification
 - error handling and retry policy
 - startup, scroll, and rendering performance checks
 
@@ -315,15 +338,16 @@ Exit criteria:
 
 - replace placeholder screens with contract-backed screens
 - decide whether `re.phiphi.android` remains the final Android application ID
-- generate the app contracts from the Deno build
+- generate and mirror localized `post-detail` payloads from the Deno build
 - add App Links for canonical post URLs
-- introduce Room/DataStore/WorkManager once real data flows land
-- add Hilt when the dependency graph stops being trivial
+- introduce Room/Paging 3/DataStore/WorkManager once remote and persistent data
+  flows land
+- wire post detail to the generated `post-detail` contract family
 
 ## Risks And Constraints
 
-- The current machine does not have a JDK or Gradle installed, so the Android
-  project can be scaffolded but not synced or built locally yet.
+- Local Android builds depend on Java 17 and a full Android SDK install on each
+  MacBook that works on the repo.
 - The repository still documents an older content-contract prototype; Phase 1
   must replace that drift with the manifest/index/detail path.
 - The exact editorial source for `updatedAt`, future block types, and some app
@@ -353,10 +377,16 @@ Recommended environment values for CLI work:
   <https://developer.android.com/topic/architecture/recommendations>
 - Offline-first guidance:
   <https://developer.android.com/topic/architecture/data-layer/offline-first>
+- Hilt and Jetpack integrations:
+  <https://developer.android.com/training/dependency-injection/hilt-jetpack>
 - Navigation Compose:
   <https://developer.android.com/develop/ui/compose/navigation>
 - Material 3 in Compose:
   <https://developer.android.com/develop/ui/compose/designsystems/material3>
+- Compose stability and performance:
+  <https://developer.android.com/develop/ui/compose/performance/stability>
+- Baseline profiles:
+  <https://developer.android.com/topic/performance/baselineprofiles/overview>
 - AGP 9.1.0 release notes:
   <https://developer.android.com/build/releases/agp-9-1-0-release-notes>
 - AndroidX stable channel:

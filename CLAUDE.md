@@ -144,6 +144,55 @@ deno task build
 Run `deno task validate-contracts` when your changes affect feeds or generated
 JSON outputs.
 
+For Android app work under `apps/android`, also run:
+
+```sh
+cd apps/android
+export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+./gradlew quality assembleDebug
+```
+
+## Android App Guidance
+
+When touching `apps/android`:
+
+- Follow the current Android guidance from Google as the primary reference:
+  - https://developer.android.com/topic/architecture/recommendations
+  - https://developer.android.com/topic/architecture/data-layer/offline-first
+  - https://developer.android.com/develop/ui/compose/navigation
+  - https://developer.android.com/develop/ui/compose/designsystems/material3
+- Keep the Android app on Kotlin, Jetpack Compose, and Material 3. Do not
+  introduce XML view stacks or hybrid UI patterns unless the existing app
+  already requires them.
+- Prefer the current canonical Android stack for this app: Hilt for DI, Kotlin
+  Flow/StateFlow for observable state, Room as the local source of truth when
+  persistence lands, WorkManager for background sync, Paging 3 for long article
+  lists, and Coil for remote images in Compose.
+- Keep business logic out of composables. UI state should be produced by
+  `ViewModel` classes and exposed as immutable `StateFlow`, then collected in
+  Compose with `collectAsStateWithLifecycle()`.
+- Use Hilt rather than hand-rolled factories or service locators for Android app
+  wiring. Prefer constructor injection, `@HiltViewModel`, and
+  `@AndroidEntryPoint` boundaries.
+- Treat repositories as the data boundary. UI code should not parse raw JSON,
+  hit URLs directly, or depend on site HTML or feed routes.
+- Keep mobile clients bound to the JSON contracts in `contracts/` and the
+  generated `/api/...` outputs, not to rendered pages.
+- Favor offline-first reads. Once storage lands, the UI should observe local
+  data and let repositories coordinate remote refresh into `Room`.
+- Prefer `DataStore` for app preferences and lightweight settings.
+- For Compose lists, provide stable item keys and `contentType` where useful,
+  keep formatting/parsing work out of hot recomposition paths, and use
+  `remember` or `derivedStateOf` only when they clearly reduce repeat work.
+- Use Material 3 patterns that fit Android surfaces: dynamic color when
+  appropriate, `Scaffold`, `NavigationBar` or adaptive navigation, and clear
+  accessibility semantics for interactive elements.
+- Prefer official Android testing primitives for Compose UI, and add screenshot
+  or baseline profile work when performance and visual stability become part of
+  the slice.
+- Preserve Android package and namespace stability deliberately. Once public IDs
+  are shipped, avoid casual renames.
+
 ## Component References
 
 - Header: https://carbondesignsystem.com/components/ui-shell-header/usage/
