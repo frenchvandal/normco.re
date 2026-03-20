@@ -8,11 +8,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,13 +38,13 @@ fun PostSummaryCard(
     post: PostSummary,
     isBookmarked: Boolean,
     showHeroImage: Boolean,
-    onOpenPost: (String) -> Unit,
+    actions: PostSummaryCardActions,
     modifier: Modifier = Modifier,
 ) {
     val publishedDate =
         remember(post.publishedAt) { formatPublishedDate(dateTime = post.publishedAt) }
 
-    Card(modifier = modifier.fillMaxWidth().clickable { onOpenPost(post.slug) }) {
+    Card(modifier = modifier.fillMaxWidth().clickable { actions.onOpenPost(post.slug) }) {
         Column(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -54,43 +60,104 @@ fun PostSummaryCard(
                     )
                 }
             }
-            Text(text = post.title, style = MaterialTheme.typography.titleLarge)
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            PostSummaryTitleRow(
+                title = post.title,
+                isBookmarked = isBookmarked,
+                onToggleBookmark = { actions.onToggleBookmark(!isBookmarked) },
+            )
+            PostSummaryDetails(
+                publishedDate = publishedDate,
+                isBookmarked = isBookmarked,
+                readingTimeMinutes = post.readingTimeMinutes,
+                summary = post.summary,
+                tags = post.tags,
+            )
+        }
+    }
+}
+
+@Immutable
+data class PostSummaryCardActions(
+    val onOpenPost: (String) -> Unit,
+    val onToggleBookmark: (Boolean) -> Unit,
+)
+
+@Composable
+private fun PostSummaryTitleRow(
+    title: String,
+    isBookmarked: Boolean,
+    onToggleBookmark: () -> Unit,
+) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.weight(1f),
+        )
+        IconButton(onClick = onToggleBookmark) {
+            Icon(
+                imageVector =
+                    if (isBookmarked) {
+                        Icons.Filled.Bookmark
+                    } else {
+                        Icons.Outlined.BookmarkBorder
+                    },
+                contentDescription =
+                    stringResource(
+                        id =
+                            if (isBookmarked) {
+                                R.string.post_remove_bookmark
+                            } else {
+                                R.string.post_save_bookmark
+                            }
+                    ),
+            )
+        }
+    }
+}
+
+@Composable
+private fun PostSummaryDetails(
+    publishedDate: String,
+    isBookmarked: Boolean,
+    readingTimeMinutes: Int?,
+    summary: String,
+    tags: List<String>,
+) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = publishedDate,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        if (isBookmarked) {
+            Surface(
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                shape = RoundedCornerShape(999.dp),
+            ) {
                 Text(
-                    text = publishedDate,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                if (isBookmarked) {
-                    Surface(
-                        color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(999.dp),
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.post_bookmarked_label),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        )
-                    }
-                }
-            }
-            post.readingTimeMinutes?.let { readingTimeMinutes ->
-                Text(
-                    text = stringResource(id = R.string.home_reading_time, readingTimeMinutes),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Text(text = post.summary, style = MaterialTheme.typography.bodyLarge)
-            if (post.tags.isNotEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.home_tags, post.tags.joinToString()),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = stringResource(id = R.string.post_bookmarked_label),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                 )
             }
         }
+    }
+    readingTimeMinutes?.let { minutes ->
+        Text(
+            text = stringResource(id = R.string.home_reading_time, minutes),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+    Text(text = summary, style = MaterialTheme.typography.bodyLarge)
+    if (tags.isNotEmpty()) {
+        Text(
+            text = stringResource(id = R.string.home_tags, tags.joinToString()),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 

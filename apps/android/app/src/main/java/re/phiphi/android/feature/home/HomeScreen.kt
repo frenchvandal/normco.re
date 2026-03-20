@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import re.phiphi.android.R
 import re.phiphi.android.ui.components.ContentSyncStatusText
 import re.phiphi.android.ui.components.PostSummaryCard
+import re.phiphi.android.ui.components.PostSummaryCardActions
 
 @Composable
 fun HomeScreen(uiState: HomeUiState, actions: HomeScreenActions, modifier: Modifier = Modifier) {
@@ -56,35 +57,11 @@ private fun androidx.compose.foundation.lazy.LazyListScope.homeSuccessItems(
     actions: HomeScreenActions,
 ) {
     if (uiState.recentItems.isNotEmpty()) {
-        item { RecentReadingHeading() }
-        items(
-            items = uiState.recentItems,
-            key = { post -> "recent:${post.id}" },
-            contentType = { "recent_post_summary" },
-        ) { post ->
-            PostSummaryCard(
-                post = post,
-                isBookmarked = post.slug in uiState.bookmarkedSlugs,
-                showHeroImage = false,
-                onOpenPost = actions.onOpenPost,
-            )
-        }
+        recentReadingItems(uiState = uiState, actions = actions)
     }
 
     if (uiState.bookmarkedItems.isNotEmpty()) {
-        item { BookmarkedHeading(onOpenSavedArchive = actions.onOpenSavedArchive) }
-        items(
-            items = uiState.bookmarkedItems,
-            key = { post -> "bookmark:${post.id}" },
-            contentType = { "bookmarked_post_summary" },
-        ) { post ->
-            PostSummaryCard(
-                post = post,
-                isBookmarked = true,
-                showHeroImage = false,
-                onOpenPost = actions.onOpenPost,
-            )
-        }
+        bookmarkedItems(uiState = uiState, actions = actions)
     }
 
     item {
@@ -112,7 +89,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.homeSuccessItems(
             post = post,
             isBookmarked = post.slug in uiState.bookmarkedSlugs,
             showHeroImage = true,
-            onOpenPost = actions.onOpenPost,
+            actions = actions.postSummaryActions(post.slug),
         )
     }
 }
@@ -121,9 +98,54 @@ private fun androidx.compose.foundation.lazy.LazyListScope.homeSuccessItems(
 data class HomeScreenActions(
     val onOpenPost: (String) -> Unit,
     val onOpenSavedArchive: () -> Unit,
+    val onToggleBookmark: (String, Boolean) -> Unit,
     val onRetry: () -> Unit,
     val onRefresh: () -> Unit,
 )
+
+private fun androidx.compose.foundation.lazy.LazyListScope.recentReadingItems(
+    uiState: HomeUiState.Success,
+    actions: HomeScreenActions,
+) {
+    item { RecentReadingHeading() }
+    items(
+        items = uiState.recentItems,
+        key = { post -> "recent:${post.id}" },
+        contentType = { "recent_post_summary" },
+    ) { post ->
+        PostSummaryCard(
+            post = post,
+            isBookmarked = post.slug in uiState.bookmarkedSlugs,
+            showHeroImage = false,
+            actions = actions.postSummaryActions(post.slug),
+        )
+    }
+}
+
+private fun androidx.compose.foundation.lazy.LazyListScope.bookmarkedItems(
+    uiState: HomeUiState.Success,
+    actions: HomeScreenActions,
+) {
+    item { BookmarkedHeading(onOpenSavedArchive = actions.onOpenSavedArchive) }
+    items(
+        items = uiState.bookmarkedItems,
+        key = { post -> "bookmark:${post.id}" },
+        contentType = { "bookmarked_post_summary" },
+    ) { post ->
+        PostSummaryCard(
+            post = post,
+            isBookmarked = true,
+            showHeroImage = false,
+            actions = actions.postSummaryActions(post.slug),
+        )
+    }
+}
+
+private fun HomeScreenActions.postSummaryActions(slug: String): PostSummaryCardActions =
+    PostSummaryCardActions(
+        onOpenPost = onOpenPost,
+        onToggleBookmark = { bookmarked -> onToggleBookmark(slug, bookmarked) },
+    )
 
 @Composable
 private fun RecentReadingHeading() {

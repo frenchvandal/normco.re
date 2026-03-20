@@ -94,6 +94,9 @@ constructor(
             loadPosts(showBlockingLoader = false)
         }
 
+    fun setBookmarked(slug: String, bookmarked: Boolean) =
+        viewModelScope.launch { readerPreferencesRepository.setPostBookmarked(slug, bookmarked) }
+
     private suspend fun loadPosts(showBlockingLoader: Boolean = true) {
         val previousSuccess = _uiState.value as? HomeUiState.Success
         if (showBlockingLoader || previousSuccess == null) {

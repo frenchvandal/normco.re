@@ -38,6 +38,7 @@ import re.phiphi.android.R
 import re.phiphi.android.core.model.PostSummary
 import re.phiphi.android.ui.components.ContentSyncStatusText
 import re.phiphi.android.ui.components.PostSummaryCard
+import re.phiphi.android.ui.components.PostSummaryCardActions
 
 @Composable
 fun ArchiveScreen(
@@ -114,7 +115,7 @@ private fun ArchiveSuccessScreen(
             visibleItems = visibleItems,
             bookmarkedSlugs = uiState.bookmarkedSlugs,
             showDefaultEmptyState = query.isBlank() && !bookmarkedOnly,
-            onOpenPost = actions.onOpenPost,
+            actions = actions,
         )
     }
 }
@@ -122,6 +123,7 @@ private fun ArchiveSuccessScreen(
 @Immutable
 data class ArchiveScreenActions(
     val onOpenPost: (String) -> Unit,
+    val onToggleBookmark: (String, Boolean) -> Unit,
     val onRetry: () -> Unit,
     val onRefresh: () -> Unit,
 )
@@ -150,7 +152,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.archiveContentItems(
     visibleItems: List<PostSummary>,
     bookmarkedSlugs: Set<String>,
     showDefaultEmptyState: Boolean,
-    onOpenPost: (String) -> Unit,
+    actions: ArchiveScreenActions,
 ) {
     if (visibleItems.isEmpty()) {
         item {
@@ -176,7 +178,13 @@ private fun androidx.compose.foundation.lazy.LazyListScope.archiveContentItems(
             post = post,
             isBookmarked = post.slug in bookmarkedSlugs,
             showHeroImage = false,
-            onOpenPost = onOpenPost,
+            actions =
+                PostSummaryCardActions(
+                    onOpenPost = actions.onOpenPost,
+                    onToggleBookmark = { bookmarked ->
+                        actions.onToggleBookmark(post.slug, bookmarked)
+                    },
+                ),
         )
     }
 }

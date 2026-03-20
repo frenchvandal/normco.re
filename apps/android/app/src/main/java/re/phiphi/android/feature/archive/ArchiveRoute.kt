@@ -21,6 +21,7 @@ fun ArchiveRoute(
         actions =
             ArchiveScreenActions(
                 onOpenPost = onOpenPost,
+                onToggleBookmark = viewModel::setBookmarked,
                 onRetry = viewModel::refresh,
                 onRefresh = viewModel::refresh,
             ),

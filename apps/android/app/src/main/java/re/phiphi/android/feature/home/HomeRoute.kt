@@ -21,6 +21,7 @@ fun HomeRoute(
             HomeScreenActions(
                 onOpenPost = onOpenPost,
                 onOpenSavedArchive = onOpenSavedArchive,
+                onToggleBookmark = viewModel::setBookmarked,
                 onRetry = viewModel::refresh,
                 onRefresh = viewModel::refresh,
             ),
