@@ -56,6 +56,8 @@
    *   readonly element: string;
    *   readonly showImages: boolean;
    *   readonly showSubResults: boolean;
+   *   readonly showEmptyFilters?: boolean;
+   *   readonly openFilters?: readonly string[];
    *   readonly resetStyles: boolean;
    *   readonly translations?: Record<string, string>;
    * }} PagefindUiOptions
@@ -731,6 +733,91 @@
 
   /**
    * @param {SearchController} controller
+   * @returns {HTMLInputElement | null}
+   */
+  function getSearchInput(controller) {
+    const input = controller.container.querySelector(
+      ".pagefind-ui__search-input",
+    );
+    return input instanceof HTMLInputElement ? input : null;
+  }
+
+  /**
+   * @param {SearchController} controller
+   * @returns {string}
+   */
+  function getActiveSearchTerm(controller) {
+    return getSearchInput(controller)?.value.trim() ?? "";
+  }
+
+  /**
+   * @param {number} count
+   * @returns {string}
+   */
+  function formatSearchResultCount(count) {
+    const locale = root.lang?.trim() || undefined;
+    return new Intl.NumberFormat(locale).format(count);
+  }
+
+  /**
+   * @param {SearchController} controller
+   * @param {number} count
+   * @returns {string}
+   */
+  function getSearchResultMessage(controller, count) {
+    const { noResults, oneResult, manyResults } = getSearchMessages(controller);
+
+    if (count <= 0) {
+      return noResults;
+    }
+
+    return (count === 1 ? oneResult : manyResults).replace(
+      "[COUNT]",
+      formatSearchResultCount(count),
+    );
+  }
+
+  /**
+   * @param {SearchController} controller
+   * @param {"info" | "warning"} tone
+   * @param {string} title
+   * @param {string} [subtitle]
+   * @returns {void}
+   */
+  function showSearchNotification(
+    controller,
+    tone,
+    title,
+    subtitle = "",
+  ) {
+    if (!(controller.notification instanceof HTMLElement)) {
+      return;
+    }
+
+    controller.notification.hidden = false;
+    controller.notification.dataset.searchNotificationTone = tone;
+    controller.notification.classList.toggle(
+      "cds--inline-notification--info",
+      tone === "info",
+    );
+    controller.notification.classList.toggle(
+      "cds--inline-notification--warning",
+      tone === "warning",
+    );
+
+    if (controller.notificationTitle instanceof HTMLElement) {
+      controller.notificationTitle.textContent = title;
+      controller.notificationTitle.hidden = title.length === 0;
+    }
+
+    if (controller.notificationSubtitle instanceof HTMLElement) {
+      controller.notificationSubtitle.textContent = subtitle;
+      controller.notificationSubtitle.hidden = subtitle.length === 0;
+    }
+  }
+
+  /**
+   * @param {SearchController} controller
    * @param {boolean} isBusy
    * @returns {void}
    */
@@ -798,10 +885,12 @@
 
     if (controller.notificationTitle instanceof HTMLElement) {
       controller.notificationTitle.textContent = "";
+      controller.notificationTitle.hidden = true;
     }
 
     if (controller.notificationSubtitle instanceof HTMLElement) {
       controller.notificationSubtitle.textContent = "";
+      controller.notificationSubtitle.hidden = true;
     }
 
     status.hidden = true;
@@ -849,29 +938,14 @@
       const tone = globalThis.navigator.onLine === false || text === offline
         ? "warning"
         : "info";
-
-      if (controller.notification instanceof HTMLElement) {
-        controller.notification.hidden = false;
-        controller.notification.dataset.searchNotificationTone = tone;
-        controller.notification.classList.toggle(
-          "cds--inline-notification--info",
-          tone === "info",
-        );
-        controller.notification.classList.toggle(
-          "cds--inline-notification--warning",
-          tone === "warning",
-        );
-      }
-
-      if (controller.notificationTitle instanceof HTMLElement) {
-        controller.notificationTitle.textContent = tone === "warning"
-          ? offlineTitle
-          : unavailableTitle;
-      }
-
-      if (controller.notificationSubtitle instanceof HTMLElement) {
-        controller.notificationSubtitle.textContent = text;
-      }
+      showSearchNotification(
+        controller,
+        tone,
+        tone === "warning" ? offlineTitle : unavailableTitle,
+        text,
+      );
+    } else if (state === "results") {
+      showSearchNotification(controller, "info", text);
     } else if (controller.statusText instanceof HTMLElement) {
       controller.statusText.hidden = false;
       controller.statusText.textContent = text;
@@ -1008,42 +1082,41 @@
    */
   function syncSearchStatus(controller) {
     const message = controller.container.querySelector(".pagefind-ui__message");
-    const input = controller.container.querySelector(
-      ".pagefind-ui__search-input",
-    );
+    const searchTerm = getActiveSearchTerm(controller);
 
-    if (
-      !(input instanceof HTMLInputElement) || input.value.trim().length === 0
-    ) {
+    if (searchTerm.length === 0) {
       clearSearchStatus(controller);
       return;
     }
 
-    if (!(message instanceof HTMLElement)) {
-      setSearchStatus(
-        controller,
-        getSearchMessages(controller).loading,
-        "loading",
-      );
-      return;
-    }
-
-    const text = message.textContent?.trim() ?? "";
-
-    if (text.length === 0) {
-      setSearchStatus(
-        controller,
-        getSearchMessages(controller).loading,
-        "loading",
-      );
-      return;
-    }
-
+    const text = message instanceof HTMLElement
+      ? message.textContent?.trim() ?? ""
+      : "";
+    const resultCount = controller.container.querySelectorAll(
+      ".pagefind-ui__result",
+    ).length;
     const { loading } = getSearchMessages(controller);
+
+    if (resultCount > 0) {
+      setSearchStatus(
+        controller,
+        text.length > 0 && text !== loading
+          ? text
+          : getSearchResultMessage(controller, resultCount),
+        "results",
+      );
+      return;
+    }
+
+    if (text.length === 0 || text === loading) {
+      setSearchStatus(controller, loading, "loading");
+      return;
+    }
+
     setSearchStatus(
       controller,
       text,
-      text === loading ? "loading" : "results",
+      "results",
     );
   }
 
@@ -1072,9 +1145,7 @@
       return;
     }
 
-    const input = controller.container.querySelector(
-      ".pagefind-ui__search-input",
-    );
+    const input = getSearchInput(controller);
 
     if (!(input instanceof HTMLInputElement)) {
       return;
@@ -1096,14 +1167,11 @@
       scheduleSearchStatusSync(controller);
     });
 
-    const resultsArea = controller.container.querySelector(
-      ".pagefind-ui__results-area",
-    ) ?? controller.container;
     const messageObserver = new MutationObserver(() => {
       syncSearchStatus(controller);
     });
 
-    messageObserver.observe(resultsArea, {
+    messageObserver.observe(controller.container, {
       childList: true,
       subtree: true,
       characterData: true,
@@ -1269,6 +1337,8 @@
     new pagefindUi({
       element: ensurePagefindSelector(controller),
       showImages: false,
+      showEmptyFilters: false,
+      openFilters: ["tag"],
       showSubResults: false,
       resetStyles: false,
       translations: getPagefindTranslations(controller),

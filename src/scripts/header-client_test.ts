@@ -319,7 +319,10 @@ function installFakePagefind(window: TestWindow) {
       const message = window.document.createElement("p");
       message.className = "pagefind-ui__message";
 
-      resultsArea.append(message);
+      const results = window.document.createElement("ol");
+      results.className = "pagefind-ui__results";
+
+      resultsArea.append(message, results);
       drawer.append(resultsArea);
       form.append(input, clear, drawer);
       wrapper.append(form);
@@ -331,8 +334,26 @@ function installFakePagefind(window: TestWindow) {
       const oneResult = translations.one_result ?? "[COUNT] result";
       const manyResults = translations.many_results ?? "[COUNT] results";
 
+      const renderResult = (title: string) => {
+        const result = window.document.createElement("li");
+        result.className = "pagefind-ui__result";
+
+        const resultTitle = window.document.createElement("p");
+        resultTitle.className = "pagefind-ui__result-title";
+
+        const link = window.document.createElement("a");
+        link.className = "pagefind-ui__result-link";
+        link.href = `/posts/${title.toLowerCase().replace(/\s+/g, "-")}`;
+        link.textContent = title;
+
+        resultTitle.append(link);
+        result.append(resultTitle);
+        return result;
+      };
+
       input.addEventListener("input", () => {
         const term = input.value.trim();
+        results.replaceChildren();
 
         if (term.length === 0) {
           message.textContent = "";
@@ -349,12 +370,23 @@ function installFakePagefind(window: TestWindow) {
           return;
         }
 
+        if (term === "stale") {
+          message.textContent = loading;
+          results.append(renderResult("Stale result"));
+          return;
+        }
+
         if (term === "one") {
           message.textContent = oneResult.replace("[COUNT]", "1");
+          results.append(renderResult("One result"));
           return;
         }
 
         message.textContent = manyResults.replace("[COUNT]", "2");
+        results.append(
+          renderResult("First result"),
+          renderResult("Second result"),
+        );
       });
     }
   };
@@ -394,6 +426,28 @@ function getSearchPanel(window: TestWindow): HTMLElement {
   const panel = window.document.querySelector("[data-search-panel]");
   assert(panel instanceof window.HTMLElement);
   return panel;
+}
+
+function getSearchNotification(window: TestWindow): HTMLElement {
+  const notification = window.document.querySelector(
+    "[data-search-notification]",
+  );
+  assert(notification instanceof window.HTMLElement);
+  return notification;
+}
+
+function getSearchNotificationTitle(window: TestWindow): HTMLElement {
+  const title = window.document.querySelector(
+    "[data-search-notification-title]",
+  );
+  assert(title instanceof window.HTMLElement);
+  return title;
+}
+
+function getSearchLoading(window: TestWindow): HTMLElement {
+  const loading = window.document.querySelector("[data-search-loading]");
+  assert(loading instanceof window.HTMLElement);
+  return loading;
 }
 
 function getLanguagePanel(window: TestWindow): HTMLElement {
@@ -558,20 +612,62 @@ describe("header-client.js", () => {
     await flush(window);
 
     const input = window.document.querySelector(".pagefind-ui__search-input");
-    const statusText = window.document.querySelector(
-      "[data-search-status-text]",
-    );
     assert(input instanceof window.HTMLInputElement);
-    assert(statusText instanceof window.HTMLElement);
+    const notification = getSearchNotification(window);
+    const notificationTitle = getSearchNotificationTitle(window);
+    const loading = getSearchLoading(window);
     assertEquals(window.document.activeElement, input);
 
     input.value = "alpha";
     input.dispatchEvent(new window.Event("input", { bubbles: true }));
     await flush(window);
 
-    assertEquals(statusText.hidden, false);
-    assertEquals(statusText.textContent, "2 results");
+    assertEquals(notification.hidden, false);
+    assertEquals(notificationTitle.textContent, "2 results");
+    assertEquals(loading.hidden, true);
     assertEquals(panel.getAttribute("aria-busy"), "false");
+  });
+
+  it("clears the inline loader once results are rendered even if Pagefind's message is stale", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    evaluateScript(window);
+
+    const toggle = getSearchToggle(window);
+    toggle.focus();
+    toggle.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Enter",
+        bubbles: true,
+      }),
+    );
+    toggle.click();
+    await flush(window, 1);
+
+    const runtimeScript = window.document.querySelector(
+      'script[src="/pagefind/pagefind-ui.js"]',
+    );
+    assert(runtimeScript instanceof window.HTMLScriptElement);
+
+    installFakePagefind(window);
+    runtimeScript.dispatchEvent(new window.Event("load"));
+    await flush(window);
+
+    const input = window.document.querySelector(".pagefind-ui__search-input");
+    assert(input instanceof window.HTMLInputElement);
+
+    input.value = "stale";
+    input.dispatchEvent(new window.Event("input", { bubbles: true }));
+    await flush(window);
+
+    const notification = getSearchNotification(window);
+    const notificationTitle = getSearchNotificationTitle(window);
+    const loading = getSearchLoading(window);
+
+    assertEquals(notification.hidden, false);
+    assertEquals(notificationTitle.textContent, "1 result");
+    assertEquals(loading.hidden, true);
   });
 
   it("removes the placeholder skeleton before mounting the live Pagefind UI", async () => {
