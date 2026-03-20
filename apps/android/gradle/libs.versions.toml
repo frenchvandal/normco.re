@@ -1,6 +1,6 @@
 [versions]
 agp = "9.1.0"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 coreKtx = "1.18.0"
 activityCompose = "1.13.0"
 lifecycle = "2.10.0"
@@ -10,6 +10,8 @@ room = "2.8.4"
 dataStore = "1.2.1"
 work = "2.11.1"
 appcompat = "1.7.1"
+detekt = "1.23.8"
+spotless = "8.4.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -34,3 +36,5 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

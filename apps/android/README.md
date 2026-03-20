@@ -1,6 +1,6 @@
-# normco.re Android
+# phiphi Android
 
-This directory contains the Android app bootstrap for normco.re.
+This directory contains the Android app bootstrap for phiphi.
 
 Current status:
 
@@ -8,9 +8,10 @@ Current status:
 - Gradle Kotlin DSL project files in place
 - Compose + Material 3 shell in place
 - dependency catalog aligned with current Google guidance
-- content contracts not wired yet
-- Gradle wrapper not generated yet because this machine does not currently have
-  a JDK installed
+- provisional app name set to `phiphi`
+- Gradle wrapper committed
+- first Home slice wired to bundled `app-manifest` and `posts-index` fixtures
+- Spotless + ktfmt, Detekt, and Android lint wired as the local quality gate
 
 ## Repository Role
 
@@ -43,23 +44,34 @@ Install these before trying to sync or build the Android app locally:
 
 Optional but useful during bootstrap:
 
-- Gradle 9.3.x as a temporary local install, only until the project wrapper is
-  generated and committed
+- Gradle 9.4.x as a temporary local install, only if the wrapper ever needs to
+  be regenerated from scratch
 
 Recommended environment values:
 
 - `JAVA_HOME` -> JDK 17
 - `ANDROID_SDK_ROOT=$HOME/Library/Android/sdk`
 
-## Next Bootstrap Step
+## Run The App
 
 Once JDK 17 is installed:
 
 1. enter `apps/android`
-2. generate the wrapper with `gradle wrapper --gradle-version 9.3.1`
-3. open the project in Android Studio
-4. let Gradle sync
-5. create an API 36 emulator and run the app
+2. open the project in Android Studio
+3. let Gradle sync
+4. create an API 36 emulator and run the app
+
+## Quality Commands
+
+Use the Gradle wrapper from `apps/android`:
+
+```sh
+./gradlew spotlessApply
+./gradlew spotlessCheck
+./gradlew detekt
+./gradlew lintDebug
+./gradlew quality
+```
 
 ## Structure
 
@@ -68,6 +80,8 @@ apps/android/
 ├── app/
 │   ├── build.gradle.kts
 │   └── src/main/
+├── config/
+│   └── detekt/
 ├── gradle/
 │   └── libs.versions.toml
 ├── build.gradle.kts

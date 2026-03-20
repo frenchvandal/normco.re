@@ -8,6 +8,25 @@ This roadmap supersedes the earlier iOS-first implementation order for active
 delivery. The shared contract-first direction from the mobile docs remains in
 force.
 
+## Current Status
+
+- Phase 0 bootstrap is complete.
+- `apps/android` imports cleanly in Android Studio.
+- The Gradle wrapper is committed and the debug build passes with Java 17.
+- The provisional app name is `phiphi`.
+- The local quality gate is installed:
+  - Spotless + ktfmt
+  - Detekt
+  - Android lint
+- The first contract-backed slice is now the Home feed:
+  - `app-manifest` fixture in app assets
+  - `posts-index` fixture in app assets
+  - repository-driven loading
+  - `ViewModel` + `StateFlow`
+  - Compose rendering of real post summaries
+- The next contract milestone is replacing bundled fixtures with JSON generated
+  by the Deno site build.
+
 ## Executive Summary
 
 - Start the native app program with Android, not with a web wrapper.
@@ -74,14 +93,14 @@ repo/
 
 ### Android Stack
 
-- `applicationId` for bootstrap: `re.normco.android`
-- `namespace`: `re.normco.android`
+- `applicationId` for bootstrap: `re.phiphi.android`
+- `namespace`: `re.phiphi.android`
 - `compileSdk`: `36`
 - `targetSdk`: `36`
 - `minSdk`: `28`
 - `AGP`: `9.1.0`
-- `Gradle wrapper target`: `9.3.1`
-- `Kotlin`: `2.3.10`
+- `Gradle wrapper target`: `9.4.1`
+- `Kotlin`: `2.3.20`
 - `Compose BOM`: `2026.03.00`
 - `Material 3`: latest stable through the Compose BOM
 - `Activity Compose`: `1.13.0`
@@ -91,6 +110,8 @@ repo/
 - `Room`: `2.8.4`
 - `DataStore`: `1.2.1`
 - `WorkManager`: `2.11.1`
+- `Spotless`: `8.4.0`
+- `Detekt`: `1.23.8`
 
 Rationale:
 
@@ -114,7 +135,7 @@ Google's architecture guidance is the baseline for this app:
 Near-term project shape inside `:app`:
 
 ```text
-app/src/main/java/re/normco/android/
+app/src/main/java/re/phiphi/android/
 ├── MainActivity.kt
 ├── feature/
 │   ├── archive/
@@ -146,6 +167,13 @@ Expected later split, only when justified:
 - `:feature:settings`
 - `:sync`
 
+### Shared Contract Tooling
+
+- When the shared contract utility is introduced, build it in Go.
+- Use the latest stable Go release available at the moment the utility work
+  starts.
+- Do not pin the tooling plan to an old Go major version in advance.
+
 ## Delivery Phases
 
 ### Phase 0: Bootstrap
@@ -153,6 +181,10 @@ Expected later split, only when justified:
 Goal:
 
 - make the repository Android-ready without destabilizing the Deno site
+
+Status:
+
+- complete
 
 Deliverables:
 
@@ -174,6 +206,12 @@ Exit criteria:
 Goal:
 
 - make the app consume real content contracts instead of placeholders
+
+Status:
+
+- in progress
+- current bridge step: bundled contract fixtures in app assets power the Home
+  feed while the Deno generator path is still being wired
 
 Deliverables:
 
@@ -276,7 +314,7 @@ Exit criteria:
 ## Immediate Backlog
 
 - replace placeholder screens with contract-backed screens
-- decide the final Android application ID if `re.normco.android` changes
+- decide whether `re.phiphi.android` remains the final Android application ID
 - generate the app contracts from the Deno build
 - add App Links for canonical post URLs
 - introduce Room/DataStore/WorkManager once real data flows land
