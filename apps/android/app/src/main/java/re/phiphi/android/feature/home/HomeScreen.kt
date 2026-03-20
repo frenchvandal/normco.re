@@ -1,6 +1,5 @@
 package re.phiphi.android.feature.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +22,6 @@ import re.phiphi.android.ui.components.PostSummaryCard
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
-    onOpenArchive: () -> Unit,
     onOpenPost: (String) -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
@@ -42,7 +40,7 @@ fun HomeScreen(
             }
 
             is HomeUiState.Success -> {
-                item { HomeFeedHeading(lang = uiState.lang) }
+                item { HomeFeedHeading() }
 
                 if (uiState.items.isEmpty()) {
                     item {
@@ -65,31 +63,17 @@ fun HomeScreen(
                         )
                     }
                 }
-
-                item { BrowseArchiveHint(onOpenArchive = onOpenArchive) }
             }
         }
     }
 }
 
 @Composable
-private fun HomeFeedHeading(lang: String) {
+private fun HomeFeedHeading() {
     Card(modifier = Modifier.fillMaxWidth().padding(top = 24.dp)) {
         Text(
-            text = stringResource(id = R.string.home_feed_title, lang),
+            text = stringResource(id = R.string.home_feed_title),
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(20.dp),
-        )
-    }
-}
-
-@Composable
-private fun BrowseArchiveHint(onOpenArchive: () -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onOpenArchive)) {
-        Text(
-            text = stringResource(id = R.string.action_open_archive),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(20.dp),
         )
     }

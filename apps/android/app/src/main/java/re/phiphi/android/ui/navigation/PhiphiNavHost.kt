@@ -26,10 +26,7 @@ fun PhiphiNavHost(
         modifier = Modifier.padding(contentPadding),
     ) {
         composable(route = AppRoutes.HOME) {
-            HomeRoute(
-                onOpenArchive = { navController.navigate(TopLevelDestination.Archive.route) },
-                onOpenPost = { slug -> navController.navigate(AppRoutes.post(slug)) },
-            )
+            HomeRoute(onOpenPost = { slug -> navController.navigate(AppRoutes.post(slug)) })
         }
 
         composable(route = AppRoutes.ARCHIVE) {

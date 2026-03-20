@@ -52,12 +52,8 @@ fun SettingsScreen(
                 item {
                     OfflinePreferencesSection(
                         saveOpenedPostsForOffline = uiState.saveOpenedPostsForOffline,
-                        syncOnUnmeteredOnly = uiState.syncOnUnmeteredOnly,
                         onSetSaveOpenedPostsForOffline = { enabled ->
                             onAction(SettingsAction.SetSaveOpenedPostsForOffline(enabled))
-                        },
-                        onSetSyncOnUnmeteredOnly = { enabled ->
-                            onAction(SettingsAction.SetSyncOnUnmeteredOnly(enabled))
                         },
                     )
                 }
@@ -157,26 +153,17 @@ private fun LanguageRow(language: String, selected: Boolean, onSelectLanguage: (
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         RadioButton(selected = selected, onClick = { onSelectLanguage(language) })
-        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(
-                text = languageDisplayName(language = language),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            Text(
-                text = language,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
+        Text(
+            text = languageDisplayName(language = language),
+            style = MaterialTheme.typography.bodyLarge,
+        )
     }
 }
 
 @Composable
 private fun OfflinePreferencesSection(
     saveOpenedPostsForOffline: Boolean,
-    syncOnUnmeteredOnly: Boolean,
     onSetSaveOpenedPostsForOffline: (Boolean) -> Unit,
-    onSetSyncOnUnmeteredOnly: (Boolean) -> Unit,
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -192,12 +179,6 @@ private fun OfflinePreferencesSection(
                 summary = stringResource(id = R.string.settings_save_opened_posts_body),
                 checked = saveOpenedPostsForOffline,
                 onCheckedChange = onSetSaveOpenedPostsForOffline,
-            )
-            TogglePreferenceRow(
-                title = stringResource(id = R.string.settings_sync_unmetered_title),
-                summary = stringResource(id = R.string.settings_sync_unmetered_body),
-                checked = syncOnUnmeteredOnly,
-                onCheckedChange = onSetSyncOnUnmeteredOnly,
             )
         }
     }
