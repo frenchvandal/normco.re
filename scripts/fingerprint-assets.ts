@@ -14,9 +14,7 @@ const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
  */
 const CANONICAL_ASSET_URLS = [
   "/style.css",
-  "/scripts/theme-toggle.js",
-  "/scripts/disclosure-controls.js",
-  "/scripts/header-tooltips.js",
+  "/scripts/header-client.js",
   "/scripts/about-contact-toggletips.js",
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
@@ -24,7 +22,6 @@ const CANONICAL_ASSET_URLS = [
   "/scripts/surface-controls.js",
   "/scripts/link-prefetch-intent.js",
   "/scripts/sw-register.js",
-  "/scripts/pagefind-lazy-init.js",
 ] as const;
 const SERVICE_WORKER_VERSION_PLACEHOLDER = "__SW_VERSION__";
 const SERVICE_WORKER_VERSION_SOURCES = [

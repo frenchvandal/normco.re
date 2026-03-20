@@ -201,10 +201,9 @@ Client-side JavaScript is strictly additive. The site remains readable without
 it. The current enhancement layer includes:
 
 - theme initialization and theme switching
-- disclosure controls for the header, language menu, and search panel
-- header tooltips for search, language, and theme actions
+- a unified header controller for disclosure controls, tooltips, theme
+  switching, and lazy search initialization
 - language preference persistence
-- Pagefind lazy initialization
 - accessible search loading, retry, and result announcements
 - code-block copy actions with explicit status feedback
 - feed copy handling
@@ -214,10 +213,10 @@ it. The current enhancement layer includes:
 ## Search and Feeds
 
 Search is powered by Pagefind and initialized lazily through
-`src/scripts/pagefind-lazy-init.js`. The UI keeps the search status surface
-under project control so loading, empty, retry, and offline states can be
-announced accessibly. The search container and panel also mirror busy state
-through `aria-busy`.
+`src/scripts/header-client.js`. The UI keeps the search status surface under
+project control so loading, empty, retry, and offline states can be announced
+accessibly. The search container and panel also mirror busy state through
+`aria-busy`.
 
 Feeds are emitted per language. RSS, Atom, and JSON outputs are generated in
 `_config/feeds.ts`. HTML feeds use Microformats2 directly in the TSX and string

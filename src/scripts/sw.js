@@ -52,7 +52,7 @@ const STATIC_ASSETS = [
   "/android-chrome-192x192.png",
   "/android-chrome-512x512.png",
   "/style.css",
-  "/scripts/theme-toggle.js",
+  "/scripts/header-client.js",
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
   "/scripts/post-code-copy.js",
@@ -120,6 +120,7 @@ function logSw(event, details = {}) {
  */
 async function precacheStaticAssets() {
   const cache = await caches.open(STATIC_CACHE);
+  /** @type {{ url: string; error: string }[]} */
   const failures = [];
 
   await Promise.all(

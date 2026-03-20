@@ -305,31 +305,13 @@ export default (
             />
           </div>
           <script
-            src="/scripts/disclosure-controls.js"
-            fetchpriority="low"
-            defer
-          >
-          </script>
-          <script
-            src="/scripts/header-tooltips.js"
+            src="/scripts/header-client.js"
             fetchpriority="low"
             defer
           >
           </script>
           <script
             src="/scripts/about-contact-toggletips.js"
-            fetchpriority="low"
-            defer
-          >
-          </script>
-          <script
-            src="/scripts/theme-toggle.js"
-            fetchpriority="low"
-            defer
-          >
-          </script>
-          <script
-            src="/scripts/pagefind-lazy-init.js"
             fetchpriority="low"
             defer
           >

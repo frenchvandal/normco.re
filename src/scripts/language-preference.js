@@ -1,13 +1,11 @@
 // @ts-check
 (() => {
   const currentScript = globalThis.document.currentScript;
-  const LANGUAGE_OPTION_SELECTOR = "[data-language-option]";
-  const HEADER_ACTION_SELECTOR =
-    ".cds--header__action[aria-controls], .cds--header__menu-toggle";
 
   if (!(currentScript instanceof HTMLScriptElement)) {
     return;
   }
+
   const scriptElement = currentScript;
 
   const STORAGE_KEY = "preferred-language";
@@ -91,11 +89,14 @@
   const defaultLanguage = normalizeLanguage(
     scriptElement.dataset.defaultLanguage ?? "en",
   ) ?? supportedLanguages[0] ?? "en";
+  const currentLanguage = normalizeLanguage(
+    scriptElement.dataset.currentLanguage ??
+      globalThis.document.documentElement.lang,
+  ) ?? defaultLanguage;
 
-  const currentLanguageCandidate = scriptElement.dataset.currentLanguage ??
-    globalThis.document.documentElement.lang;
-
-  /** @returns {Record<string, string>} */
+  /**
+   * @returns {Record<string, string>}
+   */
   function parseAlternateUrls() {
     const rawAlternates = scriptElement.dataset.languageAlternates;
 
@@ -153,27 +154,20 @@
     return "/";
   }
 
+  /**
+   * @returns {string | null}
+   */
   function readStoredLanguage() {
     try {
-      const storedLanguage = globalThis.localStorage.getItem(STORAGE_KEY);
-      return normalizeLanguage(storedLanguage);
+      return normalizeLanguage(globalThis.localStorage.getItem(STORAGE_KEY));
     } catch {
       return null;
     }
   }
 
   /**
-   * @param {string} language
-   * @returns {void}
+   * @returns {string | null}
    */
-  function persistLanguage(language) {
-    try {
-      globalThis.localStorage.setItem(STORAGE_KEY, language);
-    } catch {
-      // Ignore storage failures (private mode, blocked storage, etc.).
-    }
-  }
-
   function resolveLocaleLanguage() {
     const localeCandidates = [
       ...(Array.isArray(globalThis.navigator.languages)
@@ -193,22 +187,16 @@
     return null;
   }
 
+  /**
+   * @returns {string}
+   */
   function resolvePreferredLanguage() {
-    const storedLanguage = readStoredLanguage();
-
-    if (storedLanguage !== null) {
-      return storedLanguage;
-    }
-
-    const localeLanguage = resolveLocaleLanguage();
-
-    if (localeLanguage !== null) {
-      return localeLanguage;
-    }
-
-    return defaultLanguage;
+    return readStoredLanguage() ?? resolveLocaleLanguage() ?? defaultLanguage;
   }
 
+  /**
+   * @returns {string}
+   */
   function getCurrentPath() {
     return `${globalThis.location.pathname}${globalThis.location.search}`;
   }
@@ -241,18 +229,6 @@
    * @param {string} targetUrl
    * @returns {void}
    */
-  function assignLocation(targetUrl) {
-    if (!dispatchNavigationEvent("assign", targetUrl)) {
-      return;
-    }
-
-    globalThis.location.assign(targetUrl);
-  }
-
-  /**
-   * @param {string} targetUrl
-   * @returns {void}
-   */
   function replaceLocation(targetUrl) {
     if (!dispatchNavigationEvent("replace", targetUrl)) {
       return;
@@ -261,151 +237,14 @@
     globalThis.location.replace(targetUrl);
   }
 
-  const currentLanguage = normalizeLanguage(currentLanguageCandidate) ??
-    defaultLanguage;
   const preferredLanguage = resolvePreferredLanguage();
-  const currentPathname = globalThis.location.pathname;
-  const isRootPath = currentPathname === "/";
+  const isRootPath = globalThis.location.pathname === "/";
 
   if (preferredLanguage !== currentLanguage && isRootPath) {
     const targetUrl = resolveTargetUrl(preferredLanguage);
 
     if (getCurrentPath() !== getTargetPath(targetUrl)) {
       replaceLocation(targetUrl);
-      return;
     }
   }
-
-  /**
-   * @param {HTMLElement} menuOption
-   * @returns {string | null}
-   */
-  function getMenuOptionHref(menuOption) {
-    if (menuOption instanceof HTMLAnchorElement) {
-      return menuOption.href;
-    }
-
-    const rawHref = menuOption.getAttribute("href");
-
-    if (rawHref === null || rawHref.length === 0) {
-      return null;
-    }
-
-    try {
-      return new URL(rawHref, globalThis.location.origin).href;
-    } catch {
-      return null;
-    }
-  }
-
-  /**
-   * @param {HTMLElement} menuOption
-   * @returns {void}
-   */
-  function closeLanguageSurface(menuOption) {
-    const languagePanel = menuOption.closest("[data-language-panel]");
-
-    if (!(languagePanel instanceof HTMLElement)) {
-      return;
-    }
-
-    languagePanel.removeAttribute("expanded");
-    languagePanel.setAttribute("hidden", "");
-
-    const panelId = languagePanel.id;
-
-    if (panelId.length === 0) {
-      return;
-    }
-
-    for (
-      const action of globalThis.document.querySelectorAll(
-        HEADER_ACTION_SELECTOR,
-      )
-    ) {
-      if (!(action instanceof HTMLElement)) {
-        continue;
-      }
-
-      if (
-        action.getAttribute("aria-controls") === panelId ||
-        action.getAttribute("panel-id") === panelId
-      ) {
-        action.setAttribute("aria-expanded", "false");
-        action.focus({ preventScroll: true });
-      }
-    }
-  }
-
-  function initializeLanguageMenuOptions() {
-    const menuOptions = globalThis.document.querySelectorAll(
-      LANGUAGE_OPTION_SELECTOR,
-    );
-
-    for (const menuOption of menuOptions) {
-      if (!(menuOption instanceof HTMLElement)) {
-        continue;
-      }
-
-      const selectedLanguage = normalizeLanguage(
-        menuOption.dataset.languageOption,
-      );
-
-      if (selectedLanguage === null) {
-        continue;
-      }
-
-      menuOption.addEventListener(
-        "click",
-        (event) => {
-          if (!(event instanceof MouseEvent)) {
-            return;
-          }
-
-          persistLanguage(selectedLanguage);
-
-          if (
-            event.button !== 0 ||
-            event.metaKey ||
-            event.ctrlKey ||
-            event.shiftKey ||
-            event.altKey
-          ) {
-            return;
-          }
-
-          const targetUrl = resolveTargetUrl(selectedLanguage);
-          const menuOptionHref = getMenuOptionHref(menuOption);
-
-          if (typeof menuOptionHref === "string") {
-            const fallbackPath = getTargetPath(menuOptionHref);
-            const canonicalPath = getTargetPath(targetUrl);
-
-            if (fallbackPath === canonicalPath) {
-              if (getCurrentPath() === canonicalPath) {
-                event.preventDefault();
-                closeLanguageSurface(menuOption);
-              }
-              return;
-            }
-          }
-
-          event.preventDefault();
-
-          if (getCurrentPath() === getTargetPath(targetUrl)) {
-            closeLanguageSurface(menuOption);
-            return;
-          }
-
-          assignLocation(targetUrl);
-        },
-      );
-    }
-  }
-
-  function initializeLanguageControls() {
-    initializeLanguageMenuOptions();
-  }
-
-  initializeLanguageControls();
 })();

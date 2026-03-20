@@ -26,9 +26,7 @@ export function registerAssets(site: Site): void {
   site.add("/style.scss");
 
   // Client-side scripts
-  site.add("/scripts/theme-toggle.js");
-  site.add("/scripts/disclosure-controls.js");
-  site.add("/scripts/header-tooltips.js");
+  site.add("/scripts/header-client.js");
   site.add("/scripts/about-contact-toggletips.js");
   site.add("/scripts/language-preference.js");
   site.add("/scripts/feed-copy.js");
@@ -36,7 +34,6 @@ export function registerAssets(site: Site): void {
   site.add("/scripts/surface-controls.js");
   site.add("/scripts/link-prefetch-intent.js");
   site.add("/scripts/sw-register.js");
-  site.add("/scripts/pagefind-lazy-init.js");
 
   // Service worker — served from root, not /scripts/
   site.add("/scripts/sw.js", "/sw.js");

@@ -176,7 +176,7 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
-        'src="/scripts/header-tooltips.js"',
+        'src="/scripts/header-client.js"',
       );
       assertStringIncludes(
         html,
