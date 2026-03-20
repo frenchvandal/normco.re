@@ -13,7 +13,7 @@ import androidx.navigation.navArgument
 import re.phiphi.android.feature.archive.ArchiveRoute
 import re.phiphi.android.feature.home.HomeRoute
 import re.phiphi.android.feature.post.PostRoute
-import re.phiphi.android.feature.settings.SettingsScreen
+import re.phiphi.android.feature.settings.SettingsRoute
 
 @Composable
 fun PhiphiNavHost(
@@ -36,7 +36,7 @@ fun PhiphiNavHost(
             ArchiveRoute(onOpenPost = { slug -> navController.navigate(AppRoutes.post(slug)) })
         }
 
-        composable(route = AppRoutes.SETTINGS) { SettingsScreen() }
+        composable(route = AppRoutes.SETTINGS) { SettingsRoute() }
 
         composable(
             route = AppRoutes.POST_PATTERN,

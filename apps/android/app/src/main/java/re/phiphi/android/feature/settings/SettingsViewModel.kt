@@ -1,0 +1,75 @@
+package re.phiphi.android.feature.settings
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import re.phiphi.android.data.posts.PostsRepository
+import re.phiphi.android.data.settings.ReaderPreferencesRepository
+
+@HiltViewModel
+class SettingsViewModel
+@Inject
+constructor(
+    private val postsRepository: PostsRepository,
+    private val readerPreferencesRepository: ReaderPreferencesRepository,
+) : ViewModel() {
+    private val _uiState = MutableStateFlow<SettingsUiState>(SettingsUiState.Loading)
+    val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+    private var observePreferencesJob: Job? = null
+
+    init {
+        refresh()
+    }
+
+    fun refresh() {
+        observePreferencesJob?.cancel()
+        observePreferencesJob =
+            viewModelScope.launch {
+                _uiState.value = SettingsUiState.Loading
+
+                val manifest =
+                    runCatching { postsRepository.getAppManifest() }
+                        .getOrElse { throwable ->
+                            _uiState.value =
+                                SettingsUiState.Error(
+                                    message = throwable.message ?: "Unknown failure"
+                                )
+                            return@launch
+                        }
+
+                readerPreferencesRepository.preferences.collectLatest { preferences ->
+                    val selectedLanguage =
+                        preferences.preferredLanguage?.takeIf { candidate ->
+                            candidate in manifest.languages
+                        } ?: manifest.defaultLanguage
+
+                    _uiState.value =
+                        SettingsUiState.Success(
+                            availableLanguages = manifest.languages,
+                            selectedLanguage = selectedLanguage,
+                            saveOpenedPostsForOffline = preferences.saveOpenedPostsForOffline,
+                            syncOnUnmeteredOnly = preferences.syncOnUnmeteredOnly,
+                        )
+                }
+            }
+    }
+
+    fun setPreferredLanguage(language: String) {
+        viewModelScope.launch { readerPreferencesRepository.setPreferredLanguage(language) }
+    }
+
+    fun setSaveOpenedPostsForOffline(enabled: Boolean) {
+        viewModelScope.launch { readerPreferencesRepository.setSaveOpenedPostsForOffline(enabled) }
+    }
+
+    fun setSyncOnUnmeteredOnly(enabled: Boolean) {
+        viewModelScope.launch { readerPreferencesRepository.setSyncOnUnmeteredOnly(enabled) }
+    }
+}

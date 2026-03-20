@@ -1,10 +1,13 @@
 package re.phiphi.android.data.posts
 
+import re.phiphi.android.core.model.AppManifest
 import re.phiphi.android.core.model.PostDetail
 import re.phiphi.android.core.model.PostsIndex
 
 interface PostsRepository {
-    suspend fun getDefaultPostsIndex(): PostsIndex
+    suspend fun getAppManifest(): AppManifest
 
-    suspend fun getDefaultPostDetail(slug: String): PostDetail
+    suspend fun getPostsIndex(lang: String? = null): PostsIndex
+
+    suspend fun getPostDetail(slug: String, lang: String? = null): PostDetail
 }

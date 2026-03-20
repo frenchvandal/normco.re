@@ -35,6 +35,12 @@ force.
   - Room database installed in `:app`
   - manifest and localized posts seeded from generated app assets
   - repository reads Home, Archive, and Post data from Room after seeding
+- The settings slice is now real:
+  - DataStore-backed reader preferences
+  - persistent language selection
+  - Home, Archive, and Post now follow the selected language instead of the
+    manifest default only
+  - offline preference toggles stored for the next sync phase
 - The site build now generates:
   - `/api/app-manifest.json`
   - localized `/api/posts/index.json`
@@ -45,8 +51,8 @@ force.
   - `bootstrap/app-manifest.json`
   - `bootstrap/posts-index-<lang>.json`
   - `bootstrap/post-details/<lang>/<slug>.json`
-- The next milestone is moving from bundled generated assets to persistent
-  offline-first storage.
+- The next milestone is WorkManager-backed refresh on top of the Room and
+  DataStore source of truth.
 
 ## Executive Summary
 
@@ -65,7 +71,8 @@ force.
   - Coil for remote images
   - offline-first local source of truth
   - Room for persisted content bootstrap
-  - Paging 3, DataStore, and WorkManager as the next data-layer steps
+  - Paging 3 and WorkManager as the next data-layer steps
+  - DataStore for persisted user preferences
 - Keep mobile clients bound to the JSON contracts in `contracts/`, not to HTML
   pages, feeds, or Lume internals.
 
@@ -358,11 +365,9 @@ Exit criteria:
 
 - decide whether `re.phiphi.android` remains the final Android application ID
 - add App Links for canonical post URLs
-- add DataStore-backed user preferences
 - introduce WorkManager and remote refresh on top of the Room source of truth
 - evaluate custom Android Lint rules for architectural boundaries once the
   module graph stabilizes
-- replace the Settings placeholder with real language and offline preferences
 
 ## Risks And Constraints
 

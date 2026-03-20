@@ -17,6 +17,9 @@ Current status:
   contracts
 - Room now persists the bootstrap manifest and posts locally
 - the repository seeds from assets, then reads Home, Archive, and Post from Room
+- DataStore now persists reader preferences
+- the Settings slice now exposes real language and offline preferences
+- Home, Archive, and Post now react to the selected content language
 - Hilt installed for app wiring and `ViewModel` injection
 - `kotlinx.serialization` installed for contract parsing
 - Coil installed for Compose image loading
@@ -44,8 +47,9 @@ Current status:
 - kotlinx.serialization
 - Coil
 - Room
-- Paging 3, DataStore, and WorkManager reserved in the version catalog for the
-  next data-layer phase
+- DataStore
+- Paging 3 and WorkManager reserved in the version catalog for the next
+  data-layer phase
 
 ## What To Install On The MacBook
 
