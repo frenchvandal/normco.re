@@ -14,11 +14,13 @@ import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
@@ -30,23 +32,40 @@ import re.phiphi.android.ui.components.ContentSyncStatusText
 import re.phiphi.android.ui.components.PostSummaryCard
 import re.phiphi.android.ui.components.PostSummaryCardActions
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(uiState: HomeUiState, actions: HomeScreenActions, modifier: Modifier = Modifier) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        when (uiState) {
-            HomeUiState.Loading -> {
+    when (uiState) {
+        HomeUiState.Loading -> {
+            LazyColumn(
+                modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
                 item { LoadingCard() }
             }
+        }
 
-            is HomeUiState.Error -> {
+        is HomeUiState.Error -> {
+            LazyColumn(
+                modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
                 item { ErrorCard(message = uiState.message, onRetry = actions.onRetry) }
             }
+        }
 
-            is HomeUiState.Success -> {
-                homeSuccessItems(uiState = uiState, actions = actions)
+        is HomeUiState.Success -> {
+            PullToRefreshBox(
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = actions.onRefresh,
+                modifier = modifier.fillMaxSize(),
+            ) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    homeSuccessItems(uiState = uiState, actions = actions)
+                }
             }
         }
     }

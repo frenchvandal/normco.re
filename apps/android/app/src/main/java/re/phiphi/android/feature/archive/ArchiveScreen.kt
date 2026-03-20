@@ -16,12 +16,14 @@ import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
@@ -65,6 +67,7 @@ fun ArchiveScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ArchiveSuccessScreen(
     uiState: ArchiveUiState.Success,
@@ -90,33 +93,39 @@ private fun ArchiveSuccessScreen(
             filters = filters,
         )
 
-    LazyColumn(
-        modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+    PullToRefreshBox(
+        isRefreshing = uiState.isRefreshing,
+        onRefresh = actions.onRefresh,
+        modifier = modifier.fillMaxSize(),
     ) {
-        item {
-            ArchiveFeedHeading(
-                count = visibleItems.size,
-                lastCheckedAtMillis = uiState.lastCheckedAtMillis,
-                lastCheckSucceeded = uiState.lastCheckSucceeded,
-                isRefreshing = uiState.isRefreshing,
-                onRefresh = actions.onRefresh,
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            item {
+                ArchiveFeedHeading(
+                    count = visibleItems.size,
+                    lastCheckedAtMillis = uiState.lastCheckedAtMillis,
+                    lastCheckSucceeded = uiState.lastCheckSucceeded,
+                    isRefreshing = uiState.isRefreshing,
+                    onRefresh = actions.onRefresh,
+                )
+            }
+            item {
+                ArchiveFilters(
+                    filters = filters,
+                    onQueryChange = { value -> query = value },
+                    onToggleBookmarkedOnly = { bookmarkedOnly = !bookmarkedOnly },
+                    onSelectTag = { tag -> selectedTag = tag },
+                )
+            }
+            archiveContentItems(
+                visibleItems = visibleItems,
+                bookmarkedSlugs = uiState.bookmarkedSlugs,
+                showDefaultEmptyState = query.isBlank() && !bookmarkedOnly,
+                actions = actions,
             )
         }
-        item {
-            ArchiveFilters(
-                filters = filters,
-                onQueryChange = { value -> query = value },
-                onToggleBookmarkedOnly = { bookmarkedOnly = !bookmarkedOnly },
-                onSelectTag = { tag -> selectedTag = tag },
-            )
-        }
-        archiveContentItems(
-            visibleItems = visibleItems,
-            bookmarkedSlugs = uiState.bookmarkedSlugs,
-            showDefaultEmptyState = query.isBlank() && !bookmarkedOnly,
-            actions = actions,
-        )
     }
 }
 
