@@ -1,0 +1,98 @@
+{
+  "version": "1",
+  "id": "proin-facilisis",
+  "slug": "proin-facilisis",
+  "lang": "en",
+  "title": "Proin Facilisis: Making Things Easier",
+  "summary": "On the philosophy of reducing friction—in code, in design, and in everyday life.",
+  "publishedAt": "2025-04-12T00:00:00Z",
+  "readingTime": 2,
+  "tags": [
+    "software",
+    "design"
+  ],
+  "alternates": [
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/fr/posts/proin-facilisis/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/zh-hans/posts/proin-facilisis/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/zh-hant/posts/proin-facilisis/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/posts/proin-facilisis/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Proin facilisis—Latin for “promoting ease.” It appears in old botanical texts\nto describe a plant that aids digestion, smooths a passage, clears an\nobstruction. As a philosophy for building software, it translates remarkably\nwell."
+    },
+    {
+      "type": "paragraph",
+      "text": "Good software reduces friction. It anticipates the user’s next step. It provides\nthe right affordance at the right moment. It gets out of the way."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The friction inventory"
+    },
+    {
+      "type": "paragraph",
+      "text": "Proin in tellus sit amet nibh dignissim sagittis. The first step in reducing\nfriction is to map it. Where does the user slow down? Where does attention\nspike? Where do errors cluster?"
+    },
+    {
+      "type": "paragraph",
+      "text": "In a typical web application, the highest-friction moments are predictable:\nonboarding, form submission, error recovery, and loading states. These are the\nvestibules of the product—the thresholds users must cross to reach the value\ninside."
+    },
+    {
+      "type": "code",
+      "content": "// Friction shows up in code too.\n// Compare these two approaches to handling a missing value:\n\n// High friction—the caller must always check:\nfunction getUser(id: string): User | undefined {/* … */}\n\n// Lower friction—the error is explicit and handled at the boundary:\nfunction getUser(id: string): User {\n  const user = db.find(id);\n  if (user === undefined) {\n    throw new Error(`User not found: ${id}`);\n  }\n  return user;\n}\n",
+      "language": "ts"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The paradox of ease"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vivamus pretium aliquet erat. There is a paradox at the heart of “making things\neasy”: it is very hard to do. Eliminating friction requires deep understanding\nof the user, the context, and the failure modes. It demands more work from the\nbuilder so that less work falls on the user."
+    },
+    {
+      "type": "paragraph",
+      "text": "This is why ease is a form of generosity. Every unnecessary step you remove from\nyour user’s path is time returned to them—time they can spend on the thing that\nactually matters."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Facilisis in practice"
+    },
+    {
+      "type": "paragraph",
+      "text": "Donec aliquet metus ut erat semper, et tincidunt nulla luctus. Some principles I\nreturn to:"
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "items": [
+        "Defaults should be correct for most users, most of the time.",
+        "Error messages should explain what went wrong and how to fix it.",
+        "The happy path should require no thought.",
+        "Configuration should be possible, never required.",
+        "Documentation is part of the product."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Nulla facilisi. Phasellus blandit leo ut odio. Nam sed nulla non diam tincidunt\ntempus. The name of this principle—nulla facilisi, “no easy thing”—is a\nreminder that ease, properly understood, is never accidental."
+    }
+  ]
+}

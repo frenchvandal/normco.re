@@ -1,0 +1,87 @@
+{
+  "version": "1",
+  "id": "lorem-ipsum",
+  "slug": "lorem-ipsum",
+  "lang": "en",
+  "title": "Lorem Ipsum and the Art of Placeholder Text",
+  "summary": "A meditation on placeholder text, its history, and why it still matters in modern design workflows.",
+  "publishedAt": "2026-02-18T00:00:00Z",
+  "readingTime": 2,
+  "tags": [
+    "design",
+    "writing"
+  ],
+  "alternates": [
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/fr/posts/lorem-ipsum/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/zh-hans/posts/lorem-ipsum/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/zh-hant/posts/lorem-ipsum/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/posts/lorem-ipsum/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor\nincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis\nnostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    {
+      "type": "paragraph",
+      "text": "Most people know the phrase but few know its origin. It is a scrambled excerpt\nfrom Cicero’s de Finibus Bonorum et Malorum, a philosophical treatise written\nin 45 BC. The text has been used as filler copy since the 1500s, when an unknown\nprinter took a galley of type and scrambled it to make a type specimen book."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Why placeholder text matters"
+    },
+    {
+      "type": "paragraph",
+      "text": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu\nfugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in\nculpa qui officia deserunt mollit anim id est laborum."
+    },
+    {
+      "type": "paragraph",
+      "text": "When you design a layout with real words, you design for those specific words.\nPlaceholder text forces you to design for the structure, not the content. This\nis a valuable constraint—it reveals whether your design can accommodate the\nunexpected: a headline that runs to three lines, a paragraph with no natural\nbreak, a word too long for its container."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "A question of fidelity"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit\nlaboriosam? There is a tension in design between fidelity to real content and\nthe freedom that abstraction permits."
+    },
+    {
+      "type": "paragraph",
+      "text": "High-fidelity prototypes with real copy require real copy to exist first.\nLow-fidelity wireframes communicate structure without the distraction of\nmeaning. Both approaches have their place. The key is knowing which tool serves\nthe moment."
+    },
+    {
+      "type": "code",
+      "content": "// A small utility to generate repeating text blocks.\nfunction lorem(words: number): string {\n  const base = \"lorem ipsum dolor sit amet consectetur adipiscing elit\";\n  const tokens = base.split(\" \");\n  const result: string[] = [];\n  for (let i = 0; i < words; i++) {\n    result.push(tokens[i % tokens.length] ?? \"\");\n  }\n  return result.join(\" \");\n}\n",
+      "language": "ts"
+    },
+    {
+      "type": "paragraph",
+      "text": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed\nquia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Conclusion"
+    },
+    {
+      "type": "paragraph",
+      "text": "Lorem ipsum is more than filler. It is a mirror held up to the design—one that\nreflects structure stripped of meaning, form without content. That is precisely\nwhy it endures."
+    }
+  ]
+}

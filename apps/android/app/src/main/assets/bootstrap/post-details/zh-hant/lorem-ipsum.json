@@ -1,0 +1,87 @@
+{
+  "version": "1",
+  "id": "lorem-ipsum",
+  "slug": "lorem-ipsum",
+  "lang": "zh-hant",
+  "title": "Lorem Ipsum 與占位文字的藝術",
+  "summary": "關於占位文字的歷史、價值，以及它為何仍在現代設計流程中有效。",
+  "publishedAt": "2026-02-18T00:00:00Z",
+  "readingTime": 2,
+  "tags": [
+    "design",
+    "writing"
+  ],
+  "alternates": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/posts/lorem-ipsum/"
+    },
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/fr/posts/lorem-ipsum/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/zh-hans/posts/lorem-ipsum/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/zh-hant/posts/lorem-ipsum/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor\nincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis\nnostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    {
+      "type": "paragraph",
+      "text": "很多人都聽過這段文字，卻很少知道它的來源。它其實來自西塞羅 de Finibus Bonorum\net Malorum 的一段打亂文本，這部哲學著作寫於西元前 45 年。自 16\n世紀起，它就被當作排版占位文字使用：一位不知名的印刷工把活字順序打亂，\n做出了一本字體樣張。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "為什麼占位文字仍然重要"
+    },
+    {
+      "type": "paragraph",
+      "text": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu\nfugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in\nculpa qui officia deserunt mollit anim id est laborum."
+    },
+    {
+      "type": "paragraph",
+      "text": "當你用真實文案設計版面時，你其實是在為那一批具體句子做設計。\n占位文字迫使你先為結構而不是語義做決定。這是一種很有價值的約束：\n它能暴露設計是否能承受不確定性，例如三行標題、沒有自然換氣點的段落，\n或是一個超出容器長度的長單字。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "關於「擬真度」的問題"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit\nlaboriosam? 在設計中，真實內容的還原度與抽象帶來的自由之間，總是存在張力。"
+    },
+    {
+      "type": "paragraph",
+      "text": "高保真原型需要先有真實內容。低保真線框圖則在不被語義分散注意力的前提下傳達結構。\n兩種方法都合理，關鍵是判斷當下該用哪一種工具。"
+    },
+    {
+      "type": "code",
+      "content": "// A small utility to generate repeating text blocks.\nfunction lorem(words: number): string {\n  const base = \"lorem ipsum dolor sit amet consectetur adipiscing elit\";\n  const tokens = base.split(\" \");\n  const result: string[] = [];\n  for (let i = 0; i < words; i++) {\n    result.push(tokens[i % tokens.length] ?? \"\");\n  }\n  return result.join(\" \");\n}\n",
+      "language": "ts"
+    },
+    {
+      "type": "paragraph",
+      "text": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed\nquia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "結語"
+    },
+    {
+      "type": "paragraph",
+      "text": "Lorem ipsum 不只是填充物。它像一面鏡子，照出設計在剝離語義後留下的純結構：\n有形式、無內容。也正因如此，它才能跨越這麼多時代持續存在。"
+    }
+  ]
+}

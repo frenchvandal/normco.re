@@ -1,0 +1,98 @@
+{
+  "version": "1",
+  "id": "proin-facilisis",
+  "slug": "proin-facilisis",
+  "lang": "zh-hant",
+  "title": "Proin Facilisis：讓事情更輕鬆",
+  "summary": "關於降低摩擦的哲學：在程式碼、設計與日常生活中。",
+  "publishedAt": "2025-04-12T00:00:00Z",
+  "readingTime": 2,
+  "tags": [
+    "software",
+    "design"
+  ],
+  "alternates": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/posts/proin-facilisis/"
+    },
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/fr/posts/proin-facilisis/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/zh-hans/posts/proin-facilisis/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/zh-hant/posts/proin-facilisis/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Proin facilisis 在拉丁語裡可理解為「促進順暢」。它曾出現在古老植物學文本中，\n形容一種能幫助消化、疏通阻滯的植物。作為軟體設計哲學，這個詞意外地貼切。"
+    },
+    {
+      "type": "paragraph",
+      "text": "好的軟體會降低摩擦。它會提前預判使用者的下一步，在恰當時機給出恰當的可供性，\n然後退到背景裡。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "先做「摩擦清單」"
+    },
+    {
+      "type": "paragraph",
+      "text": "Proin in tellus sit amet nibh dignissim sagittis. 減少摩擦的第一步是把它畫出來：\n使用者在哪些環節會放慢？注意力在哪些節點會飆升？錯誤會集中出現在哪裡？"
+    },
+    {
+      "type": "paragraph",
+      "text": "在典型 Web\n應用中，高摩擦時刻通常很穩定：註冊引導、表單提交、錯誤復原、載入狀態。\n這些就是產品的「門廳」，是使用者為了抵達價值必須跨過的門檻。"
+    },
+    {
+      "type": "code",
+      "content": "// Friction shows up in code too.\n// Compare these two approaches to handling a missing value:\n\n// High friction — the caller must always check:\nfunction getUser(id: string): User | undefined {/* … */}\n\n// Lower friction — the error is explicit and handled at the boundary:\nfunction getUser(id: string): User {\n  const user = db.find(id);\n  if (user === undefined) {\n    throw new Error(`User not found: ${id}`);\n  }\n  return user;\n}\n",
+      "language": "ts"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "「簡單」本身的悖論"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vivamus pretium aliquet erat. 「讓事情變簡單」最困難的地方在於：它真的很難。\n你需要深入理解使用者、情境與失敗模式。也就是說，建構者要多做工作，使用者才能少費力。"
+    },
+    {
+      "type": "paragraph",
+      "text": "這也是為什麼「簡單」是一種慷慨。每移除一個不必要步驟，都是把時間還給使用者，\n讓他們去做真正重要的事。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "如何把 facilisis 落地"
+    },
+    {
+      "type": "paragraph",
+      "text": "Donec aliquet metus ut erat semper, et tincidunt nulla luctus.\n我經常回到這些原則："
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "items": [
+        "預設值應覆蓋多數人與多數情境。",
+        "錯誤訊息應說明問題，也說明修復路徑。",
+        "主流程不應要求額外思考。",
+        "設定應當可選，而不是前置門檻。",
+        "文件是產品的一部分，而不是附錄。"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Nulla facilisi. Phasellus blandit leo ut odio. Nam sed nulla non diam tincidunt\ntempus. 這個原則的名稱本身也提醒我們：nulla\nfacilisi，沒有真正「天然簡單」的事。好的簡單，從來都不是偶然。"
+    }
+  ]
+}

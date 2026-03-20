@@ -16,36 +16,39 @@ const GENERATED_POST_API_PATH =
   /^\/(?:(?:fr|zh-hans|zh-hant)\/)?api\/posts\/.+\.json$/;
 
 /** Block types matching `contracts/post.schema.json#/$defs/block`. */
-type ParagraphBlock = { readonly type: "paragraph"; readonly text: string };
-type HeadingBlock = {
+export type ParagraphBlock = {
+  readonly type: "paragraph";
+  readonly text: string;
+};
+export type HeadingBlock = {
   readonly type: "heading";
   readonly level: number;
   readonly text: string;
 };
-type CodeBlock = {
+export type CodeBlock = {
   readonly type: "code";
   readonly content: string;
   readonly language?: string;
 };
-type ImageBlock = {
+export type ImageBlock = {
   readonly type: "image";
   readonly src: string;
   readonly alt: string;
   readonly width?: number;
   readonly height?: number;
 };
-type QuoteBlock = {
+export type QuoteBlock = {
   readonly type: "quote";
   readonly text: string;
   readonly attribution?: string;
 };
-type ListBlock = {
+export type ListBlock = {
   readonly type: "list";
   readonly ordered: boolean;
   readonly items: ReadonlyArray<string>;
 };
 
-type ContentBlock =
+export type ContentBlock =
   | ParagraphBlock
   | HeadingBlock
   | CodeBlock
@@ -160,7 +163,9 @@ function parseBlock(el: Element): ContentBlock | undefined {
  * Falls back to the `<article>` or `<main>` element if `.post-content`
  * is not found.
  */
-function parsePostContent(document: Document): ReadonlyArray<ContentBlock> {
+export function parsePostContent(
+  document: Document,
+): ReadonlyArray<ContentBlock> {
   const container = document.querySelector(".post-content") ??
     document.querySelector("article") ??
     document.querySelector("main");

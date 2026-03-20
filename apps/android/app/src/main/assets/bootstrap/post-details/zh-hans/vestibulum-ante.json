@@ -1,0 +1,86 @@
+{
+  "version": "1",
+  "id": "vestibulum-ante",
+  "slug": "vestibulum-ante",
+  "lang": "zh-hans",
+  "title": "Vestibulum Ante：关于门槛与新的开始",
+  "summary": "关于过渡、人生中的中间地带，以及站在门槛上的意义。",
+  "publishedAt": "2025-09-04T00:00:00Z",
+  "readingTime": 2,
+  "tags": [
+    "life",
+    "essay"
+  ],
+  "alternates": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/posts/vestibulum-ante/"
+    },
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/fr/posts/vestibulum-ante/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/zh-hant/posts/vestibulum-ante/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/zh-hans/posts/vestibulum-ante/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia\ncurae. 拉丁词 vestibulum 指前庭、入口、门前空间，\n它的语义重量远比现代“门厅”这个词听上去更深。"
+    },
+    {
+      "type": "paragraph",
+      "text": "门槛既不是结束，也不是开始。它是两者之间的临界地带：开口前屏住的一口气，\n钥匙拧动后那一瞬停顿。它是“旧的已结束，而新的尚未开始”的位置。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "中间地带的价值"
+    },
+    {
+      "type": "paragraph",
+      "text": "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac\nturpis egestas. 我们生活在一个低估“过渡期”的文化里。\n我们追求结果、产出和成品。那些混乱的中段、反复草稿、犹疑时刻和缓慢积累的理解，\n往往既不被记录，也不被庆祝。"
+    },
+    {
+      "type": "paragraph",
+      "text": "但人生大部分时间都发生在中间地带。通勤路上，候诊室里，\n发送一条消息到收到回复之间，\n以及“知道自己想要什么”到“知道如何得到它”之间的那些年。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "站在门口"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fusce suscipit varius mi. Cum sociis natoque penatibus et magnis dis parturient\nmontes, nascetur ridiculus mus. Phasellus viverra nulla ut metus varius laoreet."
+    },
+    {
+      "type": "paragraph",
+      "text": "我在初秋的一个星期二搬到成都。这座城市的“温暖”让我意外，\n不是夏天的热，而是一种“它已经决定要喜欢你”的温度。\n街道闻起来是辣椒油和桂花的味道，一切都同时有一点陌生，也有一点亲切。"
+    },
+    {
+      "type": "paragraph",
+      "text": "我想，这就是门槛的感觉。它既不敌对，也不主动欢迎。\n它只是敞开着，等你决定要把它变成什么。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "尾声"
+    },
+    {
+      "type": "paragraph",
+      "text": "Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi,\ncondimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit\neget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim\nac dui."
+    },
+    {
+      "type": "paragraph",
+      "text": "每篇文本都有自己的“前厅”：标题页、引言、第一段。\n这个空间负责让读者为接下来的内容做好准备。它值得被认真写好。"
+    }
+  ]
+}

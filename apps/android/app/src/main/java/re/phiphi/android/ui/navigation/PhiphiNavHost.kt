@@ -10,12 +10,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import re.phiphi.android.feature.archive.ArchiveScreen
+import re.phiphi.android.feature.archive.ArchiveRoute
 import re.phiphi.android.feature.home.HomeRoute
-import re.phiphi.android.feature.post.PostScreen
+import re.phiphi.android.feature.post.PostRoute
 import re.phiphi.android.feature.settings.SettingsScreen
-
-private const val SAMPLE_SLUG = "alibaba-cloud-oss-cdn-deployment"
 
 @Composable
 fun PhiphiNavHost(
@@ -35,7 +33,7 @@ fun PhiphiNavHost(
         }
 
         composable(route = AppRoutes.ARCHIVE) {
-            ArchiveScreen(onOpenPost = { navController.navigate(AppRoutes.post(SAMPLE_SLUG)) })
+            ArchiveRoute(onOpenPost = { slug -> navController.navigate(AppRoutes.post(slug)) })
         }
 
         composable(route = AppRoutes.SETTINGS) { SettingsScreen() }
@@ -43,8 +41,8 @@ fun PhiphiNavHost(
         composable(
             route = AppRoutes.POST_PATTERN,
             arguments = listOf(navArgument(name = "slug") { type = NavType.StringType }),
-        ) { backStackEntry ->
-            PostScreen(slug = backStackEntry.arguments?.getString("slug").orEmpty())
+        ) {
+            PostRoute()
         }
     }
 }

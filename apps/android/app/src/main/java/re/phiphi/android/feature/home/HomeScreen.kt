@@ -1,15 +1,12 @@
 package re.phiphi.android.feature.home
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -17,19 +14,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Locale
 import re.phiphi.android.R
-import re.phiphi.android.core.model.PostSummary
+import re.phiphi.android.ui.components.PostSummaryCard
 
 @Composable
 fun HomeScreen(
@@ -142,57 +131,3 @@ private fun ErrorCard(message: String, onRetry: () -> Unit) {
         }
     }
 }
-
-@Composable
-private fun PostSummaryCard(post: PostSummary, onOpenPost: (String) -> Unit) {
-    val publishedDate =
-        remember(post.publishedAt) { formatPublishedDate(dateTime = post.publishedAt) }
-
-    Card(modifier = Modifier.fillMaxWidth().clickable { onOpenPost(post.slug) }) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            post.heroImage?.let { heroImage ->
-                AsyncImage(
-                    model = heroImage.url,
-                    contentDescription = heroImage.alt.ifBlank { null },
-                    contentScale = ContentScale.Crop,
-                    modifier =
-                        Modifier.fillMaxWidth().height(180.dp).clip(RoundedCornerShape(16.dp)),
-                )
-            }
-            Text(text = post.title, style = MaterialTheme.typography.titleLarge)
-            Text(
-                text = publishedDate,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            post.readingTimeMinutes?.let { readingTimeMinutes ->
-                Text(
-                    text = stringResource(id = R.string.home_reading_time, readingTimeMinutes),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Text(text = post.summary, style = MaterialTheme.typography.bodyLarge)
-            if (post.tags.isNotEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.home_tags, post.tags.joinToString()),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-}
-
-private fun formatPublishedDate(dateTime: String): String =
-    runCatching {
-            OffsetDateTime.parse(dateTime)
-                .format(
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-                        .withLocale(Locale.getDefault())
-                )
-        }
-        .getOrElse { dateTime }

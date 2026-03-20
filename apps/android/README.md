@@ -11,18 +11,27 @@ Current status:
 - provisional app name set to `phiphi`
 - Gradle wrapper committed
 - first Home slice wired to bundled `app-manifest` and `posts-index` contracts
+- archive slice wired to bundled generated `posts-index` contracts
+- post detail slice wired to bundled generated `post-detail` contracts
 - Android bootstrap assets can now be refreshed from the generated site
   contracts
+- Room now persists the bootstrap manifest and posts locally
+- the repository seeds from assets, then reads Home, Archive, and Post from Room
 - Hilt installed for app wiring and `ViewModel` injection
 - `kotlinx.serialization` installed for contract parsing
 - Coil installed for Compose image loading
 - Spotless + ktfmt, Detekt, and Android lint wired as the local quality gate
+- shared `PostSummaryCard` UI is now reused between Home and Archive
 
 ## Repository Role
 
 - the repo root remains the editorial and web source of truth
 - `apps/android` is the native client project
 - app content should consume generated JSON contracts, not web HTML
+- generated bootstrap assets currently live under:
+  - `app/src/main/assets/bootstrap/app-manifest.json`
+  - `app/src/main/assets/bootstrap/posts-index-<lang>.json`
+  - `app/src/main/assets/bootstrap/post-details/<lang>/<slug>.json`
 
 ## Tech Baseline
 
@@ -34,8 +43,9 @@ Current status:
 - Navigation Compose
 - kotlinx.serialization
 - Coil
-- Room, Paging 3, DataStore, and WorkManager reserved in the version catalog for
-  the next data-layer phase
+- Room
+- Paging 3, DataStore, and WorkManager reserved in the version catalog for the
+  next data-layer phase
 
 ## What To Install On The MacBook
 
@@ -87,6 +97,12 @@ Refresh the bundled fallback assets from the generated site contracts:
 ```sh
 deno task android:sync-contract-assets
 ```
+
+This mirrors:
+
+- `app-manifest`
+- localized `posts-index`
+- localized `post-detail`
 
 ## Structure
 

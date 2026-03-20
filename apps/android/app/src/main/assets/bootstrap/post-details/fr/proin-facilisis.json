@@ -1,0 +1,98 @@
+{
+  "version": "1",
+  "id": "proin-facilisis",
+  "slug": "proin-facilisis",
+  "lang": "fr",
+  "title": "Proin Facilisis : rendre les choses plus simples",
+  "summary": "Sur la philosophie de la réduction des frictions, dans le code, le design et la vie quotidienne.",
+  "publishedAt": "2025-04-12T00:00:00Z",
+  "readingTime": 2,
+  "tags": [
+    "software",
+    "design"
+  ],
+  "alternates": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/posts/proin-facilisis/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/zh-hans/posts/proin-facilisis/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/proin-facilisis.json",
+      "webUrl": "https://normco.re/zh-hant/posts/proin-facilisis/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/fr/posts/proin-facilisis/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Proin facilisis — en latin, « favoriser l’aisance ». L’expression apparaît\ndans d’anciens textes botaniques pour décrire une plante qui facilite la\ndigestion, adoucit un passage, lève une obstruction. Comme philosophie de\nconception logicielle, la formule se transpose étonnamment bien."
+    },
+    {
+      "type": "paragraph",
+      "text": "Un bon logiciel réduit les frictions. Il anticipe l’étape suivante de\nl’utilisateur. Il propose la bonne affordance au bon moment. Il s’efface."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "L’inventaire des frictions"
+    },
+    {
+      "type": "paragraph",
+      "text": "Proin in tellus sit amet nibh dignissim sagittis. La première étape pour réduire\nles frictions est de les cartographier. Où l’utilisateur ralentit-il ? Où\nl’attention monte-t-elle ? Où les erreurs se concentrent-elles ?"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dans une application web classique, les moments de forte friction sont\nprévisibles : onboarding, envoi de formulaire, récupération après erreur et\nétats de chargement. Ce sont les vestibules du produit, les seuils que\nl’utilisateur doit franchir pour atteindre la valeur."
+    },
+    {
+      "type": "code",
+      "content": "// Friction shows up in code too.\n// Compare these two approaches to handling a missing value:\n\n// High friction — the caller must always check:\nfunction getUser(id: string): User | undefined {/* … */}\n\n// Lower friction — the error is explicit and handled at the boundary:\nfunction getUser(id: string): User {\n  const user = db.find(id);\n  if (user === undefined) {\n    throw new Error(`User not found: ${id}`);\n  }\n  return user;\n}\n",
+      "language": "ts"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Le paradoxe de la simplicité"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vivamus pretium aliquet erat. Il y a un paradoxe au cœur du « rendre simple » :\nc’est difficile. Éliminer les frictions demande une compréhension fine de\nl’utilisateur, du contexte et des modes d’échec. Cela exige plus de travail côté\nconcepteur pour en demander moins côté utilisateur."
+    },
+    {
+      "type": "paragraph",
+      "text": "C’est pour cela que la simplicité est une forme de générosité. Chaque étape\ninutile retirée du parcours rend du temps à l’utilisateur, du temps qu’il peut\nconsacrer à ce qui compte vraiment."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Facilisis en pratique"
+    },
+    {
+      "type": "paragraph",
+      "text": "Donec aliquet metus ut erat semper, et tincidunt nulla luctus. Quelques\nprincipes vers lesquels je reviens régulièrement :"
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "items": [
+        "Les valeurs par défaut doivent convenir à la majorité des usages.",
+        "Les messages d’erreur doivent expliquer le problème et la correction.",
+        "Le chemin nominal ne devrait demander aucun effort mental.",
+        "La configuration doit être possible, jamais obligatoire.",
+        "La documentation fait partie intégrante du produit."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Nulla facilisi. Phasellus blandit leo ut odio. Nam sed nulla non diam tincidunt\ntempus. Le nom même de ce principe — nulla facilisi, « rien de facile » —\nrappelle que la simplicité, bien comprise, n’est jamais accidentelle."
+    }
+  ]
+}

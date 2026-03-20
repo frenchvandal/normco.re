@@ -1,0 +1,86 @@
+{
+  "version": "1",
+  "id": "vestibulum-ante",
+  "slug": "vestibulum-ante",
+  "lang": "en",
+  "title": "Vestibulum Ante: On Thresholds and New Beginnings",
+  "summary": "Reflections on transitions, the in-between spaces of life, and what it means to stand at a threshold.",
+  "publishedAt": "2025-09-04T00:00:00Z",
+  "readingTime": 2,
+  "tags": [
+    "life",
+    "essay"
+  ],
+  "alternates": [
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/fr/posts/vestibulum-ante/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/zh-hans/posts/vestibulum-ante/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/zh-hant/posts/vestibulum-ante/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/posts/vestibulum-ante/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia\ncurae. The Latin word vestibulum—a forecourt, an entrance hall, the space\nbefore the door—carries more weight than its English descendant “vestibule”\nsuggests."
+    },
+    {
+      "type": "paragraph",
+      "text": "A threshold is not an end, nor a beginning. It is the liminal space between the\ntwo: the breath held before the first word, the pause after a key turns in a\nlock. It is where one thing stops and another has not yet started."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "The value of the in-between"
+    },
+    {
+      "type": "paragraph",
+      "text": "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac\nturpis egestas. We live in a culture that devalues transition. We want results,\noutcomes, the finished thing. The messy middle—the drafts, the doubt, the slow\naccumulation of understanding—goes undocumented and uncelebrated."
+    },
+    {
+      "type": "paragraph",
+      "text": "But the in-between is where most of life happens. Commutes. Waiting rooms. The\ngap between sending a message and reading the reply. The years between knowing\nwhat you want and knowing how to get there."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Standing at the door"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fusce suscipit varius mi. Cum sociis natoque penatibus et magnis dis parturient\nmontes, nascetur ridiculus mus. Phasellus viverra nulla ut metus varius laoreet."
+    },
+    {
+      "type": "paragraph",
+      "text": "I moved to Chengdu on a Tuesday in early autumn. The city was warm in a way that\nsurprised me—not the heat of summer, but the warmth of a place that had already\ndecided it liked you. The streets smelled of chilli oil and osmanthus, and\neverything felt slightly, pleasantly unfamiliar."
+    },
+    {
+      "type": "paragraph",
+      "text": "That is what a threshold feels like, I think. Not hostile. Not welcoming. Simply\nopen—waiting to see what you will make of it."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Coda"
+    },
+    {
+      "type": "paragraph",
+      "text": "Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi,\ncondimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit\neget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim\nac dui."
+    },
+    {
+      "type": "paragraph",
+      "text": "Every document has a vestibulum—the title page, the introduction, the first\nparagraph. It is the space that prepares the reader for what follows. Write it\nwith care."
+    }
+  ]
+}

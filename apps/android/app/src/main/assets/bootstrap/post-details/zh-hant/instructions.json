@@ -1,0 +1,79 @@
+{
+  "version": "1",
+  "id": "instructions",
+  "slug": "instructions",
+  "lang": "zh-hant",
+  "title": "如何安裝這個主題？",
+  "summary": "一份快速指南，協助你為 Lume 設定 Simple Blog 主題。",
+  "publishedAt": "2022-06-12T00:00:00Z",
+  "readingTime": 1,
+  "alternates": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/instructions.json",
+      "webUrl": "https://normco.re/posts/instructions/"
+    },
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/instructions.json",
+      "webUrl": "https://normco.re/fr/posts/instructions/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/instructions.json",
+      "webUrl": "https://normco.re/zh-hans/posts/instructions/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/zh-hant/posts/instructions/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Simple blog 是一個為 Lume 準備的簡潔極簡部落格主題，支援標籤與作者。\n你可以在幾秒內建立自己的部落格，並為讀者提供 Atom 與 JSON 訂閱來源。"
+    },
+    {
+      "type": "paragraph",
+      "text": "設定這個主題最快最簡單的方法是使用\nLume init 指令，你也可以直接從\nSimple Blog 主題頁面複製。執行："
+    },
+    {
+      "type": "code",
+      "content": "deno run -A https://lume.land/init.ts --theme=simple-blog\n",
+      "language": "bash"
+    },
+    {
+      "type": "paragraph",
+      "text": "即可建立一個已設定好 Simple Blog 的新專案。接著編輯部落格根目錄下的 _data.yml\n檔案，自訂站點標題、描述與中繼資料。"
+    },
+    {
+      "type": "paragraph",
+      "text": "文章需要儲存在 posts 目錄中，例如：posts/my-first-post.md。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "以遠端主題安裝"
+    },
+    {
+      "type": "paragraph",
+      "text": "若要將這個主題接入既有的 Lume 專案，可在 _config.ts\n中以遠端模組方式匯入。後續更新時，只要調整匯入 URL 裡的版本號："
+    },
+    {
+      "type": "code",
+      "content": "import lume from \"lume/mod.ts\";\nimport blog from \"https://deno.land/x/lume_theme_simple_blog@v0.15.6/mod.ts\";\n\nconst site = lume();\n\nsite.use(blog());\n\nexport default site;\n",
+      "language": "ts"
+    },
+    {
+      "type": "paragraph",
+      "text": "然後把\n_data.yml\n複製到部落格根目錄，並填入你的資訊。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "客製化"
+    },
+    {
+      "type": "paragraph",
+      "text": "你也可以使用 lumeCMS 來客製部落格並更輕鬆地發佈內容。"
+    }
+  ]
+}

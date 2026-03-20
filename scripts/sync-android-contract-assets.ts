@@ -1,5 +1,6 @@
 import { parseArgs } from "jsr/cli";
-import { join } from "jsr/path";
+import { walk } from "jsr/fs";
+import { dirname, join, relative } from "jsr/path";
 
 const REPO_ROOT = join(import.meta.dirname ?? ".", "..");
 const DEFAULT_SITE_DIR = join(REPO_ROOT, "_site");
@@ -26,9 +27,33 @@ const POSTS_INDEX_ASSET_INPUTS = [
   { lang: "zh-hant", pathPrefix: "zh-hant" },
 ] as const;
 
+const POST_DETAIL_OUTPUT_PATTERN =
+  /(?:^|[/\\])(?:(fr|zh-hans|zh-hant)[/\\])?api[/\\]posts[/\\](?!index\.json$)[^/\\]+\.json$/;
+
+export function mapPostDetailAssetCopy(
+  source: string,
+  siteDir: string,
+  assetsDir: string,
+): ContractAssetCopy {
+  const sourceRelativePath = relative(siteDir, source);
+  const segments = sourceRelativePath.split(/[/\\]+/).filter(Boolean);
+  const lang = segments[0] === "api" ? "en" : segments[0] ?? "en";
+  const slugFileName = segments.at(-1);
+
+  if (!slugFileName) {
+    throw new Error(`Invalid post-detail source path: ${source}`);
+  }
+
+  return {
+    source,
+    destination: join(assetsDir, "post-details", lang, slugFileName),
+  };
+}
+
 export function getAndroidContractAssetCopies(
   siteDir: string = DEFAULT_SITE_DIR,
   assetsDir: string = DEFAULT_ASSETS_DIR,
+  postDetailSources: ReadonlyArray<string> = [],
 ): ReadonlyArray<ContractAssetCopy> {
   return [
     {
@@ -41,7 +66,26 @@ export function getAndroidContractAssetCopies(
         : join(siteDir, "api", "posts", "index.json"),
       destination: join(assetsDir, `posts-index-${lang}.json`),
     })),
+    ...postDetailSources.map((source) =>
+      mapPostDetailAssetCopy(source, siteDir, assetsDir)
+    ),
   ];
+}
+
+async function findPostDetailFiles(
+  siteDir: string,
+): Promise<ReadonlyArray<string>> {
+  const detailFiles: string[] = [];
+
+  for await (
+    const entry of walk(siteDir, { includeDirs: false, exts: [".json"] })
+  ) {
+    if (POST_DETAIL_OUTPUT_PATTERN.test(entry.path)) {
+      detailFiles.push(entry.path);
+    }
+  }
+
+  return detailFiles.sort();
 }
 
 function normalizeComparableJson(
@@ -91,7 +135,12 @@ export async function syncAndroidContractAssets(
   siteDir: string = DEFAULT_SITE_DIR,
   assetsDir: string = DEFAULT_ASSETS_DIR,
 ): Promise<void> {
-  const copies = getAndroidContractAssetCopies(siteDir, assetsDir);
+  const postDetailSources = await findPostDetailFiles(siteDir);
+  const copies = getAndroidContractAssetCopies(
+    siteDir,
+    assetsDir,
+    postDetailSources,
+  );
 
   await Deno.mkdir(assetsDir, { recursive: true });
 
@@ -101,6 +150,7 @@ export async function syncAndroidContractAssets(
       continue;
     }
 
+    await Deno.mkdir(dirname(destination), { recursive: true });
     const content = await Deno.readTextFile(source);
     await Deno.writeTextFile(destination, content);
     console.info(`[android-contracts] ${source} -> ${destination}`);

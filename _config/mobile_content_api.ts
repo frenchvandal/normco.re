@@ -1,4 +1,4 @@
-import { type Data, Page } from "lume/core/file.ts";
+import { type Data, Page, type Page as LumePage } from "lume/core/file.ts";
 import type Site from "lume/core/site.ts";
 import {
   resolvePostDate,
@@ -10,12 +10,20 @@ import {
   getLocalizedUrl,
   LANGUAGE_DATA_CODE,
   type SiteLanguage,
+  tryResolveSiteLanguage,
 } from "../src/utils/i18n.ts";
-import { FEED_SORT, FEED_VARIANTS, type FeedVariant } from "./feeds.ts";
+import {
+  type ContentBlock,
+  parsePostContent,
+} from "../plugins/content-contract.ts";
+import { FEED_VARIANTS, type FeedVariant } from "./feeds.ts";
 
 export const APP_CONTRACT_VERSION = "1" as const;
 export const APP_MANIFEST_API_PATH = "/api/app-manifest.json" as const;
 export const POSTS_INDEX_API_PATH = "/api/posts/index.json" as const;
+
+const GENERATED_MOBILE_API_PATH =
+  /^\/(?:(?:fr|zh-hans|zh-hant)\/)?api\/(?:app-manifest\.json|posts\/(?:index|[^/]+)\.json)$/;
 
 type AppManifestPointer = {
   readonly lang: string;
@@ -57,7 +65,35 @@ export type PostsIndexDocument = {
   readonly items: ReadonlyArray<PostsIndexItem>;
 };
 
+type PostDetailAlternate = {
+  readonly lang: string;
+  readonly apiUrl: string;
+  readonly webUrl: string;
+};
+
+export type PostDetailDocument = {
+  readonly version: typeof APP_CONTRACT_VERSION;
+  readonly id: string;
+  readonly slug: string;
+  readonly lang: string;
+  readonly title: string;
+  readonly summary: string;
+  readonly publishedAt: string;
+  readonly updatedAt?: string;
+  readonly readingTime?: number;
+  readonly tags?: ReadonlyArray<string>;
+  readonly alternates: ReadonlyArray<PostDetailAlternate>;
+  readonly heroImage?: RemoteImage | null;
+  readonly webUrl: string;
+  readonly blocks: ReadonlyArray<ContentBlock>;
+};
+
 type SiteUrlResolver = Pick<Site, "url">;
+
+type PostPage = LumePage & {
+  readonly data: Data;
+  readonly document?: unknown;
+};
 
 function stringifyJson(value: unknown): string {
   return `${JSON.stringify(value, null, 2)}\n`;
@@ -142,7 +178,21 @@ function resolveUpdatedAt(page: Data): string | undefined {
   return updatedAt ? formatDateTime(updatedAt) : undefined;
 }
 
-function getPostDetailApiUrl(slug: string, language: SiteLanguage): string {
+function resolvePageLanguage(page: Data): SiteLanguage {
+  const language = tryResolveSiteLanguage(page.lang);
+
+  if (language === undefined) {
+    throw new Error(
+      `Cannot generate mobile content contract for ${
+        describePage(page)
+      }: invalid "lang"`,
+    );
+  }
+
+  return language;
+}
+
+function getPostDetailApiPath(slug: string, language: SiteLanguage): string {
   return getLocalizedUrl(`/api/posts/${slug}.json`, language);
 }
 
@@ -170,9 +220,162 @@ function createPostsIndexItem(
     ...(updatedAt ? { updatedAt } : {}),
     ...(readingTime !== undefined ? { readingTime } : {}),
     ...(tags ? { tags } : {}),
-    detailApiUrl: getPostDetailApiUrl(slug, language),
+    detailApiUrl: getPostDetailApiPath(slug, language),
     webUrl: site.url(webPath, true),
   };
+}
+
+function isDocumentLike(value: unknown): value is Document {
+  return typeof value === "object" &&
+    value !== null &&
+    "querySelector" in value &&
+    typeof value.querySelector === "function";
+}
+
+function isPostPage(page: LumePage): page is PostPage {
+  return page.data.type === "post";
+}
+
+function isGeneratedMobileApiPage(page: LumePage): boolean {
+  return page.sourcePath === "(generated)" &&
+    GENERATED_MOBILE_API_PATH.test(page.data.url);
+}
+
+function sortPostPagesByDateDesc(
+  pages: ReadonlyArray<PostPage>,
+): ReadonlyArray<PostPage> {
+  return [...pages].sort((left, right) => {
+    const leftDate = resolvePostDate(left.data.date, new Date(0)).getTime();
+    const rightDate = resolvePostDate(right.data.date, new Date(0)).getTime();
+
+    if (leftDate !== rightDate) {
+      return rightDate - leftDate;
+    }
+
+    const leftSlug = getOptionalString(left.data.slug) ?? "";
+    const rightSlug = getOptionalString(right.data.slug) ?? "";
+    return leftSlug.localeCompare(rightSlug);
+  });
+}
+
+function createPostDetailAlternates(
+  site: SiteUrlResolver,
+  currentPage: PostPage,
+  siblingPages: ReadonlyArray<PostPage>,
+): ReadonlyArray<PostDetailAlternate> {
+  const currentLanguageDataCode = getLanguageDataCode(
+    resolvePageLanguage(currentPage.data),
+  );
+  const siblingPagesByLang = new Map(
+    siblingPages.map((page) => [
+      getLanguageDataCode(resolvePageLanguage(page.data)),
+      page,
+    ]),
+  );
+  const slug = requireString(currentPage.data, "slug", currentPage.data.slug);
+
+  return FEED_VARIANTS.flatMap((variant) => {
+    const languageDataCode = LANGUAGE_DATA_CODE[variant.language];
+
+    if (languageDataCode === currentLanguageDataCode) {
+      return [];
+    }
+
+    const siblingPage = siblingPagesByLang.get(languageDataCode);
+
+    if (siblingPage === undefined) {
+      return [];
+    }
+
+    return [{
+      lang: languageDataCode,
+      apiUrl: getPostDetailApiPath(slug, variant.language),
+      webUrl: site.url(
+        requireString(siblingPage.data, "url", siblingPage.data.url),
+        true,
+      ),
+    }];
+  });
+}
+
+function createPostDetailBlocks(page: PostPage): ReadonlyArray<ContentBlock> {
+  if (!isDocumentLike(page.document)) {
+    throw new Error(
+      `Cannot generate mobile content contract for ${
+        describePage(page.data)
+      }: missing renderable document`,
+    );
+  }
+
+  const blocks = parsePostContent(page.document);
+
+  if (blocks.length === 0) {
+    throw new Error(
+      `Cannot generate mobile content contract for ${
+        describePage(page.data)
+      }: no content blocks extracted`,
+    );
+  }
+
+  return blocks;
+}
+
+function createPostDetailDocument(
+  site: SiteUrlResolver,
+  page: PostPage,
+  siblingPages: ReadonlyArray<PostPage>,
+): PostDetailDocument {
+  const language = resolvePageLanguage(page.data);
+  const slug = requireString(page.data, "slug", page.data.slug);
+  const id = getOptionalString(page.data.id) ?? slug;
+  const webPath = requireString(page.data, "url", page.data.url);
+  const title = requireString(page.data, "title", page.data.title);
+  const summary = requireString(
+    page.data,
+    "description",
+    page.data.description,
+  );
+  const publishedAt = resolvePublishedAt(page.data);
+  const updatedAt = resolveUpdatedAt(page.data);
+  const readingTime = resolveReadingMinutes(page.data.readingInfo);
+  const tags = getOptionalStringArray(page.data.tags);
+
+  return {
+    version: APP_CONTRACT_VERSION,
+    id,
+    slug,
+    lang: getLanguageDataCode(language),
+    title,
+    summary,
+    publishedAt,
+    ...(updatedAt ? { updatedAt } : {}),
+    ...(readingTime !== undefined ? { readingTime } : {}),
+    ...(tags ? { tags } : {}),
+    alternates: createPostDetailAlternates(site, page, siblingPages),
+    heroImage: null,
+    webUrl: site.url(webPath, true),
+    blocks: createPostDetailBlocks(page),
+  };
+}
+
+function createPostPagesBySlugMap(
+  postPages: ReadonlyArray<PostPage>,
+): ReadonlyMap<string, ReadonlyArray<PostPage>> {
+  const map = new Map<string, PostPage[]>();
+
+  for (const page of postPages) {
+    const slug = requireString(page.data, "slug", page.data.slug);
+    const existing = map.get(slug);
+
+    if (existing) {
+      existing.push(page);
+      continue;
+    }
+
+    map.set(slug, [page]);
+  }
+
+  return map;
 }
 
 export function createAppManifestDocument(
@@ -204,6 +407,20 @@ export function createPostsIndexDocument(
   };
 }
 
+export function createPostDetailPage(
+  site: SiteUrlResolver,
+  page: PostPage,
+  siblingPages: ReadonlyArray<PostPage>,
+): Page {
+  const slug = requireString(page.data, "slug", page.data.slug);
+  const language = resolvePageLanguage(page.data);
+
+  return Page.create({
+    url: getPostDetailApiPath(slug, language),
+    content: stringifyJson(createPostDetailDocument(site, page, siblingPages)),
+  });
+}
+
 export function createAppManifestPage(generatedAt: Date = new Date()): Page {
   return Page.create({
     url: APP_MANIFEST_API_PATH,
@@ -225,18 +442,47 @@ export function createPostsIndexPage(
 }
 
 export function registerMobileContentApi(site: Site): void {
-  site.process(function processMobileContentApi() {
-    const generatedAt = new Date();
+  site.process([".html"], function processMobileContentApi(
+    pages: LumePage[],
+    allPages: LumePage[],
+  ) {
+    for (let index = allPages.length - 1; index >= 0; index--) {
+      const page = allPages[index];
 
-    site.pages.push(createAppManifestPage(generatedAt));
+      if (page !== undefined && isGeneratedMobileApiPage(page)) {
+        allPages.splice(index, 1);
+      }
+    }
+
+    const generatedAt = new Date();
+    const postPages = pages.filter(isPostPage);
+    const postPagesBySlug = createPostPagesBySlugMap(postPages);
+
+    allPages.push(createAppManifestPage(generatedAt));
 
     for (const variant of FEED_VARIANTS) {
-      const pages = site.search.pages(
-        `type=post lang=${LANGUAGE_DATA_CODE[variant.language]}`,
-        FEED_SORT,
-      ) as Data[];
+      const localizedPostPages = sortPostPagesByDateDesc(
+        postPages.filter((page) =>
+          getLanguageDataCode(resolvePageLanguage(page.data)) ===
+            LANGUAGE_DATA_CODE[variant.language]
+        ),
+      );
 
-      site.pages.push(createPostsIndexPage(site, variant, pages));
+      allPages.push(
+        createPostsIndexPage(
+          site,
+          variant,
+          localizedPostPages.map((page) => page.data),
+        ),
+      );
+
+      for (const page of localizedPostPages) {
+        const slug = requireString(page.data, "slug", page.data.slug);
+
+        allPages.push(
+          createPostDetailPage(site, page, postPagesBySlug.get(slug) ?? [page]),
+        );
+      }
     }
   });
 }

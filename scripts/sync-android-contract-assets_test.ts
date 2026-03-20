@@ -3,13 +3,21 @@ import { describe, it } from "jsr/testing-bdd";
 
 import {
   getAndroidContractAssetCopies,
+  mapPostDetailAssetCopy,
   needsAndroidContractAssetWrite,
 } from "./sync-android-contract-assets.ts";
 
 describe("getAndroidContractAssetCopies()", () => {
   it("maps generated site contracts to Android bootstrap asset paths", () => {
     assertEquals(
-      getAndroidContractAssetCopies("/tmp/site", "/tmp/assets"),
+      getAndroidContractAssetCopies(
+        "/tmp/site",
+        "/tmp/assets",
+        [
+          "/tmp/site/api/posts/example-post.json",
+          "/tmp/site/fr/api/posts/example-post.json",
+        ],
+      ),
       [
         {
           source: "/tmp/site/api/app-manifest.json",
@@ -31,7 +39,31 @@ describe("getAndroidContractAssetCopies()", () => {
           source: "/tmp/site/zh-hant/api/posts/index.json",
           destination: "/tmp/assets/posts-index-zh-hant.json",
         },
+        {
+          source: "/tmp/site/api/posts/example-post.json",
+          destination: "/tmp/assets/post-details/en/example-post.json",
+        },
+        {
+          source: "/tmp/site/fr/api/posts/example-post.json",
+          destination: "/tmp/assets/post-details/fr/example-post.json",
+        },
       ],
+    );
+  });
+});
+
+describe("mapPostDetailAssetCopy()", () => {
+  it("maps localized post-detail outputs into language-scoped Android assets", () => {
+    assertEquals(
+      mapPostDetailAssetCopy(
+        "/tmp/site/zh-hans/api/posts/example-post.json",
+        "/tmp/site",
+        "/tmp/assets",
+      ),
+      {
+        source: "/tmp/site/zh-hans/api/posts/example-post.json",
+        destination: "/tmp/assets/post-details/zh-hans/example-post.json",
+      },
     );
   });
 });

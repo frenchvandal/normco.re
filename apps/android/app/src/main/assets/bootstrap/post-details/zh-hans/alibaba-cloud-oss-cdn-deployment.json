@@ -1,0 +1,171 @@
+{
+  "version": "1",
+  "id": "alibaba-cloud-oss-cdn-deployment",
+  "slug": "alibaba-cloud-oss-cdn-deployment",
+  "lang": "zh-hans",
+  "title": "这个博客如何部署到阿里云 OSS 与 CDN",
+  "summary": "一份实践向说明：我的 GitHub Actions 流水线如何完成带缓存的 Lume 构建、OIDC 角色临时授权、OSS 同步、CDN 刷新，以及自动清理。",
+  "publishedAt": "2026-03-10T00:00:00Z",
+  "readingTime": 5,
+  "tags": [
+    "devops",
+    "github-actions",
+    "alibaba-cloud"
+  ],
+  "alternates": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/posts/alibaba-cloud-oss-cdn-deployment/"
+    },
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/fr/posts/alibaba-cloud-oss-cdn-deployment/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/zh-hant/posts/alibaba-cloud-oss-cdn-deployment/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/zh-hans/posts/alibaba-cloud-oss-cdn-deployment/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "这个站点使用 Lume 构建，并部署到阿里云 OSS，再由阿里云 CDN 对外分发。整条部署\n流水线刻意保持简洁：一个 GitHub Workflow、让 Deno 出现在 runner 上，再加一个\n自定义 Action；它会恢复本地构建缓存、执行构建、同步 OSS 并完成清理：\nfrenchvandal/aliyun-oss-cdn-sync-action。"
+    },
+    {
+      "type": "paragraph",
+      "text": "我现在希望同时满足五件事：短时凭证、在全新 runner 上也能热启动的构建、可预测\n上传、与文件类型相匹配的缓存头，以及自动的缓存一致性。这套配置同时做到五者，\n而且不需要在每个仓库里额外维护部署脚本。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "流水线总览"
+    },
+    {
+      "type": "paragraph",
+      "text": "从长期生产配置来看，这个仓库里的 GitHub Workflow 现在做三件事："
+    },
+    {
+      "type": "list",
+      "ordered": true,
+      "items": [
+        "检出仓库代码。",
+        "按 .tool-versions 安装固定版本的 Deno，并启用 runner 侧工具缓存。",
+        "调用 OSS/CDN 同步 Action；它会恢复 _cache、执行 deno task build、上传\n_site、刷新 CDN，并完成清理。"
+      ]
+    },
+    {
+      "type": "code",
+      "content": "name: Deploy static content to OSS\n\non:\n  push:\n    branches: [\"master\"]\n  workflow_dispatch:\n\npermissions:\n  contents: read\n  id-token: write\n\nconcurrency:\n  group: \"oss-deploy\"\n  cancel-in-progress: true\n\njobs:\n  deploy:\n    environment:\n      name: development\n    runs-on: macos-26\n    steps:\n      - name: Checkout\n        uses: actions/checkout@v6\n        with:\n          fetch-depth: 0\n\n      - name: Setup Deno environment\n        uses: denoland/setup-deno@v2\n        with:\n          deno-version-file: .tool-versions\n          cache: true\n\n      - name: Deploy to Alibaba Cloud OSS\n        uses: frenchvandal/aliyun-oss-cdn-sync-action@master\n        with:\n          role-oidc-arn: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}\n          oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}\n          role-session-name: ${{ github.run_id }}\n          role-session-expiration: 3600\n          cache-enabled: true\n          cache-key: >-\n            lume-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('deno.lock') }}-${{ hashFiles('_cache/**/*') || 'empty' }}\n          cache-restore-keys: |\n            lume-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('deno.lock') }}-\n            lume-cache-${{ runner.os }}-${{ runner.arch }}-\n          input-dir: _site\n          bucket: ${{ secrets.OSS_BUCKET }}\n          region: ${{ secrets.OSS_REGION }}\n          audience: ${{ github.repository_id }}\n          cdn-enabled: true\n          cdn-base-url: ${{ secrets.OSS_CDN_BASE_URL }}\n          cdn-actions: refresh\n          build-command: deno task build\n",
+      "language": "yaml"
+    },
+    {
+      "type": "paragraph",
+      "text": "在这个仓库里，我现在只保留 cdn-actions: refresh。Action 仍支持\nrefresh,preload，只是这个站点当前不再为每次部署开启 preload。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "为什么选 OIDC，而不是长期 Access Key"
+    },
+    {
+      "type": "paragraph",
+      "text": "这个 Action 在运行时通过 GitHub OIDC 去扮演阿里云 RAM 角色。仓库中不保存长期\nAccess Key。Workflow 只需要 id-token: write，再加上 RAM 角色和 OIDC Provider\n的 ARN。"
+    },
+    {
+      "type": "paragraph",
+      "text": "现在认证路径也只走 OIDC。如果角色扮演失败，Action 不会再从输入或环境变量回退到\n静态 Access Key。"
+    },
+    {
+      "type": "paragraph",
+      "text": "当前配置还传入了 audience: ${{ github.repository_id }}。GitHub 可以为自定义\naudience 签发 ID token，而阿里云 RAM 可以把这个 aud 值与 OIDC 身份提供商里配置\n的 Client ID，以及角色信任策略中的条件进行校验。这样比单纯依赖默认 audience\n更收敛。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Action 内部是怎么执行的"
+    },
+    {
+      "type": "paragraph",
+      "text": "这个 Action 被拆成三个阶段："
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "items": [
+        "pre：通过 OIDC 扮演 RAM 角色，并把临时凭证写入 action state。",
+        "main：按需恢复本地 _cache 目录，执行 build-command，上传本地文件到\nOSS，写入缓存头，并在启用时执行 CDN 动作。",
+        "post：比较目标前缀下的远端对象与本地文件，删除远端孤儿对象，在需要时刷新被\n删除 URL 的 CDN 缓存，写入 CDN 任务摘要，并在配置了 cache-key 时保存\n_cache。"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "清理阶段通过 post-if: always() 执行，所以即使前面步骤失败也会运行。清理和 CDN\n调用，以及缓存恢复或保存，都被设计为“非致命”：会记录警告，但不会因为 CDN API\n或缓存服务的短暂抖动而阻塞部署。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "上传、缓存、配额与漂移控制"
+    },
+    {
+      "type": "paragraph",
+      "text": "下面这些实现细节对可靠性非常关键："
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "items": [
+        "build-command 在 Action 内部执行，而且发生在 OSS 上传或 CDN 调用之前。",
+        "如果 cache-enabled 为 true 且配置了 cache-key，那么会先恢复 _cache，\nbuild 结束后还可以在 post 阶段保存一份新的快照。",
+        "cache-enabled 只控制恢复路径，所以我可以临时关闭 warm cache，同时保留\npost-step 的缓存保存。",
+        "上传通过 max-concurrency 并行化。",
+        "全局 API 限速通过 api-rps-limit 控制。",
+        "每个文件上传失败后最多重试三次。",
+        "部分上传失败会通过 failed-count 和 GitHub Actions job summary 暴露出来，\n而不是埋在日志里。",
+        "上传阶段现在会自动写入 Cache-Control：HTML 与 sw.js 会被更积极地重新验证，\n带哈希的资源按 immutable 处理，常见静态资源也会拿到更短的重新验证窗口，而不是\n一刀切的统一策略。",
+        "cdn-actions 只接受 refresh 或 refresh,preload；如果 CDN\n已启用而这个值为空或无效，Action 会回退到 refresh。",
+        "Action 会在提交 refresh 或 preload 批次前检查剩余 CDN 配额。",
+        "删除 OSS 对象时可触发对应 URL 的 CDN 刷新，减少旧缓存窗口，也能抑制对象随时间\n漂移。",
+        "Action 还会为部署、清理和 CDN 任务状态写入 GitHub Actions job summary。"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "最后一点很容易被低估：长期运行的静态站点仅有上传远远不够。你还需要删除机制，以及\n对不该再存在对象的缓存失效处理。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "最小化 RAM 权限"
+    },
+    {
+      "type": "paragraph",
+      "text": "权限上，这个角色需要目标 bucket 范围内的 OSS 权限，用于列举、上传和删除对象。\nCDN 一侧，这个 workflow 需要 refresh 权限，以及用于查询配额和任务状态的只读 API\n权限。如果启用 preload，再补上对应权限即可。此外，Trust Policy 必须允许 GitHub\nOIDC Provider 扮演部署角色。"
+    },
+    {
+      "type": "paragraph",
+      "text": "我把它单独作为“部署角色”维护，不与更宽泛的运营权限混用。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "在其他仓库复用这个 Action"
+    },
+    {
+      "type": "paragraph",
+      "text": "这个 Action 已发布，可直接复用：\ngithub.com/frenchvandal/aliyun-oss-cdn-sync-action。"
+    },
+    {
+      "type": "paragraph",
+      "text": "这个仓库目前跟踪 @master，因为站点和 Action 是一起维护、一起验证的。放到独立\n仓库里时，我通常会固定到 @v1，或者更进一步固定到完整的 commit SHA。我现在也把\nbuild 和 _cache 生命周期交给 Action 自己管理，这让消费端 workflow 更短，也更偏\n声明式。"
+    },
+    {
+      "type": "paragraph",
+      "text": "对我来说，最关键的结果还是一样：部署保持“无聊”。恢复缓存、build、sync、\nrefresh、cleanup，结束。"
+    }
+  ]
+}

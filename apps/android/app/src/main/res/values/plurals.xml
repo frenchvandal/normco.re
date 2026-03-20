@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <plurals name="archive_feed_title">
+    <item quantity="one">All writing (%1$s · %2$d item)</item>
+    <item quantity="other">All writing (%1$s · %2$d items)</item>
+  </plurals>
+</resources>

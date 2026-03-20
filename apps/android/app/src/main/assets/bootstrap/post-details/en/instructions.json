@@ -1,0 +1,79 @@
+{
+  "version": "1",
+  "id": "instructions",
+  "slug": "instructions",
+  "lang": "en",
+  "title": "How to install this theme?",
+  "summary": "A quick guide to setting up the Simple Blog theme for Lume.",
+  "publishedAt": "2022-06-12T00:00:00Z",
+  "readingTime": 1,
+  "alternates": [
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/instructions.json",
+      "webUrl": "https://normco.re/fr/posts/instructions/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/instructions.json",
+      "webUrl": "https://normco.re/zh-hans/posts/instructions/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/instructions.json",
+      "webUrl": "https://normco.re/zh-hant/posts/instructions/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/posts/instructions/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Simple blog is a clean and minimal blog theme for Lume, with support for\ntags and authors. It allows you to build your own blog in seconds, and\nprovides Atom and JSON feeds for your subscribers."
+    },
+    {
+      "type": "paragraph",
+      "text": "The fastest and easiest way to configure this theme is the\nLume init command, which you can also copy\neasily from the Simple Blog theme page.\nRunning:"
+    },
+    {
+      "type": "code",
+      "content": "deno run -A https://lume.land/init.ts --theme=simple-blog\n",
+      "language": "bash"
+    },
+    {
+      "type": "paragraph",
+      "text": "will create a new project with Simple Blog configured. Edit the _data.yml file\nin your blog root folder with your data to customize the site title,\ndescription, and metadata."
+    },
+    {
+      "type": "paragraph",
+      "text": "Posts must be saved in the posts folder. For example,\nposts/my-first-post.md."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Install as a remote theme"
+    },
+    {
+      "type": "paragraph",
+      "text": "To add the theme to an existing Lume project, import it in your _config.ts\nfile as a remote module. Update it by changing the version number in the import\nURL:"
+    },
+    {
+      "type": "code",
+      "content": "import lume from \"lume/mod.ts\";\nimport blog from \"https://deno.land/x/lume_theme_simple_blog@v0.15.6/mod.ts\";\n\nconst site = lume();\n\nsite.use(blog());\n\nexport default site;\n",
+      "language": "ts"
+    },
+    {
+      "type": "paragraph",
+      "text": "Copy the\n_data.yml\nfile to your blog root folder and edit it with your data."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Customization"
+    },
+    {
+      "type": "paragraph",
+      "text": "You can use lumeCMS to customize the blog and add\ncontent easily."
+    }
+  ]
+}

@@ -19,20 +19,34 @@ force.
   - Detekt
   - Android lint
 - The first contract-backed slice is now the Home feed:
-  - `app-manifest` fixture in app assets
-  - `posts-index` fixture in app assets
+  - `app-manifest` mirrored into app assets
+  - localized `posts-index` payloads mirrored into app assets
   - repository-driven loading
   - Hilt-backed app wiring
   - `ViewModel` + `StateFlow`
   - `kotlinx.serialization` contract parsing
   - Compose rendering of real post summaries and hero images through Coil
+  - navigation into a contract-backed post detail screen
+- The archive screen is now contract-backed as well:
+  - `ArchiveRoute` + `ArchiveViewModel`
+  - shared `PostSummaryCard` rendering
+  - post navigation by slug instead of sample data
+- The local source of truth bootstrap is now in place:
+  - Room database installed in `:app`
+  - manifest and localized posts seeded from generated app assets
+  - repository reads Home, Archive, and Post data from Room after seeding
 - The site build now generates:
   - `/api/app-manifest.json`
   - localized `/api/posts/index.json`
+  - localized `/api/posts/<slug>.json`
 - Android fallback bootstrap assets can be refreshed from generated site output
   through `deno task android:sync-contract-assets`
-- The next contract milestone is replacing bundled fixtures with JSON generated
-  by the Deno site build.
+- Android bootstrap assets now include:
+  - `bootstrap/app-manifest.json`
+  - `bootstrap/posts-index-<lang>.json`
+  - `bootstrap/post-details/<lang>/<slug>.json`
+- The next milestone is moving from bundled generated assets to persistent
+  offline-first storage.
 
 ## Executive Summary
 
@@ -50,7 +64,8 @@ force.
   - `kotlinx.serialization` for JSON contracts
   - Coil for remote images
   - offline-first local source of truth
-  - Room, Paging 3, DataStore, and WorkManager when the data layer lands
+  - Room for persisted content bootstrap
+  - Paging 3, DataStore, and WorkManager as the next data-layer steps
 - Keep mobile clients bound to the JSON contracts in `contracts/`, not to HTML
   pages, feeds, or Lume internals.
 
@@ -230,8 +245,8 @@ Status:
 
 - in progress
 - current bridge step: bundled contract assets in app assets are mirrored from
-  the generated site contracts and power the Home feed through Hilt-injected
-  repository code while post detail is still being wired
+  the generated site contracts, seeded into Room, and power the Home feed,
+  archive, and post detail screens through Hilt-injected repository code
 
 Deliverables:
 
@@ -242,12 +257,17 @@ Deliverables:
 - updated `deno task validate-contracts`
 - fixtures for each language
 - generated payload smoke tests
+- Room bootstrap seeded from the generated assets
 
 Exit criteria:
 
 - app JSON is generated from the site build
 - schemas and examples agree
 - Android can target stable URLs
+- Android can render home, archive, and detail flows from mirrored generated
+  assets
+- Android reads those flows from a persisted local store instead of raw asset
+  parsing in the UI path
 
 ### Phase 2: Data Layer And Offline-First Core
 
@@ -336,13 +356,13 @@ Exit criteria:
 
 ## Immediate Backlog
 
-- replace placeholder screens with contract-backed screens
 - decide whether `re.phiphi.android` remains the final Android application ID
-- generate and mirror localized `post-detail` payloads from the Deno build
 - add App Links for canonical post URLs
-- introduce Room/Paging 3/DataStore/WorkManager once remote and persistent data
-  flows land
-- wire post detail to the generated `post-detail` contract family
+- add DataStore-backed user preferences
+- introduce WorkManager and remote refresh on top of the Room source of truth
+- evaluate custom Android Lint rules for architectural boundaries once the
+  module graph stabilizes
+- replace the Settings placeholder with real language and offline preferences
 
 ## Risks And Constraints
 

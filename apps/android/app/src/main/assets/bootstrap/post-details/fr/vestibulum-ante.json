@@ -1,0 +1,86 @@
+{
+  "version": "1",
+  "id": "vestibulum-ante",
+  "slug": "vestibulum-ante",
+  "lang": "fr",
+  "title": "Vestibulum Ante : seuils et nouveaux départs",
+  "summary": "Réflexions sur les transitions, les espaces intermédiaires de la vie et ce que signifie se tenir sur un seuil.",
+  "publishedAt": "2025-09-04T00:00:00Z",
+  "readingTime": 2,
+  "tags": [
+    "life",
+    "essay"
+  ],
+  "alternates": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/posts/vestibulum-ante/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/zh-hans/posts/vestibulum-ante/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/vestibulum-ante.json",
+      "webUrl": "https://normco.re/zh-hant/posts/vestibulum-ante/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/fr/posts/vestibulum-ante/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia\ncurae. Le mot latin vestibulum — une antichambre, une entrée, l’espace devant\nla porte — porte un poids que son descendant français « vestibule » ne restitue\npas toujours."
+    },
+    {
+      "type": "paragraph",
+      "text": "Un seuil n’est ni une fin, ni un commencement. C’est l’espace liminal entre les\ndeux : le souffle retenu avant le premier mot, la pause après le tour de clé.\nC’est l’endroit où quelque chose s’achève et où autre chose n’a pas encore\ncommencé."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "La valeur de l’entre-deux"
+    },
+    {
+      "type": "paragraph",
+      "text": "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac\nturpis egestas. Nous vivons dans une culture qui dévalue la transition. Nous\nvoulons des résultats, des livrables, l’objet fini. Le milieu brouillon, les\nbrouillons successifs, le doute, l’accumulation lente de compréhension, tout\ncela reste peu documenté et rarement célébré."
+    },
+    {
+      "type": "paragraph",
+      "text": "Pourtant, l’entre-deux est l’endroit où se déroule l’essentiel de la vie. Les\ntrajets. Les salles d’attente. Le temps entre l’envoi d’un message et la lecture\nde la réponse. Les années entre le moment où l’on sait ce que l’on veut et celui\noù l’on sait comment l’obtenir."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Se tenir sur le pas de la porte"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fusce suscipit varius mi. Cum sociis natoque penatibus et magnis dis parturient\nmontes, nascetur ridiculus mus. Phasellus viverra nulla ut metus varius laoreet."
+    },
+    {
+      "type": "paragraph",
+      "text": "J’ai déménagé à Chengdu un mardi du début d’automne. La ville était chaude d’une\nmanière qui m’a surpris, non pas la chaleur de l’été, mais la chaleur d’un lieu\nqui avait déjà décidé qu’il vous appréciait. Les rues sentaient l’huile pimentée\net l’osmanthe, et tout semblait légèrement, agréablement familier et nouveau à\nla fois."
+    },
+    {
+      "type": "paragraph",
+      "text": "C’est cela, un seuil, je crois. Ni hostile, ni accueillant. Simplement ouvert,\nen attente de ce que vous en ferez."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Coda"
+    },
+    {
+      "type": "paragraph",
+      "text": "Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi,\ncondimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit\neget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim\nac dui."
+    },
+    {
+      "type": "paragraph",
+      "text": "Chaque texte possède son vestibule, la page de titre, l’introduction, le premier\nparagraphe. C’est l’espace qui prépare la lectrice ou le lecteur à ce qui vient\nensuite. Il faut l’écrire avec soin."
+    }
+  ]
+}

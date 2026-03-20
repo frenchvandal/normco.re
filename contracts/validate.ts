@@ -674,9 +674,6 @@ async function main(): Promise<void> {
   const postDetailSchema = await readSchemaFile(
     new URL("./post-detail.schema.json", import.meta.url),
   );
-  const postSchema = await readSchemaFile(
-    new URL("./post.schema.json", import.meta.url),
-  );
   const feedSchema = await readSchemaFile(
     new URL("./feed.schema.json", import.meta.url),
   );
@@ -720,12 +717,12 @@ async function main(): Promise<void> {
     postsIndexSchema,
   );
 
-  // Validate post JSON files
+  // Validate generated post-detail JSON files
   const postFiles = await findOutputFiles(
     siteDir,
     /\/api\/posts\/(?!index\.json$)[^/]+\.json$/,
   );
-  await validateJsonFiles("Legacy post files", postFiles, postSchema);
+  await validateJsonFiles("Post detail files", postFiles, postDetailSchema);
 
   // Validate feed JSON files
   await validateJsonFiles(

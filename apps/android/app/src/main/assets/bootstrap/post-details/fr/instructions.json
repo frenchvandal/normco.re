@@ -1,0 +1,79 @@
+{
+  "version": "1",
+  "id": "instructions",
+  "slug": "instructions",
+  "lang": "fr",
+  "title": "Comment installer ce thème ?",
+  "summary": "Un guide rapide pour configurer le thème Simple Blog avec Lume.",
+  "publishedAt": "2022-06-12T00:00:00Z",
+  "readingTime": 1,
+  "alternates": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/instructions.json",
+      "webUrl": "https://normco.re/posts/instructions/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/instructions.json",
+      "webUrl": "https://normco.re/zh-hans/posts/instructions/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/instructions.json",
+      "webUrl": "https://normco.re/zh-hant/posts/instructions/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/fr/posts/instructions/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Simple blog est un thème de blog épuré et minimal pour Lume, avec prise en\ncharge des tags et des auteurs. Il permet de créer votre blog en quelques\nsecondes, et fournit des flux Atom et JSON pour vos abonnés."
+    },
+    {
+      "type": "paragraph",
+      "text": "La manière la plus simple et la plus rapide de configurer ce thème est\nd’utiliser la commande Lume init, que vous\npouvez aussi copier facilement depuis la\npage du thème Simple Blog. En lançant :"
+    },
+    {
+      "type": "code",
+      "content": "deno run -A https://lume.land/init.ts --theme=simple-blog\n",
+      "language": "bash"
+    },
+    {
+      "type": "paragraph",
+      "text": "vous créez un nouveau projet avec Simple Blog déjà configuré. Modifiez ensuite\nle fichier _data.yml à la racine du blog pour personnaliser le titre, la\ndescription et les métadonnées du site."
+    },
+    {
+      "type": "paragraph",
+      "text": "Les articles doivent être enregistrés dans le dossier posts. Par exemple :\nposts/my-first-post.md."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Installer en tant que thème distant"
+    },
+    {
+      "type": "paragraph",
+      "text": "Pour ajouter ce thème à un projet Lume existant, importez-le dans votre fichier\n_config.ts comme module distant. Pour le mettre à jour, changez le numéro de\nversion dans l’URL d’import :"
+    },
+    {
+      "type": "code",
+      "content": "import lume from \"lume/mod.ts\";\nimport blog from \"https://deno.land/x/lume_theme_simple_blog@v0.15.6/mod.ts\";\n\nconst site = lume();\n\nsite.use(blog());\n\nexport default site;\n",
+      "language": "ts"
+    },
+    {
+      "type": "paragraph",
+      "text": "Copiez ensuite le fichier\n_data.yml\nà la racine de votre blog et adaptez-le avec vos informations."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Personnalisation"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vous pouvez utiliser lumeCMS pour personnaliser le blog\net ajouter du contenu facilement."
+    }
+  ]
+}

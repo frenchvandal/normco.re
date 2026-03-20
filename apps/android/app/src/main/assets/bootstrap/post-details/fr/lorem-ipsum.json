@@ -1,0 +1,87 @@
+{
+  "version": "1",
+  "id": "lorem-ipsum",
+  "slug": "lorem-ipsum",
+  "lang": "fr",
+  "title": "Lorem ipsum et l’art du texte de remplissage",
+  "summary": "Une réflexion sur le faux texte, son histoire et les raisons pour lesquelles il reste utile dans les workflows de design modernes.",
+  "publishedAt": "2026-02-18T00:00:00Z",
+  "readingTime": 2,
+  "tags": [
+    "design",
+    "writing"
+  ],
+  "alternates": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/posts/lorem-ipsum/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/zh-hans/posts/lorem-ipsum/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/lorem-ipsum.json",
+      "webUrl": "https://normco.re/zh-hant/posts/lorem-ipsum/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/fr/posts/lorem-ipsum/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor\nincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis\nnostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    },
+    {
+      "type": "paragraph",
+      "text": "Tout le monde connaît la formule, mais peu de personnes en connaissent\nl’origine. Il s’agit d’un extrait brouillé du de Finibus Bonorum et Malorum de\nCicéron, un traité philosophique rédigé en 45 av. J.-C. Ce texte est utilisé\ncomme faux contenu depuis le XVIe siècle, lorsqu’un imprimeur inconnu a mélangé\nune casse de caractères pour créer un spécimen typographique."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Pourquoi le texte de remplissage compte"
+    },
+    {
+      "type": "paragraph",
+      "text": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu\nfugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in\nculpa qui officia deserunt mollit anim id est laborum."
+    },
+    {
+      "type": "paragraph",
+      "text": "Quand vous concevez une mise en page avec de vrais mots, vous concevez pour ces\nmots précis. Le faux texte vous oblige à concevoir pour la structure, pas pour\nle sens. C’est une contrainte utile : elle révèle si votre design peut absorber\nl’imprévu : un titre sur trois lignes, un paragraphe sans respiration naturelle,\nun mot trop long pour son conteneur."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Une question de fidélité"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit\nlaboriosam ? En design, il existe une tension entre la fidélité au contenu réel\net la liberté qu’autorise l’abstraction."
+    },
+    {
+      "type": "paragraph",
+      "text": "Les prototypes haute fidélité avec du vrai contenu exigent que ce contenu existe\ndéjà. Les wireframes basse fidélité, eux, communiquent la structure sans la\ndistraction du sens. Les deux approches ont leur place. L’essentiel est de\nsavoir quel outil sert le moment."
+    },
+    {
+      "type": "code",
+      "content": "// A small utility to generate repeating text blocks.\nfunction lorem(words: number): string {\n  const base = \"lorem ipsum dolor sit amet consectetur adipiscing elit\";\n  const tokens = base.split(\" \");\n  const result: string[] = [];\n  for (let i = 0; i < words; i++) {\n    result.push(tokens[i % tokens.length] ?? \"\");\n  }\n  return result.join(\" \");\n}\n",
+      "language": "ts"
+    },
+    {
+      "type": "paragraph",
+      "text": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed\nquia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Conclusion"
+    },
+    {
+      "type": "paragraph",
+      "text": "Le lorem ipsum est plus qu’un simple remplissage. C’est un miroir tendu au\ndesign : il reflète la structure dépouillée de sens, la forme sans contenu.\nC’est précisément pour cela qu’il traverse les époques."
+    }
+  ]
+}

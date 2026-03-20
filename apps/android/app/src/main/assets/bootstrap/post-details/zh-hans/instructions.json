@@ -1,0 +1,79 @@
+{
+  "version": "1",
+  "id": "instructions",
+  "slug": "instructions",
+  "lang": "zh-hans",
+  "title": "如何安装这个主题？",
+  "summary": "一份快速指南，帮助你为 Lume 配置 Simple Blog 主题。",
+  "publishedAt": "2022-06-12T00:00:00Z",
+  "readingTime": 1,
+  "alternates": [
+    {
+      "lang": "en",
+      "apiUrl": "/api/posts/instructions.json",
+      "webUrl": "https://normco.re/posts/instructions/"
+    },
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/instructions.json",
+      "webUrl": "https://normco.re/fr/posts/instructions/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/instructions.json",
+      "webUrl": "https://normco.re/zh-hant/posts/instructions/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/zh-hans/posts/instructions/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "Simple blog 是一个为 Lume 准备的简洁极简博客主题，支持标签和作者。\n你可以在几秒内搭建自己的博客，并为读者提供 Atom 与 JSON 订阅源。"
+    },
+    {
+      "type": "paragraph",
+      "text": "配置这个主题最快最简单的方法是使用\nLume init 命令，你也可以直接从\nSimple Blog 主题页面复制。运行："
+    },
+    {
+      "type": "code",
+      "content": "deno run -A https://lume.land/init.ts --theme=simple-blog\n",
+      "language": "bash"
+    },
+    {
+      "type": "paragraph",
+      "text": "即可创建一个已经配置好 Simple Blog 的新项目。然后编辑博客根目录下的 _data.yml\n文件，自定义站点标题、描述和元数据。"
+    },
+    {
+      "type": "paragraph",
+      "text": "文章需要保存在 posts 目录中，例如：posts/my-first-post.md。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "作为远程主题安装"
+    },
+    {
+      "type": "paragraph",
+      "text": "如果要把这个主题接入一个已有的 Lume 项目，可以在 _config.ts\n中以远程模块方式导入。后续更新时，只需调整导入 URL 里的版本号："
+    },
+    {
+      "type": "code",
+      "content": "import lume from \"lume/mod.ts\";\nimport blog from \"https://deno.land/x/lume_theme_simple_blog@v0.15.6/mod.ts\";\n\nconst site = lume();\n\nsite.use(blog());\n\nexport default site;\n",
+      "language": "ts"
+    },
+    {
+      "type": "paragraph",
+      "text": "然后把\n_data.yml\n复制到博客根目录，并填入你的信息。"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "个性化"
+    },
+    {
+      "type": "paragraph",
+      "text": "你也可以使用 lumeCMS 来定制博客并更轻松地发布内容。"
+    }
+  ]
+}

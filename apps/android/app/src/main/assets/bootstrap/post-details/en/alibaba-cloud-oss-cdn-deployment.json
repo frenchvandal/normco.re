@@ -1,0 +1,171 @@
+{
+  "version": "1",
+  "id": "alibaba-cloud-oss-cdn-deployment",
+  "slug": "alibaba-cloud-oss-cdn-deployment",
+  "lang": "en",
+  "title": "How This Blog Deploys to Alibaba Cloud OSS and CDN",
+  "summary": "A practical walkthrough of my GitHub Actions pipeline: warmed Lume builds, OIDC role assumption, OSS sync, CDN refresh, and automatic cleanup.",
+  "publishedAt": "2026-03-10T00:00:00Z",
+  "readingTime": 4,
+  "tags": [
+    "devops",
+    "github-actions",
+    "alibaba-cloud"
+  ],
+  "alternates": [
+    {
+      "lang": "fr",
+      "apiUrl": "/fr/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/fr/posts/alibaba-cloud-oss-cdn-deployment/"
+    },
+    {
+      "lang": "zh-hans",
+      "apiUrl": "/zh-hans/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/zh-hans/posts/alibaba-cloud-oss-cdn-deployment/"
+    },
+    {
+      "lang": "zh-hant",
+      "apiUrl": "/zh-hant/api/posts/alibaba-cloud-oss-cdn-deployment.json",
+      "webUrl": "https://normco.re/zh-hant/posts/alibaba-cloud-oss-cdn-deployment/"
+    }
+  ],
+  "heroImage": null,
+  "webUrl": "https://normco.re/posts/alibaba-cloud-oss-cdn-deployment/",
+  "blocks": [
+    {
+      "type": "paragraph",
+      "text": "This site is built with Lume and deployed to Alibaba Cloud OSS, with Alibaba\nCloud CDN in front of it. The deployment pipeline stays intentionally small: one\nGitHub workflow, Deno available on the runner, and one custom action that\nrestores a local build cache, runs the build, syncs OSS, and cleans up:\nfrenchvandal/aliyun-oss-cdn-sync-action."
+    },
+    {
+      "type": "paragraph",
+      "text": "I now want five properties at the same time: short-lived credentials, warmed\nbuilds on fresh runners, predictable uploads, cache headers that match the files\nbeing shipped, and automatic cache coherence. This setup gives me all five\nwithout adding repository-specific deploy scripts."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Pipeline at a glance"
+    },
+    {
+      "type": "paragraph",
+      "text": "In steady-state production, this repository’s workflow now does three things:"
+    },
+    {
+      "type": "list",
+      "ordered": true,
+      "items": [
+        "Checks out the repository.",
+        "Installs Deno with the pinned version from .tool-versions and enables the\nrunner-side tool cache.",
+        "Runs the OSS/CDN sync action, which restores _cache, executes\ndeno task build, uploads _site, refreshes CDN, and cleans up."
+      ]
+    },
+    {
+      "type": "code",
+      "content": "name: Deploy static content to OSS\n\non:\n  push:\n    branches: [\"master\"]\n  workflow_dispatch:\n\npermissions:\n  contents: read\n  id-token: write\n\nconcurrency:\n  group: \"oss-deploy\"\n  cancel-in-progress: true\n\njobs:\n  deploy:\n    environment:\n      name: development\n    runs-on: macos-26\n    steps:\n      - name: Checkout\n        uses: actions/checkout@v6\n        with:\n          fetch-depth: 0\n\n      - name: Setup Deno environment\n        uses: denoland/setup-deno@v2\n        with:\n          deno-version-file: .tool-versions\n          cache: true\n\n      - name: Deploy to Alibaba Cloud OSS\n        uses: frenchvandal/aliyun-oss-cdn-sync-action@master\n        with:\n          role-oidc-arn: ${{ secrets.ALIBABA_CLOUD_ROLE_ARN }}\n          oidc-provider-arn: ${{ secrets.ALIBABA_CLOUD_OIDC_PROVIDER_ARN }}\n          role-session-name: ${{ github.run_id }}\n          role-session-expiration: 3600\n          cache-enabled: true\n          cache-key: >-\n            lume-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('deno.lock') }}-${{ hashFiles('_cache/**/*') || 'empty' }}\n          cache-restore-keys: |\n            lume-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('deno.lock') }}-\n            lume-cache-${{ runner.os }}-${{ runner.arch }}-\n          input-dir: _site\n          bucket: ${{ secrets.OSS_BUCKET }}\n          region: ${{ secrets.OSS_REGION }}\n          audience: ${{ github.repository_id }}\n          cdn-enabled: true\n          cdn-base-url: ${{ secrets.OSS_CDN_BASE_URL }}\n          cdn-actions: refresh\n          build-command: deno task build\n",
+      "language": "yaml"
+    },
+    {
+      "type": "paragraph",
+      "text": "In this repository, I currently keep cdn-actions: refresh. The action still\nsupports refresh,preload, but this site’s workflow no longer enables preload\non every deployment."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Why OIDC instead of access keys"
+    },
+    {
+      "type": "paragraph",
+      "text": "The action uses GitHub OIDC to assume an Alibaba Cloud RAM role at runtime. No\nlong-lived access key is stored in the repository. The workflow only needs\nid-token: write plus the RAM role ARN and the OIDC provider ARN."
+    },
+    {
+      "type": "paragraph",
+      "text": "Authentication is now OIDC-only. The action does not fall back to static access\nkeys from inputs or environment variables if role assumption fails."
+    },
+    {
+      "type": "paragraph",
+      "text": "The current setup also passes audience: ${{ github.repository_id }}. GitHub\ncan mint an ID token for a custom audience, and Alibaba Cloud RAM can validate\nthat aud value against the Client IDs configured on the OIDC identity provider\nand in the role trust policy. That gives me a tighter trust boundary than\nrelying on default audience handling alone."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "How the action runs internally"
+    },
+    {
+      "type": "paragraph",
+      "text": "The action is split into three phases:"
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "items": [
+        "pre: assumes the RAM role through OIDC and stores temporary credentials in\naction state.",
+        "main: optionally restores the local _cache directory, runs\nbuild-command, uploads local files to OSS, applies cache headers, and runs\nCDN actions if enabled.",
+        "post: compares remote objects under the destination prefix with local\nfiles produced by the build, deletes remote orphans, refreshes deleted URLs\nwhen needed, writes CDN task summaries, and saves _cache when cache-key is\nconfigured."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "The cleanup phase runs with post-if: always(), so it still executes even when\nearlier steps fail. Cleanup, CDN calls, and cache restore or save are\nintentionally best-effort: warnings are logged, but transient CDN or cache\nservice issues do not block the deployment."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Upload, cache, quota, and drift control"
+    },
+    {
+      "type": "paragraph",
+      "text": "A few implementation details matter for reliability:"
+    },
+    {
+      "type": "list",
+      "ordered": false,
+      "items": [
+        "build-command runs inside the action before any OSS upload or CDN call.",
+        "If cache-enabled is true and cache-key is configured, _cache restore\nhappens before the build and a fresh snapshot can be saved during post.",
+        "cache-enabled controls only restore, so I can skip warm-cache restore\ntemporarily without giving up the post-step cache save.",
+        "Uploads are parallelized with max-concurrency.",
+        "A global API throttle is applied through api-rps-limit.",
+        "Each file upload is retried up to 3 times before being marked as failed.",
+        "Partial upload failures are surfaced through failed-count and the GitHub job\nsummary instead of being buried in the logs.",
+        "The upload step now writes Cache-Control headers automatically: HTML and\nsw.js are revalidated aggressively, hashed assets are uploaded as immutable,\nand common static assets get shorter revalidation windows instead of a\none-size-fits-all policy.",
+        "cdn-actions only accepts refresh or refresh,preload; if CDN is enabled\nand the value is empty or invalid, the action falls back to refresh.",
+        "The action checks remaining CDN quota before submitting refresh or preload\nbatches.",
+        "Deleted OSS objects can trigger CDN refresh for removed URLs, which reduces\nstale-cache windows and limits object drift over time.",
+        "The action writes a GitHub Actions job summary for deployment, cleanup, and\nCDN task status."
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "That last point is easy to miss: upload alone is not enough for a static site\nthat changes over time. You also need deletion and cache invalidation for\nobjects that should no longer exist."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Minimum RAM permissions"
+    },
+    {
+      "type": "paragraph",
+      "text": "At the policy level, the role needs OSS permissions on the target bucket scope\nfor listing, uploading, and deleting objects. On the CDN side, this workflow\nneeds refresh permissions plus the read APIs used for quota checks and task\nlookups. If preload is enabled, add the corresponding preload permission too.\nThe trust policy must allow the GitHub OIDC provider to assume the deploy role."
+    },
+    {
+      "type": "paragraph",
+      "text": "I keep this as a dedicated deploy role rather than mixing it with broader\noperational permissions."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Reusing the action in other repositories"
+    },
+    {
+      "type": "paragraph",
+      "text": "The action is published and reusable:\ngithub.com/frenchvandal/aliyun-oss-cdn-sync-action."
+    },
+    {
+      "type": "paragraph",
+      "text": "This repository currently tracks @master because I maintain the site and the\naction together. In a separate repository, I would usually pin @v1 or, better\nyet, a full commit SHA. I also now let the action own the build and _cache\nlifecycle, which keeps consumer workflows shorter and more declarative."
+    },
+    {
+      "type": "paragraph",
+      "text": "For me, the key result is that deploys stay boring: restore cache, build, sync,\nrefresh, cleanup, done."
+    }
+  ]
+}

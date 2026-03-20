@@ -1,40 +1,60 @@
 package re.phiphi.android.data.posts
 
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import re.phiphi.android.core.model.AppManifest
+import re.phiphi.android.core.model.PostDetail
 import re.phiphi.android.core.model.PostsIndex
+import re.phiphi.android.data.posts.local.BootstrapPostsDao
+import re.phiphi.android.data.posts.local.toModel
+import re.phiphi.android.data.posts.local.toPostDetail
+import re.phiphi.android.data.posts.local.toPostsIndex
 
 @Singleton
 class AssetPostsRepository
 @Inject
-constructor(@param:ApplicationContext private val context: Context, private val json: Json) :
-    PostsRepository {
+constructor(
+    private val bootstrapPostsDao: BootstrapPostsDao,
+    private val bootstrapPostsSeeder: BootstrapPostsSeeder,
+    private val json: Json,
+) : PostsRepository {
     override suspend fun getDefaultPostsIndex(): PostsIndex =
         withContext(Dispatchers.IO) {
-            val manifest = readDocument<AppManifest>(path = "bootstrap/app-manifest.json")
-            val defaultPointer =
-                manifest.postsIndex.firstOrNull { pointer ->
-                    pointer.lang == manifest.defaultLanguage
-                }
-                    ?: error(
-                        "Missing posts-index pointer for default language '${manifest.defaultLanguage}'"
-                    )
+            bootstrapPostsSeeder.seedIfNeeded()
 
-            readDocument(path = assetPathForLang(lang = defaultPointer.lang))
+            val manifest =
+                checkNotNull(bootstrapPostsDao.getManifest()) {
+                    "Missing app manifest in the local database"
+                }
+
+            val manifestModel = manifest.toModel(json)
+            val posts = bootstrapPostsDao.getPostsForLanguage(lang = manifest.defaultLanguage)
+            posts.toPostsIndex(
+                lang = manifest.defaultLanguage,
+                version = manifestModel.version,
+                json = json,
+            )
         }
 
-    private fun assetPathForLang(lang: String): String = "bootstrap/posts-index-$lang.json"
+    override suspend fun getDefaultPostDetail(slug: String): PostDetail =
+        withContext(Dispatchers.IO) {
+            bootstrapPostsSeeder.seedIfNeeded()
 
-    private fun readAsset(path: String): String =
-        context.assets.open(path).bufferedReader().use { reader -> reader.readText() }
+            val manifest =
+                checkNotNull(bootstrapPostsDao.getManifest()) {
+                    "Missing app manifest in the local database"
+                }
+            val manifestModel = manifest.toModel(json)
 
-    private inline fun <reified T> readDocument(path: String): T =
-        json.decodeFromString(readAsset(path))
+            val post =
+                checkNotNull(
+                    bootstrapPostsDao.getPost(lang = manifest.defaultLanguage, slug = slug)
+                ) {
+                    "Missing post detail for '$slug' in the local database"
+                }
+
+            post.toPostDetail(json = json, version = manifestModel.version)
+        }
 }
