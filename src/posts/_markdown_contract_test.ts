@@ -5,7 +5,7 @@ import { SHIKI_OPTIONS } from "../../_config/code_highlighting.ts";
 import { POST_CONTRACT_FIXTURES } from "../../test/posts_contract_fixtures.ts";
 
 const EXPECTED_LANGUAGES = ["en", "fr", "zh-hans", "zh-hant"] as const;
-const SHIKI_LANGUAGE_SET = new Set<string>(SHIKI_OPTIONS.languages);
+const SHIKI_LANGUAGE_SET = new Set<string>(SHIKI_OPTIONS.highlighter?.langs);
 
 function normalizeLineEndings(document: string): string {
   return document.replace(/\r\n?/g, "\n");

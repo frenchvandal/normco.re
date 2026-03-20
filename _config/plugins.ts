@@ -28,7 +28,7 @@ import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns-locale";
 import { CARBON_SASS_LOAD_PATHS } from "./materialize_sass_npm_packages.ts";
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
 import otelPlugin from "../plugins/otel.ts";
-import shiki from "../plugins/shiki.ts";
+import shiki from "../plugins/shiki/mod.ts";
 
 /**
  * Lightning CSS expects packed browser versions in the form 0xMMmmpp
