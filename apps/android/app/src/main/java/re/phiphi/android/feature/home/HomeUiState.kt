@@ -15,5 +15,6 @@ sealed interface HomeUiState {
         val bookmarkedSlugs: Set<String>,
         val lastCheckedAtMillis: Long?,
         val lastCheckSucceeded: Boolean?,
+        val isRefreshing: Boolean,
     ) : HomeUiState
 }

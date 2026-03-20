@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -92,6 +93,7 @@ private fun ArchiveSuccessScreen(
                 count = visibleItems.size,
                 lastCheckedAtMillis = uiState.lastCheckedAtMillis,
                 lastCheckSucceeded = uiState.lastCheckSucceeded,
+                isRefreshing = uiState.isRefreshing,
                 onRefresh = onRefresh,
             )
         }
@@ -172,6 +174,7 @@ private fun ArchiveFeedHeading(
     count: Int,
     lastCheckedAtMillis: Long?,
     lastCheckSucceeded: Boolean?,
+    isRefreshing: Boolean,
     onRefresh: () -> Unit,
 ) {
     Column(
@@ -187,11 +190,15 @@ private fun ArchiveFeedHeading(
                 text = pluralStringResource(id = R.plurals.archive_feed_title, count, count),
                 style = MaterialTheme.typography.headlineSmall,
             )
-            IconButton(onClick = onRefresh) {
-                Icon(
-                    imageVector = Icons.Outlined.Refresh,
-                    contentDescription = stringResource(id = R.string.feed_refresh),
-                )
+            if (isRefreshing) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+            } else {
+                IconButton(onClick = onRefresh) {
+                    Icon(
+                        imageVector = Icons.Outlined.Refresh,
+                        contentDescription = stringResource(id = R.string.feed_refresh),
+                    )
+                }
             }
         }
         Text(

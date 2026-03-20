@@ -71,12 +71,19 @@ constructor(
 
     fun refresh() =
         viewModelScope.launch {
-            postsRepository.refreshContent()
-            loadPosts()
+            val currentState = _uiState.value
+            if (currentState is ArchiveUiState.Success) {
+                _uiState.value = currentState.copy(isRefreshing = true)
+            }
+            runCatching { postsRepository.refreshContent() }
+            loadPosts(showBlockingLoader = false)
         }
 
-    private suspend fun loadPosts() {
-        _uiState.value = ArchiveUiState.Loading
+    private suspend fun loadPosts(showBlockingLoader: Boolean = true) {
+        val previousSuccess = _uiState.value as? ArchiveUiState.Success
+        if (showBlockingLoader || previousSuccess == null) {
+            _uiState.value = ArchiveUiState.Loading
+        }
         _uiState.value =
             runCatching { postsRepository.getPostsIndex(lang = preferredLanguage) }
                 .fold(
@@ -87,10 +94,15 @@ constructor(
                             bookmarkedSlugs = bookmarkedSlugs,
                             lastCheckedAtMillis = syncStatus.lastCheckedAtMillis,
                             lastCheckSucceeded = syncStatus.lastCheckSucceeded,
+                            isRefreshing = false,
                         )
                     },
                     onFailure = { throwable ->
-                        ArchiveUiState.Error(message = throwable.message ?: "Unknown failure")
+                        previousSuccess?.copy(
+                            lastCheckedAtMillis = syncStatus.lastCheckedAtMillis,
+                            lastCheckSucceeded = syncStatus.lastCheckSucceeded,
+                            isRefreshing = false,
+                        ) ?: ArchiveUiState.Error(message = throwable.message ?: "Unknown failure")
                     },
                 )
     }

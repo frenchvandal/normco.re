@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -52,6 +53,7 @@ fun HomeScreen(
                     HomeFeedHeading(
                         lastCheckedAtMillis = uiState.lastCheckedAtMillis,
                         lastCheckSucceeded = uiState.lastCheckSucceeded,
+                        isRefreshing = uiState.isRefreshing,
                         onRefresh = onRefresh,
                     )
                 }
@@ -86,6 +88,7 @@ fun HomeScreen(
 private fun HomeFeedHeading(
     lastCheckedAtMillis: Long?,
     lastCheckSucceeded: Boolean?,
+    isRefreshing: Boolean,
     onRefresh: () -> Unit,
 ) {
     Column(
@@ -101,11 +104,15 @@ private fun HomeFeedHeading(
                 text = stringResource(id = R.string.home_feed_title),
                 style = MaterialTheme.typography.headlineSmall,
             )
-            IconButton(onClick = onRefresh) {
-                Icon(
-                    imageVector = Icons.Outlined.Refresh,
-                    contentDescription = stringResource(id = R.string.feed_refresh),
-                )
+            if (isRefreshing) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+            } else {
+                IconButton(onClick = onRefresh) {
+                    Icon(
+                        imageVector = Icons.Outlined.Refresh,
+                        contentDescription = stringResource(id = R.string.feed_refresh),
+                    )
+                }
             }
         }
         Text(
