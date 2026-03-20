@@ -33,6 +33,7 @@ constructor(
     val isBookmarked: StateFlow<Boolean> = _isBookmarked.asStateFlow()
     private val stateHandle = savedStateHandle
     private var currentLanguage: String? = null
+    private var savedReadingBlockIndex: Int? = null
 
     init {
         viewModelScope.launch {
@@ -60,6 +61,19 @@ constructor(
                 .distinctUntilChanged()
                 .collectLatest { bookmarked -> _isBookmarked.value = bookmarked }
         }
+
+        viewModelScope.launch {
+            readerPreferencesRepository.preferences
+                .map { preferences -> preferences.postReadingBlockIndexes[slug] }
+                .distinctUntilChanged()
+                .collectLatest { blockIndex ->
+                    savedReadingBlockIndex = blockIndex
+                    val currentState = _uiState.value
+                    if (currentState is PostUiState.Success) {
+                        _uiState.value = currentState.copy(savedReadingBlockIndex = blockIndex)
+                    }
+                }
+        }
     }
 
     fun refresh() =
@@ -67,6 +81,14 @@ constructor(
 
     fun setBookmarked(bookmarked: Boolean) =
         viewModelScope.launch { readerPreferencesRepository.setPostBookmarked(slug, bookmarked) }
+
+    fun setReadingBlockIndex(blockIndex: Int) =
+        viewModelScope.launch {
+            readerPreferencesRepository.setPostReadingBlockIndex(
+                slug = slug,
+                blockIndex = blockIndex,
+            )
+        }
 
     fun selectLanguage(language: String) {
         stateHandle["lang"] = language
@@ -89,6 +111,7 @@ constructor(
                             post = post,
                             isRefreshing = false,
                             refreshErrorMessage = null,
+                            savedReadingBlockIndex = savedReadingBlockIndex,
                         )
                     },
                     onFailure = { throwable ->

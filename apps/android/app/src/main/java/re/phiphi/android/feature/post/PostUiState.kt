@@ -13,6 +13,7 @@ sealed interface PostUiState {
         val post: PostDetail,
         val isRefreshing: Boolean,
         val refreshErrorMessage: String?,
+        val savedReadingBlockIndex: Int?,
     ) : PostUiState
 }
 
@@ -20,6 +21,8 @@ sealed interface PostAction {
     data class ToggleBookmark(val bookmarked: Boolean) : PostAction
 
     data class SelectLanguage(val language: String) : PostAction
+
+    data class UpdateReadingBlockIndex(val blockIndex: Int) : PostAction
 
     data object OpenInBrowser : PostAction
 

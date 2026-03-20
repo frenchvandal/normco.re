@@ -9,4 +9,5 @@ data class ReaderPreferences(
     val syncOnUnmeteredOnly: Boolean,
     val bookmarkedPostSlugs: Set<String>,
     val recentOpenedPostSlugs: List<String>,
+    val postReadingBlockIndexes: Map<String, Int>,
 )

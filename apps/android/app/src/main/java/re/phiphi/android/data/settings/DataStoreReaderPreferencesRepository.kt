@@ -18,7 +18,9 @@ private val saveOpenedPostsForOfflineKey = booleanPreferencesKey("save_opened_po
 private val syncOnUnmeteredOnlyKey = booleanPreferencesKey("sync_on_unmetered_only")
 private val bookmarkedPostSlugsKey = stringSetPreferencesKey("bookmarked_post_slugs")
 private val recentOpenedPostSlugsKey = stringPreferencesKey("recent_opened_post_slugs")
+private val postReadingBlockIndexesKey = stringPreferencesKey("post_reading_block_indexes")
 private const val RECENT_OPENED_POST_LIMIT = 8
+private const val READING_PROGRESS_LIMIT = 20
 
 @Singleton
 class DataStoreReaderPreferencesRepository
@@ -34,6 +36,10 @@ constructor(private val dataStore: DataStore<Preferences>) : ReaderPreferencesRe
                 recentOpenedPostSlugs =
                     storedPreferences[recentOpenedPostSlugsKey]?.let(::decodeRecentOpenedPostSlugs)
                         ?: emptyList(),
+                postReadingBlockIndexes =
+                    storedPreferences[postReadingBlockIndexesKey]?.let(
+                        ::decodePostReadingBlockIndexes
+                    ) ?: emptyMap(),
             )
         }
 
@@ -76,7 +82,30 @@ constructor(private val dataStore: DataStore<Preferences>) : ReaderPreferencesRe
             storedPreferences[recentOpenedPostSlugsKey] = Json.encodeToString(updated)
         }
     }
+
+    override suspend fun setPostReadingBlockIndex(slug: String, blockIndex: Int) {
+        dataStore.edit { storedPreferences ->
+            val current =
+                storedPreferences[postReadingBlockIndexesKey]?.let(::decodePostReadingBlockIndexes)
+                    ?: emptyMap()
+            val updated = linkedMapOf(slug to blockIndex)
+            current.forEach { (storedSlug, storedBlockIndex) ->
+                if (storedSlug != slug) {
+                    updated[storedSlug] = storedBlockIndex
+                }
+            }
+            storedPreferences[postReadingBlockIndexesKey] =
+                Json.encodeToString(
+                    updated.entries.take(READING_PROGRESS_LIMIT).associate { entry ->
+                        entry.toPair()
+                    }
+                )
+        }
+    }
 }
 
 private fun decodeRecentOpenedPostSlugs(encoded: String): List<String> =
     runCatching { Json.decodeFromString<List<String>>(encoded) }.getOrDefault(emptyList())
+
+private fun decodePostReadingBlockIndexes(encoded: String): Map<String, Int> =
+    runCatching { Json.decodeFromString<Map<String, Int>>(encoded) }.getOrDefault(emptyMap())

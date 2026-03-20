@@ -14,4 +14,6 @@ interface ReaderPreferencesRepository {
     suspend fun setPostBookmarked(slug: String, bookmarked: Boolean)
 
     suspend fun recordPostOpened(slug: String)
+
+    suspend fun setPostReadingBlockIndex(slug: String, blockIndex: Int)
 }
