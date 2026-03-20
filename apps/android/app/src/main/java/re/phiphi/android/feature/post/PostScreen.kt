@@ -1,6 +1,7 @@
 package re.phiphi.android.feature.post
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -143,7 +146,7 @@ private fun PostBlockContent(block: PostDetailBlock) {
     when (block.type) {
         "paragraph",
         "heading" -> TextBlockContent(type = block.type, text = block.text, level = block.level)
-        "code" -> CodeBlockContent(content = block.content)
+        "code" -> CodeBlockContent(content = block.content, language = block.language)
         "image" -> ImageBlockContent(src = block.src, alt = block.alt)
         "quote" -> QuoteBlockContent(text = block.text, attribution = block.attribution)
         "list" -> ListBlockContent(items = block.items, ordered = block.ordered == true)
@@ -172,17 +175,35 @@ private fun TextBlockContent(type: String, text: String?, level: Int?) {
 }
 
 @Composable
-private fun CodeBlockContent(content: String?) {
+private fun CodeBlockContent(content: String?, language: String?) {
     content?.let { value ->
         Card(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
+            Column(
                 modifier =
                     Modifier.fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                         .padding(16.dp),
-            )
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                language?.takeIf(String::isNotBlank)?.let { codeLanguage ->
+                    Text(
+                        text = codeLanguage.uppercase(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                SelectionContainer {
+                    Text(
+                        text = value,
+                        style =
+                            MaterialTheme.typography.bodyMedium.copy(
+                                fontFamily = FontFamily.Monospace
+                            ),
+                        softWrap = false,
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    )
+                }
+            }
         }
     }
 }
