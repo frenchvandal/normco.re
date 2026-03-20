@@ -15,6 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.Locale
 import re.phiphi.android.R
 import re.phiphi.android.core.model.PostDetail
 import re.phiphi.android.ui.components.languageDisplayName
@@ -27,6 +31,18 @@ fun PostDetailHeader(
     isBookmarked: Boolean,
     onAction: (PostAction) -> Unit,
 ) {
+    val updatedDate =
+        post.updatedAt?.let { raw ->
+            runCatching {
+                    OffsetDateTime.parse(raw)
+                        .format(
+                            DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+                                .withLocale(Locale.getDefault())
+                        )
+                }
+                .getOrElse { raw }
+        }
+
     Column(
         modifier = Modifier.padding(top = 24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -42,6 +58,15 @@ fun PostDetailHeader(
                 CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
             }
         }
+        updatedDate
+            ?.takeIf { it != publishedDate }
+            ?.let { value ->
+                Text(
+                    text = stringResource(id = R.string.post_updated_at, value),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         PostLanguageAlternates(post = post, onAction = onAction)
         post.readingTimeMinutes?.let { readingTimeMinutes ->
             Text(
