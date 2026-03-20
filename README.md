@@ -73,6 +73,8 @@ deno task build
 ├── _config.ts
 ├── _config/
 ├── _cms.ts
+├── apps/
+│   └── android/
 ├── contracts/
 ├── plugins/
 ├── scripts/
@@ -242,6 +244,7 @@ documents the infrastructure in more detail.
 - [docs/mobile-clients.md](./docs/mobile-clients.md)
 - [docs/mobile-content-api.md](./docs/mobile-content-api.md)
 - [docs/mobile-phase-0.md](./docs/mobile-phase-0.md)
+- [docs/android-roadmap.md](./docs/android-roadmap.md)
 - [plugins/README.md](./plugins/README.md)
 
 ## License

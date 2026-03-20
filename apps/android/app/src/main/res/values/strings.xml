@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">phiphi</string>
+  <string name="nav_home">Home</string>
+  <string name="nav_archive">Archive</string>
+  <string name="nav_settings">Settings</string>
+  <string name="home_title">phiphi</string>
+  <string name="home_body">Android-first reader shell is ready. The next step is wiring app-manifest and posts-index.</string>
+  <string name="archive_title">Archive</string>
+  <string name="archive_body">This screen will consume localized posts-index payloads and offline cache state.</string>
+  <string name="settings_title">Settings</string>
+  <string name="settings_body">Language, offline, bookmarks, and reading preferences will move here through DataStore.</string>
+  <string name="post_title">Post: %1$s</string>
+  <string name="post_body">This placeholder route will render post-detail blocks once the contract generator is connected.</string>
+  <string name="action_open_archive">Open archive</string>
+  <string name="action_open_sample_post">Open sample article</string>
+</resources>

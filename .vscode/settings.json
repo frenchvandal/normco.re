@@ -9,14 +9,20 @@
   "files.trimTrailingWhitespace": true,
   "files.watcherExclude": {
     "**/.deno_cache/**": true,
+    "**/.gradle/**": true,
+    "**/.kotlin/**": true,
     "**/_cache/**": true,
     "**/_site/**": true,
+    "**/apps/android/**/build/**": true,
     "**/coverage/**": true
   },
   "search.exclude": {
     "**/.deno_cache/**": true,
+    "**/.gradle/**": true,
+    "**/.kotlin/**": true,
     "**/_cache/**": true,
     "**/_site/**": true,
+    "**/apps/android/**/build/**": true,
     "**/coverage/**": true
   },
   "[javascript]": {
@@ -31,6 +37,9 @@
   "[json]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
+  "[kotlin]": {
+    "editor.defaultFormatter": "fwcd.kotlin"
+  },
   "[markdown]": {
     "editor.defaultFormatter": "denoland.vscode-deno",
     "files.trimTrailingWhitespace": false
@@ -44,7 +53,13 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  },
   "deno.enable": true,
+  "deno.disablePaths": [
+    "apps/android"
+  ],
   "deno.lint": true,
   "deno.unstable": [
     "bare-node-builtins",
@@ -66,5 +81,7 @@
     "https://cdn.jsdelivr.net": true,
     "https://deno.land": true
   },
+  "editor.linkedEditing": true,
+  "gradle.nestedProjects": true,
   "workbench.startupEditor": "readme"
 }

@@ -6,3 +6,12 @@ _site
 .env
 coverage
 node_modules
+.gradle
+.idea
+.kotlin
+local.properties
+*.keystore
+**/.cxx
+**/build
+**/captures
+apps/android/gradle/gradle-daemon-jvm.properties
