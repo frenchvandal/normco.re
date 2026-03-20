@@ -4,16 +4,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +35,15 @@ import re.phiphi.android.R
 import re.phiphi.android.core.model.PostDetail
 import re.phiphi.android.core.model.PostDetailBlock
 
+@Immutable
+internal data class PostDetailListModel(
+    val uiState: PostUiState.Success,
+    val isBookmarked: Boolean,
+    val publishedDate: String,
+    val headingTargets: List<PostHeadingTarget>,
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostScreen(
     uiState: PostUiState,
@@ -53,6 +61,7 @@ fun PostScreen(
             PostDetailContent(
                 uiState = uiState,
                 isBookmarked = isBookmarked,
+                onRetry = onRetry,
                 onAction = onAction,
                 modifier = modifier,
             )
@@ -87,10 +96,12 @@ private fun ErrorState(message: String, onRetry: () -> Unit, modifier: Modifier 
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PostDetailContent(
     uiState: PostUiState.Success,
     isBookmarked: Boolean,
+    onRetry: () -> Unit,
     onAction: (PostAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -104,12 +115,12 @@ private fun PostDetailContent(
                 hasRefreshError = uiState.refreshErrorMessage != null,
             )
         }
+    val publishedDate = remember(post.publishedAt) { formatPostDate(post.publishedAt) }
     val headingTargets =
         remember(post, uiState.refreshErrorMessage) {
             buildHeadingTargets(post = post, headerItemCount = headerItemCount)
         }
     var hasRestoredReadingPosition by remember(post.slug, post.lang) { mutableStateOf(false) }
-
     LaunchedEffect(post.slug, post.lang, headerItemCount, uiState.savedReadingBlockIndex) {
         if (hasRestoredReadingPosition) {
             return@LaunchedEffect
@@ -120,7 +131,45 @@ private fun PostDetailContent(
         }
         hasRestoredReadingPosition = true
     }
+    TrackReadingProgressEffect(
+        post = post,
+        headerItemCount = headerItemCount,
+        hasRestoredReadingPosition = hasRestoredReadingPosition,
+        listState = listState,
+        onAction = onAction,
+    )
+    PullToRefreshBox(
+        isRefreshing = uiState.isRefreshing,
+        onRefresh = onRetry,
+        modifier = modifier.fillMaxSize(),
+    ) {
+        PostDetailList(
+            model =
+                PostDetailListModel(
+                    uiState = uiState,
+                    isBookmarked = isBookmarked,
+                    publishedDate = publishedDate,
+                    headingTargets = headingTargets,
+                ),
+            listState = listState,
+            onAction = onAction,
+            onSelectHeading = { headingTarget ->
+                coroutineScope.launch {
+                    listState.animateScrollToItem(index = headingTarget.itemIndex)
+                }
+            },
+        )
+    }
+}
 
+@Composable
+private fun TrackReadingProgressEffect(
+    post: PostDetail,
+    headerItemCount: Int,
+    hasRestoredReadingPosition: Boolean,
+    listState: androidx.compose.foundation.lazy.LazyListState,
+    onAction: (PostAction) -> Unit,
+) {
     LaunchedEffect(post.slug, post.lang, headerItemCount, hasRestoredReadingPosition) {
         if (!hasRestoredReadingPosition) {
             return@LaunchedEffect
@@ -133,107 +182,9 @@ private fun PostDetailContent(
                 onAction(PostAction.UpdateReadingBlockIndex(blockIndex = blockIndex))
             }
     }
-
-    LazyColumn(
-        state = listState,
-        modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        postDetailItems(
-            uiState = uiState,
-            isBookmarked = isBookmarked,
-            headingTargets = headingTargets,
-            onAction = onAction,
-            onSelectHeading = { headingTarget ->
-                coroutineScope.launch {
-                    listState.animateScrollToItem(index = headingTarget.itemIndex)
-                }
-            },
-        )
-    }
 }
 
-private fun androidx.compose.foundation.lazy.LazyListScope.postDetailItems(
-    uiState: PostUiState.Success,
-    isBookmarked: Boolean,
-    headingTargets: List<PostHeadingTarget>,
-    onAction: (PostAction) -> Unit,
-    onSelectHeading: (PostHeadingTarget) -> Unit,
-) {
-    val post = uiState.post
-    val publishedDate = formatPostDate(post.publishedAt)
-
-    post.heroImage?.let { heroImage ->
-        item {
-            ImageBlockContent(
-                src = heroImage.url,
-                alt = heroImage.alt,
-                width = heroImage.width,
-                height = heroImage.height,
-            )
-        }
-    }
-    item {
-        PostDetailHeader(
-            post = post,
-            publishedDate = publishedDate,
-            isRefreshing = uiState.isRefreshing,
-            isBookmarked = isBookmarked,
-            onAction = onAction,
-        )
-    }
-    if (headingTargets.isNotEmpty()) {
-        item {
-            PostTableOfContents(headingTargets = headingTargets, onSelectHeading = onSelectHeading)
-        }
-    }
-    uiState.refreshErrorMessage?.let {
-        item {
-            Text(
-                text = stringResource(id = R.string.post_refresh_failed),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.error,
-            )
-        }
-    }
-
-    items(
-        items = post.blocks,
-        key = { block ->
-            listOfNotNull(block.type, block.text, block.content, block.src).joinToString("|")
-        },
-        contentType = { block -> block.type },
-    ) { block ->
-        PostBlockContent(block = block)
-    }
-}
-
-@Composable
-private fun PostTableOfContents(
-    headingTargets: List<PostHeadingTarget>,
-    onSelectHeading: (PostHeadingTarget) -> Unit,
-) {
-    Card {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = stringResource(id = R.string.post_contents_title),
-                style = MaterialTheme.typography.titleMedium,
-            )
-            headingTargets.forEach { headingTarget ->
-                TextButton(onClick = { onSelectHeading(headingTarget) }) {
-                    Text(text = headingTarget.label)
-                }
-            }
-        }
-    }
-}
-
-private data class PostHeadingTarget(val label: String, val itemIndex: Int)
-
-private fun buildHeadingTargets(post: PostDetail, headerItemCount: Int): List<PostHeadingTarget> {
+internal fun buildHeadingTargets(post: PostDetail, headerItemCount: Int): List<PostHeadingTarget> {
     return post.blocks.mapIndexedNotNull { index, block ->
         block.asHeadingTargetOrNull(itemIndex = headerItemCount + index)
     }
@@ -241,6 +192,8 @@ private fun buildHeadingTargets(post: PostDetail, headerItemCount: Int): List<Po
 
 private fun buildPostHeaderItemCount(post: PostDetail, hasRefreshError: Boolean): Int =
     (if (post.heroImage != null) 1 else 0) + 1 + 1 + if (hasRefreshError) 1 else 0
+
+internal data class PostHeadingTarget(val label: String, val itemIndex: Int)
 
 private fun PostDetailBlock.asHeadingTargetOrNull(itemIndex: Int): PostHeadingTarget? {
     return text
