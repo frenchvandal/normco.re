@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,6 +23,7 @@ import re.phiphi.android.ui.components.languageDisplayName
 fun PostDetailHeader(
     post: PostDetail,
     publishedDate: String,
+    isRefreshing: Boolean,
     isBookmarked: Boolean,
     onAction: (PostAction) -> Unit,
 ) {
@@ -29,11 +32,16 @@ fun PostDetailHeader(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(text = post.title, style = MaterialTheme.typography.headlineMedium)
-        Text(
-            text = publishedDate,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.primary,
-        )
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(
+                text = publishedDate,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            if (isRefreshing) {
+                CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+            }
+        }
         PostLanguageAlternates(post = post, onAction = onAction)
         post.readingTimeMinutes?.let { readingTimeMinutes ->
             Text(

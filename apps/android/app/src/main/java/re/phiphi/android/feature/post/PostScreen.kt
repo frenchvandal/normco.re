@@ -30,7 +30,6 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
 import re.phiphi.android.R
-import re.phiphi.android.core.model.PostDetail
 import re.phiphi.android.core.model.PostDetailBlock
 
 @Composable
@@ -48,7 +47,7 @@ fun PostScreen(
 
         is PostUiState.Success ->
             PostDetailContent(
-                post = uiState.post,
+                uiState = uiState,
                 isBookmarked = isBookmarked,
                 onAction = onAction,
                 modifier = modifier,
@@ -86,11 +85,12 @@ private fun ErrorState(message: String, onRetry: () -> Unit, modifier: Modifier 
 
 @Composable
 private fun PostDetailContent(
-    post: PostDetail,
+    uiState: PostUiState.Success,
     isBookmarked: Boolean,
     onAction: (PostAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val post = uiState.post
     val publishedDate =
         remember(post.publishedAt) {
             runCatching {
@@ -111,9 +111,19 @@ private fun PostDetailContent(
             PostDetailHeader(
                 post = post,
                 publishedDate = publishedDate,
+                isRefreshing = uiState.isRefreshing,
                 isBookmarked = isBookmarked,
                 onAction = onAction,
             )
+        }
+        uiState.refreshErrorMessage?.let {
+            item {
+                Text(
+                    text = stringResource(id = R.string.post_refresh_failed),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
         }
 
         items(

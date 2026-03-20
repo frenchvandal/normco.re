@@ -49,6 +49,7 @@
   <string name="post_title">Article</string>
   <string name="post_error">Impossible de charger l’article : %1$s</string>
   <string name="post_retry">Réessayer</string>
+  <string name="post_refresh_failed">Impossible d’actualiser l’article. Affichage de la version précédente.</string>
   <string name="post_languages_title">Langues disponibles</string>
   <string name="post_save_bookmark">Enregistrer le favori</string>
   <string name="post_remove_bookmark">Retirer des favoris</string>

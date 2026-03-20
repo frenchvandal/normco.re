@@ -8,7 +8,12 @@ sealed interface PostUiState {
 
     @Immutable data class Error(val message: String) : PostUiState
 
-    @Immutable data class Success(val post: PostDetail) : PostUiState
+    @Immutable
+    data class Success(
+        val post: PostDetail,
+        val isRefreshing: Boolean,
+        val refreshErrorMessage: String?,
+    ) : PostUiState
 }
 
 sealed interface PostAction {

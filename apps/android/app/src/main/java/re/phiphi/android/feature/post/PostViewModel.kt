@@ -47,7 +47,10 @@ constructor(
                 .distinctUntilChanged()
                 .collectLatest { language ->
                     currentLanguage = language
-                    loadPost(language = language)
+                    loadPost(
+                        language = language,
+                        showBlockingLoader = _uiState.value !is PostUiState.Success,
+                    )
                 }
         }
 
@@ -59,7 +62,8 @@ constructor(
         }
     }
 
-    fun refresh() = viewModelScope.launch { loadPost(language = currentLanguage) }
+    fun refresh() =
+        viewModelScope.launch { loadPost(language = currentLanguage, showBlockingLoader = false) }
 
     fun setBookmarked(bookmarked: Boolean) =
         viewModelScope.launch { readerPreferencesRepository.setPostBookmarked(slug, bookmarked) }
@@ -69,14 +73,28 @@ constructor(
         selectedLanguageOverride.value = language
     }
 
-    private suspend fun loadPost(language: String?) {
-        _uiState.value = PostUiState.Loading
+    private suspend fun loadPost(language: String?, showBlockingLoader: Boolean) {
+        val previousSuccess = _uiState.value as? PostUiState.Success
+        if (showBlockingLoader || previousSuccess == null) {
+            _uiState.value = PostUiState.Loading
+        } else {
+            _uiState.value = previousSuccess.copy(isRefreshing = true, refreshErrorMessage = null)
+        }
         _uiState.value =
             runCatching { postsRepository.getPostDetail(slug = slug, lang = language) }
                 .fold(
-                    onSuccess = { post -> PostUiState.Success(post = post) },
+                    onSuccess = { post ->
+                        PostUiState.Success(
+                            post = post,
+                            isRefreshing = false,
+                            refreshErrorMessage = null,
+                        )
+                    },
                     onFailure = { throwable ->
-                        PostUiState.Error(message = throwable.message ?: "Unknown failure")
+                        previousSuccess?.copy(
+                            isRefreshing = false,
+                            refreshErrorMessage = throwable.message ?: "Unknown failure",
+                        ) ?: PostUiState.Error(message = throwable.message ?: "Unknown failure")
                     },
                 )
     }
