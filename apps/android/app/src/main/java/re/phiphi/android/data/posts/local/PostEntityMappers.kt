@@ -29,6 +29,26 @@ fun AppManifestEntity.toModel(json: Json): AppManifest =
         postsIndex = json.decodeFromString<List<PostsIndexPointer>>(postsIndexJson),
     )
 
+fun PostSummary.toEntity(lang: String, json: Json, existing: PostEntity? = null): PostEntity =
+    PostEntity(
+        lang = lang,
+        slug = slug,
+        id = id,
+        title = title,
+        summary = summary,
+        publishedAt = publishedAt,
+        updatedAt = updatedAt,
+        readingTimeMinutes = readingTimeMinutes,
+        tagsJson = json.encodeToString(tags),
+        detailApiUrl = detailApiUrl,
+        webUrl = webUrl,
+        heroImageJson =
+            heroImage?.let { remoteImage -> json.encodeToString(remoteImage) }
+                ?: existing?.heroImageJson,
+        alternatesJson = existing?.alternatesJson,
+        blocksJson = existing?.blocksJson,
+    )
+
 fun PostEntity.toPostSummary(json: Json): PostSummary =
     PostSummary(
         id = id,
@@ -65,6 +85,21 @@ fun PostEntity.toPostDetail(json: Json, version: String): PostDetail =
         blocks =
             blocksJson?.let { encoded -> json.decodeFromString<List<PostDetailBlock>>(encoded) }
                 ?: emptyList(),
+    )
+
+fun PostEntity.merge(detail: PostDetail, json: Json): PostEntity =
+    copy(
+        id = detail.id,
+        title = detail.title,
+        summary = detail.summary,
+        publishedAt = detail.publishedAt,
+        updatedAt = detail.updatedAt,
+        readingTimeMinutes = detail.readingTimeMinutes,
+        tagsJson = json.encodeToString(detail.tags),
+        webUrl = detail.webUrl,
+        heroImageJson = detail.heroImage?.let { remoteImage -> json.encodeToString(remoteImage) },
+        alternatesJson = json.encodeToString(detail.alternates),
+        blocksJson = json.encodeToString(detail.blocks),
     )
 
 fun List<PostEntity>.toPostsIndex(lang: String, version: String, json: Json): PostsIndex =

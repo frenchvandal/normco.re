@@ -25,6 +25,8 @@ interface BootstrapPostsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertPosts(posts: List<PostEntity>)
 
+    @Query("DELETE FROM posts WHERE lang = :lang") suspend fun deletePostsForLanguage(lang: String)
+
     @Query("DELETE FROM app_manifest") suspend fun clearManifest()
 
     @Query("DELETE FROM posts") suspend fun clearPosts()
