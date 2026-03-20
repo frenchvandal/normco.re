@@ -1,4 +1,5 @@
 _cache
+_quality
 _site
 .deno_cache
 .DS_Store

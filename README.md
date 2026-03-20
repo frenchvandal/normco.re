@@ -215,12 +215,12 @@ Feed and JSON contract validation is also available separately through
 `deno task validate-contracts`. The RSS and Atom checks parse XML structurally
 instead of relying on tag-matching regexes.
 
-Generated quality artifacts live under `_cache/quality/`, which is ignored by
-Git. The key reports are:
+Generated quality artifacts live under `_quality/`, which is ignored by Git and
+kept separate from the Lume build cache. The key reports are:
 
-- `_cache/quality/html-issues.json`
-- `_cache/quality/broken-links.json`
-- `_cache/quality/broken-links-pre-fingerprint.json` for production builds
+- `_quality/html-issues.json`
+- `_quality/broken-links.json`
+- `_quality/broken-links-pre-fingerprint.json` for production builds
 
 ## Deployment
 

@@ -100,7 +100,7 @@ Lume’s `multilanguage` plugin provides the routing model:
 `_config.ts` instantiates the Lume site with `src/` as the source directory and
 `_site/` as the output directory. It also registers build hooks that:
 
-- prepare `_cache/quality/` before the build
+- prepare `_quality/` before the build
 - fingerprint CSS and JavaScript assets after the build
 - verify browser-safe imports in generated output
 - run the final broken-link check against the rewritten output
@@ -137,8 +137,8 @@ path with `import.meta.url` where appropriate instead of assuming the process
 
 ### Quality Reports
 
-Quality artifacts are written to `_cache/quality/`, not the repository root. The
-main reports are:
+Quality artifacts are written to `_quality/`, separate from the Lume build
+cache. The main reports are:
 
 - `html-issues.json`
 - `broken-links-pre-fingerprint.json` for production builds
@@ -329,7 +329,7 @@ JSON outputs.
 4. `src/styles/carbon/_theme-tokens.scss` remains the local bridge for the
    Carbon-backed custom properties used by the site.
 5. Public URLs remain language-aware and stable.
-6. Quality reports belong under `_cache/quality/`, not the repository root.
+6. Quality reports belong under `_quality/`, separate from the Lume build cache.
 7. The authoritative broken-link check runs against final output, after asset
    fingerprinting.
 8. The build may retain dormant code for future pipelines, but only active

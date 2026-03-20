@@ -18,9 +18,9 @@ export type CommandRunner = (
 
 export const PRE_BUILD_TASKS: ReadonlyArray<BuildTask> = [
   {
-    name: "ensure quality cache directory",
+    name: "ensure quality report directory",
     command: "deno",
-    args: ["run", "--allow-write", "scripts/ensure-dir.ts", "_cache/quality"],
+    args: ["run", "--allow-write", "scripts/ensure-dir.ts", "_quality"],
   },
 ];
 
@@ -55,7 +55,7 @@ export const POST_BUILD_TASKS: ReadonlyArray<BuildTask> = [
       "--allow-write",
       "scripts/check-output-links.ts",
       "_site",
-      "_cache/quality/broken-links.json",
+      "_quality/broken-links.json",
     ],
   },
 ];

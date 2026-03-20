@@ -10,11 +10,11 @@ import {
 import { createDirEntry, withPatchedDeno } from "../test/mock_deno.ts";
 
 describe("build task definitions", () => {
-  it("defines the quality-cache pre-build step", () => {
+  it("defines the quality-report pre-build step", () => {
     assertEquals(PRE_BUILD_TASKS, [{
-      name: "ensure quality cache directory",
+      name: "ensure quality report directory",
       command: "deno",
-      args: ["run", "--allow-write", "scripts/ensure-dir.ts", "_cache/quality"],
+      args: ["run", "--allow-write", "scripts/ensure-dir.ts", "_quality"],
     }]);
   });
 

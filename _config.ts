@@ -133,7 +133,7 @@ registerProcessors(site);
 registerXslStylesheets(site);
 
 // Ensure generated quality reports are written under a dedicated ignored
-// directory instead of polluting the repository root.
+// directory separate from the Lume build cache.
 site.addEventListener("beforeBuild", () => runBuildTasks(PRE_BUILD_TASKS));
 
 // Post-build: fingerprint assets, verify browser imports, format HTML, then

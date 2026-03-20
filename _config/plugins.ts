@@ -176,7 +176,7 @@ export function registerPlugins(
 
   site.use(
     validateHtml({
-      output: "_cache/quality/html-issues.json",
+      output: "_quality/html-issues.json",
       rules: {
         "require-sri": "off",
         "heading-level": "off",
@@ -196,7 +196,7 @@ export function registerPlugins(
         anchors: true,
         throw: true,
         ignore: ["/feed.rss", "/feed.json", "/feed.atom", "/sitemap.xml"],
-        output: "_cache/quality/broken-links-pre-fingerprint.json",
+        output: "_quality/broken-links-pre-fingerprint.json",
       }),
     );
   }

@@ -182,7 +182,7 @@ function parseCliArgs(
     rootDir: typeof rootDirArg === "string" ? rootDirArg : "_site",
     reportPath: typeof reportPathArg === "string"
       ? reportPathArg
-      : "_cache/quality/broken-links.json",
+      : "_quality/broken-links.json",
   };
 }
 
