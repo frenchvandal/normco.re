@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -13,25 +14,29 @@ import re.phiphi.android.core.model.PostDetail
 import re.phiphi.android.core.model.PostsIndex
 import re.phiphi.android.data.posts.local.BootstrapPostsDao
 import re.phiphi.android.data.posts.local.PhiphiDatabase
+import re.phiphi.android.data.posts.local.PostEntity
 import re.phiphi.android.data.posts.local.merge
 import re.phiphi.android.data.posts.local.toEntity
 import re.phiphi.android.data.posts.local.toModel
 import re.phiphi.android.data.posts.local.toPostDetail
 import re.phiphi.android.data.posts.local.toPostsIndex
+import re.phiphi.android.data.settings.ReaderPreferencesRepository
 
 private const val REMOTE_REFRESH_INTERVAL_MILLIS = 5 * 60 * 1000L
+private const val OFFLINE_DETAIL_PREFETCH_LIMIT = 6
 
 @Singleton
 class AssetPostsRepository
 @Inject
 constructor(
     private val database: PhiphiDatabase,
-    private val bootstrapPostsDao: BootstrapPostsDao,
     private val bootstrapPostsSeeder: BootstrapPostsSeeder,
     private val remoteContractsClient: RemoteContractsClient,
     private val contentSyncStatusRepository: ContentSyncStatusRepository,
+    private val readerPreferencesRepository: ReaderPreferencesRepository,
     private val json: Json,
 ) : PostsRepository {
+    private val bootstrapPostsDao: BootstrapPostsDao = database.bootstrapPostsDao()
     private val remoteRefreshMutex = Mutex()
     private var lastRemoteRefreshAtMillis: Long = 0L
 
@@ -63,13 +68,16 @@ constructor(
             val resolvedLanguage = manifest.resolveLanguage(lang)
             val localPost =
                 requireLocalPost(manifest = manifest, language = resolvedLanguage, slug = slug)
+            val readerPreferences = readerPreferencesRepository.preferences.first()
 
             val refreshedPost =
                 runCatching {
                         val remoteDetail =
                             remoteContractsClient.fetchPostDetail(apiUrl = localPost.detailApiUrl)
                         val mergedPost = localPost.merge(detail = remoteDetail, json = json)
-                        bootstrapPostsDao.upsertPosts(posts = listOf(mergedPost))
+                        if (readerPreferences.saveOpenedPostsForOffline) {
+                            bootstrapPostsDao.upsertPosts(posts = listOf(mergedPost))
+                        }
                         mergedPost
                     }
                     .getOrElse { localPost }
@@ -145,6 +153,10 @@ constructor(
                 bootstrapPostsDao.upsertPosts(posts = mergedPosts)
             }
         }
+
+        if (force) {
+            prefetchSavedPostDetails(manifest = remoteManifest)
+        }
     }
 
     private suspend fun requireLocalManifest() =
@@ -159,6 +171,50 @@ constructor(
         ) {
             "Missing post detail for '$slug' in the local database"
         }
+
+    private suspend fun prefetchSavedPostDetails(manifest: AppManifest) {
+        val readerPreferences = readerPreferencesRepository.preferences.first()
+        if (!readerPreferences.saveOpenedPostsForOffline) {
+            return
+        }
+
+        val resolvedLanguage = manifest.resolveLanguage(readerPreferences.preferredLanguage)
+        val targetSlugs =
+            (readerPreferences.recentOpenedPostSlugs +
+                    readerPreferences.bookmarkedPostSlugs.sorted())
+                .distinct()
+                .take(OFFLINE_DETAIL_PREFETCH_LIMIT)
+        if (targetSlugs.isEmpty()) {
+            return
+        }
+
+        val updatedPosts =
+            targetSlugs.mapNotNull { slug ->
+                prefetchSavedPostDetail(
+                    manifest = manifest,
+                    language = resolvedLanguage,
+                    slug = slug,
+                )
+            }
+
+        if (updatedPosts.isNotEmpty()) {
+            bootstrapPostsDao.upsertPosts(posts = updatedPosts)
+        }
+    }
+
+    private suspend fun prefetchSavedPostDetail(
+        manifest: AppManifest,
+        language: String,
+        slug: String,
+    ): PostEntity? =
+        runCatching {
+                val localPost =
+                    requireLocalPost(manifest = manifest, language = language, slug = slug)
+                val remoteDetail =
+                    remoteContractsClient.fetchPostDetail(apiUrl = localPost.detailApiUrl)
+                localPost.merge(detail = remoteDetail, json = json)
+            }
+            .getOrNull()
 }
 
 private fun AppManifest.resolveLanguage(requestedLanguage: String?): String =
