@@ -34,13 +34,25 @@ import re.phiphi.android.core.model.PostDetail
 import re.phiphi.android.core.model.PostDetailBlock
 
 @Composable
-fun PostScreen(uiState: PostUiState, onRetry: () -> Unit, modifier: Modifier = Modifier) {
+fun PostScreen(
+    uiState: PostUiState,
+    onRetry: () -> Unit,
+    onOpenInBrowser: (PostDetail) -> Unit,
+    onSharePost: (PostDetail) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     when (uiState) {
         PostUiState.Loading -> LoadingState(modifier = modifier)
         is PostUiState.Error ->
             ErrorState(message = uiState.message, onRetry = onRetry, modifier = modifier)
 
-        is PostUiState.Success -> PostDetailContent(post = uiState.post, modifier = modifier)
+        is PostUiState.Success ->
+            PostDetailContent(
+                post = uiState.post,
+                onOpenInBrowser = onOpenInBrowser,
+                onSharePost = onSharePost,
+                modifier = modifier,
+            )
     }
 }
 
@@ -73,7 +85,12 @@ private fun ErrorState(message: String, onRetry: () -> Unit, modifier: Modifier 
 }
 
 @Composable
-private fun PostDetailContent(post: PostDetail, modifier: Modifier = Modifier) {
+private fun PostDetailContent(
+    post: PostDetail,
+    onOpenInBrowser: (PostDetail) -> Unit,
+    onSharePost: (PostDetail) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val publishedDate =
         remember(post.publishedAt) {
             runCatching {
@@ -116,6 +133,10 @@ private fun PostDetailContent(post: PostDetail, modifier: Modifier = Modifier) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
+                PostActionsRow(
+                    onOpenInBrowser = { onOpenInBrowser(post) },
+                    onSharePost = { onSharePost(post) },
+                )
             }
         }
 
