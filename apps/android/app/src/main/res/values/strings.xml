@@ -4,9 +4,6 @@
   <string name="nav_home">Home</string>
   <string name="nav_archive">Archive</string>
   <string name="nav_settings">Settings</string>
-  <string name="home_title">phiphi</string>
-  <string name="home_body">Latest writing, loaded through the mobile content contracts bootstrap.</string>
-  <string name="home_source">Source: bundled generated app contracts</string>
   <string name="home_feed_title">Latest writing (%1$s)</string>
   <string name="home_loading">Loading posts…</string>
   <string name="home_empty">No posts are available yet.</string>
@@ -14,9 +11,6 @@
   <string name="home_error">Failed to load posts: %1$s</string>
   <string name="home_reading_time">%1$d min read</string>
   <string name="home_tags">Tags: %1$s</string>
-  <string name="archive_title">Archive</string>
-  <string name="archive_body">All available writing from the localized posts-index bootstrap.</string>
-  <string name="archive_source">Source: bundled generated posts-index contracts</string>
   <string name="archive_loading">Loading archive…</string>
   <string name="archive_empty">No archived posts are available yet.</string>
   <string name="archive_retry">Retry</string>

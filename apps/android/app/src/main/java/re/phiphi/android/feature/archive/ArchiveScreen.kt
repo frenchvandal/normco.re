@@ -31,8 +31,6 @@ fun ArchiveScreen(
         modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { ArchiveIntroSection() }
-
         when (uiState) {
             ArchiveUiState.Loading -> {
                 item { ArchiveLoadingCard() }
@@ -61,6 +59,7 @@ fun ArchiveScreen(
                         PostSummaryCard(
                             post = post,
                             isBookmarked = post.slug in uiState.bookmarkedSlugs,
+                            showHeroImage = false,
                             onOpenPost = onOpenPost,
                         )
                     }
@@ -71,33 +70,14 @@ fun ArchiveScreen(
 }
 
 @Composable
-private fun ArchiveIntroSection() {
-    Column(
-        modifier = Modifier.padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+private fun ArchiveFeedHeading(lang: String, count: Int) {
+    Card(modifier = Modifier.fillMaxWidth().padding(top = 24.dp)) {
         Text(
-            text = stringResource(id = R.string.archive_title),
-            style = MaterialTheme.typography.headlineMedium,
-        )
-        Text(
-            text = stringResource(id = R.string.archive_body),
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Text(
-            text = stringResource(id = R.string.archive_source),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            text = pluralStringResource(id = R.plurals.archive_feed_title, count, lang, count),
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(20.dp),
         )
     }
-}
-
-@Composable
-private fun ArchiveFeedHeading(lang: String, count: Int) {
-    Text(
-        text = pluralStringResource(id = R.plurals.archive_feed_title, count, lang, count),
-        style = MaterialTheme.typography.titleLarge,
-    )
 }
 
 @Composable

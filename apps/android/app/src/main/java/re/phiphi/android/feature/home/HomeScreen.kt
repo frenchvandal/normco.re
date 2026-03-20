@@ -1,5 +1,6 @@
 package re.phiphi.android.feature.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +12,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,8 +32,6 @@ fun HomeScreen(
         modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { HomeIntroSection(onOpenArchive = onOpenArchive) }
-
         when (uiState) {
             HomeUiState.Loading -> {
                 item { LoadingCard() }
@@ -62,46 +60,39 @@ fun HomeScreen(
                         PostSummaryCard(
                             post = post,
                             isBookmarked = post.slug in uiState.bookmarkedSlugs,
+                            showHeroImage = true,
                             onOpenPost = onOpenPost,
                         )
                     }
                 }
+
+                item { BrowseArchiveHint(onOpenArchive = onOpenArchive) }
             }
         }
     }
 }
 
 @Composable
-private fun HomeIntroSection(onOpenArchive: () -> Unit) {
-    Column(
-        modifier = Modifier.padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+private fun HomeFeedHeading(lang: String) {
+    Card(modifier = Modifier.fillMaxWidth().padding(top = 24.dp)) {
         Text(
-            text = stringResource(id = R.string.home_title),
-            style = MaterialTheme.typography.headlineMedium,
+            text = stringResource(id = R.string.home_feed_title, lang),
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(20.dp),
         )
-        Text(
-            text = stringResource(id = R.string.home_body),
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Text(
-            text = stringResource(id = R.string.home_source),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        OutlinedButton(onClick = onOpenArchive) {
-            Text(text = stringResource(id = R.string.action_open_archive))
-        }
     }
 }
 
 @Composable
-private fun HomeFeedHeading(lang: String) {
-    Text(
-        text = stringResource(id = R.string.home_feed_title, lang),
-        style = MaterialTheme.typography.titleLarge,
-    )
+private fun BrowseArchiveHint(onOpenArchive: () -> Unit) {
+    Card(modifier = Modifier.fillMaxWidth().clickable(onClick = onOpenArchive)) {
+        Text(
+            text = stringResource(id = R.string.action_open_archive),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(20.dp),
+        )
+    }
 }
 
 @Composable

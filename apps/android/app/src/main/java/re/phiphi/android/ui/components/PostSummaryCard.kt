@@ -31,6 +31,7 @@ import re.phiphi.android.core.model.PostSummary
 fun PostSummaryCard(
     post: PostSummary,
     isBookmarked: Boolean,
+    showHeroImage: Boolean,
     onOpenPost: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -42,14 +43,16 @@ fun PostSummaryCard(
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            post.heroImage?.let { heroImage ->
-                AsyncImage(
-                    model = heroImage.url,
-                    contentDescription = heroImage.alt.ifBlank { null },
-                    contentScale = ContentScale.Crop,
-                    modifier =
-                        Modifier.fillMaxWidth().height(180.dp).clip(RoundedCornerShape(16.dp)),
-                )
+            if (showHeroImage) {
+                post.heroImage?.let { heroImage ->
+                    AsyncImage(
+                        model = heroImage.url,
+                        contentDescription = heroImage.alt.ifBlank { null },
+                        contentScale = ContentScale.Crop,
+                        modifier =
+                            Modifier.fillMaxWidth().height(180.dp).clip(RoundedCornerShape(16.dp)),
+                    )
+                }
             }
             Text(text = post.title, style = MaterialTheme.typography.titleLarge)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

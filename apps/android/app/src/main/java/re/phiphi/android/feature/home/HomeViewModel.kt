@@ -14,6 +14,8 @@ import kotlinx.coroutines.launch
 import re.phiphi.android.data.posts.PostsRepository
 import re.phiphi.android.data.settings.ReaderPreferencesRepository
 
+private const val HOME_POST_LIMIT = 5
+
 @HiltViewModel
 class HomeViewModel
 @Inject
@@ -61,7 +63,7 @@ constructor(
                     onSuccess = { postsIndex ->
                         HomeUiState.Success(
                             lang = postsIndex.lang,
-                            items = postsIndex.items,
+                            items = postsIndex.items.take(HOME_POST_LIMIT),
                             bookmarkedSlugs = bookmarkedSlugs,
                         )
                     },
