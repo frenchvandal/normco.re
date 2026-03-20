@@ -55,7 +55,9 @@ Unless a later decision explicitly overrides them, use these defaults.
 
 - iOS follows Apple stack and design guidance
 - Android follows Google stack and Material 3 guidance
-- HarmonyOS follows Huawei stack and HarmonyOS NEXT guidance
+- HarmonyOS follows Huawei stack, HarmonyOS NEXT guidance, and HarmonyOS Design
+- HarmonyOS should assume strict ArkTS models and native rendering of structured
+  content rather than a WebView-first reading surface
 - none of the native apps should try to reproduce the web site’s Carbon layer
 - shared behavior lives in content contracts and information architecture, not a
   shared visual component system

@@ -173,24 +173,44 @@ pixel-identical component library.
 
 HarmonyOS remains a later client, but the direction should also be explicit:
 
+- HarmonyOS NEXT 5.x baseline when implementation starts
 - ArkTS
 - ArkUI declarative UI
 - Stage model application structure
-- UIAbility / WindowStage-based app flow
-- DevEco Studio
-- lightweight local persistence for preferences, bookmarks, and reading state
+- `entry` HAP with a single `UIAbility` first
+- one or two HSP utility modules only when shared-code pressure appears
+- prefer HSP over HAR for app-internal shared runtime code once modularization
+  starts
+- `Navigation` for the real app rather than a legacy router-first design
+- `List` + `LazyForEach` + `Refresh` for feed surfaces
+- `relationalStore` for offline content cache
+- Preferences / lightweight KV storage for settings and small local state
+- distributed KV, Cloud DB, Cloud Storage, and Push Kit only after the core
+  reader is stable and product-justified
 
 Implementation guidance:
 
-- use Huawei’s HarmonyOS NEXT design guidance for the UI layer
+- use HarmonyOS Design as the platform design system and primary UI reference
 - follow Huawei’s primary application model: ArkTS + ArkUI + Stage model
+- treat ArkTS as a strict application language and model contract types
+  explicitly rather than relying on dynamic TypeScript-style patterns
 - keep the content and data model aligned with the same shared contracts used by
   iOS and Android
+- keep the content pipeline contract-first: `app-manifest`, localized
+  `posts-index`, localized `post-detail`
+- prefer native rendering of structured article content rather than a
+  WebView-first detail screen
+- start with RDB + preferences for offline-first local state before introducing
+  distributed or cloud sync
 - favor native navigation and native components rather than a visual port of the
   web UI
+- treat Super Device continuity as a later product layer on top of a strong
+  phone reader, not as a Phase 0 prerequisite
 
 The HarmonyOS app should not try to reproduce the site’s Carbon layer either. It
 should feel native to HarmonyOS.
+
+See `docs/harmonyos-roadmap.md` for the HarmonyOS-specific execution plan.
 
 ## Shared Strategy Across Platforms
 
@@ -431,7 +451,7 @@ are:
 For HarmonyOS, current Huawei references that should anchor the implementation
 are:
 
-- [HarmonyOS NEXT Design](https://developer.huawei.com/consumer/en/design/)
+- [HarmonyOS Design](https://developer.huawei.com/consumer/en/design/)
 - [ArkUI](https://developer.huawei.com/consumer/cn/arkui/)
 - [ArkTS](https://developer.huawei.com/consumer/en/arkts/)
 - [Stage model overview](https://developer.huawei.com/consumer/cn/arkui/arkui-stage/)
