@@ -193,6 +193,40 @@ When touching `apps/android`:
 - Preserve Android package and namespace stability deliberately. Once public IDs
   are shipped, avoid casual renames.
 
+### Android Naming
+
+Use Android naming that matches the current app shape under
+`apps/android/app/src/main/java/re/phiphi/android/`.
+
+- Keep packages all-lowercase and feature-oriented, for example: `feature.home`,
+  `feature.post`, `data.posts`, `ui.navigation`.
+- Keep one primary class or top-level type per file, and keep the file name
+  identical to the main class or composable container name.
+- Use PascalCase for Kotlin types and composables, and reserve a small `Phiphi`
+  prefix only for app-level shell types such as `PhiphiApplication`,
+  `PhiphiApp`, `PhiphiTheme`, and `PhiphiNavHost`.
+- Name screen composables with the `...Screen` suffix and route-entry
+  composables with the `...Route` suffix.
+- Name presentation models with explicit suffixes such as `...UiState`,
+  `...UiModel`, and `...ViewModel`.
+- Name repository interfaces and implementations explicitly, for example
+  `PostsRepository`, `AssetPostsRepository`, and later `OfflinePostsRepository`
+  or `NetworkPostsRepository` if multiple data sources appear.
+- Name DI files by what they provide or bind, for example `PostsDataModule`, not
+  generic names such as `AppModule` unless the module is truly app-wide.
+- Keep transport, persistence, and domain models distinct when they diverge:
+  prefer suffixes like `...Dto`, `...Entity`, and unsuffixed domain models only
+  when the type is the app-facing canonical model.
+- Keep JSON schema names and Android property names aligned semantically, but
+  adapt them at the boundary with `@SerialName(...)` instead of leaking wire
+  naming into the rest of the app.
+- Use snake_case Android resource names with a feature prefix when helpful, as
+  in `home_title`, `home_retry`, and `nav_settings`.
+- Use `UPPER_SNAKE_CASE` for constants, especially route patterns, asset paths,
+  and stable keys.
+- Remove stale legacy prefixes during renames. Do not leave mixed `Normco` and
+  `Phiphi` naming in the same Android slice.
+
 ## Component References
 
 - Header: https://carbondesignsystem.com/components/ui-shell-header/usage/
