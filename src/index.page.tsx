@@ -1,5 +1,6 @@
 /** Home page - hero + five most recent posts. */
 
+import { distinct } from "jsr/collections";
 import { renderComponent } from "lume/jsx-runtime";
 
 import StatePanel from "./_components/StatePanel.tsx";
@@ -146,7 +147,7 @@ function resolvePostTags(value: unknown): string[] {
 
 function resolveFeaturedTags(posts: readonly Lume.Data[]): string[] {
   const tags = posts.flatMap((post) => resolvePostTags(post.tags));
-  return [...new Set(tags)].slice(0, 4);
+  return distinct(tags).slice(0, 4);
 }
 
 /** Renders the home page body. */

@@ -1,3 +1,6 @@
+import { parseArgs } from "jsr/cli";
+import { encodeHex } from "jsr/encoding-hex";
+import { walk } from "jsr/fs";
 import { basename, extname, join } from "jsr/path";
 
 const HASH_LENGTH = 10;
@@ -69,10 +72,7 @@ async function fileExists(filePath: string): Promise<boolean> {
 
 async function hashContent(content: Uint8Array): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", content.slice());
-  const bytes = Array.from(new Uint8Array(digest));
-  const hash = bytes.map((value) => value.toString(16).padStart(2, "0")).join(
-    "",
-  );
+  const hash = encodeHex(new Uint8Array(digest));
 
   return hash.slice(0, HASH_LENGTH);
 }
@@ -141,21 +141,6 @@ async function fingerprintAsset(
   }
 }
 
-async function* walkFiles(rootDir: string): AsyncGenerator<string> {
-  for await (const entry of Deno.readDir(rootDir)) {
-    const path = join(rootDir, entry.name);
-
-    if (entry.isDirectory) {
-      yield* walkFiles(path);
-      continue;
-    }
-
-    if (entry.isFile) {
-      yield path;
-    }
-  }
-}
-
 function isTextFile(path: string): boolean {
   return TEXT_EXTENSIONS.has(extname(path).toLowerCase());
 }
@@ -177,18 +162,31 @@ async function rewriteUrlsInSiteOutput(
   rootDir: string,
   rewrites: ReadonlyArray<[string, string]>,
 ): Promise<void> {
-  for await (const path of walkFiles(rootDir)) {
-    if (!isTextFile(path)) {
+  for await (
+    const entry of walk(rootDir, {
+      includeDirs: false,
+    })
+  ) {
+    if (!isTextFile(entry.path)) {
       continue;
     }
 
-    const original = await Deno.readTextFile(path);
+    const original = await Deno.readTextFile(entry.path);
     const rewritten = applyRewrites(original, rewrites);
 
     if (rewritten !== original) {
-      await Deno.writeTextFile(path, rewritten);
+      await Deno.writeTextFile(entry.path, rewritten);
     }
   }
+}
+
+function parseCliArgs(args: ReadonlyArray<string>): { rootDir: string } {
+  const parsedArgs = parseArgs(args);
+  const rootDirArg = parsedArgs._[0];
+
+  return {
+    rootDir: typeof rootDirArg === "string" ? rootDirArg : "_site",
+  };
 }
 
 async function injectServiceWorkerVersion(rootDir: string): Promise<string> {
@@ -220,7 +218,7 @@ async function injectServiceWorkerVersion(rootDir: string): Promise<string> {
 }
 
 async function main(): Promise<void> {
-  const rootDir = Deno.args[0] ?? "_site";
+  const { rootDir } = parseCliArgs(Deno.args);
   const rewrites: [string, string][] = [];
 
   for (const sourceUrl of CANONICAL_ASSET_URLS) {

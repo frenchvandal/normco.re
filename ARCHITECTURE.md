@@ -105,6 +105,13 @@ Lume's `multilanguage` plugin provides the routing model:
 - verify browser-safe imports in generated output
 - run the final broken-link check against the rewritten output
 
+The supporting Deno utilities favor core runtime primitives for file I/O and
+subprocesses, and use Deno std helpers for higher-level concerns such as CLI
+argument parsing, recursive filesystem traversal, XML parsing, escaping, and
+frontmatter extraction. Repo-local file reads should be anchored from the module
+path with `import.meta.url` where appropriate instead of assuming the process
+`cwd`.
+
 ### Plugin Registration
 
 `_config/plugins.ts` registers the main plugin stack:
@@ -222,6 +229,11 @@ templates:
 - post detail pages emit a full `h-entry` with `e-content`
 
 Feed item HTML is sourced from rendered post content, not raw Markdown.
+
+Generated feeds and optional JSON outputs are checked by
+`contracts/validate.ts`. RSS and Atom validation is structural: the script
+parses XML and validates feed-level elements against the actual document tree
+instead of scanning substrings with regular expressions.
 
 ### Microformats2 Mapping
 

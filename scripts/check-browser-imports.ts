@@ -1,3 +1,5 @@
+import { parseArgs } from "jsr/cli";
+import { walk } from "jsr/fs";
 import { join } from "jsr/path";
 
 const NETWORK_PREFIXES = ["http://", "https://"] as const;
@@ -183,23 +185,15 @@ async function collectBrowserScriptFiles(rootDir: string): Promise<string[]> {
   const files: string[] = [];
   const scriptsDir = join(rootDir, "scripts");
 
-  async function collectScriptsRecursively(directory: string): Promise<void> {
-    for await (const entry of Deno.readDir(directory)) {
-      const entryPath = join(directory, entry.name);
-
-      if (entry.isDirectory) {
-        await collectScriptsRecursively(entryPath);
-        continue;
-      }
-
-      if (entry.isFile && entry.name.endsWith(".js")) {
-        files.push(entryPath);
-      }
-    }
-  }
-
   try {
-    await collectScriptsRecursively(scriptsDir);
+    for await (
+      const entry of walk(scriptsDir, {
+        includeDirs: false,
+        exts: [".js"],
+      })
+    ) {
+      files.push(entry.path);
+    }
   } catch (error) {
     if (!(error instanceof Deno.errors.NotFound)) {
       throw error;
@@ -231,8 +225,17 @@ function formatIssue(issue: ImportIssue, rootDir: string): string {
   return `- ${relativePath}:${issue.line} ${issueReason}: "${issue.specifier}"`;
 }
 
+function parseCliArgs(args: ReadonlyArray<string>): { rootDir: string } {
+  const parsedArgs = parseArgs(args);
+  const rootDirArg = parsedArgs._[0];
+
+  return {
+    rootDir: typeof rootDirArg === "string" ? rootDirArg : "_site",
+  };
+}
+
 async function main(): Promise<void> {
-  const rootDir = Deno.args[0] ?? "_site";
+  const { rootDir } = parseCliArgs(Deno.args);
   const scriptFiles = await collectBrowserScriptFiles(rootDir);
   const issues: ImportIssue[] = [];
 

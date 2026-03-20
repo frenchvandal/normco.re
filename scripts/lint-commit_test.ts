@@ -103,6 +103,22 @@ describe("lintCommit()", () => {
       assertStringIncludes(rule?.message ?? "", "wip");
     });
 
+    it("suggests the closest allowed type when the typo is plausible", () => {
+      seedTestFaker(2001);
+      const subject = faker.lorem.words(3);
+      const report = lintCommit(`feature: ${subject}`);
+      const rule = report.errors.find((e) => e.rule === "type-enum");
+      assertStringIncludes(rule?.message ?? "", 'Did you mean "feat"?');
+    });
+
+    it("does not invent a suggestion when the type is unrelated", () => {
+      seedTestFaker(2002);
+      const subject = faker.lorem.words(3);
+      const report = lintCommit(`wip: ${subject}`);
+      const rule = report.errors.find((e) => e.rule === "type-enum");
+      assertEquals(rule?.message.includes("Did you mean"), false);
+    });
+
     it("accepts all allowed types", () => {
       seedTestFaker(1010);
       const subject = faker.lorem.words(2);

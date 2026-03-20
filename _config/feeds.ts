@@ -1,5 +1,6 @@
 /** Multilingual RSS, Atom, and JSON Feed configurations. */
 
+import { mapNotNullish } from "jsr/collections";
 import { type Data, Page } from "lume/core/file.ts";
 import feed from "lume/plugins/feed.ts";
 import type Site from "lume/core/site.ts";
@@ -157,9 +158,11 @@ export function createAtomFeedContent(
   isComplete: boolean = false,
 ): string {
   const fallbackDate = new Date();
-  const entries = pages
-    .map((page) => buildAtomEntry(site, page, fallbackDate))
-    .filter((entry): entry is AtomFeedEntry => entry !== undefined);
+  const entries = mapNotNullish(
+    pages,
+    (page): AtomFeedEntry | undefined =>
+      buildAtomEntry(site, page, fallbackDate),
+  );
   const atomPath = `${variant.pathPrefix}${ATOM_FEED_PATH}`;
   const updated = entries.reduce<Date>(
     (latest, entry) => entry.updated > latest ? entry.updated : latest,

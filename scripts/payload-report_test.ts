@@ -11,6 +11,7 @@ import {
   createPayloadPolicyFingerprint,
   createPayloadReportMetadata,
   getPayloadDeltas,
+  parseCliOptions,
   parsePayloadPolicy,
   parsePayloadReport,
 } from "./payload-report.ts";
@@ -249,6 +250,18 @@ describe("payload policy mode", () => {
     );
   });
 
+  it("suggests the closest field name for invalid policy keys", () => {
+    assertThrows(
+      () =>
+        parsePayloadPolicy({
+          version: 1,
+          maxRouteDeltaByte: 0,
+        }),
+      Error,
+      "Did you mean `maxRouteDeltaBytes`?",
+    );
+  });
+
   it("applies policy defaults without overriding explicit CLI fields", () => {
     const policy = parsePayloadPolicy({
       version: 1,
@@ -311,6 +324,16 @@ describe("payload policy mode", () => {
     assertEquals(
       createPayloadPolicyFingerprint(firstPolicy),
       createPayloadPolicyFingerprint(secondPolicy),
+    );
+  });
+});
+
+describe("CLI parsing", () => {
+  it("suggests the closest CLI flag for unknown options", () => {
+    assertThrows(
+      () => parseCliOptions(["--markdwon=/tmp/report.md"]),
+      Error,
+      "Did you mean `--markdown`?",
     );
   });
 });

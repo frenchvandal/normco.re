@@ -3,6 +3,7 @@
 import { assert } from "jsr/assert";
 import { FakeTime } from "jsr:@std/testing@^1.0.17/time";
 import { describe, it } from "jsr/testing-bdd";
+import { stub } from "jsr/testing-mock";
 import { faker, seedTestFaker, TEST_FAKER_REF_DATE } from "../../test/faker.ts";
 import { formatCopyrightYears } from "./copyright.ts";
 
@@ -13,18 +14,20 @@ const STRICTLY_PAST_REF_DATE = new Date("2026-01-01T00:00:00.000Z");
 const STRICTLY_FUTURE_REF_DATE = new Date("2026-12-31T23:59:59.999Z");
 
 function captureConsoleWarning(run: () => void): string {
-  const originalWarn = globalThis.console.warn;
   let warningMessage = "";
-
-  globalThis.console.warn = (...args: unknown[]) => {
-    warningMessage = args.map(String).join(" ");
-  };
+  const consoleWarnStub = stub(
+    globalThis.console,
+    "warn",
+    (...args: unknown[]) => {
+      warningMessage = args.map(String).join(" ");
+    },
+  );
 
   try {
     run();
     return warningMessage;
   } finally {
-    globalThis.console.warn = originalWarn;
+    consoleWarnStub.restore();
   }
 }
 

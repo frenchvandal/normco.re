@@ -19,6 +19,9 @@
  * ```
  */
 
+import { parseArgs } from "jsr/cli";
+import { closestString, levenshteinDistance } from "jsr/text";
+
 // ── Types ──────────────────────────────────────────────────────────────────
 
 /** Severity level of a lint issue. */
@@ -42,20 +45,22 @@ export type LintReport = {
 // ── Constants (mirrors @commitlint/config-conventional) ────────────────────
 
 /** Allowed commit types from `@commitlint/config-conventional`. */
+const ALLOWED_TYPE_LIST = [
+  "build",
+  "chore",
+  "ci",
+  "docs",
+  "feat",
+  "fix",
+  "perf",
+  "refactor",
+  "revert",
+  "style",
+  "test",
+] as const;
+
 const ALLOWED_TYPES = new Set(
-  [
-    "build",
-    "chore",
-    "ci",
-    "docs",
-    "feat",
-    "fix",
-    "perf",
-    "refactor",
-    "revert",
-    "style",
-    "test",
-  ] as const,
+  ALLOWED_TYPE_LIST,
 );
 
 /** Maximum character count for the header line. */
@@ -92,6 +97,18 @@ function parseHeader(header: string): ParsedHeader | undefined {
   const subject = groups["subject"] ?? "";
 
   return { type, scope, breaking, subject };
+}
+
+function getClosestAllowedType(type: string): string | undefined {
+  const suggestion = closestString(type, [...ALLOWED_TYPE_LIST]);
+  const maxDistance = Math.max(
+    1,
+    Math.floor(Math.max(type.length, suggestion.length) / 2),
+  );
+
+  return levenshteinDistance(type, suggestion) <= maxDistance
+    ? suggestion
+    : undefined;
 }
 
 // ── Rules ──────────────────────────────────────────────────────────────────
@@ -144,12 +161,14 @@ export function lintCommit(input: string): LintReport {
     if (
       !ALLOWED_TYPES.has(parsed.type as Parameters<typeof ALLOWED_TYPES.has>[0])
     ) {
+      const suggestion = getClosestAllowedType(parsed.type);
+
       issues.push({
         rule: "type-enum",
         severity: "error",
         message: `Type "${parsed.type}" is not allowed. Allowed types: ${
           [...ALLOWED_TYPES].join(", ")
-        }.`,
+        }.${suggestion ? ` Did you mean "${suggestion}"?` : ""}`,
       });
     }
 
@@ -311,7 +330,11 @@ function printReport(report: LintReport): void {
 
 /** Reads the commit message, runs the linter, and exits with the appropriate code. */
 async function main(): Promise<void> {
-  const commitMsgPath = Deno.args[0] ?? ".git/COMMIT_EDITMSG";
+  const parsedArgs = parseArgs(Deno.args);
+  const commitMsgPathArg = parsedArgs._[0];
+  const commitMsgPath = typeof commitMsgPathArg === "string"
+    ? commitMsgPathArg
+    : ".git/COMMIT_EDITMSG";
 
   let raw: string;
   try {

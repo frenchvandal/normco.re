@@ -1,3 +1,5 @@
+import { walk } from "jsr/fs";
+
 type CommandStatus = {
   readonly code: number;
   readonly success: boolean;
@@ -72,17 +74,13 @@ async function collectHtmlFiles(
   const files: string[] = [];
 
   try {
-    for await (const entry of Deno.readDir(rootDir)) {
-      const path = `${rootDir}/${entry.name}`;
-
-      if (entry.isDirectory) {
-        files.push(...await collectHtmlFiles(path));
-        continue;
-      }
-
-      if (entry.isFile && path.endsWith(".html")) {
-        files.push(path);
-      }
+    for await (
+      const entry of walk(rootDir, {
+        includeDirs: false,
+        exts: [".html"],
+      })
+    ) {
+      files.push(entry.path);
     }
   } catch (error) {
     if (error instanceof Deno.errors.NotFound) {

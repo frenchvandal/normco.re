@@ -1,3 +1,4 @@
+import { pooledMap } from "jsr/async";
 import type { Page } from "lume/core/file.ts";
 import type Site from "lume/core/site.ts";
 import type { Plugin } from "lume/core/site.ts";
@@ -18,6 +19,7 @@ export type ShikiPluginOptions = {
 };
 
 const DEFAULT_EXTENSIONS = [".html"] as const;
+const SHIKI_HIGHLIGHT_CONCURRENCY = 4;
 let highlighterPromise: Promise<Highlighter> | undefined;
 
 function mergeClassNames(
@@ -145,7 +147,15 @@ export default function shiki(options: ShikiPluginOptions): Plugin {
 
   return (site: Site) => {
     site.process([...extensions], async (pages) => {
-      await Promise.all(pages.map((page) => highlightPage(page, options)));
+      for await (
+        const _ of pooledMap(
+          SHIKI_HIGHLIGHT_CONCURRENCY,
+          pages,
+          (page) => highlightPage(page, options),
+        )
+      ) {
+        // Exhaust the pooled iterator to keep processing bounded but ordered.
+      }
     });
   };
 }

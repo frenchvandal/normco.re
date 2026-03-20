@@ -1,7 +1,13 @@
 import { assertEquals, assertRejects } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
-import { readJsonFile, readSchemaFile, validate } from "./validate.ts";
+import {
+  readJsonFile,
+  readSchemaFile,
+  validate,
+  validateAtomFeed,
+  validateRssFeed,
+} from "./validate.ts";
 import { withPatchedDeno } from "../test/mock_deno.ts";
 
 describe("validate()", () => {
@@ -142,5 +148,39 @@ describe("readSchemaFile()", () => {
         `Schema file "${filePath}" must contain a JSON object at the root`,
       );
     });
+  });
+});
+
+describe("validateAtomFeed()", () => {
+  it("requires feed-level fields even when an entry contains the same tag", () => {
+    const errors = validateAtomFeed(
+      `<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/feed.xsl"?><feed xmlns="http://www.w3.org/2005/Atom"><title>normco.re</title><updated>2026-03-16T00:00:00Z</updated><author><name>Phiphi</name></author><link rel="self" type="application/atom+xml" href="https://normco.re/feed.atom"/><link rel="alternate" type="text/html" href="https://normco.re/"/><entry><id>https://normco.re/posts/hello/</id><title>Hello</title><updated>2026-03-16T00:00:00Z</updated></entry></feed>`,
+    );
+
+    assertEquals(errors.some((error) => error.path === "$.feed.id"), true);
+  });
+
+  it("rejects raw child markup inside content[type=html]", () => {
+    const errors = validateAtomFeed(
+      `<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/feed.xsl"?><feed xmlns="http://www.w3.org/2005/Atom"><id>https://normco.re/feed.atom</id><title>normco.re</title><updated>2026-03-16T00:00:00Z</updated><author><name>Phiphi</name></author><link rel="self" type="application/atom+xml" href="https://normco.re/feed.atom"/><link rel="alternate" type="text/html" href="https://normco.re/"/><entry><id>https://normco.re/posts/hello/</id><title>Hello</title><updated>2026-03-16T00:00:00Z</updated><content type="html"><p>Raw HTML</p></content></entry></feed>`,
+    );
+
+    assertEquals(
+      errors.some((error) => error.path === "$.feed.entry[0].content"),
+      true,
+    );
+  });
+});
+
+describe("validateRssFeed()", () => {
+  it("requires a channel-level link even when an item contains one", () => {
+    const errors = validateRssFeed(
+      `<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/feed.xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>normco.re</title><description>Personal blog</description><language>en</language><lastBuildDate>Tue, 16 Mar 2026 00:00:00 GMT</lastBuildDate><atom:link rel="self" type="application/rss+xml" href="https://normco.re/feed.rss"/><item><title>Hello</title><link>https://normco.re/posts/hello/</link><guid>https://normco.re/posts/hello/</guid><pubDate>Tue, 16 Mar 2026 00:00:00 GMT</pubDate></item></channel></rss>`,
+    );
+
+    assertEquals(
+      errors.some((error) => error.path === "$.rss.channel.link"),
+      true,
+    );
   });
 });

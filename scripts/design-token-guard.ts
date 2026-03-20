@@ -1,3 +1,4 @@
+import { walk } from "jsr/fs";
 import { join, relative } from "jsr/path";
 
 export type StyleSource = {
@@ -108,28 +109,19 @@ export function scanStyleSources(
 
 async function collectStyleSources(rootDir: string): Promise<StyleSource[]> {
   const styleSources: StyleSource[] = [];
+  const stylesRoot = join(rootDir, STYLE_ROOT);
 
-  async function visit(directory: string): Promise<void> {
-    for await (const entry of Deno.readDir(directory)) {
-      const entryPath = join(directory, entry.name);
-
-      if (entry.isDirectory) {
-        await visit(entryPath);
-        continue;
-      }
-
-      if (!entry.isFile || !entry.name.endsWith(".scss")) {
-        continue;
-      }
-
-      styleSources.push({
-        filePath: normalizePath(relative(rootDir, entryPath)),
-        source: await Deno.readTextFile(entryPath),
-      });
-    }
+  for await (
+    const entry of walk(stylesRoot, {
+      includeDirs: false,
+      exts: [".scss"],
+    })
+  ) {
+    styleSources.push({
+      filePath: normalizePath(relative(rootDir, entry.path)),
+      source: await Deno.readTextFile(entry.path),
+    });
   }
-
-  await visit(join(rootDir, STYLE_ROOT));
 
   return styleSources;
 }

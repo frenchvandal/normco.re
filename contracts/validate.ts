@@ -11,7 +11,10 @@
  * Exits with code 1 if any validation error is found.
  */
 
+import { parseArgs } from "jsr/cli";
+import { walk } from "jsr/fs";
 import { bold, green, red, yellow } from "jsr/fmt-colors";
+import { isCData, isElement, isText, parse } from "jsr/xml";
 
 /** Minimal JSON Schema validator for the subset of features we use. */
 export interface SchemaNode {
@@ -35,6 +38,11 @@ export interface ValidationError {
   readonly path: string;
   readonly message: string;
 }
+
+type XmlDocument = ReturnType<typeof parse>;
+type XmlElement = XmlDocument["root"];
+type XmlChildNode = XmlElement["children"][number];
+type FilePath = string | URL;
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
@@ -235,7 +243,7 @@ export function validate(
 }
 
 /** Reads and parses a JSON file with contextualized failures. */
-export async function readJsonFile(filePath: string): Promise<unknown> {
+export async function readJsonFile(filePath: FilePath): Promise<unknown> {
   let content: string;
 
   try {
@@ -256,7 +264,7 @@ export async function readJsonFile(filePath: string): Promise<unknown> {
 }
 
 /** Reads a JSON schema file and ensures the root value is an object. */
-export async function readSchemaFile(filePath: string): Promise<SchemaNode> {
+export async function readSchemaFile(filePath: FilePath): Promise<SchemaNode> {
   const value = await readJsonFile(filePath);
 
   if (!isRecord(value)) {
@@ -269,7 +277,7 @@ export async function readSchemaFile(filePath: string): Promise<SchemaNode> {
 }
 
 /** Reads a text file with contextualized failures. */
-async function readTextFile(filePath: string): Promise<string> {
+async function readTextFile(filePath: FilePath): Promise<string> {
   try {
     return await Deno.readTextFile(filePath);
   } catch (error) {
@@ -286,96 +294,159 @@ async function findOutputFiles(
 ): Promise<ReadonlyArray<string>> {
   const files: string[] = [];
 
-  async function walk(currentDir: string): Promise<void> {
-    for await (const entry of Deno.readDir(currentDir)) {
-      const fullPath = `${currentDir}/${entry.name}`;
-      if (entry.isDirectory) {
-        await walk(fullPath);
-      } else if (entry.isFile && pattern.test(fullPath)) {
-        files.push(fullPath);
-      }
+  for await (
+    const entry of walk(dir, {
+      includeDirs: false,
+    })
+  ) {
+    const fullPath = entry.path.replaceAll("\\", "/");
+
+    if (pattern.test(fullPath)) {
+      files.push(fullPath);
     }
   }
 
-  await walk(dir);
   return files.sort();
 }
 
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function parseCliArgs(args: ReadonlyArray<string>): { siteDir: string } {
+  const parsedArgs = parseArgs(args, {
+    string: ["site-dir"],
+    default: {
+      "site-dir": "_site",
+    },
+  });
+  const siteDir = parsedArgs["site-dir"];
+
+  return {
+    siteDir: typeof siteDir === "string" && siteDir.length > 0
+      ? siteDir
+      : "_site",
+  };
 }
 
-function getTagText(xml: string, tagName: string): string | undefined {
-  const matcher = new RegExp(
-    `<${escapeRegExp(tagName)}\\b[^>]*>([\\s\\S]*?)<\\/${
-      escapeRegExp(tagName)
-    }>`,
-    "m",
+function parseXmlDocument(
+  content: string,
+): XmlDocument | ValidationError {
+  try {
+    return parse(content);
+  } catch (error) {
+    return {
+      path: "$.xml",
+      message: `Malformed XML: ${getErrorMessage(error)}`,
+    };
+  }
+}
+
+function isValidationError(
+  value: XmlDocument | ValidationError,
+): value is ValidationError {
+  return "path" in value;
+}
+
+function getChildElements(
+  element: XmlElement,
+  tagName?: string,
+): XmlElement[] {
+  return element.children.filter((child): child is XmlElement =>
+    isElement(child) && (tagName === undefined || child.name.raw === tagName)
   );
-  const match = xml.match(matcher);
-  const value = match?.[1]?.trim();
-  return value && value.length > 0 ? value : undefined;
 }
 
-function getElements(xml: string, tagName: string): string[] {
-  const matcher = new RegExp(
-    `<${escapeRegExp(tagName)}\\b[^>]*>([\\s\\S]*?)<\\/${
-      escapeRegExp(tagName)
-    }>`,
-    "g",
-  );
-
-  return Array.from(xml.matchAll(matcher), (match) => match[1] ?? "");
+function getFirstChildElement(
+  element: XmlElement,
+  tagName: string,
+): XmlElement | undefined {
+  return getChildElements(element, tagName)[0];
 }
 
-function getStartTags(xml: string, tagName: string): string[] {
-  const matcher = new RegExp(
-    `<${escapeRegExp(tagName)}\\b[^>]*\\/?>`,
-    "g",
-  );
-
-  return Array.from(xml.matchAll(matcher), (match) => match[0]);
+function getChildText(
+  element: XmlElement,
+  tagName: string,
+): string | undefined {
+  const child = getFirstChildElement(element, tagName);
+  return child ? getElementText(child) : undefined;
 }
 
-function hasTagWithAttributes(
-  xml: string,
+function getElementText(element: XmlElement): string | undefined {
+  const value = element.children
+    .map((child) => {
+      if (isText(child) || isCData(child)) {
+        return child.text;
+      }
+
+      if (isElement(child)) {
+        return getElementText(child) ?? "";
+      }
+
+      return "";
+    })
+    .join("")
+    .trim();
+  return value.length > 0 ? value : undefined;
+}
+
+function hasDirectChildWithAttributes(
+  element: XmlElement,
   tagName: string,
   attributes: Record<string, string>,
 ): boolean {
-  return getStartTags(xml, tagName).some((tag) =>
+  return getChildElements(element, tagName).some((child) =>
     Object.entries(attributes).every(([name, value]) =>
-      tag.includes(`${name}="${value}"`)
+      child.attributes[name] === value
     )
   );
 }
 
-function validateRssFeed(content: string): ReadonlyArray<ValidationError> {
-  const errors: ValidationError[] = [];
+function hasXmlDeclaration(document: XmlDocument): boolean {
+  return document.declaration?.version === "1.0" &&
+    document.declaration.encoding === "UTF-8";
+}
 
-  if (
-    !/^<\?xml version="1\.0" encoding="UTF-8"\?>/m.test(content)
-  ) {
+function hasStylesheetProcessingInstruction(content: string): boolean {
+  return /<\?xml-stylesheet\b[^>]*href=(["'])\/feed\.xsl\1[^>]*\?>/m.test(
+    content,
+  );
+}
+
+function hasRawHtmlChildren(element: XmlElement): boolean {
+  return element.children.some((child) => isElement(child) || isCData(child));
+}
+
+export function validateRssFeed(
+  content: string,
+): ReadonlyArray<ValidationError> {
+  const errors: ValidationError[] = [];
+  const document = parseXmlDocument(content);
+
+  if (isValidationError(document)) {
+    return [document];
+  }
+
+  if (!hasXmlDeclaration(document)) {
     errors.push({
       path: "$.xml",
       message: "Missing XML declaration with UTF-8 encoding",
     });
   }
 
-  if (!/<\?xml-stylesheet\b[^>]*href="\/feed\.xsl"\?>/m.test(content)) {
+  if (!hasStylesheetProcessingInstruction(content)) {
     errors.push({
       path: "$.xml-stylesheet",
       message: "Missing feed stylesheet processing instruction",
     });
   }
 
-  if (!/<rss\b[^>]*version="2\.0"/m.test(content)) {
+  const root = document.root;
+
+  if (root.name.raw !== "rss" || root.attributes["version"] !== "2.0") {
     errors.push({
       path: "$.rss",
       message: "Root element must be RSS 2.0",
     });
   }
 
-  const channel = getTagText(content, "channel");
+  const channel = getFirstChildElement(root, "channel");
   if (!channel) {
     errors.push({
       path: "$.rss.channel",
@@ -393,7 +464,8 @@ function validateRssFeed(content: string): ReadonlyArray<ValidationError> {
       "lastBuildDate",
     ]
   ) {
-    if (!getTagText(channel, tagName)) {
+    const element = getFirstChildElement(channel, tagName);
+    if (!element || !getElementText(element)) {
       errors.push({
         path: `$.rss.channel.${tagName}`,
         message: "Required element missing or empty",
@@ -401,7 +473,7 @@ function validateRssFeed(content: string): ReadonlyArray<ValidationError> {
     }
   }
 
-  const lastBuildDate = getTagText(channel, "lastBuildDate");
+  const lastBuildDate = getChildText(channel, "lastBuildDate");
   if (lastBuildDate && Number.isNaN(Date.parse(lastBuildDate))) {
     errors.push({
       path: "$.rss.channel.lastBuildDate",
@@ -410,7 +482,7 @@ function validateRssFeed(content: string): ReadonlyArray<ValidationError> {
   }
 
   if (
-    !hasTagWithAttributes(channel, "atom:link", {
+    !hasDirectChildWithAttributes(channel, "atom:link", {
       rel: "self",
       type: "application/rss+xml",
     })
@@ -421,10 +493,11 @@ function validateRssFeed(content: string): ReadonlyArray<ValidationError> {
     });
   }
 
-  const items = getElements(channel, "item");
+  const items = getChildElements(channel, "item");
   for (const [index, item] of items.entries()) {
     for (const tagName of ["title", "link", "guid", "pubDate"]) {
-      if (!getTagText(item, tagName)) {
+      const element = getFirstChildElement(item, tagName);
+      if (!element || !getElementText(element)) {
         errors.push({
           path: `$.rss.channel.item[${index}].${tagName}`,
           message: "Required element missing or empty",
@@ -432,7 +505,7 @@ function validateRssFeed(content: string): ReadonlyArray<ValidationError> {
       }
     }
 
-    const link = getTagText(item, "link");
+    const link = getChildText(item, "link");
     if (link && !isValidUri(link)) {
       errors.push({
         path: `$.rss.channel.item[${index}].link`,
@@ -440,7 +513,7 @@ function validateRssFeed(content: string): ReadonlyArray<ValidationError> {
       });
     }
 
-    const guid = getTagText(item, "guid");
+    const guid = getChildText(item, "guid");
     if (guid && !isValidUri(guid)) {
       errors.push({
         path: `$.rss.channel.item[${index}].guid`,
@@ -448,7 +521,7 @@ function validateRssFeed(content: string): ReadonlyArray<ValidationError> {
       });
     }
 
-    const pubDate = getTagText(item, "pubDate");
+    const pubDate = getChildText(item, "pubDate");
     if (pubDate && Number.isNaN(Date.parse(pubDate))) {
       errors.push({
         path: `$.rss.channel.item[${index}].pubDate`,
@@ -460,26 +533,36 @@ function validateRssFeed(content: string): ReadonlyArray<ValidationError> {
   return errors;
 }
 
-function validateAtomFeed(content: string): ReadonlyArray<ValidationError> {
+export function validateAtomFeed(
+  content: string,
+): ReadonlyArray<ValidationError> {
   const errors: ValidationError[] = [];
+  const document = parseXmlDocument(content);
 
-  if (
-    !/^<\?xml version="1\.0" encoding="UTF-8"\?>/m.test(content)
-  ) {
+  if (isValidationError(document)) {
+    return [document];
+  }
+
+  if (!hasXmlDeclaration(document)) {
     errors.push({
       path: "$.xml",
       message: "Missing XML declaration with UTF-8 encoding",
     });
   }
 
-  if (!/<\?xml-stylesheet\b[^>]*href="\/feed\.xsl"\?>/m.test(content)) {
+  if (!hasStylesheetProcessingInstruction(content)) {
     errors.push({
       path: "$.xml-stylesheet",
       message: "Missing feed stylesheet processing instruction",
     });
   }
 
-  if (!/<feed\b[^>]*xmlns="http:\/\/www\.w3\.org\/2005\/Atom"/m.test(content)) {
+  const root = document.root;
+
+  if (
+    root.name.raw !== "feed" ||
+    root.attributes["xmlns"] !== "http://www.w3.org/2005/Atom"
+  ) {
     errors.push({
       path: "$.feed",
       message: "Root element must declare the Atom namespace",
@@ -487,7 +570,8 @@ function validateAtomFeed(content: string): ReadonlyArray<ValidationError> {
   }
 
   for (const tagName of ["id", "title", "updated"]) {
-    if (!getTagText(content, tagName)) {
+    const element = getFirstChildElement(root, tagName);
+    if (!element || !getElementText(element)) {
       errors.push({
         path: `$.feed.${tagName}`,
         message: "Required element missing or empty",
@@ -495,14 +579,14 @@ function validateAtomFeed(content: string): ReadonlyArray<ValidationError> {
     }
   }
 
-  if (!getTagText(content, "author")) {
+  if (!getChildText(root, "author")) {
     errors.push({
       path: "$.feed.author",
       message: "Feed author is required for Atom conformance",
     });
   }
 
-  const updated = getTagText(content, "updated");
+  const updated = getChildText(root, "updated");
   if (updated && !isValidDateTime(updated)) {
     errors.push({
       path: "$.feed.updated",
@@ -511,7 +595,7 @@ function validateAtomFeed(content: string): ReadonlyArray<ValidationError> {
   }
 
   if (
-    !hasTagWithAttributes(content, "link", {
+    !hasDirectChildWithAttributes(root, "link", {
       rel: "self",
       type: "application/atom+xml",
     })
@@ -523,7 +607,7 @@ function validateAtomFeed(content: string): ReadonlyArray<ValidationError> {
   }
 
   if (
-    !hasTagWithAttributes(content, "link", {
+    !hasDirectChildWithAttributes(root, "link", {
       rel: "alternate",
       type: "text/html",
     })
@@ -534,10 +618,11 @@ function validateAtomFeed(content: string): ReadonlyArray<ValidationError> {
     });
   }
 
-  const entries = getElements(content, "entry");
+  const entries = getChildElements(root, "entry");
   for (const [index, entry] of entries.entries()) {
     for (const tagName of ["id", "title", "updated"]) {
-      if (!getTagText(entry, tagName)) {
+      const element = getFirstChildElement(entry, tagName);
+      if (!element || !getElementText(element)) {
         errors.push({
           path: `$.feed.entry[${index}].${tagName}`,
           message: "Required element missing or empty",
@@ -545,7 +630,7 @@ function validateAtomFeed(content: string): ReadonlyArray<ValidationError> {
       }
     }
 
-    const entryUpdated = getTagText(entry, "updated");
+    const entryUpdated = getChildText(entry, "updated");
     if (entryUpdated && !isValidDateTime(entryUpdated)) {
       errors.push({
         path: `$.feed.entry[${index}].updated`,
@@ -553,12 +638,11 @@ function validateAtomFeed(content: string): ReadonlyArray<ValidationError> {
       });
     }
 
-    const entryContent = getTagText(entry, "content");
+    const contentElement = getFirstChildElement(entry, "content");
     if (
-      entryContent &&
-      hasTagWithAttributes(entry, "content", { type: "html" }) &&
-      (entryContent.includes("<![CDATA[") ||
-        /<[a-zA-Z][^>]*>/.test(entryContent))
+      contentElement &&
+      contentElement.attributes["type"] === "html" &&
+      hasRawHtmlChildren(contentElement)
     ) {
       errors.push({
         path: `$.feed.entry[${index}].content`,
@@ -572,14 +656,17 @@ function validateAtomFeed(content: string): ReadonlyArray<ValidationError> {
 }
 
 async function main(): Promise<void> {
-  const siteDir = Deno.args.find((a) => a.startsWith("--site-dir="))
-    ?.split("=")[1] ?? "_site";
+  const { siteDir } = parseCliArgs(Deno.args);
 
   console.log(bold("Generated feed/content validation"));
   console.log(`Site directory: ${siteDir}\n`);
 
-  const postSchema = await readSchemaFile("contracts/post.schema.json");
-  const feedSchema = await readSchemaFile("contracts/feed.schema.json");
+  const postSchema = await readSchemaFile(
+    new URL("./post.schema.json", import.meta.url),
+  );
+  const feedSchema = await readSchemaFile(
+    new URL("./feed.schema.json", import.meta.url),
+  );
 
   let totalErrors = 0;
   let totalFiles = 0;

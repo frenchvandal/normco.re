@@ -1,3 +1,4 @@
+import { parseArgs } from "jsr/cli";
 import lume from "lume/mod.ts";
 import type Site from "lume/core/site.ts";
 import { readConsoleDebugPolicy } from "./plugins/console_debug.ts";
@@ -15,9 +16,13 @@ import { registerXslStylesheets } from "./_config/xsl_stylesheets.ts";
 
 /** Console debug policy, read once at module init from `LUME_LOGS`. */
 const consoleDebugPolicy = readConsoleDebugPolicy((name) => Deno.env.get(name));
+const parsedDenoArgs = parseArgs(Deno.args, {
+  boolean: ["serve"],
+  alias: { s: "serve" },
+});
 const isServeTask = Deno.env.get("LUME_SERVE") === "1" ||
   Deno.env.get("DENO_TASK_NAME") === "serve" ||
-  Deno.args.includes("-s") || Deno.args.includes("--serve");
+  parsedDenoArgs.serve === true;
 
 type BuildData = {
   repositoryUrl?: string;

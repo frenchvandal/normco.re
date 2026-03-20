@@ -35,6 +35,19 @@ relevant Carbon documentation for the pattern you are touching.
 
 ## Development Rules
 
+### Deno Utilities
+
+When touching build scripts or repository utilities:
+
+- Prefer Deno's built-in primitives for low-level work such as `Deno.Command`,
+  `Deno.readTextFile`, `Deno.writeTextFile`, `Deno.readDir`, `Deno.stat`,
+  `Deno.errors.NotFound`, and `import.meta.main`.
+- Prefer Deno std helpers over ad-hoc implementations for common higher-level
+  tasks such as CLI parsing, recursive filesystem traversal, HTML escaping,
+  Markdown frontmatter parsing, and targeted test stubs.
+- For repo-local files read by scripts, resolve from `import.meta.url` or
+  `import.meta.dirname` instead of assuming the current working directory.
+
 ### Tokens
 
 Do not introduce new hard-coded UI values when a Carbon token already exists.

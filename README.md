@@ -22,6 +22,9 @@ official Carbon packages, and deployed as a static site to
   navigation without relying on runtime JavaScript.
 - Search exposes inline loading, retry, and result feedback with accessible
   status announcements.
+- Repository utilities standardize on Deno core APIs plus Deno std helpers for
+  CLI parsing, recursive filesystem traversal, XML validation, escaping, and
+  frontmatter parsing.
 - GitHub Actions builds the site and deploys it to Alibaba Cloud OSS and CDN by
   way of OIDC.
 
@@ -43,15 +46,15 @@ If your environment requires system CA certificates, prefix commands with
 
 ## Daily Commands
 
-| Task          | Command                        | Notes                                        |
-| ------------- | ------------------------------ | -------------------------------------------- |
-| Serve         | `deno task serve`              | Starts the local site and LumeCMS            |
-| Check         | `deno task check`              | Type-checks the codebase                     |
-| Test          | `deno task test`               | Runs unit and integration tests              |
-| Build         | `deno task build`              | Builds `_site/` for production               |
-| Contracts     | `deno task validate-contracts` | Validates feeds and optional JSON outputs    |
-| Install hooks | `deno task lefthook:install`   | Installs local Git hooks                     |
-| Update deps   | `deno task update-deps`        | Updates pinned dependencies and the lockfile |
+| Task          | Command                        | Notes                                                  |
+| ------------- | ------------------------------ | ------------------------------------------------------ |
+| Serve         | `deno task serve`              | Starts the local site and LumeCMS                      |
+| Check         | `deno task check`              | Type-checks the codebase                               |
+| Test          | `deno task test`               | Runs unit and integration tests                        |
+| Build         | `deno task build`              | Builds `_site/` for production                         |
+| Contracts     | `deno task validate-contracts` | Validates feeds structurally and optional JSON outputs |
+| Install hooks | `deno task lefthook:install`   | Installs local Git hooks                               |
+| Update deps   | `deno task update-deps`        | Updates pinned dependencies and the lockfile           |
 
 Recommended verification for a nontrivial change:
 
@@ -202,6 +205,10 @@ The production build runs several checks in sequence:
 - HTML validation
 - browser-safe import validation
 - broken-link validation against final output after asset fingerprinting
+
+Feed and JSON contract validation is also available separately through
+`deno task validate-contracts`. The RSS and Atom checks parse XML structurally
+instead of relying on tag-matching regexes.
 
 Generated quality artifacts live under `_cache/quality/`, which is ignored by
 Git. The key reports are:

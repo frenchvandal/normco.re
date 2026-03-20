@@ -1,4 +1,6 @@
+import { pooledMap } from "jsr/async";
 import { extname, join } from "jsr/path";
+import { closestString, levenshteinDistance } from "jsr/text";
 
 const DEFAULT_ROUTES = [
   "/index.html",
@@ -20,7 +22,20 @@ const POLICY_FIELDS = [
   "maxTotalDeltaBytes",
   "maxRouteDeltaBytes",
 ] as const satisfies ReadonlyArray<PolicyField>;
+const CLI_OPTIONS = [
+  "--root",
+  "--routes",
+  "--baseline",
+  "--output",
+  "--markdown",
+  "--policy",
+  "--policy-baseline",
+  "--require-baseline",
+  "--max-total-delta",
+  "--max-route-delta",
+] as const;
 const SUPPORTED_ASSET_EXTENSIONS = new Set([".js", ".css"]);
+const PAYLOAD_REPORT_IO_CONCURRENCY = 8;
 const ASSET_REFERENCE_PATTERNS = [
   /<script[^>]*\ssrc="([^"]+)"[^>]*>/g,
   /<link[^>]*\shref="([^"]+)"[^>]*>/g,
@@ -119,7 +134,7 @@ export type PolicyField =
   | "maxTotalDeltaBytes"
   | "maxRouteDeltaBytes";
 
-type ParsedCliOptions = {
+export type ParsedCliOptions = {
   options: CliOptions;
   configuredFields: ReadonlySet<PolicyField>;
 };
@@ -229,6 +244,47 @@ function getRouteSetHash(routes: ReadonlyArray<string>): string {
   return hashString(getSortedUniqueRoutes(routes).join("\n"));
 }
 
+function getClosestSuggestion(
+  value: string,
+  candidates: ReadonlyArray<string>,
+): string | undefined {
+  if (candidates.length === 0) {
+    return undefined;
+  }
+
+  const suggestion = closestString(value, [...candidates]);
+  const maxDistance = Math.max(
+    1,
+    Math.floor(Math.max(value.length, suggestion.length) / 2),
+  );
+
+  return levenshteinDistance(value, suggestion) <= maxDistance
+    ? suggestion
+    : undefined;
+}
+
+function withSuggestion(
+  message: string,
+  suggestion: string | undefined,
+): string {
+  return suggestion ? `${message} Did you mean \`${suggestion}\`?` : message;
+}
+
+async function collectPooledMap<T, U>(
+  items: ReadonlyArray<T>,
+  mapper: (item: T) => Promise<U>,
+): Promise<U[]> {
+  const results: U[] = [];
+
+  for await (
+    const result of pooledMap(PAYLOAD_REPORT_IO_CONCURRENCY, items, mapper)
+  ) {
+    results.push(result);
+  }
+
+  return results;
+}
+
 function isPayloadReportMetadata(
   value: unknown,
 ): value is PayloadReportMetadata {
@@ -324,7 +380,7 @@ export function createPayloadReportMetadata(
   return metadata;
 }
 
-function parseCliOptions(args: ReadonlyArray<string>): ParsedCliOptions {
+export function parseCliOptions(args: ReadonlyArray<string>): ParsedCliOptions {
   const options: CliOptions = {
     rootDir: "_site",
     routes: DEFAULT_ROUTES,
@@ -353,7 +409,7 @@ function parseCliOptions(args: ReadonlyArray<string>): ParsedCliOptions {
       throw new Error(`Unknown positional argument: ${arg}`);
     }
 
-    const [key, value] = arg.split("=", 2);
+    const [key = "", value] = arg.split("=", 2);
 
     if (value === undefined || value.length === 0) {
       throw new Error(`Missing value for option: ${key}`);
@@ -389,7 +445,12 @@ function parseCliOptions(args: ReadonlyArray<string>): ParsedCliOptions {
         configuredFields.add("maxRouteDeltaBytes");
         break;
       default:
-        throw new Error(`Unknown option: ${key}`);
+        throw new Error(
+          withSuggestion(
+            `Unknown option: ${key}`,
+            getClosestSuggestion(key, CLI_OPTIONS),
+          ),
+        );
     }
 
     if (key === "--root") {
@@ -496,14 +557,17 @@ export function parsePayloadPolicy(rawPolicy: unknown): PayloadPolicy {
     throw new Error("Invalid payload policy: expected a JSON object");
   }
 
-  const allowedKeys = new Set([
-    "version",
-    ...POLICY_FIELDS,
-  ]);
+  const allowedFields = ["version", ...POLICY_FIELDS] as const;
+  const allowedKeys = new Set<string>(allowedFields);
 
   for (const key of Object.keys(rawPolicy)) {
     if (!allowedKeys.has(key)) {
-      throw new Error(`Invalid payload policy field: ${key}`);
+      throw new Error(
+        withSuggestion(
+          `Invalid payload policy field: ${key}`,
+          getClosestSuggestion(key, allowedFields),
+        ),
+      );
     }
   }
 
@@ -739,8 +803,9 @@ async function collectPayloadReport(
   policyFingerprint?: string,
   baselineKind?: "policy-baseline",
 ): Promise<PayloadReport> {
-  const routeReports = await Promise.all(
-    routes.map((route) => collectRoutePayload(rootDir, route)),
+  const routeReports = await collectPooledMap(
+    routes,
+    (route) => collectRoutePayload(rootDir, route),
   );
   const metadata = createPayloadReportMetadata(
     routeReports.map((routeReport) => routeReport.route),
@@ -811,8 +876,9 @@ export async function assertRouteFilesExist(
   readFileStat: FileStatReader = Deno.stat,
 ): Promise<void> {
   const routeIssues = (
-    await Promise.all(
-      routes.map((route) => getRouteBuildIssue(rootDir, route, readFileStat)),
+    await collectPooledMap(
+      routes,
+      (route) => getRouteBuildIssue(rootDir, route, readFileStat),
     )
   ).filter((issue) => issue !== undefined);
 

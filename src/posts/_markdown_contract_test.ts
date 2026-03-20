@@ -1,4 +1,5 @@
 import { assert, assertMatch, assertStringIncludes } from "jsr/assert";
+import { extract } from "jsr/front-matter-yaml";
 import { describe, it } from "jsr/testing-bdd";
 import { SHIKI_OPTIONS } from "../../_config/code_highlighting.ts";
 import { POST_CONTRACT_FIXTURES } from "../../test/posts_contract_fixtures.ts";
@@ -15,14 +16,11 @@ function parseFrontmatter(document: string): {
   readonly frontmatter: string;
 } {
   const normalizedDocument = normalizeLineEndings(document);
-  const match = normalizedDocument.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-  assert(match, "Expected Markdown document with YAML frontmatter");
-  const [, frontmatter, body] = match;
-  assert(typeof frontmatter === "string");
-  assert(typeof body === "string");
+  const { body, frontMatter } = extract(normalizedDocument);
+  assert(typeof frontMatter === "string");
 
   return {
-    frontmatter,
+    frontmatter: frontMatter,
     body: body.trim(),
   };
 }

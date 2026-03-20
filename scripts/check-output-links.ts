@@ -1,3 +1,5 @@
+import { parseArgs } from "jsr/cli";
+import { ensureDir, walk } from "jsr/fs";
 import { dirname, extname, join, normalize } from "jsr/path";
 
 const HTML_EXTENSIONS = new Set([".html", ".xml", ".xsl"]);
@@ -124,29 +126,18 @@ export function extractHtmlLocalReferences(source: string): string[] {
   return [...references];
 }
 
-async function* walkHtmlFiles(rootDir: string): AsyncGenerator<string> {
-  for await (const entry of Deno.readDir(rootDir)) {
-    const path = join(rootDir, entry.name);
-
-    if (entry.isDirectory) {
-      yield* walkHtmlFiles(path);
-      continue;
-    }
-
-    if (
-      entry.isFile && HTML_EXTENSIONS.has(extname(entry.name).toLowerCase())
-    ) {
-      yield path;
-    }
-  }
-}
-
 export async function collectBrokenOutputLinks(
   rootDir: string,
 ): Promise<BrokenLinksReport> {
   const report: BrokenLinksReport = {};
 
-  for await (const pagePath of walkHtmlFiles(rootDir)) {
+  for await (
+    const entry of walk(rootDir, {
+      includeDirs: false,
+      exts: [...HTML_EXTENSIONS],
+    })
+  ) {
+    const pagePath = entry.path;
     const source = await Deno.readTextFile(pagePath);
     const references = extractHtmlLocalReferences(source);
     const routePath = toRoutePath(rootDir, pagePath);
@@ -177,11 +168,29 @@ export async function collectBrokenOutputLinks(
   );
 }
 
+function parseCliArgs(
+  args: ReadonlyArray<string>,
+): {
+  rootDir: string;
+  reportPath: string;
+} {
+  const parsedArgs = parseArgs(args);
+  const rootDirArg = parsedArgs._[0];
+  const reportPathArg = parsedArgs._[1];
+
+  return {
+    rootDir: typeof rootDirArg === "string" ? rootDirArg : "_site",
+    reportPath: typeof reportPathArg === "string"
+      ? reportPathArg
+      : "_cache/quality/broken-links.json",
+  };
+}
+
 async function main(): Promise<void> {
-  const rootDir = Deno.args[0] ?? "_site";
-  const reportPath = Deno.args[1] ?? "_cache/quality/broken-links.json";
+  const { rootDir, reportPath } = parseCliArgs(Deno.args);
   const report = await collectBrokenOutputLinks(rootDir);
 
+  await ensureDir(dirname(reportPath));
   await Deno.writeTextFile(
     `${reportPath}`,
     `${JSON.stringify(report, null, 2)}\n`,
