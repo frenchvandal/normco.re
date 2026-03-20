@@ -10,3 +10,11 @@ sealed interface PostUiState {
 
     @Immutable data class Success(val post: PostDetail) : PostUiState
 }
+
+sealed interface PostAction {
+    data class ToggleBookmark(val bookmarked: Boolean) : PostAction
+
+    data object OpenInBrowser : PostAction
+
+    data object Share : PostAction
+}

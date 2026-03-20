@@ -7,4 +7,5 @@ data class ReaderPreferences(
     val preferredLanguage: String?,
     val saveOpenedPostsForOffline: Boolean,
     val syncOnUnmeteredOnly: Boolean,
+    val bookmarkedPostSlugs: Set<String>,
 )

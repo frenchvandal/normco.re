@@ -17,26 +17,39 @@ import re.phiphi.android.R
 fun PostRoute(modifier: Modifier = Modifier) {
     val viewModel: PostViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isBookmarked by viewModel.isBookmarked.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val shareChooserTitle = stringResource(id = R.string.post_share_chooser_title)
 
     PostScreen(
         uiState = uiState,
+        isBookmarked = isBookmarked,
         onRetry = viewModel::refresh,
-        onOpenInBrowser = { post ->
-            context.startExternalActivity(Intent(Intent.ACTION_VIEW, post.webUrl.toUri()))
-        },
-        onSharePost = { post ->
-            context.startExternalActivity(
-                Intent.createChooser(
-                    Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_SUBJECT, post.title)
-                        putExtra(Intent.EXTRA_TEXT, "${post.title}\n${post.webUrl}")
-                    },
-                    shareChooserTitle,
-                )
-            )
+        onAction = { action ->
+            when (action) {
+                is PostAction.ToggleBookmark -> viewModel.setBookmarked(action.bookmarked)
+
+                PostAction.OpenInBrowser ->
+                    (uiState as? PostUiState.Success)?.post?.let { post ->
+                        context.startExternalActivity(
+                            Intent(Intent.ACTION_VIEW, post.webUrl.toUri())
+                        )
+                    }
+
+                PostAction.Share ->
+                    (uiState as? PostUiState.Success)?.post?.let { post ->
+                        context.startExternalActivity(
+                            Intent.createChooser(
+                                Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_SUBJECT, post.title)
+                                    putExtra(Intent.EXTRA_TEXT, "${post.title}\n${post.webUrl}")
+                                },
+                                shareChooserTitle,
+                            )
+                        )
+                    }
+            }
         },
         modifier = modifier,
     )

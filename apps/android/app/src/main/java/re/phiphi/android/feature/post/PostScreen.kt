@@ -36,9 +36,9 @@ import re.phiphi.android.core.model.PostDetailBlock
 @Composable
 fun PostScreen(
     uiState: PostUiState,
+    isBookmarked: Boolean,
     onRetry: () -> Unit,
-    onOpenInBrowser: (PostDetail) -> Unit,
-    onSharePost: (PostDetail) -> Unit,
+    onAction: (PostAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
@@ -49,8 +49,8 @@ fun PostScreen(
         is PostUiState.Success ->
             PostDetailContent(
                 post = uiState.post,
-                onOpenInBrowser = onOpenInBrowser,
-                onSharePost = onSharePost,
+                isBookmarked = isBookmarked,
+                onAction = onAction,
                 modifier = modifier,
             )
     }
@@ -87,8 +87,8 @@ private fun ErrorState(message: String, onRetry: () -> Unit, modifier: Modifier 
 @Composable
 private fun PostDetailContent(
     post: PostDetail,
-    onOpenInBrowser: (PostDetail) -> Unit,
-    onSharePost: (PostDetail) -> Unit,
+    isBookmarked: Boolean,
+    onAction: (PostAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val publishedDate =
@@ -108,36 +108,12 @@ private fun PostDetailContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
-            Column(
-                modifier = Modifier.padding(top = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Text(text = post.title, style = MaterialTheme.typography.headlineMedium)
-                Text(
-                    text = publishedDate,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                post.readingTimeMinutes?.let { readingTimeMinutes ->
-                    Text(
-                        text = stringResource(id = R.string.home_reading_time, readingTimeMinutes),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Text(text = post.summary, style = MaterialTheme.typography.bodyLarge)
-                if (post.tags.isNotEmpty()) {
-                    Text(
-                        text = stringResource(id = R.string.home_tags, post.tags.joinToString()),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                PostActionsRow(
-                    onOpenInBrowser = { onOpenInBrowser(post) },
-                    onSharePost = { onSharePost(post) },
-                )
-            }
+            PostDetailHeader(
+                post = post,
+                publishedDate = publishedDate,
+                isBookmarked = isBookmarked,
+                onAction = onAction,
+            )
         }
 
         items(

@@ -27,6 +27,8 @@ constructor(
 
     private val _uiState = MutableStateFlow<PostUiState>(PostUiState.Loading)
     val uiState: StateFlow<PostUiState> = _uiState.asStateFlow()
+    private val _isBookmarked = MutableStateFlow(false)
+    val isBookmarked: StateFlow<Boolean> = _isBookmarked.asStateFlow()
     private var preferredLanguage: String? = null
 
     init {
@@ -39,9 +41,19 @@ constructor(
                     loadPost()
                 }
         }
+
+        viewModelScope.launch {
+            readerPreferencesRepository.preferences
+                .map { preferences -> slug in preferences.bookmarkedPostSlugs }
+                .distinctUntilChanged()
+                .collectLatest { bookmarked -> _isBookmarked.value = bookmarked }
+        }
     }
 
     fun refresh() = viewModelScope.launch { loadPost() }
+
+    fun setBookmarked(bookmarked: Boolean) =
+        viewModelScope.launch { readerPreferencesRepository.setPostBookmarked(slug, bookmarked) }
 
     private suspend fun loadPost() {
         _uiState.value = PostUiState.Loading

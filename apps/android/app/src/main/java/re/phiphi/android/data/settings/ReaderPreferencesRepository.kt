@@ -10,4 +10,6 @@ interface ReaderPreferencesRepository {
     suspend fun setSaveOpenedPostsForOffline(enabled: Boolean)
 
     suspend fun setSyncOnUnmeteredOnly(enabled: Boolean)
+
+    suspend fun setPostBookmarked(slug: String, bookmarked: Boolean)
 }
