@@ -10,10 +10,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -23,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -36,6 +41,7 @@ fun ArchiveScreen(
     uiState: ArchiveUiState,
     onOpenPost: (String) -> Unit,
     onRetry: () -> Unit,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
@@ -43,7 +49,12 @@ fun ArchiveScreen(
         is ArchiveUiState.Error ->
             ArchiveErrorCard(message = uiState.message, onRetry = onRetry, modifier = modifier)
         is ArchiveUiState.Success ->
-            ArchiveSuccessScreen(uiState = uiState, onOpenPost = onOpenPost, modifier = modifier)
+            ArchiveSuccessScreen(
+                uiState = uiState,
+                onOpenPost = onOpenPost,
+                onRefresh = onRefresh,
+                modifier = modifier,
+            )
     }
 }
 
@@ -51,6 +62,7 @@ fun ArchiveScreen(
 private fun ArchiveSuccessScreen(
     uiState: ArchiveUiState.Success,
     onOpenPost: (String) -> Unit,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var query by rememberSaveable { mutableStateOf("") }
@@ -74,7 +86,7 @@ private fun ArchiveSuccessScreen(
         modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { ArchiveFeedHeading(count = visibleItems.size) }
+        item { ArchiveFeedHeading(count = visibleItems.size, onRefresh = onRefresh) }
         item {
             ArchiveFilters(
                 filters = filters,
@@ -148,15 +160,27 @@ private fun androidx.compose.foundation.lazy.LazyListScope.archiveContentItems(
 }
 
 @Composable
-private fun ArchiveFeedHeading(count: Int) {
+private fun ArchiveFeedHeading(count: Int, onRefresh: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Text(
-            text = pluralStringResource(id = R.plurals.archive_feed_title, count, count),
-            style = MaterialTheme.typography.headlineSmall,
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = pluralStringResource(id = R.plurals.archive_feed_title, count, count),
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            IconButton(onClick = onRefresh) {
+                Icon(
+                    imageVector = Icons.Outlined.Refresh,
+                    contentDescription = stringResource(id = R.string.feed_refresh),
+                )
+            }
+        }
         Text(
             text = stringResource(id = R.string.archive_feed_subtitle),
             style = MaterialTheme.typography.bodyMedium,

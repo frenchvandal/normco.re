@@ -53,7 +53,11 @@ constructor(
         }
     }
 
-    fun refresh() = viewModelScope.launch { loadPosts() }
+    fun refresh() =
+        viewModelScope.launch {
+            postsRepository.refreshContent()
+            loadPosts()
+        }
 
     private suspend fun loadPosts() {
         _uiState.value = HomeUiState.Loading

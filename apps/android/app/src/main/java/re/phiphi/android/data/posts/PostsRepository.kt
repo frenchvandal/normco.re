@@ -10,4 +10,6 @@ interface PostsRepository {
     suspend fun getPostsIndex(lang: String? = null): PostsIndex
 
     suspend fun getPostDetail(slug: String, lang: String? = null): PostDetail
+
+    suspend fun refreshContent()
 }

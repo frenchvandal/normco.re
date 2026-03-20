@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import re.phiphi.android.data.posts.PostsRepository
+import re.phiphi.android.data.settings.AppLocaleManager
 import re.phiphi.android.data.settings.ReaderPreferencesRepository
 
 @HiltViewModel
@@ -19,6 +20,7 @@ class SettingsViewModel
 constructor(
     private val postsRepository: PostsRepository,
     private val readerPreferencesRepository: ReaderPreferencesRepository,
+    private val appLocaleManager: AppLocaleManager,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<SettingsUiState>(SettingsUiState.Loading)
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
@@ -62,7 +64,10 @@ constructor(
     }
 
     fun setPreferredLanguage(language: String) {
-        viewModelScope.launch { readerPreferencesRepository.setPreferredLanguage(language) }
+        viewModelScope.launch {
+            readerPreferencesRepository.setPreferredLanguage(language)
+            appLocaleManager.applyLanguage(language)
+        }
     }
 
     fun setSaveOpenedPostsForOffline(enabled: Boolean) {

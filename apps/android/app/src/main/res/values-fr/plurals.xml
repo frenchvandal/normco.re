@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <plurals name="archive_feed_title">
+    <item quantity="one">Tous les articles (%1$d élément)</item>
+    <item quantity="many">Tous les articles (%1$d éléments)</item>
+    <item quantity="other">Tous les articles (%1$d éléments)</item>
+  </plurals>
+</resources>

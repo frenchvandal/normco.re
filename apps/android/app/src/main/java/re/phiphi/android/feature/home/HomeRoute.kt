@@ -15,6 +15,7 @@ fun HomeRoute(onOpenPost: (String) -> Unit, modifier: Modifier = Modifier) {
         uiState = uiState,
         onOpenPost = onOpenPost,
         onRetry = viewModel::refresh,
+        onRefresh = viewModel::refresh,
         modifier = modifier,
     )
 }

@@ -76,6 +76,13 @@ constructor(
             refreshedPost.toPostDetail(json = json, version = manifest.version)
         }
 
+    override suspend fun refreshContent() =
+        withContext(Dispatchers.IO) {
+            bootstrapPostsSeeder.seedIfNeeded()
+            refreshRemoteContent(force = true)
+            lastRemoteRefreshAtMillis = System.currentTimeMillis()
+        }
+
     private suspend fun refreshRemoteContentIfStale() {
         remoteRefreshMutex.withLock {
             val now = System.currentTimeMillis()
@@ -83,15 +90,16 @@ constructor(
                 return
             }
 
-            runCatching { refreshRemoteContent() }.onSuccess { lastRemoteRefreshAtMillis = now }
+            runCatching { refreshRemoteContent(force = false) }
+                .onSuccess { lastRemoteRefreshAtMillis = now }
         }
     }
 
-    private suspend fun refreshRemoteContent() {
+    private suspend fun refreshRemoteContent(force: Boolean) {
         val localManifest = bootstrapPostsDao.getManifest()
         val remoteManifest = remoteContractsClient.fetchAppManifest()
 
-        if (localManifest?.generatedAt == remoteManifest.generatedAt) {
+        if (!force && localManifest?.generatedAt == remoteManifest.generatedAt) {
             return
         }
 
