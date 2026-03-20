@@ -6,6 +6,9 @@
   <string name="nav_settings">Paramètres</string>
   <string name="nav_back">Retour</string>
   <string name="feed_refresh">Actualiser le contenu</string>
+  <string name="feed_status_bundled">Utilise le contenu embarqué jusqu’à la première synchronisation.</string>
+  <string name="feed_status_checked">Dernière vérification %1$s</string>
+  <string name="feed_status_check_failed">La dernière vérification a échoué %1$s. Affichage du cache local.</string>
   <string name="home_feed_title">Derniers articles</string>
   <string name="home_feed_subtitle">Articles récents dans la langue de lecture actuelle.</string>
   <string name="home_loading">Chargement des articles…</string>
@@ -37,6 +40,7 @@
   <string name="settings_save_opened_posts_body">Garde les détails des articles ouverts en stockage local pour une lecture ultérieure.</string>
   <string name="settings_background_sync_title">Actualisation en arrière-plan en Wi‑Fi uniquement</string>
   <string name="settings_background_sync_body">Lorsque cette option est activée, les actualisations planifiées ne s’exécutent que sur un réseau non limité.</string>
+  <string name="settings_background_sync_schedule">Les vérifications planifiées s’exécutent environ toutes les 6 heures.</string>
   <string name="language_en">English</string>
   <string name="language_fr">Français</string>
   <string name="language_zh_hans">简体中文</string>

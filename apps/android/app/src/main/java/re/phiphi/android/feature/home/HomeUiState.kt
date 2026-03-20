@@ -13,5 +13,7 @@ sealed interface HomeUiState {
         val lang: String,
         val items: List<PostSummary>,
         val bookmarkedSlugs: Set<String>,
+        val lastCheckedAtMillis: Long?,
+        val lastCheckSucceeded: Boolean?,
     ) : HomeUiState
 }

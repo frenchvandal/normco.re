@@ -13,5 +13,7 @@ sealed interface ArchiveUiState {
         val lang: String,
         val items: List<PostSummary>,
         val bookmarkedSlugs: Set<String>,
+        val lastCheckedAtMillis: Long?,
+        val lastCheckSucceeded: Boolean?,
     ) : ArchiveUiState
 }

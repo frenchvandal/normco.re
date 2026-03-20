@@ -6,6 +6,9 @@
   <string name="nav_settings">設定</string>
   <string name="nav_back">返回</string>
   <string name="feed_refresh">刷新內容</string>
+  <string name="feed_status_bundled">首次同步前使用內建內容。</string>
+  <string name="feed_status_checked">上次檢查：%1$s</string>
+  <string name="feed_status_check_failed">上次檢查失敗：%1$s。正在顯示快取內容。</string>
   <string name="home_feed_title">最新文章</string>
   <string name="home_feed_subtitle">顯示目前閱讀語言下的最新文章。</string>
   <string name="home_loading">正在載入文章…</string>
@@ -37,6 +40,7 @@
   <string name="settings_save_opened_posts_body">將已開啟文章的詳細內容儲存在本機，方便稍後閱讀。</string>
   <string name="settings_background_sync_title">僅在 Wi‑Fi 下背景刷新</string>
   <string name="settings_background_sync_body">啟用後，排程中的背景刷新只會在非計量網路上執行。</string>
+  <string name="settings_background_sync_schedule">排程檢查大約每 6 小時執行一次。</string>
   <string name="language_en">English</string>
   <string name="language_fr">Français</string>
   <string name="language_zh_hans">简体中文</string>

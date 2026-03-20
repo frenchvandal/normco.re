@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import re.phiphi.android.R
 import re.phiphi.android.core.model.PostSummary
+import re.phiphi.android.ui.components.ContentSyncStatusText
 import re.phiphi.android.ui.components.PostSummaryCard
 
 @Composable
@@ -86,7 +87,14 @@ private fun ArchiveSuccessScreen(
         modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        item { ArchiveFeedHeading(count = visibleItems.size, onRefresh = onRefresh) }
+        item {
+            ArchiveFeedHeading(
+                count = visibleItems.size,
+                lastCheckedAtMillis = uiState.lastCheckedAtMillis,
+                lastCheckSucceeded = uiState.lastCheckSucceeded,
+                onRefresh = onRefresh,
+            )
+        }
         item {
             ArchiveFilters(
                 filters = filters,
@@ -160,7 +168,12 @@ private fun androidx.compose.foundation.lazy.LazyListScope.archiveContentItems(
 }
 
 @Composable
-private fun ArchiveFeedHeading(count: Int, onRefresh: () -> Unit) {
+private fun ArchiveFeedHeading(
+    count: Int,
+    lastCheckedAtMillis: Long?,
+    lastCheckSucceeded: Boolean?,
+    onRefresh: () -> Unit,
+) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -185,6 +198,10 @@ private fun ArchiveFeedHeading(count: Int, onRefresh: () -> Unit) {
             text = stringResource(id = R.string.archive_feed_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        ContentSyncStatusText(
+            lastCheckedAtMillis = lastCheckedAtMillis,
+            lastCheckSucceeded = lastCheckSucceeded,
         )
     }
 }

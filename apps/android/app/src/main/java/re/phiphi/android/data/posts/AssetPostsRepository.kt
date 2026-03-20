@@ -29,6 +29,7 @@ constructor(
     private val bootstrapPostsDao: BootstrapPostsDao,
     private val bootstrapPostsSeeder: BootstrapPostsSeeder,
     private val remoteContractsClient: RemoteContractsClient,
+    private val contentSyncStatusRepository: ContentSyncStatusRepository,
     private val json: Json,
 ) : PostsRepository {
     private val remoteRefreshMutex = Mutex()
@@ -79,8 +80,17 @@ constructor(
     override suspend fun refreshContent() =
         withContext(Dispatchers.IO) {
             bootstrapPostsSeeder.seedIfNeeded()
-            refreshRemoteContent(force = true)
-            lastRemoteRefreshAtMillis = System.currentTimeMillis()
+            val now = System.currentTimeMillis()
+
+            runCatching { refreshRemoteContent(force = true) }
+                .onSuccess {
+                    lastRemoteRefreshAtMillis = now
+                    contentSyncStatusRepository.recordCheckResult(atMillis = now, succeeded = true)
+                }
+                .onFailure {
+                    contentSyncStatusRepository.recordCheckResult(atMillis = now, succeeded = false)
+                }
+                .getOrThrow()
         }
 
     private suspend fun refreshRemoteContentIfStale() {
@@ -91,7 +101,13 @@ constructor(
             }
 
             runCatching { refreshRemoteContent(force = false) }
-                .onSuccess { lastRemoteRefreshAtMillis = now }
+                .onSuccess {
+                    lastRemoteRefreshAtMillis = now
+                    contentSyncStatusRepository.recordCheckResult(atMillis = now, succeeded = true)
+                }
+                .onFailure {
+                    contentSyncStatusRepository.recordCheckResult(atMillis = now, succeeded = false)
+                }
         }
     }
 

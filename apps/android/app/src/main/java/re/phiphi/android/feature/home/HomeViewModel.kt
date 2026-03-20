@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import re.phiphi.android.data.posts.ContentSyncStatus
+import re.phiphi.android.data.posts.ContentSyncStatusRepository
 import re.phiphi.android.data.posts.PostsRepository
 import re.phiphi.android.data.settings.ReaderPreferencesRepository
 
@@ -21,12 +23,14 @@ class HomeViewModel
 @Inject
 constructor(
     private val postsRepository: PostsRepository,
+    private val contentSyncStatusRepository: ContentSyncStatusRepository,
     private val readerPreferencesRepository: ReaderPreferencesRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     private var preferredLanguage: String? = null
     private var bookmarkedSlugs: Set<String> = emptySet()
+    private var syncStatus: ContentSyncStatus = ContentSyncStatus()
 
     init {
         viewModelScope.launch {
@@ -51,6 +55,20 @@ constructor(
                     }
                 }
         }
+
+        viewModelScope.launch {
+            contentSyncStatusRepository.status.collectLatest { status ->
+                syncStatus = status
+                val currentState = _uiState.value
+                if (currentState is HomeUiState.Success) {
+                    _uiState.value =
+                        currentState.copy(
+                            lastCheckedAtMillis = status.lastCheckedAtMillis,
+                            lastCheckSucceeded = status.lastCheckSucceeded,
+                        )
+                }
+            }
+        }
     }
 
     fun refresh() =
@@ -69,6 +87,8 @@ constructor(
                             lang = postsIndex.lang,
                             items = postsIndex.items.take(HOME_POST_LIMIT),
                             bookmarkedSlugs = bookmarkedSlugs,
+                            lastCheckedAtMillis = syncStatus.lastCheckedAtMillis,
+                            lastCheckSucceeded = syncStatus.lastCheckSucceeded,
                         )
                     },
                     onFailure = { throwable ->

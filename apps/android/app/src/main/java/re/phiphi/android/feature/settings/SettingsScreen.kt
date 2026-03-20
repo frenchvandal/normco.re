@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import re.phiphi.android.R
+import re.phiphi.android.data.posts.ContentSyncStatus
+import re.phiphi.android.ui.components.ContentSyncStatusText
 
 @Composable
 fun SettingsScreen(
@@ -54,6 +56,11 @@ fun SettingsScreen(
                     OfflinePreferencesSection(
                         saveOpenedPostsForOffline = uiState.saveOpenedPostsForOffline,
                         syncOnUnmeteredOnly = uiState.syncOnUnmeteredOnly,
+                        syncStatus =
+                            ContentSyncStatus(
+                                lastCheckedAtMillis = uiState.lastCheckedAtMillis,
+                                lastCheckSucceeded = uiState.lastCheckSucceeded,
+                            ),
                         onSetSaveOpenedPostsForOffline = { enabled ->
                             onAction(SettingsAction.SetSaveOpenedPostsForOffline(enabled))
                         },
@@ -171,6 +178,7 @@ private fun LanguageRow(language: String, selected: Boolean, onSelectLanguage: (
 private fun OfflinePreferencesSection(
     saveOpenedPostsForOffline: Boolean,
     syncOnUnmeteredOnly: Boolean,
+    syncStatus: ContentSyncStatus,
     onSetSaveOpenedPostsForOffline: (Boolean) -> Unit,
     onSetSyncOnUnmeteredOnly: (Boolean) -> Unit,
 ) {
@@ -194,6 +202,15 @@ private fun OfflinePreferencesSection(
                 summary = stringResource(id = R.string.settings_background_sync_body),
                 checked = syncOnUnmeteredOnly,
                 onCheckedChange = onSetSyncOnUnmeteredOnly,
+            )
+            Text(
+                text = stringResource(id = R.string.settings_background_sync_schedule),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            ContentSyncStatusText(
+                lastCheckedAtMillis = syncStatus.lastCheckedAtMillis,
+                lastCheckSucceeded = syncStatus.lastCheckSucceeded,
             )
         }
     }

@@ -13,6 +13,8 @@ sealed interface SettingsUiState {
         val selectedLanguage: String,
         val saveOpenedPostsForOffline: Boolean,
         val syncOnUnmeteredOnly: Boolean,
+        val lastCheckedAtMillis: Long?,
+        val lastCheckSucceeded: Boolean?,
     ) : SettingsUiState
 }
 

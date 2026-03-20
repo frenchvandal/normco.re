@@ -9,8 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import re.phiphi.android.data.posts.ContentSyncScheduler
+import re.phiphi.android.data.posts.ContentSyncStatusRepository
 import re.phiphi.android.data.posts.PostsRepository
 import re.phiphi.android.data.settings.AppLocaleManager
 import re.phiphi.android.data.settings.ReaderPreferencesRepository
@@ -23,6 +25,7 @@ constructor(
     private val readerPreferencesRepository: ReaderPreferencesRepository,
     private val appLocaleManager: AppLocaleManager,
     private val contentSyncScheduler: ContentSyncScheduler,
+    private val contentSyncStatusRepository: ContentSyncStatusRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<SettingsUiState>(SettingsUiState.Loading)
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
@@ -48,20 +51,28 @@ constructor(
                             return@launch
                         }
 
-                readerPreferencesRepository.preferences.collectLatest { preferences ->
-                    val selectedLanguage =
-                        preferences.preferredLanguage?.takeIf { candidate ->
-                            candidate in manifest.languages
-                        } ?: manifest.defaultLanguage
+                combine(
+                        readerPreferencesRepository.preferences,
+                        contentSyncStatusRepository.status,
+                    ) { preferences, syncStatus ->
+                        preferences to syncStatus
+                    }
+                    .collectLatest { (preferences, syncStatus) ->
+                        val selectedLanguage =
+                            preferences.preferredLanguage?.takeIf { candidate ->
+                                candidate in manifest.languages
+                            } ?: manifest.defaultLanguage
 
-                    _uiState.value =
-                        SettingsUiState.Success(
-                            availableLanguages = manifest.languages,
-                            selectedLanguage = selectedLanguage,
-                            saveOpenedPostsForOffline = preferences.saveOpenedPostsForOffline,
-                            syncOnUnmeteredOnly = preferences.syncOnUnmeteredOnly,
-                        )
-                }
+                        _uiState.value =
+                            SettingsUiState.Success(
+                                availableLanguages = manifest.languages,
+                                selectedLanguage = selectedLanguage,
+                                saveOpenedPostsForOffline = preferences.saveOpenedPostsForOffline,
+                                syncOnUnmeteredOnly = preferences.syncOnUnmeteredOnly,
+                                lastCheckedAtMillis = syncStatus.lastCheckedAtMillis,
+                                lastCheckSucceeded = syncStatus.lastCheckSucceeded,
+                            )
+                    }
             }
     }
 

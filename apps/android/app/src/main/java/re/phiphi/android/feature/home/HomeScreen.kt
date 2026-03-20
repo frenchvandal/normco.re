@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import re.phiphi.android.R
+import re.phiphi.android.ui.components.ContentSyncStatusText
 import re.phiphi.android.ui.components.PostSummaryCard
 
 @Composable
@@ -47,7 +48,13 @@ fun HomeScreen(
             }
 
             is HomeUiState.Success -> {
-                item { HomeFeedHeading(onRefresh = onRefresh) }
+                item {
+                    HomeFeedHeading(
+                        lastCheckedAtMillis = uiState.lastCheckedAtMillis,
+                        lastCheckSucceeded = uiState.lastCheckSucceeded,
+                        onRefresh = onRefresh,
+                    )
+                }
 
                 if (uiState.items.isEmpty()) {
                     item {
@@ -76,7 +83,11 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeFeedHeading(onRefresh: () -> Unit) {
+private fun HomeFeedHeading(
+    lastCheckedAtMillis: Long?,
+    lastCheckSucceeded: Boolean?,
+    onRefresh: () -> Unit,
+) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -101,6 +112,10 @@ private fun HomeFeedHeading(onRefresh: () -> Unit) {
             text = stringResource(id = R.string.home_feed_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        ContentSyncStatusText(
+            lastCheckedAtMillis = lastCheckedAtMillis,
+            lastCheckSucceeded = lastCheckSucceeded,
         )
     }
 }
