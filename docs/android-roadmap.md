@@ -366,6 +366,13 @@ Exit criteria:
 - decide whether `re.phiphi.android` remains the final Android application ID
 - add App Links for canonical post URLs
 - introduce WorkManager and remote refresh on top of the Room source of truth
+- defer immutable post-identity work to a later polish pass: keep `id == slug`
+  for now, and if slug-independent identity becomes needed, add a shared
+  `contentId` in `src/posts/<slug>/_data.yml` instead of generating UUIDs
+  separately inside each localized Markdown file
+- defer the Java toolchain upgrade to the end of the project; keep Java 17
+  during active delivery, then evaluate a move to a newer supported LTS once app
+  behavior, signing, and release wiring are stable
 - evaluate custom Android Lint rules for architectural boundaries once the
   module graph stabilizes
 

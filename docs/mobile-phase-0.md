@@ -147,6 +147,10 @@ in the repository’s Markdown without forcing the apps to parse raw HTML.
 - [x] Decide whether heading blocks use `text` or `content` as the canonical
       field once rich text is added
 - [x] Make `updatedAt` optional or add true editorial support for it
+- [ ] Defer immutable post identity unless slug changes become a real need; if
+      introduced later, prefer one shared `contentId` in
+      `src/posts/<slug>/_data.yml` over per-language UUIDs in localized Markdown
+      files
 - [ ] Decide whether `app-manifest` needs `contentOrigin`
 - [ ] Decide whether `contentHash` is needed in v1 or deferred
 - [ ] Decide whether future editorial features need placeholders now: tables,
