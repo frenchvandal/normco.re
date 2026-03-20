@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import re.phiphi.android.feature.archive.ArchiveRoute
 import re.phiphi.android.feature.home.HomeRoute
 import re.phiphi.android.feature.post.PostRoute
@@ -51,6 +52,13 @@ fun PhiphiNavHost(
         composable(
             route = AppRoutes.POST_PATTERN,
             arguments = listOf(navArgument(name = "slug") { type = NavType.StringType }),
+            deepLinks =
+                listOf(
+                    navDeepLink { uriPattern = "https://normco.re/posts/{slug}" },
+                    navDeepLink { uriPattern = "https://normco.re/posts/{slug}/" },
+                    navDeepLink { uriPattern = "https://www.normco.re/posts/{slug}" },
+                    navDeepLink { uriPattern = "https://www.normco.re/posts/{slug}/" },
+                ),
         ) {
             PostRoute()
         }
