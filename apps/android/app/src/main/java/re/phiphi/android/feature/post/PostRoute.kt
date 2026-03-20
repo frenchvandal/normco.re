@@ -28,6 +28,7 @@ fun PostRoute(modifier: Modifier = Modifier) {
         onAction = { action ->
             when (action) {
                 is PostAction.ToggleBookmark -> viewModel.setBookmarked(action.bookmarked)
+                is PostAction.SelectLanguage -> viewModel.selectLanguage(action.language)
 
                 PostAction.OpenInBrowser ->
                     (uiState as? PostUiState.Success)?.post?.let { post ->

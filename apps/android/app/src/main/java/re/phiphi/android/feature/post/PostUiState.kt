@@ -14,6 +14,8 @@ sealed interface PostUiState {
 sealed interface PostAction {
     data class ToggleBookmark(val bookmarked: Boolean) : PostAction
 
+    data class SelectLanguage(val language: String) : PostAction
+
     data object OpenInBrowser : PostAction
 
     data object Share : PostAction

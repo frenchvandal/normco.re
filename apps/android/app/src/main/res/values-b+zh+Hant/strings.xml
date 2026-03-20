@@ -49,6 +49,7 @@
   <string name="post_title">文章</string>
   <string name="post_error">文章載入失敗：%1$s</string>
   <string name="post_retry">重試</string>
+  <string name="post_languages_title">可用語言</string>
   <string name="post_save_bookmark">儲存收藏</string>
   <string name="post_remove_bookmark">取消收藏</string>
   <string name="post_bookmarked_label">已收藏</string>
