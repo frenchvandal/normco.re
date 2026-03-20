@@ -35,6 +35,8 @@
   <string name="settings_offline_title">離線偏好</string>
   <string name="settings_save_opened_posts_title">儲存已開啟文章以供離線閱讀</string>
   <string name="settings_save_opened_posts_body">將已開啟文章的詳細內容儲存在本機，方便稍後閱讀。</string>
+  <string name="settings_background_sync_title">僅在 Wi‑Fi 下背景刷新</string>
+  <string name="settings_background_sync_body">啟用後，排程中的背景刷新只會在非計量網路上執行。</string>
   <string name="language_en">English</string>
   <string name="language_fr">Français</string>
   <string name="language_zh_hans">简体中文</string>

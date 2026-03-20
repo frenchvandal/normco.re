@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import re.phiphi.android.data.posts.ContentSyncScheduler
 import re.phiphi.android.data.posts.PostsRepository
 import re.phiphi.android.data.settings.AppLocaleManager
 import re.phiphi.android.data.settings.ReaderPreferencesRepository
@@ -21,6 +22,7 @@ constructor(
     private val postsRepository: PostsRepository,
     private val readerPreferencesRepository: ReaderPreferencesRepository,
     private val appLocaleManager: AppLocaleManager,
+    private val contentSyncScheduler: ContentSyncScheduler,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<SettingsUiState>(SettingsUiState.Loading)
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
@@ -75,6 +77,9 @@ constructor(
     }
 
     fun setSyncOnUnmeteredOnly(enabled: Boolean) {
-        viewModelScope.launch { readerPreferencesRepository.setSyncOnUnmeteredOnly(enabled) }
+        viewModelScope.launch {
+            readerPreferencesRepository.setSyncOnUnmeteredOnly(enabled)
+            contentSyncScheduler.schedule(enabled)
+        }
     }
 }
