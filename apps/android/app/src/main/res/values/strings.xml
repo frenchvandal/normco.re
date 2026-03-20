@@ -6,6 +6,7 @@
   <string name="nav_settings">Settings</string>
   <string name="nav_back">Back</string>
   <string name="home_feed_title">Latest writing</string>
+  <string name="home_feed_subtitle">Recent posts from the current reading language.</string>
   <string name="home_loading">Loading posts…</string>
   <string name="home_empty">No posts are available yet.</string>
   <string name="home_retry">Retry</string>
@@ -19,6 +20,7 @@
   <string name="archive_error">Failed to load archive: %1$s</string>
   <string name="archive_search_label">Search archive</string>
   <string name="archive_search_placeholder">Title, summary, or tag</string>
+  <string name="archive_feed_subtitle">Search and filter the full index.</string>
   <string name="archive_filter_bookmarked">Bookmarked only</string>
   <string name="archive_filter_topics">Topics</string>
   <string name="archive_filter_all_topics">All topics</string>

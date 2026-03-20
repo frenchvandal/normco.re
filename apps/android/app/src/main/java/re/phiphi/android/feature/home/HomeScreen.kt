@@ -70,11 +70,18 @@ fun HomeScreen(
 
 @Composable
 private fun HomeFeedHeading() {
-    Card(modifier = Modifier.fillMaxWidth().padding(top = 24.dp)) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
         Text(
             text = stringResource(id = R.string.home_feed_title),
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(20.dp),
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Text(
+            text = stringResource(id = R.string.home_feed_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

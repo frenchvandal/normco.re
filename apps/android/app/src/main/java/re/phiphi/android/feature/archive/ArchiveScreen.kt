@@ -149,11 +149,18 @@ private fun androidx.compose.foundation.lazy.LazyListScope.archiveContentItems(
 
 @Composable
 private fun ArchiveFeedHeading(count: Int) {
-    Card(modifier = Modifier.fillMaxWidth().padding(top = 24.dp)) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
         Text(
             text = pluralStringResource(id = R.plurals.archive_feed_title, count, count),
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(20.dp),
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Text(
+            text = stringResource(id = R.string.archive_feed_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -165,52 +172,41 @@ private fun ArchiveFilters(
     onToggleBookmarkedOnly: () -> Unit,
     onSelectTag: (String?) -> Unit,
 ) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            OutlinedTextField(
-                value = filters.query,
-                onValueChange = onQueryChange,
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                label = { Text(text = stringResource(id = R.string.archive_search_label)) },
-                placeholder = {
-                    Text(text = stringResource(id = R.string.archive_search_placeholder))
-                },
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        OutlinedTextField(
+            value = filters.query,
+            onValueChange = onQueryChange,
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            label = { Text(text = stringResource(id = R.string.archive_search_label)) },
+            placeholder = { Text(text = stringResource(id = R.string.archive_search_placeholder)) },
+        )
+        FilterChip(
+            selected = filters.bookmarkedOnly,
+            onClick = onToggleBookmarkedOnly,
+            label = { Text(text = stringResource(id = R.string.archive_filter_bookmarked)) },
+        )
+        if (filters.availableTags.isNotEmpty()) {
+            Text(
+                text = stringResource(id = R.string.archive_filter_topics),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            FilterChip(
-                selected = filters.bookmarkedOnly,
-                onClick = onToggleBookmarkedOnly,
-                label = { Text(text = stringResource(id = R.string.archive_filter_bookmarked)) },
-            )
-            if (filters.availableTags.isNotEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.archive_filter_topics),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+            Row(
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                FilterChip(
+                    selected = filters.selectedTag == null,
+                    onClick = { onSelectTag(null) },
+                    label = { Text(text = stringResource(id = R.string.archive_filter_all_topics)) },
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
+                filters.availableTags.forEach { tag ->
                     FilterChip(
-                        selected = filters.selectedTag == null,
-                        onClick = { onSelectTag(null) },
-                        label = {
-                            Text(text = stringResource(id = R.string.archive_filter_all_topics))
-                        },
+                        selected = filters.selectedTag == tag,
+                        onClick = { onSelectTag(if (filters.selectedTag == tag) null else tag) },
+                        label = { Text(text = tag) },
                     )
-                    filters.availableTags.forEach { tag ->
-                        FilterChip(
-                            selected = filters.selectedTag == tag,
-                            onClick = {
-                                onSelectTag(if (filters.selectedTag == tag) null else tag)
-                            },
-                            label = { Text(text = tag) },
-                        )
-                    }
                 }
             }
         }
