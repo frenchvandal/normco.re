@@ -253,16 +253,11 @@
   }
 
   /**
+   * Resets the search status region without changing the current busy state.
    * @param {HTMLElement} container
-   * @param {string} message
-   * @param {SearchStatusState} [state]
-   * @returns {void}
+   * @returns {HTMLElement | null}
    */
-  function setSearchStatus(
-    container,
-    message,
-    state = SEARCH_STATUS_STATE.IDLE,
-  ) {
+  function resetSearchStatusRegion(container) {
     const status = getSearchStatusElement(container);
     const loading = getSearchLoadingElement(container);
     const loadingText = getSearchLoadingTextElement(container);
@@ -274,15 +269,10 @@
     );
 
     if (!(status instanceof HTMLElement)) {
-      return;
+      return null;
     }
 
-    const text = message.trim();
-    status.dataset.searchStatusState = state;
-    setSearchBusyState(
-      container,
-      text.length > 0 && state === SEARCH_STATUS_STATE.LOADING,
-    );
+    status.dataset.searchStatusState = SEARCH_STATUS_STATE.IDLE;
 
     if (loading instanceof HTMLElement) {
       loading.hidden = true;
@@ -312,10 +302,46 @@
       notificationSubtitle.textContent = "";
     }
 
-    if (text.length === 0) {
-      status.setAttribute("hidden", "");
+    status.setAttribute("hidden", "");
+    return status;
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @param {string} message
+   * @param {SearchStatusState} [state]
+   * @returns {void}
+   */
+  function setSearchStatus(
+    container,
+    message,
+    state = SEARCH_STATUS_STATE.IDLE,
+  ) {
+    const status = resetSearchStatusRegion(container);
+
+    if (!(status instanceof HTMLElement)) {
       return;
     }
+
+    const text = message.trim();
+    status.dataset.searchStatusState = state;
+    setSearchBusyState(
+      container,
+      text.length > 0 && state === SEARCH_STATUS_STATE.LOADING,
+    );
+
+    if (text.length === 0) {
+      return;
+    }
+
+    const loading = getSearchLoadingElement(container);
+    const loadingText = getSearchLoadingTextElement(container);
+    const statusText = getSearchStatusTextElement(container);
+    const notification = getSearchNotificationElement(container);
+    const notificationTitle = getSearchNotificationTitleElement(container);
+    const notificationSubtitle = getSearchNotificationSubtitleElement(
+      container,
+    );
 
     if (state === SEARCH_STATUS_STATE.LOADING) {
       if (loadingText instanceof HTMLElement) {
@@ -404,14 +430,11 @@
    * @param {HTMLElement} container
    * @returns {void}
    */
-  function showPagefindLoading(container) {
+  function showPagefindPreparing(container) {
     setPagefindState(container, PAGEFIND_STATE.LOADING);
     ensureSearchSkeleton(container);
-    setSearchStatus(
-      container,
-      getSearchMessages(container).loading,
-      SEARCH_STATUS_STATE.LOADING,
-    );
+    resetSearchStatusRegion(container);
+    setSearchBusyState(container, true);
   }
 
   /**
@@ -598,7 +621,7 @@
    */
   function startSearchInitialization(container, shouldMoveFocus) {
     if (!isPagefindReady(container)) {
-      showPagefindLoading(container);
+      showPagefindPreparing(container);
     }
 
     if (shouldMoveFocus) {
@@ -640,7 +663,7 @@
    */
   async function initializePagefind(container) {
     clearSearchFallback(container);
-    showPagefindLoading(container);
+    showPagefindPreparing(container);
     ensurePagefindStylesheet();
     await loadPagefindScript();
     await yieldToMain();

@@ -9,6 +9,12 @@
 @use "../editorial/mixins" as editorial;
 
 @layer components {
+  [data-content-switcher-panel][hidden],
+  [data-tabs-panel][hidden],
+  [data-accordion-panel][hidden] {
+    display: none;
+  }
+
   .site-content-switcher {
     inline-size: fit-content;
     max-inline-size: 100%;

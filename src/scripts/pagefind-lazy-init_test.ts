@@ -244,7 +244,7 @@ function evaluateScript(window: TestWindow) {
 }
 
 describe("pagefind-lazy-init.js", () => {
-  it("shows loading before Pagefind is ready, then focuses the input for keyboard opens and mirrors result states", async () => {
+  it("prepares Pagefind silently before focus, then mirrors result states once the user searches", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
     window.document.documentElement.dataset.interactionModality = "keyboard";
@@ -261,8 +261,8 @@ describe("pagefind-lazy-init.js", () => {
     const loading = getLoading(window);
     const statusText = getStatusText(window);
     const notification = getNotification(window);
-    assertEquals(status.hidden, false);
-    assertEquals(loading.hidden, false);
+    assertEquals(status.hidden, true);
+    assertEquals(loading.hidden, true);
     assertEquals(
       getLoadingText(window).textContent?.trim(),
       "Loading search results.",
