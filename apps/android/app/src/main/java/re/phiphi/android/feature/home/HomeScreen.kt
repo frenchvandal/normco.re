@@ -49,38 +49,60 @@ fun HomeScreen(
             }
 
             is HomeUiState.Success -> {
-                item {
-                    HomeFeedHeading(
-                        lastCheckedAtMillis = uiState.lastCheckedAtMillis,
-                        lastCheckSucceeded = uiState.lastCheckSucceeded,
-                        isRefreshing = uiState.isRefreshing,
-                        onRefresh = onRefresh,
-                    )
-                }
-
-                if (uiState.items.isEmpty()) {
-                    item {
-                        Text(
-                            text = stringResource(id = R.string.home_empty),
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    }
-                } else {
-                    items(
-                        items = uiState.items,
-                        key = { post -> post.id },
-                        contentType = { "post_summary" },
-                    ) { post ->
-                        PostSummaryCard(
-                            post = post,
-                            isBookmarked = post.slug in uiState.bookmarkedSlugs,
-                            showHeroImage = true,
-                            onOpenPost = onOpenPost,
-                        )
-                    }
-                }
+                homeSuccessItems(uiState = uiState, onOpenPost = onOpenPost, onRefresh = onRefresh)
             }
         }
+    }
+}
+
+private fun androidx.compose.foundation.lazy.LazyListScope.homeSuccessItems(
+    uiState: HomeUiState.Success,
+    onOpenPost: (String) -> Unit,
+    onRefresh: () -> Unit,
+) {
+    if (uiState.bookmarkedItems.isNotEmpty()) {
+        item { BookmarkedHeading() }
+        items(
+            items = uiState.bookmarkedItems,
+            key = { post -> "bookmark:${post.id}" },
+            contentType = { "bookmarked_post_summary" },
+        ) { post ->
+            PostSummaryCard(
+                post = post,
+                isBookmarked = true,
+                showHeroImage = false,
+                onOpenPost = onOpenPost,
+            )
+        }
+    }
+
+    item {
+        HomeFeedHeading(
+            lastCheckedAtMillis = uiState.lastCheckedAtMillis,
+            lastCheckSucceeded = uiState.lastCheckSucceeded,
+            isRefreshing = uiState.isRefreshing,
+            onRefresh = onRefresh,
+        )
+    }
+
+    if (uiState.items.isEmpty()) {
+        item {
+            Text(
+                text = stringResource(id = R.string.home_empty),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+        return
+    }
+
+    items(items = uiState.items, key = { post -> post.id }, contentType = { "post_summary" }) { post
+        ->
+        PostSummaryCard(
+            post = post,
+            isBookmarked = post.slug in uiState.bookmarkedSlugs,
+            showHeroImage = true,
+            onOpenPost = onOpenPost,
+        )
     }
 }
 
@@ -123,6 +145,24 @@ private fun HomeFeedHeading(
         ContentSyncStatusText(
             lastCheckedAtMillis = lastCheckedAtMillis,
             lastCheckSucceeded = lastCheckSucceeded,
+        )
+    }
+}
+
+@Composable
+private fun BookmarkedHeading() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = stringResource(id = R.string.home_bookmarked_title),
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Text(
+            text = stringResource(id = R.string.home_bookmarked_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

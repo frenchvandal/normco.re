@@ -17,6 +17,7 @@ import re.phiphi.android.data.posts.PostsRepository
 import re.phiphi.android.data.settings.ReaderPreferencesRepository
 
 private const val HOME_POST_LIMIT = 5
+private const val HOME_BOOKMARK_LIMIT = 3
 
 @HiltViewModel
 class HomeViewModel
@@ -90,8 +91,14 @@ constructor(
             runCatching { postsRepository.getPostsIndex(lang = preferredLanguage) }
                 .fold(
                     onSuccess = { postsIndex ->
+                        val bookmarkedItems =
+                            postsIndex.items
+                                .filter { post -> post.slug in bookmarkedSlugs }
+                                .take(HOME_BOOKMARK_LIMIT)
+
                         HomeUiState.Success(
                             lang = postsIndex.lang,
+                            bookmarkedItems = bookmarkedItems,
                             items = postsIndex.items.take(HOME_POST_LIMIT),
                             bookmarkedSlugs = bookmarkedSlugs,
                             lastCheckedAtMillis = syncStatus.lastCheckedAtMillis,

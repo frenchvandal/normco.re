@@ -11,6 +11,7 @@ sealed interface HomeUiState {
     @Immutable
     data class Success(
         val lang: String,
+        val bookmarkedItems: List<PostSummary>,
         val items: List<PostSummary>,
         val bookmarkedSlugs: Set<String>,
         val lastCheckedAtMillis: Long?,

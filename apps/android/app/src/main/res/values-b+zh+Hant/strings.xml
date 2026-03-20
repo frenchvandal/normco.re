@@ -9,6 +9,8 @@
   <string name="feed_status_bundled">首次同步前使用內建內容。</string>
   <string name="feed_status_checked">上次檢查：%1$s</string>
   <string name="feed_status_check_failed">上次檢查失敗：%1$s。正在顯示快取內容。</string>
+  <string name="home_bookmarked_title">已儲存閱讀</string>
+  <string name="home_bookmarked_subtitle">快速存取已收藏文章。</string>
   <string name="home_feed_title">最新文章</string>
   <string name="home_feed_subtitle">顯示目前閱讀語言下的最新文章。</string>
   <string name="home_loading">正在載入文章…</string>

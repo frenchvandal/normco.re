@@ -9,6 +9,8 @@
   <string name="feed_status_bundled">Utilise le contenu embarqué jusqu’à la première synchronisation.</string>
   <string name="feed_status_checked">Dernière vérification %1$s</string>
   <string name="feed_status_check_failed">La dernière vérification a échoué %1$s. Affichage du cache local.</string>
+  <string name="home_bookmarked_title">Lectures enregistrées</string>
+  <string name="home_bookmarked_subtitle">Accès rapide aux articles favoris.</string>
   <string name="home_feed_title">Derniers articles</string>
   <string name="home_feed_subtitle">Articles récents dans la langue de lecture actuelle.</string>
   <string name="home_loading">Chargement des articles…</string>
