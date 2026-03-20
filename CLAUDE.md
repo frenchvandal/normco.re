@@ -156,6 +156,19 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 17)
 
 When touching `apps/android`:
 
+- Treat Material Design 3 as the Android design-system source of truth for the
+  native app, just as Carbon is the source of truth for the web stack.
+- Before changing Android UI patterns, review the relevant official Material and
+  Android Compose component guidance first.
+- Do not invent parallel Android tokens, components, or interaction patterns
+  when Material 3 already provides a suitable primitive.
+- Diverge from Material only when the product has a clear reason, and keep the
+  deviation intentional and documented.
+- Primary Android design-system references:
+  - https://m3.material.io/
+  - https://developer.android.com/develop/ui/compose/designsystems/material3
+  - https://developer.android.com/develop/ui/compose/components
+
 - Follow the current Android guidance from Google as the primary reference:
   - https://developer.android.com/topic/architecture/recommendations
   - https://developer.android.com/topic/architecture/data-layer/offline-first
