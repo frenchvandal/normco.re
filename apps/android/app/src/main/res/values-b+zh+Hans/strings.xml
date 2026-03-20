@@ -51,6 +51,7 @@
   <string name="post_retry">重试</string>
   <string name="post_refresh_failed">文章刷新失败。正在显示上一版内容。</string>
   <string name="post_languages_title">可用语言</string>
+  <string name="post_copy_code">复制代码</string>
   <string name="post_save_bookmark">保存收藏</string>
   <string name="post_remove_bookmark">取消收藏</string>
   <string name="post_bookmarked_label">已收藏</string>

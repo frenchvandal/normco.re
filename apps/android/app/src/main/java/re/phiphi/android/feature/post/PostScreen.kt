@@ -1,5 +1,8 @@
 package re.phiphi.android.feature.post
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -19,11 +22,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -177,6 +182,8 @@ private fun TextBlockContent(type: String, text: String?, level: Int?) {
 @Composable
 private fun CodeBlockContent(content: String?, language: String?) {
     content?.let { value ->
+        val context = LocalContext.current
+
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier =
@@ -185,12 +192,29 @@ private fun CodeBlockContent(content: String?, language: String?) {
                         .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                language?.takeIf(String::isNotBlank)?.let { codeLanguage ->
-                    Text(
-                        text = codeLanguage.uppercase(),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    language?.takeIf(String::isNotBlank)?.let { codeLanguage ->
+                        Text(
+                            text = codeLanguage.uppercase(),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    TextButton(
+                        onClick = {
+                            val clipboardManager =
+                                context.getSystemService(Context.CLIPBOARD_SERVICE)
+                                    as ClipboardManager
+                            clipboardManager.setPrimaryClip(
+                                ClipData.newPlainText("post_code_block", value)
+                            )
+                        }
+                    ) {
+                        Text(text = stringResource(id = R.string.post_copy_code))
+                    }
                 }
                 SelectionContainer {
                     Text(

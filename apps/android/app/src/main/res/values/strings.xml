@@ -51,6 +51,7 @@
   <string name="post_retry">Retry</string>
   <string name="post_refresh_failed">Couldn’t refresh the article. Showing the previous version.</string>
   <string name="post_languages_title">Available languages</string>
+  <string name="post_copy_code">Copy code</string>
   <string name="post_save_bookmark">Save Bookmark</string>
   <string name="post_remove_bookmark">Remove Bookmark</string>
   <string name="post_bookmarked_label">Bookmarked</string>
