@@ -2,7 +2,7 @@
 
 This document turns the roadmap into an execution-ready Phase 0 tracker.
 
-Updated: 2026-03-18
+Updated: 2026-03-20
 
 Phase 0 is about locking product and contract decisions before implementation
 starts. It is intentionally pre-code for the native clients themselves.
@@ -66,6 +66,8 @@ Unless a later decision explicitly overrides them, use these defaults.
 - do not move the site into `apps/web` during Phase 0
 - keep JSON generation inside the current web build for the first app version
 - do not extract a dedicated `content-api` package during Phase 0
+- do not introduce a second language for shared mobile contract tooling during
+  Phase 0; keep that as a later option only if multi-client pressure appears
 
 ## Locked Decisions
 
@@ -159,6 +161,8 @@ in the repository’s Markdown without forcing the apps to parse raw HTML.
       payloads
 - [ ] Decide whether app JSON output is generated from rendered HTML, Markdown
       AST, or shared page data before implementation starts
+- [ ] Define the trigger for introducing a separate shared contract tool and
+      confirm the default language choice if that trigger is reached
 
 ### 4. Distribution And Linking Prep
 

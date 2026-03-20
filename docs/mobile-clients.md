@@ -3,7 +3,7 @@
 This document tracks the recommended path for native mobile clients of
 normco.re.
 
-Updated: 2026-03-18
+Updated: 2026-03-20
 
 Current implementation priority: iOS. Android and HarmonyOS remain follow-on
 clients and should consume the same content contracts once the iOS path is
@@ -15,6 +15,9 @@ proven with real usage.
   truth for now.
 - Generate a static JSON app API from the existing site build. No dynamic
   backend is required for the first app version.
+- Keep open the option of a separate shared contract tool for native clients,
+  but do not move app JSON generation out of the current Deno build unless
+  multi-client pressure proves the need.
 - Treat `contracts/app-manifest.schema.json`,
   `contracts/posts-index.schema.json`, and `contracts/post-detail.schema.json`
   as the intended cross-platform boundary, but revise them before freezing v1.
@@ -212,6 +215,33 @@ Platform UI guidance:
 - Android should feel native to Android and use Material 3
 - HarmonyOS should feel native to HarmonyOS and follow Huawei’s design guidance
 - web remains free to use Carbon as its own design system
+
+## Shared Contract Tooling
+
+Another language can make sense for the mobile program, but only in a narrow
+place: shared contract tooling around the JSON boundary.
+
+That means tasks such as:
+
+- consumer-facing contract validation
+- compatibility checks between payload revisions
+- fixture generation for native client tests
+- optional client model generation once more than one native client exists
+
+That does not mean moving site generation or app JSON generation out of Deno.
+The current repository should remain the canonical generator because it already
+owns the editorial source of truth.
+
+Default recommendation:
+
+- keep generation in Deno
+- consider a separate Go tool later if iOS and at least one more native client
+  both need the same contract tooling
+- treat Rust as a later option only if a lower-level shared parser or FFI-style
+  core becomes useful
+- do not plan around Ruby or R for this problem
+
+See `docs/mobile-contract-tooling.md` for the detailed reasoning.
 
 ## Current Gaps To Close Before Implementation
 
