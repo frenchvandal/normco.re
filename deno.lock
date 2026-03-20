@@ -7,11 +7,9 @@
     "jsr:@cliffy/table@1.0.0": "1.0.0",
     "jsr:@std/assert@^1.0.17": "1.0.19",
     "jsr:@std/assert@^1.0.19": "1.0.19",
-    "jsr:@std/async@*": "1.1.0",
-    "jsr:@std/async@1": "1.1.0",
-    "jsr:@std/async@^1.1.0": "1.1.0",
+    "jsr:@std/async@^1.1.0": "1.2.0",
+    "jsr:@std/async@^1.2.0": "1.2.0",
     "jsr:@std/cache@0.2.0": "0.2.0",
-    "jsr:@std/cli@*": "1.0.28",
     "jsr:@std/cli@1.0.28": "1.0.28",
     "jsr:@std/cli@^1.0.21": "1.0.28",
     "jsr:@std/cli@^1.0.28": "1.0.28",
@@ -29,13 +27,12 @@
     "jsr:@std/front-matter@*": "1.0.9",
     "jsr:@std/front-matter@1.0.9": "1.0.9",
     "jsr:@std/front-matter@^1.0.9": "1.0.9",
-    "jsr:@std/fs@*": "1.0.23",
     "jsr:@std/fs@1.0.22": "1.0.22",
     "jsr:@std/fs@1.0.23": "1.0.23",
     "jsr:@std/fs@^1.0.11": "1.0.23",
     "jsr:@std/fs@^1.0.19": "1.0.23",
+    "jsr:@std/fs@^1.0.22": "1.0.23",
     "jsr:@std/fs@^1.0.23": "1.0.23",
-    "jsr:@std/html@*": "1.0.5",
     "jsr:@std/html@1.0.5": "1.0.5",
     "jsr:@std/html@^1.0.4": "1.0.5",
     "jsr:@std/html@^1.0.5": "1.0.5",
@@ -46,7 +43,6 @@
     "jsr:@std/json@^1.0.2": "1.0.3",
     "jsr:@std/jsonc@1.0.2": "1.0.2",
     "jsr:@std/log@0.224.14": "0.224.14",
-    "jsr:@std/media-types@*": "1.1.0",
     "jsr:@std/media-types@1.1.0": "1.1.0",
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/net@^1.0.4": "1.0.6",
@@ -55,11 +51,11 @@
     "jsr:@std/path@1.1.4": "1.1.4",
     "jsr:@std/path@^1.1.1": "1.1.4",
     "jsr:@std/path@^1.1.4": "1.1.4",
+    "jsr:@std/regexp@^1.0.1": "1.0.1",
     "jsr:@std/semver@1.0.8": "1.0.8",
     "jsr:@std/streams@^1.0.10": "1.0.17",
     "jsr:@std/streams@^1.0.17": "1.0.17",
     "jsr:@std/testing@^1.0.17": "1.0.17",
-    "jsr:@std/text@*": "1.0.17",
     "jsr:@std/text@^1.0.17": "1.0.17",
     "jsr:@std/toml@1.0.11": "1.0.11",
     "jsr:@std/toml@^1.0.3": "1.0.11",
@@ -75,6 +71,7 @@
     "npm:@carbon/icons@11.76.0": "11.76.0",
     "npm:@carbon/layout@11.49.0": "11.49.0",
     "npm:@carbon/motion@11.42.0": "11.42.0",
+    "npm:@carbon/styles@*": "1.102.0_sass@1.98.0",
     "npm:@carbon/styles@1.102.0": "1.102.0_sass@1.98.0",
     "npm:@carbon/themes@11.69.0": "11.69.0",
     "npm:@carbon/type@11.55.0": "11.55.0",
@@ -111,14 +108,14 @@
         "jsr:@cliffy/internal",
         "jsr:@cliffy/table",
         "jsr:@std/fmt@^1.0.9",
-        "jsr:@std/text@^1.0.17"
+        "jsr:@std/text"
       ]
     },
     "@cliffy/flags@1.0.0": {
       "integrity": "8b57698adc644da8f90422d58976362d41a4ebca39c312ca1c101585d0148feb",
       "dependencies": [
         "jsr:@cliffy/internal",
-        "jsr:@std/text@^1.0.17"
+        "jsr:@std/text"
       ]
     },
     "@cliffy/internal@1.0.0": {
@@ -136,8 +133,8 @@
         "jsr:@std/internal"
       ]
     },
-    "@std/async@1.1.0": {
-      "integrity": "72418df08d1be84668a53e48aab3520d68ae6882182f8a5ca75c6d1f087220d1"
+    "@std/async@1.2.0": {
+      "integrity": "c059c6f6d95ca7cc012ae8e8d7164d1697113d54b0b679e4372b354b11c2dee5"
     },
     "@std/cache@0.2.0": {
       "integrity": "63a2ccd5a9e7c03e430f7d34dfcfd0d0cfc90731a1eaf8208f4c66e418fc3035"
@@ -145,6 +142,7 @@
     "@std/cli@1.0.28": {
       "integrity": "74ef9b976db59ca6b23a5283469c9072be6276853807a83ec6c7ce412135c70a",
       "dependencies": [
+        "jsr:@std/fmt@^1.0.9",
         "jsr:@std/internal"
       ]
     },
@@ -253,6 +251,9 @@
         "jsr:@std/internal"
       ]
     },
+    "@std/regexp@1.0.1": {
+      "integrity": "5179d823465085c5480dafb44438466e83c424fadc61ba31f744050ecc0f596d"
+    },
     "@std/semver@1.0.8": {
       "integrity": "dc830e8b8b6a380c895d53fbfd1258dc253704ca57bbe1629ac65fd7830179b7"
     },
@@ -265,11 +266,16 @@
         "jsr:@std/assert@^1.0.17",
         "jsr:@std/async@^1.1.0",
         "jsr:@std/data-structures",
-        "jsr:@std/internal"
+        "jsr:@std/fs@^1.0.22",
+        "jsr:@std/internal",
+        "jsr:@std/path@^1.1.4"
       ]
     },
     "@std/text@1.0.17": {
-      "integrity": "4b2c4ef67ae5b6c1dfd447c81c83a43718f52e3c7e748d8b33f694aba9895f95"
+      "integrity": "4b2c4ef67ae5b6c1dfd447c81c83a43718f52e3c7e748d8b33f694aba9895f95",
+      "dependencies": [
+        "jsr:@std/regexp"
+      ]
     },
     "@std/toml@1.0.11": {
       "integrity": "e084988b872ca4bad6aedfb7350f6eeed0e8ba88e9ee5e1590621c5b5bb8f715",
@@ -2124,7 +2130,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/assert@^1.0.19",
-      "jsr:@std/async@^1.1.0",
+      "jsr:@std/async@^1.2.0",
       "jsr:@std/cli@^1.0.28",
       "jsr:@std/collections@^1.1.6",
       "jsr:@std/encoding@^1.0.10",

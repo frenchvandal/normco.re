@@ -65,14 +65,48 @@
     margin: 0;
   }
 
+  .post-summary-callout {
+    margin-block-end: var(--space-l);
+    max-inline-size: var(--measure);
+  }
+
+  .post-summary-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-s);
+  }
+
+  .post-summary-meta-group {
+    display: grid;
+    gap: var(--cds-spacing-02);
+  }
+
+  .post-summary-term,
+  .post-details-term {
+    color: var(--cds-text-secondary);
+    font: var(--cds-productive-heading-01);
+    font-weight: var(--cds-font-weight-semibold);
+    letter-spacing: var(--site-ui-kicker-letter-spacing);
+    text-transform: uppercase;
+  }
+
+  .post-summary-value,
+  .post-details-value {
+    margin: 0;
+    color: var(--cds-text-primary);
+    font: var(--cds-productive-body-02);
+  }
+
   .post-content h2 {
     margin-block-start: var(--space-xl);
     margin-block-end: var(--space-s);
+    scroll-margin-top: calc(var(--cds-spacing-09) + var(--space-s));
   }
 
   .post-content h3 {
     margin-block-start: var(--space-l);
     margin-block-end: var(--space-s);
+    scroll-margin-top: calc(var(--cds-spacing-09) + var(--space-s));
   }
 
   .post-content ul,
@@ -162,6 +196,52 @@
     @include editorial.accent-rail;
   }
 
+  .post-outline-list {
+    display: grid;
+    gap: var(--cds-spacing-03);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .post-outline-item {
+    margin: 0;
+  }
+
+  .post-outline-item--level-3 {
+    padding-inline-start: var(--cds-spacing-05);
+  }
+
+  .post-outline-link {
+    color: var(--cds-text-primary);
+    text-decoration: none;
+  }
+
+  .post-outline-link:hover,
+  .post-outline-link:focus-visible {
+    color: var(--cds-link-primary);
+    @include editorial.editorial-link-underline;
+  }
+
+  .post-details-section {
+    max-inline-size: var(--measure);
+    margin-block-start: var(--space-xl);
+  }
+
+  .post-details-list {
+    display: grid;
+    gap: var(--space-s);
+  }
+
+  .post-details-item {
+    display: grid;
+    gap: var(--cds-spacing-02);
+  }
+
+  .post-details-link {
+    overflow-wrap: anywhere;
+  }
+
   /* Post prev/next navigation */
   .post-nav {
     display: grid;
@@ -224,5 +304,11 @@
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  @container (max-width: 40rem) {
+    .post-summary-meta {
+      grid-template-columns: 1fr;
+    }
   }
 }

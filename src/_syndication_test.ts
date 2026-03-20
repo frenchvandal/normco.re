@@ -64,11 +64,17 @@ describe("syndication.page.tsx", () => {
       html,
       'data-copy-error-status="Cannot copy RSS feed URL"',
     );
+    assertStringIncludes(html, 'data-site-tabs=""');
+    assertStringIncludes(html, 'data-content-switcher=""');
+    assertStringIncludes(html, "feeds-structured-list");
+    assertStringIncludes(html, 'data-site-accordion=""');
+    assertStringIncludes(html, 'data-copy-notice=""');
   });
 
-  it("loads the feed copy enhancement script", () => {
+  it("loads the shared surface controls and feed copy scripts", () => {
     const html = syndicationPage(MOCK_DATA);
 
+    assertStringIncludes(html, 'src="/scripts/surface-controls.js"');
     assertStringIncludes(html, 'src="/scripts/feed-copy.js"');
   });
 
@@ -86,6 +92,7 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(html, 'href="/fr/feed.json"');
     assertStringIncludes(html, 'href="/sitemap.xml"');
     assertStringIncludes(html, 'data-copy-default-label="Copier"');
+    assertStringIncludes(html, 'data-copy-notice-success-title="Copié"');
     assertStringIncludes(
       html,
       'data-copy-copied-status="URL de Flux RSS copiée"',
@@ -112,5 +119,7 @@ describe("syndication CSS contracts", () => {
       "background: var(--site-surface-panel-hover);",
     );
     assertStringIncludes(feedsStyles, "background: var(--site-surface-panel);");
+    assertStringIncludes(feedsStyles, ".feeds-structured-list");
+    assertStringIncludes(feedsStyles, ".feeds-copy-notice");
   });
 });

@@ -131,6 +131,40 @@ function resolveCurrentYear(value: unknown): number {
     : new Date().getFullYear();
 }
 
+function renderArchiveYearSection(
+  {
+    body,
+    headingId,
+    sectionId,
+    year,
+    yearSummary,
+  }: {
+    readonly body: string;
+    readonly headingId: string;
+    readonly sectionId: string;
+    readonly year: number;
+    readonly yearSummary: string;
+  },
+): string {
+  return `<section class="archive-year" id="${
+    escapeHtml(sectionId)
+  }" aria-labelledby="${escapeHtml(headingId)}">
+  <header class="archive-year-header">
+    <div class="archive-year-heading-group">
+      <h2 id="${
+    escapeHtml(headingId)
+  }" class="archive-year-heading">${year}</h2>
+      <span class="cds--tag cds--tag--gray archive-year-summary" title="${
+    escapeHtml(yearSummary)
+  }">
+        <span class="cds--tag__label">${escapeHtml(yearSummary)}</span>
+      </span>
+    </div>
+  </header>
+  ${body}
+</section>`;
+}
+
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Archive page URL. */
@@ -213,7 +247,7 @@ export default async (
 </li>`;
   }).join("\n");
 
-  const sections = await Promise.all(years.map(async (year) => {
+  const cardSections = await Promise.all(years.map(async (year) => {
     const yearPosts = byYear.get(year) ?? [];
     const postCount = yearPosts.length;
     const yearSummary = formatPostCount(postCount, language);
@@ -240,22 +274,74 @@ export default async (
       return `<li class="archive-list-item">${card}</li>`;
     })).then((cards) => cards.join("\n"));
 
-    return `<section class="archive-year" id="archive-year-${year}" aria-labelledby="archive-year-heading-${year}">
-  <header class="archive-year-header">
-    <div class="archive-year-heading-group">
-      <h2 id="archive-year-heading-${year}" class="archive-year-heading">${year}</h2>
-      <span class="cds--tag cds--tag--gray archive-year-summary" title="${
-      escapeHtml(yearSummary)
-    }">
-        <span class="cds--tag__label">${escapeHtml(yearSummary)}</span>
-      </span>
-    </div>
-  </header>
-  <ul class="archive-list">
+    return renderArchiveYearSection({
+      sectionId: `archive-year-${year}`,
+      headingId: `archive-year-heading-${year}`,
+      year,
+      yearSummary,
+      body: `<ul class="archive-list">
     ${items}
-  </ul>
-</section>`;
+  </ul>`,
+    });
   }));
+
+  const listSections = years.map((year) => {
+    const yearPosts = byYear.get(year) ?? [];
+    const postCount = yearPosts.length;
+    const yearSummary = formatPostCount(postCount, language);
+    const rows = yearPosts.map((post) => {
+      const postDate = resolvePostDate(post.date, new Date(year, 0, 1));
+      const minutes = resolveReadingMinutes(post.readingInfo);
+      const readingLabel = minutes !== undefined
+        ? formatReadingTime(minutes, language)
+        : "";
+
+      return `<div class="cds--structured-list-row">
+  <span class="cds--structured-list-td archive-structured-list-date">${
+        escapeHtml(
+          dateFormat(postDate, shortDatePattern, language) ??
+            postDate.toISOString(),
+        )
+      }</span>
+  <span class="cds--structured-list-td archive-structured-list-title">
+    <a href="${
+        escapeHtml(typeof post.url === "string" ? post.url : "")
+      }" class="archive-structured-list-link">${
+        escapeHtml(typeof post.title === "string" ? post.title : "")
+      }</a>
+  </span>
+  <span class="cds--structured-list-td archive-structured-list-reading">${
+        escapeHtml(readingLabel)
+      }</span>
+</div>`;
+    }).join("\n");
+
+    return renderArchiveYearSection({
+      sectionId: `archive-list-year-${year}`,
+      headingId: `archive-list-year-heading-${year}`,
+      year,
+      yearSummary,
+      body:
+        `<div class="cds--structured-list cds--structured-list--condensed archive-structured-list">
+    <div class="cds--structured-list-thead">
+      <div class="cds--structured-list-row cds--structured-list-row--header-row">
+        <span class="cds--structured-list-th">${
+          escapeHtml(translations.archive.listDateHeading)
+        }</span>
+        <span class="cds--structured-list-th">${
+          escapeHtml(translations.archive.listTitleHeading)
+        }</span>
+        <span class="cds--structured-list-th">${
+          escapeHtml(translations.archive.listReadingHeading)
+        }</span>
+      </div>
+    </div>
+    <div class="cds--structured-list-tbody">
+      ${rows}
+    </div>
+  </div>`,
+    });
+  });
 
   const archiveIntro = `<nav class="cds--breadcrumb" aria-label="${
     escapeHtml(translations.archive.breadcrumbAriaLabel)
@@ -279,7 +365,35 @@ export default async (
     escapeHtml(translations.archive.title)
   }</h1>
   <p class="pagehead-lead">${escapeHtml(translations.archive.lead)}</p>
-</section>`;
+</section>${
+    posts.length > 0
+      ? `<div class="cds--content-switcher site-content-switcher archive-view-switcher" data-content-switcher="" role="tablist" aria-label="${
+        escapeHtml(translations.archive.viewLabel)
+      }">
+  <button
+    type="button"
+    class="cds--content-switcher-btn cds--content-switcher--selected"
+    role="tab"
+    data-content-switcher-trigger=""
+    aria-selected="true"
+    aria-controls="archive-cards-panel"
+  >
+    <span>${escapeHtml(translations.archive.cardsViewLabel)}</span>
+  </button>
+  <button
+    type="button"
+    class="cds--content-switcher-btn"
+    role="tab"
+    data-content-switcher-trigger=""
+    aria-selected="false"
+    tabindex="-1"
+    aria-controls="archive-list-panel"
+  >
+    <span>${escapeHtml(translations.archive.listViewLabel)}</span>
+  </button>
+</div>`
+      : ""
+  }`;
 
   const archiveYearNav = years.length > 1
     ? `<nav class="archive-year-nav" aria-label="${
@@ -291,12 +405,15 @@ export default async (
 </nav>`
     : "";
 
-  const archiveBody = sections.length > 0
+  const archiveBody = cardSections.length > 0
     ? `<section class="archive-activity" aria-label="${
       escapeHtml(translations.archive.activityAriaLabel)
     }">
-  <div class="archive-activity-main">
-    ${sections.join("\n")}
+  <div id="archive-cards-panel" class="archive-activity-main" data-content-switcher-panel="">
+    ${cardSections.join("\n")}
+  </div>
+  <div id="archive-list-panel" class="archive-activity-main" data-content-switcher-panel="" hidden>
+    ${listSections.join("\n")}
   </div>
 </section>`
     : StatePanel({
@@ -336,7 +453,12 @@ export default async (
       author,
       children: {
         __html: `${archiveIntro}
-    ${archiveBody}`,
+    ${archiveBody}
+    ${
+          posts.length > 0
+            ? '<script src="/scripts/surface-controls.js" defer></script>'
+            : ""
+        }`,
       },
     }),
   );

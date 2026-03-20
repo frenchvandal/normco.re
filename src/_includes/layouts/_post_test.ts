@@ -261,6 +261,34 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, `<p>${body}</p>`);
     });
 
+    it("renders a summary callout, table of contents, and publication accordion for longform posts", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({
+            description: "Context paragraph.",
+            children: {
+              __html:
+                "<h2>First section</h2><p>Alpha.</p><h3>Second section</h3><p>Beta.</p>",
+            },
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+
+      assertStringIncludes(
+        html,
+        'class="cds--tile editorial-callout post-summary-callout"',
+      );
+      assertStringIncludes(html, "This post in context");
+      assertStringIncludes(html, 'href="#first-section"');
+      assertStringIncludes(html, 'href="#second-section"');
+      assertStringIncludes(html, 'id="first-section"');
+      assertStringIncludes(html, 'id="second-section"');
+      assertStringIncludes(html, 'class="post-details-section"');
+      assertStringIncludes(html, "Publication details");
+      assertStringIncludes(html, 'src="/scripts/surface-controls.js"');
+    });
+
     it("wraps navigation in nav[aria-label='Post navigation']", async () => {
       const prevTitle = makeSentence(710);
       const prevUrl = makePostUrl(711);

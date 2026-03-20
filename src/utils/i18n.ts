@@ -79,11 +79,14 @@ export type SiteTranslations = {
     readonly menuToggleLabel: string;
     readonly searchLabel: string;
     readonly searchLoadingLabel: string;
+    readonly searchLoadingTitle: string;
     readonly searchNoResultsLabel: string;
     readonly searchOneResultLabel: string;
     readonly searchManyResultsLabel: string;
     readonly searchUnavailableLabel: string;
+    readonly searchUnavailableTitle: string;
     readonly searchOfflineLabel: string;
+    readonly searchOfflineTitle: string;
     readonly searchRetryLabel: string;
     readonly languageSelectLabel: string;
     readonly languageSelectAriaLabel: string;
@@ -125,6 +128,12 @@ export type SiteTranslations = {
     readonly paginationPrevious: string;
     readonly paginationNext: string;
     readonly paginationPage: string;
+    readonly viewLabel: string;
+    readonly cardsViewLabel: string;
+    readonly listViewLabel: string;
+    readonly listDateHeading: string;
+    readonly listTitleHeading: string;
+    readonly listReadingHeading: string;
   };
   readonly about: {
     readonly breadcrumbAriaLabel: string;
@@ -170,6 +179,27 @@ export type SiteTranslations = {
     readonly errorAction: string;
     readonly copiedStatusMessage: string;
     readonly errorStatusMessage: string;
+    readonly copyNoticeTitle: string;
+    readonly errorNoticeTitle: string;
+    readonly tabsAriaLabel: string;
+    readonly endpointsTabLabel: string;
+    readonly guidanceTabLabel: string;
+    readonly viewLabel: string;
+    readonly cardsViewLabel: string;
+    readonly listViewLabel: string;
+    readonly listFormatHeading: string;
+    readonly listUrlHeading: string;
+    readonly listUseHeading: string;
+    readonly overviewCalloutEyebrow: string;
+    readonly overviewCalloutTitle: string;
+    readonly overviewCalloutBody: string;
+    readonly guidanceLead: string;
+    readonly guidanceReadersTitle: string;
+    readonly guidanceReadersBody: string;
+    readonly guidanceAutomationTitle: string;
+    readonly guidanceAutomationBody: string;
+    readonly guidanceDiscoveryTitle: string;
+    readonly guidanceDiscoveryBody: string;
     readonly rssTitle: string;
     readonly rssDescription: string;
     readonly atomTitle: string;
@@ -197,6 +227,15 @@ export type SiteTranslations = {
     readonly copyCodeLabel: string;
     readonly copyCodeFeedback: string;
     readonly copyCodeFailedFeedback: string;
+    readonly summaryEyebrow: string;
+    readonly summaryTitle: string;
+    readonly publishedLabel: string;
+    readonly readingLabel: string;
+    readonly sectionsLabel: string;
+    readonly outlineTitle: string;
+    readonly outlineAriaLabel: string;
+    readonly detailsTitle: string;
+    readonly permalinkLabel: string;
   };
   readonly offline: {
     readonly ariaLabel: string;
@@ -222,11 +261,14 @@ const SITE_TRANSLATIONS = {
       menuToggleLabel: "Open navigation menu",
       searchLabel: "Search",
       searchLoadingLabel: "Loading search results.",
+      searchLoadingTitle: "Preparing search",
       searchNoResultsLabel: "No results found.",
       searchOneResultLabel: "[COUNT] result",
       searchManyResultsLabel: "[COUNT] results",
       searchUnavailableLabel: "Search is temporarily unavailable.",
+      searchUnavailableTitle: "Search unavailable",
       searchOfflineLabel: "Search is unavailable while offline.",
+      searchOfflineTitle: "Offline",
       searchRetryLabel: "Retry",
       languageSelectLabel: "Language",
       languageSelectAriaLabel: "Select language",
@@ -274,6 +316,12 @@ const SITE_TRANSLATIONS = {
       paginationPrevious: "Previous page",
       paginationNext: "Next page",
       paginationPage: "Page",
+      viewLabel: "Archive view",
+      cardsViewLabel: "Cards",
+      listViewLabel: "List",
+      listDateHeading: "Date",
+      listTitleHeading: "Title",
+      listReadingHeading: "Reading time",
     },
     about: {
       breadcrumbAriaLabel: "About breadcrumb",
@@ -323,6 +371,32 @@ const SITE_TRANSLATIONS = {
       errorAction: "Cannot copy",
       copiedStatusMessage: "[LABEL] URL copied",
       errorStatusMessage: "Cannot copy [LABEL] URL",
+      copyNoticeTitle: "Copied",
+      errorNoticeTitle: "Action failed",
+      tabsAriaLabel: "Syndication sections",
+      endpointsTabLabel: "Endpoints",
+      guidanceTabLabel: "How to use",
+      viewLabel: "Endpoint view",
+      cardsViewLabel: "Cards",
+      listViewLabel: "List",
+      listFormatHeading: "Format",
+      listUrlHeading: "URL",
+      listUseHeading: "Best for",
+      overviewCalloutEyebrow: "Quick take",
+      overviewCalloutTitle: "Pick the right endpoint for the job.",
+      overviewCalloutBody:
+        "Cards stay editorial; the list view stays dense. Both expose the same feed inventory and copy actions.",
+      guidanceLead:
+        "Use the endpoint that matches your reader, automation, or indexing workflow.",
+      guidanceReadersTitle: "For feed readers",
+      guidanceReadersBody:
+        "Choose RSS for broad compatibility, or Atom when you prefer richer XML metadata and self links.",
+      guidanceAutomationTitle: "For scripts and tooling",
+      guidanceAutomationBody:
+        "Choose JSON Feed when you want lightweight parsing, typed fields, and modern automation workflows.",
+      guidanceDiscoveryTitle: "For crawling and discovery",
+      guidanceDiscoveryBody:
+        "Use the sitemap for canonical URL discovery and rely on feed autodiscovery when readers inspect the document head.",
       rssTitle: "RSS feed",
       rssDescription:
         "Classic XML feed for feed readers and broad client compatibility.",
@@ -354,6 +428,15 @@ const SITE_TRANSLATIONS = {
       copyCodeLabel: "Copy code",
       copyCodeFeedback: "Code copied",
       copyCodeFailedFeedback: "Cannot copy code",
+      summaryEyebrow: "At a glance",
+      summaryTitle: "This post in context",
+      publishedLabel: "Published",
+      readingLabel: "Reading time",
+      sectionsLabel: "Sections",
+      outlineTitle: "On this page",
+      outlineAriaLabel: "Table of contents",
+      detailsTitle: "Publication details",
+      permalinkLabel: "Permalink",
     },
     offline: {
       ariaLabel: "Offline fallback",
@@ -377,11 +460,14 @@ const SITE_TRANSLATIONS = {
       menuToggleLabel: "Ouvrir le menu de navigation",
       searchLabel: "Recherche",
       searchLoadingLabel: "Chargement des résultats de recherche.",
+      searchLoadingTitle: "Préparation de la recherche",
       searchNoResultsLabel: "Aucun résultat.",
       searchOneResultLabel: "[COUNT] résultat",
       searchManyResultsLabel: "[COUNT] résultats",
       searchUnavailableLabel: "La recherche est temporairement indisponible.",
+      searchUnavailableTitle: "Recherche indisponible",
       searchOfflineLabel: "La recherche est indisponible hors ligne.",
+      searchOfflineTitle: "Hors ligne",
       searchRetryLabel: "Réessayer",
       languageSelectLabel: "Langue",
       languageSelectAriaLabel: "Choisir la langue",
@@ -430,6 +516,12 @@ const SITE_TRANSLATIONS = {
       paginationPrevious: "Page précédente",
       paginationNext: "Page suivante",
       paginationPage: "Page",
+      viewLabel: "Vue des archives",
+      cardsViewLabel: "Cartes",
+      listViewLabel: "Liste",
+      listDateHeading: "Date",
+      listTitleHeading: "Titre",
+      listReadingHeading: "Lecture",
     },
     about: {
       breadcrumbAriaLabel: "Fil d’Ariane À propos",
@@ -480,6 +572,32 @@ const SITE_TRANSLATIONS = {
       errorAction: "Échec",
       copiedStatusMessage: "URL de [LABEL] copiée",
       errorStatusMessage: "Impossible de copier l’URL de [LABEL]",
+      copyNoticeTitle: "Copié",
+      errorNoticeTitle: "Action impossible",
+      tabsAriaLabel: "Sections de syndication",
+      endpointsTabLabel: "Points d’accès",
+      guidanceTabLabel: "Utilisation",
+      viewLabel: "Vue des endpoints",
+      cardsViewLabel: "Cartes",
+      listViewLabel: "Liste",
+      listFormatHeading: "Format",
+      listUrlHeading: "URL",
+      listUseHeading: "Usage",
+      overviewCalloutEyebrow: "En bref",
+      overviewCalloutTitle: "Choisir le bon endpoint selon le besoin.",
+      overviewCalloutBody:
+        "La vue cartes reste éditoriale; la vue liste reste dense. Les deux exposent le même inventaire et les mêmes actions de copie.",
+      guidanceLead:
+        "Choisissez le point d’accès adapté à votre lecteur, votre automatisation ou votre workflow d’indexation.",
+      guidanceReadersTitle: "Pour les lecteurs de flux",
+      guidanceReadersBody:
+        "Privilégiez RSS pour la compatibilité la plus large, ou Atom si vous préférez des métadonnées XML plus riches et des liens self.",
+      guidanceAutomationTitle: "Pour les scripts et l’outillage",
+      guidanceAutomationBody:
+        "Privilégiez JSON Feed si vous voulez un parsing léger, des champs structurés et des workflows modernes.",
+      guidanceDiscoveryTitle: "Pour l’exploration et la découverte",
+      guidanceDiscoveryBody:
+        "Utilisez le sitemap pour la découverte canonique des URL et l’autodécouverte des feeds quand un lecteur inspecte l’en-tête du document.",
       rssTitle: "Flux RSS",
       rssDescription:
         "Flux XML classique pour les lecteurs RSS et la compatibilité la plus large.",
@@ -511,6 +629,15 @@ const SITE_TRANSLATIONS = {
       copyCodeLabel: "Copier le code",
       copyCodeFeedback: "Code copié",
       copyCodeFailedFeedback: "Impossible de copier le code",
+      summaryEyebrow: "En bref",
+      summaryTitle: "Cet article en contexte",
+      publishedLabel: "Publié",
+      readingLabel: "Temps de lecture",
+      sectionsLabel: "Sections",
+      outlineTitle: "Dans cette page",
+      outlineAriaLabel: "Table des matières",
+      detailsTitle: "Détails de publication",
+      permalinkLabel: "Lien permanent",
     },
     offline: {
       ariaLabel: "Page hors ligne",
@@ -534,11 +661,14 @@ const SITE_TRANSLATIONS = {
       menuToggleLabel: "打开导航菜单",
       searchLabel: "搜索",
       searchLoadingLabel: "正在加载搜索结果。",
+      searchLoadingTitle: "正在准备搜索",
       searchNoResultsLabel: "未找到结果。",
       searchOneResultLabel: "[COUNT] 个结果",
       searchManyResultsLabel: "[COUNT] 个结果",
       searchUnavailableLabel: "搜索暂时不可用。",
+      searchUnavailableTitle: "搜索不可用",
       searchOfflineLabel: "离线时无法使用搜索。",
+      searchOfflineTitle: "离线",
       searchRetryLabel: "重试",
       languageSelectLabel: "语言",
       languageSelectAriaLabel: "选择语言",
@@ -585,6 +715,12 @@ const SITE_TRANSLATIONS = {
       paginationPrevious: "上一页",
       paginationNext: "下一页",
       paginationPage: "第",
+      viewLabel: "归档视图",
+      cardsViewLabel: "卡片",
+      listViewLabel: "列表",
+      listDateHeading: "日期",
+      listTitleHeading: "标题",
+      listReadingHeading: "阅读时间",
     },
     about: {
       breadcrumbAriaLabel: "关于页面面包屑导航",
@@ -633,6 +769,31 @@ const SITE_TRANSLATIONS = {
       errorAction: "无法复制",
       copiedStatusMessage: "已复制 [LABEL] URL",
       errorStatusMessage: "无法复制 [LABEL] URL",
+      copyNoticeTitle: "已复制",
+      errorNoticeTitle: "操作失败",
+      tabsAriaLabel: "聚合分区",
+      endpointsTabLabel: "端点",
+      guidanceTabLabel: "使用说明",
+      viewLabel: "端点视图",
+      cardsViewLabel: "卡片",
+      listViewLabel: "列表",
+      listFormatHeading: "格式",
+      listUrlHeading: "URL",
+      listUseHeading: "适用场景",
+      overviewCalloutEyebrow: "快速说明",
+      overviewCalloutTitle: "按使用场景选择合适的端点。",
+      overviewCalloutBody:
+        "卡片视图更偏编辑表达，列表视图更适合快速扫读。两种视图暴露的是同一组 feed 与复制操作。",
+      guidanceLead: "根据阅读器、自动化脚本或索引流程选择对应端点。",
+      guidanceReadersTitle: "用于订阅阅读器",
+      guidanceReadersBody:
+        "追求广泛兼容性时选 RSS；偏好更丰富 XML 元数据与 self 链接时选 Atom。",
+      guidanceAutomationTitle: "用于脚本与工具链",
+      guidanceAutomationBody:
+        "如果你需要轻量解析、结构化字段和现代自动化流程，优先使用 JSON Feed。",
+      guidanceDiscoveryTitle: "用于抓取与发现",
+      guidanceDiscoveryBody:
+        "站点地图适合发现规范 URL；阅读器检查页面 head 时则可依赖 feed 自动发现。",
       rssTitle: "RSS 订阅",
       rssDescription: "经典 XML feed，兼容各类阅读器与聚合器。",
       atomTitle: "Atom 订阅",
@@ -660,6 +821,15 @@ const SITE_TRANSLATIONS = {
       copyCodeLabel: "复制代码",
       copyCodeFeedback: "代码已复制",
       copyCodeFailedFeedback: "无法复制代码",
+      summaryEyebrow: "概览",
+      summaryTitle: "这篇文章的关键信息",
+      publishedLabel: "发布日期",
+      readingLabel: "阅读时间",
+      sectionsLabel: "章节数",
+      outlineTitle: "本页目录",
+      outlineAriaLabel: "文章目录",
+      detailsTitle: "发布详情",
+      permalinkLabel: "固定链接",
     },
     offline: {
       ariaLabel: "离线后备页面",
@@ -683,11 +853,14 @@ const SITE_TRANSLATIONS = {
       menuToggleLabel: "開啟導覽選單",
       searchLabel: "搜尋",
       searchLoadingLabel: "正在載入搜尋結果。",
+      searchLoadingTitle: "正在準備搜尋",
       searchNoResultsLabel: "未找到結果。",
       searchOneResultLabel: "[COUNT] 個結果",
       searchManyResultsLabel: "[COUNT] 個結果",
       searchUnavailableLabel: "搜尋暫時無法使用。",
+      searchUnavailableTitle: "搜尋不可用",
       searchOfflineLabel: "離線時無法使用搜尋。",
+      searchOfflineTitle: "離線",
       searchRetryLabel: "重試",
       languageSelectLabel: "語言",
       languageSelectAriaLabel: "選擇語言",
@@ -734,6 +907,12 @@ const SITE_TRANSLATIONS = {
       paginationPrevious: "上一頁",
       paginationNext: "下一頁",
       paginationPage: "第",
+      viewLabel: "彙整視圖",
+      cardsViewLabel: "卡片",
+      listViewLabel: "列表",
+      listDateHeading: "日期",
+      listTitleHeading: "標題",
+      listReadingHeading: "閱讀時間",
     },
     about: {
       breadcrumbAriaLabel: "關於頁面麵包屑導覽",
@@ -782,6 +961,31 @@ const SITE_TRANSLATIONS = {
       errorAction: "無法複製",
       copiedStatusMessage: "已複製 [LABEL] URL",
       errorStatusMessage: "無法複製 [LABEL] URL",
+      copyNoticeTitle: "已複製",
+      errorNoticeTitle: "操作失敗",
+      tabsAriaLabel: "聚合分區",
+      endpointsTabLabel: "端點",
+      guidanceTabLabel: "使用說明",
+      viewLabel: "端點視圖",
+      cardsViewLabel: "卡片",
+      listViewLabel: "列表",
+      listFormatHeading: "格式",
+      listUrlHeading: "URL",
+      listUseHeading: "適用情境",
+      overviewCalloutEyebrow: "快速說明",
+      overviewCalloutTitle: "依使用情境選擇合適的端點。",
+      overviewCalloutBody:
+        "卡片視圖偏向編輯表達，列表視圖更利於快速掃讀。兩種視圖提供的是同一組 feed 與複製操作。",
+      guidanceLead: "依據閱讀器、自動化腳本或索引流程選擇對應端點。",
+      guidanceReadersTitle: "用於訂閱閱讀器",
+      guidanceReadersBody:
+        "若重視廣泛相容性請選 RSS；若偏好更豐富 XML 中繼資料與 self 連結則選 Atom。",
+      guidanceAutomationTitle: "用於腳本與工具鏈",
+      guidanceAutomationBody:
+        "如果你需要輕量解析、結構化欄位與現代自動化流程，優先使用 JSON Feed。",
+      guidanceDiscoveryTitle: "用於抓取與發現",
+      guidanceDiscoveryBody:
+        "網站地圖適合發現規範 URL；閱讀器檢查頁面 head 時則可依賴 feed 自動發現。",
       rssTitle: "RSS 訂閱",
       rssDescription: "經典 XML feed，相容各類閱讀器與聚合器。",
       atomTitle: "Atom 訂閱",
@@ -809,6 +1013,15 @@ const SITE_TRANSLATIONS = {
       copyCodeLabel: "複製程式碼",
       copyCodeFeedback: "程式碼已複製",
       copyCodeFailedFeedback: "無法複製程式碼",
+      summaryEyebrow: "概覽",
+      summaryTitle: "這篇文章的關鍵資訊",
+      publishedLabel: "發佈日期",
+      readingLabel: "閱讀時間",
+      sectionsLabel: "章節數",
+      outlineTitle: "本頁目錄",
+      outlineAriaLabel: "文章目錄",
+      detailsTitle: "發佈詳情",
+      permalinkLabel: "固定連結",
     },
     offline: {
       ariaLabel: "離線備援頁面",

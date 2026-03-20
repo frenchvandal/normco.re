@@ -224,6 +224,20 @@ describe("posts/index.page.tsx", () => {
   });
 
   describe("archive list structure", () => {
+    it("renders a switcher and structured list view when posts exist", async () => {
+      const posts = [
+        makePost(507, {
+          date: new Date("2026-01-01"),
+          readingInfo: { minutes: 1 },
+        }),
+      ];
+      const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
+      assertStringIncludes(html, 'data-content-switcher=""');
+      assertStringIncludes(html, 'aria-controls="archive-list-panel"');
+      assertStringIncludes(html, "archive-structured-list");
+      assertStringIncludes(html, 'src="/scripts/surface-controls.js"');
+    });
+
     it("wraps each post in an li.archive-list-item", async () => {
       const posts = [
         makePost(507, {
@@ -234,6 +248,7 @@ describe("posts/index.page.tsx", () => {
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, 'class="archive-list-item"');
       assertStringIncludes(html, "post-card h-entry");
+      assertStringIncludes(html, 'class="cds--structured-list-row"');
     });
 
     it("renders a time element with the post-card date class", async () => {

@@ -94,8 +94,11 @@
   /**
    * @param {HTMLElement} container
    * @returns {{
+   *   readonly loadingTitle: string;
    *   readonly unavailable: string;
+   *   readonly unavailableTitle: string;
    *   readonly offline: string;
+   *   readonly offlineTitle: string;
    *   readonly retry: string;
    *   readonly loading: string;
    *   readonly noResults: string;
@@ -107,14 +110,18 @@
     return {
       loading: container.dataset.searchLoadingLabel ??
         "Loading search results.",
+      loadingTitle: container.dataset.searchLoadingTitle ?? "Preparing search",
       noResults: container.dataset.searchNoResultsLabel ?? "No results found.",
       oneResult: container.dataset.searchOneResultLabel ?? "[COUNT] result",
       manyResults: container.dataset.searchManyResultsLabel ??
         "[COUNT] results",
       unavailable: container.dataset.searchUnavailableLabel ??
         "Search is temporarily unavailable.",
+      unavailableTitle: container.dataset.searchUnavailableTitle ??
+        "Search unavailable",
       offline: container.dataset.searchOfflineLabel ??
         "Search is unavailable while offline.",
+      offlineTitle: container.dataset.searchOfflineTitle ?? "Offline",
       retry: container.dataset.searchRetryLabel ?? "Retry",
     };
   }
@@ -132,6 +139,100 @@
 
     const status = searchPanel.querySelector("[data-search-status]");
     return status instanceof HTMLElement ? status : null;
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {HTMLElement | null}
+   */
+  function getSearchStatusTextElement(container) {
+    const status = getSearchStatusElement(container);
+
+    if (!(status instanceof HTMLElement)) {
+      return null;
+    }
+
+    const text = status.querySelector("[data-search-status-text]");
+    return text instanceof HTMLElement ? text : null;
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {HTMLElement | null}
+   */
+  function getSearchLoadingElement(container) {
+    const status = getSearchStatusElement(container);
+
+    if (!(status instanceof HTMLElement)) {
+      return null;
+    }
+
+    const loading = status.querySelector("[data-search-loading]");
+    return loading instanceof HTMLElement ? loading : null;
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {HTMLElement | null}
+   */
+  function getSearchLoadingTextElement(container) {
+    const loading = getSearchLoadingElement(container);
+
+    if (!(loading instanceof HTMLElement)) {
+      return null;
+    }
+
+    const text = loading.querySelector("[data-search-loading-text]");
+    return text instanceof HTMLElement ? text : null;
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {HTMLElement | null}
+   */
+  function getSearchNotificationElement(container) {
+    const status = getSearchStatusElement(container);
+
+    if (!(status instanceof HTMLElement)) {
+      return null;
+    }
+
+    const notification = status.querySelector("[data-search-notification]");
+    return notification instanceof HTMLElement ? notification : null;
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {HTMLElement | null}
+   */
+  function getSearchNotificationTitleElement(container) {
+    const notification = getSearchNotificationElement(container);
+
+    if (!(notification instanceof HTMLElement)) {
+      return null;
+    }
+
+    const title = notification.querySelector(
+      "[data-search-notification-title]",
+    );
+    return title instanceof HTMLElement ? title : null;
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {HTMLElement | null}
+   */
+  function getSearchNotificationSubtitleElement(container) {
+    const notification = getSearchNotificationElement(container);
+
+    if (!(notification instanceof HTMLElement)) {
+      return null;
+    }
+
+    const subtitle = notification.querySelector(
+      "[data-search-notification-subtitle]",
+    );
+    return subtitle instanceof HTMLElement ? subtitle : null;
   }
 
   /**
@@ -163,22 +264,102 @@
     state = SEARCH_STATUS_STATE.IDLE,
   ) {
     const status = getSearchStatusElement(container);
+    const loading = getSearchLoadingElement(container);
+    const loadingText = getSearchLoadingTextElement(container);
+    const statusText = getSearchStatusTextElement(container);
+    const notification = getSearchNotificationElement(container);
+    const notificationTitle = getSearchNotificationTitleElement(container);
+    const notificationSubtitle = getSearchNotificationSubtitleElement(
+      container,
+    );
 
     if (!(status instanceof HTMLElement)) {
       return;
     }
 
     const text = message.trim();
-    status.textContent = text;
     status.dataset.searchStatusState = state;
     setSearchBusyState(
       container,
       text.length > 0 && state === SEARCH_STATUS_STATE.LOADING,
     );
 
+    if (loading instanceof HTMLElement) {
+      loading.hidden = true;
+    }
+
+    if (loadingText instanceof HTMLElement) {
+      loadingText.textContent = getSearchMessages(container).loading;
+    }
+
+    if (statusText instanceof HTMLElement) {
+      statusText.hidden = true;
+      statusText.textContent = "";
+    }
+
+    if (notification instanceof HTMLElement) {
+      notification.hidden = true;
+      notification.dataset.searchNotificationTone = "info";
+      notification.classList.add("cds--inline-notification--info");
+      notification.classList.remove("cds--inline-notification--warning");
+    }
+
+    if (notificationTitle instanceof HTMLElement) {
+      notificationTitle.textContent = "";
+    }
+
+    if (notificationSubtitle instanceof HTMLElement) {
+      notificationSubtitle.textContent = "";
+    }
+
     if (text.length === 0) {
       status.setAttribute("hidden", "");
       return;
+    }
+
+    if (state === SEARCH_STATUS_STATE.LOADING) {
+      if (loadingText instanceof HTMLElement) {
+        loadingText.textContent = text;
+      }
+
+      if (loading instanceof HTMLElement) {
+        loading.hidden = false;
+      }
+    } else if (state === SEARCH_STATUS_STATE.ERROR) {
+      const {
+        offline,
+        offlineTitle,
+        unavailableTitle,
+      } = getSearchMessages(container);
+      const tone = globalThis.navigator.onLine === false || text === offline
+        ? "warning"
+        : "info";
+
+      if (notification instanceof HTMLElement) {
+        notification.hidden = false;
+        notification.dataset.searchNotificationTone = tone;
+        notification.classList.toggle(
+          "cds--inline-notification--info",
+          tone === "info",
+        );
+        notification.classList.toggle(
+          "cds--inline-notification--warning",
+          tone === "warning",
+        );
+      }
+
+      if (notificationTitle instanceof HTMLElement) {
+        notificationTitle.textContent = tone === "warning"
+          ? offlineTitle
+          : unavailableTitle;
+      }
+
+      if (notificationSubtitle instanceof HTMLElement) {
+        notificationSubtitle.textContent = text;
+      }
+    } else if (statusText instanceof HTMLElement) {
+      statusText.hidden = false;
+      statusText.textContent = text;
     }
 
     status.removeAttribute("hidden");
@@ -225,6 +406,7 @@
    */
   function showPagefindLoading(container) {
     setPagefindState(container, PAGEFIND_STATE.LOADING);
+    ensureSearchSkeleton(container);
     setSearchStatus(
       container,
       getSearchMessages(container).loading,
@@ -265,6 +447,32 @@
       one_result: oneResult,
       many_results: manyResults,
     };
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function ensureSearchSkeleton(container) {
+    if (
+      container.querySelector("[data-search-skeleton]") !== null ||
+      container.querySelector(".pagefind-ui") !== null
+    ) {
+      return;
+    }
+
+    const skeleton = globalThis.document.createElement("div");
+    skeleton.className = "site-search-skeleton";
+    skeleton.dataset.searchSkeleton = "";
+    skeleton.setAttribute("aria-hidden", "true");
+
+    for (let index = 0; index < 3; index += 1) {
+      const line = globalThis.document.createElement("span");
+      line.className = "cds--skeleton__text site-search-skeleton-line";
+      skeleton.append(line);
+    }
+
+    container.replaceChildren(skeleton);
   }
 
   /**

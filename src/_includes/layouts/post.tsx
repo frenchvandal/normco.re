@@ -1,5 +1,7 @@
 /** Individual post layout - chains into the base layout. */
 
+import type { jsx } from "lume/jsx-runtime";
+
 import {
   formatReadingTime,
   getLanguageDataCode,
@@ -7,13 +9,16 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../../utils/i18n.ts";
+import CarbonIcon from "../../_components/CarbonIcon.tsx";
 import HEntryShell from "../../mf2/components/HEntryShell.tsx";
 import { getAuthorIdentity } from "../../mf2/extractors.ts";
+import { CHEVRON_DOWN_ICON } from "../../utils/carbon-icons.ts";
 import { getTagColor, getTagUrl } from "../../utils/tags.ts";
 import {
   resolvePostDate,
   resolveReadingMinutes,
 } from "../../posts/post-metadata.ts";
+import { enhancePostContent } from "../../utils/post-outline.ts";
 
 /** This layout is itself wrapped by the base layout. */
 export const layout = "layouts/base.tsx";
@@ -47,6 +52,13 @@ type DateHelper = (
   pattern?: string,
   lang?: string,
 ) => string | undefined;
+type SsxElement = ReturnType<typeof jsx>;
+type DefinitionListValue = SsxElement | string | number;
+type DefinitionListItem = Readonly<{
+  key: string;
+  term: string;
+  value: DefinitionListValue;
+}>;
 
 function isLumeData(value: unknown): value is Lume.Data {
   return typeof value === "object" && value !== null;
@@ -137,12 +149,9 @@ function resolveStringTags(value: unknown): string[] {
     : [];
 }
 
-/** Returns true when the post body contains at least one `<pre><code>` block. */
-function hasCodeBlocks(children: unknown): boolean {
-  const codeBlockPattern = /<pre>\s*<code\b/i;
-
+function resolveHtmlChildren(children: unknown): string | undefined {
   if (typeof children === "string") {
-    return codeBlockPattern.test(children);
+    return children;
   }
 
   if (
@@ -151,10 +160,42 @@ function hasCodeBlocks(children: unknown): boolean {
     "__html" in children
   ) {
     const html = (children as { readonly __html?: unknown }).__html;
-    return typeof html === "string" && codeBlockPattern.test(html);
+    return typeof html === "string" ? html : undefined;
   }
 
-  return false;
+  return undefined;
+}
+
+/** Returns true when the post body contains at least one `<pre><code>` block. */
+function hasCodeBlocks(children: unknown): boolean {
+  const html = resolveHtmlChildren(children);
+  return typeof html === "string" && /<pre>\s*<code\b/i.test(html);
+}
+
+function renderDefinitionList(
+  items: readonly DefinitionListItem[],
+  {
+    itemClass,
+    listClass,
+    termClass,
+    valueClass,
+  }: {
+    readonly itemClass: string;
+    readonly listClass: string;
+    readonly termClass: string;
+    readonly valueClass: string;
+  },
+): SsxElement {
+  return (
+    <dl class={listClass}>
+      {items.map(({ key, term, value }) => (
+        <div key={key} class={itemClass}>
+          <dt class={termClass}>{term}</dt>
+          <dd class={valueClass}>{value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
 }
 
 /** Renders the post page within the base layout. */
@@ -206,6 +247,14 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const tags = resolveStringTags(data.tags);
   const author = getAuthorIdentity(language, data.author);
   const includeCodeCopyScript = hasCodeBlocks(data.children);
+  const rawChildrenHtml = resolveHtmlChildren(data.children);
+  const enhancedPostContent = typeof rawChildrenHtml === "string"
+    ? enhancePostContent(rawChildrenHtml)
+    : { html: "", outline: [] };
+  const renderedChildren = typeof rawChildrenHtml === "string"
+    ? { __html: enhancedPostContent.html }
+    : data.children;
+  const outline = enhancedPostContent.outline;
   const codeCopyLabel = translations.post.copyCodeLabel;
   const codeCopyFeedback = translations.post.copyCodeFeedback;
   const codeCopyFailedFeedback = translations.post.copyCodeFailedFeedback;
@@ -222,7 +271,72 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     ? codeCopyFailedFeedback
     : undefined;
 
-  const hasRail = tags.length > 0 || prev !== undefined || next !== undefined;
+  const publishedDateIso = dateFormat(postDate, "ATOM", language) ??
+    postDate.toISOString();
+  const publishedDateLabel = dateFormat(postDate, "HUMAN_DATE", language) ??
+    postDate.toISOString();
+  const readingTimeLabel = minutes !== undefined
+    ? formatReadingTime(minutes, language)
+    : undefined;
+  const visibleSummary = typeof data.description === "string" &&
+      data.description.trim().length > 0
+    ? data.description.trim()
+    : undefined;
+  const hasRail = outline.length > 0 ||
+    tags.length > 0 ||
+    prev !== undefined ||
+    next !== undefined;
+  const showSummaryCallout = visibleSummary !== undefined ||
+    minutes !== undefined ||
+    outline.length > 0;
+  const summaryItems: DefinitionListItem[] = [
+    {
+      key: "published",
+      term: translations.post.publishedLabel,
+      value: (
+        <time datetime={publishedDateIso}>
+          {publishedDateLabel}
+        </time>
+      ),
+    },
+    ...(readingTimeLabel !== undefined
+      ? [{
+        key: "reading-time",
+        term: translations.post.readingLabel,
+        value: readingTimeLabel,
+      }]
+      : []),
+    ...(outline.length > 0
+      ? [{
+        key: "sections",
+        term: translations.post.sectionsLabel,
+        value: outline.length,
+      }]
+      : []),
+  ];
+  const publicationDetails: DefinitionListItem[] = [
+    {
+      key: "published",
+      term: translations.post.publishedLabel,
+      value: (
+        <time datetime={publishedDateIso}>
+          {publishedDateLabel}
+        </time>
+      ),
+    },
+    ...(readingTimeLabel !== undefined
+      ? [{
+        key: "reading-time",
+        term: translations.post.readingLabel,
+        value: readingTimeLabel,
+      }]
+      : []),
+    {
+      key: "permalink",
+      term: translations.post.permalinkLabel,
+      value: <a href={currentUrl} class="post-details-link">{currentUrl}</a>,
+    },
+  ];
 
   return (
     <div class="site-page-shell site-page-shell--wide">
@@ -271,26 +385,85 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             <div class="post-meta">
               <time
                 class="dt-published"
-                datetime={dateFormat(postDate, "ATOM", language) ??
-                  postDate.toISOString()}
+                datetime={publishedDateIso}
               >
-                {dateFormat(postDate, "HUMAN_DATE", language) ??
-                  postDate.toISOString()}
+                {publishedDateLabel}
               </time>
               {minutes !== undefined && (
                 <>
                   <span class="post-meta-separator" aria-hidden="true">·</span>
-                  <span>{formatReadingTime(minutes, language)}</span>
+                  <span>{readingTimeLabel}</span>
                 </>
               )}
             </div>
           </header>
+          {showSummaryCallout && (
+            <section class="cds--tile editorial-callout post-summary-callout">
+              <p class="editorial-callout-eyebrow">
+                {translations.post.summaryEyebrow}
+              </p>
+              <h2 class="editorial-callout-title">
+                {translations.post.summaryTitle}
+              </h2>
+              {visibleSummary !== undefined && (
+                <p class="editorial-callout-body">{visibleSummary}</p>
+              )}
+              {renderDefinitionList(summaryItems, {
+                listClass: "post-summary-meta",
+                itemClass: "post-summary-meta-group",
+                termClass: "post-summary-term",
+                valueClass: "post-summary-value",
+              })}
+            </section>
+          )}
           <div class="post-content e-content">
-            {data.children}
+            {renderedChildren}
           </div>
+          <section class="post-details-section">
+            <ul
+              class="cds--accordion site-accordion post-details-accordion"
+              data-site-accordion=""
+            >
+              <li class="cds--accordion__item">
+                <button
+                  type="button"
+                  class="cds--accordion__heading"
+                  data-accordion-trigger=""
+                  aria-expanded="false"
+                  aria-controls="post-publication-details"
+                >
+                  <CarbonIcon
+                    icon={CHEVRON_DOWN_ICON}
+                    className="cds--accordion__arrow"
+                    width={16}
+                    height={16}
+                  />
+                  <span class="cds--accordion__title">
+                    {translations.post.detailsTitle}
+                  </span>
+                </button>
+                <div
+                  id="post-publication-details"
+                  class="cds--accordion__wrapper"
+                  data-accordion-panel=""
+                  hidden
+                >
+                  <div class="cds--accordion__content">
+                    {renderDefinitionList(publicationDetails, {
+                      listClass: "post-details-list",
+                      itemClass: "post-details-item",
+                      termClass: "post-details-term",
+                      valueClass: "post-details-value",
+                    })}
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </section>
           {includeCodeCopyScript && (
             <script src="/scripts/post-code-copy.js" defer></script>
           )}
+          <script src="/scripts/surface-controls.js" defer></script>
         </HEntryShell>
 
         {hasRail && (
@@ -299,6 +472,31 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             aria-label={translations.post.railAriaLabel}
           >
             <div class="feature-rail-sticky">
+              {outline.length > 0 && (
+                <section class="cds--tile feature-card post-outline-card">
+                  <h2 class="feature-card-title">
+                    {translations.post.outlineTitle}
+                  </h2>
+                  <nav
+                    class="post-outline-nav"
+                    aria-label={translations.post.outlineAriaLabel}
+                  >
+                    <ul class="post-outline-list">
+                      {outline.map((item) => (
+                        <li
+                          key={item.id}
+                          class={`post-outline-item post-outline-item--level-${item.level}`}
+                        >
+                          <a href={`#${item.id}`} class="post-outline-link">
+                            {item.text}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </section>
+              )}
+
               {tags.length > 0 && (
                 <section class="cds--tile feature-card">
                   <h2 class="feature-card-title">

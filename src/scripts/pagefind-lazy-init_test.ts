@@ -25,7 +25,7 @@ function createDom(): InstanceType<typeof JSDOM> {
           hidden
         >
           <div class="cds--header__panel-content">
-            <p
+            <div
               id="site-search-status"
               class="cds--header__search-status"
               role="status"
@@ -33,19 +33,48 @@ function createDom(): InstanceType<typeof JSDOM> {
               aria-atomic="true"
               data-search-status=""
               hidden
-            ></p>
+            >
+              <div class="cds--inline-loading site-search-inline-loading" data-search-loading="" hidden>
+                <p class="cds--inline-loading__text" data-search-loading-text="">
+                  Loading search results.
+                </p>
+              </div>
+              <p class="cds--header__search-status-text" data-search-status-text="" hidden></p>
+              <div
+                class="cds--inline-notification cds--inline-notification--low-contrast cds--inline-notification--info site-search-notification"
+                data-search-notification=""
+                data-search-notification-tone="info"
+                hidden
+              >
+                <div class="cds--inline-notification__details">
+                  <div class="cds--inline-notification__text-wrapper">
+                    <p class="cds--inline-notification__title" data-search-notification-title=""></p>
+                    <p class="cds--inline-notification__subtitle" data-search-notification-subtitle=""></p>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
               id="search"
               class="cds--header__search-root"
               data-search-root=""
               data-search-loading-label="Loading search results."
+              data-search-loading-title="Preparing search"
               data-search-no-results-label="No results found."
               data-search-one-result-label="[COUNT] result"
               data-search-many-results-label="[COUNT] results"
               data-search-unavailable-label="Search is temporarily unavailable."
+              data-search-unavailable-title="Search unavailable"
               data-search-offline-label="Search is unavailable while offline."
+              data-search-offline-title="Offline"
               data-search-retry-label="Retry"
-            ></div>
+            >
+              <div class="site-search-skeleton" data-search-skeleton="" aria-hidden="true">
+                <span class="cds--skeleton__text site-search-skeleton-line"></span>
+                <span class="cds--skeleton__text site-search-skeleton-line"></span>
+                <span class="cds--skeleton__text site-search-skeleton-line"></span>
+              </div>
+            </div>
           </div>
         </div>
       </body>
@@ -162,6 +191,48 @@ function getSearchRoot(window: TestWindow): HTMLElement {
   return root;
 }
 
+function getLoading(window: TestWindow): HTMLElement {
+  const loading = window.document.querySelector("[data-search-loading]");
+  assert(loading instanceof window.HTMLElement);
+  return loading;
+}
+
+function getLoadingText(window: TestWindow): HTMLElement {
+  const text = window.document.querySelector("[data-search-loading-text]");
+  assert(text instanceof window.HTMLElement);
+  return text;
+}
+
+function getStatusText(window: TestWindow): HTMLElement {
+  const text = window.document.querySelector("[data-search-status-text]");
+  assert(text instanceof window.HTMLElement);
+  return text;
+}
+
+function getNotification(window: TestWindow): HTMLElement {
+  const notification = window.document.querySelector(
+    "[data-search-notification]",
+  );
+  assert(notification instanceof window.HTMLElement);
+  return notification;
+}
+
+function getNotificationTitle(window: TestWindow): HTMLElement {
+  const title = window.document.querySelector(
+    "[data-search-notification-title]",
+  );
+  assert(title instanceof window.HTMLElement);
+  return title;
+}
+
+function getNotificationSubtitle(window: TestWindow): HTMLElement {
+  const subtitle = window.document.querySelector(
+    "[data-search-notification-subtitle]",
+  );
+  assert(subtitle instanceof window.HTMLElement);
+  return subtitle;
+}
+
 function getSearchInput(window: TestWindow): HTMLInputElement {
   const input = window.document.querySelector(".pagefind-ui__search-input");
   assert(input instanceof window.HTMLInputElement);
@@ -187,8 +258,18 @@ describe("pagefind-lazy-init.js", () => {
 
     const status = getStatus(window);
     const root = getSearchRoot(window);
+    const loading = getLoading(window);
+    const statusText = getStatusText(window);
+    const notification = getNotification(window);
     assertEquals(status.hidden, false);
-    assertEquals(status.textContent, "Loading search results.");
+    assertEquals(loading.hidden, false);
+    assertEquals(
+      getLoadingText(window).textContent?.trim(),
+      "Loading search results.",
+    );
+    assertEquals(statusText.hidden, true);
+    assertEquals(notification.hidden, true);
+    assert(root.querySelector("[data-search-skeleton]"));
     assertEquals(root.getAttribute("aria-busy"), "true");
     assertEquals(root.dataset.searchBusy, "true");
     assertEquals(panel.getAttribute("aria-busy"), "true");
@@ -206,6 +287,7 @@ describe("pagefind-lazy-init.js", () => {
     const input = getSearchInput(window);
     assertEquals(window.document.activeElement, input);
     assertEquals(status.hidden, true);
+    assertEquals(root.querySelector("[data-search-skeleton]"), null);
     assertEquals(root.getAttribute("aria-busy"), "false");
     assertEquals(root.dataset.searchBusy, "false");
     assertEquals(panel.getAttribute("aria-busy"), "false");
@@ -214,13 +296,14 @@ describe("pagefind-lazy-init.js", () => {
     input.dispatchEvent(new window.Event("input", { bubbles: true }));
     await flush(window);
     assertEquals(status.hidden, false);
-    assertEquals(status.textContent, "2 results");
+    assertEquals(getStatusText(window).hidden, false);
+    assertEquals(getStatusText(window).textContent, "2 results");
     assertEquals(root.getAttribute("aria-busy"), "false");
 
     input.value = "none";
     input.dispatchEvent(new window.Event("input", { bubbles: true }));
     await flush(window);
-    assertEquals(status.textContent, "No results found.");
+    assertEquals(getStatusText(window).textContent, "No results found.");
   });
 
   it("does not autofocus the search input when the panel is opened from a pointer interaction", async () => {
@@ -272,7 +355,16 @@ describe("pagefind-lazy-init.js", () => {
 
     const status = getStatus(window);
     const root = getSearchRoot(window);
-    assertEquals(status.textContent, "Search is temporarily unavailable.");
+    assertEquals(status.hidden, false);
+    assertEquals(getNotification(window).hidden, false);
+    assertEquals(
+      getNotificationTitle(window).textContent,
+      "Search unavailable",
+    );
+    assertEquals(
+      getNotificationSubtitle(window).textContent,
+      "Search is temporarily unavailable.",
+    );
     assertEquals(root.getAttribute("aria-busy"), "false");
     assertEquals(panel.getAttribute("aria-busy"), "false");
 

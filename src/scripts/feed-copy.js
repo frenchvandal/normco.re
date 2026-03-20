@@ -23,6 +23,15 @@
 
   /**
    * @param {HTMLElement} control
+   * @returns {HTMLElement | null}
+   */
+  function getNoticeElement(control) {
+    const notice = control.querySelector("[data-copy-notice]");
+    return notice instanceof HTMLElement ? notice : null;
+  }
+
+  /**
+   * @param {HTMLElement} control
    * @returns {HTMLButtonElement | null}
    */
   function getCopyButton(control) {
@@ -99,6 +108,24 @@
 
   /**
    * @param {HTMLElement} control
+   * @returns {string}
+   */
+  function getSuccessNoticeTitle(control) {
+    const notice = getNoticeElement(control);
+    return notice?.dataset.copyNoticeSuccessTitle ?? "Copied";
+  }
+
+  /**
+   * @param {HTMLElement} control
+   * @returns {string}
+   */
+  function getErrorNoticeTitle(control) {
+    const notice = getNoticeElement(control);
+    return notice?.dataset.copyNoticeErrorTitle ?? "Action failed";
+  }
+
+  /**
+   * @param {HTMLElement} control
    * @param {string} message
    * @returns {void}
    */
@@ -109,6 +136,48 @@
     }
 
     statusElement.textContent = message;
+  }
+
+  /**
+   * @param {HTMLElement} control
+   * @param {CopyState} state
+   * @param {string} message
+   * @returns {void}
+   */
+  function setNoticeMessage(control, state, message) {
+    const notice = getNoticeElement(control);
+
+    if (notice === null) {
+      return;
+    }
+
+    const title = state === "copied"
+      ? getSuccessNoticeTitle(control)
+      : state === "error"
+      ? getErrorNoticeTitle(control)
+      : "";
+    const titleElement = notice.querySelector("[data-copy-notice-title]");
+    const messageElement = notice.querySelector("[data-copy-notice-message]");
+    const isVisible = state === "copied" || state === "error";
+
+    notice.dataset.copyNoticeState = state;
+    notice.classList.toggle(
+      "cds--inline-notification--success",
+      state === "copied",
+    );
+    notice.classList.toggle(
+      "cds--inline-notification--error",
+      state === "error",
+    );
+    notice.hidden = !isVisible;
+
+    if (titleElement instanceof HTMLElement) {
+      titleElement.textContent = title;
+    }
+
+    if (messageElement instanceof HTMLElement) {
+      messageElement.textContent = isVisible ? message : "";
+    }
   }
 
   /**
@@ -130,6 +199,7 @@
     control.classList.toggle("feed-copy-control--copied", isCopied);
     control.classList.toggle("feed-copy-control--error", isError);
     setStatusMessage(control, statusMessage);
+    setNoticeMessage(control, state, statusMessage);
 
     if (copyButton !== null) {
       const nextLabel = isCopied

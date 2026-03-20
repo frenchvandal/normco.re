@@ -6,11 +6,13 @@ import {
   CHECKMARK_ICON,
   CLOSE_ICON,
   DARK_ICON,
+  INFO_FILLED_ICON,
   LIGHT_ICON,
   MENU_ICON,
   SEARCH_ICON,
   SYSTEM_ICON,
   TRANSLATE_ICON,
+  WARNING_FILLED_ICON,
 } from "../utils/carbon-icons.ts";
 import CarbonIcon from "./CarbonIcon.tsx";
 import {
@@ -63,6 +65,93 @@ function renderHeaderAction(
           <span class="cds--tooltip-content">{tooltipLabel}</span>
         </div>
       </div>
+    </div>
+  );
+}
+
+function renderSearchLoading(loadingLabel: string): SsxElement {
+  return (
+    <div
+      class="cds--inline-loading site-search-inline-loading"
+      data-search-loading=""
+      hidden
+    >
+      <div class="cds--inline-loading__animation">
+        <div class="cds--loading cds--loading--small">
+          <svg
+            class="cds--loading__svg"
+            viewBox="0 0 100 100"
+            aria-hidden="true"
+          >
+            <circle
+              class="cds--loading__background"
+              cx="50"
+              cy="50"
+              r="44"
+            >
+            </circle>
+            <circle class="cds--loading__stroke" cx="50" cy="50" r="44">
+            </circle>
+          </svg>
+        </div>
+      </div>
+      <p class="cds--inline-loading__text" data-search-loading-text="">
+        {loadingLabel}
+      </p>
+    </div>
+  );
+}
+
+function renderSearchNotification(): SsxElement {
+  return (
+    <div
+      class="cds--inline-notification cds--inline-notification--low-contrast cds--inline-notification--info site-search-notification"
+      data-search-notification=""
+      data-search-notification-tone="info"
+      hidden
+    >
+      <div class="cds--inline-notification__details">
+        <span class="site-search-notification-icons" aria-hidden="true">
+          <CarbonIcon
+            icon={INFO_FILLED_ICON}
+            className="site-search-notification-icon site-search-notification-icon--info"
+            width={20}
+            height={20}
+          />
+          <CarbonIcon
+            icon={WARNING_FILLED_ICON}
+            className="site-search-notification-icon site-search-notification-icon--warning"
+            width={20}
+            height={20}
+          />
+        </span>
+        <div class="cds--inline-notification__text-wrapper">
+          <p
+            class="cds--inline-notification__title"
+            data-search-notification-title=""
+          >
+          </p>
+          <p
+            class="cds--inline-notification__subtitle"
+            data-search-notification-subtitle=""
+          >
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function renderSearchSkeleton(): SsxElement {
+  return (
+    <div
+      class="site-search-skeleton"
+      data-search-skeleton=""
+      aria-hidden="true"
+    >
+      <span class="cds--skeleton__text site-search-skeleton-line"></span>
+      <span class="cds--skeleton__text site-search-skeleton-line"></span>
+      <span class="cds--skeleton__text site-search-skeleton-line"></span>
     </div>
   );
 }
@@ -274,7 +363,7 @@ export default (
         data-search-panel=""
       >
         <div class="cds--header__panel-content">
-          <p
+          <div
             id={HEADER_IDS.searchStatus}
             class="cds--header__search-status"
             role="status"
@@ -283,13 +372,22 @@ export default (
             data-search-status=""
             hidden
           >
-          </p>
+            {renderSearchLoading(translations.site.searchLoadingLabel)}
+            <p
+              class="cds--header__search-status-text"
+              data-search-status-text=""
+              hidden
+            >
+            </p>
+            {renderSearchNotification()}
+          </div>
           <div
             id={HEADER_IDS.searchContainer}
             class="cds--header__search-root"
             data-search-root=""
             aria-busy="false"
             data-search-loading-label={translations.site.searchLoadingLabel}
+            data-search-loading-title={translations.site.searchLoadingTitle}
             data-search-no-results-label={translations.site
               .searchNoResultsLabel}
             data-search-one-result-label={translations.site
@@ -298,9 +396,13 @@ export default (
               .searchManyResultsLabel}
             data-search-unavailable-label={translations.site
               .searchUnavailableLabel}
+            data-search-unavailable-title={translations.site
+              .searchUnavailableTitle}
             data-search-offline-label={translations.site.searchOfflineLabel}
+            data-search-offline-title={translations.site.searchOfflineTitle}
             data-search-retry-label={translations.site.searchRetryLabel}
           >
+            {renderSearchSkeleton()}
           </div>
         </div>
       </div>

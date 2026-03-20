@@ -39,6 +39,23 @@ function createDom(): InstanceType<typeof JSDOM> {
           >
             <span data-copy-button-label="">Copier</span>
           </button>
+          <div
+            class="cds--inline-notification cds--inline-notification--success cds--inline-notification--low-contrast feeds-copy-notice"
+            data-copy-notice=""
+            data-copy-notice-success-title="Copié"
+            data-copy-notice-error-title="Action impossible"
+            data-copy-notice-state="idle"
+            hidden
+          >
+            <div class="cds--inline-notification__details">
+              <div class="cds--inline-notification__text-wrapper">
+                <p class="cds--inline-notification__title" data-copy-notice-title="">
+                  Copié
+                </p>
+                <p class="cds--inline-notification__subtitle" data-copy-notice-message=""></p>
+              </div>
+            </div>
+          </div>
           <span data-copy-status="" aria-live="polite"></span>
         </div>
       </body>
@@ -112,6 +129,24 @@ function getStatus(window: TestWindow): HTMLElement {
   return status;
 }
 
+function getNotice(window: TestWindow): HTMLElement {
+  const notice = window.document.querySelector("[data-copy-notice]");
+  assert(notice instanceof window.HTMLElement);
+  return notice;
+}
+
+function getNoticeTitle(window: TestWindow): HTMLElement {
+  const title = window.document.querySelector("[data-copy-notice-title]");
+  assert(title instanceof window.HTMLElement);
+  return title;
+}
+
+function getNoticeMessage(window: TestWindow): HTMLElement {
+  const message = window.document.querySelector("[data-copy-notice-message]");
+  assert(message instanceof window.HTMLElement);
+  return message;
+}
+
 describe("feed-copy.js", () => {
   it("uses localized success feedback from server-provided datasets", async () => {
     const dom = createDom();
@@ -136,6 +171,12 @@ describe("feed-copy.js", () => {
     assertEquals(control.dataset.copyState, "copied");
     assertEquals(getButtonLabel(window).textContent, "Copié");
     assertEquals(getStatus(window).textContent, "URL de Flux RSS copiée");
+    assertEquals(getNotice(window).hidden, false);
+    assertEquals(getNoticeTitle(window).textContent, "Copié");
+    assertEquals(
+      getNoticeMessage(window).textContent,
+      "URL de Flux RSS copiée",
+    );
     assertEquals(button.getAttribute("aria-label"), "URL de Flux RSS copiée");
     assertEquals(button.getAttribute("title"), "URL de Flux RSS copiée");
     timers.runAll();
@@ -185,6 +226,12 @@ describe("feed-copy.js", () => {
     assertEquals(getButtonLabel(window).textContent, "Échec");
     assertEquals(
       getStatus(window).textContent,
+      "Impossible de copier l’URL de Flux RSS",
+    );
+    assertEquals(getNotice(window).hidden, false);
+    assertEquals(getNoticeTitle(window).textContent, "Action impossible");
+    assertEquals(
+      getNoticeMessage(window).textContent,
       "Impossible de copier l’URL de Flux RSS",
     );
     assertEquals(

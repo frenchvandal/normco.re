@@ -23,6 +23,10 @@
     gap: var(--space-xl);
   }
 
+  .archive-view-switcher {
+    margin-block-start: var(--space-m);
+  }
+
   .archive-year {
     padding-block-start: var(--space-m);
     border-block-start: var(--site-border-width-thin) solid
@@ -63,6 +67,35 @@
 
   .archive-list-item {
     list-style: none;
+  }
+
+  .archive-structured-list {
+    overflow-x: auto;
+    background: var(--site-surface-page);
+  }
+
+  .archive-structured-list-date,
+  .archive-structured-list-reading {
+    color: var(--cds-text-secondary);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .archive-structured-list-title {
+    min-inline-size: 18rem;
+  }
+
+  .archive-structured-list-link {
+    color: var(--cds-text-primary);
+    font-weight: var(--cds-font-weight-medium);
+    text-decoration: none;
+    transition: color var(--cds-transition-fast);
+  }
+
+  .archive-structured-list-link:hover,
+  .archive-structured-list-link:focus-visible {
+    color: var(--cds-link-primary);
+    @include editorial.editorial-link-underline;
   }
 
   .archive-list .post-card {

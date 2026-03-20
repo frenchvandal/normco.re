@@ -206,15 +206,22 @@ describe("Header()", () => {
       );
       assertMatch(
         html,
-        /<p[^>]*id="site-search-status"[^>]*class="cds--header__search-status"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-atomic="true"[^>]*data-search-status=""[^>]*hidden/,
+        /<div[^>]*id="site-search-status"[^>]*class="cds--header__search-status"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-atomic="true"[^>]*data-search-status=""[^>]*hidden/,
       );
       assertMatch(
         html,
         /<div[^>]*class="cds--header__search-root"[^>]*aria-busy="false"/,
       );
+      assertStringIncludes(html, 'data-search-loading=""');
+      assertStringIncludes(html, 'data-search-notification=""');
+      assertStringIncludes(html, 'data-search-skeleton=""');
       assertStringIncludes(
         html,
         'data-search-loading-label="Loading search results."',
+      );
+      assertStringIncludes(
+        html,
+        'data-search-loading-title="Preparing search"',
       );
       assertStringIncludes(
         html,
@@ -234,8 +241,13 @@ describe("Header()", () => {
       );
       assertStringIncludes(
         html,
+        'data-search-unavailable-title="Search unavailable"',
+      );
+      assertStringIncludes(
+        html,
         'data-search-offline-label="Search is unavailable while offline."',
       );
+      assertStringIncludes(html, 'data-search-offline-title="Offline"');
       assertStringIncludes(html, 'data-search-retry-label="Retry"');
     });
   });

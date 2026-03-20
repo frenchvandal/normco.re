@@ -3,8 +3,13 @@
 import { siteName } from "./_data.ts";
 import {
   type CarbonIconDescriptor,
+  CHECKMARK_FILLED_ICON as CARBON_CHECKMARK_FILLED_ICON,
   CHECKMARK_ICON as CARBON_CHECKMARK_ICON,
+  CHEVRON_DOWN_ICON as CARBON_CHEVRON_DOWN_ICON,
   COPY_ICON as CARBON_COPY_ICON,
+  LIST_ICON as CARBON_LIST_ICON,
+  VIEW_ICON as CARBON_VIEW_ICON,
+  WARNING_FILLED_ICON as CARBON_WARNING_FILLED_ICON,
 } from "./utils/carbon-icons.ts";
 import {
   getLocalizedUrl,
@@ -50,6 +55,27 @@ const COPY_SUCCESS_ICON = renderCarbonIconMarkup(
   CARBON_CHECKMARK_ICON,
   "feeds-copy-icon feeds-copy-icon--success",
 );
+const CHECKMARK_FILLED_ICON = renderCarbonIconMarkup(
+  CARBON_CHECKMARK_FILLED_ICON,
+  "feeds-notice-icon feeds-notice-icon--success",
+);
+const WARNING_FILLED_ICON = renderCarbonIconMarkup(
+  CARBON_WARNING_FILLED_ICON,
+  "feeds-notice-icon feeds-notice-icon--error",
+);
+const VIEW_ICON = renderCarbonIconMarkup(
+  CARBON_VIEW_ICON,
+  "site-switcher-icon",
+);
+const LIST_ICON = renderCarbonIconMarkup(
+  CARBON_LIST_ICON,
+  "site-switcher-icon",
+);
+const CHEVRON_DOWN_ICON = renderCarbonIconMarkup(
+  CARBON_CHEVRON_DOWN_ICON,
+  "cds--accordion__arrow",
+);
+
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 /** Page URL. */
@@ -86,18 +112,59 @@ type FeedCard = {
   readonly path: string;
   readonly mime: string;
 };
+type FeedActions = Readonly<{
+  openAction: string;
+  copyAction: string;
+  copiedAction: string;
+  errorAction: string;
+  copiedStatusMessage: string;
+  errorStatusMessage: string;
+  copiedTitle: string;
+  errorTitle: string;
+}>;
 
-function renderCard(
+function resolveFeedFormatMeta(mime: string): {
+  readonly label: "JSON" | "XML";
+  readonly tone: "teal" | "gray";
+} {
+  return mime.includes("json")
+    ? { label: "JSON", tone: "teal" }
+    : { label: "XML", tone: "gray" };
+}
+
+function renderCopyNotice(
+  actions: Pick<FeedActions, "copiedTitle" | "errorTitle">,
+): string {
+  return `<div
+    class="cds--inline-notification cds--inline-notification--success cds--inline-notification--low-contrast feeds-copy-notice"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"
+    data-copy-notice=""
+    data-copy-notice-success-title="${escapeHtml(actions.copiedTitle)}"
+    data-copy-notice-error-title="${escapeHtml(actions.errorTitle)}"
+    data-copy-notice-state="idle"
+    hidden
+  >
+    <div class="cds--inline-notification__details">
+      <span class="feeds-notice-icons" aria-hidden="true">
+        ${CHECKMARK_FILLED_ICON}
+        ${WARNING_FILLED_ICON}
+      </span>
+      <div class="cds--inline-notification__text-wrapper">
+        <p class="cds--inline-notification__title" data-copy-notice-title="">
+          ${escapeHtml(actions.copiedTitle)}
+        </p>
+        <p class="cds--inline-notification__subtitle" data-copy-notice-message=""></p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCopyControl(
   card: FeedCard,
   siteOrigin: string,
-  actions: {
-    readonly openAction: string;
-    readonly copyAction: string;
-    readonly copiedAction: string;
-    readonly errorAction: string;
-    readonly copiedStatusMessage: string;
-    readonly errorStatusMessage: string;
-  },
+  actions: FeedActions,
 ): string {
   const absoluteUrl = new URL(card.path, siteOrigin).href;
   const copyTitle = `${actions.copyAction} ${card.title}`;
@@ -106,25 +173,8 @@ function renderCard(
     card.title,
   );
   const errorStatus = actions.errorStatusMessage.replace("[LABEL]", card.title);
-  const formatLabel = card.mime.includes("json") ? "JSON" : "XML";
-  const formatTone = card.mime.includes("json") ? "teal" : "gray";
 
-  return `<article class="cds--tile feeds-card feeds-card--${
-    escapeHtml(card.id)
-  }">
-  <div class="feeds-card-head">
-    <div class="feeds-card-badges">
-      <span class="cds--tag cds--tag--${
-    escapeHtml(formatTone)
-  } feeds-card-tag" title="${escapeHtml(formatLabel)}">
-        <span class="cds--tag__label">${escapeHtml(formatLabel)}</span>
-      </span>
-    </div>
-    <p class="feeds-card-kicker">${escapeHtml(card.mime)}</p>
-    <h2 class="feeds-card-title">${escapeHtml(card.title)}</h2>
-    <p class="feeds-card-description">${escapeHtml(card.description)}</p>
-  </div>
-  <div
+  return `<div
     class="feed-copy-control feeds-copy-control"
     data-copy-control=""
     data-copy-state="idle"
@@ -161,9 +211,107 @@ function renderCard(
         </span>
       </button>
     </div>
+    ${renderCopyNotice(actions)}
     <span class="sr-only" data-copy-status="" aria-live="polite"></span>
+  </div>`;
+}
+
+function renderCard(
+  card: FeedCard,
+  siteOrigin: string,
+  actions: FeedActions,
+): string {
+  const { label: formatLabel, tone: formatTone } = resolveFeedFormatMeta(
+    card.mime,
+  );
+
+  return `<article class="cds--tile feeds-card feeds-card--${
+    escapeHtml(card.id)
+  }">
+  <div class="feeds-card-head">
+    <div class="feeds-card-badges">
+      <span class="cds--tag cds--tag--${
+    escapeHtml(formatTone)
+  } feeds-card-tag" title="${escapeHtml(formatLabel)}">
+        <span class="cds--tag__label">${escapeHtml(formatLabel)}</span>
+      </span>
+    </div>
+    <p class="feeds-card-kicker">${escapeHtml(card.mime)}</p>
+    <h3 class="feeds-card-title">${escapeHtml(card.title)}</h3>
+    <p class="feeds-card-description">${escapeHtml(card.description)}</p>
   </div>
+  ${renderCopyControl(card, siteOrigin, actions)}
 </article>`;
+}
+
+function renderStructuredListRow(
+  card: FeedCard,
+  siteOrigin: string,
+  actions: FeedActions,
+): string {
+  const { label: formatLabel, tone: formatTone } = resolveFeedFormatMeta(
+    card.mime,
+  );
+
+  return `<div class="cds--structured-list-row">
+    <div class="cds--structured-list-td feeds-structured-list-format">
+      <div class="feeds-structured-list-copy">
+        <span class="cds--tag cds--tag--${
+    escapeHtml(formatTone)
+  } feeds-card-tag" title="${escapeHtml(formatLabel)}">
+          <span class="cds--tag__label">${escapeHtml(formatLabel)}</span>
+        </span>
+        <div class="feeds-structured-list-meta">
+          <p class="feeds-structured-list-title">${escapeHtml(card.title)}</p>
+          <p class="feeds-structured-list-kicker">${escapeHtml(card.mime)}</p>
+        </div>
+      </div>
+    </div>
+    <div class="cds--structured-list-td">
+      ${renderCopyControl(card, siteOrigin, actions)}
+    </div>
+    <div class="cds--structured-list-td feeds-structured-list-use">
+      <p>${escapeHtml(card.description)}</p>
+    </div>
+  </div>`;
+}
+
+function renderAccordionItem(
+  {
+    body,
+    id,
+    title,
+  }: {
+    readonly body: string;
+    readonly id: string;
+    readonly title: string;
+  },
+  expanded = false,
+): string {
+  return `<li class="cds--accordion__item${
+    expanded ? " cds--accordion__item--active" : ""
+  }">
+    <button
+      type="button"
+      class="cds--accordion__heading"
+      data-accordion-trigger=""
+      aria-expanded="${expanded ? "true" : "false"}"
+      aria-controls="${escapeHtml(id)}"
+    >
+      ${CHEVRON_DOWN_ICON}
+      <span class="cds--accordion__title">${escapeHtml(title)}</span>
+    </button>
+    <div
+      id="${escapeHtml(id)}"
+      class="cds--accordion__wrapper"
+      data-accordion-panel=""
+      ${expanded ? "" : "hidden"}
+    >
+      <div class="cds--accordion__content">
+        <p>${escapeHtml(body)}</p>
+      </div>
+    </div>
+  </li>`;
 }
 
 /** Renders the syndication page. */
@@ -202,17 +350,45 @@ export default (data: Lume.Data): string => {
       mime: "application/xml",
     },
   ];
+  const feedActions: FeedActions = {
+    openAction: translations.feeds.openAction,
+    copyAction: translations.feeds.copyAction,
+    copiedAction: translations.feeds.copiedAction,
+    errorAction: translations.feeds.errorAction,
+    copiedStatusMessage: translations.feeds.copiedStatusMessage,
+    errorStatusMessage: translations.feeds.errorStatusMessage,
+    copiedTitle: translations.feeds.copyNoticeTitle,
+    errorTitle: translations.feeds.errorNoticeTitle,
+  };
 
   const cardsHtml = feedCards.map((card) =>
-    renderCard(card, siteOrigin, {
-      openAction: translations.feeds.openAction,
-      copyAction: translations.feeds.copyAction,
-      copiedAction: translations.feeds.copiedAction,
-      errorAction: translations.feeds.errorAction,
-      copiedStatusMessage: translations.feeds.copiedStatusMessage,
-      errorStatusMessage: translations.feeds.errorStatusMessage,
-    })
+    renderCard(card, siteOrigin, feedActions)
   ).join("\n");
+
+  const listRowsHtml = feedCards.map((card) =>
+    renderStructuredListRow(card, siteOrigin, feedActions)
+  ).join("\n");
+
+  const guidanceAccordion = [
+    renderAccordionItem(
+      {
+        id: "syndication-guidance-readers",
+        title: translations.feeds.guidanceReadersTitle,
+        body: translations.feeds.guidanceReadersBody,
+      },
+      true,
+    ),
+    renderAccordionItem({
+      id: "syndication-guidance-automation",
+      title: translations.feeds.guidanceAutomationTitle,
+      body: translations.feeds.guidanceAutomationBody,
+    }),
+    renderAccordionItem({
+      id: "syndication-guidance-discovery",
+      title: translations.feeds.guidanceDiscoveryTitle,
+      body: translations.feeds.guidanceDiscoveryBody,
+    }),
+  ].join("\n");
 
   return `<div class="site-page-shell site-page-shell--wide feeds-page">
   <nav class="cds--breadcrumb" aria-label="${
@@ -244,15 +420,144 @@ export default (data: Lume.Data): string => {
     <div class="feature-main">
       <div class="syndication-content">
         <p class="syndication-intro">${escapeHtml(translations.feeds.intro)}</p>
-        <section class="syndication-section" aria-labelledby="syndication-endpoints-title">
-          <div class="subhead">
-            <h2 id="syndication-endpoints-title" class="subhead-heading">${
+        <div class="cds--tabs cds--tabs--contained site-tabs site-tabs--syndication" data-site-tabs="">
+          <ul class="cds--tab--list" role="tablist" aria-label="${
+    escapeHtml(translations.feeds.tabsAriaLabel)
+  }">
+            <li class="cds--tabs__nav-item cds--tabs__nav-item--selected">
+              <button
+                type="button"
+                class="cds--tabs__nav-link"
+                id="syndication-tab-endpoints"
+                role="tab"
+                data-tabs-trigger=""
+                aria-selected="true"
+                aria-controls="syndication-panel-endpoints"
+              >
+                <span class="cds--tabs__nav-item-label">${
+    escapeHtml(translations.feeds.endpointsTabLabel)
+  }</span>
+              </button>
+            </li>
+            <li class="cds--tabs__nav-item">
+              <button
+                type="button"
+                class="cds--tabs__nav-link"
+                id="syndication-tab-guidance"
+                role="tab"
+                data-tabs-trigger=""
+                aria-selected="false"
+                tabindex="-1"
+                aria-controls="syndication-panel-guidance"
+              >
+                <span class="cds--tabs__nav-item-label">${
+    escapeHtml(translations.feeds.guidanceTabLabel)
+  }</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+        <section
+          id="syndication-panel-endpoints"
+          class="cds--tab-content syndication-tab-panel"
+          role="tabpanel"
+          aria-labelledby="syndication-tab-endpoints"
+          data-tabs-panel=""
+        >
+          <section class="cds--tile editorial-callout editorial-callout--info feeds-overview-callout">
+            <p class="editorial-callout-eyebrow">${
+    escapeHtml(translations.feeds.overviewCalloutEyebrow)
+  }</p>
+            <p class="editorial-callout-title">${
+    escapeHtml(translations.feeds.overviewCalloutTitle)
+  }</p>
+            <p class="editorial-callout-body">${
+    escapeHtml(translations.feeds.overviewCalloutBody)
+  }</p>
+          </section>
+          <section class="syndication-section" aria-labelledby="syndication-endpoints-title">
+            <div class="subhead">
+              <h2 id="syndication-endpoints-title" class="subhead-heading">${
     escapeHtml(translations.feeds.cardsAriaLabel)
   }</h2>
-          </div>
-          <div class="feeds-grid">
-            ${cardsHtml}
-          </div>
+            </div>
+            <div class="cds--content-switcher site-content-switcher" data-content-switcher="" role="tablist" aria-label="${
+    escapeHtml(translations.feeds.viewLabel)
+  }">
+              <button
+                type="button"
+                class="cds--content-switcher-btn cds--content-switcher--selected"
+                role="tab"
+                data-content-switcher-trigger=""
+                aria-selected="true"
+                aria-controls="syndication-endpoints-cards"
+              >
+                ${VIEW_ICON}
+                <span>${escapeHtml(translations.feeds.cardsViewLabel)}</span>
+              </button>
+              <button
+                type="button"
+                class="cds--content-switcher-btn"
+                role="tab"
+                data-content-switcher-trigger=""
+                aria-selected="false"
+                tabindex="-1"
+                aria-controls="syndication-endpoints-list"
+              >
+                ${LIST_ICON}
+                <span>${escapeHtml(translations.feeds.listViewLabel)}</span>
+              </button>
+            </div>
+            <div id="syndication-endpoints-cards" data-content-switcher-panel="">
+              <div class="feeds-grid">
+                ${cardsHtml}
+              </div>
+            </div>
+            <div id="syndication-endpoints-list" data-content-switcher-panel="" hidden>
+              <div
+                class="cds--structured-list cds--structured-list--condensed feeds-structured-list"
+              >
+                <div class="cds--structured-list-thead">
+                  <div class="cds--structured-list-row cds--structured-list-row--header-row">
+                    <span class="cds--structured-list-th">${
+    escapeHtml(translations.feeds.listFormatHeading)
+  }</span>
+                    <span class="cds--structured-list-th">${
+    escapeHtml(translations.feeds.listUrlHeading)
+  }</span>
+                    <span class="cds--structured-list-th">${
+    escapeHtml(translations.feeds.listUseHeading)
+  }</span>
+                  </div>
+                </div>
+                <div class="cds--structured-list-tbody">
+                  ${listRowsHtml}
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+        <section
+          id="syndication-panel-guidance"
+          class="cds--tab-content syndication-tab-panel"
+          role="tabpanel"
+          aria-labelledby="syndication-tab-guidance"
+          data-tabs-panel=""
+          hidden
+        >
+          <section class="syndication-section" aria-labelledby="syndication-guidance-title">
+            <div class="subhead">
+              <h2 id="syndication-guidance-title" class="subhead-heading">${
+    escapeHtml(translations.feeds.guidanceTabLabel)
+  }</h2>
+            </div>
+            <p class="syndication-guidance-lead">${
+    escapeHtml(translations.feeds.guidanceLead)
+  }</p>
+            <ul class="cds--accordion site-accordion" data-site-accordion="">
+              ${guidanceAccordion}
+            </ul>
+          </section>
         </section>
       </div>
     </div>
@@ -269,6 +574,7 @@ export default (data: Lume.Data): string => {
     </aside>
   </div>
 
+  <script src="/scripts/surface-controls.js" defer></script>
   <script src="/scripts/feed-copy.js" defer></script>
 </div>`;
 };
