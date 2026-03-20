@@ -178,4 +178,47 @@ describe("sw.js", () => {
 
     assertEquals(intercepted, false);
   });
+
+  it("serves cached Pagefind assets while offline", async () => {
+    const runtime = createRuntime({
+      fetchImpl() {
+        return Promise.reject(new Error("offline"));
+      },
+      cacheStores: {
+        "static-test": {
+          match(request) {
+            const key = typeof request === "string"
+              ? request
+              : request.url ?? "";
+            return Promise.resolve(
+              key === "https://normco.re/pagefind/pagefind-entry.json"
+                ? new Response('{"cached":true}', { status: 200 })
+                : undefined,
+            );
+          },
+          put() {
+            return Promise.resolve();
+          },
+        },
+      },
+    });
+    const listener = runtime.getFetchListener();
+    let responsePromise: Promise<Response> | undefined;
+
+    listener({
+      request: {
+        url: "https://normco.re/pagefind/pagefind-entry.json",
+        method: "GET",
+        mode: "cors",
+        destination: "script",
+        headers: new Headers({ "user-agent": "Mozilla/5.0" }),
+      },
+      respondWith(promise) {
+        responsePromise = promise;
+      },
+    });
+
+    const response = await responsePromise!;
+    assertEquals(await response.text(), '{"cached":true}');
+  });
 });

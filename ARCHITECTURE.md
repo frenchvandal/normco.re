@@ -208,7 +208,8 @@ it. The current enhancement layer includes:
 - code-block copy actions with explicit status feedback
 - feed copy handling
 - intent-based link prefetching
-- service worker registration
+- service worker registration and first-use caching of Pagefind assets for
+  offline search recovery
 
 ## Search and Feeds
 
@@ -216,7 +217,11 @@ Search is powered by Pagefind and initialized lazily through
 `src/scripts/header-client.js`. The UI keeps the search status surface under
 project control so loading, empty, retry, and offline states can be announced
 accessibly. The search container and panel also mirror busy state through
-`aria-busy`.
+`aria-busy`. Post detail pages emit declarative Pagefind metadata for `tag` and
+`year` filtering plus publish-date sorting, so the search index gains facets
+without adding custom client-side filter state. The service worker caches
+`/pagefind/*` resources on demand, which lets search recover offline after the
+runtime and current-language index have been loaded once.
 
 Feeds are emitted per language. RSS, Atom, and JSON outputs are generated in
 `_config/feeds.ts`. HTML feeds use Microformats2 directly in the TSX and string

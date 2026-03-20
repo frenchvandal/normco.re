@@ -411,6 +411,11 @@ sw.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
     return;
   }
 
+  if (url.pathname.startsWith("/pagefind/")) {
+    event.respondWith(cacheFirst(request));
+    return;
+  }
+
   const isStaticAsset = url.pathname.endsWith(".css") ||
     url.pathname.endsWith(".js") ||
     url.pathname.endsWith(".woff2") ||

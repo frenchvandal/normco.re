@@ -21,7 +21,8 @@ official Carbon packages, and deployed as a static site to
 - The writing archive is grouped by year and exposes a server-rendered year jump
   navigation without relying on runtime JavaScript.
 - Search exposes inline loading, retry, and result feedback with accessible
-  status announcements.
+  status announcements, plus Pagefind-backed `tag` and `year` facets on post
+  detail pages.
 - Repository utilities standardize on Deno core APIs plus Deno std helpers for
   CLI parsing, recursive filesystem traversal, XML validation, escaping, and
   frontmatter parsing.
@@ -195,6 +196,10 @@ Interactive UI is intentionally narrow and explicit:
 - Header icon actions expose tooltips for search, language, and theme.
 - Search keeps a dedicated status surface under project control, including
   loading, empty, retry, and offline feedback.
+- Post pages expose declarative Pagefind metadata for `tag`, `year`, and
+  publish-date sorting without adding custom client-side search state.
+- The service worker caches `/pagefind/*` assets on first use so search can
+  recover cleanly while offline after the runtime has been loaded once.
 - Code blocks in posts remain editorial `pre > code` blocks, enhanced only by a
   lightweight copy action when JavaScript is available.
 
