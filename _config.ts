@@ -11,6 +11,7 @@ import { registerPlugins } from "./_config/plugins.ts";
 import { registerFeeds } from "./_config/feeds.ts";
 import { registerSiteManifest } from "./_config/site_manifest.ts";
 import { registerProcessors } from "./_config/processors.ts";
+import { registerXslStylesheets } from "./_config/xsl_stylesheets.ts";
 
 /** Console debug policy, read once at module init from `LUME_LOGS`. */
 const consoleDebugPolicy = readConsoleDebugPolicy((name) => Deno.env.get(name));
@@ -124,6 +125,7 @@ registerPlugins(site, { isServeTask });
 registerFeeds(site);
 registerSiteManifest(site);
 registerProcessors(site);
+registerXslStylesheets(site);
 
 // Ensure generated quality reports are written under a dedicated ignored
 // directory instead of polluting the repository root.

@@ -27,7 +27,7 @@
         <title>Sitemap</title>
         <link rel="stylesheet" href="/style.css"/>
         <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{const s=localStorage.getItem("color-mode");if(s==="light"||s==="dark"||s==="system")v=s;else{const l=localStorage.getItem("color-scheme");v=l==="light"||l==="dark"?l:null}}catch{v=null}const p=v??"system",t=p==="light"||p==="dark"?p:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-theme-preference",p);r.setAttribute("data-color-scheme",t);document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("theme-toggle");if(e){const l=e.getAttribute("data-label-switch-light")??"Switch to light theme",d=e.getAttribute("data-label-switch-dark")??"Switch to dark theme",s=e.getAttribute("data-label-follow-system")??"Follow system theme",n=p==="light"?d:p==="dark"?s:l;e.setAttribute("aria-label",n);e.setAttribute("title",n)}})})()</script>
-        <script src="/scripts/language-preference.js" data-supported-languages="en,fr,zhHans,zhHant" data-default-language="en" data-current-language="en" defer="defer">
+        <script src="/scripts/language-preference.js" data-supported-languages="__SUPPORTED_LANGUAGES__" data-default-language="en" data-current-language="en" defer="defer">
           <xsl:attribute name="data-language-alternates">{"en":"/sitemap.xml"}</xsl:attribute>
         </script>
       </head>
@@ -98,7 +98,7 @@
                     class="cds--header__action cds--header__language-toggle"
                     aria-label="Select language"
                     aria-expanded="false"
-                    aria-controls="site-language-panel"
+                    aria-controls="__HEADER_LANGUAGE_PANEL_ID__"
                     aria-haspopup="menu"
                     data-header-tooltip-trigger=""
                   >
@@ -153,56 +153,7 @@
               </div>
             </div>
           </header>
-          <section
-            id="site-language-panel"
-            class="cds--header__panel cds--header__language-panel"
-            aria-label="Language"
-            data-language-panel=""
-            hidden=""
-          >
-            <div
-              class="cds--header__panel-content cds--header__language-menu"
-              role="menu"
-              aria-label="Language"
-              data-language-menu=""
-            >
-              <a href="/sitemap.xml" class="cds--header__language-option" data-language-option="en" hreflang="en" lang="en" role="menuitemradio" aria-checked="true" tabindex="0">
-                <span class="cds--header__language-label">English</span>
-                <span class="cds--header__language-check" aria-hidden="true">
-                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="checkmark">
-                    <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
-                  </svg>
-                </span>
-              </a>
-              <a class="cds--header__language-option" data-language-option="fr" hreflang="fr" lang="fr" role="menuitemradio" aria-checked="false" tabindex="-1">
-                <xsl:attribute name="href"><xsl:value-of select="$fr-home-href"/></xsl:attribute>
-                <span class="cds--header__language-label">Français</span>
-                <span class="cds--header__language-check" aria-hidden="true">
-                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="checkmark">
-                    <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
-                  </svg>
-                </span>
-              </a>
-              <a class="cds--header__language-option" data-language-option="zhHans" hreflang="zh-Hans" lang="zh-Hans" role="menuitemradio" aria-checked="false" tabindex="-1">
-                <xsl:attribute name="href"><xsl:value-of select="$zh-hans-home-href"/></xsl:attribute>
-                <span class="cds--header__language-label">简体中文</span>
-                <span class="cds--header__language-check" aria-hidden="true">
-                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="checkmark">
-                    <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
-                  </svg>
-                </span>
-              </a>
-              <a class="cds--header__language-option" data-language-option="zhHant" hreflang="zh-Hant" lang="zh-Hant" role="menuitemradio" aria-checked="false" tabindex="-1">
-                <xsl:attribute name="href"><xsl:value-of select="$zh-hant-home-href"/></xsl:attribute>
-                <span class="cds--header__language-label">繁體中文</span>
-                <span class="cds--header__language-check" aria-hidden="true">
-                  <svg class="cds--header__language-check-icon" width="16" height="16" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="checkmark">
-                    <path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/>
-                  </svg>
-                </span>
-              </a>
-            </div>
-          </section>
+          <!--__HEADER_LANGUAGE_MENU_PANEL__-->
           <div
             id="site-search-panel"
             class="cds--header__panel cds--header__search-panel"

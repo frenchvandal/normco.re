@@ -2,11 +2,16 @@ import { assert, assertEquals, assertStringIncludes } from "jsr/assert";
 import baseLayoutSource from "../_includes/layouts/base.tsx" with {
   type: "text",
 };
-import feedStylesheetSource from "../feed.xsl" with { type: "text" };
-import sitemapStylesheetSource from "../sitemap.xsl" with { type: "text" };
 import { describe, it } from "jsr/testing-bdd";
 
 import { THEME_BOOTSTRAP_SCRIPT } from "./theme-bootstrap.ts";
+import {
+  renderFeedStylesheet,
+  renderSitemapStylesheet,
+} from "./xsl-stylesheets.ts";
+
+const feedStylesheetSource = renderFeedStylesheet();
+const sitemapStylesheetSource = renderSitemapStylesheet();
 
 function extractFirstInlineScript(source: string): string {
   const match = source.match(/<script>([\s\S]*?)<\/script>/u);

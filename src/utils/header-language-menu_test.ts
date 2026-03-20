@@ -1,11 +1,19 @@
 import { assert, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import feedStylesheetSource from "../feed.xsl" with { type: "text" };
-import sitemapStylesheetSource from "../sitemap.xsl" with { type: "text" };
 
 import { HEADER_IDS, HEADER_LANGUAGE_OPTIONS } from "./header-language-menu.ts";
+import {
+  renderFeedStylesheet,
+  renderSitemapStylesheet,
+} from "./xsl-stylesheets.ts";
+
+const feedStylesheetSource = renderFeedStylesheet();
+const sitemapStylesheetSource = renderSitemapStylesheet();
 
 function assertLanguageMenuContract(source: string): void {
+  assert(!source.includes("__HEADER_LANGUAGE_PANEL_ID__"));
+  assert(!source.includes("<!--__HEADER_LANGUAGE_MENU_PANEL__-->"));
+  assert(!source.includes("__SUPPORTED_LANGUAGES__"));
   assertStringIncludes(source, `id="${HEADER_IDS.languagePanel}"`);
   assertStringIncludes(source, 'data-language-panel=""');
   assertStringIncludes(source, 'data-language-menu=""');

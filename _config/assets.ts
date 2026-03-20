@@ -39,8 +39,4 @@ export function registerAssets(site: Site): void {
 
   // Service worker — served from root, not /scripts/
   site.add("/scripts/sw.js", "/sw.js");
-
-  // XSLT stylesheets for XML feed/sitemap rendering
-  site.add("/feed.xsl");
-  site.add("/sitemap.xsl");
 }
