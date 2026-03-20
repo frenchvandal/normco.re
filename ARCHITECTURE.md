@@ -1,8 +1,9 @@
 # Architecture
 
 normco.re is a static, multilingual editorial site built with Deno and Lume. Its
-architecture keeps content, presentation, and build concerns distinct while
-letting the site ship as plain static output.
+architecture keeps content, presentation, build, and native-client concerns
+distinct while letting the site ship as plain static output and expose a shared
+app-facing JSON boundary.
 
 ## System Overview
 
@@ -11,9 +12,10 @@ shared post metadata + localized Markdown bodies
                     +
 TSX pages, layouts, and shared components
                     +
-Lume plugins, processors, and post-build scripts
+Lume plugins, processors, post-build scripts, and app-contract generation
                     =
-localized HTML, feeds, assets, search indexes, and deployment artifacts
+localized HTML, feeds, static app JSON, assets, search indexes, Android
+bootstrap artifacts, and deployment artifacts
 ```
 
 ## Source Tree
@@ -30,6 +32,7 @@ normco.re/
 ├── _cms.ts
 ├── apps/
 │   └── android/
+│       └── app/
 ├── contracts/
 ├── plugins/
 ├── scripts/
@@ -114,6 +117,23 @@ frontmatter extraction. Repo-local file reads should be anchored from the module
 path with `import.meta.url` where appropriate instead of assuming the process
 `cwd`.
 
+### Shared App Contracts
+
+The site build now produces a stable mobile-facing contract family in addition
+to HTML and feeds:
+
+- `/api/app-manifest.json`
+- localized `/api/posts/index.json`
+- localized `/api/posts/<slug>.json`
+
+Those outputs are defined by the schemas in `contracts/` and validated through
+`contracts/validate.ts`.
+
+`scripts/sync-android-contract-assets.ts` mirrors the generated app-manifest,
+localized indexes, and localized post-detail files into
+`apps/android/app/src/main/assets/bootstrap/` so the Android app can bootstrap
+from the same generated source of truth before remote refresh.
+
 ### Plugin Registration
 
 `_config/plugins.ts` registers the main plugin stack:
@@ -129,6 +149,7 @@ path with `import.meta.url` where appropriate instead of assuming the process
 - JSON-LD
 - Prism highlighting
 - OpenTelemetry debug instrumentation
+- app-contract generation through the repository’s content pipeline
 
 ### Assets, Feeds, and Processors
 
@@ -213,6 +234,68 @@ it. The current enhancement layer includes:
 - service worker registration and first-use caching of Pagefind assets for
   offline search recovery
 
+## Android Client Architecture
+
+`apps/android` is the first native client implementation in the repository. It
+consumes the generated app contracts rather than HTML pages or feeds.
+
+### Android Runtime Shape
+
+The Android app currently uses:
+
+- Kotlin
+- Jetpack Compose
+- Material 3
+- Hilt
+- ViewModel + `StateFlow`
+- `kotlinx.serialization`
+- Room
+- DataStore
+- WorkManager
+- Coil
+
+The current package shape is feature-oriented inside `:app`:
+
+```text
+apps/android/app/src/main/java/re/phiphi/android/
+├── MainActivity.kt
+├── PhiphiApplication.kt
+├── data/
+│   ├── posts/
+│   └── settings/
+├── feature/
+│   ├── archive/
+│   ├── home/
+│   ├── post/
+│   └── settings/
+└── ui/
+    ├── components/
+    ├── navigation/
+    └── theme/
+```
+
+### Android Data Flow
+
+The Android reader follows an offline-first structure:
+
+1. generated site contracts are mirrored into Android bootstrap assets
+2. Room is seeded from those assets on first use
+3. repositories read from Room as the local source of truth
+4. remote contract endpoints refresh manifest, index, and detail content back
+   into Room
+5. Compose screens observe `ViewModel` state built from repositories and
+   preferences
+
+Persistent user state is split deliberately:
+
+- Room stores content bootstrap and refreshed contract data
+- DataStore stores reader preferences, bookmarks, recent reading, and reading
+  progress
+- WorkManager schedules background content sync
+
+This keeps the shared contract boundary independent from platform UI while still
+allowing the Android app to behave like a native offline-capable reader.
+
 ## Search and Feeds
 
 Search is powered by Pagefind and initialized lazily through
@@ -236,10 +319,10 @@ templates:
 
 Feed item HTML is sourced from rendered post content, not raw Markdown.
 
-Generated feeds and optional JSON outputs are checked by
-`contracts/validate.ts`. RSS and Atom validation is structural: the script
-parses XML and validates feed-level elements against the actual document tree
-instead of scanning substrings with regular expressions.
+Generated feeds and app JSON outputs are checked by `contracts/validate.ts`. RSS
+and Atom validation is structural: the script parses XML and validates
+feed-level elements against the actual document tree instead of scanning
+substrings with regular expressions.
 
 ### Microformats2 Mapping
 
@@ -336,3 +419,5 @@ JSON outputs.
    fingerprinting.
 8. The build may retain dormant code for future pipelines, but only active
    plugins should shape the published site.
+9. Native clients consume generated contracts, not rendered HTML or feed output,
+   as their application data boundary.

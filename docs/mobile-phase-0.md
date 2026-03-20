@@ -1,225 +1,146 @@
 # Mobile Phase 0
 
-This document turns the roadmap into an execution-ready Phase 0 tracker.
+This document records the Phase 0 decisions that are now considered locked for
+the mobile program.
 
-Updated: 2026-03-20
+Updated: 2026-03-21
 
-Phase 0 is about locking product and contract decisions before implementation
-starts. It is intentionally pre-code for the native clients themselves.
+Phase 0 is complete. Android is now the active native implementation track, and
+this file should be read as the shared decision record that remains in force
+while delivery continues in `docs/android-roadmap.md`.
 
 ## Purpose
 
 Use this document to:
 
-- keep one shared checklist for the preparation work
-- record the working defaults we can already use
-- separate decided defaults from still-open decisions
-- define the exit criteria for moving into implementation
+- keep the cross-platform product and contract decisions in one place
+- separate what is already locked from what remains intentionally deferred
+- make resuming mobile work possible without reconstructing the early planning
+  history from git log
 
-## Working Defaults
+## Locked Shared Decisions
 
-Unless a later decision explicitly overrides them, use these defaults.
+### Product
 
-### Product Scope Defaults
+- The first shipped native client is Android.
+- iOS and HarmonyOS remain planned follow-on clients.
+- The first release must be a native reading client, not a wrapped website.
+- v1 includes:
+  - Home
+  - Archive
+  - Post detail
+  - Settings
+  - localized content
+  - cached indexes
+  - cached opened posts
+  - per-device bookmarks
+  - per-device reading progress
+  - language switching
+  - share
+  - `Open in Browser`
+- v1 excludes:
+  - account sync
+  - comments
+  - push notifications
+  - widgets
+  - server-side search
+  - a dedicated bookmarks tab as a top-level destination
 
-- iOS v1 is the first shipping target
-- start implementation with iOS, not Android
-- Android and HarmonyOS remain planned follow-on clients
-- iOS v1 includes: home, archive, post detail, settings, cached indexes, cached
-  opened posts, explicit "Save for Offline" on post detail, bookmarks, reading
-  progress, language switching, share, and "Open in Browser"
-- iOS v1 excludes: push notifications, widgets, account sync, comments,
-  server-side search, local search in the first release, analytics-specific
-  product features, and social/community features
-- bookmarks and reading progress are per-device only in v1
-
-### Contract Defaults
+### Contracts
 
 - `contracts/app-manifest.schema.json`, `contracts/posts-index.schema.json`, and
-  `contracts/post-detail.schema.json` remain the target app-contract family
-- `contracts/post.schema.json` is legacy and should not define the future app
-  pipeline
-- `updatedAt` is optional in v1
-- when `updatedAt` is absent, generators must omit it rather than copy
+  `contracts/post-detail.schema.json` are the shared app-contract family.
+- `contracts/post.schema.json` is legacy and must not drive current client
+  architecture.
+- `updatedAt` remains optional.
+- when `updatedAt` is absent, generators omit it rather than copying
   `publishedAt`
-- `heroImage` should stay optional in v1
-- app-facing media URLs should be emitted as absolute HTTPS URLs
-- post body content should stay block-based and gain explicit inline rich-text
-  support instead of falling back to raw HTML
-- `paragraph`, `heading`, and `quote` blocks should use `content` as the
-  canonical rich-text field in v1
-- list items should be rich-text capable too and should no longer be plain
-  strings in the target v1 shape
+- `heroImage` remains optional
+- app-facing media URLs are absolute HTTPS URLs
+- the content model remains block-based and native-renderable
+- current mobile clients still decode the existing block shape; richer inline
+  content remains a later contract evolution, not a blocker for the current
+  Android app
 
-### Platform Defaults
+### Platform Direction
 
-- iOS follows Apple stack and design guidance
-- Android follows Google stack and Material 3 guidance
-- HarmonyOS follows Huawei stack, HarmonyOS NEXT guidance, and HarmonyOS Design
-- HarmonyOS should assume strict ArkTS models and native rendering of structured
-  content rather than a WebView-first reading surface
-- none of the native apps should try to reproduce the web site’s Carbon layer
-- shared behavior lives in content contracts and information architecture, not a
-  shared visual component system
+- Android uses Kotlin, Jetpack Compose, Material 3, Hilt, Room, DataStore, and
+  WorkManager.
+- iOS should follow Apple’s native stack and design guidance when work starts.
+- HarmonyOS should follow ArkTS, ArkUI, Stage model, and HarmonyOS Design when
+  work starts.
+- Native apps must share contracts and information architecture, not a shared
+  visual component library.
 
-### Repository Defaults
+### Repository
 
-- keep the current repository root as the web/editorial source of truth
-- do not move the site into `apps/web` during Phase 0
-- keep JSON generation inside the current web build for the first app version
-- do not extract a dedicated `content-api` package during Phase 0
-- do not introduce a second language for shared mobile contract tooling during
-  Phase 0; keep that as a later option only if multi-client pressure appears
+- Keep the current repository root as the editorial and web source of truth.
+- Keep app JSON generation inside the current Deno build pipeline.
+- Keep Android in `apps/android`.
+- Do not move the site into `apps/web` during active Android delivery.
 
-## Locked Decisions
+## Phase 0 Outcome Snapshot
 
-These decisions are now considered chosen for Phase 0 unless a new explicit
-decision reopens them.
+The Phase 0 plan is no longer theoretical. As of 2026-03-21:
 
-### 1. iOS v1 Product Scope
+- Android has a working native reader in `apps/android`
+- the site generates the app-manifest / posts-index / post-detail JSON outputs
+- Android mirrors those generated contracts into bootstrap assets
+- Android seeds Room from those assets and refreshes from the remote contract
+  endpoints
+- Android localizes both content and app chrome
+- Android supports bookmarks, reading continuity, archive filtering, deep links,
+  background sync, and pull-to-refresh
 
-The first app implementation starts on iOS.
+The active delivery tracker for that work is:
 
-Locked v1 scope:
+- `docs/android-roadmap.md`
 
-- home screen from localized `posts-index`
-- archive screen from localized `posts-index`
-- native post detail from structured `post-detail`
-- settings screen with language preference and data controls
-- opportunistic offline cache for the last successful localized indexes
-- opportunistic cache for opened post details
-- explicit "Save for Offline" action on post detail
-- per-device bookmarks
-- per-device reading progress
-- share sheet
-- "Open in Browser"
+## Deferred Decisions
 
-Explicitly out of scope for iOS v1:
+These items are explicitly deferred rather than unresolved by accident.
 
-- local search
-- remote search
-- account sync
-- push notifications
-- widgets
-- comments or community features
+- immutable post identity
+  - keep `id == slug` for now
+  - if slug-independent identity becomes necessary later, add one shared
+    `contentId` in `src/posts/<slug>/_data.yml`
+  - do not generate UUIDs independently in localized Markdown files
+- future contract expansion for richer inline content
+- whether `app-manifest` eventually needs fields such as `contentOrigin` or
+  `contentHash`
+- future editorial block families such as tables, footnotes, callouts, and
+  embeds
+- Java toolchain upgrade beyond Java 17
+  - keep Java 17 during active Android delivery
+  - evaluate a newer supported LTS only near the end of the project once app
+    behavior, signing, and release wiring are stable
 
-### 2. `updatedAt`
+## Open Questions Still Outside Phase 0
 
-`updatedAt` is optional in v1.
-
-Rules:
-
-- emit `publishedAt` for every item and detail payload
-- emit `updatedAt` only when the editorial source has a true update timestamp
-- do not synthesize `updatedAt` by copying `publishedAt`
-- clients should treat missing `updatedAt` as "no separate update date"
-
-### 3. Rich Text For `post-detail`
-
-The target v1 direction is block-based content with explicit inline nodes.
-
-Locked rules:
-
-- `paragraph`, `heading`, and `quote` blocks use `content`
-- list items are objects with their own `content`
-- canonical inline node families in v1: `text`, `link`, `lineBreak`
-- `text` can carry `marks`
-- canonical v1 marks: `emphasis`, `strong`, `code`
-
-This model is intentionally small. It covers the inline features already present
-in the repository’s Markdown without forcing the apps to parse raw HTML.
-
-## Preparation Backlog
-
-### 1. Product Decisions
-
-- [x] Confirm the iOS v1 feature floor
-- [x] Confirm what "offline reading" means operationally: cached indexes and
-      opened posts, plus explicit saved posts from post detail
-- [x] Decide whether local on-device search is in iOS v1 or later
-- [x] Decide whether bookmarks remain per-device only in v1
-- [ ] Decide whether HarmonyOS stays a later exploration track or a planned
-      near-term track after Android
-
-### 2. Contract Decisions
-
-- [x] Finalize the inline rich-text model for `post-detail`
-- [x] Decide whether heading blocks use `text` or `content` as the canonical
-      field once rich text is added
-- [x] Make `updatedAt` optional or add true editorial support for it
-- [ ] Defer immutable post identity unless slug changes become a real need; if
-      introduced later, prefer one shared `contentId` in
-      `src/posts/<slug>/_data.yml` over per-language UUIDs in localized Markdown
-      files
-- [ ] Decide whether `app-manifest` needs `contentOrigin`
-- [ ] Decide whether `contentHash` is needed in v1 or deferred
-- [ ] Decide whether future editorial features need placeholders now: tables,
-      footnotes, callouts, embeds
-
-### 3. Build And Validation Prep
-
-- [ ] Replace the legacy post-only content-contract path with one generator path
-      for manifest, index, and detail outputs
-- [ ] Update `deno task validate-contracts` to validate the target app-contract
-      family instead of the legacy post-only schema
-- [ ] Add language coverage fixtures for the target contracts
-- [ ] Add at least one consumer-oriented decoding smoke test for generated app
-      payloads
-- [ ] Decide whether app JSON output is generated from rendered HTML, Markdown
-      AST, or shared page data before implementation starts
-- [ ] Define the trigger for introducing a separate shared contract tool and
-      confirm the default language choice if that trigger is reached
-
-### 4. Distribution And Linking Prep
-
-- [ ] Confirm the canonical public host for deep links: `https://normco.re`
-- [ ] Reserve the Apple bundle identifier
-- [ ] Reserve the Android application ID
-- [ ] Reserve the HarmonyOS application identifier / namespace
-- [ ] Create the App Store Connect record when the iOS implementation track
-      starts
-- [ ] Plan Universal Links, Android App Links, and HarmonyOS link handling from
-      the same canonical post URLs
-- [ ] Prepare the values needed for `apple-app-site-association` once the Apple
-      team and bundle identifier are known
-
-### 5. Editorial Model Prep
-
-- [ ] Confirm that every post should expose a summary in app contracts
-- [ ] Confirm whether reading time stays derived rather than editorially
-      authored
-- [ ] Decide whether hero images are part of v1 or simply optional and mostly
-      absent at launch
-- [ ] Record any future editorial block types that should stay out of v1
-
-## Open Questions
-
-These items remain intentionally open because the repository cannot resolve them
-alone.
-
-- What is the final Apple bundle identifier?
-- What is the final Android application ID?
-- What is the final HarmonyOS application identifier?
+- Does `re.phiphi.android` remain the final Android application ID?
+- Does `phiphi` remain the final Android app name?
+- What is the final Apple bundle identifier when iOS starts?
+- What is the final HarmonyOS identifier / namespace when that track starts?
 
 ## Exit Criteria
 
-Phase 0 is complete when all of the following are true:
+Phase 0 is closed because the following are true:
 
-- the iOS v1 product scope is explicit
-- the target app-contract family is explicit
-- the rich-text direction for `post-detail` is chosen
-- the rule for `updatedAt` is chosen
-- the repository path for generating and validating app JSON is chosen
-- the canonical deep-link host is confirmed
-- the identifiers needed to start Apple / Android / HarmonyOS app setup are
-  known or explicitly deferred by decision
+- the first native client is chosen
+- the shared app-contract family is chosen
+- the repository path for generating app JSON is chosen
+- the Android implementation track is active and uses those decisions in real
+  code
 
 ## Next Step After Phase 0
 
-When the exit criteria are met, start Phase 1:
+The active next step is no longer generic prep. It is Android hardening:
 
-- generate `app-manifest`
-- generate localized `posts-index`
-- generate localized `post-detail`
-- validate examples and generated payloads in CI
-- keep generation inside the current web build
+- full screen review
+- accessibility pass
+- test coverage
+- performance verification
+- release signing and distribution setup
+
+After Android is stable enough, reuse the same contract boundary and product
+lessons for iOS and HarmonyOS.

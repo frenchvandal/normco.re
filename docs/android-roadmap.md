@@ -2,7 +2,7 @@
 
 This document is the execution roadmap for the Android app track.
 
-Updated: 2026-03-20
+Updated: 2026-03-21
 
 This roadmap supersedes the earlier iOS-first implementation order for active
 delivery. The shared contract-first direction from the mobile docs remains in
@@ -10,49 +10,72 @@ force.
 
 ## Current Status
 
-- Phase 0 bootstrap is complete.
-- `apps/android` imports cleanly in Android Studio.
-- The Gradle wrapper is committed and the debug build passes with Java 17.
-- The provisional app name is `phiphi`.
-- The local quality gate is installed:
+- Phases 0 through 3 are effectively complete for the first Android reader
+  implementation.
+- `apps/android` imports cleanly in Android Studio and the debug build passes
+  with Java 17.
+- The provisional app name remains `phiphi`.
+- The local quality gate is active and enforced:
   - Spotless + ktfmt
   - Detekt
   - Android lint
-- The first contract-backed slice is now the Home feed:
-  - `app-manifest` mirrored into app assets
-  - localized `posts-index` payloads mirrored into app assets
-  - repository-driven loading
-  - Hilt-backed app wiring
-  - `ViewModel` + `StateFlow`
-  - `kotlinx.serialization` contract parsing
-  - Compose rendering of real post summaries and hero images through Coil
-  - navigation into a contract-backed post detail screen
-- The archive screen is now contract-backed as well:
-  - `ArchiveRoute` + `ArchiveViewModel`
-  - shared `PostSummaryCard` rendering
-  - post navigation by slug instead of sample data
-- The local source of truth bootstrap is now in place:
-  - Room database installed in `:app`
-  - manifest and localized posts seeded from generated app assets
-  - repository reads Home, Archive, and Post data from Room after seeding
-- The settings slice is now real:
+- The content pipeline is live end to end:
+  - the site build emits `/api/app-manifest.json`
+  - the site build emits localized `/api/posts/index.json`
+  - the site build emits localized `/api/posts/<slug>.json`
+  - Android bootstrap assets are mirrored from generated site output through
+    `deno task android:sync-contract-assets`
+  - Room is the local source of truth after bootstrap
+  - remote contracts refresh back into Room through repository code
+- The core reader flows are implemented:
+  - Home
+  - Archive
+  - Post detail
+  - Settings
+- Home is no longer just a raw feed:
+  - recent posts only for the main feed
+  - `Continue reading`
+  - `Saved reading`
+  - direct bookmark toggles on feed cards
+- Archive is now the exhaustive retrieval surface:
+  - local search
+  - bookmarked-only filter
+  - tag filters
+  - direct bookmark toggles on feed cards
+  - pull-to-refresh
+- Post detail now includes:
+  - remote + local contract-backed rendering
+  - visible refresh without dropping current content
+  - pull-to-refresh
+  - bookmark action
+  - `Open in Browser`
+  - share sheet
+  - in-article language switching
+  - table of contents for heading blocks
+  - code-block copy action
+  - reading-position restore
+- Settings is fully wired:
   - DataStore-backed reader preferences
-  - persistent language selection
-  - Home, Archive, and Post now follow the selected language instead of the
-    manifest default only
-  - offline preference toggles stored for the next sync phase
-- The site build now generates:
-  - `/api/app-manifest.json`
-  - localized `/api/posts/index.json`
-  - localized `/api/posts/<slug>.json`
-- Android fallback bootstrap assets can be refreshed from generated site output
-  through `deno task android:sync-contract-assets`
-- Android bootstrap assets now include:
-  - `bootstrap/app-manifest.json`
-  - `bootstrap/posts-index-<lang>.json`
-  - `bootstrap/post-details/<lang>/<slug>.json`
-- The next milestone is WorkManager-backed refresh on top of the Room and
-  DataStore source of truth.
+  - app-chrome language localization through AppCompat locales
+  - offline detail caching preference
+  - background sync network preference
+  - visible content-sync status
+  - clear reading history
+- Background behavior is implemented, not just scaffolded:
+  - WorkManager periodic content sync
+  - visible sync timestamps and success/failure status
+  - unmetered-only background sync toggle has real scheduling effect
+  - opened and bookmarked posts can be prefetched into local detail cache when
+    offline saving is enabled
+- Deep links are in place for canonical post URLs under `https://normco.re`.
+- Bookmarks are intentionally not a separate top-level tab in v1:
+  - they are surfaced through `Saved reading` on Home
+  - and through the bookmarked Archive route/filter
+- The next milestone is release hardening, not core feature bootstrap:
+  - final app naming and identifier decisions
+  - accessibility and test coverage
+  - performance verification
+  - release signing and store wiring
 
 ## Executive Summary
 
@@ -94,12 +117,15 @@ force.
   - per-device reading progress
   - share sheet
   - "Open in Browser"
+  - archive-local search and filters
+  - pull-to-refresh on Home, Archive, and Post
 - v1 excludes:
   - comments
   - account sync
   - push notifications
   - widgets
   - server-side search
+  - a dedicated bookmarks tab in the top-level navigation
 
 ### Repository
 
@@ -250,10 +276,9 @@ Goal:
 
 Status:
 
-- in progress
-- current bridge step: bundled contract assets in app assets are mirrored from
-  the generated site contracts, seeded into Room, and power the Home feed,
-  archive, and post detail screens through Hilt-injected repository code
+- complete
+- the generated site contracts are mirrored into Android bootstrap assets,
+  seeded into Room, and refreshed from remote URLs through repository code
 
 Deliverables:
 
@@ -282,6 +307,10 @@ Goal:
 
 - establish the reading app backbone
 
+Status:
+
+- complete
+
 Deliverables:
 
 - repository interfaces for manifest, index, and detail payloads
@@ -304,6 +333,10 @@ Goal:
 
 - ship the first useful user flows
 
+Status:
+
+- complete
+
 Deliverables:
 
 - home screen
@@ -314,6 +347,8 @@ Deliverables:
 - reading progress
 - explicit "Save for Offline"
 - language switching
+- local archive search and filters
+- pull-to-refresh on Home, Archive, and Post
 
 Exit criteria:
 
@@ -325,6 +360,10 @@ Exit criteria:
 Goal:
 
 - make the app robust enough for testers
+
+Status:
+
+- in progress
 
 Deliverables:
 
@@ -349,6 +388,10 @@ Goal:
 
 - prepare Play distribution
 
+Status:
+
+- not started
+
 Deliverables:
 
 - final application ID confirmation
@@ -364,8 +407,15 @@ Exit criteria:
 ## Immediate Backlog
 
 - decide whether `re.phiphi.android` remains the final Android application ID
-- add App Links for canonical post URLs
-- introduce WorkManager and remote refresh on top of the Room source of truth
+- decide whether `phiphi` remains the final shipped app name
+- finish the full screen-by-screen review and fold the resulting UI cleanup into
+  the release-hardening pass
+- add accessibility review and fixes for all primary reader flows
+- add repository, ViewModel, and navigation tests for the shipped flows
+- add screenshot coverage for the critical Compose surfaces
+- validate startup and scroll performance on real devices and capture a baseline
+  profile if needed
+- wire the Play Console / signing / release metadata path
 - defer immutable post-identity work to a later polish pass: keep `id == slug`
   for now, and if slug-independent identity becomes needed, add a shared
   `contentId` in `src/posts/<slug>/_data.yml` instead of generating UUIDs

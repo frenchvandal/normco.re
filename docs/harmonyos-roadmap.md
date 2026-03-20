@@ -3,10 +3,13 @@
 This document defines the recommended HarmonyOS direction for a native normco.re
 client.
 
-Updated: 2026-03-20
+Updated: 2026-03-21
 
 HarmonyOS remains a later client track, but the architecture and product
-direction should already be explicit.
+direction should already be explicit. Android is now the reference implemented
+native client for the shared contract family; HarmonyOS should reuse that
+content boundary and adapt it to native HarmonyOS patterns rather than invent a
+parallel feed path.
 
 ## Executive Summary
 

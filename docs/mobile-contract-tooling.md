@@ -3,7 +3,7 @@
 This document records where introducing another language can make sense for the
 mobile-app side of normco.re without complicating the web build unnecessarily.
 
-Updated: 2026-03-20
+Updated: 2026-03-21
 
 ## Summary
 
@@ -154,7 +154,7 @@ boundary.
 
 Revisit this decision when at least one of these is true:
 
-- Android work has started alongside iOS
+- a second native client starts beside Android
 - HarmonyOS work has started alongside another native client
 - contract changes are causing repeated decoder breakage in client apps
 - more than one consumer repository now needs the same contract checks

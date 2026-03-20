@@ -1,220 +1,165 @@
 # Mobile Clients Roadmap
 
-This document tracks the recommended path for native mobile clients of
-normco.re.
+This document tracks the actual state and recommended direction for the native
+mobile clients of normco.re.
 
-Updated: 2026-03-20
+Updated: 2026-03-21
 
-Current implementation priority: iOS. Android and HarmonyOS remain follow-on
-clients and should consume the same content contracts once the iOS path is
-proven with real usage.
+Current implementation priority: Android. iOS and HarmonyOS remain follow-on
+clients and should consume the same content contracts once the Android release
+track is stable.
 
 ## Executive Summary
 
 - Keep the current Deno + Lume repository as the editorial and web source of
-  truth for now.
-- Generate a static JSON app API from the existing site build. No dynamic
-  backend is required for the first app version.
-- Keep open the option of a separate shared contract tool for native clients,
-  but do not move app JSON generation out of the current Deno build unless
-  multi-client pressure proves the need.
+  truth.
+- Keep generating the static JSON app API from the existing site build. No
+  dynamic backend is required for the first native clients.
 - Treat `contracts/app-manifest.schema.json`,
   `contracts/posts-index.schema.json`, and `contracts/post-detail.schema.json`
-  as the intended cross-platform boundary, but revise them before freezing v1.
-- Do not ship an iOS app that is only a wrapped website. The first release needs
-  clear native value to be a worthwhile product and to clear App Store review
-  expectations around minimum functionality.
-- Plan the iOS client around Apple’s current native stack and design guidance,
-  not around visual reuse of the web UI.
-- Plan the Android client around Google’s native stack and Material Design 3,
-  not around visual reuse of the web UI.
-- Plan the HarmonyOS client around Huawei’s native HarmonyOS NEXT stack and
-  design guidance, not around visual reuse of the web UI.
-- Defer a full `apps/web` monorepo reshuffle until a second native client or
-  shared tooling pressure actually justifies the move.
+  as the shared mobile boundary.
+- Keep Android as the reference implementation for the first shipped native
+  reader.
+- Plan iOS and HarmonyOS as later native clients that reuse the same contract
+  family and product shape rather than the Android UI itself.
+- Do not try to recreate the site’s Carbon UI in native apps. Share content and
+  information architecture, not pixel-identical components.
 
-## Goals
+## Current Snapshot
 
-- Keep the blog source of truth in the existing web site.
-- Expose a stable, versioned content surface for native clients.
-- Avoid coupling mobile apps to Lume internals, feed quirks, or rendered HTML.
-- Let each client use the native UI stack of its platform.
-- Make the first iOS release useful even when the network is poor or absent.
+### Shared Content Surface
 
-## What Changed Since The First Draft
+The site now emits the intended app-facing JSON family:
 
-The earlier draft was directionally right, but too eager in two places.
+- `/api/app-manifest.json`
+- localized `/api/posts/index.json`
+- localized `/api/posts/<slug>.json`
 
-First, it assumed a monorepo reshape to `apps/web` should happen immediately.
-That would create churn before there is any iOS code to benefit from it. The
-recommended near-term path is to leave the current web repository layout alone
-and add `apps/ios` only when implementation starts.
+The repository also provides:
 
-Second, the repository now contains two generations of app-content thinking:
+- schema definitions in `contracts/`
+- validation through `contracts/validate.ts`
+- Android asset mirroring through `deno task android:sync-contract-assets`
 
-- the current target schemas: `contracts/app-manifest.schema.json`,
-  `contracts/posts-index.schema.json`, `contracts/post-detail.schema.json`
-- an older prototype: `contracts/post.schema.json`,
-  `plugins/content-contract.ts`, and `contracts/validate.ts`
+### Android
 
-The older prototype is useful as an experiment, but it should not define the iOS
-path. It emits a simpler post-only shape that no longer matches the newer study.
+Android is no longer a planning track. It is implemented in `apps/android`.
 
-## Product Bar For The iOS v1
+Current Android state:
 
-The iOS app should be a native reading client for the blog, not a website shell.
+- Home, Archive, Post detail, and Settings are implemented
+- content is localized
+- app chrome is localized
+- Room is the local source of truth after bootstrap
+- DataStore persists reader preferences, bookmarks, and reading state
+- WorkManager schedules periodic content refresh
+- Home surfaces recent reading and saved reading
+- Archive supports local search, bookmarked-only filtering, and tag filters
+- Post detail supports bookmark, share, `Open in Browser`, in-article language
+  switching, table of contents, code copy, reading-position restore, and
+  pull-to-refresh
+- feeds and article detail support pull-to-refresh
+- canonical post URLs open the app through Android deep links
 
-Recommended first-release value:
+What remains before Android release hardening is mostly:
 
-- native home and archive screens
-- native post detail rendering from structured blocks plus inline rich text
-- cached localized indexes
-- cached opened posts plus explicit "Save for Offline" from post detail
-- per-device bookmarks
-- per-device reading progress
-- language preference and alternate-language switching
-- share sheet plus "Open in Safari"
+- final naming and identifier decisions
+- accessibility pass
+- broader test coverage
+- performance verification
+- signing / Play Console / release wiring
 
-Optional for later phases:
+See `docs/android-roadmap.md` for the detailed Android execution state.
 
-- local full-text search across cached content
-- push notifications for new posts
-- widgets or Live Activities
+### iOS
+
+iOS has not started implementation yet.
+
+When it starts, it should reuse:
+
+- the same app-manifest / posts-index / post-detail boundary
+- the same product shape proven on Android
+- native Apple design and architecture guidance rather than Android UI patterns
+
+### HarmonyOS
+
+HarmonyOS remains a later track.
+
+Its baseline remains:
+
+- HarmonyOS NEXT
+- ArkTS
+- ArkUI
+- Stage model
+- HarmonyOS Design
+
+See `docs/harmonyos-roadmap.md` for the platform-specific direction.
 
 ## Repository Strategy
 
 ### Near-Term Structure
 
-Keep the current repository root as the web app and editorial pipeline:
+Keep the current repository root as the editorial and web source of truth:
 
 ```text
 repo/
+├── apps/
+│   └── android/
 ├── contracts/
 ├── docs/
 ├── plugins/
-├── src/
-└── apps/
-    └── ios/
+├── scripts/
+└── src/
 ```
 
-Why this is the right first step:
+Why this is still the right shape:
 
-- avoids moving stable web code without a clear payoff
-- keeps the current deployment pipeline intact
-- lets the iOS app evolve against the real repository before committing to a
-  larger monorepo abstraction
+- the web build already owns the editorial source of truth
+- the static app API already comes from the same build
+- Android can evolve without forcing a larger monorepo reshuffle
+- iOS and HarmonyOS can be added later once there is real multi-client pressure
 
-### When To Introduce `apps/web`
+### When To Introduce `apps/web` Or More Shared Workspace Structure
 
-Move the existing web code into `apps/web` only when at least one of these is
+Revisit a broader application workspace only when at least one of these becomes
 true:
 
-- Android or HarmonyOS implementation has started
-- web and native build tooling now share CI pipelines that are awkward at the
-  root
-- multiple application packages need a common workspace policy
+- iOS starts in parallel
+- HarmonyOS starts in parallel
+- build logic becomes duplicated across multiple app projects
+- CI or workspace policy becomes awkward at the repository root
 
-Until then, treat `apps/web` as a possible future shape, not a prerequisite.
+Until then, treat `apps/web` as optional future cleanup, not a prerequisite.
 
-## Recommended iOS Stack
+## Shared Product Bar
 
-Recommended stack for the first iOS client:
+The first shipped native apps should be native reading clients for the blog, not
+browser shells.
 
-- SwiftUI
-- NavigationStack
-- Observation (`@Observable`)
-- `URLSession` + `async/await` + `Codable`
-- SwiftData only for local user state such as bookmarks, downloads, and reading
-  progress
-- XCTest and XCUITest
+Shared v1 product shape:
 
-Implementation guidance:
+- native Home
+- native Archive
+- native Post detail
+- native Settings
+- localized content
+- cached indexes
+- cached opened posts
+- per-device bookmarks
+- per-device reading progress
+- alternate-language switching
+- share
+- `Open in Browser`
 
-- follow Apple’s Human Interface Guidelines and Apple design resources
-- start with as few third-party dependencies as possible
-- keep remote content as network-decoded immutable models
-- keep local preferences and reading state separate from downloaded content
-- avoid using `WKWebView` as the primary reading surface
+Shared later-phase candidates:
 
-The iOS app should not try to recreate the web site’s Carbon UI. It should feel
-native to Apple platforms and follow Apple’s current design and interaction
-patterns.
+- account sync
+- push notifications
+- widgets
+- server-side search
+- cross-device sync
 
-## Recommended Android Stack
-
-Android remains a follow-on client, but the direction is now explicit:
-
-- Kotlin
-- Jetpack Compose
-- Compose Material 3
-- adaptive navigation and layouts from current Jetpack guidance
-- ViewModel
-- coroutines and Flow
-- Room for offline cache and long-lived local content
-- DataStore for lightweight preferences
-- WorkManager for background sync and deferred work
-- Hilt for dependency injection unless the app stays trivially small
-
-Implementation guidance:
-
-- use Material 3 as the Android design system
-- follow Google’s recommended Android architecture with UI, data, and optional
-  domain layers
-- follow an offline-first data strategy for reading content
-- support deep links to post URLs from the start
-- treat the Now in Android sample as the primary implementation reference for
-  app structure and quality bar
-
-The Android app should not try to recreate the web site’s Carbon UI. The shared
-surface across platforms is content and information architecture, not a
-pixel-identical component library.
-
-## Recommended HarmonyOS Stack
-
-HarmonyOS remains a later client, but the direction should also be explicit:
-
-- HarmonyOS NEXT 5.x baseline when implementation starts
-- ArkTS
-- ArkUI declarative UI
-- Stage model application structure
-- `entry` HAP with a single `UIAbility` first
-- one or two HSP utility modules only when shared-code pressure appears
-- prefer HSP over HAR for app-internal shared runtime code once modularization
-  starts
-- `Navigation` for the real app rather than a legacy router-first design
-- `List` + `LazyForEach` + `Refresh` for feed surfaces
-- `relationalStore` for offline content cache
-- Preferences / lightweight KV storage for settings and small local state
-- distributed KV, Cloud DB, Cloud Storage, and Push Kit only after the core
-  reader is stable and product-justified
-
-Implementation guidance:
-
-- use HarmonyOS Design as the platform design system and primary UI reference
-- follow Huawei’s primary application model: ArkTS + ArkUI + Stage model
-- treat ArkTS as a strict application language and model contract types
-  explicitly rather than relying on dynamic TypeScript-style patterns
-- keep the content and data model aligned with the same shared contracts used by
-  iOS and Android
-- keep the content pipeline contract-first: `app-manifest`, localized
-  `posts-index`, localized `post-detail`
-- prefer native rendering of structured article content rather than a
-  WebView-first detail screen
-- start with RDB + preferences for offline-first local state before introducing
-  distributed or cloud sync
-- favor native navigation and native components rather than a visual port of the
-  web UI
-- treat Super Device continuity as a later product layer on top of a strong
-  phone reader, not as a Phase 0 prerequisite
-
-The HarmonyOS app should not try to reproduce the site’s Carbon layer either. It
-should feel native to HarmonyOS.
-
-See `docs/harmonyos-roadmap.md` for the HarmonyOS-specific execution plan.
-
-## Shared Strategy Across Platforms
-
-The shared mobile architecture should remain contract-first.
+## Shared Contract Strategy
 
 Every native client should depend on:
 
@@ -229,218 +174,100 @@ No native client should depend directly on:
 - Lume page-data internals
 - TSX rendering logic
 
-Platform UI guidance:
+The repository still contains legacy prototype artifacts such as
+`contracts/post.schema.json` and `plugins/content-contract.ts`, but those should
+not define the active mobile architecture.
 
-- iOS should feel native to iOS
-- Android should feel native to Android and use Material 3
-- HarmonyOS should feel native to HarmonyOS and follow Huawei’s design guidance
-- web remains free to use Carbon as its own design system
+## Platform Directions
 
-## Shared Contract Tooling
+### Android
 
-Another language can make sense for the mobile program, but only in a narrow
-place: shared contract tooling around the JSON boundary.
+Android uses:
 
-That means tasks such as:
+- Kotlin
+- Jetpack Compose
+- Material 3
+- ViewModel
+- coroutines and Flow
+- Room
+- DataStore
+- WorkManager
+- Hilt
+- Coil
 
-- consumer-facing contract validation
-- compatibility checks between payload revisions
-- fixture generation for native client tests
-- optional client model generation once more than one native client exists
+Implementation guidance:
 
-That does not mean moving site generation or app JSON generation out of Deno.
-The current repository should remain the canonical generator because it already
-owns the editorial source of truth.
+- keep the UI layer in Compose
+- keep the data layer repository-driven and offline-first
+- keep deep links aligned with canonical post URLs
+- continue using Android as the reference client for validating the shared
+  contract and offline strategy
 
-Default recommendation:
+### iOS
 
-- keep generation in Deno
-- consider a separate Go tool later if iOS and at least one more native client
-  both need the same contract tooling
-- treat Rust as a later option only if a lower-level shared parser or FFI-style
-  core becomes useful
-- do not plan around Ruby or R for this problem
+iOS should use:
 
-See `docs/mobile-contract-tooling.md` for the detailed reasoning.
+- SwiftUI
+- NavigationStack
+- Observation
+- `URLSession` + `async/await` + `Codable`
+- local persistence only where the product needs it
 
-## Current Gaps To Close Before Implementation
+Implementation guidance:
 
-### 1. The Current Detail Contract Is Not Rich Enough
+- follow Apple Human Interface Guidelines
+- feel native to iOS rather than mirroring Android
+- reuse the Android-learned product behavior, not the Android component tree
 
-The current `post-detail` study models block structure, but text-bearing blocks
-still collapse inline meaning down to plain strings. That is not enough for a
-native reading app because the existing Markdown already uses:
+### HarmonyOS
 
-- inline links
-- inline code
-- emphasis / strong emphasis
+HarmonyOS should use:
 
-Before freezing v1, text-bearing blocks should support inline children or a
-similarly explicit rich-text representation.
+- HarmonyOS NEXT
+- ArkTS
+- ArkUI
+- Stage model
+- HarmonyOS Design
 
-### 2. `updatedAt` Is Not Yet Backed By Editorial Data
+Implementation guidance:
 
-The web content model currently tracks `date`, but does not yet expose a
-distinct editorial `updatedAt` field in shared post metadata. For the iOS
-contracts, choose one of these approaches explicitly:
+- keep the app contract-first
+- render structured content natively
+- start offline-first on phone before adding distributed features
 
-- make `updatedAt` optional in v1, or
-- add real update tracking to post metadata before the app contract is frozen
+## Shared Tooling Direction
 
-Duplicating `publishedAt` into `updatedAt` is acceptable as a temporary
-migration aid, but it should not become a hidden long-term rule.
+Keep the site and app JSON generation in Deno.
 
-### 3. The Build Pipeline Still Targets The Older Prototype
+A separate shared contract tool only becomes justified when multi-client reuse
+actually appears. If that happens, Go remains the default recommendation for:
 
-The repository already documents the newer app-manifest / index / detail model,
-but the retained content-contract prototype still generates the older single
-post schema. The first implementation pass should replace that drift with one
-build path that emits the real app contracts.
+- compatibility checks
+- reusable validation
+- fixture generation
+- optional code generation for clients
 
-### 4. App Distribution Metadata Is Not Prepared Yet
+See `docs/mobile-contract-tooling.md`.
 
-The repo is technically ready to host a future iOS client, but the Apple-side
-distribution setup is still missing:
+## What Is Deferred On Purpose
 
-- bundle identifier
-- Apple Developer team setup
-- App Store Connect app record
-- app icon and store artwork
-- Universal Links / Associated Domains configuration
+- immutable post identity beyond `id == slug`
+- richer inline contract modeling beyond the current mobile block usage
+- storefront metadata beyond what runtime clients need
+- a second toolchain for contract work before multi-client pressure exists
+- Java toolchain upgrades beyond Java 17 during active Android delivery
 
-## Phased Rollout
+## Recommended Sequence From Here
 
-### Phase 0: Preparation In The Current Repo
+1. finish Android hardening and release prep
+2. keep the shared contract family stable while Android is finalized
+3. start iOS only once Android product behavior and content assumptions are
+   settled enough to reuse
+4. treat HarmonyOS as a later native client built on the same contract family
 
-- finalize the iOS v1 product scope
-- revise the content contracts before treating them as stable
-- decide how native clients will represent rich inline content
-- decide whether `updatedAt` is optional or editorially authored
-- prepare Apple distribution identifiers and domain ownership details
+## External References
 
-Execution tracker for this phase:
-
-- `docs/mobile-phase-0.md`
-
-### Phase 1: Static App API Generation
-
-- generate `/api/app-manifest.json`
-- generate localized `/api/posts/index.json`
-- generate localized `/api/posts/<slug>.json`
-- validate examples and generated payloads in CI
-- keep JSON generation inside the current web build
-
-### Phase 2: iOS App Skeleton
-
-- create `apps/ios`
-- add app bootstrap, navigation, and decoding
-- implement home, archive, post detail, and settings
-- add local persistence for bookmarks, downloads, and reading progress
-
-### Phase 3: Product Hardening
-
-- offline caching policy
-- language switching flow
-- universal links
-- accessibility pass
-- TestFlight internal builds
-
-### Phase 4: Release Readiness
-
-- App Store metadata
-- screenshots and review notes
-- analytics / crash reporting if desired
-- public TestFlight or App Store launch
-
-## Work We Can Prepare Right Now
-
-### Product Decisions
-
-- confirm the iOS v1 feature floor: offline reading, bookmarks, reading
-  progress, language switching, share/open in browser
-- decide whether search is in v1 or a follow-up
-- decide whether favorites are per-device only or eventually synced
-
-### Content Contract Work
-
-- replace the old post-only prototype path with the newer manifest / index /
-  detail contract family
-- extend text-bearing blocks with inline rich-text support
-- decide the canonical shape for code blocks, lists, images, and quotes
-- make an explicit rule for `updatedAt`
-- define how relative asset URLs become app-safe absolute URLs
-
-### Build And Validation Work
-
-- add one generator path for all app JSON outputs
-- update `deno task validate-contracts` so it validates the real app contracts
-- add fixtures for each language
-- add one minimal consumer smoke test that decodes the generated payloads
-
-### Apple / Distribution Prep
-
-- reserve the bundle identifier
-- create the App Store Connect record
-- choose the Associated Domains entitlement value for Universal Links
-- plan the `apple-app-site-association` file to be hosted from the site
-- prepare a first-pass app icon set derived from the current site branding
-
-### Android Prep
-
-- reserve the Android application ID
-- create the Play Console app record when the Android track starts
-- decide the app theme strategy with Material 3 and dynamic color
-- plan Android App Links for post URLs
-- define the offline cache and sync policy around Room and WorkManager
-
-### HarmonyOS Prep
-
-- reserve the HarmonyOS application identifier and project namespace
-- prepare the AppGallery Connect / Huawei distribution setup when the HarmonyOS
-  track starts
-- define the HarmonyOS deep-linking and routing strategy for post URLs
-- decide the native HarmonyOS theme direction from Huawei’s design guidance
-- confirm the minimal local persistence approach for bookmarks and reading state
-
-### Editorial Model Prep
-
-- decide whether every post should expose a summary and reading time
-- decide whether hero images are part of the app v1 contract or deferred
-- decide how future editorial features should evolve: pull quotes, callouts,
-  embeds, tables, footnotes
-
-## Recommendation
-
-Do not start by building an iOS shell around the website and do not start by
-restructuring the repository into `apps/web`.
-
-The most pragmatic path is:
-
-1. lock the product scope and app contracts
-2. generate stable static JSON from the existing site build
-3. create `apps/ios`
-4. build a native reader with offline value
-
-That sequence reduces risk, avoids premature repo churn, and keeps the first iOS
-release aligned with the editorial strengths of the site.
-
-## External Notes
-
-Two Apple references matter for planning:
-
-- [App Store Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)
-- [Upcoming requirements notice](https://developer.apple.com/news/upcoming-requirements/)
-- [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)
-- [SwiftUI](https://developer.apple.com/swiftui/)
-- [SwiftData](https://developer.apple.com/documentation/SwiftData)
-
-As of 2026-03-18, Apple states that apps uploaded on or after 2026-04-28 must be
-built with Xcode 26 and the iOS 26 SDK. Recheck this operational requirement
-when implementation starts, but plan with current toolchains rather than older
-Xcode baselines.
-
-For Android, current Google references that should anchor the implementation
-are:
+Android references:
 
 - [Recommendations for Android architecture](https://developer.android.com/topic/architecture/recommendations)
 - [Material Design 3 in Compose](https://developer.android.com/develop/ui/compose/designsystems/material3)
@@ -448,8 +275,14 @@ are:
 - [Build an offline-first app](https://developer.android.com/topic/architecture/data-layer/offline-first)
 - [Now in Android](https://developer.android.com/series/now-in-android)
 
-For HarmonyOS, current Huawei references that should anchor the implementation
-are:
+Apple references:
+
+- [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)
+- [SwiftUI](https://developer.apple.com/swiftui/)
+- [SwiftData](https://developer.apple.com/documentation/SwiftData)
+- [App Store Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)
+
+HarmonyOS references:
 
 - [HarmonyOS Design](https://developer.huawei.com/consumer/en/design/)
 - [ArkUI](https://developer.huawei.com/consumer/cn/arkui/)
