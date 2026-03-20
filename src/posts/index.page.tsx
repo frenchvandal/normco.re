@@ -171,6 +171,8 @@ export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/posts/";
 /** Lume layout template. */
 export const layout = "layouts/base.tsx";
+/** Exclude archive listings from Pagefind in favor of source post pages. */
+export const searchIndexed = false;
 /** Page title. */
 export const title = "Writing";
 /** Page meta description. */

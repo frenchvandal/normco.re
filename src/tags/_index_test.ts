@@ -47,6 +47,7 @@ describe("tags/index.page.ts", () => {
 
     assert(designPage);
     assert(frenchDesignPage);
+    assertEquals(designPage.searchIndexed, false);
     assertEquals(designPage.type, "tag");
     assertEquals(designPage.title, "Tag: design");
     assertEquals(frenchDesignPage.title, "Étiquette\u00a0: design");

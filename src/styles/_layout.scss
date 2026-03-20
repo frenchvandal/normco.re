@@ -222,6 +222,19 @@
     inline-size: var(--site-header-language-panel-width);
   }
 
+  .cds--header__search-panel {
+    inline-size: var(--site-header-search-panel-width);
+    block-size: min(calc(100dvh - var(--site-shell-size)), 40rem);
+    overflow: hidden;
+  }
+
+  .cds--header__search-panel .cds--header__panel-content {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: var(--cds-spacing-04);
+    block-size: 100%;
+  }
+
   .cds--header__language-panel .cds--header__panel-content {
     padding: var(--cds-spacing-02) 0;
   }
@@ -286,7 +299,7 @@
   }
 
   .cds--header__search-root {
-    min-block-size: var(--site-search-field-size);
+    min-block-size: 0;
   }
 
   // Carbon UI Shell Left Panel (SideNav)

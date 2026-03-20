@@ -323,7 +323,7 @@ function installFakePagefind(window: TestWindow) {
       drawer.append(resultsArea);
       form.append(input, clear, drawer);
       wrapper.append(form);
-      target.replaceChildren(wrapper);
+      target.append(wrapper);
 
       const translations = options.translations ?? {};
       const loading = translations.searching ?? "Loading";
@@ -572,6 +572,38 @@ describe("header-client.js", () => {
     assertEquals(statusText.hidden, false);
     assertEquals(statusText.textContent, "2 results");
     assertEquals(panel.getAttribute("aria-busy"), "false");
+  });
+
+  it("removes the placeholder skeleton before mounting the live Pagefind UI", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    evaluateScript(window);
+
+    const toggle = getSearchToggle(window);
+    toggle.focus();
+    toggle.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Enter",
+        bubbles: true,
+      }),
+    );
+    toggle.click();
+    await flush(window, 1);
+
+    const runtimeScript = window.document.querySelector(
+      'script[src="/pagefind/pagefind-ui.js"]',
+    );
+    assert(runtimeScript instanceof window.HTMLScriptElement);
+
+    installFakePagefind(window);
+    runtimeScript.dispatchEvent(new window.Event("load"));
+    await flush(window);
+
+    const searchRoot = window.document.querySelector("[data-search-root]");
+    assert(searchRoot instanceof window.HTMLElement);
+    assertEquals(searchRoot.querySelector("[data-search-skeleton]"), null);
+    assertEquals(searchRoot.querySelectorAll(".pagefind-ui").length, 1);
   });
 
   it("does not autofocus search when the panel opens from a pointer interaction", async () => {

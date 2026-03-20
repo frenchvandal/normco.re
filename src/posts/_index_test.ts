@@ -9,7 +9,7 @@ import { describe, it } from "jsr/testing-bdd";
 import { faker, seedTestFaker } from "../../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../../test/lume.ts";
 
-import postsIndexPage from "./index.page.tsx";
+import postsIndexPage, { searchIndexed } from "./index.page.tsx";
 
 // ---------------------------------------------------------------------------
 // Mock helpers
@@ -94,6 +94,10 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(html, 'class="archive-page-title p-name"');
       assertStringIncludes(html, 'class="u-url sr-only" href="/posts/"');
       assertStringIncludes(html, 'class="p-author h-card sr-only"');
+    });
+
+    it("opts the archive page out of the Pagefind body region", () => {
+      assertEquals(searchIndexed, false);
     });
   });
 

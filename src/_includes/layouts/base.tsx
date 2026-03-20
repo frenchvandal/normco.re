@@ -45,6 +45,7 @@ type AlternateData = {
 type LayoutData = Lume.Data & {
   build?: BuildData;
   lang?: string;
+  searchIndexed?: boolean;
   unlisted?: boolean;
   alternates?: ReadonlyArray<AlternateData>;
   siteChrome?: SiteChromeData;
@@ -158,6 +159,7 @@ export default (
     comp,
     build,
     lang,
+    searchIndexed,
     unlisted,
     alternates,
     siteChrome,
@@ -195,7 +197,7 @@ export default (
   const includeLinkPrefetch = !isPostDetailUrl(currentUrl) &&
     !isPostsArchiveUrl(currentUrl);
   const swDebugLevel = build?.swDebugLevel ?? "off";
-  const includePagefindBody = isIndexable;
+  const includePagefindBody = isIndexable && searchIndexed !== false;
   const atomXmlUrl = getLocalizedAtomFeedUrl(language);
   const feedXmlUrl = getLocalizedRssFeedUrl(language);
   const feedJsonUrl = getLocalizedJsonFeedUrl(language);

@@ -150,6 +150,9 @@ function resolveFeaturedTags(posts: readonly Lume.Data[]): string[] {
   return distinct(tags).slice(0, 4);
 }
 
+/** Exclude aggregate landing content from Pagefind in favor of source pages. */
+export const searchIndexed = false;
+
 /** Renders the home page body. */
 export default async (
   data: Lume.Data,

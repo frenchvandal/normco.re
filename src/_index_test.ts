@@ -1,9 +1,9 @@
-import { assertMatch, assertStringIncludes } from "jsr/assert";
+import { assertEquals, assertMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { faker, seedTestFaker } from "../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../test/lume.ts";
 
-import indexPage from "./index.page.tsx";
+import indexPage, { searchIndexed } from "./index.page.tsx";
 
 // ---------------------------------------------------------------------------
 // Mock helpers
@@ -105,6 +105,10 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, 'title="design"');
       assertStringIncludes(html, 'href="/tags/writing/"');
       assertStringIncludes(html, 'href="/tags/life/"');
+    });
+
+    it("opts the home page out of the Pagefind body region", () => {
+      assertEquals(searchIndexed, false);
     });
   });
 

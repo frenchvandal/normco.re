@@ -92,6 +92,7 @@ export default function* (data: Lume.Data): Generator<Lume.Data> {
           bucket.posts.length,
           language,
         ),
+        searchIndexed: false,
         type: "tag",
         tagName: bucket.tagName,
         tagSlug,

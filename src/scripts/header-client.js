@@ -1261,6 +1261,11 @@
       return;
     }
 
+    // Pagefind mounts into the target node, so remove any placeholder skeleton
+    // before the real UI is attached.
+    controller.container.replaceChildren();
+    delete controller.container.dataset.searchStatusBound;
+
     new pagefindUi({
       element: ensurePagefindSelector(controller),
       showImages: false,
