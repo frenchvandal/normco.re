@@ -237,7 +237,7 @@ docker run --name lgtm -p 3000:3000 -p 4317:4317 -p 4318:4318 --rm -ti \
 
 | Variable                      | Example                  | Description                                                   |
 | ----------------------------- | ------------------------ | ------------------------------------------------------------- |
-| `OTEL_DENO`                   | `true`                   | **Required.** Enables Deno's built-in instrumentation         |
+| `OTEL_DENO`                   | `true`                   | **Required.** Enables Deno’s built-in instrumentation         |
 | `OTEL_SERVICE_NAME`           | `my-site`                | Service name shown in traces                                  |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://localhost:4318`  | OTLP collector endpoint                                       |
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf`          | Use `http/json` in development, `http/protobuf` in production |

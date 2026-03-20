@@ -56,7 +56,7 @@ Unless a later decision explicitly overrides them, use these defaults.
 - iOS follows Apple stack and design guidance
 - Android follows Google stack and Material 3 guidance
 - HarmonyOS follows Huawei stack and HarmonyOS NEXT guidance
-- none of the native apps should try to reproduce the web site's Carbon layer
+- none of the native apps should try to reproduce the web site’s Carbon layer
 - shared behavior lives in content contracts and information architecture, not a
   shared visual component system
 
@@ -123,7 +123,7 @@ Locked rules:
 - canonical v1 marks: `emphasis`, `strong`, `code`
 
 This model is intentionally small. It covers the inline features already present
-in the repository's Markdown without forcing the apps to parse raw HTML.
+in the repository’s Markdown without forcing the apps to parse raw HTML.
 
 ## Preparation Backlog
 

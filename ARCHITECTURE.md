@@ -86,7 +86,7 @@ their own TSX layout.
 
 ### Multilingual Behavior
 
-Lume's `multilanguage` plugin provides the routing model:
+Lume’s `multilanguage` plugin provides the routing model:
 
 - the same canonical slug is preserved across languages
 - localized prefixes are applied at the route level
@@ -237,7 +237,7 @@ instead of scanning substrings with regular expressions.
 
 ### Microformats2 Mapping
 
-The homepage's recent-writing section also exposes an `h-feed`, but the
+The homepage’s recent-writing section also exposes an `h-feed`, but the
 discoverable and canonical HTML feed target remains the localized `/posts/`
 archive.
 

@@ -10,7 +10,7 @@ incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
 nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 
 Most people know the phrase but few know its origin. It is a scrambled excerpt
-from Cicero's _de Finibus Bonorum et Malorum_, a philosophical treatise written
+from Cicero’s _de Finibus Bonorum et Malorum_, a philosophical treatise written
 in 45 BC. The text has been used as filler copy since the 1500s, when an unknown
 printer took a galley of type and scrambled it to make a type specimen book.
 

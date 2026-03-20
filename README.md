@@ -1,6 +1,6 @@
 # normco.re
 
-normco.re is Phiphi's multilingual personal site. It is built with
+normco.re is Phiphi’s multilingual personal site. It is built with
 [Deno](https://deno.com/) and [Lume](https://lume.land/), rendered with TSX
 templates and Markdown content, styled with Carbon Design System v11 through the
 official Carbon packages, and deployed as a static site to

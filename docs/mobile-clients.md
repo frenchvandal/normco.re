@@ -21,11 +21,11 @@ proven with real usage.
 - Do not ship an iOS app that is only a wrapped website. The first release needs
   clear native value to be a worthwhile product and to clear App Store review
   expectations around minimum functionality.
-- Plan the iOS client around Apple's current native stack and design guidance,
+- Plan the iOS client around Apple’s current native stack and design guidance,
   not around visual reuse of the web UI.
-- Plan the Android client around Google's native stack and Material Design 3,
+- Plan the Android client around Google’s native stack and Material Design 3,
   not around visual reuse of the web UI.
-- Plan the HarmonyOS client around Huawei's native HarmonyOS NEXT stack and
+- Plan the HarmonyOS client around Huawei’s native HarmonyOS NEXT stack and
   design guidance, not around visual reuse of the web UI.
 - Defer a full `apps/web` monorepo reshuffle until a second native client or
   shared tooling pressure actually justifies the move.
@@ -127,14 +127,14 @@ Recommended stack for the first iOS client:
 
 Implementation guidance:
 
-- follow Apple's Human Interface Guidelines and Apple design resources
+- follow Apple’s Human Interface Guidelines and Apple design resources
 - start with as few third-party dependencies as possible
 - keep remote content as network-decoded immutable models
 - keep local preferences and reading state separate from downloaded content
 - avoid using `WKWebView` as the primary reading surface
 
-The iOS app should not try to recreate the web site's Carbon UI. It should feel
-native to Apple platforms and follow Apple's current design and interaction
+The iOS app should not try to recreate the web site’s Carbon UI. It should feel
+native to Apple platforms and follow Apple’s current design and interaction
 patterns.
 
 ## Recommended Android Stack
@@ -155,14 +155,14 @@ Android remains a follow-on client, but the direction is now explicit:
 Implementation guidance:
 
 - use Material 3 as the Android design system
-- follow Google's recommended Android architecture with UI, data, and optional
+- follow Google’s recommended Android architecture with UI, data, and optional
   domain layers
 - follow an offline-first data strategy for reading content
 - support deep links to post URLs from the start
 - treat the Now in Android sample as the primary implementation reference for
   app structure and quality bar
 
-The Android app should not try to recreate the web site's Carbon UI. The shared
+The Android app should not try to recreate the web site’s Carbon UI. The shared
 surface across platforms is content and information architecture, not a
 pixel-identical component library.
 
@@ -179,14 +179,14 @@ HarmonyOS remains a later client, but the direction should also be explicit:
 
 Implementation guidance:
 
-- use Huawei's HarmonyOS NEXT design guidance for the UI layer
-- follow Huawei's primary application model: ArkTS + ArkUI + Stage model
+- use Huawei’s HarmonyOS NEXT design guidance for the UI layer
+- follow Huawei’s primary application model: ArkTS + ArkUI + Stage model
 - keep the content and data model aligned with the same shared contracts used by
   iOS and Android
 - favor native navigation and native components rather than a visual port of the
   web UI
 
-The HarmonyOS app should not try to reproduce the site's Carbon layer either. It
+The HarmonyOS app should not try to reproduce the site’s Carbon layer either. It
 should feel native to HarmonyOS.
 
 ## Shared Strategy Across Platforms
@@ -210,7 +210,7 @@ Platform UI guidance:
 
 - iOS should feel native to iOS
 - Android should feel native to Android and use Material 3
-- HarmonyOS should feel native to HarmonyOS and follow Huawei's design guidance
+- HarmonyOS should feel native to HarmonyOS and follow Huawei’s design guidance
 - web remains free to use Carbon as its own design system
 
 ## Current Gaps To Close Before Implementation
@@ -349,7 +349,7 @@ Execution tracker for this phase:
 - prepare the AppGallery Connect / Huawei distribution setup when the HarmonyOS
   track starts
 - define the HarmonyOS deep-linking and routing strategy for post URLs
-- decide the native HarmonyOS theme direction from Huawei's design guidance
+- decide the native HarmonyOS theme direction from Huawei’s design guidance
 - confirm the minimal local persistence approach for bookmarks and reading state
 
 ### Editorial Model Prep
