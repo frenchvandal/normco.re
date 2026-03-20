@@ -298,7 +298,16 @@ describe("pagefind-lazy-init.js", () => {
     assertEquals(status.hidden, false);
     assertEquals(getStatusText(window).hidden, false);
     assertEquals(getStatusText(window).textContent, "2 results");
+    assertEquals(getLoading(window).hidden, true);
+    assertEquals(getNotification(window).hidden, true);
     assertEquals(root.getAttribute("aria-busy"), "false");
+
+    input.value = "beta";
+    input.dispatchEvent(new window.Event("input", { bubbles: true }));
+    await flush(window);
+    assertEquals(getStatusText(window).textContent, "2 results");
+    assertEquals(getLoading(window).hidden, true);
+    assertEquals(getNotification(window).hidden, true);
 
     input.value = "none";
     input.dispatchEvent(new window.Event("input", { bubbles: true }));

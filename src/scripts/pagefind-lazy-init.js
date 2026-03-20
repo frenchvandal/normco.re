@@ -79,6 +79,21 @@
   let pagefindRuntimePromise;
   /** @type {WeakMap<HTMLElement, Promise<void>>} */
   const initPromiseByContainer = new WeakMap();
+  /**
+   * @typedef {{
+   *   readonly status: HTMLElement | null;
+   *   readonly loading: HTMLElement | null;
+   *   readonly loadingText: HTMLElement | null;
+   *   readonly statusText: HTMLElement | null;
+   *   readonly notification: HTMLElement | null;
+   *   readonly notificationTitle: HTMLElement | null;
+   *   readonly notificationSubtitle: HTMLElement | null;
+   * }} SearchStatusElements
+   */
+  /** @type {WeakMap<HTMLElement, SearchStatusElements>} */
+  const searchStatusElementsByContainer = new WeakMap();
+  /** @type {WeakMap<HTMLElement, number>} */
+  const pendingSearchStatusSyncByContainer = new WeakMap();
   let generatedContainerId = 0;
 
   /**
@@ -128,111 +143,67 @@
 
   /**
    * @param {HTMLElement} container
-   * @returns {HTMLElement | null}
+   * @returns {SearchStatusElements}
    */
-  function getSearchStatusElement(container) {
+  function getSearchStatusElements(container) {
+    const cachedElements = searchStatusElementsByContainer.get(container);
+
+    if (cachedElements !== undefined) {
+      return cachedElements;
+    }
+
     const searchPanel = container.closest(SEARCH_PANEL_SELECTOR);
 
     if (!(searchPanel instanceof HTMLElement)) {
-      return null;
+      const missingElements = {
+        status: null,
+        loading: null,
+        loadingText: null,
+        statusText: null,
+        notification: null,
+        notificationTitle: null,
+        notificationSubtitle: null,
+      };
+      searchStatusElementsByContainer.set(container, missingElements);
+      return missingElements;
     }
 
     const status = searchPanel.querySelector("[data-search-status]");
-    return status instanceof HTMLElement ? status : null;
-  }
-
-  /**
-   * @param {HTMLElement} container
-   * @returns {HTMLElement | null}
-   */
-  function getSearchStatusTextElement(container) {
-    const status = getSearchStatusElement(container);
-
-    if (!(status instanceof HTMLElement)) {
-      return null;
-    }
-
-    const text = status.querySelector("[data-search-status-text]");
-    return text instanceof HTMLElement ? text : null;
-  }
-
-  /**
-   * @param {HTMLElement} container
-   * @returns {HTMLElement | null}
-   */
-  function getSearchLoadingElement(container) {
-    const status = getSearchStatusElement(container);
-
-    if (!(status instanceof HTMLElement)) {
-      return null;
-    }
-
-    const loading = status.querySelector("[data-search-loading]");
-    return loading instanceof HTMLElement ? loading : null;
-  }
-
-  /**
-   * @param {HTMLElement} container
-   * @returns {HTMLElement | null}
-   */
-  function getSearchLoadingTextElement(container) {
-    const loading = getSearchLoadingElement(container);
-
-    if (!(loading instanceof HTMLElement)) {
-      return null;
-    }
-
-    const text = loading.querySelector("[data-search-loading-text]");
-    return text instanceof HTMLElement ? text : null;
-  }
-
-  /**
-   * @param {HTMLElement} container
-   * @returns {HTMLElement | null}
-   */
-  function getSearchNotificationElement(container) {
-    const status = getSearchStatusElement(container);
-
-    if (!(status instanceof HTMLElement)) {
-      return null;
-    }
-
-    const notification = status.querySelector("[data-search-notification]");
-    return notification instanceof HTMLElement ? notification : null;
-  }
-
-  /**
-   * @param {HTMLElement} container
-   * @returns {HTMLElement | null}
-   */
-  function getSearchNotificationTitleElement(container) {
-    const notification = getSearchNotificationElement(container);
-
-    if (!(notification instanceof HTMLElement)) {
-      return null;
-    }
-
-    const title = notification.querySelector(
+    const statusElement = status instanceof HTMLElement ? status : null;
+    const loading = statusElement?.querySelector("[data-search-loading]");
+    const loadingText = loading instanceof HTMLElement
+      ? loading.querySelector("[data-search-loading-text]")
+      : null;
+    const statusText = statusElement?.querySelector(
+      "[data-search-status-text]",
+    );
+    const notification = statusElement?.querySelector(
+      "[data-search-notification]",
+    );
+    const notificationElement = notification instanceof HTMLElement
+      ? notification
+      : null;
+    const notificationTitle = notificationElement?.querySelector(
       "[data-search-notification-title]",
     );
-    return title instanceof HTMLElement ? title : null;
-  }
-
-  /**
-   * @param {HTMLElement} container
-   * @returns {HTMLElement | null}
-   */
-  function getSearchNotificationSubtitleElement(container) {
-    const notification = getSearchNotificationElement(container);
-
-    if (!(notification instanceof HTMLElement)) {
-      return null;
-    }
-
-    const subtitle = notification.querySelector(
+    const notificationSubtitle = notificationElement?.querySelector(
       "[data-search-notification-subtitle]",
     );
-    return subtitle instanceof HTMLElement ? subtitle : null;
+    const elements = {
+      status: statusElement,
+      loading: loading instanceof HTMLElement ? loading : null,
+      loadingText: loadingText instanceof HTMLElement ? loadingText : null,
+      statusText: statusText instanceof HTMLElement ? statusText : null,
+      notification: notificationElement,
+      notificationTitle: notificationTitle instanceof HTMLElement
+        ? notificationTitle
+        : null,
+      notificationSubtitle: notificationSubtitle instanceof HTMLElement
+        ? notificationSubtitle
+        : null,
+    };
+    searchStatusElementsByContainer.set(container, elements);
+    return elements;
   }
 
   /**
@@ -258,15 +229,15 @@
    * @returns {HTMLElement | null}
    */
   function resetSearchStatusRegion(container) {
-    const status = getSearchStatusElement(container);
-    const loading = getSearchLoadingElement(container);
-    const loadingText = getSearchLoadingTextElement(container);
-    const statusText = getSearchStatusTextElement(container);
-    const notification = getSearchNotificationElement(container);
-    const notificationTitle = getSearchNotificationTitleElement(container);
-    const notificationSubtitle = getSearchNotificationSubtitleElement(
-      container,
-    );
+    const {
+      status,
+      loading,
+      loadingText,
+      statusText,
+      notification,
+      notificationTitle,
+      notificationSubtitle,
+    } = getSearchStatusElements(container);
 
     if (!(status instanceof HTMLElement)) {
       return null;
@@ -334,14 +305,14 @@
       return;
     }
 
-    const loading = getSearchLoadingElement(container);
-    const loadingText = getSearchLoadingTextElement(container);
-    const statusText = getSearchStatusTextElement(container);
-    const notification = getSearchNotificationElement(container);
-    const notificationTitle = getSearchNotificationTitleElement(container);
-    const notificationSubtitle = getSearchNotificationSubtitleElement(
-      container,
-    );
+    const {
+      loading,
+      loadingText,
+      statusText,
+      notification,
+      notificationTitle,
+      notificationSubtitle,
+    } = getSearchStatusElements(container);
 
     if (state === SEARCH_STATUS_STATE.LOADING) {
       if (loadingText instanceof HTMLElement) {
@@ -514,7 +485,7 @@
    */
   function renderSearchFallback(container) {
     const { unavailable, offline, retry } = getSearchMessages(container);
-    const status = getSearchStatusElement(container);
+    const { status } = getSearchStatusElements(container);
     const shouldMoveFocus = shouldMoveFocusForOpen();
     const fallback = globalThis.document.createElement("div");
     fallback.className = "pagefind-ui__drawer";
@@ -719,13 +690,16 @@
         getSearchMessages(container).loading,
         SEARCH_STATUS_STATE.LOADING,
       );
+      scheduleSearchStatusSync(container);
     });
 
     const messageObserver = new MutationObserver(() => {
       syncSearchStatus(container);
     });
 
-    messageObserver.observe(container, {
+    const resultsArea = container.querySelector(".pagefind-ui__results-area") ??
+      container;
+    messageObserver.observe(resultsArea, {
       childList: true,
       subtree: true,
       characterData: true,
@@ -778,6 +752,25 @@
       ? SEARCH_STATUS_STATE.LOADING
       : SEARCH_STATUS_STATE.RESULTS;
     setSearchStatus(container, text, state);
+  }
+
+  /**
+   * Runs one post-input sync even when Pagefind keeps the same message text and
+   * therefore doesn't emit a DOM mutation we can observe.
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function scheduleSearchStatusSync(container) {
+    if (pendingSearchStatusSyncByContainer.has(container)) {
+      return;
+    }
+
+    const timeoutId = globalThis.setTimeout(() => {
+      pendingSearchStatusSyncByContainer.delete(container);
+      syncSearchStatus(container);
+    }, 0);
+
+    pendingSearchStatusSyncByContainer.set(container, timeoutId);
   }
 
   /**
