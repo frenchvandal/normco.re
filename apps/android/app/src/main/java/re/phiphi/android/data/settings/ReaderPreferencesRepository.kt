@@ -16,4 +16,6 @@ interface ReaderPreferencesRepository {
     suspend fun recordPostOpened(slug: String)
 
     suspend fun setPostReadingBlockIndex(slug: String, blockIndex: Int)
+
+    suspend fun clearReadingHistory()
 }

@@ -13,6 +13,7 @@ sealed interface SettingsUiState {
         val selectedLanguage: String,
         val saveOpenedPostsForOffline: Boolean,
         val syncOnUnmeteredOnly: Boolean,
+        val hasReadingHistory: Boolean,
         val lastCheckedAtMillis: Long?,
         val lastCheckSucceeded: Boolean?,
     ) : SettingsUiState
@@ -24,4 +25,6 @@ sealed interface SettingsAction {
     data class SetSaveOpenedPostsForOffline(val enabled: Boolean) : SettingsAction
 
     data class SetSyncOnUnmeteredOnly(val enabled: Boolean) : SettingsAction
+
+    data object ClearReadingHistory : SettingsAction
 }

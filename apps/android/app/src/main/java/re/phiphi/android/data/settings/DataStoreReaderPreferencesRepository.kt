@@ -102,6 +102,13 @@ constructor(private val dataStore: DataStore<Preferences>) : ReaderPreferencesRe
                 )
         }
     }
+
+    override suspend fun clearReadingHistory() {
+        dataStore.edit { storedPreferences ->
+            storedPreferences.remove(recentOpenedPostSlugsKey)
+            storedPreferences.remove(postReadingBlockIndexesKey)
+        }
+    }
 }
 
 private fun decodeRecentOpenedPostSlugs(encoded: String): List<String> =

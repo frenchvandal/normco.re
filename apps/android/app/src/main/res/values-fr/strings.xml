@@ -46,6 +46,7 @@
   <string name="settings_background_sync_title">Actualisation en arrière-plan en Wi‑Fi uniquement</string>
   <string name="settings_background_sync_body">Lorsque cette option est activée, les actualisations planifiées ne s’exécutent que sur un réseau non limité.</string>
   <string name="settings_background_sync_schedule">Les vérifications planifiées s’exécutent environ toutes les 6 heures.</string>
+  <string name="settings_clear_reading_history">Effacer l’historique de lecture</string>
   <string name="language_en">English</string>
   <string name="language_fr">Français</string>
   <string name="language_zh_hans">简体中文</string>

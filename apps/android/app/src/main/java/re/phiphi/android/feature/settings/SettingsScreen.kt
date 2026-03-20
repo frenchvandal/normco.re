@@ -16,6 +16,7 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -55,19 +56,29 @@ fun SettingsScreen(
                 }
                 item {
                     OfflinePreferencesSection(
-                        saveOpenedPostsForOffline = uiState.saveOpenedPostsForOffline,
-                        syncOnUnmeteredOnly = uiState.syncOnUnmeteredOnly,
-                        syncStatus =
-                            ContentSyncStatus(
-                                lastCheckedAtMillis = uiState.lastCheckedAtMillis,
-                                lastCheckSucceeded = uiState.lastCheckSucceeded,
+                        model =
+                            OfflinePreferencesModel(
+                                saveOpenedPostsForOffline = uiState.saveOpenedPostsForOffline,
+                                syncOnUnmeteredOnly = uiState.syncOnUnmeteredOnly,
+                                syncStatus =
+                                    ContentSyncStatus(
+                                        lastCheckedAtMillis = uiState.lastCheckedAtMillis,
+                                        lastCheckSucceeded = uiState.lastCheckSucceeded,
+                                    ),
+                                hasReadingHistory = uiState.hasReadingHistory,
                             ),
-                        onSetSaveOpenedPostsForOffline = { enabled ->
-                            onAction(SettingsAction.SetSaveOpenedPostsForOffline(enabled))
-                        },
-                        onSetSyncOnUnmeteredOnly = { enabled ->
-                            onAction(SettingsAction.SetSyncOnUnmeteredOnly(enabled))
-                        },
+                        actions =
+                            OfflinePreferencesActions(
+                                onSetSaveOpenedPostsForOffline = { enabled ->
+                                    onAction(SettingsAction.SetSaveOpenedPostsForOffline(enabled))
+                                },
+                                onSetSyncOnUnmeteredOnly = { enabled ->
+                                    onAction(SettingsAction.SetSyncOnUnmeteredOnly(enabled))
+                                },
+                                onClearReadingHistory = {
+                                    onAction(SettingsAction.ClearReadingHistory)
+                                },
+                            ),
                     )
                 }
             }
@@ -177,11 +188,8 @@ private fun LanguageRow(language: String, selected: Boolean, onSelectLanguage: (
 
 @Composable
 private fun OfflinePreferencesSection(
-    saveOpenedPostsForOffline: Boolean,
-    syncOnUnmeteredOnly: Boolean,
-    syncStatus: ContentSyncStatus,
-    onSetSaveOpenedPostsForOffline: (Boolean) -> Unit,
-    onSetSyncOnUnmeteredOnly: (Boolean) -> Unit,
+    model: OfflinePreferencesModel,
+    actions: OfflinePreferencesActions,
 ) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
@@ -195,14 +203,14 @@ private fun OfflinePreferencesSection(
             TogglePreferenceRow(
                 title = stringResource(id = R.string.settings_save_opened_posts_title),
                 summary = stringResource(id = R.string.settings_save_opened_posts_body),
-                checked = saveOpenedPostsForOffline,
-                onCheckedChange = onSetSaveOpenedPostsForOffline,
+                checked = model.saveOpenedPostsForOffline,
+                onCheckedChange = actions.onSetSaveOpenedPostsForOffline,
             )
             TogglePreferenceRow(
                 title = stringResource(id = R.string.settings_background_sync_title),
                 summary = stringResource(id = R.string.settings_background_sync_body),
-                checked = syncOnUnmeteredOnly,
-                onCheckedChange = onSetSyncOnUnmeteredOnly,
+                checked = model.syncOnUnmeteredOnly,
+                onCheckedChange = actions.onSetSyncOnUnmeteredOnly,
             )
             Text(
                 text = stringResource(id = R.string.settings_background_sync_schedule),
@@ -210,12 +218,32 @@ private fun OfflinePreferencesSection(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             ContentSyncStatusText(
-                lastCheckedAtMillis = syncStatus.lastCheckedAtMillis,
-                lastCheckSucceeded = syncStatus.lastCheckSucceeded,
+                lastCheckedAtMillis = model.syncStatus.lastCheckedAtMillis,
+                lastCheckSucceeded = model.syncStatus.lastCheckSucceeded,
             )
+            if (model.hasReadingHistory) {
+                Button(onClick = actions.onClearReadingHistory) {
+                    Text(text = stringResource(id = R.string.settings_clear_reading_history))
+                }
+            }
         }
     }
 }
+
+@Immutable
+private data class OfflinePreferencesModel(
+    val saveOpenedPostsForOffline: Boolean,
+    val syncOnUnmeteredOnly: Boolean,
+    val syncStatus: ContentSyncStatus,
+    val hasReadingHistory: Boolean,
+)
+
+@Immutable
+private data class OfflinePreferencesActions(
+    val onSetSaveOpenedPostsForOffline: (Boolean) -> Unit,
+    val onSetSyncOnUnmeteredOnly: (Boolean) -> Unit,
+    val onClearReadingHistory: () -> Unit,
+)
 
 @Composable
 private fun TogglePreferenceRow(

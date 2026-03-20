@@ -21,6 +21,7 @@ fun SettingsRoute(modifier: Modifier = Modifier) {
                     viewModel.setSaveOpenedPostsForOffline(action.enabled)
                 is SettingsAction.SetSyncOnUnmeteredOnly ->
                     viewModel.setSyncOnUnmeteredOnly(action.enabled)
+                SettingsAction.ClearReadingHistory -> viewModel.clearReadingHistory()
             }
         },
         modifier = modifier,

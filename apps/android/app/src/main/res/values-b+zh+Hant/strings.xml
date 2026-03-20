@@ -46,6 +46,7 @@
   <string name="settings_background_sync_title">僅在 Wi‑Fi 下背景刷新</string>
   <string name="settings_background_sync_body">啟用後，排程中的背景刷新只會在非計量網路上執行。</string>
   <string name="settings_background_sync_schedule">排程檢查大約每 6 小時執行一次。</string>
+  <string name="settings_clear_reading_history">清除閱讀歷史</string>
   <string name="language_en">English</string>
   <string name="language_fr">Français</string>
   <string name="language_zh_hans">简体中文</string>

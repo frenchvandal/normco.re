@@ -46,6 +46,7 @@
   <string name="settings_background_sync_title">仅在 Wi‑Fi 下后台刷新</string>
   <string name="settings_background_sync_body">启用后，计划中的后台刷新只会在非计费网络上运行。</string>
   <string name="settings_background_sync_schedule">计划检查大约每 6 小时运行一次。</string>
+  <string name="settings_clear_reading_history">清除阅读历史</string>
   <string name="language_en">English</string>
   <string name="language_fr">Français</string>
   <string name="language_zh_hans">简体中文</string>

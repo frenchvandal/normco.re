@@ -69,6 +69,9 @@ constructor(
                                 selectedLanguage = selectedLanguage,
                                 saveOpenedPostsForOffline = preferences.saveOpenedPostsForOffline,
                                 syncOnUnmeteredOnly = preferences.syncOnUnmeteredOnly,
+                                hasReadingHistory =
+                                    preferences.recentOpenedPostSlugs.isNotEmpty() ||
+                                        preferences.postReadingBlockIndexes.isNotEmpty(),
                                 lastCheckedAtMillis = syncStatus.lastCheckedAtMillis,
                                 lastCheckSucceeded = syncStatus.lastCheckSucceeded,
                             )
@@ -92,5 +95,9 @@ constructor(
             readerPreferencesRepository.setSyncOnUnmeteredOnly(enabled)
             contentSyncScheduler.schedule(enabled)
         }
+    }
+
+    fun clearReadingHistory() {
+        viewModelScope.launch { readerPreferencesRepository.clearReadingHistory() }
     }
 }
