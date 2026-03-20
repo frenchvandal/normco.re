@@ -12,4 +12,6 @@ interface ReaderPreferencesRepository {
     suspend fun setSyncOnUnmeteredOnly(enabled: Boolean)
 
     suspend fun setPostBookmarked(slug: String, bookmarked: Boolean)
+
+    suspend fun recordPostOpened(slug: String)
 }

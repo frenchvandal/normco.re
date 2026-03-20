@@ -10,11 +10,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 private val preferredLanguageKey = stringPreferencesKey("preferred_language")
 private val saveOpenedPostsForOfflineKey = booleanPreferencesKey("save_opened_posts_for_offline")
 private val syncOnUnmeteredOnlyKey = booleanPreferencesKey("sync_on_unmetered_only")
 private val bookmarkedPostSlugsKey = stringSetPreferencesKey("bookmarked_post_slugs")
+private val recentOpenedPostSlugsKey = stringPreferencesKey("recent_opened_post_slugs")
+private const val RECENT_OPENED_POST_LIMIT = 8
 
 @Singleton
 class DataStoreReaderPreferencesRepository
@@ -27,6 +31,9 @@ constructor(private val dataStore: DataStore<Preferences>) : ReaderPreferencesRe
                 saveOpenedPostsForOffline = storedPreferences[saveOpenedPostsForOfflineKey] ?: true,
                 syncOnUnmeteredOnly = storedPreferences[syncOnUnmeteredOnlyKey] ?: true,
                 bookmarkedPostSlugs = storedPreferences[bookmarkedPostSlugsKey] ?: emptySet(),
+                recentOpenedPostSlugs =
+                    storedPreferences[recentOpenedPostSlugsKey]?.let(::decodeRecentOpenedPostSlugs)
+                        ?: emptyList(),
             )
         }
 
@@ -55,4 +62,21 @@ constructor(private val dataStore: DataStore<Preferences>) : ReaderPreferencesRe
                 }
         }
     }
+
+    override suspend fun recordPostOpened(slug: String) {
+        dataStore.edit { storedPreferences ->
+            val current =
+                storedPreferences[recentOpenedPostSlugsKey]?.let(::decodeRecentOpenedPostSlugs)
+                    ?: emptyList()
+            val updated =
+                listOf(slug) +
+                    current
+                        .filterNot { existingSlug -> existingSlug == slug }
+                        .take(RECENT_OPENED_POST_LIMIT - 1)
+            storedPreferences[recentOpenedPostSlugsKey] = Json.encodeToString(updated)
+        }
+    }
 }
+
+private fun decodeRecentOpenedPostSlugs(encoded: String): List<String> =
+    runCatching { Json.decodeFromString<List<String>>(encoded) }.getOrDefault(emptyList())

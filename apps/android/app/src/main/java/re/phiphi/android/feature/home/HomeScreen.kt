@@ -18,7 +18,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,13 +30,7 @@ import re.phiphi.android.ui.components.ContentSyncStatusText
 import re.phiphi.android.ui.components.PostSummaryCard
 
 @Composable
-fun HomeScreen(
-    uiState: HomeUiState,
-    onOpenPost: (String) -> Unit,
-    onRetry: () -> Unit,
-    onRefresh: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun HomeScreen(uiState: HomeUiState, actions: HomeScreenActions, modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -45,11 +41,11 @@ fun HomeScreen(
             }
 
             is HomeUiState.Error -> {
-                item { ErrorCard(message = uiState.message, onRetry = onRetry) }
+                item { ErrorCard(message = uiState.message, onRetry = actions.onRetry) }
             }
 
             is HomeUiState.Success -> {
-                homeSuccessItems(uiState = uiState, onOpenPost = onOpenPost, onRefresh = onRefresh)
+                homeSuccessItems(uiState = uiState, actions = actions)
             }
         }
     }
@@ -57,11 +53,26 @@ fun HomeScreen(
 
 private fun androidx.compose.foundation.lazy.LazyListScope.homeSuccessItems(
     uiState: HomeUiState.Success,
-    onOpenPost: (String) -> Unit,
-    onRefresh: () -> Unit,
+    actions: HomeScreenActions,
 ) {
+    if (uiState.recentItems.isNotEmpty()) {
+        item { RecentReadingHeading() }
+        items(
+            items = uiState.recentItems,
+            key = { post -> "recent:${post.id}" },
+            contentType = { "recent_post_summary" },
+        ) { post ->
+            PostSummaryCard(
+                post = post,
+                isBookmarked = post.slug in uiState.bookmarkedSlugs,
+                showHeroImage = false,
+                onOpenPost = actions.onOpenPost,
+            )
+        }
+    }
+
     if (uiState.bookmarkedItems.isNotEmpty()) {
-        item { BookmarkedHeading() }
+        item { BookmarkedHeading(onOpenSavedArchive = actions.onOpenSavedArchive) }
         items(
             items = uiState.bookmarkedItems,
             key = { post -> "bookmark:${post.id}" },
@@ -71,7 +82,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.homeSuccessItems(
                 post = post,
                 isBookmarked = true,
                 showHeroImage = false,
-                onOpenPost = onOpenPost,
+                onOpenPost = actions.onOpenPost,
             )
         }
     }
@@ -81,7 +92,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.homeSuccessItems(
             lastCheckedAtMillis = uiState.lastCheckedAtMillis,
             lastCheckSucceeded = uiState.lastCheckSucceeded,
             isRefreshing = uiState.isRefreshing,
-            onRefresh = onRefresh,
+            onRefresh = actions.onRefresh,
         )
     }
 
@@ -101,7 +112,33 @@ private fun androidx.compose.foundation.lazy.LazyListScope.homeSuccessItems(
             post = post,
             isBookmarked = post.slug in uiState.bookmarkedSlugs,
             showHeroImage = true,
-            onOpenPost = onOpenPost,
+            onOpenPost = actions.onOpenPost,
+        )
+    }
+}
+
+@Immutable
+data class HomeScreenActions(
+    val onOpenPost: (String) -> Unit,
+    val onOpenSavedArchive: () -> Unit,
+    val onRetry: () -> Unit,
+    val onRefresh: () -> Unit,
+)
+
+@Composable
+private fun RecentReadingHeading() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = stringResource(id = R.string.home_recent_title),
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Text(
+            text = stringResource(id = R.string.home_recent_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -150,15 +187,24 @@ private fun HomeFeedHeading(
 }
 
 @Composable
-private fun BookmarkedHeading() {
+private fun BookmarkedHeading(onOpenSavedArchive: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        Text(
-            text = stringResource(id = R.string.home_bookmarked_title),
-            style = MaterialTheme.typography.headlineSmall,
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(id = R.string.home_bookmarked_title),
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            TextButton(onClick = onOpenSavedArchive) {
+                Text(text = stringResource(id = R.string.home_bookmarked_view_all))
+            }
+        }
         Text(
             text = stringResource(id = R.string.home_bookmarked_subtitle),
             style = MaterialTheme.typography.bodyMedium,

@@ -7,15 +7,23 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun HomeRoute(onOpenPost: (String) -> Unit, modifier: Modifier = Modifier) {
+fun HomeRoute(
+    onOpenPost: (String) -> Unit,
+    onOpenSavedArchive: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val viewModel: HomeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     HomeScreen(
         uiState = uiState,
-        onOpenPost = onOpenPost,
-        onRetry = viewModel::refresh,
-        onRefresh = viewModel::refresh,
+        actions =
+            HomeScreenActions(
+                onOpenPost = onOpenPost,
+                onOpenSavedArchive = onOpenSavedArchive,
+                onRetry = viewModel::refresh,
+                onRefresh = viewModel::refresh,
+            ),
         modifier = modifier,
     )
 }

@@ -26,11 +26,24 @@ fun PhiphiNavHost(
         modifier = Modifier.padding(contentPadding),
     ) {
         composable(route = AppRoutes.HOME) {
-            HomeRoute(onOpenPost = { slug -> navController.navigate(AppRoutes.post(slug)) })
+            HomeRoute(
+                onOpenPost = { slug -> navController.navigate(AppRoutes.post(slug)) },
+                onOpenSavedArchive = { navController.navigate(AppRoutes.ARCHIVE_BOOKMARKED) },
+            )
         }
 
         composable(route = AppRoutes.ARCHIVE) {
-            ArchiveRoute(onOpenPost = { slug -> navController.navigate(AppRoutes.post(slug)) })
+            ArchiveRoute(
+                onOpenPost = { slug -> navController.navigate(AppRoutes.post(slug)) },
+                initialBookmarkedOnly = false,
+            )
+        }
+
+        composable(route = AppRoutes.ARCHIVE_BOOKMARKED) {
+            ArchiveRoute(
+                onOpenPost = { slug -> navController.navigate(AppRoutes.post(slug)) },
+                initialBookmarkedOnly = true,
+            )
         }
 
         composable(route = AppRoutes.SETTINGS) { SettingsRoute() }

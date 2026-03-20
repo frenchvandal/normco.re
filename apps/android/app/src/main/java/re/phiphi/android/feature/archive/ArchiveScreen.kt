@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,20 +42,23 @@ import re.phiphi.android.ui.components.PostSummaryCard
 @Composable
 fun ArchiveScreen(
     uiState: ArchiveUiState,
-    onOpenPost: (String) -> Unit,
-    onRetry: () -> Unit,
-    onRefresh: () -> Unit,
+    initialBookmarkedOnly: Boolean,
+    actions: ArchiveScreenActions,
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
         ArchiveUiState.Loading -> ArchiveLoadingCard(modifier = modifier)
         is ArchiveUiState.Error ->
-            ArchiveErrorCard(message = uiState.message, onRetry = onRetry, modifier = modifier)
+            ArchiveErrorCard(
+                message = uiState.message,
+                onRetry = actions.onRetry,
+                modifier = modifier,
+            )
         is ArchiveUiState.Success ->
             ArchiveSuccessScreen(
                 uiState = uiState,
-                onOpenPost = onOpenPost,
-                onRefresh = onRefresh,
+                initialBookmarkedOnly = initialBookmarkedOnly,
+                actions = actions,
                 modifier = modifier,
             )
     }
@@ -63,12 +67,13 @@ fun ArchiveScreen(
 @Composable
 private fun ArchiveSuccessScreen(
     uiState: ArchiveUiState.Success,
-    onOpenPost: (String) -> Unit,
-    onRefresh: () -> Unit,
+    initialBookmarkedOnly: Boolean,
+    actions: ArchiveScreenActions,
     modifier: Modifier = Modifier,
 ) {
     var query by rememberSaveable { mutableStateOf("") }
-    var bookmarkedOnly by rememberSaveable { mutableStateOf(false) }
+    var bookmarkedOnly by
+        rememberSaveable(initialBookmarkedOnly) { mutableStateOf(initialBookmarkedOnly) }
     var selectedTag by rememberSaveable { mutableStateOf<String?>(null) }
     val filters =
         ArchiveFiltersModel(
@@ -94,7 +99,7 @@ private fun ArchiveSuccessScreen(
                 lastCheckedAtMillis = uiState.lastCheckedAtMillis,
                 lastCheckSucceeded = uiState.lastCheckSucceeded,
                 isRefreshing = uiState.isRefreshing,
-                onRefresh = onRefresh,
+                onRefresh = actions.onRefresh,
             )
         }
         item {
@@ -109,10 +114,17 @@ private fun ArchiveSuccessScreen(
             visibleItems = visibleItems,
             bookmarkedSlugs = uiState.bookmarkedSlugs,
             showDefaultEmptyState = query.isBlank() && !bookmarkedOnly,
-            onOpenPost = onOpenPost,
+            onOpenPost = actions.onOpenPost,
         )
     }
 }
+
+@Immutable
+data class ArchiveScreenActions(
+    val onOpenPost: (String) -> Unit,
+    val onRetry: () -> Unit,
+    val onRefresh: () -> Unit,
+)
 
 @Composable
 private fun rememberArchiveTags(items: List<PostSummary>): List<String> =

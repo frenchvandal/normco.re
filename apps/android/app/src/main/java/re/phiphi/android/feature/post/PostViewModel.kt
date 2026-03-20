@@ -84,6 +84,7 @@ constructor(
             runCatching { postsRepository.getPostDetail(slug = slug, lang = language) }
                 .fold(
                     onSuccess = { post ->
+                        readerPreferencesRepository.recordPostOpened(slug = post.slug)
                         PostUiState.Success(
                             post = post,
                             isRefreshing = false,

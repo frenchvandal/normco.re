@@ -8,4 +8,5 @@ data class ReaderPreferences(
     val saveOpenedPostsForOffline: Boolean,
     val syncOnUnmeteredOnly: Boolean,
     val bookmarkedPostSlugs: Set<String>,
+    val recentOpenedPostSlugs: List<String>,
 )

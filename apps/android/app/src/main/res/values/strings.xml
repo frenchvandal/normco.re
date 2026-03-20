@@ -9,8 +9,11 @@
   <string name="feed_status_bundled">Using bundled content until the first sync.</string>
   <string name="feed_status_checked">Last checked %1$s</string>
   <string name="feed_status_check_failed">Last check failed %1$s. Showing cached content.</string>
+  <string name="home_recent_title">Continue reading</string>
+  <string name="home_recent_subtitle">Recently opened posts in your current language.</string>
   <string name="home_bookmarked_title">Saved reading</string>
   <string name="home_bookmarked_subtitle">Quick access to bookmarked posts.</string>
+  <string name="home_bookmarked_view_all">View all</string>
   <string name="home_feed_title">Latest writing</string>
   <string name="home_feed_subtitle">Recent posts from the current reading language.</string>
   <string name="home_loading">Loading posts…</string>

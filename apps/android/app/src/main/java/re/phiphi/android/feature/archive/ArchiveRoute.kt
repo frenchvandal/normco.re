@@ -7,15 +7,23 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun ArchiveRoute(onOpenPost: (String) -> Unit, modifier: Modifier = Modifier) {
+fun ArchiveRoute(
+    onOpenPost: (String) -> Unit,
+    initialBookmarkedOnly: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val viewModel: ArchiveViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ArchiveScreen(
         uiState = uiState,
-        onOpenPost = onOpenPost,
-        onRetry = viewModel::refresh,
-        onRefresh = viewModel::refresh,
+        initialBookmarkedOnly = initialBookmarkedOnly,
+        actions =
+            ArchiveScreenActions(
+                onOpenPost = onOpenPost,
+                onRetry = viewModel::refresh,
+                onRefresh = viewModel::refresh,
+            ),
         modifier = modifier,
     )
 }

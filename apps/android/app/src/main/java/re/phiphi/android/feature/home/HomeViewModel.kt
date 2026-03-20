@@ -17,6 +17,7 @@ import re.phiphi.android.data.posts.PostsRepository
 import re.phiphi.android.data.settings.ReaderPreferencesRepository
 
 private const val HOME_POST_LIMIT = 5
+private const val HOME_RECENT_LIMIT = 3
 private const val HOME_BOOKMARK_LIMIT = 3
 
 @HiltViewModel
@@ -31,6 +32,7 @@ constructor(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     private var preferredLanguage: String? = null
     private var bookmarkedSlugs: Set<String> = emptySet()
+    private var recentOpenedPostSlugs: List<String> = emptyList()
     private var syncStatus: ContentSyncStatus = ContentSyncStatus()
 
     init {
@@ -54,6 +56,16 @@ constructor(
                     if (currentState is HomeUiState.Success) {
                         _uiState.value = currentState.copy(bookmarkedSlugs = slugs)
                     }
+                }
+        }
+
+        viewModelScope.launch {
+            readerPreferencesRepository.preferences
+                .map { preferences -> preferences.recentOpenedPostSlugs }
+                .distinctUntilChanged()
+                .collectLatest { slugs ->
+                    recentOpenedPostSlugs = slugs
+                    loadPosts(showBlockingLoader = false)
                 }
         }
 
@@ -91,13 +103,22 @@ constructor(
             runCatching { postsRepository.getPostsIndex(lang = preferredLanguage) }
                 .fold(
                     onSuccess = { postsIndex ->
+                        val postsBySlug = postsIndex.items.associateBy { post -> post.slug }
+                        val recentItems =
+                            recentOpenedPostSlugs
+                                .mapNotNull(postsBySlug::get)
+                                .take(HOME_RECENT_LIMIT)
                         val bookmarkedItems =
                             postsIndex.items
-                                .filter { post -> post.slug in bookmarkedSlugs }
+                                .filter { post ->
+                                    post.slug in bookmarkedSlugs &&
+                                        post.slug !in recentOpenedPostSlugs
+                                }
                                 .take(HOME_BOOKMARK_LIMIT)
 
                         HomeUiState.Success(
                             lang = postsIndex.lang,
+                            recentItems = recentItems,
                             bookmarkedItems = bookmarkedItems,
                             items = postsIndex.items.take(HOME_POST_LIMIT),
                             bookmarkedSlugs = bookmarkedSlugs,

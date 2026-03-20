@@ -10,6 +10,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
@@ -35,50 +36,35 @@ fun PhiphiApp() {
         }
     val showBottomBar = currentTopLevelDestination != null
     val topBarTitleRes =
-        when (currentDestination?.route) {
-            AppRoutes.POST_PATTERN -> R.string.post_title
-            else -> R.string.app_name
-        }
+        currentTopLevelDestination?.labelRes
+            ?: when (currentDestination?.route) {
+                AppRoutes.POST_PATTERN -> R.string.post_title
+                else -> R.string.app_name
+            }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(id = topBarTitleRes)) },
-                navigationIcon = {
-                    if (!showBottomBar && navController.previousBackStackEntry != null) {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(id = R.string.nav_back),
-                            )
-                        }
-                    }
-                },
+            PhiphiTopBar(
+                titleRes = topBarTitleRes,
+                showBottomBar = showBottomBar,
+                canNavigateBack = navController.previousBackStackEntry != null,
+                onNavigateUp = navController::navigateUp,
             )
         },
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar {
-                    TopLevelDestination.entries.forEach { destination ->
-                        NavigationBarItem(
-                            selected =
-                                currentDestination.isTopLevelDestinationInHierarchy(destination),
-                            onClick = {
-                                navController.navigate(destination.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            },
-                            icon = {
-                                Icon(imageVector = destination.icon, contentDescription = null)
-                            },
-                            label = { Text(text = stringResource(id = destination.labelRes)) },
-                        )
-                    }
-                }
+                PhiphiBottomBar(
+                    currentDestination = currentDestination,
+                    onNavigateToTopLevel = { route ->
+                        navController.navigate(route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                )
             }
         },
     ) { innerPadding ->
@@ -86,7 +72,51 @@ fun PhiphiApp() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PhiphiTopBar(
+    titleRes: Int,
+    showBottomBar: Boolean,
+    canNavigateBack: Boolean,
+    onNavigateUp: () -> Unit,
+) {
+    TopAppBar(
+        title = { Text(text = stringResource(id = titleRes)) },
+        navigationIcon = {
+            if (!showBottomBar && canNavigateBack) {
+                IconButton(onClick = onNavigateUp) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.nav_back),
+                    )
+                }
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(),
+    )
+}
+
+@Composable
+private fun PhiphiBottomBar(
+    currentDestination: NavDestination?,
+    onNavigateToTopLevel: (String) -> Unit,
+) {
+    NavigationBar {
+        TopLevelDestination.entries.forEach { destination ->
+            NavigationBarItem(
+                selected = currentDestination.isTopLevelDestinationInHierarchy(destination),
+                onClick = { onNavigateToTopLevel(destination.route) },
+                icon = { Icon(imageVector = destination.icon, contentDescription = null) },
+                label = { Text(text = stringResource(id = destination.labelRes)) },
+            )
+        }
+    }
+}
+
 private fun NavDestination?.isTopLevelDestinationInHierarchy(
     destination: TopLevelDestination
 ): Boolean =
-    this?.hierarchy?.any { navDestination -> navDestination.route == destination.route } == true
+    this?.hierarchy?.any { navDestination ->
+        navDestination.route == destination.route ||
+            navDestination.route?.startsWith("${destination.route}/") == true
+    } == true
