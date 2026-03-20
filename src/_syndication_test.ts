@@ -66,6 +66,12 @@ describe("syndication.page.tsx", () => {
     );
     assertStringIncludes(html, 'data-site-tabs=""');
     assertStringIncludes(html, 'data-content-switcher=""');
+    assertStringIncludes(
+      html,
+      'class="site-switcher-icon cds--content-switcher__icon"',
+    );
+    assertStringIncludes(html, 'class="cds--content-switcher__label">Cards');
+    assertStringIncludes(html, 'class="cds--content-switcher__label">List');
     assertStringIncludes(html, "feeds-structured-list");
     assertStringIncludes(html, 'data-site-accordion=""');
     assertStringIncludes(html, 'data-copy-notice=""');

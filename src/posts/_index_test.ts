@@ -234,6 +234,8 @@ describe("posts/index.page.tsx", () => {
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, 'data-content-switcher=""');
       assertStringIncludes(html, 'aria-controls="archive-list-panel"');
+      assertStringIncludes(html, 'class="cds--content-switcher__label">Cards');
+      assertStringIncludes(html, 'class="cds--content-switcher__label">List');
       assertStringIncludes(html, "archive-structured-list");
       assertStringIncludes(html, 'src="/scripts/surface-controls.js"');
     });

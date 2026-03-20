@@ -65,11 +65,11 @@ const WARNING_FILLED_ICON = renderCarbonIconMarkup(
 );
 const VIEW_ICON = renderCarbonIconMarkup(
   CARBON_VIEW_ICON,
-  "site-switcher-icon",
+  "site-switcher-icon cds--content-switcher__icon",
 );
 const LIST_ICON = renderCarbonIconMarkup(
   CARBON_LIST_ICON,
-  "site-switcher-icon",
+  "site-switcher-icon cds--content-switcher__icon",
 );
 const CHEVRON_DOWN_ICON = renderCarbonIconMarkup(
   CARBON_CHEVRON_DOWN_ICON,
@@ -493,7 +493,9 @@ export default (data: Lume.Data): string => {
                 aria-controls="syndication-endpoints-cards"
               >
                 ${VIEW_ICON}
-                <span>${escapeHtml(translations.feeds.cardsViewLabel)}</span>
+                <span class="cds--content-switcher__label">${
+    escapeHtml(translations.feeds.cardsViewLabel)
+  }</span>
               </button>
               <button
                 type="button"
@@ -505,7 +507,9 @@ export default (data: Lume.Data): string => {
                 aria-controls="syndication-endpoints-list"
               >
                 ${LIST_ICON}
-                <span>${escapeHtml(translations.feeds.listViewLabel)}</span>
+                <span class="cds--content-switcher__label">${
+    escapeHtml(translations.feeds.listViewLabel)
+  }</span>
               </button>
             </div>
             <div id="syndication-endpoints-cards" data-content-switcher-panel="">

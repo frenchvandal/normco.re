@@ -378,7 +378,9 @@ export default async (
     aria-selected="true"
     aria-controls="archive-cards-panel"
   >
-    <span>${escapeHtml(translations.archive.cardsViewLabel)}</span>
+    <span class="cds--content-switcher__label">${
+        escapeHtml(translations.archive.cardsViewLabel)
+      }</span>
   </button>
   <button
     type="button"
@@ -389,7 +391,9 @@ export default async (
     tabindex="-1"
     aria-controls="archive-list-panel"
   >
-    <span>${escapeHtml(translations.archive.listViewLabel)}</span>
+    <span class="cds--content-switcher__label">${
+        escapeHtml(translations.archive.listViewLabel)
+      }</span>
   </button>
 </div>`
       : ""
