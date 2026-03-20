@@ -1,6 +1,51 @@
 {
   "editor.inlayHints.enabled": "off",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.watcherExclude": {
+    "**/.deno_cache/**": true,
+    "**/_cache/**": true,
+    "**/_site/**": true,
+    "**/coverage/**": true
+  },
+  "search.exclude": {
+    "**/.deno_cache/**": true,
+    "**/_cache/**": true,
+    "**/_site/**": true,
+    "**/coverage/**": true
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "denoland.vscode-deno",
+    "files.trimTrailingWhitespace": false
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
   "deno.enable": true,
+  "deno.lint": true,
   "deno.unstable": [
     "bare-node-builtins",
     "byonm",
@@ -18,6 +63,7 @@
   ],
   "deno.config": "./deno.json",
   "deno.suggest.imports.hosts": {
+    "https://cdn.jsdelivr.net": true,
     "https://deno.land": true
   },
   "workbench.startupEditor": "readme"
