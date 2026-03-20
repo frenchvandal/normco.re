@@ -8,5 +8,10 @@ sealed interface HomeUiState {
 
     @Immutable data class Error(val message: String) : HomeUiState
 
-    @Immutable data class Success(val lang: String, val items: List<PostSummary>) : HomeUiState
+    @Immutable
+    data class Success(
+        val lang: String,
+        val items: List<PostSummary>,
+        val bookmarkedSlugs: Set<String>,
+    ) : HomeUiState
 }

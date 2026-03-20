@@ -3,12 +3,14 @@ package re.phiphi.android.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -28,6 +30,7 @@ import re.phiphi.android.core.model.PostSummary
 @Composable
 fun PostSummaryCard(
     post: PostSummary,
+    isBookmarked: Boolean,
     onOpenPost: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -49,11 +52,26 @@ fun PostSummaryCard(
                 )
             }
             Text(text = post.title, style = MaterialTheme.typography.titleLarge)
-            Text(
-                text = publishedDate,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = publishedDate,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                if (isBookmarked) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        shape = RoundedCornerShape(999.dp),
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.post_bookmarked_label),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                        )
+                    }
+                }
+            }
             post.readingTimeMinutes?.let { readingTimeMinutes ->
                 Text(
                     text = stringResource(id = R.string.home_reading_time, readingTimeMinutes),

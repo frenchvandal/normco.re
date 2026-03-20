@@ -24,6 +24,7 @@ constructor(
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     private var preferredLanguage: String? = null
+    private var bookmarkedSlugs: Set<String> = emptySet()
 
     init {
         viewModelScope.launch {
@@ -33,6 +34,19 @@ constructor(
                 .collectLatest { selectedLanguage ->
                     preferredLanguage = selectedLanguage
                     loadPosts()
+                }
+        }
+
+        viewModelScope.launch {
+            readerPreferencesRepository.preferences
+                .map { preferences -> preferences.bookmarkedPostSlugs }
+                .distinctUntilChanged()
+                .collectLatest { slugs ->
+                    bookmarkedSlugs = slugs
+                    val currentState = _uiState.value
+                    if (currentState is HomeUiState.Success) {
+                        _uiState.value = currentState.copy(bookmarkedSlugs = slugs)
+                    }
                 }
         }
     }
@@ -45,7 +59,11 @@ constructor(
             runCatching { postsRepository.getPostsIndex(lang = preferredLanguage) }
                 .fold(
                     onSuccess = { postsIndex ->
-                        HomeUiState.Success(lang = postsIndex.lang, items = postsIndex.items)
+                        HomeUiState.Success(
+                            lang = postsIndex.lang,
+                            items = postsIndex.items,
+                            bookmarkedSlugs = bookmarkedSlugs,
+                        )
                     },
                     onFailure = { throwable ->
                         HomeUiState.Error(message = throwable.message ?: "Unknown failure")

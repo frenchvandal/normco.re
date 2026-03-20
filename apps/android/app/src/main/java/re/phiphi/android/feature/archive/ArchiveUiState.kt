@@ -8,5 +8,10 @@ sealed interface ArchiveUiState {
 
     @Immutable data class Error(val message: String) : ArchiveUiState
 
-    @Immutable data class Success(val lang: String, val items: List<PostSummary>) : ArchiveUiState
+    @Immutable
+    data class Success(
+        val lang: String,
+        val items: List<PostSummary>,
+        val bookmarkedSlugs: Set<String>,
+    ) : ArchiveUiState
 }

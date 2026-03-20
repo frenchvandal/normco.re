@@ -42,6 +42,7 @@
   <string name="post_retry">Retry</string>
   <string name="post_save_bookmark">Save Bookmark</string>
   <string name="post_remove_bookmark">Remove Bookmark</string>
+  <string name="post_bookmarked_label">Bookmarked</string>
   <string name="post_open_in_browser">Open in Browser</string>
   <string name="post_share">Share</string>
   <string name="post_share_chooser_title">Share article</string>

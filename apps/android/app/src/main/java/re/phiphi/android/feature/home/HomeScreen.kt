@@ -59,7 +59,11 @@ fun HomeScreen(
                         key = { post -> post.id },
                         contentType = { "post_summary" },
                     ) { post ->
-                        PostSummaryCard(post = post, onOpenPost = onOpenPost)
+                        PostSummaryCard(
+                            post = post,
+                            isBookmarked = post.slug in uiState.bookmarkedSlugs,
+                            onOpenPost = onOpenPost,
+                        )
                     }
                 }
             }

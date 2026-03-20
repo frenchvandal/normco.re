@@ -16,14 +16,19 @@ data class PostSummary(
     val title: String,
     val summary: String,
     val publishedAt: String,
-    val updatedAt: String?,
-    @SerialName("readingTime") val readingTimeMinutes: Int?,
-    val tags: List<String>,
-    val heroImage: RemoteImage?,
+    val updatedAt: String? = null,
+    @SerialName("readingTime") val readingTimeMinutes: Int? = null,
+    val tags: List<String> = emptyList(),
+    val heroImage: RemoteImage? = null,
     val detailApiUrl: String,
     val webUrl: String,
 )
 
 @Immutable
 @Serializable
-data class RemoteImage(val url: String, val alt: String, val width: Int?, val height: Int?)
+data class RemoteImage(
+    val url: String,
+    val alt: String = "",
+    val width: Int? = null,
+    val height: Int? = null,
+)
