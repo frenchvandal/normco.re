@@ -57,5 +57,5 @@ Donec aliquet metus ut erat semper, et tincidunt nulla luctus.
 - 文件是產品的一部分，而不是附錄。
 
 Nulla facilisi. Phasellus blandit leo ut odio. Nam sed nulla non diam tincidunt
-tempus. 這個原則的名稱本身也提醒我們： _nulla
+tempus. 這個原則的名稱本身也提醒我們：_nulla
 facilisi_，沒有真正「天然簡單」的事。好的簡單，從來都不是偶然。

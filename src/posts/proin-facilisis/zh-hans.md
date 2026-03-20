@@ -57,5 +57,5 @@ Donec aliquet metus ut erat semper, et tincidunt nulla luctus.
 - 文档是产品的一部分，而不是附录。
 
 Nulla facilisi. Phasellus blandit leo ut odio. Nam sed nulla non diam tincidunt
-tempus. 这个原则的名字本身也提醒我们： _nulla
+tempus. 这个原则的名字本身也提醒我们：_nulla
 facilisi_，没有真正“天然简单”的事。好的简单，从来都不是偶然。

@@ -10,7 +10,7 @@ incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
 nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 
 很多人都聽過這段文字，卻很少知道它的來源。它其實來自西塞羅 _de Finibus Bonorum
-et Malorum_ 的一段打亂文本，這部哲學著作寫於西元前 45 年。 自 16
+et Malorum_ 的一段打亂文本，這部哲學著作寫於西元前 45 年。自 16
 世紀起，它就被當作排版占位文字使用：一位不知名的印刷工把活字順序打亂，
 做出了一本字體樣張。
 
