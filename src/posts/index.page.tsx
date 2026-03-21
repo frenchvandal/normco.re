@@ -345,6 +345,7 @@ export default async (
     });
   });
 
+  const postsCountLabel = formatPostCount(posts.length, language);
   const archiveIntro = `<nav class="cds--breadcrumb" aria-label="${
     escapeHtml(translations.archive.breadcrumbAriaLabel)
   }">
@@ -356,15 +357,33 @@ export default async (
     </li>
   </ol>
 </nav>
-<section class="cds--tile pagehead archive-pagehead" aria-labelledby="archive-title">
-  <p class="pagehead-eyebrow">${escapeHtml(translations.archive.eyebrow)}</p>
-  <h1 id="archive-title" class="archive-page-title p-name">${
+<section class="pagehead archive-pagehead" aria-labelledby="archive-title">
+  <div class="archive-pagehead-grid">
+    <div class="archive-pagehead-copy">
+      <p class="pagehead-eyebrow">${
+    escapeHtml(translations.archive.eyebrow)
+  }</p>
+      <h1 id="archive-title" class="archive-page-title p-name">${
     escapeHtml(translations.archive.title)
   }</h1>
-  <p class="pagehead-lead">${escapeHtml(translations.archive.lead)}</p>
+      <p class="pagehead-lead">${escapeHtml(translations.archive.lead)}</p>
+    </div>
+    ${
+    posts.length > 0
+      ? `<div class="archive-pagehead-meta">
+      <span class="cds--tag cds--tag--gray archive-page-count" title="${
+        escapeHtml(postsCountLabel)
+      }">
+        <span class="cds--tag__label">${escapeHtml(postsCountLabel)}</span>
+      </span>
+    </div>`
+      : ""
+  }
+  </div>
 </section>${
     posts.length > 0
-      ? `<div class="cds--content-switcher site-content-switcher archive-view-switcher" data-content-switcher="" role="tablist" aria-label="${
+      ? `<div class="archive-tools">
+  <div class="cds--content-switcher site-content-switcher archive-view-switcher" data-content-switcher="" role="tablist" aria-label="${
         escapeHtml(translations.archive.viewLabel)
       }">
   <button
@@ -392,6 +411,7 @@ export default async (
         escapeHtml(translations.archive.listViewLabel)
       }</span>
   </button>
+</div>
 </div>`
       : ""
   }`;
@@ -438,9 +458,6 @@ export default async (
       <h2 class="feature-card-title">${
       escapeHtml(translations.archive.yearsAriaLabel)
     }</h2>
-      <p class="feature-card-caption">${
-      escapeHtml(formatPostCount(posts.length, language))
-    }</p>
       ${archiveYearNav}
     </section>
   </div>

@@ -44,7 +44,7 @@ export default (data: Lume.Data): string => {
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
 
-  return `<div class="site-page-shell site-page-shell--editorial">
+  return `<div class="site-page-shell site-page-shell--editorial state-page state-page--offline">
   ${
     StatePanel({
       title: translations.offline.title,
@@ -54,6 +54,7 @@ export default (data: Lume.Data): string => {
       ariaLabel: translations.offline.ariaLabel,
       headingTag: "h1",
       variant: "page",
+      className: "state-panel--offline-page",
     })
   }
 </div>`;

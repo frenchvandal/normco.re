@@ -16,6 +16,7 @@ export default (
     dateIso,
     readingLabel,
     summary,
+    showSummary,
     authorName,
     authorUrl,
   }: {
@@ -25,6 +26,7 @@ export default (
     readonly dateIso: string;
     readonly readingLabel?: string;
     readonly summary?: string;
+    readonly showSummary?: boolean;
     readonly authorName?: string;
     readonly authorUrl?: string;
   },
@@ -42,6 +44,9 @@ export default (
     <h3 class="post-card-title p-name">
       <a class="post-card-link u-url u-uid" href={url}>{title}</a>
     </h3>
+    {showSummary === true && summary !== undefined && (
+      <p class="post-card-summary">{summary}</p>
+    )}
     {readingLabel !== undefined && (
       <span class="post-card-reading-time">{readingLabel}</span>
     )}

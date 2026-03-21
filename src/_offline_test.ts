@@ -6,7 +6,14 @@ import offlinePage from "./offline.page.tsx";
 describe("offline.page.tsx", () => {
   it("renders the shared page state panel", () => {
     const html = offlinePage({} as Lume.Data);
-    assertStringIncludes(html, 'class="state-panel state-panel--page"');
+    assertStringIncludes(
+      html,
+      'class="site-page-shell site-page-shell--editorial state-page state-page--offline"',
+    );
+    assertStringIncludes(
+      html,
+      'class="state-panel state-panel--page state-panel--offline-page"',
+    );
     assertStringIncludes(html, "You are offline.");
   });
 

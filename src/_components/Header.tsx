@@ -415,6 +415,13 @@ export default (
         hidden
       >
         <nav class="cds--side-nav__navigation">
+          <div class="cds--side-nav__header">
+            <a href={homeUrl} class="cds--side-nav__brand">
+              <span class="cds--side-nav__brand-prefix">normco</span>
+              .re
+            </a>
+            <p class="cds--side-nav__lead">{translations.home.lead}</p>
+          </div>
           <ul class="cds--side-nav__items">
             {navigationItems.map(({ href, label, isCurrent }) => (
               <li class="cds--side-nav__item" key={href}>

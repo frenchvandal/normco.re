@@ -76,6 +76,20 @@ describe("PostCard()", () => {
       assertStringIncludes(html, 'href="/about/"');
       assertStringIncludes(html, '<span class="p-name">Phiphi</span>');
     });
+
+    it("renders a visible summary only when explicitly requested", async () => {
+      const base = makeBase(310);
+      const html = await renderComponent(
+        PostCard({
+          ...base,
+          summary: "Visible summary copy",
+          showSummary: true,
+        }),
+      );
+
+      assertStringIncludes(html, 'class="post-card-summary"');
+      assertStringIncludes(html, "Visible summary copy");
+    });
   });
 
   describe("without readingLabel", () => {
@@ -140,6 +154,11 @@ describe("PostCard()", () => {
     it("keeps a dedicated class on the primary title link for shared styling", () => {
       assertStringIncludes(postCardStyles, ".post-card-link");
       assertStringIncludes(postCardStyles, ".post-card-link:focus-visible");
+    });
+
+    it("defines a dedicated summary block for editorial variants", () => {
+      assertStringIncludes(postCardStyles, ".post-card-summary");
+      assertStringIncludes(postCardStyles, "max-inline-size: 42ch;");
     });
   });
 });

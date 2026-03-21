@@ -26,7 +26,18 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-m);
+    min-inline-size: 0;
     padding: var(--cds-spacing-05);
+  }
+
+  :where(.feature-rail) .feature-card {
+    border: 1px solid var(--cds-border-subtle);
+    background: linear-gradient(
+      180deg,
+      var(--site-surface-panel) 0%,
+      var(--site-surface-page) 100%
+    );
+    @include editorial.accent-rail;
   }
 
   .feature-card-title {
@@ -36,12 +47,15 @@
     letter-spacing: var(--site-ui-kicker-letter-spacing);
     text-transform: uppercase;
     color: var(--cds-text-secondary);
+    text-wrap: balance;
   }
 
   .feature-card-caption {
     margin: 0;
     color: var(--cds-text-secondary);
     font: var(--cds-productive-body-01);
+    max-inline-size: 28ch;
+    text-wrap: pretty;
   }
 
   .feature-link-list {
@@ -70,6 +84,8 @@
   }
 
   .pagehead {
+    display: grid;
+    gap: var(--space-m);
     padding-block-end: var(--space-xl);
     border-block-end: 1px solid var(--cds-border-subtle);
     margin-block-end: var(--space-xl);
@@ -77,21 +93,29 @@
 
   .pagehead-eyebrow {
     display: inline-flex;
+    align-items: center;
+    gap: var(--space-s);
     inline-size: fit-content;
-    padding: var(--cds-spacing-01) var(--cds-spacing-03);
-    border: var(--site-border-width-thin) solid var(--cds-border-subtle);
-    background: var(--site-surface-panel);
+    margin: 0;
     font-size: var(--cds-font-size-body-01);
     letter-spacing: var(--site-ui-kicker-letter-spacing);
     text-transform: uppercase;
     color: var(--cds-text-secondary);
     font-weight: var(--cds-font-weight-semibold);
-    margin-block-end: var(--space-s);
+  }
+
+  .pagehead-eyebrow::after {
+    content: "";
+    inline-size: clamp(2rem, 8vw, 3.5rem);
+    block-size: 1px;
+    background: var(--cds-border-subtle);
   }
 
   .pagehead-lead {
+    margin: 0;
     color: var(--cds-text-secondary);
     max-inline-size: 56ch;
+    text-wrap: pretty;
   }
 
   .subhead {
@@ -110,12 +134,19 @@
   }
 
   .blankslate {
+    display: grid;
+    gap: var(--space-xs);
     border: 1px dashed var(--cds-border-subtle);
     border-radius: var(--cds-radius-none);
     padding: var(--space-l);
     color: var(--cds-text-secondary);
-    background: var(--site-surface-panel);
+    background: linear-gradient(
+      180deg,
+      var(--site-surface-panel) 0%,
+      var(--site-surface-page) 100%
+    );
     max-inline-size: 100%;
+    @include editorial.accent-rail;
   }
 
   .about-title {

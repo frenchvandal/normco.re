@@ -84,7 +84,12 @@ describe("index.page.tsx", () => {
       assertMatch(html, /class="[^"]*\bhero\b[^"]*"/);
       assertStringIncludes(
         html,
-        'class="cds--tile pagehead hero home-pagehead"',
+        'class="pagehead hero home-pagehead"',
+      );
+      assertStringIncludes(html, 'class="home-hero-grid"');
+      assertStringIncludes(
+        html,
+        'class="cds--tile feature-card home-hero-card"',
       );
     });
 
@@ -100,7 +105,7 @@ describe("index.page.tsx", () => {
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
 
-      assertStringIncludes(html, 'class="home-topics"');
+      assertStringIncludes(html, 'class="home-topics home-topics--compact"');
       assertStringIncludes(html, 'href="/tags/design/"');
       assertStringIncludes(html, 'title="design"');
       assertStringIncludes(html, 'href="/tags/writing/"');
@@ -127,6 +132,21 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, 'href="/posts/"');
     });
 
+    it("surfaces the newest post as a featured card", async () => {
+      const posts = [
+        makePost(410, {
+          title: "Featured story",
+          readingInfo: { minutes: 4 },
+        }),
+        makePost(411, { title: "Secondary story" }),
+      ];
+      const html = await indexPage(makeData(posts), MOCK_HELPERS);
+
+      assertStringIncludes(html, 'class="home-featured"');
+      assertStringIncludes(html, "Featured story");
+      assertStringIncludes(html, "Secondary story");
+    });
+
     it("renders each post via PostCard", async () => {
       const firstPost = makePost(401, { readingInfo: { minutes: 2 } });
       const secondPost = makePost(402, { readingInfo: { minutes: 3 } });
@@ -142,6 +162,7 @@ describe("index.page.tsx", () => {
     it("wraps each rendered card in a home-posts-item list item", async () => {
       const posts = [
         makePost(404, { readingInfo: { minutes: 2 } }),
+        makePost(412, { readingInfo: { minutes: 5 } }),
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, 'class="home-posts-item"');
@@ -179,9 +200,9 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, 'class="post-card h-entry"');
     });
 
-    it("renders the home-posts container even when no posts exist", async () => {
+    it("renders the recent-writing section even when no posts exist", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="home-posts"');
+      assertStringIncludes(html, 'class="home-recent h-feed"');
     });
 
     it("renders the shared inline state panel when no posts exist", async () => {

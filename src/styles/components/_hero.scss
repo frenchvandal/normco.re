@@ -1,25 +1,51 @@
+@use "@carbon/styles/scss/breakpoint" as *;
 @use "../editorial/mixins" as editorial;
 
 /* Home page hero and Carbon editorial hero.
    Source: https://carbondesignsystem.com/elements/typography/overview/ */
 @layer components {
   .home-pagehead {
-    padding: var(--cds-spacing-07);
+    display: grid;
+    gap: var(--space-l);
+    padding: var(--cds-spacing-08) 0 var(--cds-spacing-07);
   }
 
   .hero-title {
-    font-size: var(--cds-font-size-heading-05);
-    max-inline-size: 20ch;
-    margin-block-end: var(--space-m);
+    max-inline-size: 12ch;
+    margin: 0;
+    font: var(--cds-productive-heading-07);
     line-height: var(--leading-tight);
   }
 
   .hero-lead {
-    font-size: var(--cds-font-size-heading-03);
+    margin: 0;
+    font: var(--cds-expressive-paragraph-01);
     color: var(--cds-text-secondary);
-    max-inline-size: 48ch;
+    max-inline-size: 42ch;
     line-height: var(--cds-line-height-relaxed);
     text-wrap: pretty;
+  }
+
+  .home-hero-grid {
+    display: grid;
+    gap: var(--space-l);
+    align-items: start;
+  }
+
+  .home-hero-copy {
+    display: grid;
+    gap: var(--space-m);
+    min-inline-size: 0;
+  }
+
+  .home-hero-aside {
+    min-inline-size: 0;
+  }
+
+  .home-hero-card {
+    gap: var(--space-s);
+    background: var(--site-surface-panel);
+    @include editorial.accent-rail;
   }
 
   .home-topics {
@@ -35,31 +61,85 @@
     display: flex;
   }
 
+  .home-topics--compact {
+    margin-block-start: 0;
+  }
+
   .home-recent {
     inline-size: 100%;
+  }
+
+  .home-recent-layout {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .home-featured {
+    min-inline-size: 0;
   }
 
   .home-posts {
     list-style: none;
     display: grid;
-    gap: var(--space-l);
+    gap: 0;
     margin: 0;
     padding: 0;
   }
 
-  .home-all-posts {
-    font-size: var(--cds-font-size-body-01);
-    white-space: nowrap;
-    text-decoration: none;
-  }
-
-  .home-all-posts:hover,
-  .home-all-posts:focus-visible,
-  .home-all-posts:active {
-    @include editorial.editorial-link-underline;
-  }
-
   .home-posts-item--empty .blankslate {
     margin-block: 0;
+  }
+
+  .home-featured .post-card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-s);
+    padding: var(--cds-spacing-06);
+    background: var(--site-surface-panel);
+    border: 1px solid var(--cds-border-subtle);
+    @include editorial.accent-rail;
+  }
+
+  .home-featured .post-card-date {
+    padding-block-start: 0;
+  }
+
+  .home-featured .post-card-title {
+    font: var(--cds-expressive-heading-04);
+  }
+
+  .home-featured .post-card-summary {
+    grid-column: auto;
+    max-inline-size: 46ch;
+  }
+
+  .home-posts .post-card {
+    border: 0;
+    border-block-start: 1px solid var(--cds-border-subtle);
+    background: transparent;
+    padding-block: var(--cds-spacing-05);
+    padding-inline: 0;
+  }
+
+  .home-posts .post-card:hover {
+    background: transparent;
+    border-color: transparent;
+    border-block-start-color: var(--cds-border-strong);
+  }
+
+  .home-posts .post-card:focus-within {
+    background: transparent;
+    border-color: transparent;
+    border-block-start-color: var(--cds-focus);
+  }
+
+  @include breakpoint-up(lg) {
+    .home-hero-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 18rem);
+    }
+
+    .home-recent-layout {
+      grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.9fr);
+      align-items: start;
+    }
   }
 }

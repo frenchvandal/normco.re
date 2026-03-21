@@ -44,7 +44,7 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
 
-  return `<div class="site-page-shell site-page-shell--editorial">
+  return `<div class="site-page-shell site-page-shell--editorial state-page state-page--404">
   ${
     StatePanel({
       title: translations.notFound.heading,
@@ -55,6 +55,7 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
       eyebrowAriaHidden: true,
       headingTag: "h1",
       variant: "page",
+      className: "state-panel--not-found",
     })
   }
 </div>`;

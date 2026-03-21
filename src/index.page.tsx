@@ -37,6 +37,7 @@ type Comp = {
     readonly dateIso: string;
     readonly readingLabel?: string;
     readonly summary?: string;
+    readonly showSummary?: boolean;
     readonly authorName?: string;
     readonly authorUrl?: string;
   }) => string | Promise<string>;
@@ -71,6 +72,7 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
       dateIso,
       readingLabel,
       summary,
+      showSummary,
       authorName,
       authorUrl,
     },
@@ -90,6 +92,10 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
           }</time><h3 class="p-name"><a class="u-url u-uid" href="${
             escapeHtml(url)
           }">${escapeHtml(title)}</a></h3>${
+            showSummary && summary
+              ? `<p class="post-card-summary">${escapeHtml(summary)}</p>`
+              : ""
+          }${
             readingLabel
               ? `<span class="post-card-reading-time">${
                 escapeHtml(readingLabel)
@@ -187,11 +193,33 @@ export default async (
     </li>`;
   }).join("\n");
 
-  const postItems = await Promise.all(recent.map(async (post) => {
+  const [featuredPost, ...secondaryPosts] = recent;
+  const featuredCard = featuredPost === undefined ? "" : (() => {
+    const postDate = resolvePostDate(featuredPost.date);
+    const minutes = resolveReadingMinutes(featuredPost.readingInfo);
+
+    return PostCard({
+      title: typeof featuredPost.title === "string" ? featuredPost.title : "",
+      url: typeof featuredPost.url === "string" ? featuredPost.url : "",
+      dateStr: dateFormat(postDate, shortDatePattern, language) ??
+        postDate.toISOString(),
+      dateIso: dateFormat(postDate, "ATOM", language) ??
+        postDate.toISOString(),
+      ...(typeof featuredPost.description === "string" &&
+          featuredPost.description.length > 0
+        ? { summary: featuredPost.description, showSummary: true }
+        : {}),
+      authorName: author.name,
+      authorUrl: author.url,
+      ...(minutes !== undefined
+        ? { readingLabel: formatReadingTime(minutes, language) }
+        : {}),
+    });
+  })();
+
+  const postItems = await Promise.all(secondaryPosts.map(async (post) => {
     const postDate = resolvePostDate(post.date);
     const minutes = resolveReadingMinutes(post.readingInfo);
-
-    // exactOptionalPropertyTypes: only include readingLabel when it has a value.
     const card = await PostCard({
       title: typeof post.title === "string" ? post.title : "",
       url: typeof post.url === "string" ? post.url : "",
@@ -211,18 +239,14 @@ export default async (
     return `<li class="home-posts-item">${card}</li>`;
   })).then((items) => items.join("\n"));
 
-  const emptyState = `<li class="home-posts-item home-posts-item--empty">
-    ${
-    StatePanel({
-      title: translations.home.emptyStateTitle,
-      message: translations.home.emptyState,
-      actionHref: aboutUrl,
-      actionLabel: translations.navigation.about,
-      headingTag: "h3",
-      variant: "inline",
-    })
-  }
-  </li>`;
+  const emptyState = StatePanel({
+    title: translations.home.emptyStateTitle,
+    message: translations.home.emptyState,
+    actionHref: aboutUrl,
+    actionLabel: translations.navigation.about,
+    headingTag: "h3",
+    variant: "inline",
+  });
 
   const recentSection = await renderComponent(
     HFeedShell({
@@ -236,31 +260,61 @@ export default async (
     <h2 id="home-recent-title" class="subhead-heading p-name">${
           escapeHtml(translations.home.recentHeading)
         }</h2>
-    <a href="${escapeHtml(archiveUrl)}" class="home-all-posts">${
-          escapeHtml(translations.home.archiveLinkLabel)
-        }</a>
   </div>
-  <ul class="home-posts">
-    ${recent.length > 0 ? postItems : emptyState}
-  </ul>`,
+  ${
+          recent.length > 0
+            ? `<div class="home-recent-layout">
+    ${
+              featuredCard.length > 0
+                ? `<div class="home-featured">${featuredCard}</div>`
+                : ""
+            }
+    ${
+              secondaryPosts.length > 0
+                ? `<ul class="home-posts">
+      ${postItems}
+    </ul>`
+                : ""
+            }
+  </div>`
+            : emptyState
+        }`,
       },
     }),
   );
 
   return `<div class="site-page-shell site-page-shell--wide">
-<section class="cds--tile pagehead hero home-pagehead" aria-labelledby="home-title">
-  <p class="pagehead-eyebrow">${escapeHtml(translations.home.eyebrow)}</p>
-  <h1 id="home-title" class="hero-title">${
+<section class="pagehead hero home-pagehead" aria-labelledby="home-title">
+  <div class="home-hero-grid">
+    <div class="home-hero-copy">
+      <p class="pagehead-eyebrow">${escapeHtml(translations.home.eyebrow)}</p>
+      <h1 id="home-title" class="hero-title">${
     escapeHtml(translations.home.title)
   }</h1>
-  <p class="hero-lead">${escapeHtml(translations.home.lead)}</p>
-  ${
+      <p class="hero-lead">${escapeHtml(translations.home.lead)}</p>
+    </div>
+    <aside class="home-hero-aside" aria-label="${
+    escapeHtml(translations.home.recentHeading)
+  }">
+      <section class="cds--tile feature-card home-hero-card">
+        <h2 class="feature-card-title">${
+    escapeHtml(translations.home.recentHeading)
+  }</h2>
+        ${
     featuredTags.length > 0
-      ? `<ul class="home-topics">
-    ${featuredTagItems}
-  </ul>`
+      ? `<ul class="home-topics home-topics--compact">
+          ${featuredTagItems}
+        </ul>`
       : ""
   }
+        <a href="${
+    escapeHtml(archiveUrl)
+  }" class="feature-link home-hero-link">${
+    escapeHtml(translations.home.archiveLinkLabel)
+  }</a>
+      </section>
+    </aside>
+  </div>
 </section>
 
 ${recentSection}

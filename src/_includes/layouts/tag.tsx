@@ -125,6 +125,7 @@ export default async (
   const archiveUrl = getLocalizedUrl("/posts/", language);
   const tagName = typeof data.tagName === "string" ? data.tagName : "";
   const posts = resolveTagPosts(data.posts);
+  const postsCountLabel = formatPostCount(posts.length, language);
   const currentUrl = typeof data.url === "string" && data.url.length > 0
     ? data.url
     : archiveUrl;
@@ -183,16 +184,30 @@ export default async (
         </li>
       </ol>
     </nav>
-    <section class="cds--tile pagehead tag-pagehead" aria-labelledby="tag-page-title">
-      <p class="pagehead-eyebrow">${
+    <section class="pagehead tag-pagehead" aria-labelledby="tag-page-title">
+      <div class="tag-pagehead-grid">
+        <div class="tag-pagehead-copy">
+          <p class="pagehead-eyebrow">${
           escapeHtml(translations.tagPage.eyebrow)
         }</p>
-      <h1 id="tag-page-title" class="tag-page-title p-name">${
+          <h1 id="tag-page-title" class="tag-page-title p-name">${
           escapeHtml(tagName)
         }</h1>
-      <p class="pagehead-lead">${
-          escapeHtml(formatPostCount(posts.length, language))
-        }</p>
+          <p class="pagehead-lead">${escapeHtml(postsCountLabel)}</p>
+        </div>
+        <div class="tag-pagehead-meta">
+          <span class="cds--tag cds--tag--${
+          getTagColor(tagName)
+        } tag-page-current-tag" title="${escapeHtml(tagName)}">
+            <span class="cds--tag__label">${escapeHtml(tagName)}</span>
+          </span>
+          <a href="${
+          escapeHtml(archiveUrl)
+        }" class="feature-link tag-pagehead-link">${
+          escapeHtml(translations.tagPage.archiveLinkLabel)
+        }</a>
+        </div>
+      </div>
     </section>
     <section class="tag-page-results" aria-label="${
           escapeHtml(translations.tagPage.postsAriaLabel)
@@ -201,9 +216,6 @@ export default async (
         <h2 class="subhead-heading">${
           escapeHtml(translations.tagPage.postsHeading)
         }</h2>
-        <a href="${escapeHtml(archiveUrl)}" class="feature-link">${
-          escapeHtml(translations.tagPage.archiveLinkLabel)
-        }</a>
       </div>
       ${
           posts.length > 0
@@ -223,7 +235,7 @@ export default async (
   }">
     <div class="feature-rail-sticky">
       <section class="cds--tile feature-card">
-        <h2 class="feature-card-title">${
+      <h2 class="feature-card-title">${
     escapeHtml(translations.tagPage.eyebrow)
   }</h2>
         <span class="cds--tag cds--tag--${
@@ -231,9 +243,7 @@ export default async (
   } tag-page-current-tag" title="${escapeHtml(tagName)}">
           <span class="cds--tag__label">${escapeHtml(tagName)}</span>
         </span>
-        <p class="feature-card-caption">${
-    escapeHtml(formatPostCount(posts.length, language))
-  }</p>
+        <p class="feature-card-caption">${escapeHtml(postsCountLabel)}</p>
         <a href="${escapeHtml(archiveUrl)}" class="feature-link">${
     escapeHtml(translations.tagPage.archiveLinkLabel)
   }</a>

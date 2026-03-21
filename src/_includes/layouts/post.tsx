@@ -285,19 +285,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     tags.length > 0 ||
     prev !== undefined ||
     next !== undefined;
-  const showSummaryCallout = visibleSummary !== undefined ||
-    minutes !== undefined ||
+  const showSummaryBlock = visibleSummary !== undefined ||
     outline.length > 0;
   const summaryItems: DefinitionListItem[] = [
-    {
-      key: "published",
-      term: translations.post.publishedLabel,
-      value: (
-        <time datetime={publishedDateIso}>
-          {publishedDateLabel}
-        </time>
-      ),
-    },
     ...(readingTimeLabel !== undefined
       ? [{
         key: "reading-time",
@@ -375,41 +365,49 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                 </li>
               </ol>
             </nav>
-            <h1 class="post-title p-name">{data.title ?? ""}</h1>
-            <div class="post-meta">
-              <time
-                class="dt-published"
-                datetime={publishedDateIso}
-              >
-                {publishedDateLabel}
-              </time>
-              {minutes !== undefined && (
-                <>
-                  <span class="post-meta-separator" aria-hidden="true">·</span>
-                  <span>{readingTimeLabel}</span>
-                </>
+            <div class="post-pagehead-grid">
+              <div class="post-pagehead-copy">
+                <h1 class="post-title p-name">{data.title ?? ""}</h1>
+                <div class="post-meta">
+                  <time
+                    class="dt-published"
+                    datetime={publishedDateIso}
+                  >
+                    {publishedDateLabel}
+                  </time>
+                  {minutes !== undefined && (
+                    <>
+                      <span class="post-meta-separator" aria-hidden="true">
+                        ·
+                      </span>
+                      <span>{readingTimeLabel}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+              {showSummaryBlock && (
+                <div class="post-pagehead-context">
+                  {visibleSummary !== undefined && (
+                    <>
+                      <p class="post-pagehead-kicker">
+                        {translations.post.summaryEyebrow}
+                      </p>
+                      <p class="post-pagehead-summary pagehead-lead">
+                        {visibleSummary}
+                      </p>
+                    </>
+                  )}
+                  {summaryItems.length > 0 &&
+                    renderDefinitionList(summaryItems, {
+                      listClass: "post-summary-meta",
+                      itemClass: "post-summary-meta-group",
+                      termClass: "post-summary-term",
+                      valueClass: "post-summary-value",
+                    })}
+                </div>
               )}
             </div>
           </header>
-          {showSummaryCallout && (
-            <section class="cds--tile editorial-callout post-summary-callout">
-              <p class="editorial-callout-eyebrow">
-                {translations.post.summaryEyebrow}
-              </p>
-              <h2 class="editorial-callout-title">
-                {translations.post.summaryTitle}
-              </h2>
-              {visibleSummary !== undefined && (
-                <p class="editorial-callout-body">{visibleSummary}</p>
-              )}
-              {renderDefinitionList(summaryItems, {
-                listClass: "post-summary-meta",
-                itemClass: "post-summary-meta-group",
-                termClass: "post-summary-term",
-                valueClass: "post-summary-value",
-              })}
-            </section>
-          )}
           <div class="post-content e-content">
             {renderedChildren}
           </div>
@@ -467,7 +465,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           >
             <div class="feature-rail-sticky">
               {outline.length > 0 && (
-                <section class="cds--tile feature-card post-outline-card">
+                <section class="feature-card post-rail-card post-outline-card">
                   <h2 class="feature-card-title">
                     {translations.post.outlineTitle}
                   </h2>
@@ -492,7 +490,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               )}
 
               {tags.length > 0 && (
-                <section class="cds--tile feature-card">
+                <section class="feature-card post-rail-card post-tags-card">
                   <h2 class="feature-card-title">
                     {translations.post.tagsAriaLabel}
                   </h2>
@@ -520,7 +518,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               )}
 
               {(prev !== undefined || next !== undefined) && (
-                <section class="cds--tile feature-card">
+                <section class="feature-card post-rail-card post-nav-card">
                   <h2 class="feature-card-title">
                     {translations.post.navigationAriaLabel}
                   </h2>

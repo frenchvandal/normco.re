@@ -13,7 +13,14 @@ const MOCK_HELPERS = asLumeHelpers({});
 describe("404.page.tsx", () => {
   it("renders the shared state panel shell", () => {
     const html = page404(MOCK_DATA, MOCK_HELPERS);
-    assertStringIncludes(html, 'class="state-panel state-panel--page"');
+    assertStringIncludes(
+      html,
+      'class="site-page-shell site-page-shell--editorial state-page state-page--404"',
+    );
+    assertStringIncludes(
+      html,
+      'class="state-panel state-panel--page state-panel--not-found"',
+    );
   });
 
   it('displays the "404" eyebrow', () => {
@@ -52,6 +59,15 @@ describe("state panel CSS contracts", () => {
     assertStringIncludes(
       errorPageStyles,
       "outline-offset: var(--focus-ring-inset-offset);",
+    );
+  });
+
+  it("adds ambient framing for page-level error states", () => {
+    assertStringIncludes(errorPageStyles, ".state-page::before");
+    assertStringIncludes(errorPageStyles, ".state-page--404::after");
+    assertStringIncludes(
+      errorPageStyles,
+      ".state-panel--not-found .state-panel-eyebrow",
     );
   });
 });

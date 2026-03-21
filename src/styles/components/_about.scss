@@ -1,6 +1,8 @@
+@use "@carbon/styles/scss/breakpoint" as *;
 @use "@carbon/styles/scss/components/button";
 @use "@carbon/styles/scss/components/popover";
 @use "@carbon/styles/scss/components/toggletip";
+@use "../editorial/mixins" as editorial;
 
 @layer components {
   body[data-contact-toggletip-modal-open="true"] {
@@ -8,7 +10,100 @@
   }
 
   .about-pagehead {
-    padding: var(--cds-spacing-07);
+    padding-block: var(--cds-spacing-08) var(--cds-spacing-07);
+  }
+
+  .about-pagehead-grid {
+    display: grid;
+    gap: var(--space-l);
+    align-items: start;
+  }
+
+  .about-pagehead-copy {
+    display: grid;
+    gap: var(--space-s);
+    min-inline-size: 0;
+  }
+
+  .about-pagehead-meta {
+    display: grid;
+    gap: var(--space-xs);
+    align-content: start;
+    min-inline-size: 0;
+    padding-block-start: var(--space-s);
+    border-block-start: 1px solid var(--cds-border-subtle);
+  }
+
+  .about-pagehead-kicker {
+    margin: 0;
+    color: var(--cds-text-secondary);
+    font: var(--cds-productive-heading-01);
+    font-weight: var(--cds-font-weight-semibold);
+    letter-spacing: var(--site-ui-kicker-letter-spacing);
+    text-transform: uppercase;
+  }
+
+  .about-pagehead-feed-links {
+    margin: 0;
+    color: var(--cds-text-primary);
+    font: var(--cds-productive-body-02);
+  }
+
+  .about-pagehead-feed-links a {
+    color: var(--cds-link-primary);
+    @include editorial.editorial-link-underline;
+  }
+
+  .about-pagehead-feed-links a:hover {
+    color: var(--cds-link-primary-hover);
+  }
+
+  .about-title {
+    margin: 0;
+  }
+
+  .about-content {
+    gap: var(--space-l);
+  }
+
+  .about-intro {
+    font: var(--cds-expressive-paragraph-01);
+    color: var(--cds-text-primary);
+    text-wrap: pretty;
+  }
+
+  .about-rail-card {
+    border: 1px solid var(--cds-border-subtle);
+    background: transparent;
+  }
+
+  .about-contact-card {
+    background: var(--site-surface-panel);
+  }
+
+  .about-facts-row {
+    padding-block-start: var(--cds-spacing-03);
+    border-block-start: 1px solid var(--cds-border-subtle);
+  }
+
+  .about-facts-row:first-child {
+    padding-block-start: 0;
+    border-block-start: none;
+  }
+
+  .about-notes {
+    padding-inline-start: 0;
+    list-style: none;
+  }
+
+  .about-notes li {
+    padding-block-start: var(--cds-spacing-03);
+    border-block-start: 1px solid var(--cds-border-subtle);
+  }
+
+  .about-notes li:first-child {
+    padding-block-start: 0;
+    border-block-start: none;
   }
 
   .about-contact-item {
@@ -237,6 +332,19 @@
     block-size: auto;
     max-block-size: min(56dvh, 32rem);
     object-fit: contain;
+  }
+
+  @include breakpoint-up(lg) {
+    .about-pagehead-grid {
+      grid-template-columns: minmax(0, 1.25fr) minmax(16rem, 0.9fr);
+    }
+
+    .about-pagehead-meta {
+      padding-block-start: 0;
+      padding-inline-start: var(--space-l);
+      border-block-start: none;
+      border-inline-start: 1px solid var(--cds-border-subtle);
+    }
   }
 
   @media (max-width: 41.98rem) {

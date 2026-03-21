@@ -167,6 +167,12 @@ describe("Header()", () => {
         Header({ currentUrl: "/", language: "en" }),
       );
       assertStringIncludes(html, 'class="cds--side-nav__navigation"');
+      assertStringIncludes(html, 'class="cds--side-nav__header"');
+      assertStringIncludes(html, 'href="/" class="cds--side-nav__brand"');
+      assertStringIncludes(
+        html,
+        'class="cds--side-nav__lead">A personal blog by Phiphi—software, culture, and everyday life from Chengdu.</p>',
+      );
       assertStringIncludes(html, 'class="cds--side-nav__items"');
       assertStringIncludes(html, 'class="cds--side-nav__item"');
       assertStringIncludes(html, 'class="cds--side-nav__link"');
@@ -529,5 +535,22 @@ describe("Header CSS contracts", () => {
       layoutStyles,
       "outline-offset: var(--focus-ring-inset-offset);",
     );
+  });
+
+  it("keeps the desktop navigation and global actions visually separated", () => {
+    assertStringIncludes(layoutStyles, ".cds--header__nav::before");
+    assertStringIncludes(layoutStyles, ".cds--header__global {");
+    assertStringIncludes(
+      layoutStyles,
+      "border-inline-start: 1px solid var(--cds-border-subtle);",
+    );
+  });
+
+  it("styles the mobile side nav as an editorial sheet", () => {
+    assertStringIncludes(layoutStyles, ".cds--side-nav__header");
+    assertStringIncludes(layoutStyles, ".cds--side-nav__brand");
+    assertStringIncludes(layoutStyles, ".cds--side-nav__lead");
+    assertStringIncludes(layoutStyles, ".cds--side-nav__overlay");
+    assertStringIncludes(layoutStyles, "backdrop-filter: blur(8px);");
   });
 });

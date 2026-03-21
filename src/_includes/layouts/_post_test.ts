@@ -279,7 +279,7 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, `<p>${body}</p>`);
     });
 
-    it("renders a summary callout, table of contents, and publication accordion for longform posts", async () => {
+    it("renders an integrated pagehead context, table of contents, and publication accordion for longform posts", async () => {
       const html = await renderComponent(
         postLayout(
           makeData({
@@ -295,9 +295,12 @@ describe("post.tsx layout", () => {
 
       assertStringIncludes(
         html,
-        'class="cds--tile editorial-callout post-summary-callout"',
+        'class="post-pagehead-grid"',
       );
-      assertStringIncludes(html, "This post in context");
+      assertStringIncludes(html, 'class="post-pagehead-context"');
+      assertStringIncludes(html, 'class="post-pagehead-summary pagehead-lead"');
+      assertStringIncludes(html, "Context paragraph.");
+      assertStringIncludes(html, 'class="post-summary-meta"');
       assertStringIncludes(html, 'href="#first-section"');
       assertStringIncludes(html, 'href="#second-section"');
       assertStringIncludes(html, 'id="first-section"');
@@ -305,6 +308,21 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'class="post-details-section"');
       assertStringIncludes(html, "Publication details");
       assertStringIncludes(html, 'src="/scripts/surface-controls.js"');
+      assertNotMatch(html, /post-summary-callout/);
+    });
+
+    it("keeps the pagehead compact when a post has no summary or outline", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({
+            readingInfo: { minutes: 5 },
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+
+      assertStringIncludes(html, 'class="post-pagehead-grid"');
+      assertNotMatch(html, /post-pagehead-context/);
     });
 
     it("wraps navigation in nav[aria-label='Post navigation']", async () => {

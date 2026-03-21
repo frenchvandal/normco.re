@@ -7,6 +7,7 @@
     grid-template-columns: 8.5ch minmax(0, 1fr);
     gap: var(--cds-spacing-02) var(--space-m);
     align-items: start;
+    align-content: start;
     padding: var(--cds-spacing-05);
     outline: var(--focus-ring-width) solid transparent;
     outline-offset: var(--focus-ring-inset-offset);
@@ -74,5 +75,12 @@
     grid-column: 2;
     font: var(--cds-productive-body-01);
     color: var(--cds-text-secondary);
+  }
+
+  .post-card-summary {
+    grid-column: 2;
+    margin: 0;
+    color: var(--cds-text-secondary);
+    max-inline-size: 42ch;
   }
 }

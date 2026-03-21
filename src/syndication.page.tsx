@@ -407,94 +407,49 @@ export default (data: Lume.Data): string => {
       </li>
     </ol>
   </nav>
-  <section class="cds--tile pagehead syndication-pagehead" aria-labelledby="syndication-title">
-    <p class="pagehead-eyebrow">${escapeHtml(translations.feeds.eyebrow)}</p>
-    <h1 id="syndication-title" class="feeds-page-title">${
+  <section class="pagehead syndication-pagehead" aria-labelledby="syndication-title">
+    <div class="syndication-pagehead-grid">
+      <div class="syndication-pagehead-copy">
+        <p class="pagehead-eyebrow">${
+    escapeHtml(translations.feeds.eyebrow)
+  }</p>
+        <h1 id="syndication-title" class="feeds-page-title">${
     escapeHtml(translations.feeds.title)
   }</h1>
-    <p class="pagehead-lead feeds-page-lead">${
+        <p class="pagehead-lead feeds-page-lead">${
     escapeHtml(translations.feeds.lead)
   }</p>
+        <p class="syndication-intro">${escapeHtml(translations.feeds.intro)}</p>
+      </div>
+      <div class="syndication-pagehead-meta">
+        <section class="syndication-overview-card">
+          <div class="syndication-overview-copy">
+            <p class="syndication-overview-kicker">${
+    escapeHtml(translations.feeds.overviewCalloutEyebrow)
+  }</p>
+            <p class="syndication-overview-title">${
+    escapeHtml(translations.feeds.overviewCalloutTitle)
+  }</p>
+            <p class="syndication-overview-body">${
+    escapeHtml(translations.feeds.overviewCalloutBody)
+  }</p>
+          </div>
+          <div class="syndication-pictogram-frame" aria-hidden="true">
+            <div class="syndication-pictogram">
+              ${SYNDICATION_PICTOGRAM}
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
   </section>
   <div class="syndication-layout">
     <div class="syndication-content">
-      <div class="syndication-hero">
-        <div class="syndication-hero-copy">
-          <p class="syndication-intro">${
-    escapeHtml(translations.feeds.intro)
-  }</p>
-        </div>
-        <aside class="syndication-rail" aria-hidden="true">
-          <section class="cds--tile feature-card syndication-pictogram-card">
-            <div class="syndication-pictogram-frame" aria-hidden="true">
-              <div class="syndication-pictogram">
-                ${SYNDICATION_PICTOGRAM}
-              </div>
-            </div>
-          </section>
-        </aside>
-      </div>
-      <div class="cds--tabs site-tabs site-tabs--syndication" data-site-tabs="">
-        <ul class="cds--tab--list" role="tablist" aria-label="${
-    escapeHtml(translations.feeds.tabsAriaLabel)
-  }">
-          <li class="cds--tabs__nav-item cds--tabs__nav-item--selected">
-            <button
-              type="button"
-              class="cds--tabs__nav-link"
-              id="syndication-tab-endpoints"
-              role="tab"
-              data-tabs-trigger=""
-              aria-selected="true"
-              aria-controls="syndication-panel-endpoints"
-            >
-              <span class="cds--tabs__nav-item-label">${
-    escapeHtml(translations.feeds.endpointsTabLabel)
-  }</span>
-            </button>
-          </li>
-          <li class="cds--tabs__nav-item">
-            <button
-              type="button"
-              class="cds--tabs__nav-link"
-              id="syndication-tab-guidance"
-              role="tab"
-              data-tabs-trigger=""
-              aria-selected="false"
-              tabindex="-1"
-              aria-controls="syndication-panel-guidance"
-            >
-              <span class="cds--tabs__nav-item-label">${
-    escapeHtml(translations.feeds.guidanceTabLabel)
-  }</span>
-            </button>
-          </li>
-        </ul>
-      </div>
-      <section
-        id="syndication-panel-endpoints"
-        class="cds--tab-content syndication-tab-panel"
-        role="tabpanel"
-        aria-labelledby="syndication-tab-endpoints"
-        data-tabs-panel=""
-      >
-        <section class="cds--tile editorial-callout editorial-callout--info feeds-overview-callout">
-          <p class="editorial-callout-eyebrow">${
-    escapeHtml(translations.feeds.overviewCalloutEyebrow)
-  }</p>
-          <p class="editorial-callout-title">${
-    escapeHtml(translations.feeds.overviewCalloutTitle)
-  }</p>
-          <p class="editorial-callout-body">${
-    escapeHtml(translations.feeds.overviewCalloutBody)
-  }</p>
-        </section>
-        <section class="syndication-section" aria-labelledby="syndication-endpoints-title">
-          <div class="subhead">
-            <h2 id="syndication-endpoints-title" class="subhead-heading">${
+      <section class="syndication-section" aria-labelledby="syndication-endpoints-title">
+        <div class="subhead syndication-subhead">
+          <h2 id="syndication-endpoints-title" class="subhead-heading">${
     escapeHtml(translations.feeds.cardsAriaLabel)
   }</h2>
-          </div>
           <div class="cds--content-switcher site-content-switcher" data-content-switcher="" role="tablist" aria-label="${
     escapeHtml(translations.feeds.viewLabel)
   }">
@@ -526,56 +481,50 @@ export default (data: Lume.Data): string => {
   }</span>
             </button>
           </div>
-          <div id="syndication-endpoints-cards" data-content-switcher-panel="">
-            <div class="feeds-grid">
-              ${cardsHtml}
-            </div>
+        </div>
+        <div id="syndication-endpoints-cards" data-content-switcher-panel="">
+          <div class="feeds-grid">
+            ${cardsHtml}
           </div>
-          <div id="syndication-endpoints-list" data-content-switcher-panel="" hidden>
-            <div
-              class="cds--structured-list cds--structured-list--condensed feeds-structured-list"
-            >
-              <div class="cds--structured-list-thead">
-                <div class="cds--structured-list-row cds--structured-list-row--header-row">
-                  <span class="cds--structured-list-th">${
+        </div>
+        <div id="syndication-endpoints-list" data-content-switcher-panel="" hidden>
+          <div
+            class="cds--structured-list cds--structured-list--condensed feeds-structured-list"
+          >
+            <div class="cds--structured-list-thead">
+              <div class="cds--structured-list-row cds--structured-list-row--header-row">
+                <span class="cds--structured-list-th">${
     escapeHtml(translations.feeds.listFormatHeading)
   }</span>
-                  <span class="cds--structured-list-th">${
+                <span class="cds--structured-list-th">${
     escapeHtml(translations.feeds.listUrlHeading)
   }</span>
-                  <span class="cds--structured-list-th">${
+                <span class="cds--structured-list-th">${
     escapeHtml(translations.feeds.listUseHeading)
   }</span>
-                </div>
-              </div>
-              <div class="cds--structured-list-tbody">
-                ${listRowsHtml}
               </div>
             </div>
+            <div class="cds--structured-list-tbody">
+              ${listRowsHtml}
+            </div>
           </div>
-        </section>
+        </div>
       </section>
       <section
-        id="syndication-panel-guidance"
-        class="cds--tab-content syndication-tab-panel"
-        role="tabpanel"
-        aria-labelledby="syndication-tab-guidance"
-        data-tabs-panel=""
-        hidden
+        class="syndication-section syndication-guidance-section"
+        aria-labelledby="syndication-guidance-title"
       >
-        <section class="syndication-section" aria-labelledby="syndication-guidance-title">
-          <div class="subhead">
-            <h2 id="syndication-guidance-title" class="subhead-heading">${
+        <div class="subhead">
+          <h2 id="syndication-guidance-title" class="subhead-heading">${
     escapeHtml(translations.feeds.guidanceTabLabel)
   }</h2>
-          </div>
-          <p class="syndication-guidance-lead">${
+        </div>
+        <p class="syndication-guidance-lead">${
     escapeHtml(translations.feeds.guidanceLead)
   }</p>
-          <ul class="cds--accordion site-accordion" data-site-accordion="">
-            ${guidanceAccordion}
-          </ul>
-        </section>
+        <ul class="cds--accordion site-accordion" data-site-accordion="">
+          ${guidanceAccordion}
+        </ul>
       </section>
     </div>
   </div>

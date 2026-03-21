@@ -15,12 +15,14 @@ export default (
   {
     author,
     language,
+    homeUrl,
     syndicationPageUrl,
     blogStartYear,
     currentYear = new Date().getFullYear(),
   }: {
     readonly author: string;
     readonly language: SiteLanguage;
+    readonly homeUrl: string;
     readonly syndicationPageUrl: string;
     readonly blogStartYear: number;
     readonly currentYear?: number;
@@ -32,15 +34,21 @@ export default (
   return (
     <footer class="site-footer">
       <div class="site-footer-inner">
-        <span>
-          © {copyrightYears} {author}
-        </span>
+        <div class="site-footer-brand">
+          <a href={homeUrl} class="site-footer-mark">
+            normco.re
+          </a>
+          <p class="site-footer-copy">
+            © {copyrightYears} {author}
+          </p>
+        </div>
         <nav
           class="site-footer-nav"
           aria-label={translations.site.siteLinksAriaLabel}
         >
           <a
             href={repositoryUrl}
+            class="site-footer-link"
             target="_blank"
             rel="noopener noreferrer"
             aria-label={translations.site.repositoryLinkAriaLabel}
@@ -51,9 +59,11 @@ export default (
               width={16}
               height={16}
             />
+            <span class="site-footer-link-label">GitHub</span>
           </a>
           <a
             href={syndicationPageUrl}
+            class="site-footer-link"
             aria-label={translations.site.syndicationPageLinkAriaLabel}
           >
             <CarbonIcon
@@ -62,6 +72,9 @@ export default (
               width={16}
               height={16}
             />
+            <span class="site-footer-link-label">
+              {translations.feeds.title}
+            </span>
           </a>
         </nav>
       </div>

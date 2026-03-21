@@ -1,12 +1,30 @@
-@use "../editorial/mixins" as editorial;
+@use "@carbon/styles/scss/breakpoint" as *;
 
 @layer components {
   .tag-pagehead {
-    padding: var(--cds-spacing-07);
+    padding-block: var(--cds-spacing-08) var(--cds-spacing-07);
+  }
+
+  .tag-pagehead-grid {
+    display: grid;
+    gap: var(--space-l);
+    align-items: start;
+  }
+
+  .tag-pagehead-copy {
+    display: grid;
+    gap: var(--space-s);
+    min-inline-size: 0;
+  }
+
+  .tag-pagehead-meta {
+    display: grid;
+    gap: var(--space-s);
+    align-content: start;
   }
 
   .tag-page-title {
-    margin-block-end: var(--space-s);
+    margin: 0;
   }
 
   .tag-page-results {
@@ -20,8 +38,18 @@
     max-inline-size: 100%;
   }
 
+  .tag-pagehead-link {
+    inline-size: fit-content;
+  }
+
   .tag-page-rail .feature-card {
-    background: var(--site-surface-panel);
-    @include editorial.accent-rail;
+    background: transparent;
+    border: 1px solid var(--cds-border-subtle);
+  }
+
+  @include breakpoint-up(lg) {
+    .tag-pagehead-grid {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
   }
 }

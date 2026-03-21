@@ -240,6 +240,9 @@ describe("posts/index.page.tsx", () => {
         }),
       ];
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
+      assertStringIncludes(html, 'class="pagehead archive-pagehead"');
+      assertStringIncludes(html, 'class="archive-pagehead-grid"');
+      assertStringIncludes(html, 'class="archive-tools"');
       assertStringIncludes(html, 'data-content-switcher=""');
       assertStringIncludes(html, 'aria-controls="archive-list-panel"');
       assertStringIncludes(html, 'class="cds--content-switcher__label">Cards');
@@ -445,6 +448,12 @@ describe("posts/index.page.tsx", () => {
 });
 
 describe("archive CSS contracts", () => {
+  it("keeps the archive pagehead on the shared open pagehead pattern", () => {
+    assertStringIncludes(archiveStyles, ".archive-pagehead-grid");
+    assertStringIncludes(archiveStyles, ".archive-tools");
+    assertStringIncludes(archiveStyles, ".archive-page-count");
+  });
+
   it("keeps desktop archive list columns pinned to shared Carbon widths", () => {
     assertStringIncludes(
       archiveStyles,

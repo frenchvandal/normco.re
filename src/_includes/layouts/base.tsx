@@ -80,6 +80,7 @@ type Comp = {
   Footer: (props: {
     readonly author: string;
     readonly language: SiteLanguage;
+    readonly homeUrl: string;
     readonly syndicationPageUrl: string;
     readonly blogStartYear: number;
   }) => AwaitableLayoutRenderable;
@@ -186,6 +187,7 @@ export default (
     : resolvedSiteName;
   const language = resolveSiteLanguage(lang);
   const translations = getSiteTranslations(language);
+  const homeUrl = getLocalizedUrl("/", language);
   const metaDescription = description ?? metas?.description ??
     "Personal blog by Phiphi, based in Chengdu, China.";
   const documentLanguage = getLanguageTag(language);
@@ -302,6 +304,7 @@ export default (
             <Footer
               author={resolvedAuthor}
               language={language}
+              homeUrl={homeUrl}
               syndicationPageUrl={syndicationPageUrl}
               blogStartYear={blogStartYear ?? new Date().getFullYear()}
             />

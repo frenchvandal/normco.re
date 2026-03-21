@@ -19,7 +19,8 @@ describe("about.page.tsx", () => {
 
   it("renders an h1 heading", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
-    assertStringIncludes(html, 'class="cds--tile pagehead about-pagehead"');
+    assertStringIncludes(html, 'class="pagehead about-pagehead"');
+    assertStringIncludes(html, 'class="about-pagehead-grid"');
     assertStringIncludes(html, "<h1");
     assertStringIncludes(html, "About");
   });
@@ -37,6 +38,7 @@ describe("about.page.tsx", () => {
   it("contains the about-content wrapper", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
     assertStringIncludes(html, 'class="about-content"');
+    assertStringIncludes(html, 'class="about-intro"');
   });
 
   it("renders the about rail with supporting cards", () => {
@@ -46,7 +48,18 @@ describe("about.page.tsx", () => {
       'class="feature-layout feature-layout--with-rail"',
     );
     assertStringIncludes(html, 'class="feature-rail about-rail"');
-    assertStringIncludes(html, "feature-card about-contact-card");
+    assertStringIncludes(
+      html,
+      'class="feature-card about-rail-card about-contact-card"',
+    );
+    assertStringIncludes(
+      html,
+      'class="feature-card about-rail-card about-facts-card"',
+    );
+    assertStringIncludes(
+      html,
+      'class="feature-card about-rail-card about-notes-card"',
+    );
     assertStringIncludes(html, "about-contact-icon--wechat");
     assertStringIncludes(html, "about-contact-icon--telegram");
     assertStringIncludes(html, 'data-contact-toggletip=""');
@@ -84,6 +97,7 @@ describe("about.page.tsx", () => {
   it("contains an RSS feed link", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
     assertStringIncludes(html, 'href="/rss.xml"');
+    assertStringIncludes(html, 'class="about-pagehead-feed-links"');
   });
 
   it("contains an Atom feed link", () => {

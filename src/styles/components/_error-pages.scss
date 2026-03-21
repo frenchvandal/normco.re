@@ -2,7 +2,58 @@
 
 /* Shared system-state panels — 404, offline, and inline empty states. */
 @layer components {
+  .state-page {
+    position: relative;
+    display: grid;
+    align-items: center;
+    min-block-size: calc(100dvh - var(--site-shell-size));
+    padding-block: var(--cds-spacing-08);
+    overflow: clip;
+  }
+
+  .state-page::before,
+  .state-page::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .state-page::before {
+    inline-size: min(36rem, 72vw);
+    block-size: min(36rem, 72vw);
+    inset-block-start: 10%;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      var(--site-surface-accent) 0%,
+      transparent 72%
+    );
+    opacity: 0.9;
+  }
+
+  .state-page::after {
+    inline-size: clamp(4.5rem, 12vw, 7rem);
+    block-size: clamp(4.5rem, 12vw, 7rem);
+    border: 1px solid var(--cds-border-subtle);
+    background: transparent;
+  }
+
+  .state-page--404::after {
+    inset-block-start: var(--cds-spacing-06);
+    inset-inline-end: var(--cds-spacing-06);
+  }
+
+  .state-page--offline::after {
+    inset-block-end: var(--cds-spacing-06);
+    inset-inline-start: var(--cds-spacing-06);
+    border-radius: 50%;
+  }
+
   .state-panel {
+    position: relative;
+    z-index: 1;
     display: grid;
     gap: var(--space-m);
     padding: var(--cds-spacing-06);
@@ -11,11 +62,18 @@
   }
 
   .state-panel--page {
-    max-inline-size: var(--measure);
+    max-inline-size: min(100%, 40rem);
     margin-inline: auto;
-    padding-block: var(--cds-spacing-08);
-    text-align: center;
-    justify-items: center;
+    gap: var(--space-l);
+    padding-block: var(--cds-spacing-09);
+    padding-inline: var(--cds-spacing-07);
+    background: linear-gradient(
+      180deg,
+      var(--site-surface-page) 0%,
+      var(--site-surface-panel) 100%
+    );
+    text-align: start;
+    justify-items: start;
   }
 
   .state-panel--inline {
@@ -35,6 +93,7 @@
     margin: 0;
     color: var(--cds-text-primary);
     font: var(--cds-expressive-heading-04);
+    text-wrap: balance;
   }
 
   .state-panel--inline .state-panel-title {
@@ -43,8 +102,9 @@
 
   .state-panel-message {
     margin: 0;
-    max-inline-size: var(--measure);
+    max-inline-size: 34ch;
     color: var(--cds-text-secondary);
+    font: var(--cds-productive-body-02);
   }
 
   .state-panel-actions {
@@ -53,7 +113,7 @@
   }
 
   .state-panel--page .state-panel-actions {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .state-panel-action {
@@ -74,6 +134,16 @@
       color var(--cds-transition-default);
   }
 
+  .state-panel--not-found .state-panel-eyebrow {
+    color: var(--cds-link-primary);
+    font: var(--cds-expressive-heading-06);
+    letter-spacing: -0.04em;
+  }
+
+  .state-panel--offline-page .state-panel-title {
+    max-inline-size: 12ch;
+  }
+
   .state-panel-action:hover {
     background: var(--site-surface-panel-hover);
     color: var(--cds-link-primary-hover);
@@ -87,9 +157,14 @@
   }
 
   @include breakpoint-up(lg) {
+    .state-page {
+      padding-block: var(--cds-spacing-09);
+    }
+
     .state-panel--page {
-      max-inline-size: calc(var(--measure) - var(--cds-spacing-08));
-      padding-block: var(--cds-spacing-07);
+      max-inline-size: 42rem;
+      padding-block: calc(var(--cds-spacing-09) + var(--cds-spacing-03));
+      padding-inline: calc(var(--cds-spacing-07) + var(--cds-spacing-03));
     }
   }
 }

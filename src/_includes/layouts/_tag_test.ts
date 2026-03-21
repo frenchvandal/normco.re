@@ -69,9 +69,13 @@ describe("tag.tsx layout", () => {
 
     assertStringIncludes(html, 'href="/fr/"');
     assertStringIncludes(html, 'href="/fr/posts/"');
-    assertStringIncludes(html, 'class="cds--tile pagehead tag-pagehead"');
+    assertStringIncludes(html, 'class="pagehead tag-pagehead"');
+    assertStringIncludes(html, 'class="tag-pagehead-grid"');
     assertStringIncludes(html, "design");
-    assertStringIncludes(html, 'href="/fr/posts/" class="feature-link"');
+    assertStringIncludes(
+      html,
+      'href="/fr/posts/" class="feature-link tag-pagehead-link"',
+    );
     assertStringIncludes(html, 'class="archive-list"');
     assertStringIncludes(html, `href="${post.url}"`);
     assertNotMatch(html, /cds--breadcrumb-current/);

@@ -286,33 +286,40 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     </li>
   </ol>
 </nav>
-<section class="cds--tile pagehead about-pagehead" aria-labelledby="about-title">
-  <p class="pagehead-eyebrow">${escapeHtml(translations.about.eyebrow)}</p>
-  <h1 id="about-title" class="about-title">${
+<section class="pagehead about-pagehead" aria-labelledby="about-title">
+  <div class="about-pagehead-grid">
+    <div class="about-pagehead-copy">
+      <p class="pagehead-eyebrow">${escapeHtml(translations.about.eyebrow)}</p>
+      <h1 id="about-title" class="about-title">${
     escapeHtml(translations.about.title)
   }</h1>
-  <p class="pagehead-lead">${escapeHtml(translations.about.lead)}</p>
-</section>
-<div class="feature-layout feature-layout--with-rail">
-  <div class="feature-main">
-    <div class="about-content">
-      <p>${escapeHtml(translations.about.intro)}</p>
-      <p>${escapeHtml(translations.about.body)}</p>
-      <p>
-        ${escapeHtml(translations.about.feedsIntro)} <a href="${
+      <p class="pagehead-lead">${escapeHtml(translations.about.lead)}</p>
+    </div>
+    <div class="about-pagehead-meta">
+      <p class="about-pagehead-kicker">${
+    escapeHtml(translations.about.feedsIntro)
+  }</p>
+      <p class="about-pagehead-feed-links"><a href="${
     escapeHtml(feedXmlUrl)
   }">RSS</a>${escapeHtml(listSeparator)}<a href="${
     escapeHtml(atomXmlUrl)
   }">Atom</a> ${escapeHtml(finalSeparator)}
-        <a href="${escapeHtml(feedJsonUrl)}">JSON Feed</a>.
-      </p>
+        <a href="${escapeHtml(feedJsonUrl)}">JSON Feed</a>.</p>
+    </div>
+  </div>
+</section>
+<div class="feature-layout feature-layout--with-rail">
+  <div class="feature-main">
+    <div class="about-content">
+      <p class="about-intro">${escapeHtml(translations.about.intro)}</p>
+      <p>${escapeHtml(translations.about.body)}</p>
     </div>
   </div>
   <aside class="feature-rail about-rail" aria-label="${
     escapeHtml(translations.about.railAriaLabel)
   }">
     <div class="feature-rail-sticky">
-      <section class="cds--tile feature-card about-contact-card">
+      <section class="feature-card about-rail-card about-contact-card">
         <h2 class="feature-card-title">${
     escapeHtml(translations.about.contactTitle)
   }</h2>
@@ -320,7 +327,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
           ${contactItems}
         </ul>
       </section>
-      <section class="cds--tile feature-card">
+      <section class="feature-card about-rail-card about-facts-card">
         <h2 class="feature-card-title">${
     escapeHtml(translations.about.atAGlanceTitle)
   }</h2>
@@ -328,7 +335,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
           ${factItems}
         </dl>
       </section>
-      <section class="cds--tile feature-card">
+      <section class="feature-card about-rail-card about-notes-card">
         <h2 class="feature-card-title">${
     escapeHtml(translations.about.siteNotesTitle)
   }</h2>
@@ -338,7 +345,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
           <li>${escapeHtml(translations.about.siteNoteThree)}</li>
         </ul>
       </section>
-      <section class="cds--tile feature-card about-pictogram-card">
+      <section class="feature-card about-rail-card about-pictogram-card">
         <h2 class="feature-card-title">${
     escapeHtml(translations.about.pictogramTitle)
   }</h2>
