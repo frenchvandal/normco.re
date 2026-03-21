@@ -42,9 +42,9 @@ export const POST_BUILD_TASKS: ReadonlyArray<BuildTask> = [
     args: ["run", "--allow-read", "scripts/check-browser-imports.ts", "_site"],
   },
   {
-    name: "format built HTML output",
+    name: "format built HTML and JSON output",
     command: "deno",
-    args: ["fmt", "_site/**/*.html"],
+    args: ["fmt", "_site/**/*.html", "_site/**/*.json"],
   },
   {
     name: "validate built output links",
@@ -68,8 +68,9 @@ function formatCommand(command: string, args: ReadonlyArray<string>): string {
   return [command, ...args].join(" ");
 }
 
-async function collectHtmlFiles(
+async function collectFilesByExtension(
   rootDir: string,
+  extension: string,
 ): Promise<ReadonlyArray<string>> {
   const files: string[] = [];
 
@@ -77,7 +78,7 @@ async function collectHtmlFiles(
     for await (
       const entry of walk(rootDir, {
         includeDirs: false,
-        exts: [".html"],
+        exts: [extension],
       })
     ) {
       files.push(entry.path);
@@ -96,16 +97,29 @@ async function collectHtmlFiles(
 async function resolveTaskArgs(
   task: BuildTask,
 ): Promise<ReadonlyArray<string>> {
-  if (task.command !== "deno" || task.args[0] !== "fmt") {
+  const firstArg = task.args[0];
+
+  if (task.command !== "deno" || firstArg !== "fmt") {
     return task.args;
   }
 
   const resolvedArgs: string[] = ["fmt"];
+  const globPattern = /^(.*)\/\*\*\/\*\.([a-z0-9]+)$/i;
 
   for (const arg of task.args.slice(1)) {
-    if (arg.endsWith("/**/*.html")) {
-      const rootDir = arg.slice(0, -"/**/*.html".length);
-      resolvedArgs.push(...await collectHtmlFiles(rootDir));
+    const match = globPattern.exec(arg);
+
+    if (match) {
+      const rootDir = match[1];
+      const extensionSuffix = match[2];
+
+      if (rootDir === undefined || extensionSuffix === undefined) {
+        continue;
+      }
+
+      resolvedArgs.push(
+        ...await collectFilesByExtension(rootDir, `.${extensionSuffix}`),
+      );
       continue;
     }
 

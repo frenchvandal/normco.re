@@ -24,7 +24,7 @@ describe("build task definitions", () => {
       [
         "fingerprint built assets",
         "verify browser imports",
-        "format built HTML output",
+        "format built HTML and JSON output",
         "validate built output links",
       ],
     );
@@ -90,7 +90,7 @@ describe("runBuildTask()", () => {
     );
   });
 
-  it("expands HTML glob arguments before invoking deno fmt", async () => {
+  it("expands HTML and JSON glob arguments before invoking deno fmt", async () => {
     const htmlDir = "/virtual/site";
     const nestedDir = `${htmlDir}/posts`;
     const calls: Array<{ command: string; args: ReadonlyArray<string> }> = [];
@@ -102,6 +102,7 @@ describe("runBuildTask()", () => {
         if (directory === htmlDir) {
           return (async function* () {
             yield createDirEntry("index.html", "file");
+            yield createDirEntry("feed.json", "file");
             yield createDirEntry("posts", "directory");
           })();
         }
@@ -109,6 +110,7 @@ describe("runBuildTask()", () => {
         if (directory === nestedDir) {
           return (async function* () {
             yield createDirEntry("entry.html", "file");
+            yield createDirEntry("entry.json", "file");
           })();
         }
 
@@ -117,9 +119,9 @@ describe("runBuildTask()", () => {
     }, async () => {
       await runBuildTask(
         {
-          name: "format built HTML output",
+          name: "format built HTML and JSON output",
           command: "deno",
-          args: ["fmt", `${htmlDir}/**/*.html`],
+          args: ["fmt", `${htmlDir}/**/*.html`, `${htmlDir}/**/*.json`],
         },
         (command, args) => {
           calls.push({ command, args });
@@ -130,11 +132,17 @@ describe("runBuildTask()", () => {
 
     assertEquals(calls, [{
       command: "deno",
-      args: ["fmt", `${htmlDir}/index.html`, `${nestedDir}/entry.html`],
+      args: [
+        "fmt",
+        `${htmlDir}/index.html`,
+        `${nestedDir}/entry.html`,
+        `${htmlDir}/feed.json`,
+        `${nestedDir}/entry.json`,
+      ],
     }]);
   });
 
-  it("skips deno fmt when the HTML glob matches no files", async () => {
+  it("skips deno fmt when the HTML and JSON globs match no files", async () => {
     let callCount = 0;
 
     await withPatchedDeno({
@@ -142,9 +150,9 @@ describe("runBuildTask()", () => {
     }, async () => {
       await runBuildTask(
         {
-          name: "format built HTML output",
+          name: "format built HTML and JSON output",
           command: "deno",
-          args: ["fmt", `/virtual/site/**/*.html`],
+          args: ["fmt", `/virtual/site/**/*.html`, `/virtual/site/**/*.json`],
         },
         () => {
           callCount += 1;
