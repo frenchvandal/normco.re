@@ -128,6 +128,8 @@ describe("syndication CSS contracts", () => {
       feedsStyles,
       "inline-size: var(--site-inline-copy-control-size);",
     );
+    assertStringIncludes(feedsStyles, "overflow: visible;");
+    assertStringIncludes(feedsStyles, "inline-size: 1rem;");
     assertStringIncludes(
       feedsStyles,
       "outline-offset: var(--focus-ring-inset-offset);",

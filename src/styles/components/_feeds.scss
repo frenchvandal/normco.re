@@ -296,6 +296,7 @@
     align-self: stretch;
     inline-size: var(--site-inline-copy-control-size);
     min-inline-size: var(--site-inline-copy-control-size);
+    overflow: visible;
     padding: 0;
     border: 0;
     border-inline-start: 1px solid var(--cds-border-subtle);
@@ -406,6 +407,9 @@
     inset-block-start: 50%;
     inset-inline-start: 50%;
     display: block;
+    inline-size: 1rem;
+    block-size: 1rem;
+    overflow: visible;
     pointer-events: none;
     transition:
       opacity var(--cds-transition-fast),
