@@ -10,8 +10,14 @@ type TestMediaQueryList = MediaQueryList & {
 };
 
 type TestWindow = InstanceType<typeof JSDOM>["window"] & {
+  __lastPagefindOptions?: {
+    openFilters?: readonly string[];
+    showEmptyFilters?: boolean;
+  };
   PagefindUI?: new (options: {
     element: string;
+    openFilters?: readonly string[];
+    showEmptyFilters?: boolean;
     translations?: Record<string, string>;
   }) => unknown;
   matchMedia(query: string): TestMediaQueryList;
@@ -285,9 +291,13 @@ function installFakePagefind(window: TestWindow) {
     constructor(
       options: {
         element: string;
+        openFilters?: readonly string[];
+        showEmptyFilters?: boolean;
         translations?: Record<string, string>;
       },
     ) {
+      window.__lastPagefindOptions = options;
+
       const target = window.document.querySelector(options.element);
 
       if (!(target instanceof window.HTMLElement)) {
@@ -351,9 +361,18 @@ function installFakePagefind(window: TestWindow) {
         return result;
       };
 
+      const revealedResult = renderResult("Revealed result");
+      revealedResult.classList.add("pagefind-ui__hidden");
+      results.append(revealedResult);
+
       input.addEventListener("input", () => {
         const term = input.value.trim();
-        results.replaceChildren();
+        if (term !== "revealed") {
+          results.replaceChildren();
+        }
+
+        message.classList.remove("pagefind-ui__hidden");
+        revealedResult.classList.add("pagefind-ui__hidden");
 
         if (term.length === 0) {
           message.textContent = "";
@@ -373,6 +392,13 @@ function installFakePagefind(window: TestWindow) {
         if (term === "stale") {
           message.textContent = loading;
           results.append(renderResult("Stale result"));
+          return;
+        }
+
+        if (term === "revealed") {
+          message.textContent = loading;
+          message.classList.add("pagefind-ui__hidden");
+          revealedResult.classList.remove("pagefind-ui__hidden");
           return;
         }
 
@@ -436,12 +462,10 @@ function getSearchNotification(window: TestWindow): HTMLElement {
   return notification;
 }
 
-function getSearchNotificationTitle(window: TestWindow): HTMLElement {
-  const title = window.document.querySelector(
-    "[data-search-notification-title]",
-  );
-  assert(title instanceof window.HTMLElement);
-  return title;
+function getSearchStatusText(window: TestWindow): HTMLElement {
+  const statusText = window.document.querySelector("[data-search-status-text]");
+  assert(statusText instanceof window.HTMLElement);
+  return statusText;
 }
 
 function getSearchLoading(window: TestWindow): HTMLElement {
@@ -614,7 +638,7 @@ describe("header-client.js", () => {
     const input = window.document.querySelector(".pagefind-ui__search-input");
     assert(input instanceof window.HTMLInputElement);
     const notification = getSearchNotification(window);
-    const notificationTitle = getSearchNotificationTitle(window);
+    const statusText = getSearchStatusText(window);
     const loading = getSearchLoading(window);
     assertEquals(window.document.activeElement, input);
 
@@ -622,8 +646,9 @@ describe("header-client.js", () => {
     input.dispatchEvent(new window.Event("input", { bubbles: true }));
     await flush(window);
 
-    assertEquals(notification.hidden, false);
-    assertEquals(notificationTitle.textContent, "2 results");
+    assertEquals(notification.hidden, true);
+    assertEquals(statusText.hidden, false);
+    assertEquals(statusText.textContent, "2 results");
     assertEquals(loading.hidden, true);
     assertEquals(panel.getAttribute("aria-busy"), "false");
   });
@@ -662,12 +687,86 @@ describe("header-client.js", () => {
     await flush(window);
 
     const notification = getSearchNotification(window);
-    const notificationTitle = getSearchNotificationTitle(window);
+    const statusText = getSearchStatusText(window);
     const loading = getSearchLoading(window);
 
-    assertEquals(notification.hidden, false);
-    assertEquals(notificationTitle.textContent, "1 result");
+    assertEquals(notification.hidden, true);
+    assertEquals(statusText.hidden, false);
+    assertEquals(statusText.textContent, "1 result");
     assertEquals(loading.hidden, true);
+  });
+
+  it("clears the inline loader when Pagefind reveals results through class changes", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    evaluateScript(window);
+
+    const toggle = getSearchToggle(window);
+    toggle.focus();
+    toggle.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Enter",
+        bubbles: true,
+      }),
+    );
+    toggle.click();
+    await flush(window, 1);
+
+    const runtimeScript = window.document.querySelector(
+      'script[src="/pagefind/pagefind-ui.js"]',
+    );
+    assert(runtimeScript instanceof window.HTMLScriptElement);
+
+    installFakePagefind(window);
+    runtimeScript.dispatchEvent(new window.Event("load"));
+    await flush(window);
+
+    const input = window.document.querySelector(".pagefind-ui__search-input");
+    assert(input instanceof window.HTMLInputElement);
+
+    input.value = "revealed";
+    input.dispatchEvent(new window.Event("input", { bubbles: true }));
+    await flush(window);
+
+    const notification = getSearchNotification(window);
+    const statusText = getSearchStatusText(window);
+    const loading = getSearchLoading(window);
+
+    assertEquals(notification.hidden, true);
+    assertEquals(statusText.hidden, false);
+    assertEquals(statusText.textContent, "1 result");
+    assertEquals(loading.hidden, true);
+  });
+
+  it("initializes Pagefind with filters collapsed by default", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    evaluateScript(window);
+
+    const toggle = getSearchToggle(window);
+    toggle.focus();
+    toggle.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Enter",
+        bubbles: true,
+      }),
+    );
+    toggle.click();
+    await flush(window, 1);
+
+    const runtimeScript = window.document.querySelector(
+      'script[src="/pagefind/pagefind-ui.js"]',
+    );
+    assert(runtimeScript instanceof window.HTMLScriptElement);
+
+    installFakePagefind(window);
+    runtimeScript.dispatchEvent(new window.Event("load"));
+    await flush(window);
+
+    assertEquals(window.__lastPagefindOptions?.openFilters?.length, 0);
+    assertEquals(window.__lastPagefindOptions?.showEmptyFilters, false);
   });
 
   it("removes the placeholder skeleton before mounting the live Pagefind UI", async () => {
@@ -727,6 +826,121 @@ describe("header-client.js", () => {
     const input = window.document.querySelector(".pagefind-ui__search-input");
     assert(input instanceof window.HTMLInputElement);
     assertEquals(window.document.activeElement, window.document.body);
+  });
+
+  it("locks body scroll while the search panel is open", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    evaluateScript(window);
+
+    const toggle = getSearchToggle(window);
+    toggle.dispatchEvent(
+      new window.MouseEvent("pointerdown", { bubbles: true }),
+    );
+    toggle.click();
+    await flush(window, 1);
+
+    assertEquals(window.document.body.style.overflow, "hidden");
+
+    window.document.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Escape",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    await flush(window);
+
+    assertEquals(window.document.body.style.overflow, "");
+  });
+
+  it("routes Tab into the search panel after a pointer open", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    evaluateScript(window);
+
+    const toggle = getSearchToggle(window);
+    toggle.focus();
+    toggle.dispatchEvent(
+      new window.MouseEvent("pointerdown", { bubbles: true }),
+    );
+    toggle.click();
+    await flush(window, 1);
+
+    const runtimeScript = window.document.querySelector(
+      'script[src="/pagefind/pagefind-ui.js"]',
+    );
+    assert(runtimeScript instanceof window.HTMLScriptElement);
+
+    installFakePagefind(window);
+    runtimeScript.dispatchEvent(new window.Event("load"));
+    await flush(window);
+
+    window.document.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Tab",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    await flush(window);
+
+    const input = window.document.querySelector(".pagefind-ui__search-input");
+    assert(input instanceof window.HTMLInputElement);
+    assertEquals(window.document.activeElement, input);
+  });
+
+  it("keeps Tab navigation trapped inside the search panel", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    evaluateScript(window);
+
+    const toggle = getSearchToggle(window);
+    toggle.focus();
+    toggle.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Enter",
+        bubbles: true,
+      }),
+    );
+    toggle.click();
+    await flush(window, 1);
+
+    const runtimeScript = window.document.querySelector(
+      'script[src="/pagefind/pagefind-ui.js"]',
+    );
+    assert(runtimeScript instanceof window.HTMLScriptElement);
+
+    installFakePagefind(window);
+    runtimeScript.dispatchEvent(new window.Event("load"));
+    await flush(window);
+
+    const input = window.document.querySelector(".pagefind-ui__search-input");
+    assert(input instanceof window.HTMLInputElement);
+
+    input.value = "one";
+    input.dispatchEvent(new window.Event("input", { bubbles: true }));
+    await flush(window);
+
+    const resultLink = window.document.querySelector(
+      ".pagefind-ui__result-link",
+    );
+    assert(resultLink instanceof window.HTMLAnchorElement);
+    resultLink.focus();
+
+    resultLink.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Tab",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    await flush(window);
+
+    assertEquals(window.document.activeElement, input);
   });
 
   it("keeps the retry action keyboard usable after a Pagefind load failure", async () => {

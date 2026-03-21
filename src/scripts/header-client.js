@@ -192,6 +192,16 @@
   }
 
   /**
+   * @param {HTMLElement} element
+   * @returns {boolean}
+   */
+  function isSuppressedSearchElement(element) {
+    return isHidden(element) ||
+      element.closest(".pagefind-ui__hidden, .pagefind-ui__suppressed") !==
+        null;
+  }
+
+  /**
    * @param {HTMLElement} control
    * @param {boolean} expanded
    * @returns {void}
@@ -302,7 +312,8 @@
    * @returns {void}
    */
   function syncBodyScrollLock() {
-    doc.body.style.overflow = isSideNav(openSurface) ? "hidden" : "";
+    doc.body.style.overflow =
+      isSideNav(openSurface) || isSearchPanel(openSurface) ? "hidden" : "";
   }
 
   /**
@@ -418,6 +429,31 @@
       event.preventDefault();
       first.focus({ preventScroll: true });
     }
+  }
+
+  /**
+   * @param {KeyboardEvent} event
+   * @param {HTMLElement} container
+   * @returns {boolean}
+   */
+  function routeFocusIntoContainer(event, container) {
+    const focusable = getFocusableElements(container);
+
+    if (focusable.length === 0) {
+      return false;
+    }
+
+    const target = event.shiftKey
+      ? focusable[focusable.length - 1]
+      : focusable[0];
+
+    if (!(target instanceof HTMLElement)) {
+      return false;
+    }
+
+    event.preventDefault();
+    target.focus({ preventScroll: true });
+    return true;
   }
 
   /**
@@ -751,6 +787,56 @@
   }
 
   /**
+   * @param {SearchController} controller
+   * @returns {string}
+   */
+  function getVisibleSearchMessage(controller) {
+    for (
+      const candidate of controller.container.querySelectorAll(
+        ".pagefind-ui__message",
+      )
+    ) {
+      if (
+        !(candidate instanceof HTMLElement) ||
+        isSuppressedSearchElement(candidate)
+      ) {
+        continue;
+      }
+
+      const text = candidate.textContent?.trim() ?? "";
+
+      if (text.length > 0) {
+        return text;
+      }
+    }
+
+    return "";
+  }
+
+  /**
+   * @param {SearchController} controller
+   * @returns {number}
+   */
+  function getVisibleSearchResultCount(controller) {
+    let count = 0;
+
+    for (
+      const candidate of controller.container.querySelectorAll(
+        ".pagefind-ui__result",
+      )
+    ) {
+      if (
+        candidate instanceof HTMLElement &&
+        !isSuppressedSearchElement(candidate)
+      ) {
+        count += 1;
+      }
+    }
+
+    return count;
+  }
+
+  /**
    * @param {number} count
    * @returns {string}
    */
@@ -790,6 +876,15 @@
     title,
     subtitle = "",
   ) {
+    if (controller.loading instanceof HTMLElement) {
+      controller.loading.hidden = true;
+    }
+
+    if (controller.statusText instanceof HTMLElement) {
+      controller.statusText.hidden = true;
+      controller.statusText.textContent = "";
+    }
+
     if (!(controller.notification instanceof HTMLElement)) {
       return;
     }
@@ -945,7 +1040,10 @@
         text,
       );
     } else if (state === "results") {
-      showSearchNotification(controller, "info", text);
+      if (controller.statusText instanceof HTMLElement) {
+        controller.statusText.hidden = false;
+        controller.statusText.textContent = text;
+      }
     } else if (controller.statusText instanceof HTMLElement) {
       controller.statusText.hidden = false;
       controller.statusText.textContent = text;
@@ -1081,7 +1179,6 @@
    * @returns {void}
    */
   function syncSearchStatus(controller) {
-    const message = controller.container.querySelector(".pagefind-ui__message");
     const searchTerm = getActiveSearchTerm(controller);
 
     if (searchTerm.length === 0) {
@@ -1089,12 +1186,8 @@
       return;
     }
 
-    const text = message instanceof HTMLElement
-      ? message.textContent?.trim() ?? ""
-      : "";
-    const resultCount = controller.container.querySelectorAll(
-      ".pagefind-ui__result",
-    ).length;
+    const text = getVisibleSearchMessage(controller);
+    const resultCount = getVisibleSearchResultCount(controller);
     const { loading } = getSearchMessages(controller);
 
     if (resultCount > 0) {
@@ -1168,10 +1261,12 @@
     });
 
     const messageObserver = new MutationObserver(() => {
-      syncSearchStatus(controller);
+      scheduleSearchStatusSync(controller);
     });
 
     messageObserver.observe(controller.container, {
+      attributes: true,
+      attributeFilter: ["class", "hidden", "open"],
       childList: true,
       subtree: true,
       characterData: true,
@@ -1338,7 +1433,7 @@
       element: ensurePagefindSelector(controller),
       showImages: false,
       showEmptyFilters: false,
-      openFilters: ["tag"],
+      openFilters: [],
       showSubResults: false,
       resetStyles: false,
       translations: getPagefindTranslations(controller),
@@ -1890,6 +1985,20 @@
 
     if (event.key === "Tab" && sideNavSurface instanceof HTMLElement) {
       trapFocus(event, sideNavSurface);
+      return;
+    }
+
+    const searchSurface = isSearchPanel(openSurface) ? openSurface : null;
+
+    if (event.key === "Tab" && searchSurface instanceof HTMLElement) {
+      if (
+        !(target instanceof HTMLElement) || !searchSurface.contains(target)
+      ) {
+        routeFocusIntoContainer(event, searchSurface);
+        return;
+      }
+
+      trapFocus(event, searchSurface);
       return;
     }
 

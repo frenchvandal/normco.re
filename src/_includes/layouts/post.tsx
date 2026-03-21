@@ -275,8 +275,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     postDate.toISOString();
   const publishedDateLabel = dateFormat(postDate, "HUMAN_DATE", language) ??
     postDate.toISOString();
-  const searchPublishedYear = String(postDate.getUTCFullYear());
-  const searchPublishedSortDate = postDate.toISOString();
   const readingTimeLabel = minutes !== undefined
     ? formatReadingTime(minutes, language)
     : undefined;
@@ -360,18 +358,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             ? { summary: data.description }
             : {})}
         >
-          <div hidden aria-hidden="true" data-pagefind-ignore="">
-            <span data-pagefind-filter="year">{searchPublishedYear}</span>
-            <span data-pagefind-sort="date">{searchPublishedSortDate}</span>
-            {tags.map((tag, index) => (
-              <span
-                key={`pagefind-tag-${tag}-${index}`}
-                data-pagefind-filter="tag"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
           <header class="post-header pagehead post-pagehead">
             <nav
               class="cds--breadcrumb"

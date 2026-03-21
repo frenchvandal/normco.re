@@ -217,7 +217,7 @@ describe("post.tsx layout", () => {
       assertNotMatch(html, /class="cds--tag cds--tag--/);
     });
 
-    it("emits Pagefind tag and year filters for posts", async () => {
+    it("does not emit Pagefind filter or sort metadata for posts", async () => {
       const html = await renderComponent(
         postLayout(
           makeData({
@@ -228,14 +228,9 @@ describe("post.tsx layout", () => {
         ),
       );
 
-      assertMatch(html, /data-pagefind-filter="year">2026<\/span>/);
-      assertMatch(
-        html,
-        /data-pagefind-sort="date">2026-03-05T12:34:56\.000Z<\/span>/,
-      );
-      assertMatch(html, /data-pagefind-filter="tag">devops<\/span>/);
-      assertMatch(html, /data-pagefind-filter="tag">cdn<\/span>/);
-      assertStringIncludes(html, "data-pagefind-ignore");
+      assertNotMatch(html, /data-pagefind-filter="/);
+      assertNotMatch(html, /data-pagefind-sort="/);
+      assertNotMatch(html, /data-pagefind-ignore/);
     });
 
     it("ignores non-string tag entries before rendering the rail", async () => {

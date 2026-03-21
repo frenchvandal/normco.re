@@ -226,6 +226,7 @@
     inline-size: var(--site-header-search-panel-width);
     block-size: min(calc(100dvh - var(--site-shell-size)), 40rem);
     overflow: hidden;
+    overscroll-behavior: contain;
   }
 
   .cds--header__search-panel .cds--header__panel-content {
