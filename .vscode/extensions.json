@@ -3,6 +3,7 @@
     "denoland.vscode-deno",
     "fwcd.kotlin",
     "vscjava.vscode-gradle",
-    "redhat.vscode-xml"
+    "redhat.vscode-xml",
+    "redhat.vscode-yaml"
   ]
 }
