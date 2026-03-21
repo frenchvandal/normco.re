@@ -37,6 +37,45 @@ around the app-facing JSON boundary once native clients exist:
 This second problem is the only place where another language may simplify the
 overall system rather than add churn.
 
+## Standard Schema Fit
+
+`standard-schema` and `Standard JSON Schema` are relevant only for the
+TypeScript-native side of contract tooling.
+
+They are a reasonable fit when a shared TypeScript tool needs to:
+
+- accept validators from multiple schema libraries without writing one adapter
+  per library
+- keep runtime validation and inferred TypeScript types aligned
+- optionally convert those TypeScript validators to JSON Schema for downstream
+  tooling
+
+They are not the source of truth for the public app contracts in this
+repository.
+
+For `normco.re` today, keep these boundaries:
+
+- public mobile contracts remain the explicit JSON Schema files in `contracts/`
+- generated payload validation remains driven by `contracts/validate.ts`
+- `standard-schema` is optional and should be considered only for internal
+  TypeScript validation layers or a future reusable TypeScript contract tool
+
+Practical reading for this repository:
+
+- good fit: build-time parsing/validation helpers inside the Deno codebase, or a
+  later TypeScript package that validates and transforms app-contract data
+- weak fit: replacing the canonical JSON Schema files or redefining the public
+  app-contract surface around a TypeScript validator library
+- low value: a future shared contract CLI implemented in Go, because
+  `standard-schema` is specifically a TypeScript ecosystem interoperability
+  layer
+
+References:
+
+- https://github.com/standard-schema/standard-schema
+- https://standardschema.dev/schema
+- https://standardschema.dev/json-schema
+
 ## Good Reasons To Add Another Language
 
 Introduce a separate shared contract tool only if at least one of these becomes
