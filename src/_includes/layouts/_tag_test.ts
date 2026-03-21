@@ -74,6 +74,8 @@ describe("tag.tsx layout", () => {
     assertStringIncludes(html, 'href="/fr/posts/" class="feature-link"');
     assertStringIncludes(html, 'class="archive-list"');
     assertStringIncludes(html, `href="${post.url}"`);
+    assertNotMatch(html, /cds--breadcrumb-current/);
+    assertNotMatch(html, /aria-current="page"/);
     assertMatch(html, /class="cds--tag cds--tag--[a-z]+ tag-page-current-tag"/);
     assertStringIncludes(html, 'title="design"');
   });

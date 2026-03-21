@@ -181,11 +181,6 @@ export default async (
           escapeHtml(translations.navigation.writing)
         }</a>
         </li>
-        <li class="cds--breadcrumb-item">
-          <span class="cds--breadcrumb-current" aria-current="page">${
-          escapeHtml(tagName)
-        }</span>
-        </li>
       </ol>
     </nav>
     <section class="cds--tile pagehead tag-pagehead" aria-labelledby="tag-page-title">

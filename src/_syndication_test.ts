@@ -1,4 +1,4 @@
-import { assertStringIncludes } from "jsr/assert";
+import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import feedsStyles from "./styles/components/_feeds.scss" with { type: "text" };
 import surfacePatternsStyles from "./styles/components/_surface-patterns.scss" with {
@@ -25,6 +25,8 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(html, 'class="cds--breadcrumb"');
     assertStringIncludes(html, 'aria-label="Syndication breadcrumb"');
     assertStringIncludes(html, 'href="/" class="cds--breadcrumb-link"');
+    assertNotMatch(html, /cds--breadcrumb-current/);
+    assertNotMatch(html, /aria-current="page"/);
     assertStringIncludes(
       html,
       '<h1 id="syndication-title" class="feeds-page-title">Syndication</h1>',
@@ -115,6 +117,7 @@ describe("syndication.page.tsx", () => {
       html,
       'data-copy-copied-status="URL de Flux RSS copiée"',
     );
+    assertNotMatch(html, /cds--breadcrumb-current/);
   });
 });
 

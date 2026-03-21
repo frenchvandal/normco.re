@@ -264,6 +264,8 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'href="/posts/"');
       assertStringIncludes(html, "Home");
       assertStringIncludes(html, "Writing");
+      assertNotMatch(html, /cds--breadcrumb-current/);
+      assertNotMatch(html, /aria-current="page"/);
     });
 
     it("renders the post body content", async () => {

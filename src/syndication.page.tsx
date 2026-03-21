@@ -405,11 +405,6 @@ export default (data: Lume.Data): string => {
           ${escapeHtml(translations.navigation.home)}
         </a>
       </li>
-      <li class="cds--breadcrumb-item">
-        <span class="cds--breadcrumb-current" aria-current="page">
-          ${escapeHtml(translations.feeds.title)}
-        </span>
-      </li>
     </ol>
   </nav>
   <section class="cds--tile pagehead syndication-pagehead" aria-labelledby="syndication-title">

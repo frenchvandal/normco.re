@@ -30,6 +30,8 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, 'class="cds--breadcrumb"');
     assertStringIncludes(html, 'aria-label="About breadcrumb"');
     assertStringIncludes(html, 'href="/" class="cds--breadcrumb-link"');
+    assertNotMatch(html, /cds--breadcrumb-current/);
+    assertNotMatch(html, /aria-current="page"/);
   });
 
   it("contains the about-content wrapper", () => {

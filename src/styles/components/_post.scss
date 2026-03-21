@@ -2,25 +2,6 @@
 
 /* Individual post page — article, breadcrumb shell, content prose, prev/next nav. */
 @layer components {
-  .post-breadcrumb-shell {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-xs);
-    margin-block-end: var(--space-s);
-    font-size: var(--cds-font-size-body-01);
-  }
-
-  .post-breadcrumb-shell a {
-    color: var(--cds-text-secondary);
-  }
-
-  .post-breadcrumb-current {
-    color: var(--cds-text-secondary);
-    font-size: var(--cds-font-size-body-01);
-    overflow-wrap: anywhere;
-  }
-
   .post-article {
     min-inline-size: 0;
   }

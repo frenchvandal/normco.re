@@ -573,9 +573,6 @@
                       <xsl:value-of select="$home-label"/>
                     </a>
                   </li>
-                  <li class="cds--breadcrumb-item">
-                    <span class="cds--breadcrumb-current" aria-current="page"><xsl:value-of select="$feed-format-label"/></span>
-                  </li>
                 </ol>
               </nav>
 

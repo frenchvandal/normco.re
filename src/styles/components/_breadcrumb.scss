@@ -9,7 +9,7 @@
 
   .cds--breadcrumb-list {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     gap: var(--cds-spacing-02);
     list-style: none;
@@ -49,10 +49,5 @@
     outline: var(--focus-ring-width) solid var(--cds-focus);
     outline-offset: var(--focus-ring-offset);
     @include editorial.editorial-link-underline;
-  }
-
-  .cds--breadcrumb-current {
-    color: var(--cds-text-primary);
-    font-weight: var(--cds-font-weight-semibold);
   }
 }

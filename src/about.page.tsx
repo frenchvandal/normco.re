@@ -284,11 +284,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     escapeHtml(translations.navigation.home)
   }</a>
     </li>
-    <li class="cds--breadcrumb-item">
-      <span class="cds--breadcrumb-current" aria-current="page">${
-    escapeHtml(translations.about.title)
-  }</span>
-    </li>
   </ol>
 </nav>
 <section class="cds--tile pagehead about-pagehead" aria-labelledby="about-title">

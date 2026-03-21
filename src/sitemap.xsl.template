@@ -229,9 +229,6 @@
                       <xsl:text>Home</xsl:text>
                     </a>
                   </li>
-                  <li class="cds--breadcrumb-item">
-                    <span class="cds--breadcrumb-current" aria-current="page">Sitemap</span>
-                  </li>
                 </ol>
               </nav>
 

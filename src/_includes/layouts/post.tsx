@@ -243,7 +243,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const postDate = resolvePostDate(data.date);
   const minutes = resolveReadingMinutes(data.readingInfo);
   const homeUrl = getLocalizedUrl("/", language);
-  const currentTitle = typeof data.title === "string" ? data.title : "";
   const tags = resolveStringTags(data.tags);
   const author = getAuthorIdentity(language, data.author);
   const includeCodeCopyScript = hasCodeBlocks(data.children);
@@ -373,11 +372,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                   <a href={postsBaseUrl} class="cds--breadcrumb-link">
                     {translations.navigation.writing}
                   </a>
-                </li>
-                <li class="cds--breadcrumb-item">
-                  <span class="cds--breadcrumb-current" aria-current="page">
-                    {currentTitle}
-                  </span>
                 </li>
               </ol>
             </nav>

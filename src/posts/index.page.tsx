@@ -354,11 +354,6 @@ export default async (
         ${escapeHtml(translations.navigation.home)}
       </a>
     </li>
-    <li class="cds--breadcrumb-item">
-      <span class="cds--breadcrumb-current" aria-current="page">
-        ${escapeHtml(translations.archive.title)}
-      </span>
-    </li>
   </ol>
 </nav>
 <section class="cds--tile pagehead archive-pagehead" aria-labelledby="archive-title">

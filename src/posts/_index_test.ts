@@ -130,7 +130,8 @@ describe("posts/index.page.tsx", () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, 'class="cds--breadcrumb-list"');
       assertStringIncludes(html, 'class="cds--breadcrumb-link"');
-      assertStringIncludes(html, 'class="cds--breadcrumb-current"');
+      assertNotMatch(html, /cds--breadcrumb-current/);
+      assertNotMatch(html, /aria-current="page"/);
       assertNotMatch(html, /cds--breadcrumb-separator/);
     });
 
