@@ -8,6 +8,9 @@ import {
 import { describe, it } from "jsr/testing-bdd";
 import { faker, seedTestFaker } from "../../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../../test/lume.ts";
+import archiveStyles from "../styles/components/_archive.scss" with {
+  type: "text",
+};
 
 import postsIndexPage, { searchIndexed } from "./index.page.tsx";
 
@@ -437,5 +440,38 @@ describe("posts/index.page.tsx", () => {
 
       assertNotMatch(html, /class="cds--pagination"/);
     });
+  });
+});
+
+describe("archive CSS contracts", () => {
+  it("keeps desktop archive list columns pinned to shared Carbon widths", () => {
+    assertStringIncludes(
+      archiveStyles,
+      "--archive-list-date-column-size: var(--cds-spacing-12);",
+    );
+    assertStringIncludes(
+      archiveStyles,
+      "--archive-list-reading-column-size: var(--cds-spacing-13);",
+    );
+    assertStringIncludes(
+      archiveStyles,
+      ".archive-structured-list .cds--structured-list-th:first-child,",
+    );
+    assertStringIncludes(
+      archiveStyles,
+      "inline-size: var(--archive-list-date-column-size);",
+    );
+    assertStringIncludes(
+      archiveStyles,
+      ".archive-structured-list .cds--structured-list-th:last-child,",
+    );
+    assertStringIncludes(
+      archiveStyles,
+      "inline-size: var(--archive-list-reading-column-size);",
+    );
+    assertStringIncludes(
+      archiveStyles,
+      "text-align: end;",
+    );
   });
 });
