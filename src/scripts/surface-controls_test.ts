@@ -126,6 +126,30 @@ describe("surface-controls.js", () => {
     assertEquals(listPanel.hidden, false);
   });
 
+  it("clears pointer-click focus for content-switcher buttons", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    evaluateScript(window);
+
+    const buttons = Array.from(
+      window.document.querySelectorAll("[data-content-switcher-trigger]"),
+    ).filter((candidate): candidate is HTMLButtonElement =>
+      candidate instanceof window.HTMLButtonElement
+    );
+    const listButton = buttons[1];
+    assert(listButton);
+
+    listButton.focus();
+    listButton.dispatchEvent(
+      new window.MouseEvent("click", {
+        bubbles: true,
+        detail: 1,
+      }),
+    );
+
+    assertEquals(window.document.activeElement === listButton, false);
+  });
+
   it("switches tabs and selected tab-item classes", () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
@@ -169,6 +193,39 @@ describe("surface-controls.js", () => {
     );
     assertEquals(panelA.hidden, true);
     assertEquals(panelB.hidden, false);
+  });
+
+  it("clears pointer-click focus for tabs while keeping selection", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    evaluateScript(window);
+
+    const tabs = Array.from(
+      window.document.querySelectorAll("[data-tabs-trigger]"),
+    ).filter((candidate): candidate is HTMLButtonElement =>
+      candidate instanceof window.HTMLButtonElement
+    );
+    const secondTab = tabs[1];
+    assert(secondTab);
+
+    secondTab.focus();
+    secondTab.dispatchEvent(
+      new window.MouseEvent("click", {
+        bubbles: true,
+        detail: 1,
+      }),
+    );
+
+    const secondItem = secondTab.closest(".cds--tabs__nav-item");
+    if (!(secondItem instanceof window.HTMLElement)) {
+      throw new Error("Expected the second tab item to exist.");
+    }
+    const secondTabItem = secondItem as HTMLElement;
+    assertEquals(
+      secondTabItem.classList.contains("cds--tabs__nav-item--selected"),
+      true,
+    );
+    assertEquals(window.document.activeElement === secondTab, false);
   });
 
   it("toggles accordion panels and active item classes", () => {

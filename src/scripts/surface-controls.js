@@ -87,7 +87,15 @@
     }
 
     for (const button of buttons) {
-      button.addEventListener("click", () => activate(button, false));
+      button.addEventListener("click", (event) => {
+        activate(button, false);
+
+        // Keep keyboard focus behavior, but do not leave a persistent focus
+        // ring after pointer clicks.
+        if (event.detail > 0) {
+          button.blur();
+        }
+      });
       button.addEventListener("keydown", (event) => handleKeys(event, button));
     }
 
@@ -188,7 +196,15 @@
     }
 
     for (const tab of tabs) {
-      tab.addEventListener("click", () => activate(tab, false));
+      tab.addEventListener("click", (event) => {
+        activate(tab, false);
+
+        // Keep keyboard focus behavior, but do not leave a persistent focus
+        // ring after pointer clicks.
+        if (event.detail > 0) {
+          tab.blur();
+        }
+      });
       tab.addEventListener("keydown", (event) => handleKeys(event, tab));
     }
 

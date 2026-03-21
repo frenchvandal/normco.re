@@ -1,6 +1,9 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import feedsStyles from "./styles/components/_feeds.scss" with { type: "text" };
+import surfacePatternsStyles from "./styles/components/_surface-patterns.scss" with {
+  type: "text",
+};
 import { asLumeData } from "../test/lume.ts";
 
 import syndicationPage from "./syndication.page.tsx";
@@ -26,12 +29,15 @@ describe("syndication.page.tsx", () => {
       html,
       '<h1 id="syndication-title" class="feeds-page-title">Syndication</h1>',
     );
+    assertStringIncludes(html, 'class="syndication-layout"');
   });
 
-  it("renders a decorative octopus pictogram in the side rail", () => {
+  it("renders a decorative octopus pictogram alongside the intro", () => {
     const html = syndicationPage(MOCK_DATA);
 
-    assertStringIncludes(html, 'class="feature-rail syndication-rail"');
+    assertStringIncludes(html, 'class="syndication-hero"');
+    assertStringIncludes(html, 'class="syndication-hero-copy"');
+    assertStringIncludes(html, 'class="syndication-rail"');
     assertStringIncludes(html, 'class="syndication-pictogram-frame"');
     assertStringIncludes(html, 'class="syndication-pictogram"');
     assertStringIncludes(html, '<path d="M18,13.5');
@@ -66,6 +72,11 @@ describe("syndication.page.tsx", () => {
     );
     assertStringIncludes(html, 'data-site-tabs=""');
     assertStringIncludes(html, 'data-content-switcher=""');
+    if (html.includes("cds--tabs--contained")) {
+      throw new Error(
+        "Syndication tabs should use Carbon line tabs, not contained tabs.",
+      );
+    }
     assertStringIncludes(
       html,
       'class="site-switcher-icon cds--content-switcher__icon"',
@@ -75,6 +86,7 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(html, "feeds-structured-list");
     assertStringIncludes(html, 'data-site-accordion=""');
     assertStringIncludes(html, 'data-copy-notice=""');
+    assertStringIncludes(html, "feeds-copy-control--compact");
   });
 
   it("loads the shared surface controls and feed copy scripts", () => {
@@ -127,5 +139,45 @@ describe("syndication CSS contracts", () => {
     assertStringIncludes(feedsStyles, "background: var(--site-surface-panel);");
     assertStringIncludes(feedsStyles, ".feeds-structured-list");
     assertStringIncludes(feedsStyles, ".feeds-copy-notice");
+    assertStringIncludes(feedsStyles, ".feeds-copy-notice[hidden]");
+    assertStringIncludes(feedsStyles, "display: none !important;");
+    assertStringIncludes(
+      feedsStyles,
+      ".feeds-copy-notice .cds--inline-notification__details",
+    );
+    assertStringIncludes(
+      feedsStyles,
+      "align-items: center !important;",
+    );
+    assertStringIncludes(feedsStyles, ".syndication-hero");
+    assertStringIncludes(feedsStyles, ".syndication-hero-copy");
+    assertStringIncludes(feedsStyles, ".feeds-copy-control--compact");
+  });
+
+  it("keeps shared switcher and tabs focus treatments readable", () => {
+    assertStringIncludes(
+      surfacePatternsStyles,
+      ".site-content-switcher .site-switcher-icon",
+    );
+    assertStringIncludes(
+      surfacePatternsStyles,
+      "fill: currentColor !important;",
+    );
+    assertStringIncludes(
+      surfacePatternsStyles,
+      "display: none;",
+    );
+    assertStringIncludes(
+      surfacePatternsStyles,
+      "inline-size: 1.125rem;",
+    );
+    assertStringIncludes(
+      surfacePatternsStyles,
+      ".site-tabs .cds--tabs__nav-link",
+    );
+    assertStringIncludes(
+      surfacePatternsStyles,
+      "cursor: pointer;",
+    );
   });
 });

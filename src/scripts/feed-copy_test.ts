@@ -240,4 +240,28 @@ describe("feed-copy.js", () => {
     );
     timers.runAll();
   });
+
+  it("keeps compact copy controls working without an inline notice", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    const timers = installFakeTimers(window);
+    window.navigator.clipboard = {
+      writeText() {
+        return Promise.resolve();
+      },
+    };
+
+    getNotice(window).remove();
+    evaluateScript(window);
+
+    const control = getControl(window);
+    const button = getButton(window);
+    button.click();
+    await flushMicrotasks();
+
+    assertEquals(control.dataset.copyState, "copied");
+    assertEquals(getStatus(window).textContent, "URL de Flux RSS copiée");
+    assertEquals(getButtonLabel(window).textContent, "Copié");
+    timers.runAll();
+  });
 });

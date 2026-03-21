@@ -26,9 +26,13 @@
     gap: var(--cds-spacing-02);
   }
 
-  .site-switcher-icon {
+  .site-content-switcher .site-switcher-icon {
+    display: none;
     flex: 0 0 auto;
-    fill: currentColor;
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+    fill: currentColor !important;
+    transition: fill var(--cds-transition-fast);
   }
 
   .site-tabs {

@@ -165,6 +165,7 @@ function renderCopyControl(
   card: FeedCard,
   siteOrigin: string,
   actions: FeedActions,
+  { compact = false }: { readonly compact?: boolean } = {},
 ): string {
   const absoluteUrl = new URL(card.path, siteOrigin).href;
   const copyTitle = `${actions.copyAction} ${card.title}`;
@@ -175,14 +176,18 @@ function renderCopyControl(
   const errorStatus = actions.errorStatusMessage.replace("[LABEL]", card.title);
 
   return `<div
-    class="feed-copy-control feeds-copy-control"
+    class="feed-copy-control feeds-copy-control${
+    compact ? " feeds-copy-control--compact" : ""
+  }"
     data-copy-control=""
     data-copy-state="idle"
     data-copy-label="${escapeHtml(card.title)}"
     data-copy-copied-status="${escapeHtml(copiedStatus)}"
     data-copy-error-status="${escapeHtml(errorStatus)}"
   >
-    <div class="feeds-endpoint-row">
+    <div class="feeds-endpoint-row${
+    compact ? " feeds-endpoint-row--compact" : ""
+  }">
       <a
         href="${escapeHtml(card.path)}"
         class="feeds-endpoint-link"
@@ -211,7 +216,7 @@ function renderCopyControl(
         </span>
       </button>
     </div>
-    ${renderCopyNotice(actions)}
+    ${compact ? "" : renderCopyNotice(actions)}
     <span class="sr-only" data-copy-status="" aria-live="polite"></span>
   </div>`;
 }
@@ -268,7 +273,7 @@ function renderStructuredListRow(
       </div>
     </div>
     <div class="cds--structured-list-td">
-      ${renderCopyControl(card, siteOrigin, actions)}
+      ${renderCopyControl(card, siteOrigin, actions, { compact: true })}
     </div>
     <div class="cds--structured-list-td feeds-structured-list-use">
       <p>${escapeHtml(card.description)}</p>
@@ -416,166 +421,168 @@ export default (data: Lume.Data): string => {
     escapeHtml(translations.feeds.lead)
   }</p>
   </section>
-  <div class="feature-layout feature-layout--with-rail syndication-layout">
-    <div class="feature-main">
-      <div class="syndication-content">
-        <p class="syndication-intro">${escapeHtml(translations.feeds.intro)}</p>
-        <div class="cds--tabs cds--tabs--contained site-tabs site-tabs--syndication" data-site-tabs="">
-          <ul class="cds--tab--list" role="tablist" aria-label="${
+  <div class="syndication-layout">
+    <div class="syndication-content">
+      <div class="syndication-hero">
+        <div class="syndication-hero-copy">
+          <p class="syndication-intro">${
+    escapeHtml(translations.feeds.intro)
+  }</p>
+        </div>
+        <aside class="syndication-rail" aria-hidden="true">
+          <section class="cds--tile feature-card syndication-pictogram-card">
+            <div class="syndication-pictogram-frame" aria-hidden="true">
+              <div class="syndication-pictogram">
+                ${SYNDICATION_PICTOGRAM}
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+      <div class="cds--tabs site-tabs site-tabs--syndication" data-site-tabs="">
+        <ul class="cds--tab--list" role="tablist" aria-label="${
     escapeHtml(translations.feeds.tabsAriaLabel)
   }">
-            <li class="cds--tabs__nav-item cds--tabs__nav-item--selected">
-              <button
-                type="button"
-                class="cds--tabs__nav-link"
-                id="syndication-tab-endpoints"
-                role="tab"
-                data-tabs-trigger=""
-                aria-selected="true"
-                aria-controls="syndication-panel-endpoints"
-              >
-                <span class="cds--tabs__nav-item-label">${
+          <li class="cds--tabs__nav-item cds--tabs__nav-item--selected">
+            <button
+              type="button"
+              class="cds--tabs__nav-link"
+              id="syndication-tab-endpoints"
+              role="tab"
+              data-tabs-trigger=""
+              aria-selected="true"
+              aria-controls="syndication-panel-endpoints"
+            >
+              <span class="cds--tabs__nav-item-label">${
     escapeHtml(translations.feeds.endpointsTabLabel)
   }</span>
-              </button>
-            </li>
-            <li class="cds--tabs__nav-item">
-              <button
-                type="button"
-                class="cds--tabs__nav-link"
-                id="syndication-tab-guidance"
-                role="tab"
-                data-tabs-trigger=""
-                aria-selected="false"
-                tabindex="-1"
-                aria-controls="syndication-panel-guidance"
-              >
-                <span class="cds--tabs__nav-item-label">${
+            </button>
+          </li>
+          <li class="cds--tabs__nav-item">
+            <button
+              type="button"
+              class="cds--tabs__nav-link"
+              id="syndication-tab-guidance"
+              role="tab"
+              data-tabs-trigger=""
+              aria-selected="false"
+              tabindex="-1"
+              aria-controls="syndication-panel-guidance"
+            >
+              <span class="cds--tabs__nav-item-label">${
     escapeHtml(translations.feeds.guidanceTabLabel)
   }</span>
-              </button>
-            </li>
-          </ul>
-        </div>
-        <section
-          id="syndication-panel-endpoints"
-          class="cds--tab-content syndication-tab-panel"
-          role="tabpanel"
-          aria-labelledby="syndication-tab-endpoints"
-          data-tabs-panel=""
-        >
-          <section class="cds--tile editorial-callout editorial-callout--info feeds-overview-callout">
-            <p class="editorial-callout-eyebrow">${
+            </button>
+          </li>
+        </ul>
+      </div>
+      <section
+        id="syndication-panel-endpoints"
+        class="cds--tab-content syndication-tab-panel"
+        role="tabpanel"
+        aria-labelledby="syndication-tab-endpoints"
+        data-tabs-panel=""
+      >
+        <section class="cds--tile editorial-callout editorial-callout--info feeds-overview-callout">
+          <p class="editorial-callout-eyebrow">${
     escapeHtml(translations.feeds.overviewCalloutEyebrow)
   }</p>
-            <p class="editorial-callout-title">${
+          <p class="editorial-callout-title">${
     escapeHtml(translations.feeds.overviewCalloutTitle)
   }</p>
-            <p class="editorial-callout-body">${
+          <p class="editorial-callout-body">${
     escapeHtml(translations.feeds.overviewCalloutBody)
   }</p>
-          </section>
-          <section class="syndication-section" aria-labelledby="syndication-endpoints-title">
-            <div class="subhead">
-              <h2 id="syndication-endpoints-title" class="subhead-heading">${
+        </section>
+        <section class="syndication-section" aria-labelledby="syndication-endpoints-title">
+          <div class="subhead">
+            <h2 id="syndication-endpoints-title" class="subhead-heading">${
     escapeHtml(translations.feeds.cardsAriaLabel)
   }</h2>
-            </div>
-            <div class="cds--content-switcher site-content-switcher" data-content-switcher="" role="tablist" aria-label="${
+          </div>
+          <div class="cds--content-switcher site-content-switcher" data-content-switcher="" role="tablist" aria-label="${
     escapeHtml(translations.feeds.viewLabel)
   }">
-              <button
-                type="button"
-                class="cds--content-switcher-btn cds--content-switcher--selected"
-                role="tab"
-                data-content-switcher-trigger=""
-                aria-selected="true"
-                aria-controls="syndication-endpoints-cards"
-              >
-                ${VIEW_ICON}
-                <span class="cds--content-switcher__label">${
+            <button
+              type="button"
+              class="cds--content-switcher-btn cds--content-switcher--selected"
+              role="tab"
+              data-content-switcher-trigger=""
+              aria-selected="true"
+              aria-controls="syndication-endpoints-cards"
+            >
+              ${VIEW_ICON}
+              <span class="cds--content-switcher__label">${
     escapeHtml(translations.feeds.cardsViewLabel)
   }</span>
-              </button>
-              <button
-                type="button"
-                class="cds--content-switcher-btn"
-                role="tab"
-                data-content-switcher-trigger=""
-                aria-selected="false"
-                tabindex="-1"
-                aria-controls="syndication-endpoints-list"
-              >
-                ${LIST_ICON}
-                <span class="cds--content-switcher__label">${
+            </button>
+            <button
+              type="button"
+              class="cds--content-switcher-btn"
+              role="tab"
+              data-content-switcher-trigger=""
+              aria-selected="false"
+              tabindex="-1"
+              aria-controls="syndication-endpoints-list"
+            >
+              ${LIST_ICON}
+              <span class="cds--content-switcher__label">${
     escapeHtml(translations.feeds.listViewLabel)
   }</span>
-              </button>
+            </button>
+          </div>
+          <div id="syndication-endpoints-cards" data-content-switcher-panel="">
+            <div class="feeds-grid">
+              ${cardsHtml}
             </div>
-            <div id="syndication-endpoints-cards" data-content-switcher-panel="">
-              <div class="feeds-grid">
-                ${cardsHtml}
-              </div>
-            </div>
-            <div id="syndication-endpoints-list" data-content-switcher-panel="" hidden>
-              <div
-                class="cds--structured-list cds--structured-list--condensed feeds-structured-list"
-              >
-                <div class="cds--structured-list-thead">
-                  <div class="cds--structured-list-row cds--structured-list-row--header-row">
-                    <span class="cds--structured-list-th">${
+          </div>
+          <div id="syndication-endpoints-list" data-content-switcher-panel="" hidden>
+            <div
+              class="cds--structured-list cds--structured-list--condensed feeds-structured-list"
+            >
+              <div class="cds--structured-list-thead">
+                <div class="cds--structured-list-row cds--structured-list-row--header-row">
+                  <span class="cds--structured-list-th">${
     escapeHtml(translations.feeds.listFormatHeading)
   }</span>
-                    <span class="cds--structured-list-th">${
+                  <span class="cds--structured-list-th">${
     escapeHtml(translations.feeds.listUrlHeading)
   }</span>
-                    <span class="cds--structured-list-th">${
+                  <span class="cds--structured-list-th">${
     escapeHtml(translations.feeds.listUseHeading)
   }</span>
-                  </div>
-                </div>
-                <div class="cds--structured-list-tbody">
-                  ${listRowsHtml}
                 </div>
               </div>
-            </div>
-          </section>
-        </section>
-        <section
-          id="syndication-panel-guidance"
-          class="cds--tab-content syndication-tab-panel"
-          role="tabpanel"
-          aria-labelledby="syndication-tab-guidance"
-          data-tabs-panel=""
-          hidden
-        >
-          <section class="syndication-section" aria-labelledby="syndication-guidance-title">
-            <div class="subhead">
-              <h2 id="syndication-guidance-title" class="subhead-heading">${
-    escapeHtml(translations.feeds.guidanceTabLabel)
-  }</h2>
-            </div>
-            <p class="syndication-guidance-lead">${
-    escapeHtml(translations.feeds.guidanceLead)
-  }</p>
-            <ul class="cds--accordion site-accordion" data-site-accordion="">
-              ${guidanceAccordion}
-            </ul>
-          </section>
-        </section>
-      </div>
-    </div>
-    <aside class="feature-rail syndication-rail" aria-hidden="true">
-      <div class="feature-rail-sticky">
-        <section class="cds--tile feature-card syndication-pictogram-card">
-          <div class="syndication-pictogram-frame" aria-hidden="true">
-            <div class="syndication-pictogram">
-              ${SYNDICATION_PICTOGRAM}
+              <div class="cds--structured-list-tbody">
+                ${listRowsHtml}
+              </div>
             </div>
           </div>
         </section>
-      </div>
-    </aside>
+      </section>
+      <section
+        id="syndication-panel-guidance"
+        class="cds--tab-content syndication-tab-panel"
+        role="tabpanel"
+        aria-labelledby="syndication-tab-guidance"
+        data-tabs-panel=""
+        hidden
+      >
+        <section class="syndication-section" aria-labelledby="syndication-guidance-title">
+          <div class="subhead">
+            <h2 id="syndication-guidance-title" class="subhead-heading">${
+    escapeHtml(translations.feeds.guidanceTabLabel)
+  }</h2>
+          </div>
+          <p class="syndication-guidance-lead">${
+    escapeHtml(translations.feeds.guidanceLead)
+  }</p>
+          <ul class="cds--accordion site-accordion" data-site-accordion="">
+            ${guidanceAccordion}
+          </ul>
+        </section>
+      </section>
+    </div>
   </div>
 
   <script src="/scripts/surface-controls.js" defer></script>
