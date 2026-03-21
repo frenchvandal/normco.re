@@ -680,9 +680,17 @@
       grid-column: auto;
     }
 
-    .feeds-structured-list .feed-copy-control,
+    .feeds-structured-list {
+      inline-size: max-content;
+      min-inline-size: 100%;
+    }
+
     .feeds-structured-list-copy {
-      min-inline-size: 0;
+      min-inline-size: 12rem;
+    }
+
+    .feeds-structured-list .feed-copy-control {
+      min-inline-size: 15rem;
     }
 
     .feeds-snippet-copy-button.cds--copy-btn {

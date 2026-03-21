@@ -185,4 +185,14 @@ describe("syndication CSS contracts", () => {
       "cursor: pointer;",
     );
   });
+
+  it("keeps the mobile structured list wide enough for copy controls", () => {
+    assertStringIncludes(feedsStyles, ".feeds-structured-list {");
+    assertStringIncludes(feedsStyles, "inline-size: max-content;");
+    assertStringIncludes(feedsStyles, "min-inline-size: 100%;");
+    assertNotMatch(
+      feedsStyles,
+      /\.feeds-structured-list \.feed-copy-control,\s*\.feeds-structured-list-copy\s*\{\s*min-inline-size:\s*0;/s,
+    );
+  });
 });
