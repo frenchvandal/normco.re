@@ -53,12 +53,7 @@ fun PhiphiNavHost(
             route = AppRoutes.POST_PATTERN,
             arguments = listOf(navArgument(name = "slug") { type = NavType.StringType }),
             deepLinks =
-                listOf(
-                    navDeepLink { uriPattern = "https://normco.re/posts/{slug}" },
-                    navDeepLink { uriPattern = "https://normco.re/posts/{slug}/" },
-                    navDeepLink { uriPattern = "https://www.normco.re/posts/{slug}" },
-                    navDeepLink { uriPattern = "https://www.normco.re/posts/{slug}/" },
-                ),
+                PostDeepLinks.uriPatterns.map { pattern -> navDeepLink { uriPattern = pattern } },
         ) {
             PostRoute()
         }

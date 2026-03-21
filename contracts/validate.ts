@@ -4,7 +4,8 @@
  * Usage: `deno task validate-contracts [--site-dir=_site]`
  *
  * Validates:
- * - `/feed.json` (and localized variants) against `contracts/feed.schema.json`
+ * - `/feed.json`, `/rss.xml`, and `/atom.xml` (and localized variants)
+ *   against the active feed validators
  * - `/api/app-manifest.json` against `contracts/app-manifest.schema.json`
  * - localized `/api/posts/index.json` files against
  *   `contracts/posts-index.schema.json`
@@ -19,11 +20,17 @@ import { parseArgs } from "jsr/cli";
 import { walk } from "jsr/fs";
 import { bold, green, red, yellow } from "jsr/fmt-colors";
 import { isCData, isElement, isText, parse } from "jsr/xml";
+import {
+  ATOM_FEED_PATH,
+  JSON_FEED_PATH,
+  RSS_FEED_PATH,
+} from "../src/utils/feed-paths.ts";
 
 /** Minimal JSON Schema validator for the subset of features we use. */
 export interface SchemaNode {
   readonly type?: string;
   readonly const?: unknown;
+  readonly enum?: ReadonlyArray<unknown>;
   readonly required?: ReadonlyArray<string>;
   readonly properties?: Readonly<Record<string, SchemaNode>>;
   readonly additionalProperties?: boolean;
@@ -142,6 +149,19 @@ export function validate(
     return errors;
   }
 
+  // enum
+  if (
+    schema.enum !== undefined &&
+    !schema.enum.some((candidate) => Object.is(candidate, value))
+  ) {
+    errors.push({
+      path,
+      message: `Expected one of ${JSON.stringify(schema.enum)}, got ${
+        JSON.stringify(value)
+      }`,
+    });
+  }
+
   // Type check
   if (schema.type !== undefined) {
     const actualType = Array.isArray(value) ? "array" : typeof value;
@@ -211,6 +231,7 @@ export function validate(
   // Object properties
   if (typeof value === "object" && value !== null && !Array.isArray(value)) {
     const obj = value as Record<string, unknown>;
+    const definedProperties = schema.properties ?? {};
 
     if (schema.required !== undefined) {
       for (const key of schema.required) {
@@ -223,13 +244,22 @@ export function validate(
       }
     }
 
-    if (schema.properties !== undefined) {
-      for (const [key, propSchema] of Object.entries(schema.properties)) {
-        if (key in obj) {
-          errors.push(
-            ...validate(obj[key], propSchema, root, `${path}.${key}`),
-          );
+    if (schema.additionalProperties === false) {
+      for (const key of Object.keys(obj)) {
+        if (!(key in definedProperties)) {
+          errors.push({
+            path: `${path}.${key}`,
+            message: "Unexpected property",
+          });
         }
+      }
+    }
+
+    for (const [key, propSchema] of Object.entries(definedProperties)) {
+      if (key in obj) {
+        errors.push(
+          ...validate(obj[key], propSchema, root, `${path}.${key}`),
+        );
       }
     }
   }
@@ -311,6 +341,11 @@ async function findOutputFiles(
   }
 
   return files.sort();
+}
+
+export function createOutputFilePattern(publicPath: string): RegExp {
+  const escapedPath = publicPath.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`${escapedPath}$`);
 }
 
 function parseCliArgs(args: ReadonlyArray<string>): { siteDir: string } {
@@ -727,7 +762,7 @@ async function main(): Promise<void> {
   // Validate feed JSON files
   await validateJsonFiles(
     "Feed files",
-    await findOutputFiles(siteDir, /\/feed\.json$/),
+    await findOutputFiles(siteDir, createOutputFilePattern(JSON_FEED_PATH)),
     feedSchema,
   );
 
@@ -750,7 +785,10 @@ async function main(): Promise<void> {
   );
 
   // Validate RSS feed XML files
-  const rssFiles = await findOutputFiles(siteDir, /\/feed\.rss$/);
+  const rssFiles = await findOutputFiles(
+    siteDir,
+    createOutputFilePattern(RSS_FEED_PATH),
+  );
   console.log(bold(`\nRSS feed files: ${rssFiles.length}`));
 
   for (const filePath of rssFiles) {
@@ -770,7 +808,10 @@ async function main(): Promise<void> {
   }
 
   // Validate Atom feed XML files
-  const atomFiles = await findOutputFiles(siteDir, /\/feed\.atom$/);
+  const atomFiles = await findOutputFiles(
+    siteDir,
+    createOutputFilePattern(ATOM_FEED_PATH),
+  );
   console.log(bold(`\nAtom feed files: ${atomFiles.length}`));
 
   for (const filePath of atomFiles) {

@@ -2,6 +2,7 @@ import { assertEquals, assertRejects } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 
 import {
+  createOutputFilePattern,
   readJsonFile,
   readSchemaFile,
   validate,
@@ -96,6 +97,71 @@ describe("validate()", () => {
       path: "$.blocks[0]",
       message: "Does not match any oneOf variant",
     }]);
+  });
+
+  it("enforces enum values declared in the schema", () => {
+    const schema = {
+      type: "object",
+      properties: {
+        lang: {
+          type: "string",
+          enum: ["en", "fr"],
+        },
+      },
+    };
+
+    const validErrors = validate({ lang: "en" }, schema, schema, "$");
+    const invalidErrors = validate({ lang: "zh-hans" }, schema, schema, "$");
+
+    assertEquals(validErrors, []);
+    assertEquals(invalidErrors, [{
+      path: "$.lang",
+      message: 'Expected one of ["en","fr"], got "zh-hans"',
+    }]);
+  });
+
+  it("rejects unexpected object properties when additionalProperties is false", () => {
+    const schema = {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        title: { type: "string" },
+      },
+    };
+
+    const validErrors = validate(
+      { title: "Valid title" },
+      schema,
+      schema,
+      "$",
+    );
+    const invalidErrors = validate(
+      { title: "Valid title", extra: true },
+      schema,
+      schema,
+      "$",
+    );
+
+    assertEquals(validErrors, []);
+    assertEquals(invalidErrors, [{
+      path: "$.extra",
+      message: "Unexpected property",
+    }]);
+  });
+});
+
+describe("createOutputFilePattern()", () => {
+  it("matches root and localized output files by public path suffix", () => {
+    const rssPattern = createOutputFilePattern("/rss.xml");
+    const atomPattern = createOutputFilePattern("/atom.xml");
+
+    assertEquals(rssPattern.test("_site/rss.xml"), true);
+    assertEquals(rssPattern.test("_site/fr/rss.xml"), true);
+    assertEquals(rssPattern.test("_site/feed.rss"), false);
+
+    assertEquals(atomPattern.test("_site/atom.xml"), true);
+    assertEquals(atomPattern.test("_site/zh-hans/atom.xml"), true);
+    assertEquals(atomPattern.test("_site/feed.atom"), false);
   });
 });
 

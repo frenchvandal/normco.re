@@ -38,8 +38,74 @@
         <category android:name="android.intent.category.BROWSABLE" />
 
         <data
+          android:host="normco.re"
+          android:pathPrefix="/fr/posts/"
+          android:scheme="https" />
+      </intent-filter>
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="normco.re"
+          android:pathPrefix="/zh-hans/posts/"
+          android:scheme="https" />
+      </intent-filter>
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="normco.re"
+          android:pathPrefix="/zh-hant/posts/"
+          android:scheme="https" />
+      </intent-filter>
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
           android:host="www.normco.re"
           android:pathPrefix="/posts/"
+          android:scheme="https" />
+      </intent-filter>
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="www.normco.re"
+          android:pathPrefix="/fr/posts/"
+          android:scheme="https" />
+      </intent-filter>
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="www.normco.re"
+          android:pathPrefix="/zh-hans/posts/"
+          android:scheme="https" />
+      </intent-filter>
+      <intent-filter android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="www.normco.re"
+          android:pathPrefix="/zh-hant/posts/"
           android:scheme="https" />
       </intent-filter>
     </activity>
