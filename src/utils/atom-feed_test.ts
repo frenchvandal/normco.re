@@ -31,11 +31,11 @@ describe("absolutizeHtmlUrls()", () => {
 
 describe("generateAtomXml()", () => {
   const baseFeed: AtomFeedData = {
-    id: "https://normco.re/feed.atom",
+    id: "https://normco.re/atom.xml",
     title: "normco.re",
     subtitle: "Feed subtitle",
     siteUrl: "https://normco.re/",
-    feedUrl: "https://normco.re/feed.atom",
+    feedUrl: "https://normco.re/atom.xml",
     language: "en",
     complete: true,
     updated: new Date("2026-03-11T00:00:00Z"),
@@ -66,7 +66,7 @@ describe("generateAtomXml()", () => {
       xml,
       '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:fh="http://purl.org/syndication/history/1.0" xml:lang="en">',
     );
-    assertStringIncludes(xml, "<id>https://normco.re/feed.atom</id>");
+    assertStringIncludes(xml, "<id>https://normco.re/atom.xml</id>");
     assertStringIncludes(xml, "<title>normco.re</title>");
     assertStringIncludes(xml, "<fh:complete/>");
     assertStringIncludes(xml, "<name>Phiphi</name>");

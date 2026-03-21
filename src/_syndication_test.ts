@@ -40,8 +40,8 @@ describe("syndication.page.tsx", () => {
   it("renders all machine-readable endpoint cards", () => {
     const html = syndicationPage(MOCK_DATA);
 
-    assertStringIncludes(html, 'href="/feed.rss"');
-    assertStringIncludes(html, 'href="/feed.atom"');
+    assertStringIncludes(html, 'href="/rss.xml"');
+    assertStringIncludes(html, 'href="/atom.xml"');
     assertStringIncludes(html, 'href="/feed.json"');
     assertStringIncludes(html, 'href="/sitemap.xml"');
     assertStringIncludes(
@@ -93,8 +93,8 @@ describe("syndication.page.tsx", () => {
     );
     assertStringIncludes(html, 'aria-label="Fil d’Ariane Syndication"');
     assertStringIncludes(html, 'href="/fr/" class="cds--breadcrumb-link"');
-    assertStringIncludes(html, 'href="/fr/feed.rss"');
-    assertStringIncludes(html, 'href="/fr/feed.atom"');
+    assertStringIncludes(html, 'href="/fr/rss.xml"');
+    assertStringIncludes(html, 'href="/fr/atom.xml"');
     assertStringIncludes(html, 'href="/fr/feed.json"');
     assertStringIncludes(html, 'href="/sitemap.xml"');
     assertStringIncludes(html, 'data-copy-default-label="Copier"');

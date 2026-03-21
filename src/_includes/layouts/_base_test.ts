@@ -165,8 +165,8 @@ describe("base.tsx layout", () => {
         html,
         '<script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");',
       );
-      assertStringIncludes(html, 'href="/feed.rss"');
-      assertStringIncludes(html, 'href="/feed.atom"');
+      assertStringIncludes(html, 'href="/rss.xml"');
+      assertStringIncludes(html, 'href="/atom.xml"');
       assertStringIncludes(html, 'href="/feed.json"');
       assertStringIncludes(html, 'type="text/mf2+html"');
       assertStringIncludes(html, 'href="/posts/"');

@@ -28,7 +28,7 @@ describe("_config/feeds.ts", () => {
       FEED_VARIANTS.map((variant) => createFeedOptions(variant)),
       [
         {
-          output: ["/feed.rss", "/feed.json"],
+          output: ["/rss.xml", "/feed.json"],
           query: "type=post lang=en",
           sort: FEED_SORT,
           limit: FEED_LIMIT,
@@ -42,7 +42,7 @@ describe("_config/feeds.ts", () => {
           items: FEED_ITEMS,
         },
         {
-          output: ["/fr/feed.rss", "/fr/feed.json"],
+          output: ["/fr/rss.xml", "/fr/feed.json"],
           query: "type=post lang=fr",
           sort: FEED_SORT,
           limit: FEED_LIMIT,
@@ -56,7 +56,7 @@ describe("_config/feeds.ts", () => {
           items: FEED_ITEMS,
         },
         {
-          output: ["/zh-hans/feed.rss", "/zh-hans/feed.json"],
+          output: ["/zh-hans/rss.xml", "/zh-hans/feed.json"],
           query: "type=post lang=zh-hans",
           sort: FEED_SORT,
           limit: FEED_LIMIT,
@@ -70,7 +70,7 @@ describe("_config/feeds.ts", () => {
           items: FEED_ITEMS,
         },
         {
-          output: ["/zh-hant/feed.rss", "/zh-hant/feed.json"],
+          output: ["/zh-hant/rss.xml", "/zh-hant/feed.json"],
           query: "type=post lang=zh-hant",
           sort: FEED_SORT,
           limit: FEED_LIMIT,
@@ -128,7 +128,7 @@ describe("_config/feeds.ts", () => {
     assertStringIncludes(xml, "<name>Phiphi</name>");
     assertStringIncludes(
       xml,
-      '<link rel="self" type="application/atom+xml" href="https://normco.re/feed.atom"/>',
+      '<link rel="self" type="application/atom+xml" href="https://normco.re/atom.xml"/>',
     );
     assertStringIncludes(
       xml,

@@ -142,10 +142,10 @@ than depending on a client-side enhancement.
 
 The site emits localized RSS, Atom, JSON Feed, and HTML Microformats2 feeds:
 
-- `/feed.rss`, `/feed.atom`, and `/feed.json`
-- `/fr/feed.rss`, `/fr/feed.atom`, and `/fr/feed.json`
-- `/zh-hans/feed.rss`, `/zh-hans/feed.atom`, and `/zh-hans/feed.json`
-- `/zh-hant/feed.rss`, `/zh-hant/feed.atom`, and `/zh-hant/feed.json`
+- `/rss.xml`, `/atom.xml`, and `/feed.json`
+- `/fr/rss.xml`, `/fr/atom.xml`, and `/fr/feed.json`
+- `/zh-hans/rss.xml`, `/zh-hans/atom.xml`, and `/zh-hans/feed.json`
+- `/zh-hant/rss.xml`, `/zh-hant/atom.xml`, and `/zh-hant/feed.json`
 - `/posts/`, `/fr/posts/`, `/zh-hans/posts/`, and `/zh-hant/posts/` as the
   canonical localized `h-feed` archive routes
 - `/tags/<slug>/` and localized tag routes as secondary `h-feed` listings
