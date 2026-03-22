@@ -132,7 +132,7 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, 'href="/posts/"');
     });
 
-    it("surfaces the newest post as a featured card", async () => {
+    it("surfaces the newest post as the editorial featured card", async () => {
       const posts = [
         makePost(410, {
           title: "Featured story",
@@ -142,9 +142,26 @@ describe("index.page.tsx", () => {
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
 
-      assertStringIncludes(html, 'class="home-featured"');
+      assertStringIncludes(
+        html,
+        'class="home-featured home-featured--editorial"',
+      );
       assertStringIncludes(html, "Featured story");
       assertStringIncludes(html, "Secondary story");
+    });
+
+    it("uses the editorial desktop layout hooks for recent posts", async () => {
+      const posts = [
+        makePost(413, { title: "Top story" }),
+        makePost(414, { title: "Follow-up story" }),
+      ];
+      const html = await indexPage(makeData(posts), MOCK_HELPERS);
+
+      assertStringIncludes(
+        html,
+        'class="home-recent-layout home-recent-layout--editorial"',
+      );
+      assertStringIncludes(html, 'class="home-posts home-posts--grid"');
     });
 
     it("renders each post via PostCard", async () => {

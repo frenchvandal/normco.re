@@ -216,7 +216,6 @@ export default async (
         : {}),
     });
   })();
-
   const postItems = await Promise.all(secondaryPosts.map(async (post) => {
     const postDate = resolvePostDate(post.date);
     const minutes = resolveReadingMinutes(post.readingInfo);
@@ -263,15 +262,15 @@ export default async (
   </div>
   ${
           recent.length > 0
-            ? `<div class="home-recent-layout">
+            ? `<div class="home-recent-layout home-recent-layout--editorial">
     ${
               featuredCard.length > 0
-                ? `<div class="home-featured">${featuredCard}</div>`
+                ? `<div class="home-featured home-featured--editorial">${featuredCard}</div>`
                 : ""
             }
     ${
               secondaryPosts.length > 0
-                ? `<ul class="home-posts">
+                ? `<ul class="home-posts home-posts--grid">
       ${postItems}
     </ul>`
                 : ""

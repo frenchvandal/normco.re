@@ -86,50 +86,39 @@
     padding: 0;
   }
 
+  .home-posts-item {
+    min-inline-size: 0;
+  }
+
   .home-posts-item--empty .blankslate {
     margin-block: 0;
   }
 
-  .home-featured .post-card {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-s);
+  .home-featured--editorial .post-card {
+    grid-template-columns: 9ch minmax(0, 1fr);
+    gap: var(--space-m);
     padding: var(--cds-spacing-06);
     background: var(--site-surface-panel);
     border: 1px solid var(--cds-border-subtle);
     @include editorial.accent-rail;
   }
 
-  .home-featured .post-card-date {
-    padding-block-start: 0;
+  .home-featured--editorial .post-card-title {
+    font: var(--cds-productive-heading-04);
   }
 
-  .home-featured .post-card-title {
-    font: var(--cds-expressive-heading-04);
+  .home-featured--editorial .post-card-summary {
+    max-inline-size: 56ch;
   }
 
-  .home-featured .post-card-summary {
-    grid-column: auto;
-    max-inline-size: 46ch;
+  .home-posts--grid {
+    gap: var(--space-m);
   }
 
-  .home-posts .post-card {
-    border: 0;
-    border-block-start: 1px solid var(--cds-border-subtle);
-    background: transparent;
-    padding-block: var(--cds-spacing-05);
-    padding-inline: 0;
-  }
-
-  .home-posts .post-card:hover {
-    background: transparent;
-    border-color: transparent;
-    border-block-start-color: var(--cds-border-strong);
-  }
-
-  .home-posts .post-card:focus-within {
-    background: transparent;
-    border-color: transparent;
-    border-block-start-color: var(--cds-focus);
+  .home-posts--grid .post-card {
+    block-size: 100%;
+    background: var(--site-surface-panel);
+    border: 1px solid var(--cds-border-subtle);
   }
 
   @include breakpoint-up(lg) {
@@ -137,8 +126,12 @@
       grid-template-columns: minmax(0, 1fr) minmax(16rem, 18rem);
     }
 
-    .home-recent-layout {
-      grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.9fr);
+    .home-recent-layout--editorial {
+      gap: var(--cds-spacing-06);
+    }
+
+    .home-posts--grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: start;
     }
   }
