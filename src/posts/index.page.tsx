@@ -389,6 +389,7 @@ export default async (
   <button
     type="button"
     class="cds--content-switcher-btn cds--content-switcher--selected"
+    id="archive-cards-tab"
     role="tab"
     data-content-switcher-trigger=""
     aria-selected="true"
@@ -401,6 +402,7 @@ export default async (
   <button
     type="button"
     class="cds--content-switcher-btn"
+    id="archive-list-tab"
     role="tab"
     data-content-switcher-trigger=""
     aria-selected="false"
@@ -430,10 +432,23 @@ export default async (
     ? `<section class="archive-activity" aria-label="${
       escapeHtml(translations.archive.activityAriaLabel)
     }">
-  <div id="archive-cards-panel" class="archive-activity-main" data-content-switcher-panel="">
+  <div
+    id="archive-cards-panel"
+    class="archive-activity-main"
+    role="tabpanel"
+    aria-labelledby="archive-cards-tab"
+    data-content-switcher-panel=""
+  >
     ${cardSections.join("\n")}
   </div>
-  <div id="archive-list-panel" class="archive-activity-main" data-content-switcher-panel="" hidden>
+  <div
+    id="archive-list-panel"
+    class="archive-activity-main"
+    role="tabpanel"
+    aria-labelledby="archive-list-tab"
+    data-content-switcher-panel=""
+    hidden
+  >
     ${listSections.join("\n")}
   </div>
 </section>`

@@ -194,7 +194,7 @@ export default async (
   }).join("\n");
 
   const [featuredPost, ...secondaryPosts] = recent;
-  const featuredCard = featuredPost === undefined ? "" : (() => {
+  const featuredCard = featuredPost === undefined ? "" : await (() => {
     const postDate = resolvePostDate(featuredPost.date);
     const minutes = resolveReadingMinutes(featuredPost.readingInfo);
 

@@ -422,7 +422,7 @@ export default (data: Lume.Data): string => {
         <p class="syndication-intro">${escapeHtml(translations.feeds.intro)}</p>
       </div>
       <div class="syndication-pagehead-meta">
-        <section class="syndication-overview-card">
+        <div class="syndication-overview-card">
           <div class="syndication-overview-copy">
             <p class="syndication-overview-kicker">${
     escapeHtml(translations.feeds.overviewCalloutEyebrow)
@@ -439,7 +439,7 @@ export default (data: Lume.Data): string => {
               ${SYNDICATION_PICTOGRAM}
             </div>
           </div>
-        </section>
+        </div>
       </div>
     </div>
   </section>
@@ -456,6 +456,7 @@ export default (data: Lume.Data): string => {
             <button
               type="button"
               class="cds--content-switcher-btn cds--content-switcher--selected"
+              id="syndication-endpoints-cards-tab"
               role="tab"
               data-content-switcher-trigger=""
               aria-selected="true"
@@ -469,6 +470,7 @@ export default (data: Lume.Data): string => {
             <button
               type="button"
               class="cds--content-switcher-btn"
+              id="syndication-endpoints-list-tab"
               role="tab"
               data-content-switcher-trigger=""
               aria-selected="false"
@@ -482,12 +484,23 @@ export default (data: Lume.Data): string => {
             </button>
           </div>
         </div>
-        <div id="syndication-endpoints-cards" data-content-switcher-panel="">
+        <div
+          id="syndication-endpoints-cards"
+          role="tabpanel"
+          aria-labelledby="syndication-endpoints-cards-tab"
+          data-content-switcher-panel=""
+        >
           <div class="feeds-grid">
             ${cardsHtml}
           </div>
         </div>
-        <div id="syndication-endpoints-list" data-content-switcher-panel="" hidden>
+        <div
+          id="syndication-endpoints-list"
+          role="tabpanel"
+          aria-labelledby="syndication-endpoints-list-tab"
+          data-content-switcher-panel=""
+          hidden
+        >
           <div
             class="cds--structured-list cds--structured-list--condensed feeds-structured-list"
           >

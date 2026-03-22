@@ -411,7 +411,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           <div class="post-content e-content">
             {renderedChildren}
           </div>
-          <section class="post-details-section">
+          <div class="post-details-section">
             <ul
               class="cds--accordion site-accordion post-details-accordion"
               data-site-accordion=""
@@ -451,7 +451,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                 </div>
               </li>
             </ul>
-          </section>
+          </div>
           {includeCodeCopyScript && (
             <script src="/scripts/post-code-copy.js" defer></script>
           )}
