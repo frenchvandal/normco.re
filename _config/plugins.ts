@@ -94,9 +94,10 @@ export function registerPlugins(
     }),
   );
 
-  if (options.isServeTask) {
-    site.use(sourceMaps());
-  }
+  // Keep external source maps in both serve and production builds. The
+  // post-build asset fingerprinting step already renames `.map` files and
+  // rewrites `sourceMappingURL` comments to the hashed filenames.
+  site.use(sourceMaps());
 
   // --- Template rendering ---
 
