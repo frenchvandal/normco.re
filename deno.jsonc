@@ -1,11 +1,8 @@
-// Deno workspace configuration for normco.re
-// Dependencies are centralised in import_map.jsonc.
 {
-  "importMap": "./import_map.jsonc",
+  // Keep the import map as strict JSON for Deno/tooling compatibility.
+  "importMap": "./import_map.json",
 
-  // ── Tasks ─────────────────────────────────────────────────────────
   "tasks": {
-    // Core build & dev
     "lume": {
       "description": "Run Lume command",
       "command": "deno run -A lume/cli.ts"
@@ -18,14 +15,10 @@
       "description": "Run and serve the site for development",
       "command": "LUME_SERVE=1 deno task lume -s"
     },
-
-    // Dependency management
     "update-deps": {
       "description": "Update declared Deno dependencies and regenerate lock file",
       "command": "deno outdated --update --latest"
     },
-
-    // Quality gates
     "check": {
       "description": "Type-check the entire project",
       "command": "deno check _cms.ts _cms_test.ts _config.ts _config/**/*.ts contracts/**/*.ts plugins/**/*.ts scripts/**/*.ts src/**/*.ts src/**/*.tsx test/**/*.ts"
@@ -72,8 +65,6 @@
       "description": "Run build + policy-based payload report + guard in one PR/CI flow (`deno task payload:ci --baseline=/path/to/baseline.json`)",
       "command": "deno task build && deno task payload:policy"
     },
-
-    // Commit & contract validation
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"
@@ -82,30 +73,22 @@
       "description": "Validate generated JSON feeds and any optional content-contract output against schemas",
       "command": "deno run --allow-read contracts/validate.ts"
     },
-
-    // Android companion app
     "android:sync-contract-assets": {
       "description": "Build the site contracts and mirror app-manifest/posts-index outputs into the Android bootstrap assets",
       "command": "deno task build && deno run --allow-read --allow-write scripts/sync-android-contract-assets.ts"
     },
-
-    // Git hooks
     "lefthook:install": {
       "description": "Install Lefthook git hooks non-interactively via deno x (no global install or Node.js required)",
       "command": "DENO_NO_PROMPT=1 deno x lefthook install"
     }
   },
 
-  // ── TypeScript compiler ───────────────────────────────────────────
   "compilerOptions": {
-    // Lume global types (Site, Page, helpers, etc.)
     "types": [
       "lume/types.ts"
     ],
-    // SSX-based JSX transform used by Lume 3
     "jsx": "react-jsx",
     "jsxImportSource": "lume",
-    // Strict checks beyond the default
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "verbatimModuleSyntax": true,
@@ -114,18 +97,15 @@
     "noImplicitReturns": true
   },
 
-  // ── Unstable Deno features ────────────────────────────────────────
-  // raw-imports: allows importing non-TS assets as raw text
+  // Needed for importing non-TS assets as raw text.
   "unstable": [
     "raw-imports"
   ],
 
-  // Use auto node_modules for npm compatibility (esbuild, shiki, etc.)
+  // Required for npm packages like esbuild and shiki.
   "nodeModulesDir": "auto",
 
-  // ── Test / fmt / lint configuration ───────────────────────────────
   "test": {
-    // Markdown files contain JSDoc doc-test fences but are not test modules
     "exclude": [
       "**/*.md"
     ]
@@ -140,15 +120,14 @@
       "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/lint.ts"
     ],
     "rules": {
-      // Disabled because the import map uses canonical @std/ prefixes
+      // The repo uses canonical @std/ import-map aliases.
       "exclude": [
         "no-import-prefix"
       ]
     }
   },
 
-  // ── npm lifecycle scripts ─────────────────────────────────────────
-  // Packages that need post-install scripts to build native binaries
+  // Packages that need install scripts for native binaries.
   "allowScripts": {
     "allow": [
       "npm:@parcel/watcher@2.5.6",
