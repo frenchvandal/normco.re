@@ -116,7 +116,7 @@ export function registerProcessors(site: Site): void {
     ) => [`${variant.pathPrefix}/feed.json`, variant.language]),
   );
 
-  // Lume's feed plugin still emits JSON Feed 1.0-shaped output, so normalize
+  // Lume’s feed plugin still emits JSON Feed 1.0-shaped output, so normalize
   // generated files after the plugin runs.
   site.process([".json"], (pages: Page[]) => {
     for (const page of pages) {

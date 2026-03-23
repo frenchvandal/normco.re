@@ -1,7 +1,7 @@
 import { slugify } from "../utils/slugify.ts";
 import { resolveCurrentDateIso } from "../utils/current-date.ts";
 
-// Lume archetype for the repo's multilingual post model:
+// Lume archetype for the repo’s multilingual post model:
 // `src/posts/<slug>/_data.yml` plus one Markdown body per supported language.
 function today(): string {
   return resolveCurrentDateIso();

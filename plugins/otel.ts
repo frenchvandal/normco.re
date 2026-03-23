@@ -51,7 +51,7 @@ export interface Options {
 
   /**
    * Whether to record custom error counters and build metrics in addition to
-   * Deno's built-in HTTP metrics (request duration, active requests, body
+   * Deno’s built-in HTTP metrics (request duration, active requests, body
    * sizes).
    */
   recordMetrics: boolean;
