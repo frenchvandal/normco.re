@@ -4,11 +4,10 @@ import type { jsx } from "lume/jsx-runtime";
 
 import { getSiteTranslations, type SiteLanguage } from "../utils/i18n.ts";
 import { formatCopyrightYears } from "../utils/copyright.ts";
-import type { OcticonName } from "../utils/primer-icons.ts";
-import SiteIcon from "./SiteIcon.tsx";
 
 const repositoryUrl = "https://github.com/frenchvandal/normco.re" as const;
 type SsxElement = ReturnType<typeof jsx>;
+type FooterBrandIcon = "github" | "rss";
 type FooterProps = Readonly<{
   author: string;
   language: SiteLanguage;
@@ -21,7 +20,7 @@ type FooterLinkProps = Readonly<{
   href: string;
   label: string;
   ariaLabel: string;
-  icon: OcticonName;
+  icon: FooterBrandIcon;
   external?: boolean;
 }>;
 
@@ -35,12 +34,11 @@ function renderFooterLink(
       aria-label={ariaLabel}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
-      <SiteIcon
-        name={icon}
-        className="site-footer-icon"
-        width={16}
-        height={16}
-      />
+      <span
+        class={`site-footer-icon site-footer-icon--brand site-footer-icon--${icon}`}
+        aria-hidden="true"
+      >
+      </span>
       <span class="site-footer-link-label">{label}</span>
     </a>
   );
@@ -79,7 +77,7 @@ export default (
             href: repositoryUrl,
             label: "GitHub",
             ariaLabel: translations.site.repositoryLinkAriaLabel,
-            icon: "mark-github",
+            icon: "github",
             external: true,
           })}
           {renderFooterLink({

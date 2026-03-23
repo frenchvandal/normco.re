@@ -26,6 +26,8 @@ import {
 } from "../../utils/feed-paths.ts";
 import { THEME_BOOTSTRAP_SCRIPT } from "../../utils/theme-bootstrap.ts";
 
+const CANONICAL_BRAND_ICON_NAMES = ["github", "rss"] as const;
+
 /** `<!doctype html>` prepended to the document before the `<html>` root. */
 const DOCTYPE = { __html: "<!doctype html>\n" } as const;
 // Keep the theme bootstrap inline to avoid an extra render-blocking fetch on
@@ -217,6 +219,12 @@ export default (
   const Header = resolveComponent<HeaderProps>(comp, "Header");
   const Footer = resolveComponent<FooterProps>(comp, "Footer");
   const iconResolver = resolveIconResolver(_helpers);
+
+  // Simple Icons via the Lume plugin are the canonical source for brand/social
+  // logos site-wide. LAO_YANG remains a hard-coded SVG in `about.pictogram.ts`.
+  for (const iconName of CANONICAL_BRAND_ICON_NAMES) {
+    iconResolver?.(iconName, "simpleicons");
+  }
 
   return (
     <>
