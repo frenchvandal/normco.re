@@ -1,113 +1,34 @@
 import { renderComponent } from "lume/jsx-runtime";
 
-import HEntryShell from "../../mf2/components/HEntryShell.tsx";
 import HFeedShell from "../../mf2/components/HFeedShell.tsx";
 import { getAuthorIdentity } from "../../mf2/extractors.ts";
 import {
   formatPostCount,
   formatReadingTime,
-  getLocalizedUrl,
-  getSiteTranslations,
+  formatShortDate,
+  getPageContext,
   resolveSiteLanguage,
 } from "../../utils/i18n.ts";
 import {
   resolvePostDate,
   resolveReadingMinutes,
 } from "../../posts/post-metadata.ts";
+import { formatRfc3339Instant } from "../../utils/date-time.ts";
 import { escapeHtml } from "../../utils/html.ts";
+import {
+  resolveDateHelper,
+  resolvePostCardRenderer,
+} from "../../utils/lume-helpers.ts";
 import { getTagColor } from "../../utils/tags.ts";
+import { isLumeData, resolveOptionalString } from "../../utils/type-guards.ts";
 
 export const layout = "layouts/base.tsx";
-
-type Comp = {
-  PostCard: (props: {
-    readonly title: string;
-    readonly url: string;
-    readonly dateStr: string;
-    readonly dateIso: string;
-    readonly readingLabel?: string;
-    readonly summary?: string;
-    readonly authorName?: string;
-    readonly authorUrl?: string;
-  }) => string | Promise<string>;
-};
-
-type H = {
-  date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
-};
 
 type TagPageData = Lume.Data & {
   tagName?: string;
   posts?: unknown;
   lang?: string;
 };
-
-function isLumeData(value: unknown): value is Lume.Data {
-  return typeof value === "object" && value !== null;
-}
-
-function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
-  if (typeof value === "object" && value !== null) {
-    const PostCard = Reflect.get(value, "PostCard");
-
-    if (typeof PostCard === "function") {
-      return (props) => {
-        const rendered = Reflect.apply(PostCard, value, [props]);
-        return rendered instanceof Promise ? rendered : String(rendered);
-      };
-    }
-  }
-
-  return (
-    {
-      title,
-      url,
-      dateStr,
-      dateIso,
-      readingLabel,
-      summary,
-      authorName,
-      authorUrl,
-    },
-  ) =>
-    renderComponent(
-      HEntryShell({
-        className: "cds--tile post-card h-entry",
-        ...(summary !== undefined ? { summary } : {}),
-        ...(authorName && authorUrl
-          ? { author: { name: authorName, url: authorUrl } }
-          : {}),
-        children: {
-          __html: `<time class="post-card-date dt-published" datetime="${
-            escapeHtml(dateIso)
-          }">${
-            escapeHtml(dateStr)
-          }</time><h3 class="p-name"><a class="u-url u-uid" href="${
-            escapeHtml(url)
-          }">${escapeHtml(title)}</a></h3>${
-            readingLabel
-              ? `<span class="post-card-reading-time">${
-                escapeHtml(readingLabel)
-              }</span>`
-              : ""
-          }`,
-        },
-      }),
-    );
-}
-
-function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
-  const date = Reflect.get(helpers, "date");
-
-  if (typeof date !== "function") {
-    return () => undefined;
-  }
-
-  return (value, pattern, lang) => {
-    const formatted = Reflect.apply(date, helpers, [value, pattern, lang]);
-    return typeof formatted === "string" ? formatted : undefined;
-  };
-}
 
 function resolveTagPosts(value: unknown): Lume.Data[] {
   return Array.isArray(value) ? value.filter(isLumeData) : [];
@@ -120,34 +41,24 @@ export default async (
   const PostCard = resolvePostCardRenderer(data.comp);
   const dateFormat = resolveDateHelper(helpers);
   const language = resolveSiteLanguage(data.lang);
-  const translations = getSiteTranslations(language);
-  const homeUrl = getLocalizedUrl("/", language);
-  const archiveUrl = getLocalizedUrl("/posts/", language);
-  const tagName = typeof data.tagName === "string" ? data.tagName : "";
+  const { archiveUrl, homeUrl, translations } = getPageContext(language);
+  const tagName = resolveOptionalString(data.tagName) ?? "";
   const posts = resolveTagPosts(data.posts);
   const postsCountLabel = formatPostCount(posts.length, language);
-  const currentUrl = typeof data.url === "string" && data.url.length > 0
-    ? data.url
-    : archiveUrl;
-  const shortDatePattern = language === "fr"
-    ? "d MMM"
-    : language === "zhHans" || language === "zhHant"
-    ? "M月d日"
-    : "SHORT";
+  const currentUrl = resolveOptionalString(data.url) ?? archiveUrl;
   const author = getAuthorIdentity(language, data.author);
 
   const items = await Promise.all(posts.map(async (post) => {
     const postDate = resolvePostDate(post.date);
     const minutes = resolveReadingMinutes(post.readingInfo);
+    const summary = resolveOptionalString(post.description);
     const card = await PostCard({
-      title: typeof post.title === "string" ? post.title : "",
-      url: typeof post.url === "string" ? post.url : "",
-      dateStr: dateFormat(postDate, shortDatePattern, language) ??
-        postDate.toISOString(),
-      dateIso: dateFormat(postDate, "ATOM", language) ?? postDate.toISOString(),
-      ...(typeof post.description === "string" && post.description.length > 0
-        ? { summary: post.description }
-        : {}),
+      title: resolveOptionalString(post.title) ?? "",
+      url: resolveOptionalString(post.url) ?? "",
+      dateStr: formatShortDate(postDate, language),
+      dateIso: dateFormat(postDate, "ATOM", language) ??
+        formatRfc3339Instant(postDate),
+      ...(summary !== undefined ? { summary } : {}),
       authorName: author.name,
       authorUrl: author.url,
       ...(minutes !== undefined

@@ -1,11 +1,7 @@
 /** 404 error page. */
 
 import StatePanel from "./_components/StatePanel.tsx";
-import {
-  getLocalizedUrl,
-  getSiteTranslations,
-  resolveSiteLanguage,
-} from "./utils/i18n.ts";
+import { getPageContext, resolveSiteLanguage } from "./utils/i18n.ts";
 
 /** Page URL. */
 export const url = "/404.html";
@@ -41,14 +37,14 @@ export const unlisted = true;
 /** Renders the 404 page body. */
 export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
   const language = resolveSiteLanguage(data.lang);
-  const translations = getSiteTranslations(language);
+  const { homeUrl, translations } = getPageContext(language);
 
   return `<div class="site-page-shell site-page-shell--editorial state-page state-page--404">
   ${
     StatePanel({
       title: translations.notFound.heading,
       message: translations.notFound.message,
-      actionHref: getLocalizedUrl("/", language),
+      actionHref: homeUrl,
       actionLabel: translations.notFound.backToHome,
       eyebrow: "404",
       eyebrowAriaHidden: true,

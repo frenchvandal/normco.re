@@ -1,6 +1,7 @@
 import { parseArgs } from "@std/cli";
 import { ensureDir, walk } from "@std/fs";
 import { dirname, extname, join, normalize } from "@std/path";
+import { fileExists } from "./_shared.ts";
 
 const HTML_EXTENSIONS = new Set([".html", ".xml", ".xsl"]);
 const SKIPPED_PREFIXES = [
@@ -78,19 +79,6 @@ function candidateOutputPaths(rootDir: string, target: string): string[] {
     `${directPath}.html`,
     join(rootDir, trimmedTarget, "index.html"),
   ];
-}
-
-async function fileExists(filePath: string): Promise<boolean> {
-  try {
-    await Deno.stat(filePath);
-    return true;
-  } catch (error) {
-    if (error instanceof Deno.errors.NotFound) {
-      return false;
-    }
-
-    throw error;
-  }
 }
 
 function resolveLocalTarget(pagePath: string, rawTarget: string): string {

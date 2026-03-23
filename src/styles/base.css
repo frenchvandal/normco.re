@@ -142,32 +142,41 @@
     background: transparent;
   }
 
-  .shiki,
-  .shiki span {
-    color: var(--shiki-light);
-    background-color: var(--shiki-light-bg);
-    font-style: var(--shiki-light-font-style, inherit);
-    font-weight: var(--shiki-light-font-weight, inherit);
-    text-decoration: var(--shiki-light-text-decoration, inherit);
+  .shiki {
+    --site-shiki-color: var(--shiki-light);
+    --site-shiki-background: var(--shiki-light-bg);
+    --site-shiki-font-style: var(--shiki-light-font-style, inherit);
+    --site-shiki-font-weight: var(--shiki-light-font-weight, inherit);
+    --site-shiki-text-decoration: var(--shiki-light-text-decoration, inherit);
   }
 
-  :root[data-color-mode="dark"] .shiki,
-  :root[data-color-mode="dark"] .shiki span {
-    color: var(--shiki-dark);
-    background-color: var(--shiki-dark-bg);
-    font-style: var(--shiki-dark-font-style, inherit);
-    font-weight: var(--shiki-dark-font-weight, inherit);
-    text-decoration: var(--shiki-dark-text-decoration, inherit);
+  .shiki,
+  .shiki span {
+    color: var(--site-shiki-color);
+    background-color: var(--site-shiki-background);
+  }
+
+  .shiki span {
+    font-style: var(--site-shiki-font-style);
+    font-weight: var(--site-shiki-font-weight);
+    text-decoration: var(--site-shiki-text-decoration);
+  }
+
+  :root[data-color-mode="dark"] .shiki {
+    --site-shiki-color: var(--shiki-dark);
+    --site-shiki-background: var(--shiki-dark-bg);
+    --site-shiki-font-style: var(--shiki-dark-font-style, inherit);
+    --site-shiki-font-weight: var(--shiki-dark-font-weight, inherit);
+    --site-shiki-text-decoration: var(--shiki-dark-text-decoration, inherit);
   }
 
   @media (prefers-color-scheme: dark) {
-    :root:not([data-color-mode="light"]) .shiki,
-    :root:not([data-color-mode="light"]) .shiki span {
-      color: var(--shiki-dark);
-      background-color: var(--shiki-dark-bg);
-      font-style: var(--shiki-dark-font-style, inherit);
-      font-weight: var(--shiki-dark-font-weight, inherit);
-      text-decoration: var(--shiki-dark-text-decoration, inherit);
+    :root:not([data-color-mode="light"]) .shiki {
+      --site-shiki-color: var(--shiki-dark);
+      --site-shiki-background: var(--shiki-dark-bg);
+      --site-shiki-font-style: var(--shiki-dark-font-style, inherit);
+      --site-shiki-font-weight: var(--shiki-dark-font-weight, inherit);
+      --site-shiki-text-decoration: var(--shiki-dark-text-decoration, inherit);
     }
   }
 

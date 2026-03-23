@@ -8,18 +8,26 @@ import HFeedShell from "./mf2/components/HFeedShell.tsx";
 import { getAuthorIdentity } from "./mf2/extractors.ts";
 import {
   formatReadingTime,
+  formatShortDate,
   getLanguageDataCode,
-  getLocalizedUrl,
-  getSiteTranslations,
+  getPageContext,
   resolveSiteLanguage,
   type SiteLanguage,
+  type SiteTranslations,
 } from "./utils/i18n.ts";
 import {
   resolvePostDate,
   resolveReadingMinutes,
 } from "./posts/post-metadata.ts";
+import { formatRfc3339Instant } from "./utils/date-time.ts";
 import { escapeHtml } from "./utils/html.ts";
+import {
+  type DateHelper,
+  resolveDateHelper,
+  resolvePostCardRenderer,
+} from "./utils/lume-helpers.ts";
 import { getTagUrl } from "./utils/tags.ts";
+import { isLumeData, resolveOptionalString } from "./utils/type-guards.ts";
 
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
@@ -27,28 +35,6 @@ export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/";
 /** Page title - left undefined so the base layout emits the bare site name. */
 export const title: string | undefined = undefined;
-
-/** Typed component functions used on this page. */
-type PostCardProps = Readonly<{
-  title: string;
-  url: string;
-  dateStr: string;
-  dateIso: string;
-  className?: string;
-  readingLabel?: string;
-  summary?: string;
-  showSummary?: boolean;
-  authorName?: string;
-  authorUrl?: string;
-}>;
-type Comp = {
-  PostCard: (props: PostCardProps) => string | Promise<string>;
-};
-
-/** Typed helpers used in this page. */
-type H = {
-  date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
-};
 
 type AuthorIdentity = ReturnType<typeof getAuthorIdentity>;
 type StoryData = {
@@ -60,89 +46,6 @@ type StoryData = {
   readonly dateLabel: string;
   readonly readingLabel?: string;
 };
-
-function isLumeData(value: unknown): value is Lume.Data {
-  return typeof value === "object" && value !== null;
-}
-
-function renderFallbackPostCard(
-  {
-    title,
-    url,
-    dateStr,
-    dateIso,
-    className,
-    readingLabel,
-    summary,
-    showSummary,
-    authorName,
-    authorUrl,
-  }: PostCardProps,
-): Promise<string> {
-  return Promise.resolve(
-    renderComponent(
-      HEntryShell({
-        className: [
-          "cds--tile",
-          "post-card",
-          "h-entry",
-          className,
-        ].filter(Boolean).join(" "),
-        ...(summary !== undefined ? { summary } : {}),
-        ...(authorName && authorUrl
-          ? { author: { name: authorName, url: authorUrl } }
-          : {}),
-        children: {
-          __html: `<time class="post-card-date dt-published" datetime="${
-            escapeHtml(dateIso)
-          }">${
-            escapeHtml(dateStr)
-          }</time><h3 class="post-card-title p-name"><a class="post-card-link u-url u-uid" href="${
-            escapeHtml(url)
-          }">${escapeHtml(title)}</a></h3>${
-            showSummary && summary
-              ? `<p class="post-card-summary">${escapeHtml(summary)}</p>`
-              : ""
-          }${
-            readingLabel
-              ? `<span class="post-card-reading-time">${
-                escapeHtml(readingLabel)
-              }</span>`
-              : ""
-          }`,
-        },
-      }),
-    ),
-  );
-}
-
-function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
-  if (typeof value === "object" && value !== null) {
-    const PostCard = Reflect.get(value, "PostCard");
-
-    if (typeof PostCard === "function") {
-      return (props) => {
-        const rendered = Reflect.apply(PostCard, value, [props]);
-        return rendered instanceof Promise ? rendered : String(rendered);
-      };
-    }
-  }
-
-  return renderFallbackPostCard;
-}
-
-function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
-  const date = Reflect.get(helpers, "date");
-
-  if (typeof date !== "function") {
-    return () => undefined;
-  }
-
-  return (value, pattern, lang) => {
-    const formatted = Reflect.apply(date, helpers, [value, pattern, lang]);
-    return typeof formatted === "string" ? formatted : undefined;
-  };
-}
 
 function resolveRecentPosts(
   search: unknown,
@@ -180,27 +83,10 @@ function resolveFeaturedTags(posts: readonly Lume.Data[]): string[] {
   return distinct(tags).slice(0, 4);
 }
 
-function resolveOptionalString(value: unknown): string | undefined {
-  return typeof value === "string" && value.length > 0 ? value : undefined;
-}
-
-function resolveShortDatePattern(language: SiteLanguage): string {
-  switch (language) {
-    case "fr":
-      return "d MMM";
-    case "zhHans":
-    case "zhHant":
-      return "M 月 d 日";
-    default:
-      return "SHORT";
-  }
-}
-
 function resolveStoryData(
   post: Lume.Data,
   language: SiteLanguage,
-  shortDatePattern: string,
-  dateFormat: H["date"],
+  dateFormat: DateHelper,
 ): StoryData {
   const postDate = resolvePostDate(post.date);
   const minutes = resolveReadingMinutes(post.readingInfo);
@@ -210,9 +96,9 @@ function resolveStoryData(
     title: resolveOptionalString(post.title) ?? "",
     url: resolveOptionalString(post.url) ?? "",
     tags: resolvePostTags(post.tags),
-    dateIso: dateFormat(postDate, "ATOM", language) ?? postDate.toISOString(),
-    dateLabel: dateFormat(postDate, shortDatePattern, language) ??
-      postDate.toISOString(),
+    dateIso: dateFormat(postDate, "ATOM", language) ??
+      formatRfc3339Instant(postDate),
+    dateLabel: formatShortDate(postDate, language),
     ...(summary !== undefined ? { summary } : {}),
     ...(minutes !== undefined
       ? { readingLabel: formatReadingTime(minutes, language) }
@@ -314,7 +200,7 @@ function renderFeaturedStory(
 
 function renderEmptyState(
   aboutUrl: string,
-  translations: ReturnType<typeof getSiteTranslations>,
+  translations: SiteTranslations,
 ): string {
   return `<div class="primer-home-empty-state">
     <p class="primer-home-section-kicker">${
@@ -340,11 +226,10 @@ export default async (
   const dateFormat = resolveDateHelper(helpers);
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
-  const translations = getSiteTranslations(language);
-  const shortDatePattern = resolveShortDatePattern(language);
-  const aboutUrl = getLocalizedUrl("/about/", language);
-  const currentUrl = getLocalizedUrl("/", language);
-  const archiveUrl = getLocalizedUrl("/posts/", language);
+  const { aboutUrl, archiveUrl, homeUrl, translations } = getPageContext(
+    language,
+  );
+  const currentUrl = homeUrl;
   const recent = resolveRecentPosts(data.search, languageDataCode);
   const author = getAuthorIdentity(language, data.author);
   const introTopicMarkup = renderTopicList(
@@ -364,7 +249,6 @@ export default async (
       resolveStoryData(
         featuredPost,
         language,
-        shortDatePattern,
         dateFormat,
       ),
       author,
@@ -375,7 +259,6 @@ export default async (
     const story = resolveStoryData(
       post,
       language,
-      shortDatePattern,
       dateFormat,
     );
     const card = await PostCard({

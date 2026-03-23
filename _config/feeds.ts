@@ -9,6 +9,7 @@ import {
   LANGUAGE_DATA_CODE,
   type SiteLanguage,
 } from "../src/utils/i18n.ts";
+import { parseDateValue } from "../src/utils/date-time.ts";
 import {
   absolutizeHtmlUrls,
   type AtomFeedData,
@@ -94,16 +95,7 @@ export function createFeedOptions(variant: FeedVariant) {
 }
 
 function toDate(value: unknown): Date | undefined {
-  if (value instanceof Date) {
-    return Number.isNaN(value.getTime()) ? undefined : value;
-  }
-
-  if (typeof value === "string" || typeof value === "number") {
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? undefined : date;
-  }
-
-  return undefined;
+  return parseDateValue(value);
 }
 
 function getStringValue(value: unknown): string | undefined {

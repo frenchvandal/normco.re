@@ -16,7 +16,7 @@ describe("resolvePostDate()", () => {
     const date = faker.date.past();
     const iso = date.toISOString().slice(0, 10);
     const parsed = resolvePostDate(iso);
-    assertEquals(parsed.toISOString().startsWith(iso), true);
+    assertEquals(parsed.toISOString(), `${iso}T00:00:00.000Z`);
   });
 
   it("falls back when input is invalid", () => {

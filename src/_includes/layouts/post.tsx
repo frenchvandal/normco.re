@@ -5,18 +5,24 @@ import type { jsx } from "lume/jsx-runtime";
 import {
   formatReadingTime,
   getLanguageDataCode,
-  getLocalizedUrl,
-  getSiteTranslations,
+  getPageContext,
   resolveSiteLanguage,
 } from "../../utils/i18n.ts";
 import SiteIcon from "../../_components/SiteIcon.tsx";
 import HEntryShell from "../../mf2/components/HEntryShell.tsx";
 import { getAuthorIdentity } from "../../mf2/extractors.ts";
+import { resolveDateHelper } from "../../utils/lume-helpers.ts";
 import { getTagColor, getTagUrl } from "../../utils/tags.ts";
+import {
+  isDefined,
+  isLumeData,
+  resolveOptionalTrimmedString,
+} from "../../utils/type-guards.ts";
 import {
   resolvePostDate,
   resolveReadingMinutes,
 } from "../../posts/post-metadata.ts";
+import { formatRfc3339Instant } from "../../utils/date-time.ts";
 import { enhancePostContent } from "../../utils/post-outline.ts";
 
 /** This layout is itself wrapped by the base layout. */
@@ -46,11 +52,6 @@ type SearchHelper = {
   pages: (query: string, sort?: string) => ReadonlyArray<unknown>;
 };
 
-type DateHelper = (
-  value: unknown,
-  pattern?: string,
-  lang?: string,
-) => string | undefined;
 type SsxElement = ReturnType<typeof jsx>;
 type DefinitionListValue = SsxElement | string | number;
 type NavMethod = NonNullable<NavHelper["previousPage"]>;
@@ -59,10 +60,6 @@ type DefinitionListItem = Readonly<{
   term: string;
   value: DefinitionListValue;
 }>;
-
-function isLumeData(value: unknown): value is Lume.Data {
-  return typeof value === "object" && value !== null;
-}
 
 /** Returns true when the candidate looks like a post URL in the expected base path. */
 function isPostCandidate(
@@ -99,21 +96,6 @@ function resolveMethod<TArgs extends unknown[], TResult>(
   }
 
   return (...args) => Reflect.apply(method, value, args) as TResult;
-}
-
-function resolveDateHelper(helpers: Lume.Helpers): DateHelper {
-  const helper = resolveMethod<Parameters<DateHelper>, unknown>(
-    helpers,
-    "date",
-  );
-  if (!helper) {
-    return () => undefined;
-  }
-
-  return (value, pattern, lang) => {
-    const result = helper(value, pattern, lang);
-    return typeof result === "string" ? result : undefined;
-  };
 }
 
 function resolveNavHelper(value: unknown): NavHelper {
@@ -173,19 +155,6 @@ function hasCodeBlocks(children: unknown): boolean {
   return /<pre>\s*<code\b/i.test(resolveHtmlChildren(children) ?? "");
 }
 
-function isDefined<T>(value: T | undefined): value is T {
-  return value !== undefined;
-}
-
-function resolveOptionalTrimmedString(value: unknown): string | undefined {
-  if (typeof value !== "string") {
-    return undefined;
-  }
-
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : undefined;
-}
-
 function resolveCodeCopyAttribute(
   includeCodeCopyScript: boolean,
   label: string,
@@ -243,16 +212,36 @@ function renderDefinitionList(
   );
 }
 
+function renderPostNavLink(
+  post: Lume.Data | undefined,
+  label: string,
+  isNext = false,
+): SsxElement {
+  if (post === undefined) {
+    return <div class="post-nav-placeholder" aria-hidden="true"></div>;
+  }
+
+  return (
+    <div class={`post-nav-item${isNext ? " post-nav-item--next" : ""}`}>
+      <span class="post-nav-label">{label}</span>
+      <a href={post.url ?? ""} class="post-nav-title">
+        {post.title ?? ""}
+      </a>
+    </div>
+  );
+}
+
 /** Renders the post page within the base layout. */
 export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const dateFormat = resolveDateHelper(helpers);
   const nav = resolveNavHelper(data.nav);
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
-  const translations = getSiteTranslations(language);
+  const { archiveUrl: postsBaseUrl, homeUrl, translations } = getPageContext(
+    language,
+  );
   const postQuery = `type=post lang=${languageDataCode}`;
   const currentUrl = typeof data.url === "string" ? data.url : "/";
-  const postsBaseUrl = getLocalizedUrl("/posts/", language);
   const search = resolveSearchHelper(data.search);
   let { prev, next } = resolveAdjacentPosts(
     currentUrl,
@@ -282,7 +271,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
 
   const postDate = resolvePostDate(data.date);
   const minutes = resolveReadingMinutes(data.readingInfo);
-  const homeUrl = getLocalizedUrl("/", language);
   const tags = resolveStringTags(data.tags);
   const author = getAuthorIdentity(language, data.author);
   const includeCodeCopyScript = hasCodeBlocks(data.children);
@@ -314,9 +302,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   );
 
   const publishedDateIso = dateFormat(postDate, "ATOM", language) ??
-    postDate.toISOString();
+    formatRfc3339Instant(postDate);
   const publishedDateLabel = dateFormat(postDate, "HUMAN_DATE", language) ??
-    postDate.toISOString();
+    formatRfc3339Instant(postDate);
   const readingTimeLabel = minutes !== undefined
     ? formatReadingTime(minutes, language)
     : undefined;
@@ -560,36 +548,12 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                     class="post-nav post-nav--rail"
                     aria-label={translations.post.navigationAriaLabel}
                   >
-                    {prev
-                      ? (
-                        <div class="post-nav-item">
-                          <span class="post-nav-label">
-                            {translations.post.previousLabel}
-                          </span>
-                          <a href={prev.url ?? ""} class="post-nav-title">
-                            {prev.title ?? ""}
-                          </a>
-                        </div>
-                      )
-                      : (
-                        <div class="post-nav-placeholder" aria-hidden="true">
-                        </div>
-                      )}
-                    {next
-                      ? (
-                        <div class="post-nav-item post-nav-item--next">
-                          <span class="post-nav-label">
-                            {translations.post.nextLabel}
-                          </span>
-                          <a href={next.url ?? ""} class="post-nav-title">
-                            {next.title ?? ""}
-                          </a>
-                        </div>
-                      )
-                      : (
-                        <div class="post-nav-placeholder" aria-hidden="true">
-                        </div>
-                      )}
+                    {renderPostNavLink(prev, translations.post.previousLabel)}
+                    {renderPostNavLink(
+                      next,
+                      translations.post.nextLabel,
+                      true,
+                    )}
                   </nav>
                 </section>
               )}

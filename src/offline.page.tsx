@@ -1,11 +1,7 @@
 /** Offline fallback page served when navigation fails without connectivity. */
 
 import StatePanel from "./_components/StatePanel.tsx";
-import {
-  getLocalizedUrl,
-  getSiteTranslations,
-  resolveSiteLanguage,
-} from "./utils/i18n.ts";
+import { getPageContext, resolveSiteLanguage } from "./utils/i18n.ts";
 
 /** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
@@ -41,14 +37,14 @@ export const zhHant = {
 /** Renders the offline fallback body. */
 export default (data: Lume.Data): string => {
   const language = resolveSiteLanguage(data.lang);
-  const translations = getSiteTranslations(language);
+  const { homeUrl, translations } = getPageContext(language);
 
   return `<div class="site-page-shell site-page-shell--editorial state-page state-page--offline">
   ${
     StatePanel({
       title: translations.offline.title,
       message: translations.offline.lead,
-      actionHref: getLocalizedUrl("/", language),
+      actionHref: homeUrl,
       actionLabel: translations.offline.backToHome,
       ariaLabel: translations.offline.ariaLabel,
       headingTag: "h1",

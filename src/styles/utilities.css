@@ -16,6 +16,19 @@
     outline-offset: var(--ph-focus-offset);
   }
 
+  .u-icon,
+  svg[data-icon],
+  .site-footer-icon {
+    inline-size: 1rem;
+    block-size: 1rem;
+    fill: currentColor;
+    flex: 0 0 auto;
+  }
+
+  .site-footer-icon {
+    display: inline-block;
+  }
+
   .u-measure {
     inline-size: min(100%, var(--ph-measure));
   }
@@ -24,5 +37,11 @@
     inline-size: min(100%, var(--ph-site-max));
     margin-inline: auto;
     padding-inline: var(--ph-shell-gutter);
+  }
+
+  .u-surface-subtle {
+    border: 1px solid var(--ph-color-border-default);
+    border-radius: var(--ph-radius-md);
+    background: var(--ph-color-canvas-subtle);
   }
 }

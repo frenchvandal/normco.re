@@ -1,5 +1,6 @@
 import { walk } from "@std/fs";
 import { join, relative } from "@std/path";
+import { lineNumberAt } from "./_shared.ts";
 
 export type StyleSource = {
   readonly filePath: string;
@@ -59,16 +60,6 @@ const RULES: readonly GuardRule[] = [
 
 function normalizePath(filePath: string): string {
   return filePath.replaceAll("\\", "/");
-}
-
-function lineNumberAt(source: string, index: number): number {
-  let line = 1;
-  for (let i = 0; i < index; i += 1) {
-    if (source[i] === "\n") {
-      line += 1;
-    }
-  }
-  return line;
 }
 
 function ruleAllowsFile(rule: GuardRule, filePath: string): boolean {

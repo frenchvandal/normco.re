@@ -3,10 +3,10 @@
 import { siteName } from "./_data.ts";
 import { renderOcticonMarkup } from "./utils/primer-icons.ts";
 import {
-  getLocalizedUrl,
-  getSiteTranslations,
+  getPageContext,
   resolveSiteLanguage,
   type SiteLanguage,
+  type SiteTranslations,
 } from "./utils/i18n.ts";
 import {
   getLocalizedAtomFeedUrl,
@@ -285,7 +285,7 @@ function renderAccordionItem(
 
 function buildFeedCards(
   language: SiteLanguage,
-  translations: ReturnType<typeof getSiteTranslations>,
+  translations: SiteTranslations,
 ): ReadonlyArray<FeedCard> {
   return [
     {
@@ -320,7 +320,7 @@ function buildFeedCards(
 }
 
 function buildFeedActions(
-  translations: ReturnType<typeof getSiteTranslations>,
+  translations: SiteTranslations,
 ): FeedActions {
   return {
     openAction: translations.feeds.openAction,
@@ -337,9 +337,8 @@ function buildFeedActions(
 /** Renders the syndication page. */
 export default (data: Lume.Data): string => {
   const language = resolveSiteLanguage(data.lang);
-  const translations = getSiteTranslations(language);
+  const { homeUrl, translations } = getPageContext(language);
   const siteOrigin = `https://${siteName}`;
-  const homeUrl = getLocalizedUrl("/", language);
   const feedCards = buildFeedCards(language, translations);
   const feedActions = buildFeedActions(translations);
 

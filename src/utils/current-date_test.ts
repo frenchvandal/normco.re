@@ -3,27 +3,24 @@ import { describe, it } from "@std/testing/bdd";
 
 import { resolveCurrentDateIso } from "./current-date.ts";
 
-const LOCAL_NOON = new Date(2026, 2, 16, 12, 0, 0, 0);
-
 describe("resolveCurrentDateIso()", () => {
-  it("prefers Temporal when available", () => {
+  it("returns the provided Temporal plain date", () => {
+    const plainDate = {
+      toString: () => "2026-03-20",
+    } as Temporal.PlainDate;
+
     assertEquals(
-      resolveCurrentDateIso(
-        LOCAL_NOON,
-        {
-          Now: {
-            plainDateISO: () => ({ toString: () => "2026-03-20" }),
-          },
-        },
-      ),
+      resolveCurrentDateIso({
+        plainDateISO: () => plainDate,
+      }),
       "2026-03-20",
     );
   });
 
-  it("falls back to local Date components when Temporal is unavailable", () => {
+  it("uses the runtime Temporal clock by default", () => {
     assertEquals(
-      resolveCurrentDateIso(LOCAL_NOON, {}),
-      "2026-03-16",
+      resolveCurrentDateIso(),
+      Temporal.Now.plainDateISO().toString(),
     );
   });
 });

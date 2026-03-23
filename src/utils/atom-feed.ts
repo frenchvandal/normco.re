@@ -1,5 +1,7 @@
 /** Utilities to generate Atom 1.0 feeds. */
 
+import { formatRfc3339Instant } from "./date-time.ts";
+
 export type AtomFeedAuthor = {
   readonly name: string;
   readonly url?: string;
@@ -66,11 +68,13 @@ function formatEntry(entry: AtomFeedEntry): string {
     `    <link rel="alternate" type="text/html" href="${
       escapeXml(entry.url)
     }"/>`,
-    `    <updated>${entry.updated.toISOString()}</updated>`,
+    `    <updated>${formatRfc3339Instant(entry.updated)}</updated>`,
   ];
 
   if (entry.published) {
-    lines.push(`    <published>${entry.published.toISOString()}</published>`);
+    lines.push(
+      `    <published>${formatRfc3339Instant(entry.published)}</published>`,
+    );
   }
 
   if (entry.summary) {
@@ -113,7 +117,7 @@ export function generateAtomXml(data: AtomFeedData): string {
       escapeXml(data.siteUrl)
     }"/>`,
     ...(data.complete ? ["  <fh:complete/>"] : []),
-    `  <updated>${data.updated.toISOString()}</updated>`,
+    `  <updated>${formatRfc3339Instant(data.updated)}</updated>`,
   );
 
   if (data.subtitle) {

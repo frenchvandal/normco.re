@@ -5,6 +5,10 @@ import {
   resolveReadingMinutes,
 } from "../src/posts/post-metadata.ts";
 import {
+  formatRfc3339Instant,
+  parseDateValue,
+} from "../src/utils/date-time.ts";
+import {
   DEFAULT_LANGUAGE,
   getLanguageDataCode,
   getLocalizedUrl,
@@ -100,7 +104,7 @@ function stringifyJson(value: unknown): string {
 }
 
 function formatDateTime(date: Date): string {
-  return date.toISOString().replace(".000Z", "Z");
+  return formatRfc3339Instant(date);
 }
 
 function getOptionalString(value: unknown): string | undefined {
@@ -123,16 +127,7 @@ function getOptionalStringArray(
 }
 
 function toValidDate(value: unknown): Date | undefined {
-  if (value instanceof Date) {
-    return Number.isNaN(value.getTime()) ? undefined : value;
-  }
-
-  if (typeof value === "string" || typeof value === "number") {
-    const parsed = new Date(value);
-    return Number.isNaN(parsed.getTime()) ? undefined : parsed;
-  }
-
-  return undefined;
+  return parseDateValue(value);
 }
 
 function describePage(page: Data): string {

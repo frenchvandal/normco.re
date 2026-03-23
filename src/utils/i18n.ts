@@ -252,6 +252,15 @@ export type SiteTranslations = {
   };
 };
 
+export type PageContext = Readonly<{
+  translations: SiteTranslations;
+  homeUrl: string;
+  archiveUrl: string;
+  tagsUrl: string;
+  aboutUrl: string;
+  syndicationPageUrl: string;
+}>;
+
 const SITE_TRANSLATIONS = {
   en: {
     site: {
@@ -1098,6 +1107,40 @@ export function getLocalizedUrl(path: string, language: SiteLanguage): string {
 /** Returns the translation bundle for a language. */
 export function getSiteTranslations(language: SiteLanguage): SiteTranslations {
   return SITE_TRANSLATIONS[language];
+}
+
+const SHORT_DATE_FORMAT = {
+  en: new Intl.DateTimeFormat(LANGUAGE_TAG.en, {
+    month: "short",
+    day: "numeric",
+  }),
+  fr: new Intl.DateTimeFormat(LANGUAGE_TAG.fr, {
+    month: "short",
+    day: "numeric",
+  }),
+  zhHans: new Intl.DateTimeFormat(LANGUAGE_TAG.zhHans, {
+    month: "short",
+    day: "numeric",
+  }),
+  zhHant: new Intl.DateTimeFormat(LANGUAGE_TAG.zhHant, {
+    month: "short",
+    day: "numeric",
+  }),
+} as const satisfies Record<SiteLanguage, Intl.DateTimeFormat>;
+
+export function formatShortDate(date: Date, language: SiteLanguage): string {
+  return SHORT_DATE_FORMAT[language].format(date);
+}
+
+export function getPageContext(language: SiteLanguage): PageContext {
+  return {
+    translations: getSiteTranslations(language),
+    homeUrl: getLocalizedUrl("/", language),
+    archiveUrl: getLocalizedUrl("/posts/", language),
+    tagsUrl: getLocalizedUrl("/tags/", language),
+    aboutUrl: getLocalizedUrl("/about/", language),
+    syndicationPageUrl: getLocalizedUrl("/syndication/", language),
+  };
 }
 
 const READING_TIME_FORMAT = {

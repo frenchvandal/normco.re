@@ -1,6 +1,6 @@
 import {
   getLocalizedUrl,
-  getSiteTranslations,
+  getPageContext,
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
 } from "../utils/i18n.ts";
@@ -55,11 +55,8 @@ export function buildHeaderNavigation(
     readonly language: SiteLanguage;
   },
 ): readonly HeaderNavigationItem[] {
-  const translations = getSiteTranslations(language);
-  const homeUrl = getLocalizedUrl("/", language);
-  const postsUrl = getLocalizedUrl("/posts/", language);
-  const tagsUrl = getLocalizedUrl("/tags/", language);
-  const aboutUrl = getLocalizedUrl("/about/", language);
+  const { aboutUrl, archiveUrl: postsUrl, homeUrl, tagsUrl, translations } =
+    getPageContext(language);
 
   return [
     {

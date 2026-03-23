@@ -1,6 +1,9 @@
 import CMS from "lume/cms/mod.ts";
-import { slugify } from "./src/utils/slugify.ts";
-import { resolveCurrentDateIso } from "./src/utils/current-date.ts";
+import {
+  resolveCmsProdBranch,
+  resolveCurrentDateIso,
+  resolveSlug,
+} from "./src/utils/cms.ts";
 
 type PostLanguageCollection = {
   readonly filename: string;
@@ -9,8 +12,6 @@ type PostLanguageCollection = {
   readonly name: string;
 };
 
-const CMS_PROD_BRANCH_ENV_KEY = "CMS_PROD_BRANCH";
-const DEFAULT_CMS_PROD_BRANCH = "master";
 const REQUIRED_FIELD_ATTRIBUTES = { required: true } as const;
 
 const POST_LANGUAGE_COLLECTIONS: ReadonlyArray<PostLanguageCollection> = [
@@ -40,21 +41,11 @@ const POST_LANGUAGE_COLLECTIONS: ReadonlyArray<PostLanguageCollection> = [
   },
 ] as const;
 
-export function resolveSlug(value: unknown): string {
-  if (typeof value !== "string" || value.trim().length === 0) {
-    throw new Error("Post slug is required.");
-  }
-
-  const normalizedSlug = slugify(value);
-
-  if (normalizedSlug.length === 0) {
-    throw new Error(`Post slug "${value}" is invalid after normalization.`);
-  }
-
-  return normalizedSlug;
-}
-
-export { resolveCurrentDateIso } from "./src/utils/current-date.ts";
+export {
+  resolveCmsProdBranch,
+  resolveCurrentDateIso,
+  resolveSlug,
+} from "./src/utils/cms.ts";
 
 /**
  * Returns the Git branch used by the CMS publish workflow.
@@ -62,21 +53,6 @@ export { resolveCurrentDateIso } from "./src/utils/current-date.ts";
  * The repository default is still `master`, but deployments can override it
  * explicitly via `CMS_PROD_BRANCH` without editing source.
  */
-export function resolveCmsProdBranch(
-  env: Pick<typeof Deno.env, "get"> = Deno.env,
-): string {
-  try {
-    const configuredBranch = env.get(CMS_PROD_BRANCH_ENV_KEY)?.trim();
-    if (configuredBranch) {
-      return configuredBranch;
-    }
-  } catch {
-    // Ignore env lookup errors in restricted runtimes and keep the repo default.
-  }
-
-  return DEFAULT_CMS_PROD_BRANCH;
-}
-
 function toFolderLabel(name: string, suffix: string): string {
   return name.endsWith(suffix) ? name.slice(0, -suffix.length) : name;
 }

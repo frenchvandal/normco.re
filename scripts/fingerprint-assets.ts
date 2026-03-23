@@ -2,6 +2,7 @@ import { parseArgs } from "@std/cli";
 import { encodeHex } from "@std/encoding/hex";
 import { walk } from "@std/fs";
 import { basename, extname, join } from "@std/path";
+import { fileExists, getErrorMessage } from "./_shared.ts";
 
 const HASH_LENGTH = 10;
 const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
@@ -35,10 +36,6 @@ type AssetRewrite = {
   fingerprintedMapUrl?: string;
 };
 
-function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
-
 function toOutputPath(rootDir: string, urlPath: string): string {
   return join(
     rootDir,
@@ -53,19 +50,6 @@ function toFingerprintedUrl(urlPath: string, hash: string): string {
     : urlPath;
 
   return `${basePath}.${hash}${extension}`;
-}
-
-async function fileExists(filePath: string): Promise<boolean> {
-  try {
-    await Deno.stat(filePath);
-    return true;
-  } catch (error) {
-    if (error instanceof Deno.errors.NotFound) {
-      return false;
-    }
-
-    throw error;
-  }
 }
 
 async function hashContent(content: Uint8Array): Promise<string> {

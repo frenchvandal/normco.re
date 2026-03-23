@@ -12,7 +12,7 @@ describe("toRfc3339()", () => {
   it("converts RFC 2822 dates to RFC 3339", () => {
     assertEquals(
       toRfc3339("Tue, 10 Mar 2026 00:00:00 GMT"),
-      "2026-03-10T00:00:00.000Z",
+      "2026-03-10T00:00:00Z",
     );
   });
 
@@ -42,7 +42,7 @@ describe("normalizeJsonFeed()", () => {
     assertEquals(normalized.language, "fr");
     assertEquals(
       normalized.items?.[0]?.date_published,
-      "2026-03-10T00:00:00.000Z",
+      "2026-03-10T00:00:00Z",
     );
   });
 });

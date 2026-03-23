@@ -1,3 +1,5 @@
+import { parseDateValue } from "../utils/date-time.ts";
+
 /**
  * Resolves a post date value into a valid `Date` instance.
  *
@@ -11,18 +13,7 @@ export function resolvePostDate(
   value: unknown,
   fallback: Date = new Date(),
 ): Date {
-  if (value instanceof Date && !Number.isNaN(value.valueOf())) {
-    return value;
-  }
-
-  if (typeof value === "string" || typeof value === "number") {
-    const parsedDate = new Date(value);
-    if (!Number.isNaN(parsedDate.valueOf())) {
-      return parsedDate;
-    }
-  }
-
-  return fallback;
+  return parseDateValue(value) ?? fallback;
 }
 
 /** Returns rounded reading minutes when available, otherwise `undefined`. */

@@ -1,9 +1,9 @@
 /** About page - prose introduction. */
 
 import {
-  getLocalizedUrl,
-  getSiteTranslations,
+  getPageContext,
   resolveSiteLanguage,
+  type SiteTranslations,
 } from "./utils/i18n.ts";
 import {
   getLocalizedAtomFeedUrl,
@@ -35,7 +35,7 @@ function renderContactItem(
     readonly downloadIconMarkup: string;
     readonly qrImageSizes: string;
     readonly qrImageTransforms: string;
-    readonly translations: ReturnType<typeof getSiteTranslations>;
+    readonly translations: SiteTranslations;
   },
 ): string {
   const panelId = `contact-qr-${contact.key}`;
@@ -186,8 +186,7 @@ export const zhHant = {
 /** Renders the About page body. */
 export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const language = resolveSiteLanguage(data.lang);
-  const translations = getSiteTranslations(language);
-  const homeUrl = getLocalizedUrl("/", language);
+  const { homeUrl, translations } = getPageContext(language);
   const atomXmlUrl = getLocalizedAtomFeedUrl(language);
   const feedXmlUrl = getLocalizedRssFeedUrl(language);
   const feedJsonUrl = getLocalizedJsonFeedUrl(language);

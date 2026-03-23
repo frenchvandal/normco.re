@@ -4,6 +4,7 @@ import type { jsx } from "lume/jsx-runtime";
 
 import {
   getLocalizedUrl,
+  getPageContext,
   getSiteTranslations,
   type SiteLanguage,
 } from "../utils/i18n.ts";
@@ -32,6 +33,17 @@ type HeaderActionProps = Readonly<{
   buttonId?: string;
   iconMarkup: SsxElement;
   tooltipLabel: string;
+}>;
+type HeaderActionDescriptor = Readonly<
+  HeaderActionProps & {
+    key: "search" | "language" | "theme";
+  }
+>;
+type HeaderActionVariant = Readonly<{
+  actionButtonClassName: string;
+  actionIconClassName: string;
+  iconSize?: number;
+  languageButtonClassName?: string;
 }>;
 type LanguagePanelProps = Readonly<{
   language: SiteLanguage;
@@ -93,6 +105,106 @@ function renderHeaderAction(
       </div>
     </div>
   );
+}
+
+function renderThemeIcons(
+  className: string,
+  {
+    height = 16,
+    width = 16,
+  }: Readonly<{
+    height?: number;
+    width?: number;
+  }> = {},
+): SsxElement {
+  return (
+    <>
+      <SiteIcon
+        name="sun"
+        className={`theme-icon theme-icon--sun ${className}`}
+        width={width}
+        height={height}
+      />
+      <SiteIcon
+        name="moon"
+        className={`theme-icon theme-icon--moon ${className}`}
+        width={width}
+        height={height}
+      />
+      <SiteIcon
+        name="device-desktop"
+        className={`theme-icon theme-icon--system ${className}`}
+        width={width}
+        height={height}
+      />
+    </>
+  );
+}
+
+function resolveHeaderActions(
+  translations: HeaderTranslations,
+  {
+    actionButtonClassName,
+    actionIconClassName,
+    iconSize = 16,
+    languageButtonClassName,
+  }: HeaderActionVariant,
+): readonly HeaderActionDescriptor[] {
+  return [
+    {
+      key: "search",
+      buttonAttributes: {
+        "aria-label": translations.site.searchLabel,
+        "aria-expanded": "false",
+        "aria-controls": HEADER_IDS.searchPanel,
+      },
+      buttonClassName: actionButtonClassName,
+      iconMarkup: (
+        <SiteIcon
+          name="search"
+          className={actionIconClassName}
+          width={iconSize}
+          height={iconSize}
+        />
+      ),
+      tooltipLabel: translations.site.searchLabel,
+    },
+    {
+      key: "language",
+      buttonAttributes: {
+        "aria-label": translations.site.languageSelectAriaLabel,
+        "aria-expanded": "false",
+        "aria-controls": HEADER_IDS.languagePanel,
+        "aria-haspopup": "menu",
+      },
+      buttonClassName: languageButtonClassName ?? actionButtonClassName,
+      iconMarkup: (
+        <SiteIcon
+          name="globe"
+          className={actionIconClassName}
+          width={iconSize}
+          height={iconSize}
+        />
+      ),
+      tooltipLabel: translations.site.languageSelectLabel,
+    },
+    {
+      key: "theme",
+      buttonAttributes: {
+        "aria-label": translations.site.themeToggleLabel,
+        "data-label-switch-light": translations.site.switchToLightThemeLabel,
+        "data-label-switch-dark": translations.site.switchToDarkThemeLabel,
+        "data-label-follow-system": translations.site.followSystemThemeLabel,
+      },
+      buttonClassName: actionButtonClassName,
+      buttonId: HEADER_IDS.themeToggle,
+      iconMarkup: renderThemeIcons(actionIconClassName, {
+        width: iconSize,
+        height: iconSize,
+      }),
+      tooltipLabel: translations.site.themeToggleLabel,
+    },
+  ];
 }
 
 function renderSearchLoading(loadingLabel: string): SsxElement {
@@ -427,9 +539,15 @@ function renderSideNav(
 
 function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
   const { currentUrl, language, languageAlternates = {} } = props;
-  const translations = getSiteTranslations(language);
-  const homeUrl = getLocalizedUrl("/", language);
+  const { homeUrl, translations } = getPageContext(language);
   const navigationItems = buildHeaderNavigation({ currentUrl, language });
+  const headerActions = resolveHeaderActions(translations, {
+    actionButtonClassName:
+      "cds--header__action btn-octicon primer-home-header__action",
+    actionIconClassName: "primer-home-header__action-icon",
+    languageButtonClassName:
+      "cds--header__action cds--header__language-toggle btn-octicon primer-home-header__action",
+  });
 
   return (
     <>
@@ -481,72 +599,7 @@ function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
           </nav>
 
           <div class="cds--header__global primer-home-header__global">
-            {renderHeaderAction({
-              buttonAttributes: {
-                "aria-label": translations.site.searchLabel,
-                "aria-expanded": "false",
-                "aria-controls": HEADER_IDS.searchPanel,
-              },
-              buttonClassName:
-                "cds--header__action btn-octicon primer-home-header__action",
-              iconMarkup: (
-                <SiteIcon
-                  name="search"
-                  className="primer-home-header__action-icon"
-                />
-              ),
-              tooltipLabel: translations.site.searchLabel,
-            })}
-
-            {renderHeaderAction({
-              buttonAttributes: {
-                "aria-label": translations.site.languageSelectAriaLabel,
-                "aria-expanded": "false",
-                "aria-controls": HEADER_IDS.languagePanel,
-                "aria-haspopup": "menu",
-              },
-              buttonClassName:
-                "cds--header__action cds--header__language-toggle btn-octicon primer-home-header__action",
-              iconMarkup: (
-                <SiteIcon
-                  name="globe"
-                  className="primer-home-header__action-icon"
-                />
-              ),
-              tooltipLabel: translations.site.languageSelectLabel,
-            })}
-
-            {renderHeaderAction({
-              buttonAttributes: {
-                "aria-label": translations.site.themeToggleLabel,
-                "data-label-switch-light": translations.site
-                  .switchToLightThemeLabel,
-                "data-label-switch-dark": translations.site
-                  .switchToDarkThemeLabel,
-                "data-label-follow-system": translations.site
-                  .followSystemThemeLabel,
-              },
-              buttonClassName:
-                "cds--header__action btn-octicon primer-home-header__action",
-              buttonId: HEADER_IDS.themeToggle,
-              iconMarkup: (
-                <>
-                  <SiteIcon
-                    name="sun"
-                    className="theme-icon theme-icon--sun primer-home-header__action-icon"
-                  />
-                  <SiteIcon
-                    name="moon"
-                    className="theme-icon theme-icon--moon primer-home-header__action-icon"
-                  />
-                  <SiteIcon
-                    name="device-desktop"
-                    className="theme-icon theme-icon--system primer-home-header__action-icon"
-                  />
-                </>
-              ),
-              tooltipLabel: translations.site.themeToggleLabel,
-            })}
+            {headerActions.map((action) => renderHeaderAction(action))}
           </div>
         </div>
       </header>
@@ -599,9 +652,14 @@ function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
 /** Renders the site header with navigation and user controls. */
 export default (props: HeaderProps): SsxElement => {
   const { currentUrl, language, languageAlternates = {} } = props;
-  const translations = getSiteTranslations(language);
-  const homeUrl = getLocalizedUrl("/", language);
+  const { homeUrl, translations } = getPageContext(language);
   const navigationItems = buildHeaderNavigation({ currentUrl, language });
+  const headerActions = resolveHeaderActions(translations, {
+    actionButtonClassName: "cds--header__action",
+    actionIconClassName: "cds--header__action-icon",
+    iconSize: 20,
+    languageButtonClassName: "cds--header__action cds--header__language-toggle",
+  });
 
   if (currentUrl === homeUrl) {
     return renderPrimerHomeHeader(props);
@@ -650,78 +708,7 @@ export default (props: HeaderProps): SsxElement => {
           </div>
 
           <div class="cds--header__global">
-            {renderHeaderAction({
-              buttonAttributes: {
-                "aria-label": translations.site.searchLabel,
-                "aria-expanded": "false",
-                "aria-controls": HEADER_IDS.searchPanel,
-              },
-              iconMarkup: (
-                <SiteIcon
-                  name="search"
-                  className="cds--header__action-icon"
-                  width={20}
-                  height={20}
-                />
-              ),
-              tooltipLabel: translations.site.searchLabel,
-            })}
-
-            {renderHeaderAction({
-              buttonAttributes: {
-                "aria-label": translations.site.languageSelectAriaLabel,
-                "aria-expanded": "false",
-                "aria-controls": HEADER_IDS.languagePanel,
-                "aria-haspopup": "menu",
-              },
-              buttonClassName:
-                "cds--header__action cds--header__language-toggle",
-              iconMarkup: (
-                <SiteIcon
-                  name="globe"
-                  className="cds--header__action-icon"
-                  width={20}
-                  height={20}
-                />
-              ),
-              tooltipLabel: translations.site.languageSelectLabel,
-            })}
-
-            {renderHeaderAction({
-              buttonAttributes: {
-                "aria-label": translations.site.themeToggleLabel,
-                "data-label-switch-light": translations.site
-                  .switchToLightThemeLabel,
-                "data-label-switch-dark": translations.site
-                  .switchToDarkThemeLabel,
-                "data-label-follow-system": translations.site
-                  .followSystemThemeLabel,
-              },
-              buttonId: HEADER_IDS.themeToggle,
-              iconMarkup: (
-                <>
-                  <SiteIcon
-                    name="sun"
-                    className="cds--header__action-icon theme-icon theme-icon--sun"
-                    width={20}
-                    height={20}
-                  />
-                  <SiteIcon
-                    name="moon"
-                    className="cds--header__action-icon theme-icon theme-icon--moon"
-                    width={20}
-                    height={20}
-                  />
-                  <SiteIcon
-                    name="device-desktop"
-                    className="cds--header__action-icon theme-icon theme-icon--system"
-                    width={20}
-                    height={20}
-                  />
-                </>
-              ),
-              tooltipLabel: translations.site.themeToggleLabel,
-            })}
+            {headerActions.map((action) => renderHeaderAction(action))}
           </div>
         </div>
       </header>

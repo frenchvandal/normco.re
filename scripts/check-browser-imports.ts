@@ -1,6 +1,7 @@
 import { parseArgs } from "@std/cli";
 import { walk } from "@std/fs";
 import { join } from "@std/path";
+import { lineNumberAt } from "./_shared.ts";
 
 const NETWORK_PREFIXES = ["http://", "https://"] as const;
 const FORBIDDEN_PREFIXES = [
@@ -40,43 +41,21 @@ export type AnalyzeOptions = {
   ) => boolean;
 };
 
-function isForbiddenPrefix(specifier: string): boolean {
-  return FORBIDDEN_PREFIXES.some((prefix) => specifier.startsWith(prefix));
-}
-
-function isNetworkSpecifier(specifier: string): boolean {
-  return NETWORK_PREFIXES.some((prefix) => specifier.startsWith(prefix));
-}
-
-function isBrowserResolvable(specifier: string): boolean {
-  return ALLOWED_PREFIXES.some((prefix) => specifier.startsWith(prefix));
-}
-
-function getLineNumber(source: string, offset: number): number {
-  return source.slice(0, offset).split("\n").length;
+function hasPrefix(
+  value: string,
+  prefixes: ReadonlyArray<string>,
+): boolean {
+  return prefixes.some((prefix) => value.startsWith(prefix));
 }
 
 function unwrapStringLiteral(expression: string): string | undefined {
-  const trimmedExpression = expression.trim();
-  const quote = trimmedExpression.at(0);
-  const lastCharacter = trimmedExpression.at(-1);
+  const match = expression.trim().match(/^(['"`])([\s\S]*?)\1$/);
 
-  if (
-    quote === undefined ||
-    lastCharacter === undefined ||
-    quote !== lastCharacter ||
-    !(quote === '"' || quote === "'" || quote === "`")
-  ) {
+  if (!match || (match[1] === "`" && match[2]?.includes("${"))) {
     return undefined;
   }
 
-  const value = trimmedExpression.slice(1, -1);
-
-  if (quote === "`" && value.includes("${")) {
-    return undefined;
-  }
-
-  return value;
+  return match[2];
 }
 
 function createSpecifierIssue(
@@ -85,30 +64,30 @@ function createSpecifierIssue(
   matchIndex: number,
   specifier: string,
 ): ImportIssue | undefined {
-  if (isNetworkSpecifier(specifier)) {
+  if (hasPrefix(specifier, NETWORK_PREFIXES)) {
     return {
       filePath,
       kind: "network-specifier",
       specifier,
-      line: getLineNumber(source, matchIndex),
+      line: lineNumberAt(source, matchIndex),
     };
   }
 
-  if (isForbiddenPrefix(specifier)) {
+  if (hasPrefix(specifier, FORBIDDEN_PREFIXES)) {
     return {
       filePath,
       kind: "forbidden-prefix",
       specifier,
-      line: getLineNumber(source, matchIndex),
+      line: lineNumberAt(source, matchIndex),
     };
   }
 
-  if (!isBrowserResolvable(specifier)) {
+  if (!hasPrefix(specifier, ALLOWED_PREFIXES)) {
     return {
       filePath,
       kind: "bare-specifier",
       specifier,
-      line: getLineNumber(source, matchIndex),
+      line: lineNumberAt(source, matchIndex),
     };
   }
 
@@ -160,7 +139,7 @@ export function analyzeImportSpecifiers(
           filePath,
           kind: "dynamic-non-literal",
           specifier: expression,
-          line: getLineNumber(source, matchIndex),
+          line: lineNumberAt(source, matchIndex),
         });
       }
       continue;

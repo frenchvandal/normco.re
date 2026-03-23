@@ -166,26 +166,6 @@
     text-decoration: none;
   }
 
-  .cds--header__action-icon,
-  .cds--header__menu-icon,
-  .primer-home-header__action-icon,
-  .site-footer-icon,
-  .site-switcher-icon,
-  .about-contact-action-icon-svg,
-  .about-fact-icon-svg,
-  .feeds-copy-icon,
-  .feeds-notice-icon,
-  .site-search-notification-icon {
-    inline-size: 1rem;
-    block-size: 1rem;
-    fill: currentColor;
-    flex: 0 0 auto;
-  }
-
-  .site-footer-icon {
-    display: inline-block;
-  }
-
   .site-footer-icon--brand::before {
     content: "";
     display: block;
@@ -449,6 +429,7 @@
     stroke-width: 8;
   }
 
+  .u-surface-subtle,
   .site-search-notification,
   .feeds-copy-notice {
     border: 1px solid var(--ph-color-border-default);

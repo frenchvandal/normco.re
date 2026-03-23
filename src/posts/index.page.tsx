@@ -3,105 +3,24 @@
 import { renderComponent } from "lume/jsx-runtime";
 
 import StatePanel from "../_components/StatePanel.tsx";
-import HEntryShell from "../mf2/components/HEntryShell.tsx";
 import HFeedShell from "../mf2/components/HFeedShell.tsx";
 import { getAuthorIdentity, getCanonicalFeedUrl } from "../mf2/extractors.ts";
+import { formatRfc3339Instant } from "../utils/date-time.ts";
 import {
   formatPostCount,
   formatReadingTime,
+  formatShortDate,
   getLanguageDataCode,
-  getLocalizedUrl,
-  getSiteTranslations,
+  getPageContext,
   resolveSiteLanguage,
 } from "../utils/i18n.ts";
 import { resolvePostDate, resolveReadingMinutes } from "./post-metadata.ts";
 import { escapeHtml } from "../utils/html.ts";
-
-/** Typed component functions used on this page. */
-type Comp = {
-  PostCard: (props: {
-    readonly title: string;
-    readonly url: string;
-    readonly dateStr: string;
-    readonly dateIso: string;
-    readonly readingLabel?: string;
-    readonly summary?: string;
-    readonly authorName?: string;
-    readonly authorUrl?: string;
-  }) => string | Promise<string>;
-};
-
-/** Typed helpers used in this page. */
-type H = {
-  date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
-};
-
-function isLumeData(value: unknown): value is Lume.Data {
-  return typeof value === "object" && value !== null;
-}
-
-function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
-  if (typeof value === "object" && value !== null) {
-    const PostCard = Reflect.get(value, "PostCard");
-
-    if (typeof PostCard === "function") {
-      return (props) => {
-        const rendered = Reflect.apply(PostCard, value, [props]);
-        return rendered instanceof Promise ? rendered : String(rendered);
-      };
-    }
-  }
-
-  return (
-    {
-      title,
-      url,
-      dateStr,
-      dateIso,
-      readingLabel,
-      summary,
-      authorName,
-      authorUrl,
-    },
-  ) =>
-    renderComponent(
-      HEntryShell({
-        className: "cds--tile post-card h-entry",
-        ...(summary !== undefined ? { summary } : {}),
-        ...(authorName && authorUrl
-          ? { author: { name: authorName, url: authorUrl } }
-          : {}),
-        children: {
-          __html: `<time class="post-card-date dt-published" datetime="${
-            escapeHtml(dateIso)
-          }">${
-            escapeHtml(dateStr)
-          }</time><h3 class="p-name"><a class="u-url u-uid" href="${
-            escapeHtml(url)
-          }">${escapeHtml(title)}</a></h3>${
-            readingLabel
-              ? `<span class="post-card-reading-time">${
-                escapeHtml(readingLabel)
-              }</span>`
-              : ""
-          }`,
-        },
-      }),
-    );
-}
-
-function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
-  const date = Reflect.get(helpers, "date");
-
-  if (typeof date !== "function") {
-    return () => undefined;
-  }
-
-  return (value, pattern, lang) => {
-    const formatted = Reflect.apply(date, helpers, [value, pattern, lang]);
-    return typeof formatted === "string" ? formatted : undefined;
-  };
-}
+import {
+  resolveDateHelper,
+  resolvePostCardRenderer,
+} from "../utils/lume-helpers.ts";
+import { isLumeData, resolveOptionalString } from "../utils/type-guards.ts";
 
 function resolveArchivePosts(
   search: unknown,
@@ -210,14 +129,8 @@ export default async (
   const dateFormat = resolveDateHelper(helpers);
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
-  const translations = getSiteTranslations(language);
-  const homeUrl = getLocalizedUrl("/", language);
+  const { homeUrl, translations } = getPageContext(language);
   const feedUrl = getCanonicalFeedUrl(language);
-  const shortDatePattern = language === "fr"
-    ? "d MMM"
-    : language === "zhHans" || language === "zhHant"
-    ? "M月d日"
-    : "SHORT";
   const posts = resolveArchivePosts(data.search, languageDataCode);
   const author = getAuthorIdentity(language, data.author);
 
@@ -256,16 +169,14 @@ export default async (
     const items = await Promise.all(yearPosts.map(async (post) => {
       const postDate = resolvePostDate(post.date, new Date(year, 0, 1));
       const minutes = resolveReadingMinutes(post.readingInfo);
+      const summary = resolveOptionalString(post.description);
       const card = await PostCard({
-        title: typeof post.title === "string" ? post.title : "",
-        url: typeof post.url === "string" ? post.url : "",
-        dateStr: dateFormat(postDate, shortDatePattern, language) ??
-          postDate.toISOString(),
+        title: resolveOptionalString(post.title) ?? "",
+        url: resolveOptionalString(post.url) ?? "",
+        dateStr: formatShortDate(postDate, language),
         dateIso: dateFormat(postDate, "ATOM", language) ??
-          postDate.toISOString(),
-        ...(typeof post.description === "string" && post.description.length > 0
-          ? { summary: post.description }
-          : {}),
+          formatRfc3339Instant(postDate),
+        ...(summary !== undefined ? { summary } : {}),
         authorName: author.name,
         authorUrl: author.url,
         ...(minutes !== undefined
@@ -297,19 +208,16 @@ export default async (
       const readingLabel = minutes !== undefined
         ? formatReadingTime(minutes, language)
         : "";
+      const postUrl = resolveOptionalString(post.url) ?? "";
+      const postTitle = resolveOptionalString(post.title) ?? "";
 
       return `<div class="cds--structured-list-row">
   <span class="cds--structured-list-td archive-structured-list-date">${
-        escapeHtml(
-          dateFormat(postDate, shortDatePattern, language) ??
-            postDate.toISOString(),
-        )
+        escapeHtml(formatShortDate(postDate, language))
       }</span>
   <span class="cds--structured-list-td archive-structured-list-title">
-    <a href="${
-        escapeHtml(typeof post.url === "string" ? post.url : "")
-      }" class="archive-structured-list-link">${
-        escapeHtml(typeof post.title === "string" ? post.title : "")
+    <a href="${escapeHtml(postUrl)}" class="archive-structured-list-link">${
+        escapeHtml(postTitle)
       }</a>
   </span>
   <span class="cds--structured-list-td archive-structured-list-reading">${
