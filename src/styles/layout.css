@@ -41,7 +41,7 @@
   }
 
   .site-page-shell--editorial {
-    inline-size: min(100%, var(--ph-content-max));
+    inline-size: min(100%, var(--ph-wide-max));
   }
 
   .cds--header {
@@ -109,10 +109,7 @@
   }
 
   .site-header--primer .cds--header__wrapper {
-    inline-size: min(
-      100%,
-      calc(var(--ph-content-max) + var(--ph-shell-gutter) * 2)
-    );
+    inline-size: min(100%, var(--ph-wide-max));
   }
 
   .primer-home-header__left,

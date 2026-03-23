@@ -63,7 +63,7 @@
                   </a>
                   <a class="cds--header__menu-item">
                     <xsl:attribute name="href"><xsl:value-of select="$posts-href"/></xsl:attribute>
-                    <xsl:text>Writing</xsl:text>
+                    <xsl:text>Articles</xsl:text>
                   </a>
                   <a class="cds--header__menu-item">
                     <xsl:attribute name="href"><xsl:value-of select="$about-href"/></xsl:attribute>
@@ -205,7 +205,7 @@
                 <li class="cds--side-nav__item">
                   <a class="cds--side-nav__link">
                     <xsl:attribute name="href"><xsl:value-of select="$posts-href"/></xsl:attribute>
-                    <span class="cds--side-nav__link-text">Writing</span>
+                    <span class="cds--side-nav__link-text">Articles</span>
                   </a>
                 </li>
                 <li class="cds--side-nav__item">

@@ -16,7 +16,6 @@ import {
   tryResolveSiteLanguage,
 } from "../../utils/i18n.ts";
 import type { IconResolver } from "../../utils/primer-icons.ts";
-import DiscoveryLinks from "../../mf2/components/DiscoveryLinks.tsx";
 import {
   getLocalizedAtomFeedUrl,
   getLocalizedJsonFeedUrl,
@@ -288,12 +287,23 @@ export default (
             defer
           >
           </script>
-          <DiscoveryLinks
-            language={language}
-            siteName={resolvedSiteName}
-            rssUrl={feedXmlUrl}
-            atomUrl={atomXmlUrl}
-            jsonFeedUrl={feedJsonUrl}
+          <link
+            rel="alternate"
+            type="application/rss+xml"
+            title={resolvedSiteName}
+            href={feedXmlUrl}
+          />
+          <link
+            rel="alternate"
+            type="application/atom+xml"
+            title={`${resolvedSiteName} Atom feed`}
+            href={atomXmlUrl}
+          />
+          <link
+            rel="alternate"
+            type="application/feed+json"
+            title={`${resolvedSiteName} JSON feed`}
+            href={feedJsonUrl}
           />
         </head>
         <body data-current-language={language}>

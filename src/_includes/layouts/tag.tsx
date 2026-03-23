@@ -1,7 +1,3 @@
-import { renderComponent } from "lume/jsx-runtime";
-
-import HFeedShell from "../../mf2/components/HFeedShell.tsx";
-import { getAuthorIdentity } from "../../mf2/extractors.ts";
 import {
   formatPostCount,
   formatReadingTime,
@@ -45,8 +41,6 @@ export default async (
   const tagName = resolveOptionalString(data.tagName) ?? "";
   const posts = resolveTagPosts(data.posts);
   const postsCountLabel = formatPostCount(posts.length, language);
-  const currentUrl = resolveOptionalString(data.url) ?? archiveUrl;
-  const author = getAuthorIdentity(language, data.author);
 
   const items = await Promise.all(posts.map(async (post) => {
     const postDate = resolvePostDate(post.date);
@@ -59,8 +53,6 @@ export default async (
       dateIso: dateFormat(postDate, "ATOM", language) ??
         formatRfc3339Instant(postDate),
       ...(summary !== undefined ? { summary } : {}),
-      authorName: author.name,
-      authorUrl: author.url,
       ...(minutes !== undefined
         ? { readingLabel: formatReadingTime(minutes, language) }
         : {}),
@@ -73,25 +65,21 @@ export default async (
     escapeHtml(translations.archive.emptyState)
   }</p>`;
 
-  const tagFeed = await renderComponent(
-    HFeedShell({
-      className: "feature-main h-feed",
-      url: currentUrl,
-      author,
-      children: {
-        __html: `<nav class="cds--breadcrumb" aria-label="${
-          escapeHtml(translations.tagPage.breadcrumbAriaLabel)
-        }">
+  return `<div class="site-page-shell site-page-shell--editorial">
+  <div class="feature-main">
+    <nav class="cds--breadcrumb" aria-label="${
+    escapeHtml(translations.tagPage.breadcrumbAriaLabel)
+  }">
       <ol class="cds--breadcrumb-list">
         <li class="cds--breadcrumb-item">
           <a href="${escapeHtml(homeUrl)}" class="cds--breadcrumb-link">${
-          escapeHtml(translations.navigation.home)
-        }</a>
+    escapeHtml(translations.navigation.home)
+  }</a>
         </li>
         <li class="cds--breadcrumb-item">
           <a href="${escapeHtml(archiveUrl)}" class="cds--breadcrumb-link">${
-          escapeHtml(translations.navigation.writing)
-        }</a>
+    escapeHtml(translations.navigation.writing)
+  }</a>
         </li>
       </ol>
     </nav>
@@ -99,46 +87,39 @@ export default async (
       <div class="tag-pagehead-grid">
         <div class="tag-pagehead-copy">
           <p class="pagehead-eyebrow">${
-          escapeHtml(translations.tagPage.eyebrow)
-        }</p>
-          <h1 id="tag-page-title" class="tag-page-title p-name">${
-          escapeHtml(tagName)
-        }</h1>
+    escapeHtml(translations.tagPage.eyebrow)
+  }</p>
+          <h1 id="tag-page-title" class="tag-page-title">${
+    escapeHtml(tagName)
+  }</h1>
           <p class="pagehead-lead">${escapeHtml(postsCountLabel)}</p>
         </div>
         <div class="tag-pagehead-meta">
           <span class="cds--tag cds--tag--${
-          getTagColor(tagName)
-        } tag-page-current-tag" title="${escapeHtml(tagName)}">
+    getTagColor(tagName)
+  } tag-page-current-tag" title="${escapeHtml(tagName)}">
             <span class="cds--tag__label">${escapeHtml(tagName)}</span>
           </span>
           <a href="${
-          escapeHtml(archiveUrl)
-        }" class="feature-link tag-pagehead-link">${
-          escapeHtml(translations.tagPage.archiveLinkLabel)
-        }</a>
+    escapeHtml(archiveUrl)
+  }" class="feature-link tag-pagehead-link">${
+    escapeHtml(translations.tagPage.archiveLinkLabel)
+  }</a>
         </div>
       </div>
     </section>
     <section class="tag-page-results" aria-label="${
-          escapeHtml(translations.tagPage.postsAriaLabel)
-        }">
+    escapeHtml(translations.tagPage.postsAriaLabel)
+  }">
       <div class="subhead">
         <h2 class="subhead-heading">${
-          escapeHtml(translations.tagPage.postsHeading)
-        }</h2>
+    escapeHtml(translations.tagPage.postsHeading)
+  }</h2>
       </div>
       ${
-          posts.length > 0
-            ? `<ul class="archive-list">${items}</ul>`
-            : emptyState
-        }
-    </section>`,
-      },
-    }),
-  );
-
-  return `<div class="site-page-shell site-page-shell--editorial">
-  ${tagFeed}
+    posts.length > 0 ? `<ul class="archive-list">${items}</ul>` : emptyState
+  }
+    </section>
+  </div>
 </div>`;
 };

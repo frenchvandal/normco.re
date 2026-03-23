@@ -7,8 +7,6 @@ import {
   resolveSiteLanguage,
 } from "../../utils/i18n.ts";
 import SiteIcon from "../../_components/SiteIcon.tsx";
-import HEntryShell from "../../mf2/components/HEntryShell.tsx";
-import { getAuthorIdentity } from "../../mf2/extractors.ts";
 import { resolveDateHelper } from "../../utils/lume-helpers.ts";
 import { getTagColor, getTagUrl } from "../../utils/tags.ts";
 import {
@@ -265,7 +263,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const postDate = resolvePostDate(data.date);
   const minutes = resolveReadingMinutes(data.readingInfo);
   const tags = resolveStringTags(data.tags);
-  const author = getAuthorIdentity(language, data.author);
   const includeCodeCopyScript = hasCodeBlocks(data.children);
   const rawChildrenHtml = resolveHtmlChildren(data.children);
   const enhancedPostContent = typeof rawChildrenHtml === "string"
@@ -347,20 +344,11 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
       <div
         class={`feature-layout${hasRail ? " feature-layout--with-rail" : ""}`}
       >
-        <HEntryShell
-          className="post-article feature-main h-entry"
-          rootAttributes={{
-            "data-code-copy-label": codeCopyLabelAttribute,
-            "data-code-copy-feedback": codeCopyFeedbackAttribute,
-            "data-code-copy-failed-feedback": codeCopyFailedFeedbackAttribute,
-          }}
-          url={currentUrl}
-          author={author}
-          categories={tags}
-          {...(typeof data.description === "string" &&
-              data.description.length > 0
-            ? { summary: data.description }
-            : {})}
+        <article
+          class="post-article feature-main"
+          data-code-copy-label={codeCopyLabelAttribute}
+          data-code-copy-feedback={codeCopyFeedbackAttribute}
+          data-code-copy-failed-feedback={codeCopyFailedFeedbackAttribute}
         >
           <header class="post-header pagehead post-pagehead">
             <nav
@@ -382,10 +370,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             </nav>
             <div class="post-pagehead-grid">
               <div class="post-pagehead-copy">
-                <h1 class="post-title p-name">{data.title ?? ""}</h1>
+                <h1 class="post-title">{data.title ?? ""}</h1>
                 <div class="post-meta">
                   <time
-                    class="dt-published"
                     datetime={publishedDateIso}
                   >
                     {publishedDateLabel}
@@ -423,7 +410,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               )}
             </div>
           </header>
-          <div class="post-content e-content">
+          <div class="post-content">
             {renderedChildren}
           </div>
           <div class="post-details-section">
@@ -471,7 +458,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             <script src="/scripts/post-code-copy.js" defer></script>
           )}
           <script src="/scripts/surface-controls.js" defer></script>
-        </HEntryShell>
+        </article>
 
         {hasRail && (
           <aside
@@ -519,7 +506,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                         >
                           <a
                             href={getTagUrl(tagLabel, language)}
-                            class={`tag-link tag-link--${_color} p-category`}
+                            class={`tag-link tag-link--${_color}`}
                             rel="tag"
                             title={tagLabel}
                           >

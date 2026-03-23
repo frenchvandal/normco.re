@@ -60,7 +60,6 @@
     "jsr:@std/yaml@1.0.12": "1.0.12",
     "jsr:@std/yaml@^1.0.5": "1.0.12",
     "npm:@faker-js/faker@^10.3.0": "10.3.0",
-    "npm:@opentelemetry/api@^1.9.0": "1.9.0",
     "npm:@resvg/resvg-wasm@2.6.2": "2.6.2",
     "npm:autoprefixer@10.4.27": "10.4.27_postcss@8.5.8",
     "npm:date-fns@4.1.0": "4.1.0",
@@ -662,9 +661,6 @@
         "@jridgewell/resolve-uri",
         "@jridgewell/sourcemap-codec"
       ]
-    },
-    "@opentelemetry/api@1.9.0": {
-      "integrity": "sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg=="
     },
     "@pagefind/darwin-arm64@1.4.0": {
       "integrity": "sha512-2vMqkbv3lbx1Awea90gTaBsvpzgRs7MuSgKDxW0m9oV1GPZCZbZBJg/qL83GIUEN2BFlY46dtUZi54pwH+/pTQ==",
@@ -1924,7 +1920,6 @@
       "jsr:@std/text@^1.0.17",
       "jsr:@std/xml@0.1",
       "npm:@faker-js/faker@^10.3.0",
-      "npm:@opentelemetry/api@^1.9.0",
       "npm:date-fns@4.1.0",
       "npm:shiki@4.0.2"
     ]

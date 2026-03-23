@@ -158,10 +158,9 @@ describe("post.tsx layout", () => {
         postLayout(makeData({}), MOCK_HELPERS),
       );
       assertMatch(html, /class="[^"]*\bpost-article\b[^"]*"/);
-      assertMatch(html, /class="[^"]*\bh-entry\b[^"]*"/);
     });
 
-    it("emits canonical h-entry properties for the article shell", async () => {
+    it("renders the article heading, publication time, permalink, and body", async () => {
       const html = await renderComponent(
         postLayout(
           makeData({
@@ -174,15 +173,11 @@ describe("post.tsx layout", () => {
         ),
       );
 
-      assertStringIncludes(html, 'class="post-title p-name"');
-      assertStringIncludes(html, 'class="dt-published"');
-      assertStringIncludes(html, 'class="u-url u-uid sr-only"');
+      assertStringIncludes(html, 'class="post-title"');
+      assertStringIncludes(html, 'datetime="');
       assertStringIncludes(html, 'href="/posts/entry-title/"');
-      assertStringIncludes(html, 'class="p-author h-card sr-only"');
-      assertStringIncludes(html, 'class="p-summary sr-only"');
       assertStringIncludes(html, "Entry summary");
-      assertStringIncludes(html, 'class="p-category sr-only"');
-      assertStringIncludes(html, 'class="post-content e-content"');
+      assertStringIncludes(html, 'class="post-content"');
     });
 
     it("renders the post rail when tags are present", async () => {
@@ -250,7 +245,7 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'href="/"');
       assertStringIncludes(html, 'href="/posts/"');
       assertStringIncludes(html, "Home");
-      assertStringIncludes(html, "Writing");
+      assertStringIncludes(html, "Articles");
       assertNotMatch(html, /cds--breadcrumb-current/);
       assertNotMatch(html, /aria-current="page"/);
     });

@@ -49,17 +49,16 @@ describe("PostCard()", () => {
     });
   });
 
-  describe("microformats2", () => {
-    it("renders an h-entry root with canonical name and URL properties", async () => {
+  describe("content", () => {
+    it("renders the native title, link, and time structure", async () => {
       const base = makeBase(307);
       const html = await renderComponent(PostCard({ ...base }));
-      assertStringIncludes(html, "post-card h-entry");
-      assertStringIncludes(html, 'class="post-card-title p-name"');
-      assertStringIncludes(html, 'class="post-card-link u-url u-uid"');
-      assertStringIncludes(html, 'class="post-card-date dt-published"');
+      assertStringIncludes(html, 'class="post-card-title"');
+      assertStringIncludes(html, 'class="post-card-link"');
+      assertStringIncludes(html, 'class="post-card-date"');
     });
 
-    it("renders hidden summary and author data when provided", async () => {
+    it("ignores unused author metadata props and keeps the card clean", async () => {
       const base = makeBase(308);
       const html = await renderComponent(
         PostCard({
@@ -70,11 +69,8 @@ describe("PostCard()", () => {
         }),
       );
 
-      assertStringIncludes(html, 'class="p-summary sr-only"');
-      assertStringIncludes(html, "Summary copy");
-      assertStringIncludes(html, 'class="p-author h-card sr-only"');
-      assertStringIncludes(html, 'href="/about/"');
-      assertStringIncludes(html, '<span class="p-name">Phiphi</span>');
+      assertNotMatch(html, /p-summary|p-author|h-card|p-name/);
+      assertNotMatch(html, /\/about\//);
     });
 
     it("renders a visible summary only when explicitly requested", async () => {
@@ -106,7 +102,7 @@ describe("PostCard()", () => {
     it("wraps content in article.post-card", async () => {
       const base = makeBase(304);
       const html = await renderComponent(PostCard({ ...base }));
-      assertStringIncludes(html, "post-card h-entry");
+      assertStringIncludes(html, "post-card");
       assertStringIncludes(html, "cds--tile");
     });
 
@@ -125,7 +121,7 @@ describe("PostCard()", () => {
       assertStringIncludes(html, base.title);
       assertStringIncludes(html, "<h3");
       assertStringIncludes(html, "<a");
-      assertStringIncludes(html, 'class="post-card-link u-url u-uid"');
+      assertStringIncludes(html, 'class="post-card-link"');
     });
 
     it("merges optional variant classes onto the article root", async () => {

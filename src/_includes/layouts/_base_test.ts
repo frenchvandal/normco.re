@@ -156,8 +156,6 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, 'href="/rss.xml"');
       assertStringIncludes(html, 'href="/atom.xml"');
       assertStringIncludes(html, 'href="/feed.json"');
-      assertStringIncludes(html, 'type="text/mf2+html"');
-      assertStringIncludes(html, 'href="/posts/"');
       assertStringIncludes(
         html,
         'src="/scripts/sw-register.js"',

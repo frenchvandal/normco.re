@@ -1,4 +1,9 @@
-import { assertEquals, assertMatch, assertStringIncludes } from "@std/assert";
+import {
+  assertEquals,
+  assertMatch,
+  assertNotMatch,
+  assertStringIncludes,
+} from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import { faker, seedTestFaker } from "../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../test/lume.ts";
@@ -30,13 +35,11 @@ function makeData(
     },
     comp: {
       PostCard: (props: Record<string, unknown>) =>
-        `<article class="post-card h-entry ${
+        `<article class="post-card ${
           props["className"] ?? ""
-        }"><time class="post-card-date dt-published" datetime="${
-          props["dateIso"]
-        }">${
+        }"><time class="post-card-date" datetime="${props["dateIso"]}">${
           props["dateStr"]
-        }</time><h3 class="post-card-title p-name"><a class="post-card-link" href="${
+        }</time><h3 class="post-card-title"><a class="post-card-link" href="${
           props["url"]
         }">${props["title"]}</a></h3></article>`,
     },
@@ -119,16 +122,14 @@ describe("index.page.tsx", () => {
   });
 
   describe("recent posts", () => {
-    it("marks the recent-writing section as an h-feed", async () => {
+    it("renders the recent-writing section chrome", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(
         html,
-        'class="home-recent home-recent--primer h-feed"',
+        'class="home-recent home-recent--primer"',
       );
-      assertStringIncludes(html, 'class="p-name primer-home-section-title"');
-      assertStringIncludes(html, 'class="u-url sr-only" href="/"');
-      assertStringIncludes(html, 'class="p-author h-card sr-only"');
-      assertStringIncludes(html, 'href="/about/"');
+      assertStringIncludes(html, 'class="primer-home-section-title"');
+      assertNotMatch(html, /h-feed|p-name|h-card|u-url sr-only/);
     });
 
     it("renders a link to the full archive", async () => {
@@ -150,7 +151,7 @@ describe("index.page.tsx", () => {
         html,
         'class="primer-home-ledger"',
       );
-      assertStringIncludes(html, 'class="primer-home-featured-story h-entry"');
+      assertStringIncludes(html, 'class="primer-home-featured-story"');
       assertStringIncludes(html, "Featured story");
       assertStringIncludes(html, "Secondary story");
     });
@@ -191,7 +192,7 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, 'class="home-posts-item"');
       assertStringIncludes(
         html,
-        'class="post-card h-entry primer-home-post primer-home-post--ledger"',
+        'class="post-card primer-home-post primer-home-post--ledger"',
       );
     });
 
@@ -219,9 +220,9 @@ describe("index.page.tsx", () => {
           },
           comp: {
             PostCard: (props: Record<string, unknown>) =>
-              `<article class="post-card h-entry ${
-                props["className"] ?? ""
-              }"><h3 class="p-name">${props["title"]}</h3></article>`,
+              `<article class="post-card ${props["className"] ?? ""}"><h3>${
+                props["title"]
+              }</h3></article>`,
           },
         }),
         MOCK_HELPERS,
@@ -230,7 +231,7 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, "Grid card");
       assertStringIncludes(
         html,
-        'class="post-card h-entry primer-home-post primer-home-post--ledger"',
+        'class="post-card primer-home-post primer-home-post--ledger"',
       );
     });
 
@@ -249,7 +250,7 @@ describe("index.page.tsx", () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(
         html,
-        'class="home-recent home-recent--primer h-feed"',
+        'class="home-recent home-recent--primer"',
       );
     });
 

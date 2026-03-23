@@ -1,6 +1,3 @@
-import { renderComponent } from "lume/jsx-runtime";
-
-import HEntryShell from "../mf2/components/HEntryShell.tsx";
 import { escapeHtml } from "./html.ts";
 
 export type PostCardProps = Readonly<{
@@ -34,43 +31,32 @@ export function renderFallbackPostCard(
     readingLabel,
     summary,
     showSummary,
-    authorName,
-    authorUrl,
   }: PostCardProps,
 ): Promise<string> {
   return Promise.resolve(
-    renderComponent(
-      HEntryShell({
-        className: [
+    `<article class="${
+      escapeHtml(
+        [
           "cds--tile",
           "post-card",
-          "h-entry",
           className,
         ].filter(Boolean).join(" "),
-        ...(summary !== undefined ? { summary } : {}),
-        ...(authorName && authorUrl
-          ? { author: { name: authorName, url: authorUrl } }
-          : {}),
-        children: {
-          __html:
-            `<h3 class="post-card-title p-name"><a class="post-card-link u-url u-uid" href="${
-              escapeHtml(url)
-            }">${escapeHtml(title)}</a></h3>${
-              showSummary && summary
-                ? `<p class="post-card-summary">${escapeHtml(summary)}</p>`
-                : ""
-            }<div class="post-card-meta"><time class="post-card-date dt-published" datetime="${
-              escapeHtml(dateIso)
-            }">${escapeHtml(dateStr)}</time>${
-              readingLabel
-                ? `<span class="post-card-reading-time">${
-                  escapeHtml(readingLabel)
-                }</span>`
-                : ""
-            }</div>`,
-        },
-      }),
-    ),
+      )
+    }"><h3 class="post-card-title"><a class="post-card-link" href="${
+      escapeHtml(url)
+    }">${escapeHtml(title)}</a></h3>${
+      showSummary && summary
+        ? `<p class="post-card-summary">${escapeHtml(summary)}</p>`
+        : ""
+    }<div class="post-card-meta"><time class="post-card-date" datetime="${
+      escapeHtml(dateIso)
+    }">${escapeHtml(dateStr)}</time>${
+      readingLabel
+        ? `<span class="post-card-reading-time">${
+          escapeHtml(readingLabel)
+        }</span>`
+        : ""
+    }</div></article>`,
   );
 }
 

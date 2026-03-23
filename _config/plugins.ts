@@ -23,7 +23,6 @@ import jsonLd from "lume/plugins/json_ld.ts";
 import type Site from "lume/core/site.ts";
 import { enUS, fr as frLocale, zhCN, zhTW } from "date-fns/locale";
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
-import otelPlugin from "../plugins/otel.ts";
 import shiki from "../plugins/shiki/mod.ts";
 
 /**
@@ -174,5 +173,4 @@ export function registerPlugins(
 
   site.use(jsonLd());
   site.use(shiki(SHIKI_OPTIONS));
-  site.use(otelPlugin());
 }

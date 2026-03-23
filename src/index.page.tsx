@@ -1,9 +1,5 @@
 import { distinct } from "@std/collections";
-import { renderComponent } from "lume/jsx-runtime";
 
-import HEntryShell from "./mf2/components/HEntryShell.tsx";
-import HFeedShell from "./mf2/components/HFeedShell.tsx";
-import { getAuthorIdentity } from "./mf2/extractors.ts";
 import {
   formatReadingTime,
   formatShortDate,
@@ -32,7 +28,6 @@ export const url = "/";
 // Keep the title undefined so the base layout emits the bare site name.
 export const title: string | undefined = undefined;
 
-type AuthorIdentity = ReturnType<typeof getAuthorIdentity>;
 type StoryData = {
   readonly title: string;
   readonly url: string;
@@ -136,9 +131,8 @@ function renderTopicList(
 
 function renderFeaturedStory(
   story: StoryData,
-  author: AuthorIdentity,
   language: SiteLanguage,
-): Promise<string> {
+): string {
   const topics = renderTopicList(
     story.tags.slice(0, 2),
     language,
@@ -149,48 +143,36 @@ function renderFeaturedStory(
     },
   );
 
-  return Promise.resolve(
-    renderComponent(
-      HEntryShell({
-        className: "primer-home-featured-story h-entry",
-        ...(story.summary !== undefined ? { summary: story.summary } : {}),
-        categories: story.tags.slice(0, 2),
-        author,
-        children: {
-          __html: `<div class="primer-home-featured-story__body">
+  return `<article class="primer-home-featured-story">
+  <div class="primer-home-featured-story__body">
     ${topics}
-    <h2 class="primer-home-featured-story__title p-name">
-      <a class="primer-home-featured-story__link u-url u-uid" href="${
-            escapeHtml(story.url)
-          }">
+    <h2 class="primer-home-featured-story__title">
+      <a class="primer-home-featured-story__link" href="${
+    escapeHtml(story.url)
+  }">
         ${escapeHtml(story.title)}
       </a>
     </h2>
     ${
-            story.summary === undefined
-              ? ""
-              : `<p class="primer-home-featured-story__summary">${
-                escapeHtml(story.summary)
-              }</p>`
-          }
+    story.summary === undefined
+      ? ""
+      : `<p class="primer-home-featured-story__summary">${
+        escapeHtml(story.summary)
+      }</p>`
+  }
     <div class="primer-home-featured-story__meta">
-      <time class="dt-published" datetime="${escapeHtml(story.dateIso)}">${
-            escapeHtml(story.dateLabel)
-          }</time>${
-            story.readingLabel === undefined
-              ? ""
-              : `<span class="primer-home-featured-story__reading">${
-                escapeHtml(story.readingLabel)
-              }</span>`
-          }<span class="primer-home-featured-story__author">${
-            escapeHtml(author.name)
-          }</span>
+      <time datetime="${escapeHtml(story.dateIso)}">${
+    escapeHtml(story.dateLabel)
+  }</time>${
+    story.readingLabel === undefined
+      ? ""
+      : `<span class="primer-home-featured-story__reading">${
+        escapeHtml(story.readingLabel)
+      }</span>`
+  }
     </div>
-  </div>`,
-        },
-      }),
-    ),
-  );
+  </div>
+</article>`;
 }
 
 function renderEmptyState(
@@ -220,12 +202,10 @@ export default async (
   const dateFormat = resolveDateHelper(helpers);
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
-  const { aboutUrl, archiveUrl, homeUrl, translations } = getPageContext(
+  const { aboutUrl, archiveUrl, translations } = getPageContext(
     language,
   );
-  const currentUrl = homeUrl;
   const recent = resolveRecentPosts(data.search, languageDataCode);
-  const author = getAuthorIdentity(language, data.author);
   const introTopicMarkup = renderTopicList(
     resolveFeaturedTags(recent),
     language,
@@ -245,7 +225,6 @@ export default async (
         language,
         dateFormat,
       ),
-      author,
       language,
     );
 
@@ -264,8 +243,6 @@ export default async (
       ...(story.summary !== undefined
         ? { summary: story.summary, showSummary: true }
         : {}),
-      authorName: author.name,
-      authorUrl: author.url,
       ...(story.readingLabel !== undefined
         ? { readingLabel: story.readingLabel }
         : {}),
@@ -274,44 +251,36 @@ export default async (
     return `<li class="home-posts-item">${card}</li>`;
   })).then((items) => items.join("\n"));
 
-  const recentSection = await renderComponent(
-    HFeedShell({
-      tagName: "section",
-      className: "home-recent home-recent--primer h-feed",
-      rootAttributes: { "aria-labelledby": "home-recent-title" },
-      url: currentUrl,
-      author,
-      children: {
-        __html: `<div class="primer-home-section-head">
+  const recentSection =
+    `<section class="home-recent home-recent--primer" aria-labelledby="home-recent-title">
+  <div class="primer-home-section-head">
     <div class="primer-home-section-head-copy">
       <p class="primer-home-section-kicker">${
-          escapeHtml(translations.archive.eyebrow)
-        }</p>
-      <h2 id="home-recent-title" class="p-name primer-home-section-title">${
-          escapeHtml(translations.home.recentHeading)
-        }</h2>
+      escapeHtml(translations.archive.eyebrow)
+    }</p>
+      <h2 id="home-recent-title" class="primer-home-section-title">${
+      escapeHtml(translations.home.recentHeading)
+    }</h2>
     </div>
     <a href="${escapeHtml(archiveUrl)}" class="primer-home-section-link">${
-          escapeHtml(translations.home.archiveLinkLabel)
-        }</a>
+      escapeHtml(translations.home.archiveLinkLabel)
+    }</a>
   </div>
   ${
-          recent.length === 0
-            ? renderEmptyState(aboutUrl, translations)
-            : `<div class="primer-home-ledger">
+      recent.length === 0
+        ? renderEmptyState(aboutUrl, translations)
+        : `<div class="primer-home-ledger">
     ${featuredStory}
     ${
-              listingMarkup.length > 0
-                ? `<ul class="home-posts home-posts--ledger">
+          listingMarkup.length > 0
+            ? `<ul class="home-posts home-posts--ledger">
       ${listingMarkup}
     </ul>`
-                : ""
-            }
+            : ""
+        }
   </div>`
-        }`,
-      },
-    }),
-  );
+    }
+</section>`;
 
   return `<div class="site-page-shell site-page-shell--editorial home-page home-page--primer">
 <section class="primer-home-intro" aria-labelledby="home-title">

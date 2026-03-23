@@ -281,7 +281,7 @@
         <xsl:when test="$is-fr">Articles</xsl:when>
         <xsl:when test="$is-zh-hans">文章</xsl:when>
         <xsl:when test="$is-zh-hant">文章</xsl:when>
-        <xsl:otherwise>Writing</xsl:otherwise>
+        <xsl:otherwise>Articles</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="about-label">

@@ -140,18 +140,15 @@ than depending on a client-side enhancement.
 
 ### Feeds
 
-The site emits localized RSS, Atom, JSON Feed, and HTML Microformats2 feeds:
+The site emits localized RSS, Atom, and JSON feeds:
 
 - `/rss.xml`, `/atom.xml`, and `/feed.json`
 - `/fr/rss.xml`, `/fr/atom.xml`, and `/fr/feed.json`
 - `/zh-hans/rss.xml`, `/zh-hans/atom.xml`, and `/zh-hans/feed.json`
 - `/zh-hant/rss.xml`, `/zh-hant/atom.xml`, and `/zh-hant/feed.json`
-- `/posts/`, `/fr/posts/`, `/zh-hans/posts/`, and `/zh-hant/posts/` as the
-  canonical localized `h-feed` archive routes
-- `/tags/<slug>/` and localized tag routes as secondary `h-feed` listings
 
-`src/_includes/layouts/base.tsx` also publishes the localized archive route as a
-discoverable HTML feed with `rel="alternate"` and `type="text/mf2+html"`.
+`src/_includes/layouts/base.tsx` publishes the localized RSS, Atom, and JSON
+feed endpoints via standard `rel="alternate"` links in the document head.
 
 ## Authoring Workflow
 

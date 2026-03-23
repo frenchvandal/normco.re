@@ -263,7 +263,7 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
           <nav class="cds--side-nav__navigation">
             <ul class="cds--side-nav__items">
               <li class="cds--side-nav__item">
-                <a href="/posts/" class="cds--side-nav__link">Writing</a>
+                <a href="/posts/" class="cds--side-nav__link">Articles</a>
               </li>
             </ul>
           </nav>
