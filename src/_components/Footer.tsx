@@ -1,5 +1,3 @@
-/** Site footer with copyright and primary links. */
-
 import type { jsx } from "lume/jsx-runtime";
 
 import { getSiteTranslations, type SiteLanguage } from "../utils/i18n.ts";
@@ -44,7 +42,6 @@ function renderFooterLink(
   );
 }
 
-/** Renders the site footer with the repository and RSS links. */
 export default (
   {
     author,

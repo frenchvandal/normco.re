@@ -1,5 +1,3 @@
-/** HTML processors — image dimensions, multilanguage aliases, and JSON Feed normalization. */
-
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
 import {
@@ -29,7 +27,6 @@ function isMutableRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
-/** Applies camelCase-to-hyphenated language aliases onto mutable page data. */
 export function applyMultilanguageDataAliases(pageData: unknown): void {
   if (!isMutableRecord(pageData)) {
     return;
@@ -52,7 +49,6 @@ export function applyMultilanguageDataAliases(pageData: unknown): void {
   }
 }
 
-/** Normalizes Lume page content into a string for downstream text processors. */
 export function decodePageContent(content: unknown): string {
   if (typeof content === "string") {
     return content;
@@ -75,9 +71,9 @@ export function decodePageContent(content: unknown): string {
   return String(content);
 }
 
-/** Register all HTML and XML processors. */
 export function registerProcessors(site: Site): void {
-  // Add image-size attribute to editorial images missing dimensions.
+  // Add `image-size` only on searchable editorial content; other image surfaces
+  // are handled separately and should not be pulled into this processor.
   site.process([".html"], (pages: Page[]) => {
     for (const page of pages) {
       for (
@@ -96,7 +92,7 @@ export function registerProcessors(site: Site): void {
     }
   });
 
-  // Enforce explicit dimensions in editorial HTML for CLS safeguards.
+  // Fail the build when editorial images still ship without dimensions.
   site.process([".html"], (pages: Page[]) => {
     const snapshots: EditorialImagePageSnapshot[] = pages.map((page) => ({
       pageUrl: typeof page.data.url === "string"
@@ -108,7 +104,6 @@ export function registerProcessors(site: Site): void {
     assertEditorialImageDimensions(snapshots);
   });
 
-  // Expose camelCase data aliases for multilanguage hyphenated codes.
   site.preprocess([".html"], (pages: Page[]) => {
     for (const page of pages) {
       applyMultilanguageDataAliases(page.data);
@@ -121,7 +116,8 @@ export function registerProcessors(site: Site): void {
     ) => [`${variant.pathPrefix}/feed.json`, variant.language]),
   );
 
-  // Normalize generated feed JSON files to JSON Feed 1.1 conventions.
+  // Lume's feed plugin still emits JSON Feed 1.0-shaped output, so normalize
+  // generated files after the plugin runs.
   site.process([".json"], (pages: Page[]) => {
     for (const page of pages) {
       const pageUrl = typeof page.data.url === "string"

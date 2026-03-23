@@ -1,5 +1,3 @@
-/** Lume plugin configuration — all plugin registrations in correct order. */
-
 import terser from "lume/plugins/terser.ts";
 import postcss from "lume/plugins/postcss.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
@@ -46,13 +44,10 @@ const LIGHTNING_CSS_TARGETS = {
   safari: encodeLightningCssTarget(17, 5),
 } as const;
 
-/** Register all Lume plugins in the correct cascade order. */
 export function registerPlugins(
   site: Site,
   options: { readonly isServeTask: boolean },
 ): void {
-  // --- Asset processing ---
-
   site.use(
     terser({
       options: {
@@ -82,8 +77,6 @@ export function registerPlugins(
   // rewrites `sourceMappingURL` comments to the hashed filenames.
   site.use(sourceMaps());
 
-  // --- Template rendering ---
-
   site.use(attributes());
   site.use(jsx());
   site.use(imageSize());
@@ -100,8 +93,6 @@ export function registerPlugins(
   );
   site.use(resolveUrls());
 
-  // --- Content processing ---
-
   site.use(
     date({
       locales: {
@@ -117,8 +108,6 @@ export function registerPlugins(
   );
   site.use(readingInfo());
   site.use(icons());
-
-  // --- Navigation and discovery ---
 
   site.use(
     sitemap({
@@ -156,8 +145,6 @@ export function registerPlugins(
     }),
   );
 
-  // --- Validation ---
-
   site.use(
     validateHtml({
       output: "_quality/html-issues.json",
@@ -184,8 +171,6 @@ export function registerPlugins(
       }),
     );
   }
-
-  // --- Structured data ---
 
   site.use(jsonLd());
   site.use(shiki(SHIKI_OPTIONS));

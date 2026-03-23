@@ -1,5 +1,3 @@
-/** Individual post layout - chains into the base layout. */
-
 import type { jsx } from "lume/jsx-runtime";
 
 import {
@@ -25,7 +23,6 @@ import {
 import { formatRfc3339Instant } from "../../utils/date-time.ts";
 import { enhancePostContent } from "../../utils/post-outline.ts";
 
-/** This layout is itself wrapped by the base layout. */
 export const layout = "layouts/base.tsx";
 
 /**
@@ -47,7 +44,6 @@ type NavHelper = {
   ) => unknown;
 };
 
-/** Minimal interface for the search helper injected by Lume. */
 type SearchHelper = {
   pages: (query: string, sort?: string) => ReadonlyArray<unknown>;
 };
@@ -61,7 +57,6 @@ type DefinitionListItem = Readonly<{
   value: DefinitionListValue;
 }>;
 
-/** Returns true when the candidate looks like a post URL in the expected base path. */
 function isPostCandidate(
   candidate: unknown,
   postsBaseUrl: string,
@@ -150,7 +145,6 @@ function resolveHtmlChildren(children: unknown): string | undefined {
   return typeof html === "string" ? html : undefined;
 }
 
-/** Returns true when the post body contains at least one `<pre><code>` block. */
 function hasCodeBlocks(children: unknown): boolean {
   return /<pre>\s*<code\b/i.test(resolveHtmlChildren(children) ?? "");
 }
@@ -231,7 +225,6 @@ function renderPostNavLink(
   );
 }
 
-/** Renders the post page within the base layout. */
 export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const dateFormat = resolveDateHelper(helpers);
   const nav = resolveNavHelper(data.nav);

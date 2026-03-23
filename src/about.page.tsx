@@ -1,5 +1,3 @@
-/** About page - prose introduction. */
-
 import {
   getPageContext,
   resolveSiteLanguage,
@@ -155,35 +153,27 @@ function renderFactItem(fact: AboutFact): string {
     </div>`;
 }
 
-/** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
-/** Page URL. */
 export const url = "/about/";
-/** Page title. */
 export const title = "About";
-/** Page meta description. */
 export const description =
   "About Phiphi—a software person writing from Chengdu, China.";
 
-/** French-only metadata overrides used by the multilanguage plugin. */
 export const fr = {
   title: "À propos",
   description: "À propos de Phiphi — une personne qui écrit depuis Chengdu.",
 } as const;
 
-/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
 export const zhHans = {
   title: "关于",
   description: "关于 Phiphi：一位在成都写作的软件从业者。",
 } as const;
 
-/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
 export const zhHant = {
   title: "關於",
   description: "關於 Phiphi：一位在成都寫作的軟體工作者。",
 } as const;
 
-/** Renders the About page body. */
 export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const language = resolveSiteLanguage(data.lang);
   const { homeUrl, translations } = getPageContext(language);
@@ -211,6 +201,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
     "(min-width: 66rem) 16rem, (min-width: 42rem) 14rem, calc(100vw - 6rem)";
   const qrImageTransforms = "avif webp jpg 240 360 512";
   const resolveIcon = helpers.icon?.bind(helpers);
+  // About uses Simple Icons for network branding while keeping the rest of the
+  // page markup framework-agnostic strings.
   resolveIcon?.("wechat", "simpleicons");
   resolveIcon?.("telegram", "simpleicons");
   const { final: finalSeparator, list: listSeparator } = getAboutFeedSeparators(

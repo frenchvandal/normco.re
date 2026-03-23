@@ -1,13 +1,3 @@
-/**
- * Converts free-form text into a URL-safe kebab-case slug segment.
- *
- * @example
- * ```ts
- * import { assertEquals } from "jsr:@std/assert/equals";
- *
- * assertEquals(slugify("Hello, World!"), "hello-world");
- * ```
- */
 export function slugify(value: string): string {
   return value
     .normalize("NFKD")

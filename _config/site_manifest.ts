@@ -18,7 +18,6 @@ export function createSiteManifestPage(siteManifest: SiteManifestData): Page {
   });
 }
 
-/** Register the root Web App Manifest generated from shared site data. */
 export function registerSiteManifest(site: Site): void {
   site.process(function processSiteManifest() {
     const rootData = site.source.data.get("/") as RootSiteData | undefined;

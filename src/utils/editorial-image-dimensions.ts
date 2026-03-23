@@ -1,13 +1,11 @@
 const EDITORIAL_IMAGE_SELECTOR = "main[data-pagefind-body] img";
 
-/** Minimal DOM-like query root required by the editorial image dimension gate. */
 export type EditorialImageQueryRoot = {
   querySelectorAll(
     selectors: string,
   ): Iterable<{ getAttribute(name: string): string | null }>;
 };
 
-/** Minimal snapshot needed to validate editorial image dimensions. */
 export type EditorialImagePageSnapshot = {
   readonly pageUrl: string;
   readonly document: EditorialImageQueryRoot;
@@ -49,7 +47,6 @@ export function collectEditorialImageDimensionIssues(
   return issues;
 }
 
-/** Builds the canonical error text thrown when the editorial image gate fails. */
 export function formatEditorialImageDimensionError(
   issues: ReadonlyArray<string>,
 ): string {
@@ -62,7 +59,6 @@ export function formatEditorialImageDimensionError(
   return issueSummary.join("\n");
 }
 
-/** Throws when at least one editorial image is missing `width` and/or `height`. */
 export function assertEditorialImageDimensions(
   pages: ReadonlyArray<EditorialImagePageSnapshot>,
 ): void {

@@ -1,5 +1,3 @@
-/** Multilingual RSS, Atom, and JSON Feed configurations. */
-
 import { mapNotNullish } from "@std/collections";
 import { type Data, Page } from "lume/core/file.ts";
 import feed from "lume/plugins/feed.ts";
@@ -23,14 +21,10 @@ import {
   RSS_FEED_PATH,
 } from "../src/utils/feed-paths.ts";
 
-/** Sort order shared by all feed outputs. */
 export const FEED_SORT = "date=desc";
-/** Maximum number of items emitted per feed. */
 export const FEED_LIMIT = 10;
-/** Browser stylesheet applied to XML feed outputs. */
 export const FEED_STYLESHEET = FEED_STYLESHEET_PATH;
 
-/** Shared item mapping for all feed variants. */
 export const FEED_ITEMS = {
   title: "=title",
   description: "=description",
@@ -45,7 +39,6 @@ export type FeedVariant = {
   readonly description: string;
 };
 
-/** Shared feed metadata for each localized output. */
 export const FEED_VARIANTS = [
   {
     language: "en",
@@ -73,7 +66,6 @@ export const FEED_VARIANTS = [
   },
 ] as const satisfies ReadonlyArray<FeedVariant>;
 
-/** Builds the feed plugin options for a single language variant. */
 export function createFeedOptions(variant: FeedVariant) {
   return {
     output: [
@@ -142,7 +134,6 @@ function buildAtomEntry(
   };
 }
 
-/** Generates the Atom XML content for a localized feed variant. */
 export function createAtomFeedContent(
   site: Site,
   variant: FeedVariant,
@@ -181,7 +172,6 @@ export function createAtomFeedContent(
   return generateAtomXml(atomFeed);
 }
 
-/** Register all multilingual feed outputs. */
 export function registerFeeds(site: Site): void {
   for (const variant of FEED_VARIANTS) {
     site.use(feed(createFeedOptions(variant)));

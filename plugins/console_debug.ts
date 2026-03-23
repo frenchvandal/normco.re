@@ -1,4 +1,3 @@
-/** Lume log levels accepted by the `LUME_LOGS` environment variable. */
 export type LumeLogLevel =
   | "debug"
   | "info"
@@ -6,16 +5,11 @@ export type LumeLogLevel =
   | "error"
   | "critical";
 
-/** Console verbosity levels for local diagnostics output. */
 export type ConsoleDebugLevel = "off" | "summary" | "verbose";
 
-/** Runtime policy that controls how much data is emitted to the console. */
 export interface ConsoleDebugPolicy {
-  /** Selected verbosity level. */
   level: ConsoleDebugLevel;
-  /** Whether stack traces should be emitted for deeper investigations. */
   includeTrace: boolean;
-  /** Raw normalized `LUME_LOGS` value used to derive this policy. */
   lumeLogs: LumeLogLevel;
 }
 

@@ -1,23 +1,3 @@
-/**
- * Formats a copyright year range given a start year and the current year.
- *
- * - If start year equals current year: returns the start year as a string.
- * - If start year is less than current year: returns "startYear-currentYear".
- * - If start year is greater than current year: logs a warning and returns the start year.
- * - If start year is not a valid number: logs a warning and returns the current year.
- *
- * @param startYear - The year the blog or project started (YYYY format).
- * @param currentYear - The current year (defaults to Date.now() if not provided).
- * @returns A formatted copyright year string.
- *
- * @example
- * ```ts
- * formatCopyrightYears(2022, 2026); // "2022-2026"
- * formatCopyrightYears(2026, 2026); // "2026"
- * formatCopyrightYears(2030, 2026); // logs warning, returns "2030"
- * formatCopyrightYears("invalid", 2026); // logs warning, returns "2026"
- * ```
- */
 export function formatCopyrightYears(
   startYear: unknown,
   currentYear: number = new Date().getFullYear(),

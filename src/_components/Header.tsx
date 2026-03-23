@@ -1,5 +1,3 @@
-/** Site header shell with navigation and user controls. */
-
 import type { jsx } from "lume/jsx-runtime";
 
 import {
@@ -649,7 +647,6 @@ function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
   );
 }
 
-/** Renders the site header with navigation and user controls. */
 export default (props: HeaderProps): SsxElement => {
   const { currentUrl, language, languageAlternates = {} } = props;
   const { homeUrl, translations } = getPageContext(language);

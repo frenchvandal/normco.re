@@ -1,9 +1,7 @@
 import type { ShikiPluginOptions } from "../plugins/shiki/types.ts";
 
-/**
- * Centralized code-highlighting config.
- * Add new fenced-code language ids here when posts start using them.
- */
+// Keep supported fenced-code languages centralized so post content and the
+// Shiki pipeline stay in sync.
 export const SHIKI_OPTIONS = {
   highlighter: {
     langs: ["bash", "ts", "yaml"],

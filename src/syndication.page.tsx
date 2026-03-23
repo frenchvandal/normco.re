@@ -1,5 +1,3 @@
-/** Syndication page with copyable feed and indexing endpoints. */
-
 import { siteName } from "./_data.ts";
 import { renderOcticonMarkup } from "./utils/primer-icons.ts";
 import {
@@ -46,30 +44,23 @@ const CHEVRON_DOWN_ICON = renderOcticonMarkup(
   "cds--accordion__arrow",
 );
 
-/** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
-/** Page URL. */
 export const url = "/syndication/";
-/** Page title. */
 export const title = "Syndication";
-/** Page meta description. */
 export const description =
   "Machine-readable syndication endpoints for normco.re.";
 
-/** French-only metadata overrides used by the multilanguage plugin. */
 export const fr = {
   title: "Syndication",
   description:
     "Points d’accès de syndication structurés pour le contenu de normco.re.",
 } as const;
 
-/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
 export const zhHans = {
   title: "聚合",
   description: "normco.re 的结构化订阅与索引入口。",
 } as const;
 
-/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
 export const zhHant = {
   title: "聚合",
   description: "normco.re 的結構化訂閱與索引入口。",
@@ -334,7 +325,6 @@ function buildFeedActions(
   };
 }
 
-/** Renders the syndication page. */
 export default (data: Lume.Data): string => {
   const language = resolveSiteLanguage(data.lang);
   const { homeUrl, translations } = getPageContext(language);

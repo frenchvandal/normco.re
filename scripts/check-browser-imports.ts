@@ -18,14 +18,12 @@ const ALLOWED_PREFIXES = [
   "blob:",
 ] as const;
 
-/** Categories of non-browser-resolvable import expressions. */
 export type ImportIssueKind =
   | "network-specifier"
   | "forbidden-prefix"
   | "bare-specifier"
   | "dynamic-non-literal";
 
-/** One import-resolution issue found in shipped browser scripts. */
 export type ImportIssue = {
   filePath: string;
   kind: ImportIssueKind;
@@ -33,7 +31,6 @@ export type ImportIssue = {
   line: number;
 };
 
-/** Optional analysis controls for imported specifier validation. */
 export type AnalyzeOptions = {
   readonly allowDynamicExpression?: (
     filePath: string,
@@ -94,10 +91,6 @@ function createSpecifierIssue(
   return undefined;
 }
 
-/**
- * Analyze import expressions and report browser-unresolvable specifiers.
- * Supports static imports and dynamic imports with string-literal specifiers.
- */
 export function analyzeImportSpecifiers(
   source: string,
   filePath: string,

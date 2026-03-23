@@ -1,5 +1,3 @@
-/** Utilities to generate Atom 1.0 feeds. */
-
 import { formatRfc3339Instant } from "./date-time.ts";
 
 export type AtomFeedAuthor = {
@@ -31,7 +29,6 @@ export type AtomFeedData = {
   readonly stylesheetHref?: string;
 };
 
-/** Escapes a string for XML text and attribute contexts. */
 export function escapeXml(value: string): string {
   return value
     .replaceAll("&", "&amp;")
@@ -41,7 +38,6 @@ export function escapeXml(value: string): string {
     .replaceAll("'", "&apos;");
 }
 
-/** Rewrites relative `href` and `src` attributes in HTML to absolute URLs. */
 export function absolutizeHtmlUrls(baseUrl: string, html: string): string {
   return html.replaceAll(
     /\s(href|src)="([^"]+)"/g,
@@ -92,7 +88,6 @@ function formatEntry(entry: AtomFeedEntry): string {
   return lines.join("\n");
 }
 
-/** Generates a complete Atom 1.0 XML document. */
 export function generateAtomXml(data: AtomFeedData): string {
   const lines = ['<?xml version="1.0" encoding="UTF-8"?>'];
 

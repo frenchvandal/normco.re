@@ -1,5 +1,3 @@
-/** Base HTML layout. Every page and layout chains to this. */
-
 import type { jsx } from "lume/jsx-runtime";
 
 import {
@@ -28,7 +26,8 @@ import { THEME_BOOTSTRAP_SCRIPT } from "../../utils/theme-bootstrap.ts";
 
 const CANONICAL_BRAND_ICON_NAMES = ["github", "rss"] as const;
 
-/** `<!doctype html>` prepended to the document before the `<html>` root. */
+// Lume JSX renders a fragment here; the document doctype still has to be
+// injected explicitly ahead of `<html>`.
 const DOCTYPE = { __html: "<!doctype html>\n" } as const;
 // Keep the theme bootstrap inline to avoid an extra render-blocking fetch on
 // first paint while still setting the resolved color mode before CSS applies.
@@ -52,17 +51,14 @@ type LayoutData = Lume.Data & {
   unlisted?: boolean;
   alternates?: ReadonlyArray<AlternateData>;
   siteChrome?: SiteChromeData;
-  /** Injected by `src/_data.ts` - canonical site name / domain. */
+  // Populated by `src/_data.ts` in real builds. These stay optional so layout
+  // tests can render with partial data.
   siteName?: string;
-  /** Injected by `src/_data.ts` - primary author name. */
   author?: string;
-  /** Injected by `src/_data.ts` - site metadata for meta tags. */
   metas?: { readonly site?: string; readonly description?: string };
-  /** Injected by `src/_data.ts` - year the blog was launched. */
   blogStartYear?: number;
 };
 
-/** Return type of an ssx JSX element, used to type Lume component functions. */
 type SsxElement = ReturnType<typeof jsx>;
 type LayoutRenderable =
   | SsxElement
@@ -88,13 +84,11 @@ type FooterProps = Readonly<{
 }>;
 type ComponentKey = "Header" | "Footer";
 
-/** Minimal typed interface for the components used in this layout. */
 type Comp = {
   Header: LayoutComponent<HeaderProps>;
   Footer: LayoutComponent<FooterProps>;
 };
 
-/** Returns alternate URLs keyed by language for the current page. */
 function collectAlternateUrls(
   alternates: ReadonlyArray<AlternateData> | undefined,
   currentLanguage: SiteLanguage,
@@ -122,12 +116,10 @@ function collectAlternateUrls(
   return urls;
 }
 
-/** Returns true when the current URL is an individual post route. */
 function isPostDetailUrl(currentUrl: string): boolean {
   return /\/posts\/[^/]+\/$/.test(currentUrl);
 }
 
-/** Returns true when the current URL is a posts archive route (localized or default). */
 function isPostsArchiveUrl(currentUrl: string): boolean {
   return /\/posts\/$/.test(currentUrl);
 }
@@ -167,7 +159,6 @@ function resolveIconResolver(
     : undefined;
 }
 
-/** Renders the full HTML document shell. */
 export default (
   {
     title,
@@ -188,8 +179,8 @@ export default (
   }: LayoutData,
   _helpers: Lume.Helpers,
 ) => {
-  // siteName and author are always provided by src/_data.ts; the fallbacks are
-  // a safety net for test environments that omit them.
+  // The real site injects these via `src/_data.ts`; fallbacks keep tests and
+  // isolated renders from depending on the full Lume data pipeline.
   const resolvedSiteName = siteName ?? "normco.re";
   const resolvedAuthor = author ?? "Phiphi";
   const resolvedSiteChrome = resolveSiteChromeData(siteChrome);
@@ -210,6 +201,9 @@ export default (
   const includeLinkPrefetch = !isPostDetailUrl(currentUrl) &&
     !isPostsArchiveUrl(currentUrl);
   const swDebugLevel = build?.swDebugLevel ?? "off";
+  // Pagefind should index only public pages that opt in. Unlisted or
+  // search-disabled routes still render normally but stay out of the generated
+  // search corpus.
   const includePagefindBody = isIndexable && searchIndexed !== false;
   const atomXmlUrl = getLocalizedAtomFeedUrl(language);
   const feedXmlUrl = getLocalizedRssFeedUrl(language);
@@ -220,8 +214,8 @@ export default (
   const Footer = resolveComponent<FooterProps>(comp, "Footer");
   const iconResolver = resolveIconResolver(_helpers);
 
-  // Simple Icons via the Lume plugin are the canonical source for brand/social
-  // logos site-wide. LAO_YANG remains a hard-coded SVG in `about.pictogram.ts`.
+  // Resolve shared Simple Icons during render so missing plugin wiring fails
+  // eagerly instead of only on the pages that happen to use these logos.
   for (const iconName of CANONICAL_BRAND_ICON_NAMES) {
     iconResolver?.(iconName, "simpleicons");
   }

@@ -23,7 +23,6 @@
  * all four locations.
  */
 
-/** Supported language codes available in the site. */
 export const SUPPORTED_LANGUAGES = [
   "en",
   "fr",
@@ -31,15 +30,12 @@ export const SUPPORTED_LANGUAGES = [
   "zhHant",
 ] as const;
 
-/** Canonical language type used across pages, components, and scripts. */
 export type SiteLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
-/** Fallback language used when no supported language can be resolved. */
 export const DEFAULT_LANGUAGE: SiteLanguage = "en";
 
 const SUPPORTED_LANGUAGE_SET = new Set<string>(SUPPORTED_LANGUAGES);
 
-/** BCP 47 tags written to the HTML `lang` attribute and feed metadata. */
 export const LANGUAGE_TAG = {
   en: "en",
   fr: "fr",
@@ -47,7 +43,6 @@ export const LANGUAGE_TAG = {
   zhHant: "zh-Hant",
 } as const satisfies Record<SiteLanguage, string>;
 
-/** Canonical language values stored in page data (`data.lang`). */
 export const LANGUAGE_DATA_CODE = {
   en: "en",
   fr: "fr",
@@ -55,7 +50,6 @@ export const LANGUAGE_DATA_CODE = {
   zhHant: "zh-hant",
 } as const satisfies Record<SiteLanguage, string>;
 
-/** URL prefixes used by the multilanguage plugin for each language. */
 export const LANGUAGE_PREFIX = {
   en: "",
   fr: "/fr",
@@ -70,7 +64,6 @@ const LANGUAGE_ALIASES: Readonly<Record<string, SiteLanguage>> = {
   "zh_hant": "zhHant",
 };
 
-/** Translation contract used by shared UI components and pages. */
 export type SiteTranslations = {
   readonly site: {
     readonly skipToContent: string;
@@ -1048,12 +1041,10 @@ const SITE_TRANSLATIONS = {
   },
 } as const satisfies Record<SiteLanguage, SiteTranslations>;
 
-/** Returns true when a value is one of the supported language codes. */
 export function isSiteLanguage(value: unknown): value is SiteLanguage {
   return typeof value === "string" && SUPPORTED_LANGUAGE_SET.has(value);
 }
 
-/** Tries to resolve a language-like value to a supported site language. */
 export function tryResolveSiteLanguage(
   value: unknown,
 ): SiteLanguage | undefined {
@@ -1069,27 +1060,22 @@ export function tryResolveSiteLanguage(
   return LANGUAGE_ALIASES[normalized];
 }
 
-/** Resolves a language value to a supported code, with English fallback. */
 export function resolveSiteLanguage(value: unknown): SiteLanguage {
   return tryResolveSiteLanguage(value) ?? DEFAULT_LANGUAGE;
 }
 
-/** Returns the language tag used in HTML and feed metadata. */
 export function getLanguageTag(language: SiteLanguage): string {
   return LANGUAGE_TAG[language];
 }
 
-/** Returns the canonical value used in page metadata and search queries. */
 export function getLanguageDataCode(language: SiteLanguage): string {
   return LANGUAGE_DATA_CODE[language];
 }
 
-/** Returns the path prefix for a language (`""` for default). */
 export function getLanguagePrefix(language: SiteLanguage): string {
   return LANGUAGE_PREFIX[language];
 }
 
-/** Returns a site URL translated to the target language. */
 export function getLocalizedUrl(path: string, language: SiteLanguage): string {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
 
@@ -1104,7 +1090,6 @@ export function getLocalizedUrl(path: string, language: SiteLanguage): string {
   return `${getLanguagePrefix(language)}${normalizedPath}`;
 }
 
-/** Returns the translation bundle for a language. */
 export function getSiteTranslations(language: SiteLanguage): SiteTranslations {
   return SITE_TRANSLATIONS[language];
 }
@@ -1178,7 +1163,6 @@ const TAG_PAGE_DESCRIPTION_FORMAT = {
   (tag: string, count: number) => string
 >;
 
-/** Formats a reading-time label localized to the target language. */
 export function formatReadingTime(
   minutes: number,
   language: SiteLanguage,
@@ -1186,12 +1170,10 @@ export function formatReadingTime(
   return READING_TIME_FORMAT[language](minutes);
 }
 
-/** Formats a yearly post-count summary localized to the target language. */
 export function formatPostCount(count: number, language: SiteLanguage): string {
   return POST_COUNT_FORMAT[language](count);
 }
 
-/** Formats the localized page title for a tag taxonomy route. */
 export function formatTagPageTitle(
   tag: string,
   language: SiteLanguage,
@@ -1199,7 +1181,6 @@ export function formatTagPageTitle(
   return TAG_PAGE_TITLE_FORMAT[language](tag);
 }
 
-/** Formats the localized meta description for a tag taxonomy route. */
 export function formatTagPageDescription(
   tag: string,
   count: number,

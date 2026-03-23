@@ -6,9 +6,6 @@ import { asLumeData, asLumeHelpers } from "../../../test/lume.ts";
 
 import baseLayout from "./base.tsx";
 
-// ---------------------------------------------------------------------------
-// No helpers are used by base.tsx after JSX migration.
-// ---------------------------------------------------------------------------
 const MOCK_HELPERS = asLumeHelpers({});
 
 async function renderBase(data: Lume.Data): Promise<string> {
@@ -20,11 +17,6 @@ function makeSentence(seed: number): string {
   return faker.lorem.sentence({ min: 3, max: 7 });
 }
 
-// ---------------------------------------------------------------------------
-// Helper factory
-// ---------------------------------------------------------------------------
-
-/** Builds a minimal Lume.Data mock for the base layout. */
 function makeData(
   overrides: {
     title?: string;
@@ -73,10 +65,6 @@ function makeData(
     ...overrides,
   });
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 describe("base.tsx layout", () => {
   describe("page title", () => {

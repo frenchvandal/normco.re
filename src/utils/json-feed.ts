@@ -1,11 +1,7 @@
-/** Utilities to normalize generated JSON Feed documents. */
-
 import { formatRfc3339Instant, parseDateValue } from "./date-time.ts";
 
-/** JSON Feed version URL for the 1.1 specification. */
 export const JSON_FEED_VERSION = "https://jsonfeed.org/version/1.1";
 
-/** Pattern matching localized `feed.json` output paths. */
 export const JSON_FEED_PATH_PATTERN = /\/feed\.json$/;
 
 export type JsonFeedItem = {
@@ -21,13 +17,13 @@ export type JsonFeedDocument = {
   readonly [key: string]: unknown;
 };
 
-/** Converts a date string to RFC 3339 when it is parseable. */
 export function toRfc3339(value: string): string {
   const date = parseDateValue(value);
   return date ? formatRfc3339Instant(date) : value;
 }
 
-/** Normalizes Lume's JSON Feed output to JSON Feed 1.1 conventions. */
+// Lume's JSON feed output still needs light normalization to match the 1.1
+// fields and date formats expected by downstream consumers.
 export function normalizeJsonFeed(
   feed: JsonFeedDocument,
   language?: string,

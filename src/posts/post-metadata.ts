@@ -16,7 +16,6 @@ export function resolvePostDate(
   return parseDateValue(value) ?? fallback;
 }
 
-/** Returns rounded reading minutes when available, otherwise `undefined`. */
 export function resolveReadingMinutes(value: unknown): number | undefined {
   if (
     typeof value === "object" &&

@@ -1,9 +1,3 @@
-/**
- * Shared state panel for full-page fallbacks and inline empty states.
- *
- * This stays intentionally simple: one title, one message, one primary action.
- */
-
 import { escapeHtml } from "../utils/html.ts";
 
 export type StatePanelProps = {
@@ -21,7 +15,6 @@ export type StatePanelProps = {
 
 const ALLOWED_HEADING_TAGS = new Set(["h1", "h2", "h3"]);
 
-/** Renders the shared local state panel pattern. */
 export default ({
   title,
   message,

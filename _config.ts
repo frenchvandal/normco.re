@@ -15,7 +15,6 @@ import { registerSiteManifest } from "./_config/site_manifest.ts";
 import { registerProcessors } from "./_config/processors.ts";
 import { registerXslStylesheets } from "./_config/xsl_stylesheets.ts";
 
-/** Console debug policy, read once at module init from `LUME_LOGS`. */
 const consoleDebugPolicy = readConsoleDebugPolicy((name) => Deno.env.get(name));
 const parsedDenoArgs = parseArgs(Deno.args, {
   boolean: ["serve"],
@@ -104,11 +103,6 @@ function updateSeoDebugCollection(
   }));
 }
 
-// ---------------------------------------------------------------------------
-// Site instantiation
-// ---------------------------------------------------------------------------
-
-/** Lume site instance — entry point for the build pipeline. */
 const site: Site = lume({
   src: "./src",
   location: new URL("https://normco.re"),
@@ -129,7 +123,7 @@ site.addEventListener("beforeSave", () => {
   updateSeoDebugCollection(site, buildData, seoIssues);
 });
 
-// Module registrations — order matters for some plugins.
+// Registration order matters for some plugins and post-processors.
 registerAssets(site);
 registerPlugins(site, { isServeTask });
 registerFeeds(site);
@@ -142,8 +136,8 @@ registerXslStylesheets(site);
 // directory separate from the Lume build cache.
 site.addEventListener("beforeBuild", () => runBuildTasks(PRE_BUILD_TASKS));
 
-// Post-build: fingerprint assets, verify browser imports, format HTML, then
-// validate local links against the final rewritten output.
+// Run asset fingerprinting and link/import validation against the final output,
+// after Lume has finished rewriting URLs.
 site.addEventListener("afterBuild", () => runBuildTasks(POST_BUILD_TASKS));
 
 export default site;

@@ -16,9 +16,6 @@ import layoutStyles from "../../styles/layout.css" with { type: "text" };
 
 import postLayout from "./post.tsx";
 
-// ---------------------------------------------------------------------------
-// Minimal mock helpers satisfying the `H` interface used inside post.tsx.
-// ---------------------------------------------------------------------------
 const MOCK_HELPERS = asLumeHelpers({
   date: (_value: unknown, _format: string): string => "2026-03-05",
 });
@@ -38,11 +35,6 @@ function makePostDate(seed: number): Date {
   return faker.date.anytime();
 }
 
-// ---------------------------------------------------------------------------
-// Helper factories
-// ---------------------------------------------------------------------------
-
-/** Creates a minimal NavHelper mock with fixed prev/next values. */
 function makeNav(
   prev: { url: string; title: string } | undefined,
   next: { url: string; title: string } | undefined,
@@ -53,7 +45,6 @@ function makeNav(
   };
 }
 
-/** Builds a minimal Lume.Data mock for the post layout. */
 function makeData(
   overrides: {
     title?: string;
@@ -82,10 +73,6 @@ function makeData(
     ...overrides,
   });
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 describe("post.tsx layout", () => {
   describe("reading time", () => {

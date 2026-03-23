@@ -1,5 +1,3 @@
-/** Tests for the copyright year formatter utility. */
-
 import { assert } from "@std/assert";
 import { FakeTime } from "@std/testing/time";
 import { describe, it } from "@std/testing/bdd";
