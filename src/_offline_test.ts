@@ -1,5 +1,5 @@
-import { assertStringIncludes } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assertStringIncludes } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 
 import offlinePage from "./offline.page.tsx";
 

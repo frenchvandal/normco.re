@@ -1,4 +1,4 @@
-import { faker } from "npm/faker-js";
+import { faker } from "@faker-js/faker";
 
 /** Shared fixed reference date for reproducible Faker date helpers in tests. */
 export const TEST_FAKER_REF_DATE = new Date("2026-03-16T00:00:00.000Z");

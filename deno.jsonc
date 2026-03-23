@@ -1,28 +1,11 @@
+// Deno workspace configuration for normco.re
+// Dependencies are centralised in import_map.jsonc.
 {
-  "imports": {
-    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/",
-    "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
-    "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",
-    "jsr/assert": "jsr:@std/assert@^1.0.19",
-    "jsr/async": "jsr:@std/async@^1.2.0",
-    "jsr/cli": "jsr:@std/cli@^1.0.28",
-    "jsr/collections": "jsr:@std/collections@^1.1.6",
-    "jsr/encoding-hex": "jsr:@std/encoding@^1.0.10/hex",
-    "jsr/front-matter-yaml": "jsr:@std/front-matter@^1.0.9/yaml",
-    "jsr/fs": "jsr:@std/fs@^1.0.23",
-    "jsr/fmt-colors": "jsr:@std/fmt@^1.0.9/colors",
-    "jsr/html": "jsr:@std/html@^1.0.5",
-    "jsr/path": "jsr:@std/path@^1.1.4",
-    "jsr/text": "jsr:@std/text@^1.0.17",
-    "jsr/testing-bdd": "jsr:@std/testing@^1.0.17/bdd",
-    "jsr/testing-mock": "jsr:@std/testing@^1.0.17/mock",
-    "jsr/xml": "jsr:@std/xml@^0.1.0",
-    "npm/faker-js": "npm:@faker-js/faker@^10.3.0",
-    "npm/opentelemetry-api": "npm:@opentelemetry/api@^1.9.0",
-    "npm/date-fns-locale": "npm:date-fns@4.1.0/locale",
-    "npm/shiki": "npm:shiki@4.0.2"
-  },
+  "importMap": "./import_map.jsonc",
+
+  // ── Tasks ─────────────────────────────────────────────────────────
   "tasks": {
+    // Core build & dev
     "lume": {
       "description": "Run Lume command",
       "command": "deno run -A lume/cli.ts"
@@ -35,10 +18,14 @@
       "description": "Run and serve the site for development",
       "command": "LUME_SERVE=1 deno task lume -s"
     },
+
+    // Dependency management
     "update-deps": {
       "description": "Update declared Deno dependencies and regenerate lock file",
       "command": "deno outdated --update --latest"
     },
+
+    // Quality gates
     "check": {
       "description": "Type-check the entire project",
       "command": "deno check _cms.ts _cms_test.ts _config.ts _config/**/*.ts contracts/**/*.ts plugins/**/*.ts scripts/**/*.ts src/**/*.ts src/**/*.tsx test/**/*.ts"
@@ -59,6 +46,8 @@
       "description": "Run documentation tests from inline JSDoc examples in source files",
       "command": "deno test --doc src/**/*.ts src/**/*.tsx plugins/**/*.ts"
     },
+
+    // Payload budget
     "payload:report": {
       "description": "Report route-level JS/CSS payload from generated output (`_site` by default)",
       "command": "deno run --allow-read --allow-write scripts/payload-report.ts"
@@ -83,6 +72,8 @@
       "description": "Run build + policy-based payload report + guard in one PR/CI flow (`deno task payload:ci --baseline=/path/to/baseline.json`)",
       "command": "deno task build && deno task payload:policy"
     },
+
+    // Commit & contract validation
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"
@@ -91,21 +82,30 @@
       "description": "Validate generated JSON feeds and any optional content-contract output against schemas",
       "command": "deno run --allow-read contracts/validate.ts"
     },
+
+    // Android companion app
     "android:sync-contract-assets": {
       "description": "Build the site contracts and mirror app-manifest/posts-index outputs into the Android bootstrap assets",
       "command": "deno task build && deno run --allow-read --allow-write scripts/sync-android-contract-assets.ts"
     },
+
+    // Git hooks
     "lefthook:install": {
       "description": "Install Lefthook git hooks non-interactively via deno x (no global install or Node.js required)",
       "command": "DENO_NO_PROMPT=1 deno x lefthook install"
     }
   },
+
+  // ── TypeScript compiler ───────────────────────────────────────────
   "compilerOptions": {
+    // Lume global types (Site, Page, helpers, etc.)
     "types": [
       "lume/types.ts"
     ],
+    // SSX-based JSX transform used by Lume 3
     "jsx": "react-jsx",
     "jsxImportSource": "lume",
+    // Strict checks beyond the default
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "verbatimModuleSyntax": true,
@@ -113,11 +113,19 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true
   },
+
+  // ── Unstable Deno features ────────────────────────────────────────
+  // raw-imports: allows importing non-TS assets as raw text
   "unstable": [
     "raw-imports"
   ],
+
+  // Use auto node_modules for npm compatibility (esbuild, shiki, etc.)
   "nodeModulesDir": "auto",
+
+  // ── Test / fmt / lint configuration ───────────────────────────────
   "test": {
+    // Markdown files contain JSDoc doc-test fences but are not test modules
     "exclude": [
       "**/*.md"
     ]
@@ -132,11 +140,15 @@
       "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/lint.ts"
     ],
     "rules": {
+      // Disabled because the import map uses canonical @std/ prefixes
       "exclude": [
         "no-import-prefix"
       ]
     }
   },
+
+  // ── npm lifecycle scripts ─────────────────────────────────────────
+  // Packages that need post-install scripts to build native binaries
   "allowScripts": {
     "allow": [
       "npm:@parcel/watcher@2.5.6",

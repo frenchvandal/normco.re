@@ -1,5 +1,5 @@
-import { assertEquals, assertStringIncludes, assertThrows } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assertEquals, assertStringIncludes, assertThrows } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 import { DOMParser } from "lume/deps/dom.ts";
 
 import {

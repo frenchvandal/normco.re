@@ -1,4 +1,4 @@
-import { parseArgs } from "jsr/cli";
+import { parseArgs } from "@std/cli";
 import lume from "lume/mod.ts";
 import type Site from "lume/core/site.ts";
 import { readConsoleDebugPolicy } from "./plugins/console_debug.ts";

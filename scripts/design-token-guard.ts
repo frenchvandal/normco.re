@@ -1,5 +1,5 @@
-import { walk } from "jsr/fs";
-import { join, relative } from "jsr/path";
+import { walk } from "@std/fs";
+import { join, relative } from "@std/path";
 
 export type StyleSource = {
   readonly filePath: string;

@@ -1,5 +1,5 @@
-import { describe, it } from "jsr/testing-bdd";
-import { assertEquals } from "jsr/assert";
+import { describe, it } from "@std/testing/bdd";
+import { assertEquals } from "@std/assert";
 
 import { readConsoleDebugPolicy } from "./console_debug.ts";
 

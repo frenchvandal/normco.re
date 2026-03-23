@@ -1,5 +1,5 @@
-import { assertEquals, assertStringIncludes } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assertEquals, assertStringIncludes } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker, seedTestFaker } from "../../test/faker.ts";
 

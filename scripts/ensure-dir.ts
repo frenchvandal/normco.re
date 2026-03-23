@@ -1,4 +1,4 @@
-import { parseArgs } from "jsr/cli";
+import { parseArgs } from "@std/cli";
 
 const parsedArgs = parseArgs(Deno.args);
 const targetDir = parsedArgs._[0];

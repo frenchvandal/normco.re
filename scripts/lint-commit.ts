@@ -19,8 +19,8 @@
  * ```
  */
 
-import { parseArgs } from "jsr/cli";
-import { closestString, levenshteinDistance } from "jsr/text";
+import { parseArgs } from "@std/cli";
+import { closestString, levenshteinDistance } from "@std/text";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 

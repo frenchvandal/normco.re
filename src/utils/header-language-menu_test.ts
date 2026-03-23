@@ -1,5 +1,5 @@
-import { assert, assertStringIncludes } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assert, assertStringIncludes } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 
 import { HEADER_IDS, HEADER_LANGUAGE_OPTIONS } from "./header-language-menu.ts";
 import {

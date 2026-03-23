@@ -1,5 +1,5 @@
-import { describe, it } from "jsr/testing-bdd";
-import { assertEquals, assertRejects } from "jsr/assert";
+import { describe, it } from "@std/testing/bdd";
+import { assertEquals, assertRejects } from "@std/assert";
 
 import type Site from "lume/core/site.ts";
 

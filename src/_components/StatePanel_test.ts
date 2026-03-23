@@ -1,5 +1,5 @@
-import { assertNotMatch, assertStringIncludes } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assertNotMatch, assertStringIncludes } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 
 import StatePanel from "./StatePanel.tsx";
 

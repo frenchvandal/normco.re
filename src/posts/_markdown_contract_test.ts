@@ -1,6 +1,6 @@
-import { assert, assertMatch, assertStringIncludes } from "jsr/assert";
-import { extract } from "jsr/front-matter-yaml";
-import { describe, it } from "jsr/testing-bdd";
+import { assert, assertMatch, assertStringIncludes } from "@std/assert";
+import { extract } from "@std/front-matter/yaml";
+import { describe, it } from "@std/testing/bdd";
 import { SHIKI_OPTIONS } from "../../_config/code_highlighting.ts";
 import { POST_CONTRACT_FIXTURES } from "../../test/posts_contract_fixtures.ts";
 

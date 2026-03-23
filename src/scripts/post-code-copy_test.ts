@@ -1,5 +1,5 @@
-import { assert, assertEquals } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assert, assertEquals } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 import SCRIPT_SOURCE from "./post-code-copy.js" with { type: "text" };
 import { getJSDOM } from "../../test/jsdom.ts";
 

@@ -1,5 +1,5 @@
-import { assertEquals, assertStrictEquals } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assertEquals, assertStrictEquals } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 
 import {
   DEFAULT_LANGUAGE,

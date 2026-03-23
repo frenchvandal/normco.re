@@ -3,8 +3,8 @@ import {
   assertMatch,
   assertNotMatch,
   assertStringIncludes,
-} from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+} from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import layoutStyles from "../styles/layout.css" with { type: "text" };
 

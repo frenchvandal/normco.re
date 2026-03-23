@@ -1,4 +1,4 @@
-import { pooledMap } from "jsr:@std/async@^1.2.0/pool";
+import { pooledMap } from "@std/async/pool";
 import type { Page } from "lume/core/file.ts";
 import type Site from "lume/core/site.ts";
 import type { Plugin } from "lume/core/site.ts";
@@ -9,7 +9,7 @@ import {
   type CodeToHastOptions,
   createHighlighter,
   type Highlighter,
-} from "npm:shiki@4.0.2";
+} from "shiki";
 
 import type {
   ShikiHighlighterOptions,

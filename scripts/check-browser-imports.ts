@@ -1,6 +1,6 @@
-import { parseArgs } from "jsr/cli";
-import { walk } from "jsr/fs";
-import { join } from "jsr/path";
+import { parseArgs } from "@std/cli";
+import { walk } from "@std/fs";
+import { join } from "@std/path";
 
 const NETWORK_PREFIXES = ["http://", "https://"] as const;
 const FORBIDDEN_PREFIXES = [

@@ -1,7 +1,7 @@
-import { parseArgs } from "jsr/cli";
-import { encodeHex } from "jsr/encoding-hex";
-import { walk } from "jsr/fs";
-import { basename, extname, join } from "jsr/path";
+import { parseArgs } from "@std/cli";
+import { encodeHex } from "@std/encoding/hex";
+import { walk } from "@std/fs";
+import { basename, extname, join } from "@std/path";
 
 const HASH_LENGTH = 10;
 const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
