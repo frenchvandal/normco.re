@@ -10,14 +10,7 @@ import {
   getLocalizedJsonFeedUrl,
   getLocalizedRssFeedUrl,
 } from "./utils/feed-paths.ts";
-import {
-  type CarbonIconDescriptor,
-  CLOSE_ICON as CARBON_CLOSE_ICON,
-  DOWNLOAD_ICON as CARBON_DOWNLOAD_ICON,
-  LOCATION_ICON as CARBON_LOCATION_ICON,
-  NOTEBOOK_ICON as CARBON_NOTEBOOK_ICON,
-  TRANSLATE_ICON as CARBON_TRANSLATE_ICON,
-} from "./utils/carbon-icons.ts";
+import { renderOcticonMarkup } from "./utils/primer-icons.ts";
 import { escapeHtml } from "./utils/html.ts";
 import {
   type AboutContact,
@@ -27,30 +20,6 @@ import {
   getAboutFeedSeparators,
 } from "./about.data.ts";
 import { ABOUT_PICTOGRAM_SVG } from "./about.pictogram.ts";
-function renderCarbonIconMarkup(
-  {
-    attrs,
-    content,
-    name,
-  }: CarbonIconDescriptor,
-  className: string,
-): string {
-  const paths = content.map((node: CarbonIconDescriptor["content"][number]) => {
-    const attributes = Object.entries(node.attrs)
-      .map(([key, value]) => `${key}="${escapeHtml(String(value))}"`)
-      .join(" ");
-
-    return `<path ${attributes}></path>`;
-  }).join("");
-
-  return `<svg class="${
-    escapeHtml(className)
-  }" width="${attrs.width}" height="${attrs.height}" viewBox="${
-    escapeHtml(attrs.viewBox)
-  }" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="${
-    escapeHtml(name)
-  }">${paths}</svg>`;
-}
 
 function renderContactItem(
   {
@@ -123,7 +92,7 @@ function renderContactItem(
                     </div>
                     <div class="about-contact-popover-toolbar">
                       <a
-                        class="cds--btn cds--btn--ghost about-contact-action about-contact-download"
+                        class="btn cds--btn--ghost about-contact-action about-contact-download"
                         href="${escapeHtml(contact.originalSrc)}"
                         download="${escapeHtml(contact.downloadName)}"
                         aria-label="${
@@ -139,7 +108,7 @@ function renderContactItem(
                       </a>
                       <button
                         type="button"
-                        class="cds--btn cds--btn--ghost about-contact-action about-contact-close"
+                        class="btn cds--btn--ghost about-contact-action about-contact-close"
                         aria-label="${
     escapeHtml(translations.about.contactCloseLabel)
   }"
@@ -222,42 +191,34 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const atomXmlUrl = getLocalizedAtomFeedUrl(language);
   const feedXmlUrl = getLocalizedRssFeedUrl(language);
   const feedJsonUrl = getLocalizedJsonFeedUrl(language);
-  const closeIconMarkup = renderCarbonIconMarkup(
-    CARBON_CLOSE_ICON,
+  const closeIconMarkup = renderOcticonMarkup(
+    "x",
     "about-contact-action-icon-svg",
   );
-  const downloadIconMarkup = renderCarbonIconMarkup(
-    CARBON_DOWNLOAD_ICON,
+  const downloadIconMarkup = renderOcticonMarkup(
+    "download",
     "about-contact-action-icon-svg",
   );
-  const locationIconMarkup = renderCarbonIconMarkup(
-    CARBON_LOCATION_ICON,
+  const locationIconMarkup = renderOcticonMarkup(
+    "location",
     "about-fact-icon-svg",
   );
-  const notebookIconMarkup = renderCarbonIconMarkup(
-    CARBON_NOTEBOOK_ICON,
-    "about-fact-icon-svg",
-  );
-  const translateIconMarkup = renderCarbonIconMarkup(
-    CARBON_TRANSLATE_ICON,
+  const notebookIconMarkup = renderOcticonMarkup("book", "about-fact-icon-svg");
+  const translateIconMarkup = renderOcticonMarkup(
+    "globe",
     "about-fact-icon-svg",
   );
   const qrImageSizes =
     "(min-width: 66rem) 16rem, (min-width: 42rem) 14rem, calc(100vw - 6rem)";
   const qrImageTransforms = "avif webp jpg 240 360 512";
-  const icon = helpers.icon?.bind(helpers) ??
-    ((key: string, catalogId: string): string =>
-      `/icons/${catalogId}/${key}.svg`);
-  icon("wechat", "simpleicons");
-  icon("telegram", "simpleicons");
+  const resolveIcon = helpers.icon?.bind(helpers);
+  resolveIcon?.("wechat", "simpleicons");
+  resolveIcon?.("telegram", "simpleicons");
   const { final: finalSeparator, list: listSeparator } = getAboutFeedSeparators(
     language,
   );
-  const contacts: readonly AboutContact[] = getAboutContacts(
-    language,
-    translations.about,
-  );
-  const facts: readonly AboutFact[] = getAboutFacts(translations.about, {
+  const contacts = getAboutContacts(language, translations.about);
+  const facts = getAboutFacts(translations.about, {
     location: locationIconMarkup,
     notebook: notebookIconMarkup,
     translate: translateIconMarkup,

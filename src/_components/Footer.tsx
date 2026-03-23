@@ -4,8 +4,8 @@ import type { jsx } from "lume/jsx-runtime";
 
 import { getSiteTranslations, type SiteLanguage } from "../utils/i18n.ts";
 import { formatCopyrightYears } from "../utils/copyright.ts";
-import { GITHUB_ICON, RSS_ICON } from "../utils/carbon-icons.ts";
-import CarbonIcon from "./CarbonIcon.tsx";
+import type { OcticonName } from "../utils/primer-icons.ts";
+import SiteIcon from "./SiteIcon.tsx";
 
 const repositoryUrl = "https://github.com/frenchvandal/normco.re" as const;
 type SsxElement = ReturnType<typeof jsx>;
@@ -21,7 +21,7 @@ type FooterLinkProps = Readonly<{
   href: string;
   label: string;
   ariaLabel: string;
-  icon: typeof GITHUB_ICON | typeof RSS_ICON;
+  icon: OcticonName;
   external?: boolean;
 }>;
 
@@ -35,8 +35,8 @@ function renderFooterLink(
       aria-label={ariaLabel}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
-      <CarbonIcon
-        icon={icon}
+      <SiteIcon
+        name={icon}
         className="site-footer-icon"
         width={16}
         height={16}
@@ -79,14 +79,14 @@ export default (
             href: repositoryUrl,
             label: "GitHub",
             ariaLabel: translations.site.repositoryLinkAriaLabel,
-            icon: GITHUB_ICON,
+            icon: "mark-github",
             external: true,
           })}
           {renderFooterLink({
             href: syndicationPageUrl,
             label: translations.feeds.title,
             ariaLabel: translations.site.syndicationPageLinkAriaLabel,
-            icon: RSS_ICON,
+            icon: "rss",
           })}
         </nav>
       </div>

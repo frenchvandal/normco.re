@@ -42,6 +42,10 @@ export function ariaCurrent(
   return {};
 }
 
+function isCurrentPage(href: string, currentUrl: string): boolean {
+  return ariaCurrent(href, currentUrl)["aria-current"] === "page";
+}
+
 export function buildHeaderNavigation(
   {
     currentUrl,
@@ -61,19 +65,18 @@ export function buildHeaderNavigation(
     {
       href: homeUrl,
       label: translations.navigation.home,
-      isCurrent: ariaCurrent(homeUrl, currentUrl)["aria-current"] === "page",
+      isCurrent: isCurrentPage(homeUrl, currentUrl),
     },
     {
       href: postsUrl,
       label: translations.navigation.writing,
-      isCurrent: ariaCurrent(postsUrl, currentUrl)["aria-current"] ===
-          "page" ||
-        ariaCurrent(tagsUrl, currentUrl)["aria-current"] === "page",
+      isCurrent: isCurrentPage(postsUrl, currentUrl) ||
+        isCurrentPage(tagsUrl, currentUrl),
     },
     {
       href: aboutUrl,
       label: translations.navigation.about,
-      isCurrent: ariaCurrent(aboutUrl, currentUrl)["aria-current"] === "page",
+      isCurrent: isCurrentPage(aboutUrl, currentUrl),
     },
   ] as const;
 }

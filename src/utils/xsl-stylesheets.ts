@@ -1,10 +1,9 @@
-import type { CarbonIconDescriptor } from "../_components/CarbonIcon.tsx";
 import feedStylesheetTemplate from "../feed.xsl.template" with { type: "text" };
 import sitemapStylesheetTemplate from "../sitemap.xsl.template" with {
   type: "text",
 };
 
-import { CHECKMARK_ICON } from "./carbon-icons.ts";
+import { renderOcticonMarkup } from "./primer-icons.ts";
 import { HEADER_IDS, HEADER_LANGUAGE_OPTIONS } from "./header-language-menu.ts";
 import { type SiteLanguage, SUPPORTED_LANGUAGES } from "./i18n.ts";
 
@@ -74,44 +73,6 @@ function renderXslAttribute(
   return `${indent}<xsl:attribute name="${name}">${content}</xsl:attribute>`;
 }
 
-function renderIconAttributes(
-  attributes: Readonly<Record<string, string | number>>,
-): string {
-  return Object.entries(attributes).map(([name, value]) =>
-    `${name}="${escapeXml(String(value))}"`
-  ).join(" ");
-}
-
-function renderCarbonIconMarkup(
-  {
-    className,
-    height,
-    icon,
-    width,
-  }: {
-    readonly className: string;
-    readonly height?: number;
-    readonly icon: CarbonIconDescriptor;
-    readonly width?: number;
-  },
-): string {
-  const svgAttributes = renderIconAttributes({
-    class: className,
-    width: width ?? icon.attrs.width,
-    height: height ?? icon.attrs.height,
-    viewBox: icon.attrs.viewBox,
-    fill: "currentColor",
-    "aria-hidden": "true",
-    focusable: "false",
-    "data-carbon-icon": icon.name,
-  });
-  const pathMarkup = icon.content.map((node) =>
-    `<path ${renderIconAttributes(node.attrs)}></path>`
-  ).join("");
-
-  return `<svg ${svgAttributes}>${pathMarkup}</svg>`;
-}
-
 function renderSelectedLanguageTest(language: SiteLanguage): string {
   return `<xsl:choose><xsl:when test="$page-language-key='${language}'">true</xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose>`;
 }
@@ -123,12 +84,14 @@ function renderSelectedLanguageTabIndex(language: SiteLanguage): string {
 function renderHeaderLanguageMenuPanelXsl(
   context: HeaderLanguageMenuXslContext,
 ): string {
-  const checkmarkIconMarkup = renderCarbonIconMarkup({
-    icon: CHECKMARK_ICON,
-    className: "cds--header__language-check-icon",
-    width: 16,
-    height: 16,
-  });
+  const checkmarkIconMarkup = renderOcticonMarkup(
+    "check",
+    "cds--header__language-check-icon",
+    {
+      width: 16,
+      height: 16,
+    },
+  );
   const languageOptionsMarkup = HEADER_LANGUAGE_OPTIONS.map((option) =>
     [
       `              <a class="cds--header__language-option" data-language-option="${option.language}" hreflang="${option.tag}" lang="${option.tag}" role="menuitemradio">`,

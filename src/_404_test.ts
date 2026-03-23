@@ -1,6 +1,6 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import layoutStyles from "./styles/_layout.scss" with {
+import layoutStyles from "./styles/layout.css" with {
   type: "text",
 };
 import { asLumeData, asLumeHelpers } from "../test/lume.ts";

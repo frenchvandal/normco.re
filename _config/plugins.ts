@@ -1,7 +1,6 @@
 /** Lume plugin configuration — all plugin registrations in correct order. */
 
 import terser from "lume/plugins/terser.ts";
-import sass from "lume/plugins/sass.ts";
 import postcss from "lume/plugins/postcss.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
@@ -25,7 +24,6 @@ import checkUrls from "lume/plugins/check_urls.ts";
 import jsonLd from "lume/plugins/json_ld.ts";
 import type Site from "lume/core/site.ts";
 import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns-locale";
-import { SASS_LOAD_PATHS } from "./materialize_sass_npm_packages.ts";
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
 import otelPlugin from "../plugins/otel.ts";
 import shiki from "../plugins/shiki/mod.ts";
@@ -60,15 +58,6 @@ export function registerPlugins(
       options: {
         compress: true,
         mangle: true,
-      },
-    }),
-  );
-
-  // Compile the local Sass layer before PostCSS/LightningCSS processing.
-  site.use(
-    sass({
-      options: {
-        loadPaths: [...SASS_LOAD_PATHS],
       },
     }),
   );

@@ -1,6 +1,6 @@
 import { assert, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import layoutStyles from "./styles/_layout.scss" with { type: "text" };
+import layoutStyles from "./styles/layout.css" with { type: "text" };
 import { asLumeData, asLumeHelpers } from "../test/lume.ts";
 
 import aboutPage from "./about.page.tsx";

@@ -42,14 +42,13 @@ export const unlisted = true;
 export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
   const language = resolveSiteLanguage(data.lang);
   const translations = getSiteTranslations(language);
-  const homeUrl = getLocalizedUrl("/", language);
 
   return `<div class="site-page-shell site-page-shell--editorial state-page state-page--404">
   ${
     StatePanel({
       title: translations.notFound.heading,
       message: translations.notFound.message,
-      actionHref: homeUrl,
+      actionHref: getLocalizedUrl("/", language),
       actionLabel: translations.notFound.backToHome,
       eyebrow: "404",
       eyebrowAriaHidden: true,

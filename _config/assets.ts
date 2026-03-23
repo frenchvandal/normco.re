@@ -22,8 +22,8 @@ export function registerAssets(site: Site): void {
     ".svg",
   ]);
 
-  // Main stylesheet (Sass entry point — compiled to /style.css by Lume Sass plugin)
-  site.add("/style.scss");
+  // Main stylesheet entry point.
+  site.add("/style.css");
 
   // Client-side scripts
   site.add("/scripts/header-client.js");

@@ -6,7 +6,7 @@ import {
 } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
-import layoutStyles from "../styles/_layout.scss" with { type: "text" };
+import layoutStyles from "../styles/layout.css" with { type: "text" };
 
 import Header from "./Header.tsx";
 import { ariaCurrent, buildHeaderNavigation } from "./header-navigation.ts";
@@ -67,7 +67,7 @@ describe("header-navigation.ts", () => {
 });
 
 describe("Header()", () => {
-  it("keeps the Carbon shell on non-home routes", async () => {
+  it("keeps the shared shell on non-home routes", async () => {
     const html = await renderComponent(
       Header({ currentUrl: "/posts/", language: "en" }),
     );
@@ -80,7 +80,7 @@ describe("Header()", () => {
     assertStringIncludes(html, 'class="cds--side-nav__navigation"');
   });
 
-  it("keeps legacy navigation, menu, and Carbon icon controls off the home route", async () => {
+  it("keeps legacy navigation, menu, and icon controls off the home route", async () => {
     const html = await renderComponent(
       Header({ currentUrl: "/posts/", language: "en" }),
     );
@@ -89,12 +89,12 @@ describe("Header()", () => {
       html,
       /<button[^>]*class="cds--header__action cds--header__menu-toggle"[^>]*aria-controls="site-side-nav"/,
     );
-    assertStringIncludes(html, 'data-carbon-icon="menu"');
-    assertStringIncludes(html, 'data-carbon-icon="close"');
-    assertStringIncludes(html, 'data-carbon-icon="translate"');
-    assertStringIncludes(html, 'data-carbon-icon="sun"');
-    assertStringIncludes(html, 'data-carbon-icon="moon"');
-    assertStringIncludes(html, 'data-carbon-icon="screen"');
+    assertStringIncludes(html, 'data-icon="three-bars"');
+    assertStringIncludes(html, 'data-icon="x"');
+    assertStringIncludes(html, 'data-icon="globe"');
+    assertStringIncludes(html, 'data-icon="sun"');
+    assertStringIncludes(html, 'data-icon="moon"');
+    assertStringIncludes(html, 'data-icon="device-desktop"');
   });
 
   it("renders search, language, and theme affordances for the legacy header", async () => {

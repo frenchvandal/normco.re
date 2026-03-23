@@ -42,14 +42,13 @@ export const zhHant = {
 export default (data: Lume.Data): string => {
   const language = resolveSiteLanguage(data.lang);
   const translations = getSiteTranslations(language);
-  const homeUrl = getLocalizedUrl("/", language);
 
   return `<div class="site-page-shell site-page-shell--editorial state-page state-page--offline">
   ${
     StatePanel({
       title: translations.offline.title,
       message: translations.offline.lead,
-      actionHref: homeUrl,
+      actionHref: getLocalizedUrl("/", language),
       actionLabel: translations.offline.backToHome,
       ariaLabel: translations.offline.ariaLabel,
       headingTag: "h1",

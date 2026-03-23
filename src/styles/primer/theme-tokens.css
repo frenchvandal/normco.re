@@ -106,6 +106,8 @@
     );
     --ph-side-nav-width: min(20rem, calc(100vw - var(--ph-space-8)));
     --ph-search-field-height: 40px;
+    --ph-control-size-compact: 2.25rem;
+    --ph-skeleton-line-height: 0.875rem;
     --ph-link-underline-thickness: 0.08em;
     --ph-link-underline-offset: 0.18em;
     --ph-grid-rule: color-mix(

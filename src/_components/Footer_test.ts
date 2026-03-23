@@ -2,7 +2,7 @@ import { assert, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker, seedTestFaker } from "../../test/faker.ts";
-import layoutStyles from "../styles/_layout.scss" with { type: "text" };
+import layoutStyles from "../styles/layout.css" with { type: "text" };
 
 import Footer from "./Footer.tsx";
 
@@ -45,7 +45,7 @@ describe("Footer()", () => {
     assertStringIncludes(html, 'aria-label="Open syndication page"');
     assertStringIncludes(html, ">Syndication</span>");
     assertStringIncludes(html, 'class="site-footer-icon"');
-    assertStringIncludes(html, 'data-carbon-icon="rss"');
+    assertStringIncludes(html, 'data-icon="rss"');
   });
 
   it("contains a GitHub repository link", async () => {
@@ -69,7 +69,7 @@ describe("Footer()", () => {
     assertStringIncludes(html, 'aria-label="Open GitHub repository"');
     assertStringIncludes(html, ">GitHub</span>");
     assertStringIncludes(html, 'class="site-footer-icon"');
-    assertStringIncludes(html, 'data-carbon-icon="logo--github"');
+    assertStringIncludes(html, 'data-icon="mark-github"');
   });
 
   it("renders the GitHub link before feed links", async () => {

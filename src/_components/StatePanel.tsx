@@ -21,7 +21,7 @@ export type StatePanelProps = {
 
 const ALLOWED_HEADING_TAGS = new Set(["h1", "h2", "h3"]);
 
-/** Renders a Carbon-aligned local state panel pattern. */
+/** Renders the shared local state panel pattern. */
 export default ({
   title,
   message,

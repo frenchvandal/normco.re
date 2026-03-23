@@ -12,7 +12,7 @@ import {
   asLumeHelpers,
   asOptionalLumeData,
 } from "../../../test/lume.ts";
-import layoutStyles from "../../styles/_layout.scss" with { type: "text" };
+import layoutStyles from "../../styles/layout.css" with { type: "text" };
 
 import postLayout from "./post.tsx";
 

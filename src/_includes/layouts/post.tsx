@@ -9,10 +9,9 @@ import {
   getSiteTranslations,
   resolveSiteLanguage,
 } from "../../utils/i18n.ts";
-import CarbonIcon from "../../_components/CarbonIcon.tsx";
+import SiteIcon from "../../_components/SiteIcon.tsx";
 import HEntryShell from "../../mf2/components/HEntryShell.tsx";
 import { getAuthorIdentity } from "../../mf2/extractors.ts";
-import { CHEVRON_DOWN_ICON } from "../../utils/carbon-icons.ts";
 import { getTagColor, getTagUrl } from "../../utils/tags.ts";
 import {
   resolvePostDate,
@@ -459,8 +458,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                   aria-expanded="false"
                   aria-controls="post-publication-details"
                 >
-                  <CarbonIcon
-                    icon={CHEVRON_DOWN_ICON}
+                  <SiteIcon
+                    name="chevron-down"
                     className="cds--accordion__arrow"
                     width={16}
                     height={16}

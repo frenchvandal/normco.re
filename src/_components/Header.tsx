@@ -1,35 +1,19 @@
-/** Site header with Carbon UI Shell structure, navigation, and user controls. */
+/** Site header shell with navigation and user controls. */
 
 import type { jsx } from "lume/jsx-runtime";
 
-import {
-  CHECKMARK_ICON,
-  CLOSE_ICON,
-  DARK_ICON,
-  INFO_FILLED_ICON,
-  LIGHT_ICON,
-  MENU_ICON,
-  SEARCH_ICON,
-  SYSTEM_ICON,
-  TRANSLATE_ICON,
-  WARNING_FILLED_ICON,
-} from "../utils/carbon-icons.ts";
-import CarbonIcon from "./CarbonIcon.tsx";
 import {
   getLocalizedUrl,
   getSiteTranslations,
   type SiteLanguage,
 } from "../utils/i18n.ts";
-import {
-  getOcticonPathData,
-  type IconResolver,
-  type OcticonName,
-} from "../utils/primer-icons.ts";
+import { type IconResolver } from "../utils/primer-icons.ts";
 import { buildHeaderNavigation } from "./header-navigation.ts";
 import {
   HEADER_IDS,
   HEADER_LANGUAGE_OPTIONS,
 } from "../utils/header-language-menu.ts";
+import SiteIcon from "./SiteIcon.tsx";
 
 type SsxElement = ReturnType<typeof jsx>;
 type HeaderTranslations = ReturnType<typeof getSiteTranslations>;
@@ -76,27 +60,6 @@ type SideNavProps = Readonly<{
   headerClassName?: string;
   eyebrow?: string;
 }>;
-
-function renderMaskedIcon(
-  name: OcticonName,
-  className: string,
-): SsxElement {
-  const pathData = getOcticonPathData(name);
-
-  return (
-    <svg
-      class={className}
-      width={16}
-      height={16}
-      viewBox="0 0 16 16"
-      fill="currentColor"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d={pathData}></path>
-    </svg>
-  );
-}
 
 function renderHeaderAction(
   {
@@ -175,14 +138,14 @@ function renderSearchNotification(): SsxElement {
     >
       <div class="cds--inline-notification__details">
         <span class="site-search-notification-icons" aria-hidden="true">
-          <CarbonIcon
-            icon={INFO_FILLED_ICON}
+          <SiteIcon
+            name="info"
             className="site-search-notification-icon site-search-notification-icon--info"
             width={20}
             height={20}
           />
-          <CarbonIcon
-            icon={WARNING_FILLED_ICON}
+          <SiteIcon
+            name="alert-fill"
             className="site-search-notification-icon site-search-notification-icon--warning"
             width={20}
             height={20}
@@ -292,8 +255,8 @@ function renderLanguageOptions(
         >
           <span class="cds--header__language-label">{label}</span>
           <span class="cds--header__language-check" aria-hidden="true">
-            <CarbonIcon
-              icon={CHECKMARK_ICON}
+            <SiteIcon
+              name="check"
               className="cds--header__language-check-icon"
               width={16}
               height={16}
@@ -480,14 +443,14 @@ function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
               aria-expanded="false"
               aria-controls={HEADER_IDS.sideNav}
             >
-              {renderMaskedIcon(
-                "three-bars",
-                "site-menu-icon site-menu-icon--menu primer-home-header__action-icon",
-              )}
-              {renderMaskedIcon(
-                "x",
-                "site-menu-icon site-menu-icon--close primer-home-header__action-icon",
-              )}
+              <SiteIcon
+                name="three-bars"
+                className="site-menu-icon site-menu-icon--menu primer-home-header__action-icon"
+              />
+              <SiteIcon
+                name="x"
+                className="site-menu-icon site-menu-icon--close primer-home-header__action-icon"
+              />
             </button>
 
             <a
@@ -526,9 +489,11 @@ function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
               },
               buttonClassName:
                 "cds--header__action btn-octicon primer-home-header__action",
-              iconMarkup: renderMaskedIcon(
-                "search",
-                "primer-home-header__action-icon",
+              iconMarkup: (
+                <SiteIcon
+                  name="search"
+                  className="primer-home-header__action-icon"
+                />
               ),
               tooltipLabel: translations.site.searchLabel,
             })}
@@ -542,9 +507,11 @@ function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
               },
               buttonClassName:
                 "cds--header__action cds--header__language-toggle btn-octicon primer-home-header__action",
-              iconMarkup: renderMaskedIcon(
-                "globe",
-                "primer-home-header__action-icon",
+              iconMarkup: (
+                <SiteIcon
+                  name="globe"
+                  className="primer-home-header__action-icon"
+                />
               ),
               tooltipLabel: translations.site.languageSelectLabel,
             })}
@@ -564,18 +531,18 @@ function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
               buttonId: HEADER_IDS.themeToggle,
               iconMarkup: (
                 <>
-                  {renderMaskedIcon(
-                    "sun",
-                    "theme-icon theme-icon--sun primer-home-header__action-icon",
-                  )}
-                  {renderMaskedIcon(
-                    "moon",
-                    "theme-icon theme-icon--moon primer-home-header__action-icon",
-                  )}
-                  {renderMaskedIcon(
-                    "device-desktop",
-                    "theme-icon theme-icon--system primer-home-header__action-icon",
-                  )}
+                  <SiteIcon
+                    name="sun"
+                    className="theme-icon theme-icon--sun primer-home-header__action-icon"
+                  />
+                  <SiteIcon
+                    name="moon"
+                    className="theme-icon theme-icon--moon primer-home-header__action-icon"
+                  />
+                  <SiteIcon
+                    name="device-desktop"
+                    className="theme-icon theme-icon--system primer-home-header__action-icon"
+                  />
                 </>
               ),
               tooltipLabel: translations.site.themeToggleLabel,
@@ -629,7 +596,7 @@ function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
   );
 }
 
-/** Renders the Carbon UI Shell header with navigation and user controls. */
+/** Renders the site header with navigation and user controls. */
 export default (props: HeaderProps): SsxElement => {
   const { currentUrl, language, languageAlternates = {} } = props;
   const translations = getSiteTranslations(language);
@@ -652,14 +619,14 @@ export default (props: HeaderProps): SsxElement => {
               aria-expanded="false"
               aria-controls={HEADER_IDS.sideNav}
             >
-              <CarbonIcon
-                icon={MENU_ICON}
+              <SiteIcon
+                name="three-bars"
                 className="cds--header__menu-icon site-menu-icon site-menu-icon--menu"
                 width={20}
                 height={20}
               />
-              <CarbonIcon
-                icon={CLOSE_ICON}
+              <SiteIcon
+                name="x"
                 className="cds--header__menu-icon site-menu-icon site-menu-icon--close"
                 width={20}
                 height={20}
@@ -690,8 +657,8 @@ export default (props: HeaderProps): SsxElement => {
                 "aria-controls": HEADER_IDS.searchPanel,
               },
               iconMarkup: (
-                <CarbonIcon
-                  icon={SEARCH_ICON}
+                <SiteIcon
+                  name="search"
                   className="cds--header__action-icon"
                   width={20}
                   height={20}
@@ -710,8 +677,8 @@ export default (props: HeaderProps): SsxElement => {
               buttonClassName:
                 "cds--header__action cds--header__language-toggle",
               iconMarkup: (
-                <CarbonIcon
-                  icon={TRANSLATE_ICON}
+                <SiteIcon
+                  name="globe"
                   className="cds--header__action-icon"
                   width={20}
                   height={20}
@@ -733,20 +700,20 @@ export default (props: HeaderProps): SsxElement => {
               buttonId: HEADER_IDS.themeToggle,
               iconMarkup: (
                 <>
-                  <CarbonIcon
-                    icon={LIGHT_ICON}
+                  <SiteIcon
+                    name="sun"
                     className="cds--header__action-icon theme-icon theme-icon--sun"
                     width={20}
                     height={20}
                   />
-                  <CarbonIcon
-                    icon={DARK_ICON}
+                  <SiteIcon
+                    name="moon"
                     className="cds--header__action-icon theme-icon theme-icon--moon"
                     width={20}
                     height={20}
                   />
-                  <CarbonIcon
-                    icon={SYSTEM_ICON}
+                  <SiteIcon
+                    name="device-desktop"
                     className="cds--header__action-icon theme-icon theme-icon--system"
                     width={20}
                     height={20}

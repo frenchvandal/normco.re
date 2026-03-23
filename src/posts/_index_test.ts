@@ -8,7 +8,7 @@ import {
 import { describe, it } from "jsr/testing-bdd";
 import { faker, seedTestFaker } from "../../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../../test/lume.ts";
-import layoutStyles from "../styles/_layout.scss" with {
+import layoutStyles from "../styles/layout.css" with {
   type: "text",
 };
 
@@ -126,7 +126,7 @@ describe("posts/index.page.tsx", () => {
   });
 
   describe("breadcrumb", () => {
-    it("uses the shared ordered-list Carbon breadcrumb structure", async () => {
+    it("uses the shared ordered-list breadcrumb structure", async () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(html, 'class="cds--breadcrumb-list"');
       assertStringIncludes(html, 'class="cds--breadcrumb-link"');
@@ -390,7 +390,7 @@ describe("posts/index.page.tsx", () => {
       }
     });
 
-    it("renders the year summary as a Carbon tag instead of plain recap text", async () => {
+    it("renders the year summary as a tag instead of plain recap text", async () => {
       const posts = [
         makePost(517, {
           date: new Date("2026-01-01"),

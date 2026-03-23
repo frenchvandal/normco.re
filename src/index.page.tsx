@@ -346,10 +346,9 @@ export default async (
   const currentUrl = getLocalizedUrl("/", language);
   const archiveUrl = getLocalizedUrl("/posts/", language);
   const recent = resolveRecentPosts(data.search, languageDataCode);
-  const featuredTopics = resolveFeaturedTags(recent);
   const author = getAuthorIdentity(language, data.author);
   const introTopicMarkup = renderTopicList(
-    featuredTopics,
+    resolveFeaturedTags(recent),
     language,
     {
       listClassName: "primer-home-topics",
@@ -398,8 +397,6 @@ export default async (
     return `<li class="home-posts-item">${card}</li>`;
   })).then((items) => items.join("\n"));
 
-  const emptyState = renderEmptyState(aboutUrl, translations);
-
   const recentSection = await renderComponent(
     HFeedShell({
       tagName: "section",
@@ -422,15 +419,17 @@ export default async (
         }</a>
   </div>
   ${
-          recent.length === 0 ? emptyState : `<div class="primer-home-ledger">
+          recent.length === 0
+            ? renderEmptyState(aboutUrl, translations)
+            : `<div class="primer-home-ledger">
     ${featuredStory}
     ${
-            listingMarkup.length > 0
-              ? `<ul class="home-posts home-posts--ledger">
+              listingMarkup.length > 0
+                ? `<ul class="home-posts home-posts--ledger">
       ${listingMarkup}
     </ul>`
-              : ""
-          }
+                : ""
+            }
   </div>`
         }`,
       },

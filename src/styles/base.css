@@ -193,7 +193,6 @@
   }
 
   .btn,
-  .cds--btn,
   .state-panel-action,
   .feature-link,
   .pagefind-ui__button {
@@ -214,7 +213,7 @@
   }
 
   .btn-sm {
-    min-block-size: 2.25rem;
+    min-block-size: var(--ph-control-size-compact);
     padding-inline: var(--ph-space-3);
   }
 
@@ -223,7 +222,6 @@
   }
 
   .btn:hover,
-  .cds--btn:hover,
   .state-panel-action:hover,
   .feature-link:hover,
   .pagefind-ui__button:hover {
@@ -267,7 +265,6 @@
 
     a,
     .btn,
-    .cds--btn,
     .feature-link,
     .state-panel-action,
     .pagefind-ui__button {
