@@ -96,7 +96,8 @@ the test, for example:
 
 Required practices:
 
-- Import Faker via the import map alias: `import { faker } from "@faker-js/faker";`
+- Import Faker via the import map alias:
+  `import { faker } from "@faker-js/faker";`
 - Seed Faker in each test or shared test helper before generating values:
   `faker.seed(1234)`.
 - Keep seeds stable and local to the file or helper so failures are

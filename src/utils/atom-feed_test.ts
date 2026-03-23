@@ -1,4 +1,8 @@
-import { assertEquals, assertNotMatch, assertStringIncludes } from "@std/assert";
+import {
+  assertEquals,
+  assertNotMatch,
+  assertStringIncludes,
+} from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
 import {

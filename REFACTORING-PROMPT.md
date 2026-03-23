@@ -1,8 +1,8 @@
 # Codex Refactoring Prompt
 
-> **Objectif** : rendre le code plus léger, élégant et lisible sans sacrifier les
-> bonnes pratiques modernes (Deno 2 / TypeScript 5, Kotlin 2 / Compose,
-> CSS custom properties, etc.).
+> **Objectif** : rendre le code plus léger, élégant et lisible sans sacrifier
+> les bonnes pratiques modernes (Deno 2 / TypeScript 5, Kotlin 2 / Compose, CSS
+> custom properties, etc.).
 
 ---
 
@@ -78,7 +78,8 @@ const homeUrl = getLocalizedUrl("/", language);
 ```
 
 Ce doublet apparaît dans quasiment chaque page. Envisage un helper
-`usePageContext(language)` qui renvoie `{ translations, homeUrl, archiveUrl, … }`.
+`usePageContext(language)` qui renvoie
+`{ translations, homeUrl, archiveUrl, … }`.
 
 ---
 
@@ -86,9 +87,9 @@ Ce doublet apparaît dans quasiment chaque page. Envisage un helper
 
 ### 2.1 Réduire la répétition Shiki
 
-`base.css:145-172` déclare trois fois les mêmes cinq propriétés
-(`color`, `background-color`, `font-style`, `font-weight`, `text-decoration`)
-pour les variantes Shiki light / dark / forced-colors.
+`base.css:145-172` déclare trois fois les mêmes cinq propriétés (`color`,
+`background-color`, `font-style`, `font-weight`, `text-decoration`) pour les
+variantes Shiki light / dark / forced-colors.
 
 **Action** : isole les propriétés communes dans une règle de base `.shiki span`
 et ne redéfinis que les custom properties dans les media queries.
@@ -96,8 +97,8 @@ et ne redéfinis que les custom properties dans les media queries.
 ### 2.2 Consolider les sélecteurs d'icônes
 
 `layout.css:169-183` liste dix classes d'icônes qui partagent les mêmes
-propriétés de taille/fill. Crée une classe utilitaire `.u-icon` (ou
-`.ph-icon`) appliquée côté markup, et remplace la longue liste de sélecteurs.
+propriétés de taille/fill. Crée une classe utilitaire `.u-icon` (ou `.ph-icon`)
+appliquée côté markup, et remplace la longue liste de sélecteurs.
 
 ### 2.3 Extraire le pattern « surface subtle »
 
@@ -118,11 +119,11 @@ Ce triplet revient dans `.site-search-notification`, `.feeds-copy-notice`,
 
 Les fonctions suivantes sont dupliquées dans 2-3 scripts chacune :
 
-| Fonction | Fichiers |
-|----------|----------|
-| `fileExists()` | `fingerprint-assets.ts`, `check-output-links.ts`, `sync-android-contract-assets.ts` |
-| `getLineNumber()` / `lineNumberAt()` | `check-browser-imports.ts`, `design-token-guard.ts` |
-| `getErrorMessage()` | `fingerprint-assets.ts`, `payload-report.ts` |
+| Fonction                             | Fichiers                                                                            |
+| ------------------------------------ | ----------------------------------------------------------------------------------- |
+| `fileExists()`                       | `fingerprint-assets.ts`, `check-output-links.ts`, `sync-android-contract-assets.ts` |
+| `getLineNumber()` / `lineNumberAt()` | `check-browser-imports.ts`, `design-token-guard.ts`                                 |
+| `getErrorMessage()`                  | `fingerprint-assets.ts`, `payload-report.ts`                                        |
 
 **Action** : exporte-les depuis `scripts/_shared.ts` ; utilise
 `import.meta.dirname` pour la résolution de chemin si besoin.
@@ -149,10 +150,10 @@ toutes `prefixes.some(p => s.startsWith(p))`.
 
 ### 3.4 Utiliser `beforeEach` pour le seed Faker dans les tests
 
-`lint-commit_test.ts` appelle `seedTestFaker(N)` au début de chaque test avec
-un seed différent. Si l'intention est un seed unique par test, un
-`beforeEach(() => seedTestFaker(seed++))` avec `describe` et
-`@std/testing/bdd` simplifiera le fichier.
+`lint-commit_test.ts` appelle `seedTestFaker(N)` au début de chaque test avec un
+seed différent. Si l'intention est un seed unique par test, un
+`beforeEach(() => seedTestFaker(seed++))` avec `describe` et `@std/testing/bdd`
+simplifiera le fichier.
 
 ---
 
@@ -170,9 +171,8 @@ boilerplate et évite les races potentielles entre mises à jour d'état.
 
 ### 4.2 Extraire les composables Loading/Error
 
-`HomeScreen`, `ArchiveScreen`, `PostScreen`, `SettingsScreen` définissent
-chacun leur propre `LoadingCard()` et `ErrorCard()` avec un contenu
-quasi-identique.
+`HomeScreen`, `ArchiveScreen`, `PostScreen`, `SettingsScreen` définissent chacun
+leur propre `LoadingCard()` et `ErrorCard()` avec un contenu quasi-identique.
 
 **Action** : crée `ui/components/AsyncStateCards.kt` avec :
 
@@ -189,8 +189,8 @@ fun ErrorStateCard(message: String, @StringRes labelRes: Int, onRetry: () -> Uni
 `HomeScreen` définit `RecentReadingHeading`, `BookmarkedHeading`,
 `LatestPostsHeading` — tous titre + sous-titre + action optionnelle.
 
-**Action** : crée `ui/components/SectionHeading.kt` paramétré par
-`titleRes`, `subtitleRes`, `actionLabel?`, `onAction?`.
+**Action** : crée `ui/components/SectionHeading.kt` paramétré par `titleRes`,
+`subtitleRes`, `actionLabel?`, `onAction?`.
 
 ### 4.4 Centraliser `formatPublishedDate()`
 
@@ -223,7 +223,7 @@ Flow source, éliminant la gestion manuelle du Job.
   imports Faker via l'alias local, seeds stables, préférence Deno std, etc.
 - **Pas de sur-ingénierie** — ne crée pas d'abstractions « au cas où ». Si un
   helper n'est utilisé que deux fois, le gain doit être évident en lisibilité.
-- **Commits atomiques** — un commit par thème (ex. « extract shared type
-  guards », « consolidate icon selectors »), pas un seul commit monolithique.
+- **Commits atomiques** — un commit par thème (ex. « extract shared type guards
+  », « consolidate icon selectors »), pas un seul commit monolithique.
 - **Pas de changements cosmétiques gratuits** — ne reformate pas du code non
   touché, n'ajoute pas de docstrings ou de commentaires inutiles.
