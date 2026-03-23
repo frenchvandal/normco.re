@@ -1,8 +1,8 @@
-import { assert, assertEquals, assertStringIncludes } from "jsr/assert";
+import { assert, assertEquals, assertStringIncludes } from "@std/assert";
 import baseLayoutSource from "../_includes/layouts/base.tsx" with {
   type: "text",
 };
-import { describe, it } from "jsr/testing-bdd";
+import { describe, it } from "@std/testing/bdd";
 
 import { THEME_BOOTSTRAP_SCRIPT } from "./theme-bootstrap.ts";
 import {

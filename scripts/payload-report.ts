@@ -1,6 +1,6 @@
-import { pooledMap } from "jsr/async";
-import { extname, join } from "jsr/path";
-import { closestString, levenshteinDistance } from "jsr/text";
+import { pooledMap } from "@std/async";
+import { extname, join } from "@std/path";
+import { closestString, levenshteinDistance } from "@std/text";
 
 const DEFAULT_ROUTES = [
   "/index.html",

@@ -16,10 +16,10 @@
  * Exits with code 1 if any validation error is found.
  */
 
-import { parseArgs } from "jsr/cli";
-import { walk } from "jsr/fs";
-import { bold, green, red, yellow } from "jsr/fmt-colors";
-import { isCData, isElement, isText, parse } from "jsr/xml";
+import { parseArgs } from "@std/cli";
+import { walk } from "@std/fs";
+import { bold, green, red, yellow } from "@std/fmt/colors";
+import { isCData, isElement, isText, parse } from "@std/xml";
 import {
   ATOM_FEED_PATH,
   JSON_FEED_PATH,

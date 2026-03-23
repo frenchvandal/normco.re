@@ -1,5 +1,5 @@
-import { assertEquals, assertThrows } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assertEquals, assertThrows } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 import type Site from "lume/core/site.ts";
 import type { Data, Page } from "lume/core/file.ts";
 

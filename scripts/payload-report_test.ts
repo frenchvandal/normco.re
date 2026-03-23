@@ -1,6 +1,6 @@
-import { assertEquals, assertRejects, assertThrows } from "jsr/assert";
-import { join } from "jsr/path";
-import { describe, it } from "jsr/testing-bdd";
+import { assertEquals, assertRejects, assertThrows } from "@std/assert";
+import { join } from "@std/path";
+import { describe, it } from "@std/testing/bdd";
 
 import {
   applyPayloadPolicy,

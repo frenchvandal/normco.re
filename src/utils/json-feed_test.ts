@@ -1,5 +1,5 @@
-import { assertEquals } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assertEquals } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 
 import {
   JSON_FEED_PATH_PATTERN,

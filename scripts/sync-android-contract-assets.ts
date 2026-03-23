@@ -1,6 +1,6 @@
-import { parseArgs } from "jsr/cli";
-import { walk } from "jsr/fs";
-import { dirname, join, relative } from "jsr/path";
+import { parseArgs } from "@std/cli";
+import { walk } from "@std/fs";
+import { dirname, join, relative } from "@std/path";
 
 const REPO_ROOT = join(import.meta.dirname ?? ".", "..");
 const DEFAULT_SITE_DIR = join(REPO_ROOT, "_site");

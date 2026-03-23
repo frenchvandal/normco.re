@@ -1,5 +1,5 @@
-import { assertEquals, assertStringIncludes } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assertEquals, assertStringIncludes } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 
 import { scanStyleSources } from "./design-token-guard.ts";
 

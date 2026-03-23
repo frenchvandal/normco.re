@@ -1,6 +1,6 @@
-import { parseArgs } from "jsr/cli";
-import { ensureDir, walk } from "jsr/fs";
-import { dirname, extname, join, normalize } from "jsr/path";
+import { parseArgs } from "@std/cli";
+import { ensureDir, walk } from "@std/fs";
+import { dirname, extname, join, normalize } from "@std/path";
 
 const HTML_EXTENSIONS = new Set([".html", ".xml", ".xsl"]);
 const SKIPPED_PREFIXES = [

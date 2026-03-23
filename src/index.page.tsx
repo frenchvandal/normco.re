@@ -1,6 +1,6 @@
 /** Home page - editorial landing with featured story and recent posts. */
 
-import { distinct } from "jsr/collections";
+import { distinct } from "@std/collections";
 import { renderComponent } from "lume/jsx-runtime";
 
 import HEntryShell from "./mf2/components/HEntryShell.tsx";

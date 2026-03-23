@@ -1,5 +1,5 @@
-import { assertEquals, assertNotMatch, assertStringIncludes } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assertEquals, assertNotMatch, assertStringIncludes } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 
 import {
   absolutizeHtmlUrls,

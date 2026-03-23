@@ -4,8 +4,8 @@ import {
   assertMatch,
   assertNotMatch,
   assertStringIncludes,
-} from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+} from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 import { faker, seedTestFaker } from "../../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../../test/lume.ts";
 import layoutStyles from "../styles/layout.css" with {

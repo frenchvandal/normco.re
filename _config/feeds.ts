@@ -1,6 +1,6 @@
 /** Multilingual RSS, Atom, and JSON Feed configurations. */
 
-import { mapNotNullish } from "jsr/collections";
+import { mapNotNullish } from "@std/collections";
 import { type Data, Page } from "lume/core/file.ts";
 import feed from "lume/plugins/feed.ts";
 import type Site from "lume/core/site.ts";

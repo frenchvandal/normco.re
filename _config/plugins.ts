@@ -23,7 +23,7 @@ import validateHtml from "lume/plugins/validate_html.ts";
 import checkUrls from "lume/plugins/check_urls.ts";
 import jsonLd from "lume/plugins/json_ld.ts";
 import type Site from "lume/core/site.ts";
-import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns-locale";
+import { enUS, fr as frLocale, zhCN, zhTW } from "date-fns/locale";
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
 import otelPlugin from "../plugins/otel.ts";
 import shiki from "../plugins/shiki/mod.ts";

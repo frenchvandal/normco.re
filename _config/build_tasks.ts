@@ -1,4 +1,4 @@
-import { walk } from "jsr/fs";
+import { walk } from "@std/fs";
 
 type CommandStatus = {
   readonly code: number;

@@ -5,7 +5,7 @@ import type {
   CodeOptionsMultipleThemes,
   CodeOptionsSingleTheme,
   CodeToHastOptions,
-} from "npm:shiki@4.0.2";
+} from "shiki";
 
 export type ShikiHighlighterOptions = BundledHighlighterOptions<
   BundledLanguage,

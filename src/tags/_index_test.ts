@@ -1,5 +1,5 @@
-import { assert, assertEquals } from "jsr/assert";
-import { describe, it } from "jsr/testing-bdd";
+import { assert, assertEquals } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 
 import tagsPage from "./index.page.ts";
 

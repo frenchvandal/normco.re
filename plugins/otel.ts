@@ -6,10 +6,10 @@ import type {
   Item as DebugBarItem,
 } from "lume/deps/debugbar.ts";
 
-import { sumOf } from "jsr/collections";
-import { bold, cyan, dim, green, red, yellow } from "jsr/fmt-colors";
-import { metrics, SpanStatusCode, trace } from "npm/opentelemetry-api";
-import type { Span } from "npm/opentelemetry-api";
+import { sumOf } from "@std/collections";
+import { bold, cyan, dim, green, red, yellow } from "@std/fmt/colors";
+import { metrics, SpanStatusCode, trace } from "@opentelemetry/api";
+import type { Span } from "@opentelemetry/api";
 
 // ---------------------------------------------------------------------------
 // Types

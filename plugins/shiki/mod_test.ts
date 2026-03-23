@@ -1,4 +1,4 @@
-import { assertEquals, assertStringIncludes } from "jsr/assert";
+import { assertEquals, assertStringIncludes } from "@std/assert";
 
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
