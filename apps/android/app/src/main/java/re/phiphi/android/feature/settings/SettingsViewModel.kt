@@ -4,12 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import re.phiphi.android.data.posts.ContentSyncScheduler
 import re.phiphi.android.data.posts.ContentSyncStatusRepository
@@ -17,6 +21,9 @@ import re.phiphi.android.data.posts.PostsRepository
 import re.phiphi.android.data.settings.AppLocaleManager
 import re.phiphi.android.data.settings.ReaderPreferencesRepository
 
+private const val SETTINGS_SUBSCRIPTION_TIMEOUT_MILLIS = 5_000L
+
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SettingsViewModel
 @Inject
@@ -27,43 +34,35 @@ constructor(
     private val contentSyncScheduler: ContentSyncScheduler,
     private val contentSyncStatusRepository: ContentSyncStatusRepository,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<SettingsUiState>(SettingsUiState.Loading)
-    val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
-    private var observePreferencesJob: Job? = null
+    private val refreshRequests = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val uiState: StateFlow<SettingsUiState> =
+        refreshRequests
+            .onStart { emit(Unit) }
+            .flatMapLatest {
+                flow {
+                    emit(SettingsUiState.Loading)
 
-    init {
-        refresh()
-    }
-
-    fun refresh() {
-        observePreferencesJob?.cancel()
-        observePreferencesJob =
-            viewModelScope.launch {
-                _uiState.value = SettingsUiState.Loading
-
-                val manifest =
-                    runCatching { postsRepository.getAppManifest() }
-                        .getOrElse { throwable ->
-                            _uiState.value =
-                                SettingsUiState.Error(
-                                    message = throwable.message ?: "Unknown failure"
+                    val manifest =
+                        runCatching { postsRepository.getAppManifest() }
+                            .getOrElse { throwable ->
+                                emit(
+                                    SettingsUiState.Error(
+                                        message = throwable.message ?: "Unknown failure"
+                                    )
                                 )
-                            return@launch
-                        }
+                                return@flow
+                            }
 
-                combine(
-                        readerPreferencesRepository.preferences,
-                        contentSyncStatusRepository.status,
-                    ) { preferences, syncStatus ->
-                        preferences to syncStatus
-                    }
-                    .collectLatest { (preferences, syncStatus) ->
-                        val selectedLanguage =
-                            preferences.preferredLanguage?.takeIf { candidate ->
-                                candidate in manifest.languages
-                            } ?: manifest.defaultLanguage
+                    emitAll(
+                        combine(
+                            readerPreferencesRepository.preferences,
+                            contentSyncStatusRepository.status,
+                        ) { preferences, syncStatus ->
+                            val selectedLanguage =
+                                preferences.preferredLanguage?.takeIf { candidate ->
+                                    candidate in manifest.languages
+                                } ?: manifest.defaultLanguage
 
-                        _uiState.value =
                             SettingsUiState.Success(
                                 availableLanguages = manifest.languages,
                                 selectedLanguage = selectedLanguage,
@@ -75,8 +74,22 @@ constructor(
                                 lastCheckedAtMillis = syncStatus.lastCheckedAtMillis,
                                 lastCheckSucceeded = syncStatus.lastCheckSucceeded,
                             )
-                    }
+                        }
+                    )
+                }
             }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(SETTINGS_SUBSCRIPTION_TIMEOUT_MILLIS),
+                initialValue = SettingsUiState.Loading,
+            )
+
+    init {
+        refresh()
+    }
+
+    fun refresh() {
+        refreshRequests.tryEmit(Unit)
     }
 
     fun setPreferredLanguage(language: String) {

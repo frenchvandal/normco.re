@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
@@ -24,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import re.phiphi.android.R
 import re.phiphi.android.data.posts.ContentSyncStatus
 import re.phiphi.android.ui.components.ContentSyncStatusText
+import re.phiphi.android.ui.components.ErrorStateCard
+import re.phiphi.android.ui.components.LoadingStateCard
 import re.phiphi.android.ui.components.languageDisplayName
 
 @Composable
@@ -40,9 +41,16 @@ fun SettingsScreen(
         item { SettingsIntroSection() }
 
         when (uiState) {
-            SettingsUiState.Loading -> item { SettingsLoadingCard() }
+            SettingsUiState.Loading ->
+                item { LoadingStateCard(messageRes = R.string.settings_loading) }
             is SettingsUiState.Error ->
-                item { SettingsErrorCard(message = uiState.message, onRetry = onRetry) }
+                item {
+                    ErrorStateCard(
+                        message = stringResource(id = R.string.settings_error, uiState.message),
+                        labelRes = R.string.settings_retry,
+                        onRetry = onRetry,
+                    )
+                }
 
             is SettingsUiState.Success -> {
                 item {
@@ -100,38 +108,6 @@ private fun SettingsIntroSection() {
             text = stringResource(id = R.string.settings_intro),
             style = MaterialTheme.typography.bodyLarge,
         )
-    }
-}
-
-@Composable
-private fun SettingsLoadingCard() {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            CircularProgressIndicator()
-            Text(
-                text = stringResource(id = R.string.settings_loading),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
-    }
-}
-
-@Composable
-private fun SettingsErrorCard(message: String, onRetry: () -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = stringResource(id = R.string.settings_error, message),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            Button(onClick = onRetry) { Text(text = stringResource(id = R.string.settings_retry)) }
-        }
     }
 }
 

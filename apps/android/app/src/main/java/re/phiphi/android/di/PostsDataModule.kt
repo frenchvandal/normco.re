@@ -10,6 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 import kotlinx.serialization.json.Json
+import okhttp3.OkHttpClient
 import re.phiphi.android.data.posts.AssetPostsRepository
 import re.phiphi.android.data.posts.ContentSyncStatusRepository
 import re.phiphi.android.data.posts.DataStoreContentSyncStatusRepository
@@ -32,6 +33,10 @@ abstract class PostsDataModule {
 
     companion object {
         @Provides @Singleton fun provideJson(): Json = Json { ignoreUnknownKeys = true }
+
+        @Provides
+        @Singleton
+        fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder().build()
 
         @Provides
         @Singleton

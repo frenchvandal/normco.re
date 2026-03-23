@@ -8,13 +8,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import re.phiphi.android.data.posts.ContentSyncStatus
 import re.phiphi.android.data.posts.ContentSyncStatusRepository
 import re.phiphi.android.data.posts.PostsRepository
 import re.phiphi.android.data.settings.ReaderPreferencesRepository
+
+private data class ArchiveContentState(
+    val preferredLanguage: String?,
+    val bookmarkedSlugs: Set<String>,
+    val syncStatus: ContentSyncStatus,
+)
 
 @HiltViewModel
 class ArchiveViewModel
@@ -32,40 +38,36 @@ constructor(
 
     init {
         viewModelScope.launch {
-            readerPreferencesRepository.preferences
-                .map { preferences -> preferences.preferredLanguage }
-                .distinctUntilChanged()
-                .collectLatest { selectedLanguage ->
-                    preferredLanguage = selectedLanguage
-                    loadPosts()
+            combine(readerPreferencesRepository.preferences, contentSyncStatusRepository.status) {
+                    preferences,
+                    syncStatus ->
+                    ArchiveContentState(
+                        preferredLanguage = preferences.preferredLanguage,
+                        bookmarkedSlugs = preferences.bookmarkedPostSlugs,
+                        syncStatus = syncStatus,
+                    )
                 }
-        }
-
-        viewModelScope.launch {
-            readerPreferencesRepository.preferences
-                .map { preferences -> preferences.bookmarkedPostSlugs }
                 .distinctUntilChanged()
-                .collectLatest { slugs ->
-                    bookmarkedSlugs = slugs
+                .collectLatest { contentState ->
+                    val shouldReloadPosts = preferredLanguage != contentState.preferredLanguage
+
+                    preferredLanguage = contentState.preferredLanguage
+                    bookmarkedSlugs = contentState.bookmarkedSlugs
+                    syncStatus = contentState.syncStatus
+
                     val currentState = _uiState.value
-                    if (currentState is ArchiveUiState.Success) {
-                        _uiState.value = currentState.copy(bookmarkedSlugs = slugs)
+                    if (shouldReloadPosts || currentState !is ArchiveUiState.Success) {
+                        loadPosts(showBlockingLoader = currentState !is ArchiveUiState.Success)
+                        return@collectLatest
                     }
-                }
-        }
 
-        viewModelScope.launch {
-            contentSyncStatusRepository.status.collectLatest { status ->
-                syncStatus = status
-                val currentState = _uiState.value
-                if (currentState is ArchiveUiState.Success) {
                     _uiState.value =
                         currentState.copy(
-                            lastCheckedAtMillis = status.lastCheckedAtMillis,
-                            lastCheckSucceeded = status.lastCheckSucceeded,
+                            bookmarkedSlugs = contentState.bookmarkedSlugs,
+                            lastCheckedAtMillis = contentState.syncStatus.lastCheckedAtMillis,
+                            lastCheckSucceeded = contentState.syncStatus.lastCheckSucceeded,
                         )
                 }
-            }
         }
     }
 

@@ -13,8 +13,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -39,6 +37,8 @@ import androidx.compose.ui.unit.dp
 import re.phiphi.android.R
 import re.phiphi.android.core.model.PostSummary
 import re.phiphi.android.ui.components.ContentSyncStatusText
+import re.phiphi.android.ui.components.ErrorStateCard
+import re.phiphi.android.ui.components.LoadingStateCard
 import re.phiphi.android.ui.components.PostSummaryCard
 import re.phiphi.android.ui.components.PostSummaryCardActions
 
@@ -50,10 +50,12 @@ fun ArchiveScreen(
     modifier: Modifier = Modifier,
 ) {
     when (uiState) {
-        ArchiveUiState.Loading -> ArchiveLoadingCard(modifier = modifier)
+        ArchiveUiState.Loading ->
+            LoadingStateCard(messageRes = R.string.archive_loading, modifier = modifier)
         is ArchiveUiState.Error ->
-            ArchiveErrorCard(
-                message = uiState.message,
+            ErrorStateCard(
+                message = stringResource(id = R.string.archive_error, uiState.message),
+                labelRes = R.string.archive_retry,
                 onRetry = actions.onRetry,
                 modifier = modifier,
             )
@@ -296,35 +298,3 @@ private data class ArchiveFiltersModel(
     val availableTags: List<String>,
     val selectedTag: String?,
 )
-
-@Composable
-private fun ArchiveLoadingCard(modifier: Modifier = Modifier) {
-    Card(modifier = modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            CircularProgressIndicator()
-            Text(
-                text = stringResource(id = R.string.archive_loading),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ArchiveErrorCard(message: String, onRetry: () -> Unit, modifier: Modifier = Modifier) {
-    Card(modifier = modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = stringResource(id = R.string.archive_error, message),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            Button(onClick = onRetry) { Text(text = stringResource(id = R.string.archive_retry)) }
-        }
-    }
-}

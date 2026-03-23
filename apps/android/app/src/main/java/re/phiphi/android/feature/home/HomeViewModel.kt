@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import re.phiphi.android.data.posts.ContentSyncStatus
 import re.phiphi.android.data.posts.ContentSyncStatusRepository
@@ -19,6 +19,13 @@ import re.phiphi.android.data.settings.ReaderPreferencesRepository
 private const val HOME_POST_LIMIT = 5
 private const val HOME_RECENT_LIMIT = 3
 private const val HOME_BOOKMARK_LIMIT = 3
+
+private data class HomeContentState(
+    val preferredLanguage: String?,
+    val bookmarkedSlugs: Set<String>,
+    val recentOpenedPostSlugs: List<String>,
+    val syncStatus: ContentSyncStatus,
+)
 
 @HiltViewModel
 class HomeViewModel
@@ -37,50 +44,40 @@ constructor(
 
     init {
         viewModelScope.launch {
-            readerPreferencesRepository.preferences
-                .map { preferences -> preferences.preferredLanguage }
-                .distinctUntilChanged()
-                .collectLatest { selectedLanguage ->
-                    preferredLanguage = selectedLanguage
-                    loadPosts()
+            combine(readerPreferencesRepository.preferences, contentSyncStatusRepository.status) {
+                    preferences,
+                    syncStatus ->
+                    HomeContentState(
+                        preferredLanguage = preferences.preferredLanguage,
+                        bookmarkedSlugs = preferences.bookmarkedPostSlugs,
+                        recentOpenedPostSlugs = preferences.recentOpenedPostSlugs,
+                        syncStatus = syncStatus,
+                    )
                 }
-        }
-
-        viewModelScope.launch {
-            readerPreferencesRepository.preferences
-                .map { preferences -> preferences.bookmarkedPostSlugs }
                 .distinctUntilChanged()
-                .collectLatest { slugs ->
-                    bookmarkedSlugs = slugs
+                .collectLatest { contentState ->
+                    val shouldReloadPosts =
+                        preferredLanguage != contentState.preferredLanguage ||
+                            recentOpenedPostSlugs != contentState.recentOpenedPostSlugs
+
+                    preferredLanguage = contentState.preferredLanguage
+                    bookmarkedSlugs = contentState.bookmarkedSlugs
+                    recentOpenedPostSlugs = contentState.recentOpenedPostSlugs
+                    syncStatus = contentState.syncStatus
+
                     val currentState = _uiState.value
-                    if (currentState is HomeUiState.Success) {
-                        _uiState.value = currentState.copy(bookmarkedSlugs = slugs)
+                    if (shouldReloadPosts || currentState !is HomeUiState.Success) {
+                        loadPosts(showBlockingLoader = currentState !is HomeUiState.Success)
+                        return@collectLatest
                     }
-                }
-        }
 
-        viewModelScope.launch {
-            readerPreferencesRepository.preferences
-                .map { preferences -> preferences.recentOpenedPostSlugs }
-                .distinctUntilChanged()
-                .collectLatest { slugs ->
-                    recentOpenedPostSlugs = slugs
-                    loadPosts(showBlockingLoader = false)
-                }
-        }
-
-        viewModelScope.launch {
-            contentSyncStatusRepository.status.collectLatest { status ->
-                syncStatus = status
-                val currentState = _uiState.value
-                if (currentState is HomeUiState.Success) {
                     _uiState.value =
                         currentState.copy(
-                            lastCheckedAtMillis = status.lastCheckedAtMillis,
-                            lastCheckSucceeded = status.lastCheckSucceeded,
+                            bookmarkedSlugs = contentState.bookmarkedSlugs,
+                            lastCheckedAtMillis = contentState.syncStatus.lastCheckedAtMillis,
+                            lastCheckSucceeded = contentState.syncStatus.lastCheckSucceeded,
                         )
                 }
-            }
         }
     }
 

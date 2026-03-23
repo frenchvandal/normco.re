@@ -5,11 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -23,10 +19,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Locale
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -34,6 +26,9 @@ import kotlinx.coroutines.launch
 import re.phiphi.android.R
 import re.phiphi.android.core.model.PostDetail
 import re.phiphi.android.core.model.PostDetailBlock
+import re.phiphi.android.ui.components.ErrorStateCard
+import re.phiphi.android.ui.components.LoadingStateCard
+import re.phiphi.android.ui.utils.formatPublishedDate
 
 @Immutable
 internal data class PostDetailListModel(
@@ -74,11 +69,7 @@ private fun LoadingState(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize().padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        CircularProgressIndicator()
-        Text(
-            text = stringResource(id = R.string.post_loading),
-            style = MaterialTheme.typography.bodyLarge,
-        )
+        LoadingStateCard(messageRes = R.string.post_loading)
     }
 }
 
@@ -88,11 +79,11 @@ private fun ErrorState(message: String, onRetry: () -> Unit, modifier: Modifier 
         modifier = modifier.fillMaxSize().padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Text(
-            text = stringResource(id = R.string.post_error, message),
-            style = MaterialTheme.typography.bodyLarge,
+        ErrorStateCard(
+            message = stringResource(id = R.string.post_error, message),
+            labelRes = R.string.post_retry,
+            onRetry = onRetry,
         )
-        Button(onClick = onRetry) { Text(text = stringResource(id = R.string.post_retry)) }
     }
 }
 
@@ -115,7 +106,7 @@ private fun PostDetailContent(
                 hasRefreshError = uiState.refreshErrorMessage != null,
             )
         }
-    val publishedDate = remember(post.publishedAt) { formatPostDate(post.publishedAt) }
+    val publishedDate = remember(post.publishedAt) { formatPublishedDate(post.publishedAt) }
     val headingTargets =
         remember(post, uiState.refreshErrorMessage) {
             buildHeadingTargets(post = post, headerItemCount = headerItemCount)
@@ -201,13 +192,3 @@ private fun PostDetailBlock.asHeadingTargetOrNull(itemIndex: Int): PostHeadingTa
         ?.takeIf { type == "heading" && it.isNotBlank() }
         ?.let { label -> PostHeadingTarget(label = label, itemIndex = itemIndex) }
 }
-
-private fun formatPostDate(raw: String): String =
-    runCatching {
-            OffsetDateTime.parse(raw)
-                .format(
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-                        .withLocale(Locale.getDefault())
-                )
-        }
-        .getOrElse { raw }

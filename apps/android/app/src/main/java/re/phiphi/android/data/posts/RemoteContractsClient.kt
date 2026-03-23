@@ -1,27 +1,25 @@
 package re.phiphi.android.data.posts
 
 import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import re.phiphi.android.core.model.AppManifest
 import re.phiphi.android.core.model.PostDetail
 import re.phiphi.android.core.model.PostsIndex
 
 private const val SITE_ORIGIN = "https://normco.re"
 private const val APP_MANIFEST_API_PATH = "/api/app-manifest.json"
-private const val CONNECT_TIMEOUT_MILLIS = 10_000
-private const val READ_TIMEOUT_MILLIS = 10_000
-private const val HTTP_SUCCESS_MIN = 200
-private const val HTTP_SUCCESS_MAX = 299
 
 @Singleton
-class RemoteContractsClient @Inject constructor(private val json: Json) {
+class RemoteContractsClient
+@Inject
+constructor(private val json: Json, private val okHttpClient: OkHttpClient) {
     suspend fun fetchAppManifest(): AppManifest = fetchDocument(path = APP_MANIFEST_API_PATH)
 
     suspend fun fetchPostsIndex(apiUrl: String): PostsIndex = fetchDocument(path = apiUrl)
@@ -39,28 +37,26 @@ class RemoteContractsClient @Inject constructor(private val json: Json) {
         }
 
     private fun readText(url: String): String {
-        val connection =
-            (URL(url).openConnection() as HttpURLConnection).apply {
-                requestMethod = "GET"
-                connectTimeout = CONNECT_TIMEOUT_MILLIS
-                readTimeout = READ_TIMEOUT_MILLIS
-                setRequestProperty("Accept", "application/json")
+        val request =
+            Request.Builder()
+                .url(url)
+                .get()
+                .header(name = "Accept", value = "application/json")
+                .build()
+
+        okHttpClient.newCall(request).execute().use { response ->
+            val responseBody = response.body?.string().orEmpty()
+
+            if (!response.isSuccessful) {
+                val message = responseBody.ifBlank { response.message }.ifBlank { null }
+                throw IOException("HTTP ${response.code} for $url${message?.let { ": $it" } ?: ""}")
             }
 
-        return try {
-            val statusCode = connection.responseCode
-            if (statusCode !in HTTP_SUCCESS_MIN..HTTP_SUCCESS_MAX) {
-                val message =
-                    connection.errorStream
-                        ?.bufferedReader()
-                        ?.use { reader -> reader.readText() }
-                        ?.ifBlank { null }
-                throw IOException("HTTP $statusCode for $url${message?.let { ": $it" } ?: ""}")
+            if (responseBody.isBlank()) {
+                throw IOException("Empty response body for $url")
             }
 
-            connection.inputStream.bufferedReader().use { reader -> reader.readText() }
-        } finally {
-            connection.disconnect()
+            return responseBody
         }
     }
 }

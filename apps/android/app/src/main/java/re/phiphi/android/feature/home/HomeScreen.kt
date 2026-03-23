@@ -2,7 +2,6 @@ package re.phiphi.android.feature.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,8 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,14 +20,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import re.phiphi.android.R
 import re.phiphi.android.ui.components.ContentSyncStatusText
+import re.phiphi.android.ui.components.ErrorStateCard
+import re.phiphi.android.ui.components.LoadingStateCard
 import re.phiphi.android.ui.components.PostSummaryCard
 import re.phiphi.android.ui.components.PostSummaryCardActions
+import re.phiphi.android.ui.components.SectionHeading
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +40,7 @@ fun HomeScreen(uiState: HomeUiState, actions: HomeScreenActions, modifier: Modif
                 modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                item { LoadingCard() }
+                item { LoadingStateCard(messageRes = R.string.home_loading) }
             }
         }
 
@@ -50,7 +49,13 @@ fun HomeScreen(uiState: HomeUiState, actions: HomeScreenActions, modifier: Modif
                 modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                item { ErrorCard(message = uiState.message, onRetry = actions.onRetry) }
+                item {
+                    ErrorStateCard(
+                        message = stringResource(id = R.string.home_error, uiState.message),
+                        labelRes = R.string.home_retry,
+                        onRetry = actions.onRetry,
+                    )
+                }
             }
         }
 
@@ -168,20 +173,10 @@ private fun HomeScreenActions.postSummaryActions(slug: String): PostSummaryCardA
 
 @Composable
 private fun RecentReadingHeading() {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Text(
-            text = stringResource(id = R.string.home_recent_title),
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        Text(
-            text = stringResource(id = R.string.home_recent_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
+    SectionHeading(
+        titleRes = R.string.home_recent_title,
+        subtitleRes = R.string.home_recent_subtitle,
+    )
 }
 
 @Composable
@@ -191,34 +186,22 @@ private fun HomeFeedHeading(
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(id = R.string.home_feed_title),
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            if (isRefreshing) {
-                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-            } else {
-                IconButton(onClick = onRefresh) {
-                    Icon(
-                        imageVector = Icons.Outlined.Refresh,
-                        contentDescription = stringResource(id = R.string.feed_refresh),
-                    )
+    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        SectionHeading(
+            titleRes = R.string.home_feed_title,
+            subtitleRes = R.string.home_feed_subtitle,
+            trailingContent = {
+                if (isRefreshing) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                } else {
+                    IconButton(onClick = onRefresh) {
+                        Icon(
+                            imageVector = Icons.Outlined.Refresh,
+                            contentDescription = stringResource(id = R.string.feed_refresh),
+                        )
+                    }
                 }
-            }
-        }
-        Text(
-            text = stringResource(id = R.string.home_feed_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            },
         )
         ContentSyncStatusText(
             lastCheckedAtMillis = lastCheckedAtMillis,
@@ -229,59 +212,13 @@ private fun HomeFeedHeading(
 
 @Composable
 private fun BookmarkedHeading(onOpenSavedArchive: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(id = R.string.home_bookmarked_title),
-                style = MaterialTheme.typography.headlineSmall,
-            )
+    SectionHeading(
+        titleRes = R.string.home_bookmarked_title,
+        subtitleRes = R.string.home_bookmarked_subtitle,
+        trailingContent = {
             TextButton(onClick = onOpenSavedArchive) {
                 Text(text = stringResource(id = R.string.home_bookmarked_view_all))
             }
-        }
-        Text(
-            text = stringResource(id = R.string.home_bookmarked_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
-@Composable
-private fun LoadingCard() {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            CircularProgressIndicator()
-            Text(
-                text = stringResource(id = R.string.home_loading),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ErrorCard(message: String, onRetry: () -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = stringResource(id = R.string.home_error, message),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            Button(onClick = onRetry) { Text(text = stringResource(id = R.string.home_retry)) }
-        }
-    }
+        },
+    )
 }

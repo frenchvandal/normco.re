@@ -26,12 +26,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Locale
 import re.phiphi.android.R
 import re.phiphi.android.core.model.PostSummary
+import re.phiphi.android.ui.utils.formatPublishedDate
 
 @Composable
 fun PostSummaryCard(
@@ -160,13 +157,3 @@ private fun PostSummaryDetails(
         )
     }
 }
-
-private fun formatPublishedDate(dateTime: String): String =
-    runCatching {
-            OffsetDateTime.parse(dateTime)
-                .format(
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
-                        .withLocale(Locale.getDefault())
-                )
-        }
-        .getOrElse { dateTime }
