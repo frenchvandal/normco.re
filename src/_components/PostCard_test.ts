@@ -14,7 +14,6 @@ const POST_CARD_DATE_FORMATTER = new Intl.DateTimeFormat("en", {
   timeZone: "UTC",
 });
 
-/** Builds deterministic test props with realistic randomized values. */
 function makeBase(seed: number) {
   seedTestFaker(seed);
   const slug = faker.lorem.slug(3);
@@ -36,6 +35,7 @@ describe("PostCard()", () => {
         PostCard({ ...base, readingLabel: "3 min read" }),
       );
       assertStringIncludes(html, "3 min read");
+      assertStringIncludes(html, 'class="post-card-meta"');
       assertStringIncludes(html, 'class="post-card-reading-time"');
       assertStringIncludes(html, "<span");
     });
@@ -113,6 +113,7 @@ describe("PostCard()", () => {
     it("renders a time element with the ISO datetime attribute", async () => {
       const base = makeBase(305);
       const html = await renderComponent(PostCard({ ...base }));
+      assertStringIncludes(html, 'class="post-card-meta"');
       assertStringIncludes(html, `datetime="${base.dateIso}"`);
       assertStringIncludes(html, base.dateStr);
     });
@@ -166,6 +167,14 @@ describe("PostCard()", () => {
     it("keeps a dedicated class on the primary title link for shared styling", () => {
       assertStringIncludes(layoutStyles, ".post-card-link");
       assertStringIncludes(layoutStyles, ".post-card-title {");
+    });
+
+    it("groups post metadata in a shared inline row", () => {
+      assertStringIncludes(layoutStyles, ".post-card-meta");
+      assertStringIncludes(
+        layoutStyles,
+        ".post-card-meta > * + *::before",
+      );
     });
 
     it("defines a dedicated summary block for editorial variants", () => {

@@ -1,5 +1,3 @@
-/** Home page - editorial landing with featured story and recent posts. */
-
 import { distinct } from "@std/collections";
 import { renderComponent } from "lume/jsx-runtime";
 
@@ -29,11 +27,9 @@ import {
 import { getTagUrl } from "./utils/tags.ts";
 import { isLumeData, resolveOptionalString } from "./utils/type-guards.ts";
 
-/** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
-/** Page URL. */
 export const url = "/";
-/** Page title - left undefined so the base layout emits the bare site name. */
+// Keep the title undefined so the base layout emits the bare site name.
 export const title: string | undefined = undefined;
 
 type AuthorIdentity = ReturnType<typeof getAuthorIdentity>;
@@ -178,9 +174,6 @@ function renderFeaturedStory(
               }</p>`
           }
     <div class="primer-home-featured-story__meta">
-      <span class="primer-home-featured-story__author">${
-            escapeHtml(author.name)
-          }</span>
       <time class="dt-published" datetime="${escapeHtml(story.dateIso)}">${
             escapeHtml(story.dateLabel)
           }</time>${
@@ -189,7 +182,9 @@ function renderFeaturedStory(
               : `<span class="primer-home-featured-story__reading">${
                 escapeHtml(story.readingLabel)
               }</span>`
-          }
+          }<span class="primer-home-featured-story__author">${
+            escapeHtml(author.name)
+          }</span>
     </div>
   </div>`,
         },
@@ -214,10 +209,9 @@ function renderEmptyState(
   </div>`;
 }
 
-/** Exclude aggregate landing content from Pagefind in favor of source pages. */
+// Keep Pagefind focused on canonical content pages instead of aggregate shells.
 export const searchIndexed = false;
 
-/** Renders the home page body. */
 export default async (
   data: Lume.Data,
   helpers: Lume.Helpers,
@@ -319,7 +313,7 @@ export default async (
     }),
   );
 
-  return `<div class="site-page-shell site-page-shell--wide home-page home-page--primer">
+  return `<div class="site-page-shell site-page-shell--editorial home-page home-page--primer">
 <section class="primer-home-intro" aria-labelledby="home-title">
   <p class="primer-home-kicker">${escapeHtml(translations.home.eyebrow)}</p>
   <div class="primer-home-intro__grid">
@@ -340,8 +334,17 @@ export default async (
   }" class="primer-home-inline-link primer-home-inline-link--primary">${
     escapeHtml(translations.home.archiveLinkLabel)
   }</a>
+        <a href="${escapeHtml(aboutUrl)}" class="primer-home-inline-link">${
+    escapeHtml(translations.navigation.about)
+  }</a>
       </nav>
-      ${introTopicMarkup}
+      ${
+    introTopicMarkup.length === 0
+      ? ""
+      : `<div class="primer-home-intro__topics">
+        ${introTopicMarkup}
+      </div>`
+  }
     </div>
   </div>
 </section>

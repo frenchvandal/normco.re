@@ -1,5 +1,3 @@
-/** Posts archive - all posts grouped by year, newest first. */
-
 import { renderComponent } from "lume/jsx-runtime";
 
 import StatePanel from "../_components/StatePanel.tsx";
@@ -84,32 +82,25 @@ function renderArchiveYearSection(
 </section>`;
 }
 
-/** Available language versions generated from this page. */
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
-/** Archive page URL. */
 export const url = "/posts/";
-/** Lume layout template. */
 export const layout = "layouts/base.tsx";
-/** Exclude archive listings from Pagefind in favor of source post pages. */
+// Keep Pagefind focused on canonical post detail pages instead of archive
+// listings that repeat the same content.
 export const searchIndexed = false;
-/** Page title. */
 export const title = "Writing";
-/** Page meta description. */
 export const description = "All posts, grouped by year.";
 
-/** French-only metadata overrides used by the multilanguage plugin. */
 export const fr = {
   title: "Articles",
   description: "Tous les articles, regroupés par année.",
 } as const;
 
-/** Simplified Chinese metadata overrides used by the multilanguage plugin. */
 export const zhHans = {
   title: "文章",
   description: "所有文章，按年份分组。",
 } as const;
 
-/** Traditional Chinese metadata overrides used by the multilanguage plugin. */
 export const zhHant = {
   title: "文章",
   description: "所有文章，依年份分組。",
@@ -117,10 +108,8 @@ export const zhHant = {
 
 // Override the `type = "post"` inherited from _data.ts so this page
 // is not matched by `search.pages("type=post")` or nav plugin queries.
-/** Page type - overrides the inherited `"post"` to exclude this page from post queries. */
 export const type = "archive";
 
-/** Renders the posts archive page body. */
 export default async (
   data: Lume.Data,
   helpers: Lume.Helpers,
@@ -134,7 +123,6 @@ export default async (
   const posts = resolveArchivePosts(data.search, languageDataCode);
   const author = getAuthorIdentity(language, data.author);
 
-  // Group posts by year.
   const currentYear = resolveCurrentYear(Reflect.get(data, "currentYear"));
   const byYear = new Map<number, Lume.Data[]>();
 
@@ -327,7 +315,7 @@ export default async (
   }`;
 
   const archiveYearNav = years.length > 1
-    ? `<nav class="archive-year-nav" aria-label="${
+    ? `<nav class="archive-year-nav archive-year-nav--inline" aria-label="${
       escapeHtml(translations.archive.yearsAriaLabel)
     }">
   <ol class="archive-year-nav-list">
@@ -337,7 +325,8 @@ export default async (
     : "";
 
   const archiveBody = cardSections.length > 0
-    ? `<section class="archive-activity" aria-label="${
+    ? `${archiveYearNav}
+<section class="archive-activity" aria-label="${
       escapeHtml(translations.archive.activityAriaLabel)
     }">
   <div
@@ -369,24 +358,6 @@ export default async (
       variant: "inline",
     });
 
-  const archiveLayoutClass = archiveYearNav
-    ? "feature-layout feature-layout--with-rail"
-    : "feature-layout";
-  const archiveRail = archiveYearNav
-    ? `<aside class="feature-rail archive-rail" aria-label="${
-      escapeHtml(translations.archive.railAriaLabel)
-    }">
-  <div class="feature-rail-sticky">
-    <section class="cds--tile feature-card archive-year-card">
-      <h2 class="feature-card-title">${
-      escapeHtml(translations.archive.yearsAriaLabel)
-    }</h2>
-      ${archiveYearNav}
-    </section>
-  </div>
-</aside>`
-    : "";
-
   const archiveFeed = await renderComponent(
     HFeedShell({
       className: "feature-main h-feed",
@@ -405,9 +376,6 @@ export default async (
   );
 
   return `<div class="site-page-shell site-page-shell--wide">
-<div class="${escapeHtml(archiveLayoutClass)}">
   ${archiveFeed}
-  ${archiveRail}
-</div>
 </div>`;
 };

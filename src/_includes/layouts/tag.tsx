@@ -138,29 +138,7 @@ export default async (
     }),
   );
 
-  return `<div class="site-page-shell site-page-shell--wide">
-<div class="feature-layout feature-layout--with-rail">
+  return `<div class="site-page-shell site-page-shell--editorial">
   ${tagFeed}
-  <aside class="feature-rail tag-page-rail" aria-label="${
-    escapeHtml(translations.tagPage.railAriaLabel)
-  }">
-    <div class="feature-rail-sticky">
-      <section class="cds--tile feature-card">
-      <h2 class="feature-card-title">${
-    escapeHtml(translations.tagPage.eyebrow)
-  }</h2>
-        <span class="cds--tag cds--tag--${
-    getTagColor(tagName)
-  } tag-page-current-tag" title="${escapeHtml(tagName)}">
-          <span class="cds--tag__label">${escapeHtml(tagName)}</span>
-        </span>
-        <p class="feature-card-caption">${escapeHtml(postsCountLabel)}</p>
-        <a href="${escapeHtml(archiveUrl)}" class="feature-link">${
-    escapeHtml(translations.tagPage.archiveLinkLabel)
-  }</a>
-      </section>
-    </div>
-  </aside>
-</div>
 </div>`;
 };

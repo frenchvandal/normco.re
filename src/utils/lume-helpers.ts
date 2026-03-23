@@ -52,23 +52,22 @@ export function renderFallbackPostCard(
           ? { author: { name: authorName, url: authorUrl } }
           : {}),
         children: {
-          __html: `<time class="post-card-date dt-published" datetime="${
-            escapeHtml(dateIso)
-          }">${
-            escapeHtml(dateStr)
-          }</time><h3 class="post-card-title p-name"><a class="u-url u-uid" href="${
-            escapeHtml(url)
-          }">${escapeHtml(title)}</a></h3>${
-            showSummary && summary
-              ? `<p class="post-card-summary">${escapeHtml(summary)}</p>`
-              : ""
-          }${
-            readingLabel
-              ? `<span class="post-card-reading-time">${
-                escapeHtml(readingLabel)
-              }</span>`
-              : ""
-          }`,
+          __html:
+            `<h3 class="post-card-title p-name"><a class="post-card-link u-url u-uid" href="${
+              escapeHtml(url)
+            }">${escapeHtml(title)}</a></h3>${
+              showSummary && summary
+                ? `<p class="post-card-summary">${escapeHtml(summary)}</p>`
+                : ""
+            }<div class="post-card-meta"><time class="post-card-date dt-published" datetime="${
+              escapeHtml(dateIso)
+            }">${escapeHtml(dateStr)}</time>${
+              readingLabel
+                ? `<span class="post-card-reading-time">${
+                  escapeHtml(readingLabel)
+                }</span>`
+                : ""
+            }</div>`,
         },
       }),
     ),

@@ -7,7 +7,6 @@
 
 import HEntryShell from "../mf2/components/HEntryShell.tsx";
 
-/** Renders one post card row. */
 export default (
   {
     title,
@@ -45,17 +44,19 @@ export default (
       ? { author: { name: authorName, url: authorUrl } }
       : {})}
   >
-    <time class="post-card-date dt-published" datetime={dateIso}>
-      {dateStr}
-    </time>
     <h3 class="post-card-title p-name">
       <a class="post-card-link u-url u-uid" href={url}>{title}</a>
     </h3>
     {showSummary === true && summary !== undefined && (
       <p class="post-card-summary">{summary}</p>
     )}
-    {readingLabel !== undefined && (
-      <span class="post-card-reading-time">{readingLabel}</span>
-    )}
+    <div class="post-card-meta">
+      <time class="post-card-date dt-published" datetime={dateIso}>
+        {dateStr}
+      </time>
+      {readingLabel !== undefined && (
+        <span class="post-card-reading-time">{readingLabel}</span>
+      )}
+    </div>
   </HEntryShell>
 );

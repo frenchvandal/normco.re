@@ -14,18 +14,10 @@ import layoutStyles from "../styles/layout.css" with {
 
 import postsIndexPage, { searchIndexed } from "./index.page.tsx";
 
-// ---------------------------------------------------------------------------
-// Mock helpers
-// ---------------------------------------------------------------------------
 const MOCK_HELPERS = asLumeHelpers({
   date: (_value: unknown, _format: string): string => "Mar 5",
 });
 
-// ---------------------------------------------------------------------------
-// Helper factory
-// ---------------------------------------------------------------------------
-
-/** Builds a Lume.Data mock for the posts archive page. */
 type MockPost = {
   title: string;
   url: string;
@@ -76,10 +68,6 @@ function makePost(
 
   return { ...basePost, ...overrides };
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 describe("posts/index.page.tsx", () => {
   describe("shell", () => {
@@ -311,13 +299,11 @@ describe("posts/index.page.tsx", () => {
         }),
       ];
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
+      assertNotMatch(html, /class="feature-rail archive-rail"/);
       assertStringIncludes(
         html,
-        'class="feature-layout feature-layout--with-rail"',
+        'class="archive-year-nav archive-year-nav--inline"',
       );
-      assertStringIncludes(html, 'class="feature-rail archive-rail"');
-      assertStringIncludes(html, "feature-card archive-year-card");
-      assertStringIncludes(html, 'class="archive-year-nav"');
       assertStringIncludes(html, 'href="#archive-year-2026"');
       assertStringIncludes(html, 'href="#archive-year-2025"');
       assertMatch(html, /class="archive-year-nav-link"/);

@@ -83,6 +83,9 @@
     --ph-content-max: 860px;
     --ph-site-max: 1280px;
     --ph-sidebar: 240px;
+    --ph-wide-max: calc(
+      var(--ph-content-max) + var(--ph-sidebar) + var(--ph-space-8)
+    );
 
     --ph-radius-sm: 3px;
     --ph-radius-md: 6px;

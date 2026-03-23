@@ -5,18 +5,10 @@ import { asLumeData, asLumeHelpers } from "../test/lume.ts";
 
 import indexPage, { searchIndexed } from "./index.page.tsx";
 
-// ---------------------------------------------------------------------------
-// Mock helpers
-// ---------------------------------------------------------------------------
 const MOCK_HELPERS = asLumeHelpers({
   date: (_value: unknown, _format: string): string => "Mar 5",
 });
 
-// ---------------------------------------------------------------------------
-// Helper factory
-// ---------------------------------------------------------------------------
-
-/** Builds a Lume.Data mock for the home page, with an optional post list. */
 type MockPost = {
   title: string;
   url: string;
@@ -69,17 +61,13 @@ function makePost(
   return { ...basePost, ...overrides };
 }
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
-
 describe("index.page.tsx", () => {
   describe("hero section", () => {
-    it("wraps the page in the wide desktop shell", async () => {
+    it("wraps the page in the editorial shell", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertMatch(
         html,
-        /class="[^"]*\bsite-page-shell\b[^"]*\bsite-page-shell--wide\b[^"]*\bhome-page\b[^"]*\bhome-page--primer\b[^"]*"/,
+        /class="[^"]*\bsite-page-shell\b[^"]*\bsite-page-shell--editorial\b[^"]*\bhome-page\b[^"]*\bhome-page--primer\b[^"]*"/,
       );
     });
 

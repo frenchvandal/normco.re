@@ -23,7 +23,7 @@ function makePost(seed: number, overrides: Partial<Lume.Data> = {}): Lume.Data {
 }
 
 describe("tag.tsx layout", () => {
-  it("wraps the tag page in the wide shell and feature rail layout", async () => {
+  it("wraps the tag page in the editorial shell without a secondary rail", async () => {
     const html = await renderComponent(
       tagLayout(
         asLumeData({
@@ -39,13 +39,12 @@ describe("tag.tsx layout", () => {
       ),
     );
 
-    assertStringIncludes(html, 'class="site-page-shell site-page-shell--wide"');
     assertStringIncludes(
       html,
-      'class="feature-layout feature-layout--with-rail"',
+      'class="site-page-shell site-page-shell--editorial"',
     );
     assertStringIncludes(html, 'class="feature-main h-feed"');
-    assertStringIncludes(html, 'class="feature-rail tag-page-rail"');
+    assertNotMatch(html, /class="feature-rail tag-page-rail"/);
     assertStringIncludes(html, 'class="u-url sr-only" href="/posts/"');
     assertStringIncludes(html, 'class="p-author h-card sr-only"');
   });
@@ -131,7 +130,8 @@ describe("tag.tsx layout", () => {
 
     assertStringIncludes(html, 'class="archive-list"');
     assertStringIncludes(html, "post-card h-entry");
-    assertStringIncludes(html, 'class="u-url u-uid" href=""');
+    assertStringIncludes(html, 'class="post-card-link u-url u-uid" href=""');
+    assertStringIncludes(html, 'class="post-card-meta"');
     assertNotMatch(html, /not-a-post/);
     assertNotMatch(html, />42</);
   });
