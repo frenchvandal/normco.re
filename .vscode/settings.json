@@ -79,12 +79,13 @@
     "http",
     "net"
   ],
-  "deno.config": "./deno.json",
+  "deno.config": "./deno.jsonc",
   "deno.suggest.imports.hosts": {
     "https://cdn.jsdelivr.net": true,
     "https://deno.land": true
   },
   "editor.linkedEditing": true,
   "gradle.nestedProjects": true,
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": false,
   "workbench.startupEditor": "readme"
 }
