@@ -157,7 +157,7 @@ describe("about page CSS contracts", () => {
     assertStringIncludes(layoutStyles, ".about-contact-popover {");
     assertStringIncludes(
       layoutStyles,
-      "inline-size: min(18rem, calc(100vw - (var(--ph-shell-gutter) * 2)));",
+      "inline-size: min(18rem, calc(100vw - var(--ph-shell-gutter) * 2));",
     );
     assertStringIncludes(layoutStyles, ".about-contact-trigger:hover,");
   });

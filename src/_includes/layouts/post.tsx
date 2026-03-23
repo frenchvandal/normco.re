@@ -54,6 +54,7 @@ type DateHelper = (
 ) => string | undefined;
 type SsxElement = ReturnType<typeof jsx>;
 type DefinitionListValue = SsxElement | string | number;
+type NavMethod = NonNullable<NavHelper["previousPage"]>;
 type DefinitionListItem = Readonly<{
   key: string;
   term: string;
@@ -85,59 +86,67 @@ function isPostCandidate(
   return true;
 }
 
-function resolveDateHelper(helpers: Lume.Helpers): DateHelper {
-  const helper = Reflect.get(helpers, "date");
+function resolveMethod<TArgs extends unknown[], TResult>(
+  value: unknown,
+  key: PropertyKey,
+): ((...args: TArgs) => TResult) | undefined {
+  if (typeof value !== "object" || value === null) {
+    return undefined;
+  }
 
-  if (typeof helper !== "function") {
+  const method = Reflect.get(value, key);
+  if (typeof method !== "function") {
+    return undefined;
+  }
+
+  return (...args) => Reflect.apply(method, value, args) as TResult;
+}
+
+function resolveDateHelper(helpers: Lume.Helpers): DateHelper {
+  const helper = resolveMethod<Parameters<DateHelper>, unknown>(
+    helpers,
+    "date",
+  );
+  if (!helper) {
     return () => undefined;
   }
 
   return (value, pattern, lang) => {
-    const result = Reflect.apply(helper, helpers, [value, pattern, lang]);
+    const result = helper(value, pattern, lang);
     return typeof result === "string" ? result : undefined;
   };
 }
 
 function resolveNavHelper(value: unknown): NavHelper {
-  if (typeof value !== "object" || value === null) {
-    return {};
-  }
-
-  const previousPage = Reflect.get(value, "previousPage");
-  const nextPage = Reflect.get(value, "nextPage");
+  const previousPage = resolveMethod<Parameters<NavMethod>, unknown>(
+    value,
+    "previousPage",
+  );
+  const nextPage = resolveMethod<Parameters<NavMethod>, unknown>(
+    value,
+    "nextPage",
+  );
 
   return {
-    ...(typeof previousPage === "function"
-      ? {
-        previousPage: (url, base, query, sort) =>
-          Reflect.apply(previousPage, value, [url, base, query, sort]),
-      }
-      : {}),
-    ...(typeof nextPage === "function"
-      ? {
-        nextPage: (url, base, query, sort) =>
-          Reflect.apply(nextPage, value, [url, base, query, sort]),
-      }
-      : {}),
+    ...(previousPage ? { previousPage } : {}),
+    ...(nextPage ? { nextPage } : {}),
   };
 }
 
 function resolveSearchHelper(
   value: unknown,
 ): Partial<SearchHelper> | undefined {
-  if (typeof value !== "object" || value === null) {
-    return undefined;
-  }
-
-  const pages = Reflect.get(value, "pages");
-
-  if (typeof pages !== "function") {
+  const pages = resolveMethod<Parameters<SearchHelper["pages"]>, unknown>(
+    value,
+    "pages",
+  );
+  if (!pages) {
     return undefined;
   }
 
   return {
     pages: (query, sort) => {
-      const result = Reflect.apply(pages, value, [query, sort]);
+      const result = pages(query, sort);
       return Array.isArray(result) ? result : [];
     },
   };
@@ -154,22 +163,59 @@ function resolveHtmlChildren(children: unknown): string | undefined {
     return children;
   }
 
-  if (
-    typeof children === "object" &&
-    children !== null &&
-    "__html" in children
-  ) {
-    const html = (children as { readonly __html?: unknown }).__html;
-    return typeof html === "string" ? html : undefined;
-  }
-
-  return undefined;
+  const html = typeof children === "object" && children !== null
+    ? Reflect.get(children, "__html")
+    : undefined;
+  return typeof html === "string" ? html : undefined;
 }
 
 /** Returns true when the post body contains at least one `<pre><code>` block. */
 function hasCodeBlocks(children: unknown): boolean {
-  const html = resolveHtmlChildren(children);
-  return typeof html === "string" && /<pre>\s*<code\b/i.test(html);
+  return /<pre>\s*<code\b/i.test(resolveHtmlChildren(children) ?? "");
+}
+
+function isDefined<T>(value: T | undefined): value is T {
+  return value !== undefined;
+}
+
+function resolveOptionalTrimmedString(value: unknown): string | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function resolveCodeCopyAttribute(
+  includeCodeCopyScript: boolean,
+  label: string,
+  fallback: string,
+): string | undefined {
+  return includeCodeCopyScript && label !== fallback ? label : undefined;
+}
+
+function resolveAdjacentPosts(
+  currentUrl: string,
+  postQuery: string,
+  search: Partial<SearchHelper> | undefined,
+): { prev?: Lume.Data; next?: Lume.Data } {
+  const searchPages = search?.pages;
+  if (typeof searchPages !== "function") {
+    return {};
+  }
+
+  const posts = searchPages(postQuery, "date=asc").filter(isLumeData);
+  const currentIndex = posts.findIndex((post) => post.url === currentUrl);
+  const prev = currentIndex > 0 ? posts[currentIndex - 1] : undefined;
+  const next = currentIndex >= 0 && currentIndex < posts.length - 1
+    ? posts[currentIndex + 1]
+    : undefined;
+
+  return {
+    ...(prev ? { prev } : {}),
+    ...(next ? { next } : {}),
+  };
 }
 
 function renderDefinitionList(
@@ -201,7 +247,7 @@ function renderDefinitionList(
 /** Renders the post page within the base layout. */
 export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const dateFormat = resolveDateHelper(helpers);
-  const n = resolveNavHelper(data.nav);
+  const nav = resolveNavHelper(data.nav);
   const language = resolveSiteLanguage(data.lang);
   const languageDataCode = getLanguageDataCode(language);
   const translations = getSiteTranslations(language);
@@ -209,35 +255,30 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const currentUrl = typeof data.url === "string" ? data.url : "/";
   const postsBaseUrl = getLocalizedUrl("/posts/", language);
   const search = resolveSearchHelper(data.search);
-  let prev: Lume.Data | undefined;
-  let next: Lume.Data | undefined;
+  let { prev, next } = resolveAdjacentPosts(
+    currentUrl,
+    postQuery,
+    search,
+  );
 
-  if (typeof search?.pages === "function") {
-    const posts = search.pages(postQuery, "date=asc").filter(isLumeData);
-    const currentIndex = posts.findIndex((post) => post.url === currentUrl);
-
-    if (currentIndex > 0) {
-      prev = posts[currentIndex - 1];
-    }
-
-    if (currentIndex >= 0 && currentIndex < posts.length - 1) {
-      next = posts[currentIndex + 1];
-    }
+  const navPrev = nav.previousPage?.(
+    currentUrl,
+    postsBaseUrl,
+    postQuery,
+    "date=asc",
+  );
+  if (prev === undefined && isPostCandidate(navPrev, postsBaseUrl)) {
+    prev = navPrev;
   }
 
-  if (prev === undefined && typeof n.previousPage === "function") {
-    const navPrev = n.previousPage(
-      currentUrl,
-      postsBaseUrl,
-      postQuery,
-      "date=asc",
-    );
-    prev = isPostCandidate(navPrev, postsBaseUrl) ? navPrev : undefined;
-  }
-
-  if (next === undefined && typeof n.nextPage === "function") {
-    const navNext = n.nextPage(currentUrl, postsBaseUrl, postQuery, "date=asc");
-    next = isPostCandidate(navNext, postsBaseUrl) ? navNext : undefined;
+  const navNext = nav.nextPage?.(
+    currentUrl,
+    postsBaseUrl,
+    postQuery,
+    "date=asc",
+  );
+  if (next === undefined && isPostCandidate(navNext, postsBaseUrl)) {
+    next = navNext;
   }
 
   const postDate = resolvePostDate(data.date);
@@ -257,18 +298,21 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const codeCopyLabel = translations.post.copyCodeLabel;
   const codeCopyFeedback = translations.post.copyCodeFeedback;
   const codeCopyFailedFeedback = translations.post.copyCodeFailedFeedback;
-  const codeCopyLabelAttribute = includeCodeCopyScript &&
-      codeCopyLabel !== "Copy code"
-    ? codeCopyLabel
-    : undefined;
-  const codeCopyFeedbackAttribute = includeCodeCopyScript &&
-      codeCopyFeedback !== "Code copied"
-    ? codeCopyFeedback
-    : undefined;
-  const codeCopyFailedFeedbackAttribute = includeCodeCopyScript &&
-      codeCopyFailedFeedback !== "Cannot copy code"
-    ? codeCopyFailedFeedback
-    : undefined;
+  const codeCopyLabelAttribute = resolveCodeCopyAttribute(
+    includeCodeCopyScript,
+    codeCopyLabel,
+    "Copy code",
+  );
+  const codeCopyFeedbackAttribute = resolveCodeCopyAttribute(
+    includeCodeCopyScript,
+    codeCopyFeedback,
+    "Code copied",
+  );
+  const codeCopyFailedFeedbackAttribute = resolveCodeCopyAttribute(
+    includeCodeCopyScript,
+    codeCopyFailedFeedback,
+    "Cannot copy code",
+  );
 
   const publishedDateIso = dateFormat(postDate, "ATOM", language) ??
     postDate.toISOString();
@@ -277,32 +321,25 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const readingTimeLabel = minutes !== undefined
     ? formatReadingTime(minutes, language)
     : undefined;
-  const visibleSummary = typeof data.description === "string" &&
-      data.description.trim().length > 0
-    ? data.description.trim()
-    : undefined;
+  const visibleSummary = resolveOptionalTrimmedString(data.description);
   const hasRail = outline.length > 0 ||
     tags.length > 0 ||
     prev !== undefined ||
     next !== undefined;
   const showSummaryBlock = visibleSummary !== undefined ||
     outline.length > 0;
-  const summaryItems: DefinitionListItem[] = [
-    ...(readingTimeLabel !== undefined
-      ? [{
-        key: "reading-time",
-        term: translations.post.readingLabel,
-        value: readingTimeLabel,
-      }]
-      : []),
-    ...(outline.length > 0
-      ? [{
-        key: "sections",
-        term: translations.post.sectionsLabel,
-        value: outline.length,
-      }]
-      : []),
-  ];
+  const summaryItems = [
+    readingTimeLabel === undefined ? undefined : {
+      key: "reading-time",
+      term: translations.post.readingLabel,
+      value: readingTimeLabel,
+    },
+    outline.length === 0 ? undefined : {
+      key: "sections",
+      term: translations.post.sectionsLabel,
+      value: outline.length,
+    },
+  ].filter(isDefined);
   const publicationDetails: DefinitionListItem[] = [
     {
       key: "published",
@@ -313,19 +350,17 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
         </time>
       ),
     },
-    ...(readingTimeLabel !== undefined
-      ? [{
-        key: "reading-time",
-        term: translations.post.readingLabel,
-        value: readingTimeLabel,
-      }]
-      : []),
+    readingTimeLabel === undefined ? undefined : {
+      key: "reading-time",
+      term: translations.post.readingLabel,
+      value: readingTimeLabel,
+    },
     {
       key: "permalink",
       term: translations.post.permalinkLabel,
       value: <a href={currentUrl} class="post-details-link">{currentUrl}</a>,
     },
-  ];
+  ].filter(isDefined);
 
   return (
     <div class="site-page-shell site-page-shell--wide">

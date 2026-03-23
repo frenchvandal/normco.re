@@ -15,6 +15,7 @@ import {
   getLocalizedUrl,
   getSiteTranslations,
   resolveSiteLanguage,
+  type SiteLanguage,
 } from "./utils/i18n.ts";
 import {
   getLocalizedAtomFeedUrl,
@@ -112,6 +113,10 @@ type FeedCard = {
   readonly path: string;
   readonly mime: string;
 };
+type FormatMeta = Readonly<{
+  label: "JSON" | "XML";
+  tone: "teal" | "gray";
+}>;
 type FeedActions = Readonly<{
   openAction: string;
   copyAction: string;
@@ -122,14 +127,24 @@ type FeedActions = Readonly<{
   copiedTitle: string;
   errorTitle: string;
 }>;
+type AccordionItemProps = Readonly<{
+  body: string;
+  id: string;
+  title: string;
+}>;
 
-function resolveFeedFormatMeta(mime: string): {
-  readonly label: "JSON" | "XML";
-  readonly tone: "teal" | "gray";
-} {
+function resolveFeedFormatMeta(mime: string): FormatMeta {
   return mime.includes("json")
     ? { label: "JSON", tone: "teal" }
     : { label: "XML", tone: "gray" };
+}
+
+function renderFormatTag({ label, tone }: FormatMeta): string {
+  return `<span class="cds--tag cds--tag--${
+    escapeHtml(tone)
+  } feeds-card-tag" title="${escapeHtml(label)}">
+        <span class="cds--tag__label">${escapeHtml(label)}</span>
+      </span>`;
 }
 
 function renderCopyNotice(
@@ -226,20 +241,14 @@ function renderCard(
   siteOrigin: string,
   actions: FeedActions,
 ): string {
-  const { label: formatLabel, tone: formatTone } = resolveFeedFormatMeta(
-    card.mime,
-  );
+  const formatMeta = resolveFeedFormatMeta(card.mime);
 
   return `<article class="cds--tile feeds-card feeds-card--${
     escapeHtml(card.id)
   }">
   <div class="feeds-card-head">
     <div class="feeds-card-badges">
-      <span class="cds--tag cds--tag--${
-    escapeHtml(formatTone)
-  } feeds-card-tag" title="${escapeHtml(formatLabel)}">
-        <span class="cds--tag__label">${escapeHtml(formatLabel)}</span>
-      </span>
+      ${renderFormatTag(formatMeta)}
     </div>
     <p class="feeds-card-kicker">${escapeHtml(card.mime)}</p>
     <h3 class="feeds-card-title">${escapeHtml(card.title)}</h3>
@@ -254,18 +263,12 @@ function renderStructuredListRow(
   siteOrigin: string,
   actions: FeedActions,
 ): string {
-  const { label: formatLabel, tone: formatTone } = resolveFeedFormatMeta(
-    card.mime,
-  );
+  const formatMeta = resolveFeedFormatMeta(card.mime);
 
   return `<div class="cds--structured-list-row">
     <div class="cds--structured-list-td feeds-structured-list-format">
       <div class="feeds-structured-list-copy">
-        <span class="cds--tag cds--tag--${
-    escapeHtml(formatTone)
-  } feeds-card-tag" title="${escapeHtml(formatLabel)}">
-          <span class="cds--tag__label">${escapeHtml(formatLabel)}</span>
-        </span>
+        ${renderFormatTag(formatMeta)}
         <div class="feeds-structured-list-meta">
           <p class="feeds-structured-list-title">${escapeHtml(card.title)}</p>
           <p class="feeds-structured-list-kicker">${escapeHtml(card.mime)}</p>
@@ -282,15 +285,7 @@ function renderStructuredListRow(
 }
 
 function renderAccordionItem(
-  {
-    body,
-    id,
-    title,
-  }: {
-    readonly body: string;
-    readonly id: string;
-    readonly title: string;
-  },
+  { body, id, title }: AccordionItemProps,
   expanded = false,
 ): string {
   return `<li class="cds--accordion__item${
@@ -319,13 +314,11 @@ function renderAccordionItem(
   </li>`;
 }
 
-/** Renders the syndication page. */
-export default (data: Lume.Data): string => {
-  const language = resolveSiteLanguage(data.lang);
-  const translations = getSiteTranslations(language);
-  const siteOrigin = `https://${siteName}`;
-  const homeUrl = getLocalizedUrl("/", language);
-  const feedCards: ReadonlyArray<FeedCard> = [
+function buildFeedCards(
+  language: SiteLanguage,
+  translations: ReturnType<typeof getSiteTranslations>,
+): ReadonlyArray<FeedCard> {
+  return [
     {
       id: "rss",
       title: translations.feeds.rssTitle,
@@ -355,7 +348,12 @@ export default (data: Lume.Data): string => {
       mime: "application/xml",
     },
   ];
-  const feedActions: FeedActions = {
+}
+
+function buildFeedActions(
+  translations: ReturnType<typeof getSiteTranslations>,
+): FeedActions {
+  return {
     openAction: translations.feeds.openAction,
     copyAction: translations.feeds.copyAction,
     copiedAction: translations.feeds.copiedAction,
@@ -365,6 +363,16 @@ export default (data: Lume.Data): string => {
     copiedTitle: translations.feeds.copyNoticeTitle,
     errorTitle: translations.feeds.errorNoticeTitle,
   };
+}
+
+/** Renders the syndication page. */
+export default (data: Lume.Data): string => {
+  const language = resolveSiteLanguage(data.lang);
+  const translations = getSiteTranslations(language);
+  const siteOrigin = `https://${siteName}`;
+  const homeUrl = getLocalizedUrl("/", language);
+  const feedCards = buildFeedCards(language, translations);
+  const feedActions = buildFeedActions(translations);
 
   const cardsHtml = feedCards.map((card) =>
     renderCard(card, siteOrigin, feedActions)

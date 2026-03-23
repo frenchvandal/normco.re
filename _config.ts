@@ -37,8 +37,7 @@ type SeoIssue = {
 
 function runGitCommand(args: string[]): string | undefined {
   try {
-    const command = new Deno.Command("git", { args });
-    const output = command.outputSync();
+    const output = new Deno.Command("git", { args }).outputSync();
 
     if (!output.success) {
       return undefined;
@@ -73,7 +72,10 @@ function getBuildData(): BuildData {
   );
   const swDebugLevel = isServeTask ? consoleDebugPolicy.level : "off";
 
-  return repositoryUrl ? { repositoryUrl, swDebugLevel } : { swDebugLevel };
+  return {
+    swDebugLevel,
+    ...(repositoryUrl ? { repositoryUrl } : {}),
+  };
 }
 
 function updateSeoDebugCollection(
@@ -87,15 +89,17 @@ function updateSeoDebugCollection(
     return;
   }
 
+  const repositoryActions = buildData.repositoryUrl
+    ? [{ text: "Open repository", href: buildData.repositoryUrl }]
+    : [];
+
   collection.icon = "search";
   collection.items = seoIssues.map(({ pagePath, messages }) => ({
     title: pagePath,
     description: messages.join("\n"),
     actions: [
       { text: "Open page", href: pagePath },
-      ...(buildData.repositoryUrl
-        ? [{ text: "Open repository", href: buildData.repositoryUrl }]
-        : []),
+      ...repositoryActions,
     ],
   }));
 }

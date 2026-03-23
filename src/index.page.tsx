@@ -29,19 +29,20 @@ export const url = "/";
 export const title: string | undefined = undefined;
 
 /** Typed component functions used on this page. */
+type PostCardProps = Readonly<{
+  title: string;
+  url: string;
+  dateStr: string;
+  dateIso: string;
+  className?: string;
+  readingLabel?: string;
+  summary?: string;
+  showSummary?: boolean;
+  authorName?: string;
+  authorUrl?: string;
+}>;
 type Comp = {
-  PostCard: (props: {
-    readonly title: string;
-    readonly url: string;
-    readonly dateStr: string;
-    readonly dateIso: string;
-    readonly className?: string;
-    readonly readingLabel?: string;
-    readonly summary?: string;
-    readonly showSummary?: boolean;
-    readonly authorName?: string;
-    readonly authorUrl?: string;
-  }) => string | Promise<string>;
+  PostCard: (props: PostCardProps) => string | Promise<string>;
 };
 
 /** Typed helpers used in this page. */
@@ -49,6 +50,7 @@ type H = {
   date: (value: unknown, pattern?: string, lang?: string) => string | undefined;
 };
 
+type AuthorIdentity = ReturnType<typeof getAuthorIdentity>;
 type StoryData = {
   readonly title: string;
   readonly url: string;
@@ -63,32 +65,21 @@ function isLumeData(value: unknown): value is Lume.Data {
   return typeof value === "object" && value !== null;
 }
 
-function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
-  if (typeof value === "object" && value !== null) {
-    const PostCard = Reflect.get(value, "PostCard");
-
-    if (typeof PostCard === "function") {
-      return (props) => {
-        const rendered = Reflect.apply(PostCard, value, [props]);
-        return rendered instanceof Promise ? rendered : String(rendered);
-      };
-    }
-  }
-
-  return (
-    {
-      title,
-      url,
-      dateStr,
-      dateIso,
-      className,
-      readingLabel,
-      summary,
-      showSummary,
-      authorName,
-      authorUrl,
-    },
-  ) =>
+function renderFallbackPostCard(
+  {
+    title,
+    url,
+    dateStr,
+    dateIso,
+    className,
+    readingLabel,
+    summary,
+    showSummary,
+    authorName,
+    authorUrl,
+  }: PostCardProps,
+): Promise<string> {
+  return Promise.resolve(
     renderComponent(
       HEntryShell({
         className: [
@@ -121,7 +112,23 @@ function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
           }`,
         },
       }),
-    );
+    ),
+  );
+}
+
+function resolvePostCardRenderer(value: unknown): Comp["PostCard"] {
+  if (typeof value === "object" && value !== null) {
+    const PostCard = Reflect.get(value, "PostCard");
+
+    if (typeof PostCard === "function") {
+      return (props) => {
+        const rendered = Reflect.apply(PostCard, value, [props]);
+        return rendered instanceof Promise ? rendered : String(rendered);
+      };
+    }
+  }
+
+  return renderFallbackPostCard;
 }
 
 function resolveDateHelper(helpers: Lume.Helpers): H["date"] {
@@ -177,6 +184,18 @@ function resolveOptionalString(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
 }
 
+function resolveShortDatePattern(language: SiteLanguage): string {
+  switch (language) {
+    case "fr":
+      return "d MMM";
+    case "zhHans":
+    case "zhHant":
+      return "M 月 d 日";
+    default:
+      return "SHORT";
+  }
+}
+
 function resolveStoryData(
   post: Lume.Data,
   language: SiteLanguage,
@@ -201,75 +220,63 @@ function resolveStoryData(
   };
 }
 
-/** Exclude aggregate landing content from Pagefind in favor of source pages. */
-export const searchIndexed = false;
+function renderTopicList(
+  tags: readonly string[],
+  language: SiteLanguage,
+  {
+    itemClassName,
+    linkClassName,
+    listClassName,
+  }: Readonly<{
+    itemClassName: string;
+    linkClassName: string;
+    listClassName: string;
+  }>,
+): string {
+  if (tags.length === 0) {
+    return "";
+  }
 
-/** Renders the home page body. */
-export default async (
-  data: Lume.Data,
-  helpers: Lume.Helpers,
-): Promise<string> => {
-  const PostCard = resolvePostCardRenderer(data.comp);
-  const dateFormat = resolveDateHelper(helpers);
-  const language = resolveSiteLanguage(data.lang);
-  const languageDataCode = getLanguageDataCode(language);
-  const translations = getSiteTranslations(language);
-  const shortDatePattern = language === "fr"
-    ? "d MMM"
-    : language === "zhHans" || language === "zhHant"
-    ? "M 月 d 日"
-    : "SHORT";
-  const aboutUrl = getLocalizedUrl("/about/", language);
-  const currentUrl = getLocalizedUrl("/", language);
-  const archiveUrl = getLocalizedUrl("/posts/", language);
-  const recent = resolveRecentPosts(data.search, languageDataCode);
-  const featuredTopics = resolveFeaturedTags(recent);
-  const author = getAuthorIdentity(language, data.author);
-  const introTopicMarkup = featuredTopics.map((tag) => {
-    return `<li class="primer-home-topics__item">
+  const items = tags.map((tag) =>
+    `<li class="${itemClassName}">
       <a href="${
       escapeHtml(getTagUrl(tag, language))
-    }" class="primer-home-topic-link">
+    }" class="${linkClassName}">
         ${escapeHtml(tag)}
       </a>
-    </li>`;
-  }).join("\n");
+    </li>`
+  ).join("\n");
 
-  const [featuredPost, ...remainingPosts] = recent;
+  return `<ul class="${listClassName}">
+    ${items}
+  </ul>`;
+}
 
-  const featuredStory = featuredPost === undefined ? "" : await (() => {
-    const story = resolveStoryData(
-      featuredPost,
-      language,
-      shortDatePattern,
-      dateFormat,
-    );
-    const tags = story.tags.slice(0, 2);
-    const visibleTagMarkup = tags.length === 0
-      ? ""
-      : `<ul class="primer-home-featured-story__topics">
-      ${
-        tags.map((tag) =>
-          `<li class="primer-home-featured-story__topics-item">
-          <a href="${
-            escapeHtml(getTagUrl(tag, language))
-          }" class="primer-home-featured-story__topic-link">
-            ${escapeHtml(tag)}
-          </a>
-        </li>`
-        ).join("\n")
-      }
-    </ul>`;
+function renderFeaturedStory(
+  story: StoryData,
+  author: AuthorIdentity,
+  language: SiteLanguage,
+): Promise<string> {
+  const topics = renderTopicList(
+    story.tags.slice(0, 2),
+    language,
+    {
+      listClassName: "primer-home-featured-story__topics",
+      itemClassName: "primer-home-featured-story__topics-item",
+      linkClassName: "primer-home-featured-story__topic-link",
+    },
+  );
 
-    return renderComponent(
+  return Promise.resolve(
+    renderComponent(
       HEntryShell({
         className: "primer-home-featured-story h-entry",
         ...(story.summary !== undefined ? { summary: story.summary } : {}),
-        categories: tags,
+        categories: story.tags.slice(0, 2),
         author,
         children: {
           __html: `<div class="primer-home-featured-story__body">
-    ${visibleTagMarkup}
+    ${topics}
     <h2 class="primer-home-featured-story__title p-name">
       <a class="primer-home-featured-story__link u-url u-uid" href="${
             escapeHtml(story.url)
@@ -301,8 +308,69 @@ export default async (
   </div>`,
         },
       }),
+    ),
+  );
+}
+
+function renderEmptyState(
+  aboutUrl: string,
+  translations: ReturnType<typeof getSiteTranslations>,
+): string {
+  return `<div class="primer-home-empty-state">
+    <p class="primer-home-section-kicker">${
+    escapeHtml(translations.home.eyebrow)
+  }</p>
+    <h3>${escapeHtml(translations.home.emptyStateTitle)}</h3>
+    <p>${escapeHtml(translations.home.emptyState)}</p>
+    <a href="${escapeHtml(aboutUrl)}" class="btn btn-sm">${
+    escapeHtml(translations.navigation.about)
+  }</a>
+  </div>`;
+}
+
+/** Exclude aggregate landing content from Pagefind in favor of source pages. */
+export const searchIndexed = false;
+
+/** Renders the home page body. */
+export default async (
+  data: Lume.Data,
+  helpers: Lume.Helpers,
+): Promise<string> => {
+  const PostCard = resolvePostCardRenderer(data.comp);
+  const dateFormat = resolveDateHelper(helpers);
+  const language = resolveSiteLanguage(data.lang);
+  const languageDataCode = getLanguageDataCode(language);
+  const translations = getSiteTranslations(language);
+  const shortDatePattern = resolveShortDatePattern(language);
+  const aboutUrl = getLocalizedUrl("/about/", language);
+  const currentUrl = getLocalizedUrl("/", language);
+  const archiveUrl = getLocalizedUrl("/posts/", language);
+  const recent = resolveRecentPosts(data.search, languageDataCode);
+  const featuredTopics = resolveFeaturedTags(recent);
+  const author = getAuthorIdentity(language, data.author);
+  const introTopicMarkup = renderTopicList(
+    featuredTopics,
+    language,
+    {
+      listClassName: "primer-home-topics",
+      itemClassName: "primer-home-topics__item",
+      linkClassName: "primer-home-topic-link",
+    },
+  );
+
+  const [featuredPost, ...remainingPosts] = recent;
+  const featuredStory = featuredPost === undefined
+    ? ""
+    : await renderFeaturedStory(
+      resolveStoryData(
+        featuredPost,
+        language,
+        shortDatePattern,
+        dateFormat,
+      ),
+      author,
+      language,
     );
-  })();
 
   const listingMarkup = await Promise.all(remainingPosts.map(async (post) => {
     const story = resolveStoryData(
@@ -330,16 +398,7 @@ export default async (
     return `<li class="home-posts-item">${card}</li>`;
   })).then((items) => items.join("\n"));
 
-  const emptyState = `<div class="primer-home-empty-state">
-    <p class="primer-home-section-kicker">${
-    escapeHtml(translations.home.eyebrow)
-  }</p>
-    <h3>${escapeHtml(translations.home.emptyStateTitle)}</h3>
-    <p>${escapeHtml(translations.home.emptyState)}</p>
-    <a href="${escapeHtml(aboutUrl)}" class="btn btn-sm">${
-    escapeHtml(translations.navigation.about)
-  }</a>
-  </div>`;
+  const emptyState = renderEmptyState(aboutUrl, translations);
 
   const recentSection = await renderComponent(
     HFeedShell({
@@ -403,13 +462,7 @@ export default async (
     escapeHtml(translations.navigation.about)
   }</a>
       </nav>
-      ${
-    introTopicMarkup.length > 0
-      ? `<ul class="primer-home-topics">
-        ${introTopicMarkup}
-      </ul>`
-      : ""
-  }
+      ${introTopicMarkup}
     </div>
   </div>
 </section>

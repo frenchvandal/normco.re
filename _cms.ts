@@ -11,6 +11,7 @@ type PostLanguageCollection = {
 
 const CMS_PROD_BRANCH_ENV_KEY = "CMS_PROD_BRANCH";
 const DEFAULT_CMS_PROD_BRANCH = "master";
+const REQUIRED_FIELD_ATTRIBUTES = { required: true } as const;
 
 const POST_LANGUAGE_COLLECTIONS: ReadonlyArray<PostLanguageCollection> = [
   {
@@ -84,6 +85,20 @@ function createLanguageCollection(
   cms: ReturnType<typeof CMS>,
   collection: PostLanguageCollection,
 ): void {
+  const slugField = {
+    name: "slug",
+    type: "text",
+    label: "Slug",
+    attributes: REQUIRED_FIELD_ATTRIBUTES,
+  } as const;
+  const languageField = {
+    name: "lang",
+    type: "hidden",
+    init(field: { value?: string | number | boolean }) {
+      field.value = collection.language;
+    },
+  } as const;
+
   cms.collection({
     name: collection.name,
     label: collection.label,
@@ -91,21 +106,8 @@ function createLanguageCollection(
       `Edit ${collection.language} Markdown posts stored in src/posts/*/${collection.filename}.`,
     store: `src:posts/*/${collection.filename}`,
     fields: [
-      {
-        name: "slug",
-        type: "text",
-        label: "Slug",
-        attributes: {
-          required: true,
-        },
-      },
-      {
-        name: "lang",
-        type: "hidden",
-        init(field) {
-          field.value = collection.language;
-        },
-      },
+      slugField,
+      languageField,
       "title: text!",
       {
         name: "description",
@@ -150,23 +152,17 @@ cms.collection({
       name: "slug",
       type: "text",
       label: "Slug",
-      attributes: {
-        required: true,
-      },
+      attributes: REQUIRED_FIELD_ATTRIBUTES,
     },
     {
       name: "id",
       type: "text",
-      attributes: {
-        required: true,
-      },
+      attributes: REQUIRED_FIELD_ATTRIBUTES,
     },
     {
       name: "url",
       type: "text",
-      attributes: {
-        required: true,
-      },
+      attributes: REQUIRED_FIELD_ATTRIBUTES,
     },
     {
       name: "date",

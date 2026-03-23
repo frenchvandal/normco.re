@@ -139,6 +139,10 @@ describe("syndication CSS contracts", () => {
     );
     assertStringIncludes(
       layoutStyles,
+      "grid-template-columns: minmax(0, 1fr) auto;",
+    );
+    assertStringIncludes(
+      layoutStyles,
       ".feeds-structured-list .cds--structured-list-row",
     );
     assertStringIncludes(layoutStyles, ".feeds-copy-notice");
@@ -148,7 +152,6 @@ describe("syndication CSS contracts", () => {
     );
     assertStringIncludes(layoutStyles, ".syndication-pagehead-grid");
     assertStringIncludes(layoutStyles, ".syndication-overview-card");
-    assertStringIncludes(layoutStyles, ".feeds-copy-control--compact");
   });
 
   it("keeps shared switcher focus treatments readable", () => {

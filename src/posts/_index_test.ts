@@ -457,7 +457,11 @@ describe("archive CSS contracts", () => {
   it("keeps archive rows on a fixed three-column ledger", () => {
     assertStringIncludes(
       layoutStyles,
-      "grid-template-columns: minmax(5.5rem, 7rem) minmax(0, 1fr) minmax(7rem, auto);",
+      ".cds--structured-list-row {",
+    );
+    assertStringIncludes(
+      layoutStyles,
+      "minmax(5.5rem, 7rem) minmax(0, 1fr) minmax(7rem, auto);",
     );
     assertStringIncludes(
       layoutStyles,

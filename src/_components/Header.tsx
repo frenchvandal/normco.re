@@ -32,7 +32,50 @@ import {
 } from "../utils/header-language-menu.ts";
 
 type SsxElement = ReturnType<typeof jsx>;
+type HeaderTranslations = ReturnType<typeof getSiteTranslations>;
+type LanguageAlternates = Partial<Record<SiteLanguage, string>>;
+type NavigationItem = ReturnType<typeof buildHeaderNavigation>[number];
+type HeaderProps = Readonly<{
+  currentUrl: string;
+  language: SiteLanguage;
+  languageAlternates?: LanguageAlternates;
+  icon?: IconResolver;
+}>;
 type HeaderActionButtonAttributes = Readonly<Record<string, string>>;
+type HeaderActionProps = Readonly<{
+  buttonAttributes: HeaderActionButtonAttributes;
+  buttonClassName?: string;
+  buttonId?: string;
+  iconMarkup: SsxElement;
+  tooltipLabel: string;
+}>;
+type LanguagePanelProps = Readonly<{
+  language: SiteLanguage;
+  languageAlternates: LanguageAlternates;
+  optionClassName: string;
+  menuClassName: string;
+  panelClassName: string;
+  panelContentClassName: string;
+  translations: HeaderTranslations;
+  panelHeadClassName?: string;
+}>;
+type SearchPanelProps = Readonly<{
+  panelClassName: string;
+  panelContentClassName: string;
+  searchRootClassName: string;
+  translations: HeaderTranslations;
+  panelHeadClassName?: string;
+}>;
+type SideNavProps = Readonly<{
+  navigationItems: readonly NavigationItem[];
+  homeUrl: string;
+  ariaLabel: string;
+  lead: string;
+  asideClassName: string;
+  navigationClassName?: string;
+  headerClassName?: string;
+  eyebrow?: string;
+}>;
 
 function renderMaskedIcon(
   name: OcticonName,
@@ -62,13 +105,7 @@ function renderHeaderAction(
     buttonId,
     iconMarkup,
     tooltipLabel,
-  }: {
-    readonly buttonAttributes: HeaderActionButtonAttributes;
-    readonly buttonClassName?: string;
-    readonly buttonId?: string;
-    readonly iconMarkup: SsxElement;
-    readonly tooltipLabel: string;
-  },
+  }: HeaderActionProps,
 ): SsxElement {
   const mergedButtonAttributes = {
     ...(buttonId ? { id: buttonId } : {}),
@@ -182,23 +219,254 @@ function renderSearchSkeleton(): SsxElement {
   );
 }
 
-function renderPrimerHomeHeader(
+function getCurrentPageAttributes(isCurrent: boolean) {
+  return isCurrent ? { "aria-current": "page" as const } : {};
+}
+
+function resolveLanguageOptionUrl(
+  optionLanguage: SiteLanguage,
+  languageAlternates: LanguageAlternates,
+): string {
+  return languageAlternates[optionLanguage] ??
+    getLocalizedUrl("/", optionLanguage);
+}
+
+function renderHeaderNavigationLinks(
+  navigationItems: readonly NavigationItem[],
+  className: string,
+  labelClassName?: string,
+): SsxElement[] {
+  return navigationItems.map(({ href, label, isCurrent }) => (
+    <a
+      key={href}
+      href={href}
+      class={className}
+      {...getCurrentPageAttributes(isCurrent)}
+    >
+      {labelClassName ? <span class={labelClassName}>{label}</span> : label}
+    </a>
+  ));
+}
+
+function renderSideNavItems(
+  navigationItems: readonly NavigationItem[],
+): SsxElement[] {
+  return navigationItems.map(({ href, label, isCurrent }) => (
+    <li class="cds--side-nav__item" key={href}>
+      <a
+        href={href}
+        class="cds--side-nav__link"
+        {...getCurrentPageAttributes(isCurrent)}
+      >
+        <span class="cds--side-nav__link-text">{label}</span>
+      </a>
+    </li>
+  ));
+}
+
+function renderLanguageOptions(
   {
-    currentUrl,
     language,
-    languageAlternates = {},
-    icon,
-  }: {
-    readonly currentUrl: string;
-    readonly language: SiteLanguage;
-    readonly languageAlternates?: Partial<Record<SiteLanguage, string>>;
-    readonly icon?: IconResolver;
-  },
+    languageAlternates,
+    optionClassName,
+  }: Pick<
+    LanguagePanelProps,
+    "language" | "languageAlternates" | "optionClassName"
+  >,
+): SsxElement[] {
+  return HEADER_LANGUAGE_OPTIONS.map(
+    ({ label, language: optionLanguage, tag }) => {
+      const isSelected = optionLanguage === language;
+
+      return (
+        <a
+          key={optionLanguage}
+          href={resolveLanguageOptionUrl(optionLanguage, languageAlternates)}
+          class={optionClassName}
+          data-language-option={optionLanguage}
+          hreflang={tag}
+          lang={tag}
+          role="menuitemradio"
+          aria-checked={isSelected ? "true" : "false"}
+          tabindex={isSelected ? "0" : "-1"}
+        >
+          <span class="cds--header__language-label">{label}</span>
+          <span class="cds--header__language-check" aria-hidden="true">
+            <CarbonIcon
+              icon={CHECKMARK_ICON}
+              className="cds--header__language-check-icon"
+              width={16}
+              height={16}
+            />
+          </span>
+        </a>
+      );
+    },
+  );
+}
+
+function renderLanguagePanel(
+  {
+    language,
+    languageAlternates,
+    optionClassName,
+    menuClassName,
+    panelClassName,
+    panelContentClassName,
+    translations,
+    panelHeadClassName,
+  }: LanguagePanelProps,
 ): SsxElement {
+  return (
+    <section
+      id={HEADER_IDS.languagePanel}
+      class={panelClassName}
+      aria-label={translations.site.languageSelectLabel}
+      data-language-panel=""
+      hidden
+    >
+      <div class={panelContentClassName}>
+        {panelHeadClassName && (
+          <div class={panelHeadClassName}>
+            <p class="cds--header__panel-title">
+              {translations.site.languageSelectLabel}
+            </p>
+          </div>
+        )}
+        <div
+          class={menuClassName}
+          role="menu"
+          aria-label={translations.site.languageSelectLabel}
+          data-language-menu=""
+        >
+          {renderLanguageOptions({
+            language,
+            languageAlternates,
+            optionClassName,
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function renderSearchRoot(
+  translations: HeaderTranslations,
+  className: string,
+): SsxElement {
+  return (
+    <div
+      id={HEADER_IDS.searchContainer}
+      class={className}
+      data-search-root=""
+      aria-busy="false"
+      data-search-loading-label={translations.site.searchLoadingLabel}
+      data-search-loading-title={translations.site.searchLoadingTitle}
+      data-search-no-results-label={translations.site.searchNoResultsLabel}
+      data-search-one-result-label={translations.site.searchOneResultLabel}
+      data-search-many-results-label={translations.site.searchManyResultsLabel}
+      data-search-unavailable-label={translations.site.searchUnavailableLabel}
+      data-search-unavailable-title={translations.site.searchUnavailableTitle}
+      data-search-offline-label={translations.site.searchOfflineLabel}
+      data-search-offline-title={translations.site.searchOfflineTitle}
+      data-search-retry-label={translations.site.searchRetryLabel}
+    >
+      {renderSearchSkeleton()}
+    </div>
+  );
+}
+
+function renderSearchPanel(
+  {
+    panelClassName,
+    panelContentClassName,
+    searchRootClassName,
+    translations,
+    panelHeadClassName,
+  }: SearchPanelProps,
+): SsxElement {
+  return (
+    <div
+      id={HEADER_IDS.searchPanel}
+      class={panelClassName}
+      role="search"
+      aria-label={translations.site.searchLabel}
+      hidden
+      data-search-panel=""
+    >
+      <div class={panelContentClassName}>
+        {panelHeadClassName && (
+          <div class={panelHeadClassName}>
+            <p class="cds--header__panel-title">
+              {translations.site.searchLabel}
+            </p>
+          </div>
+        )}
+        <div
+          id={HEADER_IDS.searchStatus}
+          class="cds--header__search-status"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-search-status=""
+          hidden
+        >
+          {renderSearchLoading(translations.site.searchLoadingLabel)}
+          <p
+            class="cds--header__search-status-text"
+            data-search-status-text=""
+            hidden
+          >
+          </p>
+          {renderSearchNotification()}
+        </div>
+        {renderSearchRoot(translations, searchRootClassName)}
+      </div>
+    </div>
+  );
+}
+
+function renderSideNav(
+  {
+    navigationItems,
+    homeUrl,
+    ariaLabel,
+    lead,
+    asideClassName,
+    navigationClassName = "cds--side-nav__navigation",
+    headerClassName = "cds--side-nav__header",
+    eyebrow,
+  }: SideNavProps,
+): SsxElement {
+  return (
+    <aside
+      id={HEADER_IDS.sideNav}
+      class={asideClassName}
+      aria-label={ariaLabel}
+      hidden
+    >
+      <nav class={navigationClassName}>
+        <div class={headerClassName}>
+          {eyebrow && <p class="cds--side-nav__eyebrow">{eyebrow}</p>}
+          <a href={homeUrl} class="cds--side-nav__brand">
+            <span class="cds--side-nav__brand-prefix">normco</span>
+            .re
+          </a>
+          <p class="cds--side-nav__lead">{lead}</p>
+        </div>
+        <ul class="cds--side-nav__items">
+          {renderSideNavItems(navigationItems)}
+        </ul>
+      </nav>
+    </aside>
+  );
+}
+
+function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
+  const { currentUrl, language, languageAlternates = {} } = props;
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
   const navigationItems = buildHeaderNavigation({ currentUrl, language });
-  void icon;
 
   return (
     <>
@@ -242,20 +510,11 @@ function renderPrimerHomeHeader(
             class="cds--header__nav subnav subnav-flush primer-home-header__nav"
             aria-label={translations.site.mainNavigationAriaLabel}
           >
-            {navigationItems.map(({ href, label, isCurrent }) => (
-              <a
-                key={href}
-                href={href}
-                class="cds--header__menu-item subnav-item primer-home-header__nav-link"
-                {...(isCurrent
-                  ? ({
-                    "aria-current": "page" as const,
-                  })
-                  : {})}
-              >
-                <span class="site-header-menu-item-label">{label}</span>
-              </a>
-            ))}
+            {renderHeaderNavigationLinks(
+              navigationItems,
+              "cds--header__menu-item subnav-item primer-home-header__nav-link",
+              "site-header-menu-item-label",
+            )}
           </nav>
 
           <div class="cds--header__global primer-home-header__global">
@@ -325,156 +584,45 @@ function renderPrimerHomeHeader(
         </div>
       </header>
 
-      <section
-        id={HEADER_IDS.languagePanel}
-        class="cds--header__panel cds--header__language-panel primer-home-header__panel"
-        aria-label={translations.site.languageSelectLabel}
-        data-language-panel=""
-        hidden
-      >
-        <div class="cds--header__panel-content Box primer-home-header__panel-box">
-          <div class="site-header-panel-head">
-            <p class="cds--header__panel-title">
-              {translations.site.languageSelectLabel}
-            </p>
-          </div>
-          <div
-            class="cds--header__language-menu primer-home-header__language-menu"
-            role="menu"
-            aria-label={translations.site.languageSelectLabel}
-            data-language-menu=""
-          >
-            {HEADER_LANGUAGE_OPTIONS.map(
-              ({ label, language: optionLanguage, tag }) => {
-                const optionUrl = languageAlternates[optionLanguage] ??
-                  getLocalizedUrl("/", optionLanguage);
-                const isSelected = optionLanguage === language;
-                return (
-                  <a
-                    key={optionLanguage}
-                    href={optionUrl}
-                    class="cds--header__language-option primer-home-header__menu-option"
-                    data-language-option={optionLanguage}
-                    hreflang={tag}
-                    lang={tag}
-                    role="menuitemradio"
-                    aria-checked={isSelected ? "true" : "false"}
-                    tabindex={isSelected ? "0" : "-1"}
-                  >
-                    <span class="cds--header__language-label">{label}</span>
-                    <span
-                      class="cds--header__language-check"
-                      aria-hidden="true"
-                    >
-                      <CarbonIcon
-                        icon={CHECKMARK_ICON}
-                        className="cds--header__language-check-icon"
-                        width={16}
-                        height={16}
-                      />
-                    </span>
-                  </a>
-                );
-              },
-            )}
-          </div>
-        </div>
-      </section>
+      {renderLanguagePanel({
+        language,
+        languageAlternates,
+        optionClassName:
+          "cds--header__language-option primer-home-header__menu-option",
+        menuClassName:
+          "cds--header__language-menu primer-home-header__language-menu",
+        panelClassName:
+          "cds--header__panel cds--header__language-panel primer-home-header__panel",
+        panelContentClassName:
+          "cds--header__panel-content Box primer-home-header__panel-box",
+        translations,
+        panelHeadClassName: "site-header-panel-head",
+      })}
 
-      <div
-        id={HEADER_IDS.searchPanel}
-        class="cds--header__panel cds--header__search-panel primer-home-header__panel"
-        role="search"
-        aria-label={translations.site.searchLabel}
-        hidden
-        data-search-panel=""
-      >
-        <div class="cds--header__panel-content Box primer-home-header__panel-box">
-          <div class="site-header-panel-head site-header-panel-head--search">
-            <p class="cds--header__panel-title">
-              {translations.site.searchLabel}
-            </p>
-          </div>
-          <div
-            id={HEADER_IDS.searchStatus}
-            class="cds--header__search-status"
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-            data-search-status=""
-            hidden
-          >
-            {renderSearchLoading(translations.site.searchLoadingLabel)}
-            <p
-              class="cds--header__search-status-text"
-              data-search-status-text=""
-              hidden
-            >
-            </p>
-            {renderSearchNotification()}
-          </div>
-          <div
-            id={HEADER_IDS.searchContainer}
-            class="cds--header__search-root primer-home-header__search-root"
-            data-search-root=""
-            aria-busy="false"
-            data-search-loading-label={translations.site.searchLoadingLabel}
-            data-search-loading-title={translations.site.searchLoadingTitle}
-            data-search-no-results-label={translations.site
-              .searchNoResultsLabel}
-            data-search-one-result-label={translations.site
-              .searchOneResultLabel}
-            data-search-many-results-label={translations.site
-              .searchManyResultsLabel}
-            data-search-unavailable-label={translations.site
-              .searchUnavailableLabel}
-            data-search-unavailable-title={translations.site
-              .searchUnavailableTitle}
-            data-search-offline-label={translations.site.searchOfflineLabel}
-            data-search-offline-title={translations.site.searchOfflineTitle}
-            data-search-retry-label={translations.site.searchRetryLabel}
-          >
-            {renderSearchSkeleton()}
-          </div>
-        </div>
-      </div>
+      {renderSearchPanel({
+        panelClassName:
+          "cds--header__panel cds--header__search-panel primer-home-header__panel",
+        panelContentClassName:
+          "cds--header__panel-content Box primer-home-header__panel-box",
+        searchRootClassName:
+          "cds--header__search-root primer-home-header__search-root",
+        translations,
+        panelHeadClassName:
+          "site-header-panel-head site-header-panel-head--search",
+      })}
 
-      <aside
-        id={HEADER_IDS.sideNav}
-        class="cds--side-nav primer-home-header__drawer"
-        aria-label={translations.site.mainNavigationAriaLabel}
-        hidden
-      >
-        <nav class="cds--side-nav__navigation primer-home-header__drawer-navigation">
-          <div class="cds--side-nav__header primer-home-header__drawer-header">
-            <p class="cds--side-nav__eyebrow">
-              {translations.site.mainNavigationAriaLabel}
-            </p>
-            <a href={homeUrl} class="cds--side-nav__brand">
-              <span class="cds--side-nav__brand-prefix">normco</span>
-              .re
-            </a>
-            <p class="cds--side-nav__lead">{translations.home.lead}</p>
-          </div>
-          <ul class="cds--side-nav__items">
-            {navigationItems.map(({ href, label, isCurrent }) => (
-              <li class="cds--side-nav__item" key={href}>
-                <a
-                  href={href}
-                  class="cds--side-nav__link"
-                  {...(isCurrent
-                    ? ({
-                      "aria-current": "page" as const,
-                    })
-                    : {})}
-                >
-                  <span class="cds--side-nav__link-text">{label}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
+      {renderSideNav({
+        navigationItems,
+        homeUrl,
+        ariaLabel: translations.site.mainNavigationAriaLabel,
+        lead: translations.home.lead,
+        asideClassName: "cds--side-nav primer-home-header__drawer",
+        navigationClassName:
+          "cds--side-nav__navigation primer-home-header__drawer-navigation",
+        headerClassName:
+          "cds--side-nav__header primer-home-header__drawer-header",
+        eyebrow: translations.site.mainNavigationAriaLabel,
+      })}
 
       <div class="cds--side-nav__overlay" aria-hidden="true"></div>
     </>
@@ -482,35 +630,21 @@ function renderPrimerHomeHeader(
 }
 
 /** Renders the Carbon UI Shell header with navigation and user controls. */
-export default (
-  { currentUrl, language, languageAlternates = {}, icon }: {
-    readonly currentUrl: string;
-    readonly language: SiteLanguage;
-    readonly languageAlternates?: Partial<Record<SiteLanguage, string>>;
-    readonly icon?: IconResolver;
-  },
-): SsxElement => {
+export default (props: HeaderProps): SsxElement => {
+  const { currentUrl, language, languageAlternates = {} } = props;
   const translations = getSiteTranslations(language);
   const homeUrl = getLocalizedUrl("/", language);
   const navigationItems = buildHeaderNavigation({ currentUrl, language });
 
   if (currentUrl === homeUrl) {
-    return renderPrimerHomeHeader({
-      currentUrl,
-      language,
-      languageAlternates,
-      ...(icon ? { icon } : {}),
-    });
+    return renderPrimerHomeHeader(props);
   }
 
   return (
     <>
-      {/* Carbon UI Shell Header */}
       <header class="cds--header">
         <div class="cds--header__wrapper">
-          {/* Left section: hamburger menu + product name */}
           <div class="cds--header__left">
-            {/* Hamburger menu trigger for SideNav */}
             <button
               type="button"
               class="cds--header__action cds--header__menu-toggle"
@@ -532,37 +666,23 @@ export default (
               />
             </button>
 
-            {/* Product/brand name */}
             <a href={homeUrl} class="cds--header__name">
               <span class="cds--header__name--prefix">normco</span>
               .re
             </a>
 
-            {/* Header navigation (desktop) */}
             <nav
               class="cds--header__nav"
               aria-label={translations.site.mainNavigationAriaLabel}
             >
-              {navigationItems.map(({ href, label, isCurrent }) => (
-                <a
-                  key={href}
-                  href={href}
-                  class="cds--header__menu-item"
-                  {...(isCurrent
-                    ? ({
-                      "aria-current": "page" as const,
-                    })
-                    : {})}
-                >
-                  {label}
-                </a>
-              ))}
+              {renderHeaderNavigationLinks(
+                navigationItems,
+                "cds--header__menu-item",
+              )}
             </nav>
           </div>
 
-          {/* Right section: global actions */}
           <div class="cds--header__global">
-            {/* Search action */}
             {renderHeaderAction({
               buttonAttributes: {
                 "aria-label": translations.site.searchLabel,
@@ -580,7 +700,6 @@ export default (
               tooltipLabel: translations.site.searchLabel,
             })}
 
-            {/* Language selector action */}
             {renderHeaderAction({
               buttonAttributes: {
                 "aria-label": translations.site.languageSelectAriaLabel,
@@ -601,7 +720,6 @@ export default (
               tooltipLabel: translations.site.languageSelectLabel,
             })}
 
-            {/* Theme toggle action */}
             {renderHeaderAction({
               buttonAttributes: {
                 "aria-label": translations.site.themeToggleLabel,
@@ -641,148 +759,31 @@ export default (
         </div>
       </header>
 
-      {/* Language selector dropdown menu */}
-      <section
-        id={HEADER_IDS.languagePanel}
-        class="cds--header__panel cds--header__language-panel"
-        aria-label={translations.site.languageSelectLabel}
-        data-language-panel=""
-        hidden
-      >
-        <div class="cds--header__panel-content">
-          <div
-            class="cds--header__language-menu"
-            role="menu"
-            aria-label={translations.site.languageSelectLabel}
-            data-language-menu=""
-          >
-            {HEADER_LANGUAGE_OPTIONS.map(
-              ({ label, language: optionLanguage, tag }) => {
-                const optionUrl = languageAlternates[optionLanguage] ??
-                  getLocalizedUrl("/", optionLanguage);
-                const isSelected = optionLanguage === language;
-                return (
-                  <a
-                    key={optionLanguage}
-                    href={optionUrl}
-                    class="cds--header__language-option"
-                    data-language-option={optionLanguage}
-                    hreflang={tag}
-                    lang={tag}
-                    role="menuitemradio"
-                    aria-checked={isSelected ? "true" : "false"}
-                    tabindex={isSelected ? "0" : "-1"}
-                  >
-                    <span class="cds--header__language-label">{label}</span>
-                    <span
-                      class="cds--header__language-check"
-                      aria-hidden="true"
-                    >
-                      <CarbonIcon
-                        icon={CHECKMARK_ICON}
-                        className="cds--header__language-check-icon"
-                        width={16}
-                        height={16}
-                      />
-                    </span>
-                  </a>
-                );
-              },
-            )}
-          </div>
-        </div>
-      </section>
+      {renderLanguagePanel({
+        language,
+        languageAlternates,
+        optionClassName: "cds--header__language-option",
+        menuClassName: "cds--header__language-menu",
+        panelClassName: "cds--header__panel cds--header__language-panel",
+        panelContentClassName: "cds--header__panel-content",
+        translations,
+      })}
 
-      {/* Search panel */}
-      <div
-        id={HEADER_IDS.searchPanel}
-        class="cds--header__panel cds--header__search-panel"
-        role="search"
-        aria-label={translations.site.searchLabel}
-        hidden
-        data-search-panel=""
-      >
-        <div class="cds--header__panel-content">
-          <div
-            id={HEADER_IDS.searchStatus}
-            class="cds--header__search-status"
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-            data-search-status=""
-            hidden
-          >
-            {renderSearchLoading(translations.site.searchLoadingLabel)}
-            <p
-              class="cds--header__search-status-text"
-              data-search-status-text=""
-              hidden
-            >
-            </p>
-            {renderSearchNotification()}
-          </div>
-          <div
-            id={HEADER_IDS.searchContainer}
-            class="cds--header__search-root"
-            data-search-root=""
-            aria-busy="false"
-            data-search-loading-label={translations.site.searchLoadingLabel}
-            data-search-loading-title={translations.site.searchLoadingTitle}
-            data-search-no-results-label={translations.site
-              .searchNoResultsLabel}
-            data-search-one-result-label={translations.site
-              .searchOneResultLabel}
-            data-search-many-results-label={translations.site
-              .searchManyResultsLabel}
-            data-search-unavailable-label={translations.site
-              .searchUnavailableLabel}
-            data-search-unavailable-title={translations.site
-              .searchUnavailableTitle}
-            data-search-offline-label={translations.site.searchOfflineLabel}
-            data-search-offline-title={translations.site.searchOfflineTitle}
-            data-search-retry-label={translations.site.searchRetryLabel}
-          >
-            {renderSearchSkeleton()}
-          </div>
-        </div>
-      </div>
+      {renderSearchPanel({
+        panelClassName: "cds--header__panel cds--header__search-panel",
+        panelContentClassName: "cds--header__panel-content",
+        searchRootClassName: "cds--header__search-root",
+        translations,
+      })}
 
-      {/* Carbon UI Shell Left Panel (SideNav) */}
-      <aside
-        id={HEADER_IDS.sideNav}
-        class="cds--side-nav"
-        aria-label={translations.site.mainNavigationAriaLabel}
-        hidden
-      >
-        <nav class="cds--side-nav__navigation">
-          <div class="cds--side-nav__header">
-            <a href={homeUrl} class="cds--side-nav__brand">
-              <span class="cds--side-nav__brand-prefix">normco</span>
-              .re
-            </a>
-            <p class="cds--side-nav__lead">{translations.home.lead}</p>
-          </div>
-          <ul class="cds--side-nav__items">
-            {navigationItems.map(({ href, label, isCurrent }) => (
-              <li class="cds--side-nav__item" key={href}>
-                <a
-                  href={href}
-                  class="cds--side-nav__link"
-                  {...(isCurrent
-                    ? ({
-                      "aria-current": "page" as const,
-                    })
-                    : {})}
-                >
-                  <span class="cds--side-nav__link-text">{label}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
+      {renderSideNav({
+        navigationItems,
+        homeUrl,
+        ariaLabel: translations.site.mainNavigationAriaLabel,
+        lead: translations.home.lead,
+        asideClassName: "cds--side-nav",
+      })}
 
-      {/* Overlay for mobile when SideNav is open */}
       <div class="cds--side-nav__overlay" aria-hidden="true"></div>
     </>
   );

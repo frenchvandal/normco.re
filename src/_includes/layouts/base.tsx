@@ -70,22 +70,26 @@ type LayoutRenderable =
   | null
   | undefined;
 type AwaitableLayoutRenderable = LayoutRenderable | Promise<LayoutRenderable>;
+type LayoutComponent<TProps> = (props: TProps) => AwaitableLayoutRenderable;
+type HeaderProps = Readonly<{
+  currentUrl: string;
+  language: SiteLanguage;
+  languageAlternates?: Partial<Record<SiteLanguage, string>>;
+  icon?: IconResolver;
+}>;
+type FooterProps = Readonly<{
+  author: string;
+  language: SiteLanguage;
+  homeUrl: string;
+  syndicationPageUrl: string;
+  blogStartYear: number;
+}>;
+type ComponentKey = "Header" | "Footer";
 
 /** Minimal typed interface for the components used in this layout. */
 type Comp = {
-  Header: (props: {
-    readonly currentUrl: string;
-    readonly language: SiteLanguage;
-    readonly languageAlternates?: Partial<Record<SiteLanguage, string>>;
-    readonly icon?: IconResolver;
-  }) => AwaitableLayoutRenderable;
-  Footer: (props: {
-    readonly author: string;
-    readonly language: SiteLanguage;
-    readonly homeUrl: string;
-    readonly syndicationPageUrl: string;
-    readonly blogStartYear: number;
-  }) => AwaitableLayoutRenderable;
+  Header: LayoutComponent<HeaderProps>;
+  Footer: LayoutComponent<FooterProps>;
 };
 
 /** Returns alternate URLs keyed by language for the current page. */
@@ -126,30 +130,39 @@ function isPostsArchiveUrl(currentUrl: string): boolean {
   return /\/posts\/$/.test(currentUrl);
 }
 
-function resolveHeaderComponent(value: unknown): Comp["Header"] {
+function resolveComponent<TProps>(
+  value: unknown,
+  key: ComponentKey,
+): LayoutComponent<TProps> {
   if (typeof value === "object" && value !== null) {
-    const Header = Reflect.get(value, "Header");
+    const component = Reflect.get(value, key);
 
-    if (typeof Header === "function") {
+    if (typeof component === "function") {
       return (props) =>
-        Reflect.apply(Header, value, [props]) as AwaitableLayoutRenderable;
+        Reflect.apply(component, value, [props]) as AwaitableLayoutRenderable;
     }
   }
 
   return () => "";
 }
 
-function resolveFooterComponent(value: unknown): Comp["Footer"] {
-  if (typeof value === "object" && value !== null) {
-    const Footer = Reflect.get(value, "Footer");
+function resolveSiteChromeData(siteChrome?: SiteChromeData): SiteChromeData {
+  return {
+    faviconIcoUrl: "/favicon.ico",
+    faviconSvgUrl: "/favicon.svg",
+    appleTouchIconUrl: "/apple-touch-icon.png",
+    themeColorLight: "#ffffff",
+    themeColorDark: "#262626",
+    ...siteChrome,
+  };
+}
 
-    if (typeof Footer === "function") {
-      return (props) =>
-        Reflect.apply(Footer, value, [props]) as AwaitableLayoutRenderable;
-    }
-  }
-
-  return () => "";
+function resolveIconResolver(
+  helpers: Lume.Helpers,
+): IconResolver | undefined {
+  return typeof helpers.icon === "function"
+    ? helpers.icon.bind(helpers)
+    : undefined;
 }
 
 /** Renders the full HTML document shell. */
@@ -177,13 +190,7 @@ export default (
   // a safety net for test environments that omit them.
   const resolvedSiteName = siteName ?? "normco.re";
   const resolvedAuthor = author ?? "Phiphi";
-  const resolvedSiteChrome: SiteChromeData = {
-    faviconIcoUrl: siteChrome?.faviconIcoUrl ?? "/favicon.ico",
-    faviconSvgUrl: siteChrome?.faviconSvgUrl ?? "/favicon.svg",
-    appleTouchIconUrl: siteChrome?.appleTouchIconUrl ?? "/apple-touch-icon.png",
-    themeColorLight: siteChrome?.themeColorLight ?? "#ffffff",
-    themeColorDark: siteChrome?.themeColorDark ?? "#262626",
-  };
+  const resolvedSiteChrome = resolveSiteChromeData(siteChrome);
   const pageTitle = title && title !== resolvedSiteName
     ? `${title} - ${resolvedSiteName}`
     : resolvedSiteName;
@@ -193,7 +200,7 @@ export default (
   const metaDescription = description ?? metas?.description ??
     "Personal blog by Phiphi, based in Chengdu, China.";
   const documentLanguage = getLanguageTag(language);
-  const currentUrl = typeof url === "string" && url.length > 0 ? url : "/";
+  const currentUrl = typeof url === "string" && url ? url : "/";
   const isIndexable = unlisted !== true;
   const canonicalUrl = isIndexable
     ? new URL(currentUrl, `https://${resolvedSiteName}`).href
@@ -207,11 +214,9 @@ export default (
   const feedJsonUrl = getLocalizedJsonFeedUrl(language);
   const syndicationPageUrl = getLocalizedUrl("/syndication/", language);
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
-  const Header = resolveHeaderComponent(comp);
-  const Footer = resolveFooterComponent(comp);
-  const iconResolver = typeof _helpers.icon === "function"
-    ? _helpers.icon.bind(_helpers)
-    : undefined;
+  const Header = resolveComponent<HeaderProps>(comp, "Header");
+  const Footer = resolveComponent<FooterProps>(comp, "Footer");
+  const iconResolver = resolveIconResolver(_helpers);
 
   return (
     <>
