@@ -2,7 +2,7 @@ import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker, seedTestFaker } from "../../test/faker.ts";
-import postCardStyles from "../styles/components/_post-card.scss" with {
+import layoutStyles from "../styles/_layout.scss" with {
   type: "text",
 };
 
@@ -127,6 +127,16 @@ describe("PostCard()", () => {
       assertStringIncludes(html, 'class="post-card-link u-url u-uid"');
     });
 
+    it("merges optional variant classes onto the article root", async () => {
+      const base = makeBase(311);
+      const html = await renderComponent(
+        PostCard({ ...base, className: "custom-post-card" }),
+      );
+
+      assertStringIncludes(html, "custom-post-card");
+      assertStringIncludes(html, "cds--tile");
+    });
+
     it("escapes title and URL values before interpolation", async () => {
       seedTestFaker(309);
       const unsafeDate = faker.date.anytime();
@@ -144,21 +154,23 @@ describe("PostCard()", () => {
   });
 
   describe("CSS contracts", () => {
-    it("defines Carbon-like hover and focus feedback on the card container", () => {
-      assertStringIncludes(postCardStyles, ".post-card:hover");
-      assertStringIncludes(postCardStyles, ".post-card:focus-within");
-      assertStringIncludes(postCardStyles, "var(--cds-layer-hover)");
-      assertStringIncludes(postCardStyles, "var(--cds-focus)");
+    it("defines hover and focus feedback on the primary title link", () => {
+      assertStringIncludes(layoutStyles, ".post-card:hover .post-card-link");
+      assertStringIncludes(
+        layoutStyles,
+        ".post-card:focus-within .post-card-link",
+      );
+      assertStringIncludes(layoutStyles, "var(--ph-color-accent-fg)");
     });
 
     it("keeps a dedicated class on the primary title link for shared styling", () => {
-      assertStringIncludes(postCardStyles, ".post-card-link");
-      assertStringIncludes(postCardStyles, ".post-card-link:focus-visible");
+      assertStringIncludes(layoutStyles, ".post-card-link");
+      assertStringIncludes(layoutStyles, ".post-card-title {");
     });
 
     it("defines a dedicated summary block for editorial variants", () => {
-      assertStringIncludes(postCardStyles, ".post-card-summary");
-      assertStringIncludes(postCardStyles, "max-inline-size: 42ch;");
+      assertStringIncludes(layoutStyles, ".post-card-summary");
+      assertStringIncludes(layoutStyles, "max-inline-size: 52ch;");
     });
   });
 });

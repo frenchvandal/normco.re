@@ -1,6 +1,6 @@
 import { assert, assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import aboutStyles from "./styles/components/_about.scss" with { type: "text" };
+import layoutStyles from "./styles/_layout.scss" with { type: "text" };
 import { asLumeData, asLumeHelpers } from "../test/lume.ts";
 
 import aboutPage from "./about.page.tsx";
@@ -153,23 +153,27 @@ describe("about.page.tsx", () => {
 });
 
 describe("about page CSS contracts", () => {
-  it("uses the shared scrim token instead of raw overlay color literals", () => {
+  it("keeps the contact popover on the shared raised surface", () => {
+    assertStringIncludes(layoutStyles, ".about-contact-popover {");
     assertStringIncludes(
-      aboutStyles,
-      "background: var(--site-surface-scrim) !important;",
+      layoutStyles,
+      "inline-size: min(18rem, calc(100vw - (var(--ph-shell-gutter) * 2)));",
     );
-    assertNotMatch(aboutStyles, /rgb\(/);
+    assertStringIncludes(layoutStyles, ".about-contact-trigger:hover,");
   });
 
-  it("keeps the contact action controls on shared panel surfaces", () => {
-    assertStringIncludes(aboutStyles, ".about-contact-action.cds--btn");
+  it("keeps the QR and pictogram frames on shared neutral panels", () => {
     assertStringIncludes(
-      aboutStyles,
-      "background: var(--site-surface-panel-hover) !important;",
+      layoutStyles,
+      ".about-pictogram-frame,",
     );
     assertStringIncludes(
-      aboutStyles,
-      "background: var(--site-surface-panel-selected-hover) !important;",
+      layoutStyles,
+      ".syndication-pictogram-frame {",
+    );
+    assertStringIncludes(
+      layoutStyles,
+      "background: var(--ph-color-canvas-default);",
     );
   });
 });

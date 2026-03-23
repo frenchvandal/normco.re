@@ -8,7 +8,7 @@ import {
 import { describe, it } from "jsr/testing-bdd";
 import { faker, seedTestFaker } from "../../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../../test/lume.ts";
-import archiveStyles from "../styles/components/_archive.scss" with {
+import layoutStyles from "../styles/_layout.scss" with {
   type: "text",
 };
 
@@ -449,39 +449,27 @@ describe("posts/index.page.tsx", () => {
 
 describe("archive CSS contracts", () => {
   it("keeps the archive pagehead on the shared open pagehead pattern", () => {
-    assertStringIncludes(archiveStyles, ".archive-pagehead-grid");
-    assertStringIncludes(archiveStyles, ".archive-tools");
-    assertStringIncludes(archiveStyles, ".archive-page-count");
+    assertStringIncludes(layoutStyles, ".archive-pagehead-grid,");
+    assertStringIncludes(layoutStyles, ".archive-tools {");
+    assertStringIncludes(layoutStyles, ".archive-year {");
   });
 
-  it("keeps desktop archive list columns pinned to shared Carbon widths", () => {
+  it("keeps archive rows on a fixed three-column ledger", () => {
     assertStringIncludes(
-      archiveStyles,
-      "--archive-list-date-column-size: var(--cds-spacing-12);",
+      layoutStyles,
+      "grid-template-columns: minmax(5.5rem, 7rem) minmax(0, 1fr) minmax(7rem, auto);",
     );
     assertStringIncludes(
-      archiveStyles,
-      "--archive-list-reading-column-size: var(--cds-spacing-13);",
+      layoutStyles,
+      ".archive-structured-list-date,",
     );
     assertStringIncludes(
-      archiveStyles,
-      ".archive-structured-list .cds--structured-list-th:first-child,",
+      layoutStyles,
+      ".archive-structured-list-reading {",
     );
     assertStringIncludes(
-      archiveStyles,
-      "inline-size: var(--archive-list-date-column-size);",
-    );
-    assertStringIncludes(
-      archiveStyles,
-      ".archive-structured-list .cds--structured-list-th:last-child,",
-    );
-    assertStringIncludes(
-      archiveStyles,
-      "inline-size: var(--archive-list-reading-column-size);",
-    );
-    assertStringIncludes(
-      archiveStyles,
-      "text-align: end;",
+      layoutStyles,
+      "font-variant-numeric: tabular-nums;",
     );
   });
 });

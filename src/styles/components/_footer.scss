@@ -1,8 +1,0 @@
-/* Footer — site-specific classes (not Carbon cds--footer).
-   The footer component uses site-footer* classes defined in src/styles/_layout.scss.
-   This file is kept as the component entry point for future footer-specific
-   styles that do not belong in the layout layer. */
-@layer components {
-  /* Currently empty — footer layout is handled by src/styles/_layout.scss
-     (.site-footer, .site-footer-inner, .site-footer-nav, .site-footer-icon). */
-}

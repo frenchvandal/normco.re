@@ -1,43 +1,5 @@
-// normco.re — main stylesheet entrypoint (Sass)
-// Architecture: CUBE/ITCSS-inspired layers + Carbon Sass modules
-// Carbon Design System v11 — compiled at build time via Lume Sass plugin
-//
-// Token source of truth: @carbon/styles Sass modules
-// Grid: Carbon 2x CSS Grid
-// Prefix: cds-- (Carbon v11 default)
-
-// Layer 1: Tokens — Carbon theme generates CSS custom properties
-@use "./styles/carbon/theme-tokens";
-@use "./styles/editorial/tokens";
-
-// Layer 2: Reset
+@use "./styles/primer/theme-tokens";
 @use "./styles/reset";
-
-// Layer 3: Base
 @use "./styles/base";
-
-// Layer 4: Layout (Carbon 2x Grid + UI Shell + site structure)
 @use "./styles/layout";
-
-// Components — split into individual files, all in @layer components
-@use "./styles/components/skip-link";
-@use "./styles/components/header";
-@use "./styles/components/page-structure";
-@use "./styles/components/hero";
-@use "./styles/components/surface-patterns";
-@use "./styles/components/post-card";
-@use "./styles/components/post";
-@use "./styles/components/archive";
-@use "./styles/components/tag-page";
-@use "./styles/components/feeds";
-@use "./styles/components/shiki";
-@use "./styles/components/error-pages";
-@use "./styles/components/footer";
-@use "./styles/components/about";
-@use "./styles/components/breadcrumb";
-@use "./styles/components/tag";
-@use "./styles/components/pagination";
-@use "./styles/components/tooltip";
-
-// Layer 6: Utilities
 @use "./styles/utilities";

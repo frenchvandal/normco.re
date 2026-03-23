@@ -1,7 +1,5 @@
 /** Site-wide data available to all pages and layouts. */
 
-import { g90, white } from "npm:@carbon/themes@11.69.0";
-
 import {
   type SiteChromeData,
   type SiteManifestData,
@@ -37,8 +35,8 @@ export const siteChrome = {
   faviconIcoUrl: "/favicon.ico",
   faviconSvgUrl: "/favicon.svg",
   appleTouchIconUrl: "/apple-touch-icon.png",
-  themeColorLight: white.background,
-  themeColorDark: g90.background,
+  themeColorLight: "#ffffff",
+  themeColorDark: "#22272e",
 } as const satisfies SiteChromeData;
 
 /**

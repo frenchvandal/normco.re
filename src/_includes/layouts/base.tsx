@@ -17,6 +17,7 @@ import {
   SUPPORTED_LANGUAGES,
   tryResolveSiteLanguage,
 } from "../../utils/i18n.ts";
+import type { IconResolver } from "../../utils/primer-icons.ts";
 import DiscoveryLinks from "../../mf2/components/DiscoveryLinks.tsx";
 import {
   getLocalizedAtomFeedUrl,
@@ -76,6 +77,7 @@ type Comp = {
     readonly currentUrl: string;
     readonly language: SiteLanguage;
     readonly languageAlternates?: Partial<Record<SiteLanguage, string>>;
+    readonly icon?: IconResolver;
   }) => AwaitableLayoutRenderable;
   Footer: (props: {
     readonly author: string;
@@ -207,6 +209,9 @@ export default (
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
   const Header = resolveHeaderComponent(comp);
   const Footer = resolveFooterComponent(comp);
+  const iconResolver = typeof _helpers.icon === "function"
+    ? _helpers.icon.bind(_helpers)
+    : undefined;
 
   return (
     <>
@@ -293,6 +298,7 @@ export default (
               currentUrl={currentUrl}
               language={language}
               languageAlternates={alternateUrls}
+              {...(iconResolver ? { icon: iconResolver } : {})}
             />
             <main
               class="site-main"

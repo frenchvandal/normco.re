@@ -12,7 +12,7 @@ import {
   asLumeHelpers,
   asOptionalLumeData,
 } from "../../../test/lume.ts";
-import tagStyles from "../../styles/components/_tag.scss" with { type: "text" };
+import layoutStyles from "../../styles/_layout.scss" with { type: "text" };
 
 import postLayout from "./post.tsx";
 
@@ -425,14 +425,14 @@ describe("post.tsx layout", () => {
 });
 
 describe("tag-link CSS contracts", () => {
-  it("keeps navigational tag links distinct from Carbon tags", () => {
-    assertStringIncludes(tagStyles, ".tag-link::after");
+  it("keeps navigational tag links distinct and monochrome", () => {
+    assertStringIncludes(layoutStyles, ".tag-link::after");
     assertStringIncludes(
-      tagStyles,
-      "font-weight: var(--cds-font-weight-medium);",
+      layoutStyles,
+      "font-size: var(--ph-text-xs);",
     );
-    assertStringIncludes(tagStyles, ".tag-link:hover .tag-link__label");
-    assertStringIncludes(tagStyles, "var(--site-tag-blue-bg)");
-    assertNotMatch(tagStyles, /oklch\(/);
+    assertStringIncludes(layoutStyles, ".tag-link:hover .tag-link__label");
+    assertStringIncludes(layoutStyles, "var(--ph-color-accent-fg)");
+    assertNotMatch(layoutStyles, /var\(--site-tag-/);
   });
 });

@@ -1,0 +1,158 @@
+@layer tokens {
+  :root {
+    color-scheme: light;
+
+    --ph-font-sans:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+      Arial, sans-serif;
+    --ph-font-mono:
+      -apple-system, BlinkMacSystemFont, "Segoe UI Mono", "Noto Sans Mono",
+      Consolas, monospace;
+
+    --ph-color-canvas-default: light-dark(
+      oklch(100% 0 89.88),
+      oklch(27.08% 0.0149 256.8)
+    );
+    --ph-color-canvas-subtle: light-dark(
+      oklch(97.82% 0.0034 247.86),
+      oklch(31.86% 0.0165 255.64)
+    );
+    --ph-color-canvas-inset: light-dark(
+      oklch(95.97% 0.0052 247.88),
+      oklch(24.58% 0.0153 256.81)
+    );
+    --ph-color-fg-default: light-dark(
+      oklch(25.42% 0.0111 254.04),
+      oklch(78.29% 0.0235 248.13)
+    );
+    --ph-color-fg-muted: light-dark(
+      oklch(53.1% 0.0172 251.29),
+      oklch(60.38% 0.025 248.24)
+    );
+    --ph-color-fg-subtle: light-dark(
+      oklch(56.51% 0.0189 250.97),
+      oklch(53.36% 0.0244 252.64)
+    );
+    --ph-color-accent-fg: light-dark(
+      oklch(53.99% 0.1906 257.48),
+      oklch(68.41% 0.152 255.12)
+    );
+    --ph-color-accent-emphasis: light-dark(
+      oklch(45.09% 0.1641 258.18),
+      oklch(54.53% 0.1575 259.06)
+    );
+    --ph-color-border-default: light-dark(
+      oklch(87.58% 0.0123 247.97),
+      oklch(41.32% 0.0197 254.06)
+    );
+    --ph-color-border-muted: light-dark(
+      oklch(89.78% 0.0105 247.94),
+      oklch(36.09% 0.0182 254.76)
+    );
+    --ph-color-selection-bg: light-dark(
+      oklch(91.24% 0.0439 250.42 / 0.78),
+      oklch(41.09% 0.0835 250.08 / 0.72)
+    );
+
+    --ph-text-xs: 0.64rem;
+    --ph-text-sm: 0.8rem;
+    --ph-text-base: 1rem;
+    --ph-text-md: 1.25rem;
+    --ph-text-lg: 1.563rem;
+    --ph-text-xl: 1.953rem;
+    --ph-text-2xl: 2.441rem;
+    --ph-text-3xl: 3.052rem;
+
+    --ph-lh-tight: 1.2;
+    --ph-lh-snug: 1.375;
+    --ph-lh-base: 1.5;
+    --ph-lh-relaxed: 1.625;
+
+    --ph-space-1: 4px;
+    --ph-space-2: 8px;
+    --ph-space-3: 12px;
+    --ph-space-4: 16px;
+    --ph-space-5: 24px;
+    --ph-space-6: 32px;
+    --ph-space-7: 48px;
+    --ph-space-8: 64px;
+    --ph-space-9: 80px;
+    --ph-space-10: 96px;
+
+    --ph-measure: 68ch;
+    --ph-content-max: 860px;
+    --ph-site-max: 1280px;
+    --ph-sidebar: 240px;
+
+    --ph-radius-sm: 3px;
+    --ph-radius-md: 6px;
+    --ph-radius-lg: 12px;
+
+    --ph-duration-fast: 80ms;
+    --ph-duration-default: 160ms;
+    --ph-easing-default: cubic-bezier(0.3, 0, 0.5, 1);
+
+    --ph-focus-color: oklch(65% 0.19 255);
+    --ph-focus-width: 2px;
+    --ph-focus-offset: 2px;
+
+    --ph-border-hairline: 1px;
+    --ph-header-height: 48px;
+    --ph-shell-gutter: clamp(var(--ph-space-4), 4vw, var(--ph-space-8));
+    --ph-panel-width: min(28rem, calc(100vw - var(--ph-shell-gutter) * 2));
+    --ph-language-panel-width: min(
+      18rem,
+      calc(100vw - var(--ph-shell-gutter) * 2)
+    );
+    --ph-side-nav-width: min(20rem, calc(100vw - var(--ph-space-8)));
+    --ph-search-field-height: 40px;
+    --ph-link-underline-thickness: 0.08em;
+    --ph-link-underline-offset: 0.18em;
+    --ph-grid-rule: color-mix(
+      in oklch,
+      var(--ph-color-border-muted) 72%,
+      transparent
+    );
+    --ph-surface-frosted: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 88%,
+      transparent
+    );
+    --ph-surface-raised: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 92%,
+      var(--ph-color-canvas-subtle)
+    );
+    --ph-surface-accent: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 8%,
+      var(--ph-color-canvas-subtle)
+    );
+    --ph-surface-accent-strong: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 14%,
+      var(--ph-color-canvas-subtle)
+    );
+    --ph-shadow-floating: 0 18px 48px color-mix(
+      in oklch,
+      var(--ph-color-fg-default) 12%,
+      transparent
+    );
+  }
+
+  :root[data-color-mode="dark"],
+  :root[data-theme-preference="dark"] {
+    color-scheme: dark;
+  }
+
+  :root[data-color-mode="light"],
+  :root[data-theme-preference="light"] {
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-color-mode="light"]):not([data-theme-preference="light"]) {
+      color-scheme: dark;
+    }
+  }
+}

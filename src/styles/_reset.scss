@@ -1,35 +1,83 @@
-// Layer: reset
 @layer reset {
   *,
   *::before,
   *::after {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  }
+
+  * {
+    min-inline-size: 0;
   }
 
   html {
+    hanging-punctuation: first last;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
 
-  img,
-  video,
-  svg {
-    display: block;
-    max-width: 100%;
-    height: auto;
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  blockquote,
+  figure,
+  dl,
+  dd {
+    margin: 0;
   }
 
   ul,
   ol {
-    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    color: inherit;
   }
 
   button,
-  input,
-  select,
+  [type="button"],
+  [type="reset"],
+  [type="submit"] {
+    cursor: pointer;
+  }
+
   textarea {
-    font: inherit;
+    resize: vertical;
+  }
+
+  table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  summary {
+    cursor: pointer;
+  }
+
+  :target {
+    scroll-margin-block-start: calc(
+      var(--ph-header-height) + var(--ph-space-6)
+    );
   }
 }

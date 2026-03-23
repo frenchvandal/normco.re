@@ -14,6 +14,7 @@ export default (
     url,
     dateStr,
     dateIso,
+    className,
     readingLabel,
     summary,
     showSummary,
@@ -24,6 +25,7 @@ export default (
     readonly url: string;
     readonly dateStr: string;
     readonly dateIso: string;
+    readonly className?: string;
     readonly readingLabel?: string;
     readonly summary?: string;
     readonly showSummary?: boolean;
@@ -32,7 +34,12 @@ export default (
   },
 ) => (
   <HEntryShell
-    className="cds--tile post-card h-entry"
+    className={[
+      "cds--tile",
+      "post-card",
+      "h-entry",
+      className,
+    ].filter(Boolean).join(" ")}
     {...(summary !== undefined ? { summary } : {})}
     {...(authorName !== undefined && authorUrl !== undefined
       ? { author: { name: authorName, url: authorUrl } }

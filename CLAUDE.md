@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 This repository contains a static site built with Deno, Lume, TSX layouts and
-pages, Markdown posts, and Carbon Sass.
+pages, Markdown posts, and Sass.
 
 ## Content Model
 
@@ -12,26 +12,17 @@ pages, Markdown posts, and Carbon Sass.
 
 ## Design-System Guidance
 
-The UI is built on Carbon Design System v11 through the official Carbon npm
-packages, especially `@carbon/styles`.
+The UI is built on a local Primer-inspired token system defined in
+`src/styles/primer/_theme-tokens.scss`.
 
-- Official Carbon documentation is the primary reference.
-- The installed Carbon npm packages are the implementation reference.
-- `src/styles/carbon/_theme-tokens.scss` is the local bridge that exposes the
-  Carbon-backed custom properties used by this site.
+- `--ph-*` custom properties are the source of truth for color, type, spacing,
+  layout, radius, motion, and focus decisions.
+- `src/style.scss` composes the site from five layers only: reset, tokens, base,
+  layout, and utilities.
+- The visual language is a Swiss-Primer hybrid: monochrome surfaces, one blue
+  accent family, strict spacing discipline, and minimal decoration.
 - No exported Figma token file or historical migration document should be
   treated as authoritative.
-
-Primary references:
-
-- https://carbondesignsystem.com/
-- https://carbondesignsystem.com/components/
-- https://carbondesignsystem.com/guidelines/
-- https://carbondesignsystem.com/guidelines/tokens/overview/
-- https://carbondesignsystem.com/guidelines/accessibility/overview/
-
-Before modifying UI code, review the existing implementation and consult the
-relevant Carbon documentation for the pattern you are touching.
 
 ## Development Rules
 
@@ -50,7 +41,8 @@ When touching build scripts or repository utilities:
 
 ### Tokens
 
-Do not introduce new hard-coded UI values when a Carbon token already exists.
+Do not introduce new hard-coded UI values when an existing local token already
+exists.
 
 Avoid examples such as:
 
@@ -59,11 +51,10 @@ Avoid examples such as:
 
 Prefer:
 
-- `var(--cds-*)` custom properties already exposed by the theme layer
-- Carbon Sass modules imported from `@carbon/styles/scss/*`
+- `var(--ph-*)` custom properties already exposed by the theme layer
 
-If a needed Carbon token is not yet exposed locally, add it intentionally in
-`src/styles/carbon/_theme-tokens.scss` rather than inventing a parallel local
+If a needed token is not yet exposed locally, add it intentionally in
+`src/styles/primer/_theme-tokens.scss` rather than inventing a parallel local
 token source.
 
 ### Accessibility

@@ -25,7 +25,7 @@ import checkUrls from "lume/plugins/check_urls.ts";
 import jsonLd from "lume/plugins/json_ld.ts";
 import type Site from "lume/core/site.ts";
 import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns-locale";
-import { CARBON_SASS_LOAD_PATHS } from "./materialize_sass_npm_packages.ts";
+import { SASS_LOAD_PATHS } from "./materialize_sass_npm_packages.ts";
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
 import otelPlugin from "../plugins/otel.ts";
 import shiki from "../plugins/shiki/mod.ts";
@@ -64,17 +64,11 @@ export function registerPlugins(
     }),
   );
 
-  // Typography now comes from Carbon-backed system font stacks in the token
-  // layer, so the asset pipeline no longer downloads webfonts or emits a
-  // generated font stylesheet.
-  // Compile Carbon Sass → CSS before PostCSS/LightningCSS processing.
-  // The imported package.json modules above force Deno to materialize the
-  // Carbon Sass dependency graph under top-level node_modules, which is the
-  // location Dart Sass resolves from when using bare package imports.
+  // Compile the local Sass layer before PostCSS/LightningCSS processing.
   site.use(
     sass({
       options: {
-        loadPaths: [...CARBON_SASS_LOAD_PATHS],
+        loadPaths: [...SASS_LOAD_PATHS],
       },
     }),
   );

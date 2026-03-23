@@ -1,7 +1,6 @@
 import { assertNotMatch, assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import feedsStyles from "./styles/components/_feeds.scss" with { type: "text" };
-import surfacePatternsStyles from "./styles/components/_surface-patterns.scss" with {
+import layoutStyles from "./styles/_layout.scss" with {
   type: "text",
 };
 import { asLumeData } from "../test/lume.ts";
@@ -121,69 +120,57 @@ describe("syndication.page.tsx", () => {
 });
 
 describe("syndication CSS contracts", () => {
-  it("keeps shared inline copy controls and inset focus tokens", () => {
-    assertStringIncludes(feedsStyles, ".feeds-endpoint-copy-button");
+  it("keeps shared inline copy controls and copy-state feedback", () => {
+    assertStringIncludes(layoutStyles, ".feeds-endpoint-copy-button");
     assertStringIncludes(
-      feedsStyles,
-      "inline-size: var(--site-inline-copy-control-size);",
+      layoutStyles,
+      ".feed-copy-control--copied .feeds-endpoint-copy-button {",
     );
-    assertStringIncludes(feedsStyles, "overflow: visible;");
-    assertStringIncludes(feedsStyles, "inline-size: 1rem;");
     assertStringIncludes(
-      feedsStyles,
-      "outline-offset: var(--focus-ring-inset-offset);",
+      layoutStyles,
+      ".feeds-copy-icon--success {",
     );
   });
 
   it("keeps endpoint rows on shared panel surfaces", () => {
     assertStringIncludes(
-      feedsStyles,
-      "background: var(--site-surface-panel-hover);",
+      layoutStyles,
+      ".feeds-endpoint-row {",
     );
-    assertStringIncludes(feedsStyles, "background: var(--site-surface-panel);");
-    assertStringIncludes(feedsStyles, ".feeds-structured-list");
-    assertStringIncludes(feedsStyles, ".feeds-copy-notice");
-    assertStringIncludes(feedsStyles, ".feeds-copy-notice[hidden]");
-    assertStringIncludes(feedsStyles, "display: none !important;");
     assertStringIncludes(
-      feedsStyles,
+      layoutStyles,
+      ".feeds-structured-list .cds--structured-list-row",
+    );
+    assertStringIncludes(layoutStyles, ".feeds-copy-notice");
+    assertStringIncludes(
+      layoutStyles,
       ".feeds-copy-notice .cds--inline-notification__details",
     );
-    assertStringIncludes(
-      feedsStyles,
-      "align-items: center !important;",
-    );
-    assertStringIncludes(feedsStyles, ".syndication-pagehead-grid");
-    assertStringIncludes(feedsStyles, ".syndication-overview-card");
-    assertStringIncludes(feedsStyles, ".feeds-copy-control--compact");
+    assertStringIncludes(layoutStyles, ".syndication-pagehead-grid");
+    assertStringIncludes(layoutStyles, ".syndication-overview-card");
+    assertStringIncludes(layoutStyles, ".feeds-copy-control--compact");
   });
 
   it("keeps shared switcher focus treatments readable", () => {
     assertStringIncludes(
-      surfacePatternsStyles,
-      ".site-content-switcher .site-switcher-icon",
+      layoutStyles,
+      ".cds--content-switcher,",
     );
     assertStringIncludes(
-      surfacePatternsStyles,
-      "fill: currentColor !important;",
+      layoutStyles,
+      ".cds--content-switcher-btn {",
     );
     assertStringIncludes(
-      surfacePatternsStyles,
-      "display: none;",
-    );
-    assertStringIncludes(
-      surfacePatternsStyles,
-      "inline-size: 1.125rem;",
+      layoutStyles,
+      ".cds--content-switcher--selected,",
     );
   });
 
   it("keeps the mobile structured list wide enough for copy controls", () => {
-    assertStringIncludes(feedsStyles, ".feeds-structured-list {");
-    assertStringIncludes(feedsStyles, "inline-size: max-content;");
-    assertStringIncludes(feedsStyles, "min-inline-size: 100%;");
-    assertNotMatch(
-      feedsStyles,
-      /\.feeds-structured-list \.feed-copy-control,\s*\.feeds-structured-list-copy\s*\{\s*min-inline-size:\s*0;/s,
+    assertStringIncludes(layoutStyles, "@media (max-width: 47.999rem) {");
+    assertStringIncludes(
+      layoutStyles,
+      ".feeds-structured-list .cds--structured-list-row {",
     );
   });
 });

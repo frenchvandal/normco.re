@@ -38,11 +38,15 @@ function makeData(
     },
     comp: {
       PostCard: (props: Record<string, unknown>) =>
-        `<article class="post-card h-entry"><time class="post-card-date dt-published" datetime="${
+        `<article class="post-card h-entry ${
+          props["className"] ?? ""
+        }"><time class="post-card-date dt-published" datetime="${
           props["dateIso"]
-        }">${props["dateStr"]}</time><h3 class="p-name">${
-          props["title"]
-        }</h3></article>`,
+        }">${
+          props["dateStr"]
+        }</time><h3 class="post-card-title p-name"><a class="post-card-link" href="${
+          props["url"]
+        }">${props["title"]}</a></h3></article>`,
     },
   });
 }
@@ -73,24 +77,33 @@ describe("index.page.tsx", () => {
   describe("hero section", () => {
     it("wraps the page in the wide desktop shell", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
-      assertStringIncludes(
+      assertMatch(
         html,
-        'class="site-page-shell site-page-shell--wide"',
+        /class="[^"]*\bsite-page-shell\b[^"]*\bsite-page-shell--wide\b[^"]*\bhome-page\b[^"]*\bhome-page--primer\b[^"]*"/,
       );
     });
 
-    it("renders the hero section", async () => {
+    it("renders the editorial intro section", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
-      assertMatch(html, /class="[^"]*\bhero\b[^"]*"/);
       assertStringIncludes(
         html,
-        'class="pagehead hero home-pagehead"',
+        'class="primer-home-intro"',
       );
-      assertStringIncludes(html, 'class="home-hero-grid"');
       assertStringIncludes(
         html,
-        'class="cds--tile feature-card home-hero-card"',
+        'class="primer-home-intro__grid"',
       );
+      assertStringIncludes(
+        html,
+        'class="primer-home-intro__links"',
+      );
+      assertStringIncludes(
+        html,
+        'class="primer-home-inline-link primer-home-inline-link--primary"',
+      );
+      assertStringIncludes(html, 'class="primer-home-intro__aside"');
+      assertStringIncludes(html, 'href="/posts/"');
+      assertStringIncludes(html, 'href="/about/"');
     });
 
     it("renders an h1 in the hero", async () => {
@@ -105,9 +118,9 @@ describe("index.page.tsx", () => {
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
 
-      assertStringIncludes(html, 'class="home-topics home-topics--compact"');
+      assertStringIncludes(html, 'class="primer-home-topics"');
+      assertStringIncludes(html, 'class="primer-home-topic-link"');
       assertStringIncludes(html, 'href="/tags/design/"');
-      assertStringIncludes(html, 'title="design"');
       assertStringIncludes(html, 'href="/tags/writing/"');
       assertStringIncludes(html, 'href="/tags/life/"');
     });
@@ -120,8 +133,11 @@ describe("index.page.tsx", () => {
   describe("recent posts", () => {
     it("marks the recent-writing section as an h-feed", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="home-recent h-feed"');
-      assertStringIncludes(html, 'class="subhead-heading p-name"');
+      assertStringIncludes(
+        html,
+        'class="home-recent home-recent--primer h-feed"',
+      );
+      assertStringIncludes(html, 'class="p-name primer-home-section-title"');
       assertStringIncludes(html, 'class="u-url sr-only" href="/"');
       assertStringIncludes(html, 'class="p-author h-card sr-only"');
       assertStringIncludes(html, 'href="/about/"');
@@ -132,7 +148,7 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, 'href="/posts/"');
     });
 
-    it("surfaces the newest post as the editorial featured card", async () => {
+    it("surfaces the newest post as the editorial featured story", async () => {
       const posts = [
         makePost(410, {
           title: "Featured story",
@@ -144,24 +160,24 @@ describe("index.page.tsx", () => {
 
       assertStringIncludes(
         html,
-        'class="home-featured home-featured--editorial"',
+        'class="primer-home-ledger"',
       );
+      assertStringIncludes(html, 'class="primer-home-featured-story h-entry"');
       assertStringIncludes(html, "Featured story");
       assertStringIncludes(html, "Secondary story");
     });
 
-    it("uses the editorial desktop layout hooks for recent posts", async () => {
+    it("uses the editorial ledger layout hooks for recent posts", async () => {
       const posts = [
         makePost(413, { title: "Top story" }),
         makePost(414, { title: "Follow-up story" }),
+        makePost(415, { title: "Third story" }),
+        makePost(416, { title: "Fourth story" }),
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
 
-      assertStringIncludes(
-        html,
-        'class="home-recent-layout home-recent-layout--editorial"',
-      );
-      assertStringIncludes(html, 'class="home-posts home-posts--grid"');
+      assertStringIncludes(html, 'class="primer-home-ledger"');
+      assertStringIncludes(html, 'class="home-posts home-posts--ledger"');
     });
 
     it("renders each post via PostCard", async () => {
@@ -180,10 +196,15 @@ describe("index.page.tsx", () => {
       const posts = [
         makePost(404, { readingInfo: { minutes: 2 } }),
         makePost(412, { readingInfo: { minutes: 5 } }),
+        makePost(417, { readingInfo: { minutes: 7 } }),
+        makePost(418, { readingInfo: { minutes: 9 } }),
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
       assertStringIncludes(html, 'class="home-posts-item"');
-      assertStringIncludes(html, 'class="post-card h-entry"');
+      assertStringIncludes(
+        html,
+        'class="post-card h-entry primer-home-post primer-home-post--ledger"',
+      );
     });
 
     it("handles posts that lack reading info", async () => {
@@ -197,34 +218,56 @@ describe("index.page.tsx", () => {
     });
 
     it("renders async PostCard components", async () => {
-      const post = makePost(405, { readingInfo: { minutes: 2 } });
+      const posts = [
+        makePost(405, { title: "Feature", readingInfo: { minutes: 2 } }),
+        makePost(406, { title: "Spotlight one" }),
+        makePost(419, { title: "Spotlight two" }),
+        makePost(420, { title: "Grid card" }),
+      ];
       const html = await indexPage(
         asLumeData({
           search: {
-            pages: () => [post],
+            pages: () => posts,
           },
           comp: {
             PostCard: (props: Record<string, unknown>) =>
-              `<article class="post-card h-entry"><h3 class="p-name">${
-                props["title"]
-              }</h3></article>`,
+              `<article class="post-card h-entry ${
+                props["className"] ?? ""
+              }"><h3 class="p-name">${props["title"]}</h3></article>`,
           },
         }),
         MOCK_HELPERS,
       );
 
-      assertStringIncludes(html, post.title);
-      assertStringIncludes(html, 'class="post-card h-entry"');
+      assertStringIncludes(html, "Grid card");
+      assertStringIncludes(
+        html,
+        'class="post-card h-entry primer-home-post primer-home-post--ledger"',
+      );
+    });
+
+    it("does not render images or quotation blocks in the home feature", async () => {
+      const posts = [
+        makePost(421, { title: "Feature only" }),
+      ];
+      const html = await indexPage(makeData(posts), MOCK_HELPERS);
+
+      assertEquals(html.includes("<img"), false);
+      assertEquals(html.includes("<figure"), false);
+      assertEquals(html.includes("<blockquote"), false);
     });
 
     it("renders the recent-writing section even when no posts exist", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="home-recent h-feed"');
+      assertStringIncludes(
+        html,
+        'class="home-recent home-recent--primer h-feed"',
+      );
     });
 
-    it("renders the shared inline state panel when no posts exist", async () => {
+    it("renders the Primer empty state when no posts exist", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="state-panel state-panel--inline"');
+      assertStringIncludes(html, 'class="primer-home-empty-state"');
       assertStringIncludes(html, "Nothing published yet.");
       assertStringIncludes(html, 'href="/about/"');
     });

@@ -2,9 +2,8 @@
 
 normco.re is Phiphi’s multilingual personal site. It is built with
 [Deno](https://deno.com/) and [Lume](https://lume.land/), rendered with TSX
-templates and Markdown content, styled with Carbon Design System v11 through the
-official Carbon packages, and deployed as a static site to
-[normco.re](https://normco.re).
+templates and Markdown content, styled with a custom Primer-inspired token
+system and deployed as a static site to [normco.re](https://normco.re).
 
 ## Overview
 
@@ -13,11 +12,12 @@ official Carbon packages, and deployed as a static site to
 - Shared post metadata lives in `src/posts/<slug>/_data.yml`.
 - The site is localized in English, French, Simplified Chinese, and Traditional
   Chinese.
-- The UI is built on `@carbon/styles`.
-- Carbon documentation and the installed Carbon npm packages are the
-  authoritative design-system references.
-- `src/styles/carbon/_theme-tokens.scss` exposes the Carbon-backed custom
-  properties consumed by the site.
+- The UI is built on a local `--ph-*` token layer in
+  `src/styles/primer/_theme-tokens.scss`.
+- The visual direction is a Swiss-Primer hybrid: restrained monochrome surfaces,
+  one blue accent family, strict spacing, and generous editorial whitespace.
+- The stylesheet entrypoint is `src/style.scss`, which composes reset, tokens,
+  base, layout, and utilities layers only.
 - The writing archive is grouped by year and exposes a server-rendered year jump
   navigation without relying on runtime JavaScript.
 - Search exposes inline loading, retry, and result feedback with accessible
@@ -183,15 +183,14 @@ Then reference them from Markdown with relative paths.
 The site uses Carbon Design System v11 Sass modules as its design-system
 foundation.
 
-- Design-system authority: official Carbon documentation and installed Carbon
-  npm packages
-- Local theme bridge: `src/styles/carbon/_theme-tokens.scss`
-- Editorial aliases: `src/styles/editorial/_tokens.scss`
+- Design-system authority: the local `--ph-*` token system and the site’s core
+  layout layer
+- Local theme bridge: `src/styles/primer/_theme-tokens.scss`
+- Core layout implementation: `src/styles/_layout.scss`
 - Global stylesheet entrypoint: `src/style.scss`
 
-When a Carbon token already exists, do not introduce new hard-coded spacing,
-color, or typography values in UI code. Prefer `var(--cds-*)` or Carbon Sass
-modules.
+When a local token already exists, do not introduce new hard-coded spacing,
+color, or typography values in UI code. Prefer `var(--ph-*)`.
 
 Interactive UI is intentionally narrow and explicit:
 

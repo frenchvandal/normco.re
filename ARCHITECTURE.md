@@ -169,54 +169,50 @@ cache. The main reports are:
 
 ## Styling Architecture
 
-The site uses Carbon Design System v11 as its design-system foundation.
+The site uses a local Primer-inspired token system as its design foundation.
 
 ### Design-System Sources of Truth
 
-Carbon guidance comes from two places:
+Design-system guidance comes from two places:
 
-- the official Carbon documentation
-- the installed Carbon npm packages, especially `@carbon/styles`
+- the local `--ph-*` token layer in `src/styles/primer/_theme-tokens.scss`
+- the repository’s own layout and utility layers in `src/styles/_layout.scss`
+  and `src/styles/_utilities.scss`
 
-Within this repository, `src/styles/carbon/_theme-tokens.scss` is the local
-bridge that exposes the Carbon-backed custom properties consumed by the site. No
-exported design-token artifact is treated as authoritative.
+No exported design-token artifact is treated as authoritative.
 
 ### Token Model
 
-- `src/styles/carbon/_theme-tokens.scss` exposes the Carbon-backed custom
-  properties used in the site
-- `src/styles/editorial/_tokens.scss` provides project-level aliases layered on
-  top of those values
-- new UI work should avoid inventing hard-coded values when a Carbon token
-  already exists
+- `src/styles/primer/_theme-tokens.scss` exposes the `--ph-*` custom properties
+  used across the site
+- `src/styles/_base.scss`, `src/styles/_layout.scss`, and
+  `src/styles/_utilities.scss` consume those values directly
+- new UI work should avoid inventing hard-coded values when an existing token
+  already covers the need
 
 ### Sass and npm Integration
 
-Carbon Sass is consumed from `@carbon/styles`. Because Dart Sass resolves bare
-package imports from a materialized `node_modules` tree, the repository uses:
+The active stylesheet is local Sass only. The repository still uses:
 
 - `nodeModulesDir: "auto"` in `deno.json`
-- `_config/materialize_sass_npm_packages.ts` to expose Carbon Sass load paths to
+- `_config/materialize_sass_npm_packages.ts` to centralize Sass load paths for
   the Lume Sass plugin
 
-This keeps the site aligned with the official Carbon packages while remaining
-compatible with Deno and Lume.
+This keeps the build predictable under Deno and Lume.
 
 ### CSS Entrypoint
 
 `src/style.scss` composes the styling layers in order:
 
-1. Carbon and editorial tokens
-2. reset and base styles
-3. layout styles
-4. component styles
+1. reset
+2. tokens
+3. base styles
+4. layout styles
 5. utilities
 
-Typography relies on the Carbon-backed system font stacks exposed through
-`src/styles/carbon/_theme-tokens.scss`. Chinese pages use language-targeted
-system CJK fallback stacks instead of bundled webfonts, and the build no longer
-generates `styles/fonts.css` or `/fonts/*` assets.
+Typography relies on the local system font stacks exposed through
+`src/styles/primer/_theme-tokens.scss`, and the build does not generate bundled
+webfont assets.
 
 ## Client-Side Enhancements
 

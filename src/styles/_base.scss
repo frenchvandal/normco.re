@@ -1,122 +1,250 @@
-// Layer: base
 @layer base {
-  :root {
-    color-scheme: light dark;
-  }
-
   ::selection {
-    background-color: var(--color-selection-bg);
+    background: var(--ph-color-selection-bg);
   }
 
   html {
-    font: var(--cds-productive-body-02);
-    color: var(--cds-text-primary);
-    background-color: var(--cds-background);
+    font-family: var(--ph-font-sans);
+    font-size: 100%;
+    line-height: var(--ph-lh-base);
+    color: var(--ph-color-fg-default);
+    background:
+      radial-gradient(
+        circle at top right,
+        color-mix(in oklch, var(--ph-color-accent-fg) 6%, transparent) 0,
+        transparent 28rem
+      ),
+      linear-gradient(
+      180deg,
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-subtle) 72%,
+        var(--ph-color-canvas-default)
+      ) 0,
+      var(--ph-color-canvas-default) 18rem
+    );
+    scroll-padding-block-start: calc(
+      var(--ph-header-height) + var(--ph-space-5)
+    );
     scroll-behavior: smooth;
-    transition:
-      background-color var(--cds-transition-default),
-      color var(--cds-transition-default);
   }
 
   body {
     min-block-size: 100dvh;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
+    background: linear-gradient(
+      90deg,
+      transparent calc(50% - 0.5px),
+      color-mix(in oklch, var(--ph-grid-rule) 55%, transparent) calc(
+        50% - 0.5px
+      ),
+      color-mix(in oklch, var(--ph-grid-rule) 55%, transparent) calc(
+        50% + 0.5px
+      ),
+      transparent calc(50% + 0.5px)
+    );
+    font-family: var(--ph-font-sans);
+    font-size: var(--ph-text-base);
+    line-height: var(--ph-lh-base);
+    color: var(--ph-color-fg-default);
   }
 
-  a {
-    color: var(--cds-link-primary);
-    text-decoration: none;
-    transition:
-      color var(--cds-transition-fast),
-      text-decoration-color var(--cds-transition-fast);
-  }
-
-  a:hover {
-    color: var(--cds-link-primary-hover);
-  }
-
-  a:focus-visible {
-    outline: var(--focus-ring-width) solid var(--cds-focus);
-    outline-offset: var(--focus-ring-offset);
-    border-radius: 0;
-  }
-
-  :where(button, [role="button"], input, select, textarea):focus-visible {
-    outline: var(--focus-ring-width) solid var(--cds-focus);
-    outline-offset: var(--focus-ring-offset);
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--cds-font-family-sans);
-    font-weight: var(--cds-font-weight-semibold);
-    letter-spacing: var(--cds-letter-spacing-expressive);
+  :where(h1, h2, h3, h4, h5, h6) {
+    color: var(--ph-color-fg-default);
+    font-weight: 600;
+    line-height: var(--ph-lh-tight);
+    letter-spacing: -0.02em;
     text-wrap: balance;
   }
 
-  h1 {
-    font: var(--cds-expressive-heading-05);
-  }
-  h2 {
-    font: var(--cds-expressive-heading-04);
-  }
-  h3 {
-    font: var(--cds-expressive-heading-03);
-  }
-  h4 {
-    font: var(--cds-productive-heading-03);
-  }
-  h5, h6 {
-    font: var(--cds-productive-heading-02);
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
   }
 
   p {
-    font: var(--cds-productive-body-long-02);
-    text-wrap: pretty;
-    max-inline-size: var(--measure);
+    max-inline-size: var(--ph-measure);
+  }
+
+  a {
+    color: var(--ph-color-accent-fg);
+    text-decoration-thickness: var(--ph-link-underline-thickness);
+    text-underline-offset: var(--ph-link-underline-offset);
+    text-decoration-color: color-mix(
+      in oklch,
+      currentColor 32%,
+      transparent
+    );
+    transition:
+      color var(--ph-duration-fast) var(--ph-easing-default),
+      background-color var(--ph-duration-fast) var(--ph-easing-default),
+      border-color var(--ph-duration-fast) var(--ph-easing-default),
+      text-decoration-color var(--ph-duration-fast) var(--ph-easing-default);
+  }
+
+  a:hover {
+    color: var(--ph-color-accent-emphasis);
+    text-decoration-color: currentColor;
+  }
+
+  :where(
+    a,
+    button,
+    [role="button"],
+    input,
+    select,
+    textarea,
+    summary
+  ):focus-visible {
+    outline: var(--ph-focus-width) solid var(--ph-focus-color);
+    outline-offset: var(--ph-focus-offset);
+  }
+
+  :where(button, input, select, textarea) {
+    border-radius: var(--ph-radius-sm);
+  }
+
+  :where(button, [type="button"], [type="reset"], [type="submit"]) {
+    border: 0;
+    background: none;
+  }
+
+  :where(code, kbd, samp, pre) {
+    font-family: var(--ph-font-mono);
   }
 
   code {
-    font: var(--cds-productive-code-02);
-    font-family: var(--cds-font-family-mono);
-    background-color: var(--cds-layer);
-    padding: var(--cds-spacing-01) var(--cds-spacing-02);
-    border-radius: 0;
+    display: inline-block;
+    padding: 2px 4px;
+    border-radius: var(--ph-radius-sm);
+    background: var(--ph-color-canvas-inset);
+    font-size: var(--ph-text-sm);
+    line-height: 1.4;
+  }
+
+  pre,
+  .shiki {
+    inline-size: 100%;
+    overflow-x: auto;
+    border-radius: var(--ph-radius-md);
+    background: var(--ph-color-canvas-inset);
   }
 
   pre {
-    background-color: var(--cds-layer);
-    border: 1px solid var(--cds-border-subtle);
-    padding: var(--cds-spacing-05);
-    border-radius: 0;
-    overflow-x: auto;
-    font: var(--cds-productive-code-02);
-    line-height: var(--cds-line-height-loose);
+    padding: var(--ph-space-5);
   }
 
-  pre code {
-    background: none;
+  pre code,
+  .shiki code {
+    display: block;
+    min-inline-size: max-content;
     padding: 0;
-    font-size: inherit;
-    border-radius: 0;
+    background: transparent;
+  }
+
+  .shiki,
+  .shiki span {
+    color: var(--shiki-light);
+    background-color: var(--shiki-light-bg);
+    font-style: var(--shiki-light-font-style, inherit);
+    font-weight: var(--shiki-light-font-weight, inherit);
+    text-decoration: var(--shiki-light-text-decoration, inherit);
+  }
+
+  :root[data-color-mode="dark"] .shiki,
+  :root[data-color-mode="dark"] .shiki span {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+    font-style: var(--shiki-dark-font-style, inherit);
+    font-weight: var(--shiki-dark-font-weight, inherit);
+    text-decoration: var(--shiki-dark-text-decoration, inherit);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-color-mode="light"]) .shiki,
+    :root:not([data-color-mode="light"]) .shiki span {
+      color: var(--shiki-dark);
+      background-color: var(--shiki-dark-bg);
+      font-style: var(--shiki-dark-font-style, inherit);
+      font-weight: var(--shiki-dark-font-weight, inherit);
+      text-decoration: var(--shiki-dark-text-decoration, inherit);
+    }
   }
 
   blockquote {
-    border-inline-start: 3px solid var(--cds-link-primary);
-    padding-inline-start: var(--cds-spacing-05);
-    color: var(--cds-text-secondary);
-    font-style: italic;
+    padding-inline-start: var(--ph-space-4);
+    border-inline-start: 3px solid var(--ph-color-border-default);
+    color: var(--ph-color-fg-muted);
   }
 
   hr {
-    border: none;
-    border-block-start: 1px solid var(--cds-border-subtle);
-    margin-block: var(--cds-spacing-07);
+    border: 0;
+    border-block-start: 1px solid var(--ph-color-border-muted);
+    margin-block: var(--ph-space-8);
+  }
+
+  mark {
+    background: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 18%,
+      var(--ph-color-canvas-default)
+    );
+    color: inherit;
+  }
+
+  .btn,
+  .cds--btn,
+  .state-panel-action,
+  .feature-link,
+  .pagefind-ui__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ph-space-2);
+    min-block-size: 2.5rem;
+    padding-inline: var(--ph-space-4);
+    border: 1px solid var(--ph-color-border-default);
+    border-radius: var(--ph-radius-sm);
+    background: var(--ph-color-canvas-default);
+    color: var(--ph-color-fg-default);
+    font-size: var(--ph-text-sm);
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .btn-sm {
+    min-block-size: 2.25rem;
+    padding-inline: var(--ph-space-3);
+  }
+
+  .btn-octicon {
+    padding: 0;
+  }
+
+  .btn:hover,
+  .cds--btn:hover,
+  .state-panel-action:hover,
+  .feature-link:hover,
+  .pagefind-ui__button:hover {
+    background: var(--ph-color-canvas-subtle);
+    border-color: var(--ph-color-border-default);
+    color: var(--ph-color-fg-default);
+    text-decoration: none;
+  }
+
+  .Box {
+    background: transparent;
+  }
+
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: var(--ph-duration-default);
+    animation-timing-function: var(--ph-easing-default);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -131,22 +259,21 @@
   }
 
   @media (forced-colors: active) {
-    a {
+    html,
+    body {
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    a,
+    .btn,
+    .cds--btn,
+    .feature-link,
+    .state-panel-action,
+    .pagefind-ui__button {
       color: LinkText;
+      border-color: ButtonBorder;
+      background: Canvas;
     }
-
-    a:focus-visible {
-      outline-color: Highlight;
-    }
-  }
-
-  @media (prefers-reduced-transparency: reduce) {
-    :root {
-      --color-selection-bg: var(--cds-layer-selected);
-    }
-  }
-
-  @view-transition {
-    navigation: auto;
   }
 }

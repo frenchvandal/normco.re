@@ -1,6 +1,6 @@
 import { assertStringIncludes } from "jsr/assert";
 import { describe, it } from "jsr/testing-bdd";
-import errorPageStyles from "./styles/components/_error-pages.scss" with {
+import layoutStyles from "./styles/_layout.scss" with {
   type: "text",
 };
 import { asLumeData, asLumeHelpers } from "../test/lume.ts";
@@ -54,20 +54,18 @@ describe("404.page.tsx", () => {
 });
 
 describe("state panel CSS contracts", () => {
-  it("gives the page action an inset focus ring", () => {
-    assertStringIncludes(errorPageStyles, ".state-panel-action:focus-visible");
-    assertStringIncludes(
-      errorPageStyles,
-      "outline-offset: var(--focus-ring-inset-offset);",
-    );
+  it("keeps the page state centered in a narrow editorial column", () => {
+    assertStringIncludes(layoutStyles, ".state-panel--page {");
+    assertStringIncludes(layoutStyles, "inline-size: min(100%, 480px);");
+    assertStringIncludes(layoutStyles, ".state-panel-actions {");
   });
 
-  it("adds ambient framing for page-level error states", () => {
-    assertStringIncludes(errorPageStyles, ".state-page::before");
-    assertStringIncludes(errorPageStyles, ".state-page--404::after");
+  it("gives the status code and copy their dedicated hierarchy", () => {
+    assertStringIncludes(layoutStyles, ".state-panel-eyebrow {");
+    assertStringIncludes(layoutStyles, "font-size: var(--ph-text-3xl);");
     assertStringIncludes(
-      errorPageStyles,
-      ".state-panel--not-found .state-panel-eyebrow",
+      layoutStyles,
+      ".state-panel-message {",
     );
   });
 });
