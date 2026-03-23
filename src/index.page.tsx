@@ -340,9 +340,6 @@ export default async (
   }" class="primer-home-inline-link primer-home-inline-link--primary">${
     escapeHtml(translations.home.archiveLinkLabel)
   }</a>
-        <a href="${escapeHtml(aboutUrl)}" class="primer-home-inline-link">${
-    escapeHtml(translations.navigation.about)
-  }</a>
       </nav>
       ${introTopicMarkup}
     </div>

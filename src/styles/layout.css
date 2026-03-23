@@ -831,13 +831,6 @@
     text-transform: uppercase;
   }
 
-  .pagehead-eyebrow::after {
-    content: "";
-    inline-size: clamp(var(--ph-space-7), 10vw, var(--ph-space-10));
-    block-size: 1px;
-    background: var(--ph-grid-rule);
-  }
-
   .pagehead-lead {
     color: var(--ph-color-fg-muted);
     font-size: var(--ph-text-md);
@@ -877,7 +870,9 @@
     gap: var(--ph-space-5);
   }
 
-  .feature-card {
+  .feature-card,
+  .syndication-overview-card,
+  .feeds-card {
     display: grid;
     gap: var(--ph-space-4);
     padding: var(--ph-space-5);
@@ -886,7 +881,12 @@
     background: var(--ph-color-canvas-subtle);
   }
 
-  .feature-card-title {
+  .feature-card-title,
+  .post-pagehead-kicker,
+  .about-pagehead-kicker,
+  .syndication-overview-kicker,
+  .feeds-card-kicker,
+  .feeds-structured-list-kicker {
     color: var(--ph-color-fg-muted);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
@@ -896,7 +896,10 @@
     text-transform: uppercase;
   }
 
-  .feature-card-caption {
+  .feature-card-caption,
+  .about-pagehead-feed-links,
+  .feeds-card-description,
+  .feeds-structured-list-use p {
     color: var(--ph-color-fg-muted);
     font-size: var(--ph-text-sm);
     line-height: var(--ph-lh-relaxed);
@@ -1515,18 +1518,6 @@
     line-height: var(--ph-lh-tight);
   }
 
-  .post-pagehead-kicker,
-  .about-pagehead-kicker,
-  .syndication-overview-kicker {
-    color: var(--ph-color-fg-muted);
-    font-family: var(--ph-font-mono);
-    font-size: var(--ph-text-xs);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    margin: 0;
-    text-transform: uppercase;
-  }
-
   .post-pagehead-summary,
   .syndication-overview-body,
   .syndication-intro,
@@ -1743,13 +1734,6 @@
     line-height: var(--ph-lh-relaxed);
   }
 
-  .about-pagehead-feed-links {
-    color: var(--ph-color-fg-muted);
-    font-size: var(--ph-text-sm);
-    line-height: var(--ph-lh-relaxed);
-    margin: 0;
-  }
-
   .about-contact-list,
   .about-notes {
     display: grid;
@@ -1930,57 +1914,14 @@
     gap: var(--ph-space-6);
   }
 
-  .syndication-overview-card {
-    display: grid;
-    gap: var(--ph-space-4);
-    padding: var(--ph-space-5);
-    border: 1px solid var(--ph-color-border-default);
-    border-radius: var(--ph-radius-lg);
-    background: var(--ph-color-canvas-subtle);
-  }
-
-  .syndication-overview-copy {
-    display: grid;
-    gap: var(--ph-space-2);
-  }
-
-  .syndication-overview-title {
-    font-size: var(--ph-text-md);
-    line-height: var(--ph-lh-snug);
-    margin: 0;
-  }
-
-  .feeds-grid {
-    display: grid;
-    gap: var(--ph-space-5);
-  }
-
-  .feeds-card {
-    display: grid;
-    gap: var(--ph-space-4);
-    padding: var(--ph-space-5);
-    border: 1px solid var(--ph-color-border-default);
-    border-radius: var(--ph-radius-lg);
-    background: var(--ph-color-canvas-subtle);
-  }
-
+  .syndication-overview-copy,
   .feeds-card-head,
   .feeds-card-badges {
     display: grid;
     gap: var(--ph-space-2);
   }
 
-  .feeds-card-kicker,
-  .feeds-structured-list-kicker {
-    color: var(--ph-color-fg-muted);
-    font-family: var(--ph-font-mono);
-    font-size: var(--ph-text-xs);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    margin: 0;
-    text-transform: uppercase;
-  }
-
+  .syndication-overview-title,
   .feeds-card-title,
   .feeds-structured-list-title {
     color: var(--ph-color-fg-default);
@@ -1989,12 +1930,9 @@
     margin: 0;
   }
 
-  .feeds-card-description,
-  .feeds-structured-list-use p {
-    color: var(--ph-color-fg-muted);
-    font-size: var(--ph-text-sm);
-    line-height: var(--ph-lh-relaxed);
-    margin: 0;
+  .feeds-grid {
+    display: grid;
+    gap: var(--ph-space-5);
   }
 
   .feeds-copy-control {

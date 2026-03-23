@@ -260,7 +260,7 @@ export default function shiki(userOptions: ShikiPluginOptions = {}): Plugin {
         const _ of pooledMap(
           options.concurrency,
           pages,
-          (page) => highlightPage(page, options, loadHighlighter),
+          (page: Page) => highlightPage(page, options, loadHighlighter),
         )
       ) {
         // Exhaust the pooled iterator to keep processing bounded but ordered.
