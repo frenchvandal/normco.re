@@ -45,7 +45,6 @@ describe("src/posts Markdown contract", () => {
     assert(slugs.length > 0);
 
     for (const { slug, metadata } of POST_CONTRACT_FIXTURES) {
-      assertMatch(metadata, new RegExp(`^slug: ${slug}$`, "m"));
       assertMatch(metadata, new RegExp(`^id: ${slug}$`, "m"));
       assertMatch(metadata, new RegExp(`^url: /posts/${slug}/$`, "m"));
       assertMatch(metadata, /^date: \d{4}-\d{2}-\d{2}$/m);
@@ -58,7 +57,6 @@ describe("src/posts Markdown contract", () => {
         const document = documents[language];
         const { body, frontmatter } = parseFrontmatter(document);
 
-        assertStringIncludes(frontmatter, `slug: ${slug}`);
         assertStringIncludes(frontmatter, `lang: ${language}`);
         assertMatch(frontmatter, /^title: .+/m);
         assertMatch(frontmatter, /^description: .+/m);

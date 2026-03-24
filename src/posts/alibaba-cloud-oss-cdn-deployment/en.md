@@ -1,5 +1,4 @@
 ---
-slug: alibaba-cloud-oss-cdn-deployment
 lang: en
 title: "How This Blog Deploys to Alibaba Cloud OSS and CDN"
 description: "A practical walkthrough of my GitHub Actions pipeline: warmed Lume builds, OIDC role assumption, OSS sync, CDN refresh, and automatic cleanup."

@@ -1,5 +1,4 @@
 ---
-slug: vestibulum-ante
 lang: fr
 title: "Vestibulum Ante : seuils et nouveaux départs"
 description: "Réflexions sur les transitions, les espaces intermédiaires de la vie et ce que signifie se tenir sur un seuil."

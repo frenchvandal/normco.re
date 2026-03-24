@@ -1,5 +1,4 @@
 ---
-slug: proin-facilisis
 lang: zh-hant
 title: "Proin Facilisis：讓事情更輕鬆"
 description: "關於降低摩擦的哲學：在程式碼、設計與日常生活中。"

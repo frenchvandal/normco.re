@@ -41,7 +41,7 @@ function createPostPage(
     data: {
       type: "post",
       id: slug,
-      slug,
+      basename: slug,
       lang,
       title: options.title ?? "Example post",
       description: options.description ?? "Contract-backed summary.",
@@ -126,7 +126,7 @@ describe("_config/mobile_content_api.ts", () => {
     const index = createPostsIndexDocument(siteStub, "en", [
       {
         id: "example-post",
-        slug: "example-post",
+        basename: "example-post",
         title: "Example post",
         description: "Contract-backed summary.",
         date: new Date("2026-03-16T00:00:00Z"),
@@ -227,7 +227,7 @@ describe("_config/mobile_content_api.ts", () => {
       () => {
         createPostsIndexDocument(siteStub, "en", [
           {
-            slug: "missing-summary",
+            basename: "missing-summary",
             title: "Missing summary",
             date: new Date("2026-03-16T00:00:00Z"),
             url: "/posts/missing-summary/",
@@ -284,7 +284,7 @@ describe("_config/mobile_content_api.ts", () => {
       },
       [
         {
-          slug: "bonjour",
+          basename: "bonjour",
           title: "Bonjour",
           description: "Résumé",
           date: new Date("2026-03-16T00:00:00Z"),

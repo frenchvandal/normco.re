@@ -1,5 +1,4 @@
 ---
-slug: alibaba-cloud-oss-cdn-deployment
 lang: zh-hans
 title: "这个博客如何部署到阿里云 OSS 与 CDN"
 description: "一份实践向说明：我的 GitHub Actions 流水线如何完成带缓存的 Lume 构建、OIDC 角色临时授权、OSS 同步、CDN 刷新，以及自动清理。"

@@ -1,5 +1,4 @@
 ---
-slug: vestibulum-ante
 lang: zh-hant
 title: "Vestibulum Ante：關於門檻與新的開始"
 description: "關於過渡、人生中的中間地帶，以及站在門檻上的意義。"

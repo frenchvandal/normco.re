@@ -1,5 +1,4 @@
 ---
-slug: vestibulum-ante
 lang: en
 title: "Vestibulum Ante: On Thresholds and New Beginnings"
 description: "Reflections on transitions, the in-between spaces of life, and what it means to stand at a threshold."

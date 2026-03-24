@@ -1,5 +1,4 @@
 ---
-slug: proin-facilisis
 lang: en
 title: "Proin Facilisis: Making Things Easier"
 description: "On the philosophy of reducing friction—in code, in design, and in everyday life."

@@ -1,5 +1,4 @@
 ---
-slug: lorem-ipsum
 lang: fr
 title: "Lorem ipsum et l’art du texte de remplissage"
 description: "Une réflexion sur le faux texte, son histoire et les raisons pour lesquelles il reste utile dans les workflows de design modernes."
