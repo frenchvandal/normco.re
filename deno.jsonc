@@ -108,7 +108,7 @@
       "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/lint.ts"
     ],
     "rules": {
-      // The repo uses canonical @std/ import-map aliases.
+      "tags": ["recommended", "jsr"],
       "exclude": [
         "no-import-prefix"
       ]
