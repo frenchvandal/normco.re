@@ -12,6 +12,9 @@ export const lang = "en";
 export const blogStartYear = 2022 as const;
 
 export const layout = "layouts/base.tsx";
+// Ask Lume's multilanguage plugin to emit `hreflang="x-default"` pointing to
+// the English variant when alternates exist.
+export const unmatchedLangUrl = "en" as const;
 
 export const siteName = "normco.re" as const;
 

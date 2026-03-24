@@ -1,5 +1,6 @@
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
+import { generate as generateUuidV7 } from "jsr:@std/uuid@^1.1.0/v7";
 import {
   assertEditorialImageDimensions,
   type EditorialImagePageSnapshot,
@@ -22,9 +23,83 @@ const MULTILANGUAGE_DATA_ALIASES = {
   "zh-hans": "zhHans",
   "zh-hant": "zhHant",
 } as const;
+const POSTS_SOURCE_SEGMENT = "/posts/";
 
 function isMutableRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
+}
+
+function getNonEmptyString(value: unknown): string | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const trimmedValue = value.trim();
+  return trimmedValue.length > 0 ? trimmedValue : undefined;
+}
+
+function normalizeSourcePath(sourcePath: string): string {
+  return sourcePath.replaceAll("\\", "/");
+}
+
+export function getPostIdScopeKey(sourcePath: string): string | undefined {
+  if (sourcePath.length === 0 || sourcePath === "(generated)") {
+    return undefined;
+  }
+
+  const normalizedSourcePath = normalizeSourcePath(sourcePath);
+  const postsSegmentIndex = normalizedSourcePath.indexOf(POSTS_SOURCE_SEGMENT);
+
+  if (postsSegmentIndex === -1) {
+    return undefined;
+  }
+
+  const lastSeparatorIndex = normalizedSourcePath.lastIndexOf("/");
+  if (lastSeparatorIndex <= postsSegmentIndex + POSTS_SOURCE_SEGMENT.length) {
+    return undefined;
+  }
+
+  return normalizedSourcePath.slice(0, lastSeparatorIndex);
+}
+
+export function assignMissingPostId(
+  pageData: unknown,
+  sourcePath: string | undefined,
+  postIdsByScope: Map<string, string>,
+  generateId: () => string = generateUuidV7,
+): void {
+  if (!isMutableRecord(pageData) || pageData.type !== "post") {
+    return;
+  }
+
+  const basename = getNonEmptyString(pageData.basename);
+  const scopeKey = (sourcePath ? getPostIdScopeKey(sourcePath) : undefined) ??
+    (basename ? `basename:${basename}` : undefined);
+  const existingId = getNonEmptyString(pageData.id);
+
+  if (existingId !== undefined) {
+    if (scopeKey !== undefined) {
+      postIdsByScope.set(scopeKey, existingId);
+    }
+    return;
+  }
+
+  const scopedId = scopeKey !== undefined
+    ? postIdsByScope.get(scopeKey)
+    : undefined;
+
+  if (scopedId !== undefined) {
+    pageData.id = scopedId;
+    return;
+  }
+
+  const generatedId = generateId();
+
+  if (scopeKey !== undefined) {
+    postIdsByScope.set(scopeKey, generatedId);
+  }
+
+  pageData.id = generatedId;
 }
 
 export function applyMultilanguageDataAliases(pageData: unknown): void {
@@ -72,6 +147,10 @@ export function decodePageContent(content: unknown): string {
 }
 
 export function registerProcessors(site: Site): void {
+  // Reuse generated ids across localized siblings and repeated watch rebuilds
+  // within the same process when source metadata omits `id`.
+  const generatedPostIdsByScope = new Map<string, string>();
+
   // Add `image-size` only on searchable editorial content; other image surfaces
   // are handled separately and should not be pulled into this processor.
   site.process([".html"], (pages: Page[]) => {
@@ -107,6 +186,11 @@ export function registerProcessors(site: Site): void {
   site.preprocess([".html"], (pages: Page[]) => {
     for (const page of pages) {
       applyMultilanguageDataAliases(page.data);
+      assignMissingPostId(
+        page.data,
+        typeof page.sourcePath === "string" ? page.sourcePath : undefined,
+        generatedPostIdsByScope,
+      );
     }
   });
 

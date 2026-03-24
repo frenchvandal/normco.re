@@ -9,12 +9,14 @@ import {
   metas,
   siteChrome,
   siteManifest,
+  unmatchedLangUrl,
 } from "./_data.ts";
 
 describe("src/_data.ts", () => {
   it("exports global language and base layout", () => {
     assertEquals(lang, "en");
     assertEquals(layout, "layouts/base.tsx");
+    assertEquals(unmatchedLangUrl, "en");
   });
 
   it("exports baseline WebSite structured data", () => {

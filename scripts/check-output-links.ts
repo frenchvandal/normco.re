@@ -1,6 +1,7 @@
 import { parseArgs } from "@std/cli";
 import { ensureDir, walk } from "@std/fs";
 import { dirname, extname, join, normalize } from "@std/path";
+import { DOMParser } from "lume/deps/dom.ts";
 import { fileExists } from "./_shared.ts";
 
 const HTML_EXTENSIONS = new Set([".html", ".xml", ".xsl"]);
@@ -99,10 +100,15 @@ function resolveLocalTarget(pagePath: string, rawTarget: string): string {
 
 export function extractHtmlLocalReferences(source: string): string[] {
   const references = new Set<string>();
-  const attributePattern = /\b(?:href|src)=["']([^"'#][^"']*)["']/g;
+  const document = new DOMParser().parseFromString(source, "text/html");
 
-  for (const match of source.matchAll(attributePattern)) {
-    const target = match[1]?.trim();
+  if (document === null) {
+    return [];
+  }
+
+  for (const element of document.querySelectorAll("[href], [src]")) {
+    const target = element.getAttribute("href")?.trim() ??
+      element.getAttribute("src")?.trim();
 
     if (target === undefined || shouldSkipTarget(target)) {
       continue;

@@ -44,11 +44,11 @@ describe("404.page.tsx", () => {
     assertStringIncludes(html, 'aria-hidden="true"');
   });
 
-  it("localizes message and home link for French data", () => {
+  it("keeps the built 404 page explicitly English even if other lang data is passed", () => {
     const frenchData = asLumeData({ lang: "fr" });
     const html = page404(frenchData);
-    assertStringIncludes(html, "Page introuvable");
-    assertStringIncludes(html, 'href="/fr/"');
+    assertStringIncludes(html, "Page not found");
+    assertStringIncludes(html, 'href="/"');
   });
 });
 

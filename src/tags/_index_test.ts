@@ -18,7 +18,7 @@ function makePost(
 }
 
 describe("tags/index.page.ts", () => {
-  it("generates one localized page per tag slug with plural basenames", () => {
+  it("generates one multilingual descriptor per tag slug", () => {
     const search = {
       pages: (query: string) => {
         if (query === "type=post lang=en") {
@@ -41,28 +41,24 @@ describe("tags/index.page.ts", () => {
 
     const pages = [...tagsPage({ search } as unknown as Lume.Data)];
     const designPage = pages.find((page) => page.url === "/tags/design/");
-    const frenchDesignPage = pages.find((page) =>
-      page.url === "/fr/tags/design/"
-    );
 
     assert(designPage);
-    assert(frenchDesignPage);
     assertEquals(designPage.searchIndexed, false);
     assertEquals(designPage.type, "tag");
+    assertEquals(designPage.id, "tag:design");
+    const designPageLanguages = designPage.lang;
+    if (!Array.isArray(designPageLanguages)) {
+      throw new Error("Expected design tag page languages to be an array");
+    }
+    assertEquals(Array.from(designPageLanguages), ["en", "fr"]);
     assertEquals(designPage.title, "Tag: design");
-    assertEquals(frenchDesignPage.title, "Étiquette\u00a0: design");
-    const alternates = designPage.alternates as Array<{
-      lang: string;
-      url: string;
-    }>;
-    assertEquals(alternates.length, 2);
-    assertEquals(alternates[0]?.lang, "en");
-    assertEquals(alternates[0]?.url, "/tags/design/");
-    assertEquals(alternates[1]?.lang, "fr");
-    assertEquals(alternates[1]?.url, "/fr/tags/design/");
+    assertEquals(
+      (designPage.fr as Record<string, unknown>).title,
+      "Étiquette\u00a0: design",
+    );
   });
 
-  it("normalizes tag slugs, ignores blank tags, and aggregates posts by slug", () => {
+  it("normalizes tag slugs, ignores blank tags, and stores localized page data for the plugin", () => {
     const search = {
       pages: (query: string) => {
         if (query === "type=post lang=en") {
@@ -98,22 +94,26 @@ describe("tags/index.page.ts", () => {
     assertEquals((designSystemsPage.posts as Lume.Data[]).length, 2);
     assertEquals(cafeOpsPage.tagName, "Café Ops");
     assertEquals((cafeOpsPage.posts as Lume.Data[]).length, 1);
+    assertEquals(designSystemsPage.id, "tag:design-systems");
+    const designSystemsPageLanguages = designSystemsPage.lang;
+    if (!Array.isArray(designSystemsPageLanguages)) {
+      throw new Error(
+        "Expected design-systems tag page languages to be an array",
+      );
+    }
+    assertEquals(Array.from(designSystemsPageLanguages), ["en", "fr"]);
+    assertEquals(
+      ((designSystemsPage.fr as Record<string, unknown>).posts as Lume.Data[])
+        .length,
+      1,
+    );
     assertEquals(
       pages.some((page) => page.url === "/tags//"),
       false,
     );
-
-    const alternates = designSystemsPage.alternates as Array<{
-      lang: string;
-      url: string;
-    }>;
-    assertEquals(alternates, [
-      { lang: "en", url: "/tags/design-systems/" },
-      { lang: "fr", url: "/fr/tags/design-systems/" },
-    ]);
   });
 
-  it("sorts generated tag pages alphabetically by display tag name inside each language", () => {
+  it("sorts generated tag descriptors alphabetically by their primary display tag name", () => {
     const search = {
       pages: (query: string) => {
         if (query === "type=post lang=en") {
@@ -129,16 +129,9 @@ describe("tags/index.page.ts", () => {
     };
 
     const pages = [...tagsPage({ search } as unknown as Lume.Data)];
-    const englishTagUrls = pages
-      .filter((page) =>
-        typeof page.url === "string" && !page.url.startsWith("/fr/")
-      )
-      .filter((page) =>
-        typeof page.url === "string" && !page.url.startsWith("/zh-")
-      )
-      .map((page) => page.url);
+    const tagUrls = pages.map((page) => page.url);
 
-    assertEquals(englishTagUrls, [
+    assertEquals(tagUrls, [
       "/tags/alibaba-cloud/",
       "/tags/design/",
       "/tags/writing/",

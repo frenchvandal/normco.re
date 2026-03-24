@@ -1,3 +1,4 @@
+import { escape } from "@std/html";
 import { formatRfc3339Instant } from "./date-time.ts";
 
 export type AtomFeedAuthor = {
@@ -30,12 +31,7 @@ export type AtomFeedData = {
 };
 
 export function escapeXml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&apos;");
+  return escape(value).replaceAll("&#39;", "&apos;");
 }
 
 export function absolutizeHtmlUrls(baseUrl: string, html: string): string {

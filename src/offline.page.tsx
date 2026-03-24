@@ -8,6 +8,7 @@ export const description =
   "Offline fallback page for normco.re when connectivity is unavailable.";
 // Keep the offline fallback out of sitemap and search surfaces.
 export const unlisted = true;
+export const unmatchedLangUrl = false;
 
 export const fr = {
   title: "Hors ligne",

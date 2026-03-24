@@ -104,6 +104,18 @@ describe("extractHtmlLocalReferences()", () => {
       "./rss.xml",
     ]);
   });
+
+  it("supports single-quoted attributes after parsing HTML", () => {
+    const source = `
+      <img src='/images/hero.png?size=2x#figure'>
+      <a href='/posts/example/'>Example</a>
+    `;
+
+    assertEquals(extractHtmlLocalReferences(source), [
+      "/images/hero.png",
+      "/posts/example/",
+    ]);
+  });
 });
 
 describe("collectBrokenOutputLinks()", () => {

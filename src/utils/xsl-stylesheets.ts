@@ -3,6 +3,7 @@ import sitemapStylesheetTemplate from "../sitemap.xsl.template" with {
   type: "text",
 };
 
+import { escape } from "@std/html";
 import { renderOcticonMarkup } from "./primer-icons.ts";
 import { HEADER_IDS, HEADER_LANGUAGE_OPTIONS } from "./header-language-menu.ts";
 import { type SiteLanguage, SUPPORTED_LANGUAGES } from "./i18n.ts";
@@ -46,12 +47,7 @@ const SITEMAP_HREF = {
 } as const satisfies Record<SiteLanguage, string>;
 
 function escapeXml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&apos;");
+  return escape(value).replaceAll("&#39;", "&apos;");
 }
 
 function literalAttribute(value: string): XslAttributeContent {
