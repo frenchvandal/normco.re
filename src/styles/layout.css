@@ -713,6 +713,7 @@
     position: fixed;
     inset-block-start: var(--ph-header-height);
     inset-inline-start: 0;
+    z-index: 45;
     inline-size: var(--ph-side-nav-width);
     max-inline-size: 100%;
     block-size: calc(100dvh - var(--ph-header-height));
@@ -796,6 +797,7 @@
   .cds--side-nav__overlay {
     position: fixed;
     inset: var(--ph-header-height) 0 0;
+    z-index: 40;
     background: color-mix(
       in oklch,
       var(--ph-color-fg-default) 22%,
