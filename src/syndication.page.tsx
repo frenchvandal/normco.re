@@ -1,7 +1,6 @@
 import { siteName } from "./_data.ts";
 import { renderOcticonMarkup } from "./utils/primer-icons.ts";
 import { resolvePageSetup } from "./utils/page-setup.ts";
-import { renderBreadcrumb } from "./utils/breadcrumb.ts";
 import type { SiteLanguage, SiteTranslations } from "./utils/i18n.ts";
 import {
   getLocalizedAtomFeedUrl,
@@ -323,7 +322,7 @@ function buildFeedActions(
 }
 
 export default (data: Lume.Data): string => {
-  const { language, homeUrl, translations } = resolvePageSetup(data.lang);
+  const { language, translations } = resolvePageSetup(data.lang);
   const siteOrigin = `https://${siteName}`;
   const feedCards = buildFeedCards(language, translations);
   const feedActions = buildFeedActions(translations);
@@ -357,13 +356,7 @@ export default (data: Lume.Data): string => {
     }),
   ].join("\n");
 
-  const breadcrumb = renderBreadcrumb(
-    [{ href: homeUrl, label: translations.navigation.home }],
-    translations.feeds.breadcrumbAriaLabel,
-  );
-
   return `<div class="site-page-shell site-page-shell--wide feeds-page">
-  ${breadcrumb}
   <section class="pagehead syndication-pagehead" aria-labelledby="syndication-title">
     <div class="syndication-pagehead-grid">
       <div class="syndication-pagehead-copy">

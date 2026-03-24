@@ -6,7 +6,6 @@ import {
 } from "./utils/feed-paths.ts";
 import { renderOcticonMarkup } from "./utils/primer-icons.ts";
 import { escapeHtml } from "./utils/html.ts";
-import { renderBreadcrumb } from "./utils/breadcrumb.ts";
 import {
   type AboutContact,
   type AboutFact,
@@ -156,7 +155,7 @@ export const zhHant = {
 } as const;
 
 export default (data: Lume.Data, helpers: Lume.Helpers): string => {
-  const { language, homeUrl, translations: t } = resolvePageSetup(data.lang);
+  const { language, translations: t } = resolvePageSetup(data.lang);
   const atomXmlUrl = getLocalizedAtomFeedUrl(language);
   const feedXmlUrl = getLocalizedRssFeedUrl(language);
   const feedJsonUrl = getLocalizedJsonFeedUrl(language);
@@ -195,13 +194,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   ).join("");
   const factItems = facts.map(renderFactItem).join("");
 
-  const breadcrumb = renderBreadcrumb(
-    [{ href: homeUrl, label: t.navigation.home }],
-    t.about.breadcrumbAriaLabel,
-  );
-
   return `<div class="site-page-shell site-page-shell--wide">
-${breadcrumb}
 <section class="pagehead about-pagehead" aria-labelledby="about-title">
   <div class="about-pagehead-grid">
     <div class="about-pagehead-copy">

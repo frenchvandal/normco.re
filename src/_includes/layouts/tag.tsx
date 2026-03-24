@@ -74,9 +74,6 @@ export default async (
     <section class="tag-page-results" aria-label="${
     escapeHtml(t.tagPage.postsAriaLabel)
   }">
-      <div class="subhead">
-        <h2 class="subhead-heading">${escapeHtml(t.tagPage.postsHeading)}</h2>
-      </div>
       ${
     posts.length > 0
       ? `<ul class="archive-list">${items}</ul>`

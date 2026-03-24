@@ -22,9 +22,9 @@ describe("syndication.page.tsx", () => {
       'class="pagehead syndication-pagehead"',
     );
     assertStringIncludes(html, 'class="syndication-pagehead-grid"');
-    assertStringIncludes(html, 'class="cds--breadcrumb"');
-    assertStringIncludes(html, 'aria-label="Syndication breadcrumb"');
-    assertStringIncludes(html, 'href="/" class="cds--breadcrumb-link"');
+    assertNotMatch(html, /class="cds--breadcrumb"/);
+    assertNotMatch(html, /Syndication breadcrumb/);
+    assertNotMatch(html, /href="\/" class="cds--breadcrumb-link"/);
     assertNotMatch(html, /cds--breadcrumb-current/);
     assertNotMatch(html, /aria-current="page"/);
     assertStringIncludes(
@@ -103,8 +103,8 @@ describe("syndication.page.tsx", () => {
       html,
       '<h1 id="syndication-title" class="feeds-page-title">Syndication</h1>',
     );
-    assertStringIncludes(html, 'aria-label="Fil d’Ariane Syndication"');
-    assertStringIncludes(html, 'href="/fr/" class="cds--breadcrumb-link"');
+    assertNotMatch(html, /Fil d’Ariane Syndication/);
+    assertNotMatch(html, /href="\/fr\/" class="cds--breadcrumb-link"/);
     assertStringIncludes(html, 'href="/fr/rss.xml"');
     assertStringIncludes(html, 'href="/fr/atom.xml"');
     assertStringIncludes(html, 'href="/fr/feed.json"');

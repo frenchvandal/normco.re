@@ -12,20 +12,14 @@
     font-kerning: normal;
     font-optical-sizing: auto;
     font-synthesis: none;
-    background:
-      radial-gradient(
-        circle at top right,
-        color-mix(in oklch, var(--ph-color-accent-fg) 6%, transparent) 0,
-        transparent 28rem
-      ),
-      linear-gradient(
+    background: linear-gradient(
       180deg,
       color-mix(
         in oklch,
-        var(--ph-color-canvas-subtle) 72%,
+        var(--ph-color-canvas-subtle) 58%,
         var(--ph-color-canvas-default)
       ) 0,
-      var(--ph-color-canvas-default) 18rem
+      var(--ph-color-canvas-default) 14rem
     );
     scroll-padding-block-start: calc(
       var(--ph-header-height) + var(--ph-space-5)

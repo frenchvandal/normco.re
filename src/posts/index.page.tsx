@@ -8,7 +8,6 @@ import {
   resolveDateHelper,
   resolvePostCardRenderer,
 } from "../utils/lume-helpers.ts";
-import { renderBreadcrumb } from "../utils/breadcrumb.ts";
 
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/posts/";
@@ -61,11 +60,6 @@ export default async (
 
   const postsCountLabel = formatPostCount(posts.length, language);
 
-  const breadcrumb = renderBreadcrumb(
-    [{ href: homeUrl, label: t.navigation.home }],
-    t.archive.breadcrumbAriaLabel,
-  );
-
   const pageBody = posts.length > 0
     ? `<section class="archive-activity" aria-label="${
       escapeHtml(t.archive.activityAriaLabel)
@@ -87,11 +81,9 @@ export default async (
 
   return `<div class="site-page-shell site-page-shell--wide">
   <div class="feature-main">
-    ${breadcrumb}
 <section class="pagehead archive-pagehead" aria-labelledby="archive-title">
   <div class="archive-pagehead-grid">
     <div class="archive-pagehead-copy">
-      <p class="pagehead-eyebrow">${escapeHtml(t.archive.eyebrow)}</p>
       <h1 id="archive-title" class="archive-page-title">${
     escapeHtml(t.archive.title)
   }</h1>
