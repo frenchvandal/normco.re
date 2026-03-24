@@ -54,6 +54,7 @@
     line-height: var(--ph-lh-tight);
     letter-spacing: -0.02em;
     text-wrap: balance;
+    font-feature-settings: var(--ph-opentype-heading);
   }
 
   p,
@@ -111,6 +112,7 @@
 
   :where(code, kbd, samp, pre) {
     font-family: var(--ph-font-mono);
+    font-feature-settings: var(--ph-opentype-code);
   }
 
   code {
@@ -118,7 +120,7 @@
     padding: 2px 4px;
     border-radius: var(--ph-radius-sm);
     background: var(--ph-color-canvas-inset);
-    font-size: var(--ph-text-sm);
+    font-size: 0.875em;
     line-height: 1.4;
   }
 
@@ -181,15 +183,41 @@
   }
 
   blockquote {
-    padding-inline-start: var(--ph-space-4);
+    padding-inline-start: var(--ph-space-5);
     border-inline-start: 3px solid var(--ph-color-border-default);
     color: var(--ph-color-fg-muted);
+    font-style: italic;
+  }
+
+  blockquote cite,
+  blockquote footer {
+    display: block;
+    margin-block-start: var(--ph-space-2);
+    font-style: normal;
+    font-size: var(--ph-text-sm);
+    color: var(--ph-color-fg-subtle);
+  }
+
+  blockquote cite::before {
+    content: "\2014\00a0";
   }
 
   hr {
     border: 0;
     border-block-start: 1px solid var(--ph-color-border-muted);
     margin-block: var(--ph-space-8);
+  }
+
+  figure {
+    display: grid;
+    gap: var(--ph-space-3);
+  }
+
+  figcaption {
+    color: var(--ph-color-fg-muted);
+    font-size: var(--ph-text-sm);
+    line-height: var(--ph-lh-base);
+    text-align: center;
   }
 
   mark {

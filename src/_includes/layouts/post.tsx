@@ -158,9 +158,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             </div>
           </header>
 
-          <div class="post-content">{renderedChildren}</div>
+          <div class="post-content" lang={language}>{renderedChildren}</div>
 
-          <div class="post-details-section">
+          <footer class="post-details-section">
             <ul class="cds--accordion site-accordion post-details-accordion" data-site-accordion="">
               <li class="cds--accordion__item">
                 <button
@@ -185,7 +185,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                 </div>
               </li>
             </ul>
-          </div>
+          </footer>
 
           {includeCodeCopy && <script src="/scripts/post-code-copy.js" defer></script>}
           <script src="/scripts/surface-controls.js" defer></script>
