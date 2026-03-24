@@ -24,52 +24,109 @@ type HeaderProps = Readonly<{
   languageAlternates?: LanguageAlternates;
   icon?: IconResolver;
 }>;
-type HeaderActionButtonAttributes = Readonly<Record<string, string>>;
-type HeaderActionProps = Readonly<{
-  buttonAttributes: HeaderActionButtonAttributes;
-  buttonClassName?: string;
-  buttonId?: string;
-  iconMarkup: SsxElement;
-  tooltipLabel: string;
+
+/** CSS class sets that differ between the primer-home and standard variants. */
+type VariantClasses = Readonly<{
+  header: string;
+  wrapper: string;
+  left: string;
+  menuToggle: string;
+  menuIconClass: string;
+  menuIconSize: number;
+  name: string;
+  nav: string;
+  navLink: string;
+  navLinkLabel?: string;
+  global: string;
+  actionButton: string;
+  actionIcon: string;
+  actionIconSize: number;
+  languageButton: string;
+  languageOption: string;
+  languageMenu: string;
+  languagePanel: string;
+  languagePanelContent: string;
+  searchPanel: string;
+  searchPanelContent: string;
+  searchRoot: string;
+  sideNav: string;
+  sideNavNavigation?: string;
+  sideNavHeader?: string;
+  panelHead: boolean;
+  searchPanelHead: boolean;
 }>;
-type HeaderActionDescriptor = Readonly<
-  HeaderActionProps & {
-    key: "search" | "language" | "theme";
-  }
->;
-type HeaderActionVariant = Readonly<{
-  actionButtonClassName: string;
-  actionIconClassName: string;
-  iconSize?: number;
-  languageButtonClassName?: string;
-}>;
-type LanguagePanelProps = Readonly<{
-  language: SiteLanguage;
-  languageAlternates: LanguageAlternates;
-  optionClassName: string;
-  menuClassName: string;
-  panelClassName: string;
-  panelContentClassName: string;
-  translations: HeaderTranslations;
-  panelHeadClassName?: string;
-}>;
-type SearchPanelProps = Readonly<{
-  panelClassName: string;
-  panelContentClassName: string;
-  searchRootClassName: string;
-  translations: HeaderTranslations;
-  panelHeadClassName?: string;
-}>;
-type SideNavProps = Readonly<{
-  navigationItems: readonly NavigationItem[];
-  homeUrl: string;
-  ariaLabel: string;
-  lead: string;
-  asideClassName: string;
-  navigationClassName?: string;
-  headerClassName?: string;
-  eyebrow?: string;
-}>;
+
+const PRIMER_HOME: VariantClasses = {
+  header: "cds--header site-header--primer",
+  wrapper: "cds--header__wrapper primer-home-header__wrapper",
+  left: "cds--header__left primer-home-header__left",
+  menuToggle:
+    "cds--header__action cds--header__menu-toggle btn-octicon primer-home-header__menu-toggle",
+  menuIconClass: "site-menu-icon primer-home-header__action-icon",
+  menuIconSize: 16,
+  name: "cds--header__name primer-home-header__name",
+  nav: "cds--header__nav subnav subnav-flush primer-home-header__nav",
+  navLink:
+    "cds--header__menu-item subnav-item primer-home-header__nav-link",
+  navLinkLabel: "site-header-menu-item-label",
+  global: "cds--header__global primer-home-header__global",
+  actionButton:
+    "cds--header__action btn-octicon primer-home-header__action",
+  actionIcon: "primer-home-header__action-icon",
+  actionIconSize: 16,
+  languageButton:
+    "cds--header__action cds--header__language-toggle btn-octicon primer-home-header__action",
+  languageOption:
+    "cds--header__language-option primer-home-header__menu-option",
+  languageMenu:
+    "cds--header__language-menu primer-home-header__language-menu",
+  languagePanel:
+    "cds--header__panel cds--header__language-panel primer-home-header__panel",
+  languagePanelContent:
+    "cds--header__panel-content Box primer-home-header__panel-box",
+  searchPanel:
+    "cds--header__panel cds--header__search-panel primer-home-header__panel",
+  searchPanelContent:
+    "cds--header__panel-content Box primer-home-header__panel-box",
+  searchRoot:
+    "cds--header__search-root primer-home-header__search-root",
+  sideNav: "cds--side-nav primer-home-header__drawer",
+  sideNavNavigation:
+    "cds--side-nav__navigation primer-home-header__drawer-navigation",
+  sideNavHeader:
+    "cds--side-nav__header primer-home-header__drawer-header",
+  panelHead: true,
+  searchPanelHead: true,
+};
+
+const STANDARD: VariantClasses = {
+  header: "cds--header",
+  wrapper: "cds--header__wrapper",
+  left: "cds--header__left",
+  menuToggle: "cds--header__action cds--header__menu-toggle",
+  menuIconClass: "cds--header__menu-icon site-menu-icon",
+  menuIconSize: 20,
+  name: "cds--header__name",
+  nav: "cds--header__nav",
+  navLink: "cds--header__menu-item",
+  global: "cds--header__global",
+  actionButton: "cds--header__action",
+  actionIcon: "cds--header__action-icon",
+  actionIconSize: 20,
+  languageButton: "cds--header__action cds--header__language-toggle",
+  languageOption: "cds--header__language-option",
+  languageMenu: "cds--header__language-menu",
+  languagePanel: "cds--header__panel cds--header__language-panel",
+  languagePanelContent: "cds--header__panel-content",
+  searchPanel: "cds--header__panel cds--header__search-panel",
+  searchPanelContent: "cds--header__panel-content",
+  searchRoot: "cds--header__search-root",
+  sideNav: "cds--side-nav",
+  panelHead: false,
+  searchPanelHead: false,
+};
+
+// ── Shared sub-components ──────────────────────────────────────────────
 
 function renderHeaderAction(
   {
@@ -78,21 +135,26 @@ function renderHeaderAction(
     buttonId,
     iconMarkup,
     tooltipLabel,
-  }: HeaderActionProps,
+  }: Readonly<{
+    buttonAttributes: Readonly<Record<string, string>>;
+    buttonClassName?: string;
+    buttonId?: string;
+    iconMarkup: SsxElement;
+    tooltipLabel: string;
+  }>,
 ): SsxElement {
-  const mergedButtonAttributes = {
-    ...(buttonId ? { id: buttonId } : {}),
-    class: buttonClassName,
-    "data-header-tooltip-trigger": "",
-    ...buttonAttributes,
-  };
-
   return (
     <div
       class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
       data-header-tooltip=""
     >
-      <button type="button" {...mergedButtonAttributes}>
+      <button
+        type="button"
+        {...(buttonId ? { id: buttonId } : {})}
+        class={buttonClassName}
+        data-header-tooltip-trigger=""
+        {...buttonAttributes}
+      >
         {iconMarkup}
       </button>
       <div class="cds--popover" aria-hidden="true">
@@ -105,258 +167,120 @@ function renderHeaderAction(
   );
 }
 
-function renderThemeIcons(
-  className: string,
-  {
-    height = 16,
-    width = 16,
-  }: Readonly<{
-    height?: number;
-    width?: number;
-  }> = {},
-): SsxElement {
+function renderThemeIcons(className: string, size = 16): SsxElement {
   return (
     <>
       <SiteIcon
         name="sun"
         className={`theme-icon theme-icon--sun ${className}`}
-        width={width}
-        height={height}
+        width={size}
+        height={size}
       />
       <SiteIcon
         name="moon"
         className={`theme-icon theme-icon--moon ${className}`}
-        width={width}
-        height={height}
+        width={size}
+        height={size}
       />
       <SiteIcon
         name="device-desktop"
         className={`theme-icon theme-icon--system ${className}`}
-        width={width}
-        height={height}
+        width={size}
+        height={size}
       />
     </>
   );
 }
 
 function resolveHeaderActions(
-  translations: HeaderTranslations,
-  {
-    actionButtonClassName,
-    actionIconClassName,
-    iconSize = 16,
-    languageButtonClassName,
-  }: HeaderActionVariant,
-): readonly HeaderActionDescriptor[] {
+  t: HeaderTranslations,
+  v: VariantClasses,
+) {
   return [
     {
-      key: "search",
+      key: "search" as const,
       buttonAttributes: {
-        "aria-label": translations.site.searchLabel,
+        "aria-label": t.site.searchLabel,
         "aria-expanded": "false",
         "aria-controls": HEADER_IDS.searchPanel,
       },
-      buttonClassName: actionButtonClassName,
+      buttonClassName: v.actionButton,
       iconMarkup: (
         <SiteIcon
           name="search"
-          className={actionIconClassName}
-          width={iconSize}
-          height={iconSize}
+          className={v.actionIcon}
+          width={v.actionIconSize}
+          height={v.actionIconSize}
         />
       ),
-      tooltipLabel: translations.site.searchLabel,
+      tooltipLabel: t.site.searchLabel,
     },
     {
-      key: "language",
+      key: "language" as const,
       buttonAttributes: {
-        "aria-label": translations.site.languageSelectAriaLabel,
+        "aria-label": t.site.languageSelectAriaLabel,
         "aria-expanded": "false",
         "aria-controls": HEADER_IDS.languagePanel,
         "aria-haspopup": "menu",
       },
-      buttonClassName: languageButtonClassName ?? actionButtonClassName,
+      buttonClassName: v.languageButton,
       iconMarkup: (
         <SiteIcon
           name="globe"
-          className={actionIconClassName}
-          width={iconSize}
-          height={iconSize}
+          className={v.actionIcon}
+          width={v.actionIconSize}
+          height={v.actionIconSize}
         />
       ),
-      tooltipLabel: translations.site.languageSelectLabel,
+      tooltipLabel: t.site.languageSelectLabel,
     },
     {
-      key: "theme",
+      key: "theme" as const,
       buttonAttributes: {
-        "aria-label": translations.site.themeToggleLabel,
-        "data-label-switch-light": translations.site.switchToLightThemeLabel,
-        "data-label-switch-dark": translations.site.switchToDarkThemeLabel,
-        "data-label-follow-system": translations.site.followSystemThemeLabel,
+        "aria-label": t.site.themeToggleLabel,
+        "data-label-switch-light": t.site.switchToLightThemeLabel,
+        "data-label-switch-dark": t.site.switchToDarkThemeLabel,
+        "data-label-follow-system": t.site.followSystemThemeLabel,
       },
-      buttonClassName: actionButtonClassName,
+      buttonClassName: v.actionButton,
       buttonId: HEADER_IDS.themeToggle,
-      iconMarkup: renderThemeIcons(actionIconClassName, {
-        width: iconSize,
-        height: iconSize,
-      }),
-      tooltipLabel: translations.site.themeToggleLabel,
+      iconMarkup: renderThemeIcons(v.actionIcon, v.actionIconSize),
+      tooltipLabel: t.site.themeToggleLabel,
     },
-  ];
+  ] as const;
 }
 
-function renderSearchLoading(loadingLabel: string): SsxElement {
-  return (
-    <div
-      class="cds--inline-loading site-search-inline-loading"
-      data-search-loading=""
-      hidden
-    >
-      <div class="cds--inline-loading__animation">
-        <div class="cds--loading cds--loading--small">
-          <svg
-            class="cds--loading__svg"
-            viewBox="0 0 100 100"
-            aria-hidden="true"
-          >
-            <circle
-              class="cds--loading__background"
-              cx="50"
-              cy="50"
-              r="44"
-            >
-            </circle>
-            <circle class="cds--loading__stroke" cx="50" cy="50" r="44">
-            </circle>
-          </svg>
-        </div>
-      </div>
-      <p class="cds--inline-loading__text" data-search-loading-text="">
-        {loadingLabel}
-      </p>
-    </div>
-  );
-}
-
-function renderSearchNotification(): SsxElement {
-  return (
-    <div
-      class="cds--inline-notification cds--inline-notification--low-contrast cds--inline-notification--info site-search-notification"
-      data-search-notification=""
-      data-search-notification-tone="info"
-      hidden
-    >
-      <div class="cds--inline-notification__details">
-        <span class="site-search-notification-icons" aria-hidden="true">
-          <SiteIcon
-            name="info"
-            className="site-search-notification-icon site-search-notification-icon--info"
-            width={20}
-            height={20}
-          />
-          <SiteIcon
-            name="alert-fill"
-            className="site-search-notification-icon site-search-notification-icon--warning"
-            width={20}
-            height={20}
-          />
-        </span>
-        <div class="cds--inline-notification__text-wrapper">
-          <p
-            class="cds--inline-notification__title"
-            data-search-notification-title=""
-          >
-          </p>
-          <p
-            class="cds--inline-notification__subtitle"
-            data-search-notification-subtitle=""
-          >
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function renderSearchSkeleton(): SsxElement {
-  return (
-    <div
-      class="site-search-skeleton"
-      data-search-skeleton=""
-      aria-hidden="true"
-    >
-      <span class="cds--skeleton__text site-search-skeleton-line"></span>
-      <span class="cds--skeleton__text site-search-skeleton-line"></span>
-      <span class="cds--skeleton__text site-search-skeleton-line"></span>
-    </div>
-  );
-}
-
-function getCurrentPageAttributes(isCurrent: boolean) {
-  return isCurrent ? { "aria-current": "page" as const } : {};
-}
-
-function resolveLanguageOptionUrl(
-  optionLanguage: SiteLanguage,
-  languageAlternates: LanguageAlternates,
-): string {
-  return languageAlternates[optionLanguage] ??
-    getLocalizedUrl("/", optionLanguage);
-}
-
-function renderHeaderNavigationLinks(
-  navigationItems: readonly NavigationItem[],
+function renderNavLinks(
+  items: readonly NavigationItem[],
   className: string,
   labelClassName?: string,
 ): SsxElement[] {
-  return navigationItems.map(({ href, label, isCurrent }) => (
+  return items.map(({ href, label, isCurrent }) => (
     <a
       key={href}
       href={href}
       class={className}
-      {...getCurrentPageAttributes(isCurrent)}
+      {...(isCurrent ? { "aria-current": "page" as const } : {})}
     >
       {labelClassName ? <span class={labelClassName}>{label}</span> : label}
     </a>
   ));
 }
 
-function renderSideNavItems(
-  navigationItems: readonly NavigationItem[],
-): SsxElement[] {
-  return navigationItems.map(({ href, label, isCurrent }) => (
-    <li class="cds--side-nav__item" key={href}>
-      <a
-        href={href}
-        class="cds--side-nav__link"
-        {...getCurrentPageAttributes(isCurrent)}
-      >
-        <span class="cds--side-nav__link-text">{label}</span>
-      </a>
-    </li>
-  ));
-}
-
 function renderLanguageOptions(
-  {
-    language,
-    languageAlternates,
-    optionClassName,
-  }: Pick<
-    LanguagePanelProps,
-    "language" | "languageAlternates" | "optionClassName"
-  >,
+  language: SiteLanguage,
+  alternates: LanguageAlternates,
+  optionClassName: string,
 ): SsxElement[] {
   return HEADER_LANGUAGE_OPTIONS.map(
-    ({ label, language: optionLanguage, tag }) => {
-      const isSelected = optionLanguage === language;
-
+    ({ label, language: optLang, tag }) => {
+      const isSelected = optLang === language;
       return (
         <a
-          key={optionLanguage}
-          href={resolveLanguageOptionUrl(optionLanguage, languageAlternates)}
+          key={optLang}
+          href={alternates[optLang] ?? getLocalizedUrl("/", optLang)}
           class={optionClassName}
-          data-language-option={optionLanguage}
+          data-language-option={optLang}
           hreflang={tag}
           lang={tag}
           role="menuitemradio"
@@ -378,102 +302,67 @@ function renderLanguageOptions(
   );
 }
 
+function PanelHead({ className, title }: { className: string; title: string }) {
+  return (
+    <div class={className}>
+      <p class="cds--header__panel-title">{title}</p>
+    </div>
+  );
+}
+
 function renderLanguagePanel(
-  {
-    language,
-    languageAlternates,
-    optionClassName,
-    menuClassName,
-    panelClassName,
-    panelContentClassName,
-    translations,
-    panelHeadClassName,
-  }: LanguagePanelProps,
+  language: SiteLanguage,
+  alternates: LanguageAlternates,
+  t: HeaderTranslations,
+  v: VariantClasses,
 ): SsxElement {
   return (
     <section
       id={HEADER_IDS.languagePanel}
-      class={panelClassName}
-      aria-label={translations.site.languageSelectLabel}
+      class={v.languagePanel}
+      aria-label={t.site.languageSelectLabel}
       data-language-panel=""
       hidden
     >
-      <div class={panelContentClassName}>
-        {panelHeadClassName && (
-          <div class={panelHeadClassName}>
-            <p class="cds--header__panel-title">
-              {translations.site.languageSelectLabel}
-            </p>
-          </div>
+      <div class={v.languagePanelContent}>
+        {v.panelHead && (
+          <PanelHead
+            className="site-header-panel-head"
+            title={t.site.languageSelectLabel}
+          />
         )}
         <div
-          class={menuClassName}
+          class={v.languageMenu}
           role="menu"
-          aria-label={translations.site.languageSelectLabel}
+          aria-label={t.site.languageSelectLabel}
           data-language-menu=""
         >
-          {renderLanguageOptions({
-            language,
-            languageAlternates,
-            optionClassName,
-          })}
+          {renderLanguageOptions(language, alternates, v.languageOption)}
         </div>
       </div>
     </section>
   );
 }
 
-function renderSearchRoot(
-  translations: HeaderTranslations,
-  className: string,
-): SsxElement {
-  return (
-    <div
-      id={HEADER_IDS.searchContainer}
-      class={className}
-      data-search-root=""
-      aria-busy="false"
-      data-search-loading-label={translations.site.searchLoadingLabel}
-      data-search-loading-title={translations.site.searchLoadingTitle}
-      data-search-no-results-label={translations.site.searchNoResultsLabel}
-      data-search-one-result-label={translations.site.searchOneResultLabel}
-      data-search-many-results-label={translations.site.searchManyResultsLabel}
-      data-search-unavailable-label={translations.site.searchUnavailableLabel}
-      data-search-unavailable-title={translations.site.searchUnavailableTitle}
-      data-search-offline-label={translations.site.searchOfflineLabel}
-      data-search-offline-title={translations.site.searchOfflineTitle}
-      data-search-retry-label={translations.site.searchRetryLabel}
-    >
-      {renderSearchSkeleton()}
-    </div>
-  );
-}
-
 function renderSearchPanel(
-  {
-    panelClassName,
-    panelContentClassName,
-    searchRootClassName,
-    translations,
-    panelHeadClassName,
-  }: SearchPanelProps,
+  t: HeaderTranslations,
+  v: VariantClasses,
 ): SsxElement {
   return (
     <div
       id={HEADER_IDS.searchPanel}
-      class={panelClassName}
+      class={v.searchPanel}
       role="search"
-      aria-label={translations.site.searchLabel}
+      aria-label={t.site.searchLabel}
       hidden
       data-search-panel=""
     >
-      <div class={panelContentClassName}>
-        {panelHeadClassName && (
-          <div class={panelHeadClassName}>
-            <p class="cds--header__panel-title">
-              {translations.site.searchLabel}
-            </p>
-          </div>
+      <div class={v.searchPanelContent}>
+        {v.searchPanelHead && (
+          <PanelHead
+            className="site-header-panel-head site-header-panel-head--search"
+            title={t.site.searchLabel}
+          />
         )}
         <div
           id={HEADER_IDS.searchStatus}
@@ -484,257 +373,254 @@ function renderSearchPanel(
           data-search-status=""
           hidden
         >
-          {renderSearchLoading(translations.site.searchLoadingLabel)}
+          <div
+            class="cds--inline-loading site-search-inline-loading"
+            data-search-loading=""
+            hidden
+          >
+            <div class="cds--inline-loading__animation">
+              <div class="cds--loading cds--loading--small">
+                <svg
+                  class="cds--loading__svg"
+                  viewBox="0 0 100 100"
+                  aria-hidden="true"
+                >
+                  <circle
+                    class="cds--loading__background"
+                    cx="50"
+                    cy="50"
+                    r="44"
+                  />
+                  <circle
+                    class="cds--loading__stroke"
+                    cx="50"
+                    cy="50"
+                    r="44"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p
+              class="cds--inline-loading__text"
+              data-search-loading-text=""
+            >
+              {t.site.searchLoadingLabel}
+            </p>
+          </div>
           <p
             class="cds--header__search-status-text"
             data-search-status-text=""
             hidden
+          />
+          <div
+            class="cds--inline-notification cds--inline-notification--low-contrast cds--inline-notification--info site-search-notification"
+            data-search-notification=""
+            data-search-notification-tone="info"
+            hidden
           >
-          </p>
-          {renderSearchNotification()}
+            <div class="cds--inline-notification__details">
+              <span
+                class="site-search-notification-icons"
+                aria-hidden="true"
+              >
+                <SiteIcon
+                  name="info"
+                  className="site-search-notification-icon site-search-notification-icon--info"
+                  width={20}
+                  height={20}
+                />
+                <SiteIcon
+                  name="alert-fill"
+                  className="site-search-notification-icon site-search-notification-icon--warning"
+                  width={20}
+                  height={20}
+                />
+              </span>
+              <div class="cds--inline-notification__text-wrapper">
+                <p
+                  class="cds--inline-notification__title"
+                  data-search-notification-title=""
+                />
+                <p
+                  class="cds--inline-notification__subtitle"
+                  data-search-notification-subtitle=""
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        {renderSearchRoot(translations, searchRootClassName)}
+        <div
+          id={HEADER_IDS.searchContainer}
+          class={v.searchRoot}
+          data-search-root=""
+          aria-busy="false"
+          data-search-loading-label={t.site.searchLoadingLabel}
+          data-search-loading-title={t.site.searchLoadingTitle}
+          data-search-no-results-label={t.site.searchNoResultsLabel}
+          data-search-one-result-label={t.site.searchOneResultLabel}
+          data-search-many-results-label={t.site.searchManyResultsLabel}
+          data-search-unavailable-label={t.site.searchUnavailableLabel}
+          data-search-unavailable-title={t.site.searchUnavailableTitle}
+          data-search-offline-label={t.site.searchOfflineLabel}
+          data-search-offline-title={t.site.searchOfflineTitle}
+          data-search-retry-label={t.site.searchRetryLabel}
+        >
+          <div
+            class="site-search-skeleton"
+            data-search-skeleton=""
+            aria-hidden="true"
+          >
+            <span class="cds--skeleton__text site-search-skeleton-line" />
+            <span class="cds--skeleton__text site-search-skeleton-line" />
+            <span class="cds--skeleton__text site-search-skeleton-line" />
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
 function renderSideNav(
-  {
-    navigationItems,
-    homeUrl,
-    ariaLabel,
-    lead,
-    asideClassName,
-    navigationClassName = "cds--side-nav__navigation",
-    headerClassName = "cds--side-nav__header",
-    eyebrow,
-  }: SideNavProps,
+  items: readonly NavigationItem[],
+  homeUrl: string,
+  t: HeaderTranslations,
+  v: VariantClasses,
+  eyebrow?: string,
 ): SsxElement {
   return (
     <aside
       id={HEADER_IDS.sideNav}
-      class={asideClassName}
-      aria-label={ariaLabel}
+      class={v.sideNav}
+      aria-label={t.site.mainNavigationAriaLabel}
       hidden
     >
-      <nav class={navigationClassName}>
-        <div class={headerClassName}>
+      <nav class={v.sideNavNavigation ?? "cds--side-nav__navigation"}>
+        <div class={v.sideNavHeader ?? "cds--side-nav__header"}>
           {eyebrow && <p class="cds--side-nav__eyebrow">{eyebrow}</p>}
           <a href={homeUrl} class="cds--side-nav__brand">
             <span class="cds--side-nav__brand-prefix">normco</span>
             .re
           </a>
-          <p class="cds--side-nav__lead">{lead}</p>
+          <p class="cds--side-nav__lead">{t.home.lead}</p>
         </div>
         <ul class="cds--side-nav__items">
-          {renderSideNavItems(navigationItems)}
+          {items.map(({ href, label, isCurrent }) => (
+            <li class="cds--side-nav__item" key={href}>
+              <a
+                href={href}
+                class="cds--side-nav__link"
+                {...(isCurrent
+                  ? { "aria-current": "page" as const }
+                  : {})}
+              >
+                <span class="cds--side-nav__link-text">{label}</span>
+              </a>
+            </li>
+          ))}
         </ul>
       </nav>
     </aside>
   );
 }
 
-function renderPrimerHomeHeader(props: HeaderProps): SsxElement {
-  const { currentUrl, language, languageAlternates = {} } = props;
-  const { homeUrl, translations } = getPageContext(language);
-  const navigationItems = buildHeaderNavigation({ currentUrl, language });
-  const headerActions = resolveHeaderActions(translations, {
-    actionButtonClassName:
-      "cds--header__action btn-octicon primer-home-header__action",
-    actionIconClassName: "primer-home-header__action-icon",
-    languageButtonClassName:
-      "cds--header__action cds--header__language-toggle btn-octicon primer-home-header__action",
-  });
+// ── Primer home variant brand markup ───────────────────────────────────
 
+function renderPrimerHomeBrand(
+  homeUrl: string,
+  t: HeaderTranslations,
+): SsxElement {
   return (
-    <>
-      <header class="cds--header site-header--primer">
-        <div class="cds--header__wrapper primer-home-header__wrapper">
-          <div class="cds--header__left primer-home-header__left">
-            <button
-              type="button"
-              class="cds--header__action cds--header__menu-toggle btn-octicon primer-home-header__menu-toggle"
-              aria-label={translations.site.menuToggleLabel}
-              aria-expanded="false"
-              aria-controls={HEADER_IDS.sideNav}
-            >
-              <SiteIcon
-                name="three-bars"
-                className="site-menu-icon site-menu-icon--menu primer-home-header__action-icon"
-              />
-              <SiteIcon
-                name="x"
-                className="site-menu-icon site-menu-icon--close primer-home-header__action-icon"
-              />
-            </button>
-
-            <a
-              href={homeUrl}
-              class="cds--header__name primer-home-header__name"
-            >
-              <span class="primer-home-header__brand-lockup">
-                <span class="primer-home-header__brand-wordmark">
-                  <span class="cds--header__name--prefix">normco</span>
-                  .re
-                </span>
-                <span class="primer-home-header__brand-meta">
-                  {translations.home.eyebrow}
-                </span>
-              </span>
-            </a>
-          </div>
-
-          <nav
-            class="cds--header__nav subnav subnav-flush primer-home-header__nav"
-            aria-label={translations.site.mainNavigationAriaLabel}
-          >
-            {renderHeaderNavigationLinks(
-              navigationItems,
-              "cds--header__menu-item subnav-item primer-home-header__nav-link",
-              "site-header-menu-item-label",
-            )}
-          </nav>
-
-          <div class="cds--header__global primer-home-header__global">
-            {headerActions.map((action) => renderHeaderAction(action))}
-          </div>
-        </div>
-      </header>
-
-      {renderLanguagePanel({
-        language,
-        languageAlternates,
-        optionClassName:
-          "cds--header__language-option primer-home-header__menu-option",
-        menuClassName:
-          "cds--header__language-menu primer-home-header__language-menu",
-        panelClassName:
-          "cds--header__panel cds--header__language-panel primer-home-header__panel",
-        panelContentClassName:
-          "cds--header__panel-content Box primer-home-header__panel-box",
-        translations,
-        panelHeadClassName: "site-header-panel-head",
-      })}
-
-      {renderSearchPanel({
-        panelClassName:
-          "cds--header__panel cds--header__search-panel primer-home-header__panel",
-        panelContentClassName:
-          "cds--header__panel-content Box primer-home-header__panel-box",
-        searchRootClassName:
-          "cds--header__search-root primer-home-header__search-root",
-        translations,
-        panelHeadClassName:
-          "site-header-panel-head site-header-panel-head--search",
-      })}
-
-      {renderSideNav({
-        navigationItems,
-        homeUrl,
-        ariaLabel: translations.site.mainNavigationAriaLabel,
-        lead: translations.home.lead,
-        asideClassName: "cds--side-nav primer-home-header__drawer",
-        navigationClassName:
-          "cds--side-nav__navigation primer-home-header__drawer-navigation",
-        headerClassName:
-          "cds--side-nav__header primer-home-header__drawer-header",
-        eyebrow: translations.site.mainNavigationAriaLabel,
-      })}
-
-      <div class="cds--side-nav__overlay" aria-hidden="true"></div>
-    </>
+    <a href={homeUrl} class="cds--header__name primer-home-header__name">
+      <span class="primer-home-header__brand-lockup">
+        <span class="primer-home-header__brand-wordmark">
+          <span class="cds--header__name--prefix">normco</span>
+          .re
+        </span>
+        <span class="primer-home-header__brand-meta">
+          {t.home.eyebrow}
+        </span>
+      </span>
+    </a>
   );
 }
 
-export default (props: HeaderProps): SsxElement => {
-  const { currentUrl, language, languageAlternates = {} } = props;
-  const { homeUrl, translations } = getPageContext(language);
-  const navigationItems = buildHeaderNavigation({ currentUrl, language });
-  const headerActions = resolveHeaderActions(translations, {
-    actionButtonClassName: "cds--header__action",
-    actionIconClassName: "cds--header__action-icon",
-    iconSize: 20,
-    languageButtonClassName: "cds--header__action cds--header__language-toggle",
-  });
+// ── Main export ────────────────────────────────────────────────────────
 
-  if (currentUrl === homeUrl) {
-    return renderPrimerHomeHeader(props);
-  }
+export default ({ currentUrl, language, languageAlternates = {} }: HeaderProps): SsxElement => {
+  const { homeUrl, translations: t } = getPageContext(language);
+  const navItems = buildHeaderNavigation({ currentUrl, language });
+  const isHome = currentUrl === homeUrl;
+  const v = isHome ? PRIMER_HOME : STANDARD;
+  const actions = resolveHeaderActions(t, v);
 
   return (
     <>
-      <header class="cds--header">
-        <div class="cds--header__wrapper">
-          <div class="cds--header__left">
+      <header class={v.header}>
+        <div class={v.wrapper}>
+          <div class={v.left}>
             <button
               type="button"
-              class="cds--header__action cds--header__menu-toggle"
-              aria-label={translations.site.menuToggleLabel}
+              class={v.menuToggle}
+              aria-label={t.site.menuToggleLabel}
               aria-expanded="false"
               aria-controls={HEADER_IDS.sideNav}
             >
               <SiteIcon
                 name="three-bars"
-                className="cds--header__menu-icon site-menu-icon site-menu-icon--menu"
-                width={20}
-                height={20}
+                className={`${v.menuIconClass} site-menu-icon--menu`}
+                width={v.menuIconSize}
+                height={v.menuIconSize}
               />
               <SiteIcon
                 name="x"
-                className="cds--header__menu-icon site-menu-icon site-menu-icon--close"
-                width={20}
-                height={20}
+                className={`${v.menuIconClass} site-menu-icon--close`}
+                width={v.menuIconSize}
+                height={v.menuIconSize}
               />
             </button>
 
-            <a href={homeUrl} class="cds--header__name">
-              <span class="cds--header__name--prefix">normco</span>
-              .re
-            </a>
-
-            <nav
-              class="cds--header__nav"
-              aria-label={translations.site.mainNavigationAriaLabel}
-            >
-              {renderHeaderNavigationLinks(
-                navigationItems,
-                "cds--header__menu-item",
+            {isHome
+              ? renderPrimerHomeBrand(homeUrl, t)
+              : (
+                <>
+                  <a href={homeUrl} class={v.name}>
+                    <span class="cds--header__name--prefix">normco</span>
+                    .re
+                  </a>
+                  <nav
+                    class={v.nav}
+                    aria-label={t.site.mainNavigationAriaLabel}
+                  >
+                    {renderNavLinks(navItems, v.navLink)}
+                  </nav>
+                </>
               )}
-            </nav>
           </div>
 
-          <div class="cds--header__global">
-            {headerActions.map((action) => renderHeaderAction(action))}
+          {isHome && (
+            <nav
+              class={v.nav}
+              aria-label={t.site.mainNavigationAriaLabel}
+            >
+              {renderNavLinks(navItems, v.navLink, v.navLinkLabel)}
+            </nav>
+          )}
+
+          <div class={v.global}>
+            {actions.map((action) => renderHeaderAction(action))}
           </div>
         </div>
       </header>
 
-      {renderLanguagePanel({
-        language,
-        languageAlternates,
-        optionClassName: "cds--header__language-option",
-        menuClassName: "cds--header__language-menu",
-        panelClassName: "cds--header__panel cds--header__language-panel",
-        panelContentClassName: "cds--header__panel-content",
-        translations,
-      })}
-
-      {renderSearchPanel({
-        panelClassName: "cds--header__panel cds--header__search-panel",
-        panelContentClassName: "cds--header__panel-content",
-        searchRootClassName: "cds--header__search-root",
-        translations,
-      })}
-
-      {renderSideNav({
-        navigationItems,
+      {renderLanguagePanel(language, languageAlternates, t, v)}
+      {renderSearchPanel(t, v)}
+      {renderSideNav(
+        navItems,
         homeUrl,
-        ariaLabel: translations.site.mainNavigationAriaLabel,
-        lead: translations.home.lead,
-        asideClassName: "cds--side-nav",
-      })}
-
+        t,
+        v,
+        isHome ? t.site.mainNavigationAriaLabel : undefined,
+      )}
       <div class="cds--side-nav__overlay" aria-hidden="true"></div>
     </>
   );

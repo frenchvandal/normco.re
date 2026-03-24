@@ -64,196 +64,8 @@ const LANGUAGE_ALIASES: Readonly<Record<string, SiteLanguage>> = {
   "zh_hant": "zhHant",
 };
 
-export type SiteTranslations = {
-  readonly site: {
-    readonly skipToContent: string;
-    readonly mainNavigationAriaLabel: string;
-    readonly siteLinksAriaLabel: string;
-    readonly menuToggleLabel: string;
-    readonly searchLabel: string;
-    readonly searchLoadingLabel: string;
-    readonly searchLoadingTitle: string;
-    readonly searchNoResultsLabel: string;
-    readonly searchOneResultLabel: string;
-    readonly searchManyResultsLabel: string;
-    readonly searchUnavailableLabel: string;
-    readonly searchUnavailableTitle: string;
-    readonly searchOfflineLabel: string;
-    readonly searchOfflineTitle: string;
-    readonly searchRetryLabel: string;
-    readonly languageSelectLabel: string;
-    readonly languageSelectAriaLabel: string;
-    readonly themeToggleLabel: string;
-    readonly switchToLightThemeLabel: string;
-    readonly switchToDarkThemeLabel: string;
-    readonly followSystemThemeLabel: string;
-    readonly repositoryLinkAriaLabel: string;
-    readonly rssLinkAriaLabel: string;
-    readonly syndicationPageLinkAriaLabel: string;
-  };
-  readonly navigation: {
-    readonly home: string;
-    readonly writing: string;
-    readonly about: string;
-  };
-  readonly languageNames: Record<SiteLanguage, string>;
-  readonly home: {
-    readonly eyebrow: string;
-    readonly title: string;
-    readonly lead: string;
-    readonly recentHeading: string;
-    readonly archiveLinkLabel: string;
-    readonly emptyStateTitle: string;
-    readonly emptyState: string;
-  };
-  readonly archive: {
-    readonly eyebrow: string;
-    readonly title: string;
-    readonly lead: string;
-    readonly activityAriaLabel: string;
-    readonly yearsAriaLabel: string;
-    readonly emptyStateTitle: string;
-    readonly emptyState: string;
-    readonly breadcrumbAriaLabel: string;
-    readonly railAriaLabel: string;
-    readonly paginationAriaLabel: string;
-    readonly paginationItemsRange: string;
-    readonly paginationPrevious: string;
-    readonly paginationNext: string;
-    readonly paginationPage: string;
-    readonly viewLabel: string;
-    readonly cardsViewLabel: string;
-    readonly listViewLabel: string;
-    readonly listDateHeading: string;
-    readonly listTitleHeading: string;
-    readonly listReadingHeading: string;
-  };
-  readonly about: {
-    readonly breadcrumbAriaLabel: string;
-    readonly eyebrow: string;
-    readonly title: string;
-    readonly lead: string;
-    readonly intro: string;
-    readonly body: string;
-    readonly feedsIntro: string;
-    readonly railAriaLabel: string;
-    readonly contactTitle: string;
-    readonly contactOpenQrLabel: string;
-    readonly contactDownloadJpgLabel: string;
-    readonly contactCloseLabel: string;
-    readonly contactTelegramLabel: string;
-    readonly contactWechatLabel: string;
-    readonly contactTelegramQrAlt: string;
-    readonly contactWechatQrAlt: string;
-    readonly atAGlanceTitle: string;
-    readonly locationLabel: string;
-    readonly locationValue: string;
-    readonly topicsLabel: string;
-    readonly topicsValue: string;
-    readonly languagesLabel: string;
-    readonly languagesValue: string;
-    readonly siteNotesTitle: string;
-    readonly siteNoteOne: string;
-    readonly siteNoteTwo: string;
-    readonly siteNoteThree: string;
-    readonly pictogramTitle: string;
-    readonly pictogramCaption: string;
-  };
-  readonly feeds: {
-    readonly breadcrumbAriaLabel: string;
-    readonly eyebrow: string;
-    readonly title: string;
-    readonly lead: string;
-    readonly intro: string;
-    readonly cardsAriaLabel: string;
-    readonly openAction: string;
-    readonly copyAction: string;
-    readonly copiedAction: string;
-    readonly errorAction: string;
-    readonly copiedStatusMessage: string;
-    readonly errorStatusMessage: string;
-    readonly copyNoticeTitle: string;
-    readonly errorNoticeTitle: string;
-    readonly tabsAriaLabel: string;
-    readonly endpointsTabLabel: string;
-    readonly guidanceTabLabel: string;
-    readonly viewLabel: string;
-    readonly cardsViewLabel: string;
-    readonly listViewLabel: string;
-    readonly listFormatHeading: string;
-    readonly listUrlHeading: string;
-    readonly listUseHeading: string;
-    readonly overviewCalloutEyebrow: string;
-    readonly overviewCalloutTitle: string;
-    readonly overviewCalloutBody: string;
-    readonly guidanceLead: string;
-    readonly guidanceReadersTitle: string;
-    readonly guidanceReadersBody: string;
-    readonly guidanceAutomationTitle: string;
-    readonly guidanceAutomationBody: string;
-    readonly guidanceDiscoveryTitle: string;
-    readonly guidanceDiscoveryBody: string;
-    readonly rssTitle: string;
-    readonly rssDescription: string;
-    readonly atomTitle: string;
-    readonly atomDescription: string;
-    readonly jsonTitle: string;
-    readonly jsonDescription: string;
-    readonly sitemapTitle: string;
-    readonly sitemapDescription: string;
-  };
-  readonly tagPage: {
-    readonly eyebrow: string;
-    readonly breadcrumbAriaLabel: string;
-    readonly railAriaLabel: string;
-    readonly postsAriaLabel: string;
-    readonly postsHeading: string;
-    readonly archiveLinkLabel: string;
-  };
-  readonly post: {
-    readonly breadcrumbAriaLabel: string;
-    readonly navigationAriaLabel: string;
-    readonly railAriaLabel: string;
-    readonly previousLabel: string;
-    readonly nextLabel: string;
-    readonly tagsAriaLabel: string;
-    readonly copyCodeLabel: string;
-    readonly copyCodeFeedback: string;
-    readonly copyCodeFailedFeedback: string;
-    readonly summaryEyebrow: string;
-    readonly summaryTitle: string;
-    readonly publishedLabel: string;
-    readonly readingLabel: string;
-    readonly sectionsLabel: string;
-    readonly outlineTitle: string;
-    readonly outlineAriaLabel: string;
-    readonly detailsTitle: string;
-    readonly permalinkLabel: string;
-  };
-  readonly offline: {
-    readonly ariaLabel: string;
-    readonly title: string;
-    readonly lead: string;
-    readonly backToHome: string;
-  };
-  readonly notFound: {
-    readonly title: string;
-    readonly description: string;
-    readonly heading: string;
-    readonly message: string;
-    readonly backToHome: string;
-  };
-};
-
-export type PageContext = Readonly<{
-  translations: SiteTranslations;
-  homeUrl: string;
-  archiveUrl: string;
-  tagsUrl: string;
-  aboutUrl: string;
-  syndicationPageUrl: string;
-}>;
-
+// Translation data is defined first so the type can be derived from it,
+// eliminating ~180 lines of manual type definition.
 const SITE_TRANSLATIONS = {
   en: {
     site: {
@@ -1038,7 +850,29 @@ const SITE_TRANSLATIONS = {
       backToHome: "返回首頁",
     },
   },
-} as const satisfies Record<SiteLanguage, SiteTranslations>;
+} as const;
+
+/** Widen all leaf string literals in T to `string`. */
+type Widen<T> = {
+  readonly [K in keyof T]: T[K] extends string ? string
+    : T[K] extends Record<string, unknown> ? Widen<T[K]>
+    : T[K];
+};
+
+/**
+ * Derived from the English translation object shape, with string literals
+ * widened so all four languages are assignable to the same type.
+ */
+export type SiteTranslations = Widen<typeof SITE_TRANSLATIONS[typeof DEFAULT_LANGUAGE]>;
+
+export type PageContext = Readonly<{
+  translations: SiteTranslations;
+  homeUrl: string;
+  archiveUrl: string;
+  tagsUrl: string;
+  aboutUrl: string;
+  syndicationPageUrl: string;
+}>;
 
 export function isSiteLanguage(value: unknown): value is SiteLanguage {
   return typeof value === "string" && SUPPORTED_LANGUAGE_SET.has(value);
@@ -1093,24 +927,17 @@ export function getSiteTranslations(language: SiteLanguage): SiteTranslations {
   return SITE_TRANSLATIONS[language];
 }
 
-const SHORT_DATE_FORMAT = {
-  en: new Intl.DateTimeFormat(LANGUAGE_TAG.en, {
-    month: "short",
-    day: "numeric",
-  }),
-  fr: new Intl.DateTimeFormat(LANGUAGE_TAG.fr, {
-    month: "short",
-    day: "numeric",
-  }),
-  zhHans: new Intl.DateTimeFormat(LANGUAGE_TAG.zhHans, {
-    month: "short",
-    day: "numeric",
-  }),
-  zhHant: new Intl.DateTimeFormat(LANGUAGE_TAG.zhHant, {
-    month: "short",
-    day: "numeric",
-  }),
-} as const satisfies Record<SiteLanguage, Intl.DateTimeFormat>;
+const SHORT_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+  month: "short",
+  day: "numeric",
+};
+
+const SHORT_DATE_FORMAT = Object.fromEntries(
+  SUPPORTED_LANGUAGES.map((lang) => [
+    lang,
+    new Intl.DateTimeFormat(LANGUAGE_TAG[lang], SHORT_DATE_OPTIONS),
+  ]),
+) as Record<SiteLanguage, Intl.DateTimeFormat>;
 
 export function formatShortDate(date: Date, language: SiteLanguage): string {
   return SHORT_DATE_FORMAT[language].format(date);

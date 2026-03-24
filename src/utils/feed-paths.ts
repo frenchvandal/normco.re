@@ -5,14 +5,9 @@ export const ATOM_FEED_PATH = "/atom.xml";
 export const JSON_FEED_PATH = "/feed.json";
 export const FEED_STYLESHEET_PATH = "/feed.xsl";
 
-export function getLocalizedRssFeedUrl(language: SiteLanguage): string {
-  return getLocalizedUrl(RSS_FEED_PATH, language);
-}
+const localizedFeedUrl = (path: string) => (language: SiteLanguage) =>
+  getLocalizedUrl(path, language);
 
-export function getLocalizedAtomFeedUrl(language: SiteLanguage): string {
-  return getLocalizedUrl(ATOM_FEED_PATH, language);
-}
-
-export function getLocalizedJsonFeedUrl(language: SiteLanguage): string {
-  return getLocalizedUrl(JSON_FEED_PATH, language);
-}
+export const getLocalizedRssFeedUrl = localizedFeedUrl(RSS_FEED_PATH);
+export const getLocalizedAtomFeedUrl = localizedFeedUrl(ATOM_FEED_PATH);
+export const getLocalizedJsonFeedUrl = localizedFeedUrl(JSON_FEED_PATH);
