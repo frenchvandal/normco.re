@@ -9,12 +9,11 @@ import {
   DEFAULT_LANGUAGE,
   getLanguageTag,
   getLocalizedUrl,
-  getSiteTranslations,
-  resolveSiteLanguage,
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
   tryResolveSiteLanguage,
 } from "../../utils/i18n.ts";
+import { resolvePageSetup } from "../../utils/page-setup.ts";
 import type { IconResolver } from "../../utils/primer-icons.ts";
 import {
   getLocalizedAtomFeedUrl,
@@ -186,9 +185,8 @@ export default (
   const pageTitle = title && title !== resolvedSiteName
     ? `${title} - ${resolvedSiteName}`
     : resolvedSiteName;
-  const language = resolveSiteLanguage(lang);
-  const translations = getSiteTranslations(language);
-  const homeUrl = getLocalizedUrl("/", language);
+  const { language, translations, homeUrl, syndicationPageUrl } =
+    resolvePageSetup(lang);
   const metaDescription = description ?? metas?.description ??
     "Personal blog by Phiphi, based in Chengdu, China.";
   const documentLanguage = getLanguageTag(language);
@@ -207,7 +205,6 @@ export default (
   const atomXmlUrl = getLocalizedAtomFeedUrl(language);
   const feedXmlUrl = getLocalizedRssFeedUrl(language);
   const feedJsonUrl = getLocalizedJsonFeedUrl(language);
-  const syndicationPageUrl = getLocalizedUrl("/syndication/", language);
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
   const Header = resolveComponent<HeaderProps>(comp, "Header");
   const Footer = resolveComponent<FooterProps>(comp, "Footer");

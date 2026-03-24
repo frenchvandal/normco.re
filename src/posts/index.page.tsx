@@ -1,42 +1,11 @@
 import StatePanel from "../_components/StatePanel.tsx";
-import { formatRfc3339Instant } from "../utils/date-time.ts";
-import {
-  formatPostCount,
-  formatReadingTime,
-  formatShortDate,
-  getLanguageDataCode,
-  getPageContext,
-  resolveSiteLanguage,
-} from "../utils/i18n.ts";
-import { resolvePostDate, resolveReadingMinutes } from "./post-metadata.ts";
+import { resolvePageSetup } from "../utils/page-setup.ts";
+import { searchPages } from "../utils/lume-data.ts";
+import { toStoryData, renderPostListItem } from "../utils/story-data.ts";
+import { formatPostCount } from "../utils/i18n.ts";
 import { escapeHtml } from "../utils/html.ts";
-import {
-  resolveDateHelper,
-  resolvePostCardRenderer,
-} from "../utils/lume-helpers.ts";
-import { isLumeData, resolveOptionalString } from "../utils/type-guards.ts";
-
-function resolveArchivePosts(
-  search: unknown,
-  languageDataCode: string,
-): Lume.Data[] {
-  if (typeof search !== "object" || search === null) {
-    return [];
-  }
-
-  const pages = Reflect.get(search, "pages");
-
-  if (typeof pages !== "function") {
-    return [];
-  }
-
-  const results = Reflect.apply(pages, search, [
-    `type=post lang=${languageDataCode}`,
-    "date=desc",
-  ]);
-
-  return Array.isArray(results) ? results.filter(isLumeData) : [];
-}
+import { resolveDateHelper, resolvePostCardRenderer } from "../utils/lume-helpers.ts";
+import { renderBreadcrumb } from "../utils/breadcrumb.ts";
 
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/posts/";
@@ -72,52 +41,58 @@ export default async (
 ): Promise<string> => {
   const PostCard = resolvePostCardRenderer(data.comp);
   const dateFormat = resolveDateHelper(helpers);
-  const language = resolveSiteLanguage(data.lang);
-  const languageDataCode = getLanguageDataCode(language);
-  const { homeUrl, translations } = getPageContext(language);
-  const posts = resolveArchivePosts(data.search, languageDataCode);
-  const items = await Promise.all(posts.map(async (post) => {
-    const postDate = resolvePostDate(post.date);
-    const minutes = resolveReadingMinutes(post.readingInfo);
-    const summary = resolveOptionalString(post.description);
-    const card = await PostCard({
-      title: resolveOptionalString(post.title) ?? "",
-      url: resolveOptionalString(post.url) ?? "",
-      dateStr: formatShortDate(postDate, language),
-      dateIso: dateFormat(postDate, "ATOM", language) ??
-        formatRfc3339Instant(postDate),
-      className: "archive-post",
-      ...(summary !== undefined ? { summary, showSummary: true } : {}),
-      ...(minutes !== undefined
-        ? { readingLabel: formatReadingTime(minutes, language) }
-        : {}),
-    });
+  const { language, languageDataCode, homeUrl, translations: t } =
+    resolvePageSetup(data.lang);
+  const posts = searchPages(
+    data.search,
+    `type=post lang=${languageDataCode}`,
+  );
 
-    return `<li class="archive-list-item">${card}</li>`;
-  })).then((cards) => cards.join("\n"));
+  const items = (await Promise.all(posts.map((post) =>
+    renderPostListItem(
+      PostCard,
+      toStoryData(post, language, dateFormat),
+      { className: "archive-post", showSummary: true },
+    )
+  ))).join("\n");
 
   const postsCountLabel = formatPostCount(posts.length, language);
-  const pageIntro = `<nav class="cds--breadcrumb" aria-label="${
-    escapeHtml(translations.archive.breadcrumbAriaLabel)
-  }">
-  <ol class="cds--breadcrumb-list">
-    <li class="cds--breadcrumb-item">
-      <a href="${escapeHtml(homeUrl)}" class="cds--breadcrumb-link">
-        ${escapeHtml(translations.navigation.home)}
-      </a>
-    </li>
-  </ol>
-</nav>
+
+  const breadcrumb = renderBreadcrumb(
+    [{ href: homeUrl, label: t.navigation.home }],
+    t.archive.breadcrumbAriaLabel,
+  );
+
+  const pageBody = posts.length > 0
+    ? `<section class="archive-activity" aria-label="${
+      escapeHtml(t.archive.activityAriaLabel)
+    }">
+  <div class="archive-activity-main">
+    <ul class="archive-list">
+      ${items}
+    </ul>
+  </div>
+</section>`
+    : StatePanel({
+      title: t.archive.emptyStateTitle,
+      message: t.archive.emptyState,
+      actionHref: homeUrl,
+      actionLabel: t.navigation.home,
+      headingTag: "h2",
+      variant: "inline",
+    });
+
+  return `<div class="site-page-shell site-page-shell--wide">
+  <div class="feature-main">
+    ${breadcrumb}
 <section class="pagehead archive-pagehead" aria-labelledby="archive-title">
   <div class="archive-pagehead-grid">
     <div class="archive-pagehead-copy">
-      <p class="pagehead-eyebrow">${
-    escapeHtml(translations.archive.eyebrow)
-  }</p>
+      <p class="pagehead-eyebrow">${escapeHtml(t.archive.eyebrow)}</p>
       <h1 id="archive-title" class="archive-page-title">${
-    escapeHtml(translations.archive.title)
+    escapeHtml(t.archive.title)
   }</h1>
-      <p class="pagehead-lead">${escapeHtml(translations.archive.lead)}</p>
+      <p class="pagehead-lead">${escapeHtml(t.archive.lead)}</p>
     </div>
     ${
     posts.length > 0
@@ -131,30 +106,7 @@ export default async (
       : ""
   }
   </div>
-</section>`;
-
-  const pageBody = posts.length > 0
-    ? `<section class="archive-activity" aria-label="${
-      escapeHtml(translations.archive.activityAriaLabel)
-    }">
-  <div class="archive-activity-main">
-    <ul class="archive-list">
-      ${items}
-    </ul>
-  </div>
-</section>`
-    : StatePanel({
-      title: translations.archive.emptyStateTitle,
-      message: translations.archive.emptyState,
-      actionHref: homeUrl,
-      actionLabel: translations.navigation.home,
-      headingTag: "h2",
-      variant: "inline",
-    });
-
-  return `<div class="site-page-shell site-page-shell--wide">
-  <div class="feature-main">
-    ${pageIntro}
+</section>
     ${pageBody}
   </div>
 </div>`;

@@ -4,8 +4,7 @@ import { getSiteTranslations, type SiteLanguage } from "../utils/i18n.ts";
 import { formatCopyrightYears } from "../utils/copyright.ts";
 
 const repositoryUrl = "https://github.com/frenchvandal/normco.re" as const;
-type SsxElement = ReturnType<typeof jsx>;
-type FooterBrandIcon = "github" | "rss";
+type El = ReturnType<typeof jsx>;
 type FooterProps = Readonly<{
   author: string;
   language: SiteLanguage;
@@ -14,17 +13,16 @@ type FooterProps = Readonly<{
   blogStartYear: number;
   currentYear?: number;
 }>;
-type FooterLinkProps = Readonly<{
-  href: string;
-  label: string;
-  ariaLabel: string;
-  icon: FooterBrandIcon;
-  external?: boolean;
-}>;
 
 function renderFooterLink(
-  { href, label, ariaLabel, icon, external = false }: FooterLinkProps,
-): SsxElement {
+  { href, label, ariaLabel, icon, external = false }: Readonly<{
+    href: string;
+    label: string;
+    ariaLabel: string;
+    icon: "github" | "rss";
+    external?: boolean;
+  }>,
+): El {
   return (
     <a
       href={href}
@@ -51,7 +49,7 @@ export default (
     blogStartYear,
     currentYear = new Date().getFullYear(),
   }: FooterProps,
-): SsxElement => {
+): El => {
   const copyrightYears = formatCopyrightYears(blogStartYear, currentYear);
   const translations = getSiteTranslations(language);
 
