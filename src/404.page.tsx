@@ -1,5 +1,5 @@
 import StatePanel from "./_components/StatePanel.tsx";
-import { getPageContext, resolveSiteLanguage } from "./utils/i18n.ts";
+import { resolvePageSetup } from "./utils/page-setup.ts";
 
 export const url = "/404.html";
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
@@ -24,17 +24,16 @@ export const zhHant = {
 // Exclude the generated error route from the sitemap and search surfaces.
 export const unlisted = true;
 
-export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
-  const language = resolveSiteLanguage(data.lang);
-  const { homeUrl, translations } = getPageContext(language);
+export default (data: Lume.Data): string => {
+  const { homeUrl, translations: t } = resolvePageSetup(data.lang);
 
   return `<div class="site-page-shell site-page-shell--editorial state-page state-page--404">
   ${
     StatePanel({
-      title: translations.notFound.heading,
-      message: translations.notFound.message,
+      title: t.notFound.heading,
+      message: t.notFound.message,
       actionHref: homeUrl,
-      actionLabel: translations.notFound.backToHome,
+      actionLabel: t.notFound.backToHome,
       eyebrow: "404",
       eyebrowAriaHidden: true,
       headingTag: "h1",

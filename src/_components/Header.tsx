@@ -3,8 +3,8 @@ import type { jsx } from "lume/jsx-runtime";
 import {
   getLocalizedUrl,
   getPageContext,
-  getSiteTranslations,
   type SiteLanguage,
+  type SiteTranslations,
 } from "../utils/i18n.ts";
 import { type IconResolver } from "../utils/primer-icons.ts";
 import { buildHeaderNavigation } from "./header-navigation.ts";
@@ -14,8 +14,8 @@ import {
 } from "../utils/header-language-menu.ts";
 import SiteIcon from "./SiteIcon.tsx";
 
-type SsxElement = ReturnType<typeof jsx>;
-type HeaderTranslations = ReturnType<typeof getSiteTranslations>;
+type El = ReturnType<typeof jsx>;
+type Translations = SiteTranslations;
 type LanguageAlternates = Partial<Record<SiteLanguage, string>>;
 type NavigationItem = ReturnType<typeof buildHeaderNavigation>[number];
 type HeaderProps = Readonly<{
@@ -56,49 +56,7 @@ type VariantClasses = Readonly<{
   searchPanelHead: boolean;
 }>;
 
-const PRIMER_HOME: VariantClasses = {
-  header: "cds--header site-header--primer",
-  wrapper: "cds--header__wrapper primer-home-header__wrapper",
-  left: "cds--header__left primer-home-header__left",
-  menuToggle:
-    "cds--header__action cds--header__menu-toggle btn-octicon primer-home-header__menu-toggle",
-  menuIconClass: "site-menu-icon primer-home-header__action-icon",
-  menuIconSize: 16,
-  name: "cds--header__name primer-home-header__name",
-  nav: "cds--header__nav subnav subnav-flush primer-home-header__nav",
-  navLink:
-    "cds--header__menu-item subnav-item primer-home-header__nav-link",
-  navLinkLabel: "site-header-menu-item-label",
-  global: "cds--header__global primer-home-header__global",
-  actionButton:
-    "cds--header__action btn-octicon primer-home-header__action",
-  actionIcon: "primer-home-header__action-icon",
-  actionIconSize: 16,
-  languageButton:
-    "cds--header__action cds--header__language-toggle btn-octicon primer-home-header__action",
-  languageOption:
-    "cds--header__language-option primer-home-header__menu-option",
-  languageMenu:
-    "cds--header__language-menu primer-home-header__language-menu",
-  languagePanel:
-    "cds--header__panel cds--header__language-panel primer-home-header__panel",
-  languagePanelContent:
-    "cds--header__panel-content Box primer-home-header__panel-box",
-  searchPanel:
-    "cds--header__panel cds--header__search-panel primer-home-header__panel",
-  searchPanelContent:
-    "cds--header__panel-content Box primer-home-header__panel-box",
-  searchRoot:
-    "cds--header__search-root primer-home-header__search-root",
-  sideNav: "cds--side-nav primer-home-header__drawer",
-  sideNavNavigation:
-    "cds--side-nav__navigation primer-home-header__drawer-navigation",
-  sideNavHeader:
-    "cds--side-nav__header primer-home-header__drawer-header",
-  panelHead: true,
-  searchPanelHead: true,
-};
-
+/** Standard (non-home) variant - base class names only. */
 const STANDARD: VariantClasses = {
   header: "cds--header",
   wrapper: "cds--header__wrapper",
@@ -126,6 +84,39 @@ const STANDARD: VariantClasses = {
   searchPanelHead: false,
 };
 
+/** Primer home variant extends standard with additional primer classes. */
+const ph = (suffix: string) => `primer-home-header__${suffix}`;
+const PRIMER_HOME: VariantClasses = {
+  ...STANDARD,
+  header: `cds--header site-header--primer`,
+  wrapper: `cds--header__wrapper ${ph("wrapper")}`,
+  left: `cds--header__left ${ph("left")}`,
+  menuToggle: `cds--header__action cds--header__menu-toggle btn-octicon ${ph("menu-toggle")}`,
+  menuIconClass: `site-menu-icon ${ph("action-icon")}`,
+  menuIconSize: 16,
+  name: `cds--header__name ${ph("name")}`,
+  nav: `cds--header__nav subnav subnav-flush ${ph("nav")}`,
+  navLink: `cds--header__menu-item subnav-item ${ph("nav-link")}`,
+  navLinkLabel: "site-header-menu-item-label",
+  global: `cds--header__global ${ph("global")}`,
+  actionButton: `cds--header__action btn-octicon ${ph("action")}`,
+  actionIcon: ph("action-icon"),
+  actionIconSize: 16,
+  languageButton: `cds--header__action cds--header__language-toggle btn-octicon ${ph("action")}`,
+  languageOption: `cds--header__language-option ${ph("menu-option")}`,
+  languageMenu: `cds--header__language-menu ${ph("language-menu")}`,
+  languagePanel: `cds--header__panel cds--header__language-panel ${ph("panel")}`,
+  languagePanelContent: `cds--header__panel-content Box ${ph("panel-box")}`,
+  searchPanel: `cds--header__panel cds--header__search-panel ${ph("panel")}`,
+  searchPanelContent: `cds--header__panel-content Box ${ph("panel-box")}`,
+  searchRoot: `cds--header__search-root ${ph("search-root")}`,
+  sideNav: `cds--side-nav ${ph("drawer")}`,
+  sideNavNavigation: `cds--side-nav__navigation ${ph("drawer-navigation")}`,
+  sideNavHeader: `cds--side-nav__header ${ph("drawer-header")}`,
+  panelHead: true,
+  searchPanelHead: true,
+};
+
 // ── Shared sub-components ──────────────────────────────────────────────
 
 function renderHeaderAction(
@@ -139,10 +130,10 @@ function renderHeaderAction(
     buttonAttributes: Readonly<Record<string, string>>;
     buttonClassName?: string;
     buttonId?: string;
-    iconMarkup: SsxElement;
+    iconMarkup: El;
     tooltipLabel: string;
   }>,
-): SsxElement {
+): El {
   return (
     <div
       class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
@@ -167,7 +158,7 @@ function renderHeaderAction(
   );
 }
 
-function renderThemeIcons(className: string, size = 16): SsxElement {
+function renderThemeIcons(className: string, size = 16): El {
   return (
     <>
       <SiteIcon
@@ -193,7 +184,7 @@ function renderThemeIcons(className: string, size = 16): SsxElement {
 }
 
 function resolveHeaderActions(
-  t: HeaderTranslations,
+  t: Translations,
   v: VariantClasses,
 ) {
   return [
@@ -254,7 +245,7 @@ function renderNavLinks(
   items: readonly NavigationItem[],
   className: string,
   labelClassName?: string,
-): SsxElement[] {
+): El[] {
   return items.map(({ href, label, isCurrent }) => (
     <a
       key={href}
@@ -271,7 +262,7 @@ function renderLanguageOptions(
   language: SiteLanguage,
   alternates: LanguageAlternates,
   optionClassName: string,
-): SsxElement[] {
+): El[] {
   return HEADER_LANGUAGE_OPTIONS.map(
     ({ label, language: optLang, tag }) => {
       const isSelected = optLang === language;
@@ -313,9 +304,9 @@ function PanelHead({ className, title }: { className: string; title: string }) {
 function renderLanguagePanel(
   language: SiteLanguage,
   alternates: LanguageAlternates,
-  t: HeaderTranslations,
+  t: Translations,
   v: VariantClasses,
-): SsxElement {
+): El {
   return (
     <section
       id={HEADER_IDS.languagePanel}
@@ -345,9 +336,9 @@ function renderLanguagePanel(
 }
 
 function renderSearchPanel(
-  t: HeaderTranslations,
+  t: Translations,
   v: VariantClasses,
-): SsxElement {
+): El {
   return (
     <div
       id={HEADER_IDS.searchPanel}
@@ -483,10 +474,10 @@ function renderSearchPanel(
 function renderSideNav(
   items: readonly NavigationItem[],
   homeUrl: string,
-  t: HeaderTranslations,
+  t: Translations,
   v: VariantClasses,
   eyebrow?: string,
-): SsxElement {
+): El {
   return (
     <aside
       id={HEADER_IDS.sideNav}
@@ -527,8 +518,8 @@ function renderSideNav(
 
 function renderPrimerHomeBrand(
   homeUrl: string,
-  t: HeaderTranslations,
-): SsxElement {
+  t: Translations,
+): El {
   return (
     <a href={homeUrl} class="cds--header__name primer-home-header__name">
       <span class="primer-home-header__brand-lockup">
@@ -546,7 +537,7 @@ function renderPrimerHomeBrand(
 
 // ── Main export ────────────────────────────────────────────────────────
 
-export default ({ currentUrl, language, languageAlternates = {} }: HeaderProps): SsxElement => {
+export default ({ currentUrl, language, languageAlternates = {} }: HeaderProps): El => {
   const { homeUrl, translations: t } = getPageContext(language);
   const navItems = buildHeaderNavigation({ currentUrl, language });
   const isHome = currentUrl === homeUrl;

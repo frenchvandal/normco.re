@@ -37,13 +37,12 @@ export function renderFallbackPostCard(
   );
 }
 
-export function resolvePostCardRenderer(value: unknown): PostCardRenderer {
-  if (typeof value === "object" && value !== null) {
-    const PostCard = Reflect.get(value, "PostCard");
-    if (typeof PostCard === "function") {
-      return (props) =>
-        Promise.resolve(Reflect.apply(PostCard, value, [props])).then(String);
-    }
+export function resolvePostCardRenderer(comp: unknown): PostCardRenderer {
+  if (typeof comp !== "object" || comp === null) return renderFallbackPostCard;
+  const PostCard = Reflect.get(comp, "PostCard");
+  if (typeof PostCard === "function") {
+    return (props) =>
+      Promise.resolve(Reflect.apply(PostCard, comp, [props])).then(String);
   }
   return renderFallbackPostCard;
 }

@@ -1,5 +1,5 @@
 import StatePanel from "./_components/StatePanel.tsx";
-import { getPageContext, resolveSiteLanguage } from "./utils/i18n.ts";
+import { resolvePageSetup } from "./utils/page-setup.ts";
 
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/offline/";
@@ -26,17 +26,16 @@ export const zhHant = {
 } as const;
 
 export default (data: Lume.Data): string => {
-  const language = resolveSiteLanguage(data.lang);
-  const { homeUrl, translations } = getPageContext(language);
+  const { homeUrl, translations: t } = resolvePageSetup(data.lang);
 
   return `<div class="site-page-shell site-page-shell--editorial state-page state-page--offline">
   ${
     StatePanel({
-      title: translations.offline.title,
-      message: translations.offline.lead,
+      title: t.offline.title,
+      message: t.offline.lead,
       actionHref: homeUrl,
-      actionLabel: translations.offline.backToHome,
-      ariaLabel: translations.offline.ariaLabel,
+      actionLabel: t.offline.backToHome,
+      ariaLabel: t.offline.ariaLabel,
       headingTag: "h1",
       variant: "page",
       className: "state-panel--offline-page",

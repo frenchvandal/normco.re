@@ -1,11 +1,8 @@
 import { siteName } from "./_data.ts";
 import { renderOcticonMarkup } from "./utils/primer-icons.ts";
-import {
-  getPageContext,
-  resolveSiteLanguage,
-  type SiteLanguage,
-  type SiteTranslations,
-} from "./utils/i18n.ts";
+import { resolvePageSetup } from "./utils/page-setup.ts";
+import { renderBreadcrumb } from "./utils/breadcrumb.ts";
+import type { SiteLanguage, SiteTranslations } from "./utils/i18n.ts";
 import {
   getLocalizedAtomFeedUrl,
   getLocalizedJsonFeedUrl,
@@ -326,8 +323,7 @@ function buildFeedActions(
 }
 
 export default (data: Lume.Data): string => {
-  const language = resolveSiteLanguage(data.lang);
-  const { homeUrl, translations } = getPageContext(language);
+  const { language, homeUrl, translations } = resolvePageSetup(data.lang);
   const siteOrigin = `https://${siteName}`;
   const feedCards = buildFeedCards(language, translations);
   const feedActions = buildFeedActions(translations);
@@ -361,18 +357,13 @@ export default (data: Lume.Data): string => {
     }),
   ].join("\n");
 
+  const breadcrumb = renderBreadcrumb(
+    [{ href: homeUrl, label: translations.navigation.home }],
+    translations.feeds.breadcrumbAriaLabel,
+  );
+
   return `<div class="site-page-shell site-page-shell--wide feeds-page">
-  <nav class="cds--breadcrumb" aria-label="${
-    escapeHtml(translations.feeds.breadcrumbAriaLabel)
-  }">
-    <ol class="cds--breadcrumb-list">
-      <li class="cds--breadcrumb-item">
-        <a href="${escapeHtml(homeUrl)}" class="cds--breadcrumb-link">
-          ${escapeHtml(translations.navigation.home)}
-        </a>
-      </li>
-    </ol>
-  </nav>
+  ${breadcrumb}
   <section class="pagehead syndication-pagehead" aria-labelledby="syndication-title">
     <div class="syndication-pagehead-grid">
       <div class="syndication-pagehead-copy">
