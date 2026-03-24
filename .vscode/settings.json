@@ -1,5 +1,5 @@
 {
-  "editor.inlayHints.enabled": "off",
+  "editor.inlayHints.enabled": "on",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
@@ -86,6 +86,6 @@
   },
   "editor.linkedEditing": true,
   "gradle.nestedProjects": true,
-  "js/ts.tsserver.experimental.enableProjectDiagnostics": false,
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": true,
   "workbench.startupEditor": "readme"
 }
