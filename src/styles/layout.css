@@ -1622,13 +1622,21 @@
   }
 
   .post-title {
-    font-size: clamp(var(--ph-text-xl), 5vw, var(--ph-text-2xl));
+    font-size: var(--ph-text-prose-xl);
     line-height: var(--ph-lh-tight);
+    letter-spacing: -0.025em;
     margin: 0;
-    max-inline-size: 18ch;
+    max-inline-size: 20ch;
   }
 
-  .post-pagehead-summary,
+  .post-pagehead-summary {
+    color: var(--ph-color-fg-muted);
+    font-family: var(--ph-font-serif);
+    font-size: var(--ph-text-prose);
+    line-height: var(--ph-lh-relaxed);
+    margin: 0;
+  }
+
   .syndication-overview-body,
   .syndication-intro,
   .syndication-guidance-lead {
@@ -1691,8 +1699,15 @@
 
   .post-content {
     display: grid;
-    gap: var(--ph-space-3);
+    gap: 0;
     inline-size: min(100%, var(--ph-content-max));
+    font-family: var(--ph-font-serif);
+    font-size: var(--ph-text-prose);
+    line-height: var(--ph-lh-prose);
+    font-feature-settings: var(--ph-opentype-body);
+    font-kerning: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   .post-content > * {
@@ -1700,32 +1715,52 @@
     margin: 0;
   }
 
+  .post-content > * + * {
+    margin-block-start: var(--ph-prose-paragraph-spacing);
+  }
+
   .post-content > :where(pre, .shiki, figure, hr) {
     inline-size: 100%;
   }
 
-  .post-content > :where(h2, h3) {
+  .post-content > :where(h2, h3, h4) {
+    font-family: var(--ph-font-sans);
     max-inline-size: var(--ph-measure);
   }
 
   .post-content h2 {
     padding-block-end: var(--ph-space-2);
     border-block-end: 1px solid var(--ph-color-border-muted);
-    font-size: var(--ph-text-md);
+    font-size: var(--ph-text-prose-md);
     line-height: var(--ph-lh-snug);
-    margin-block-start: var(--ph-space-6);
+    margin-block-start: var(--ph-prose-section-spacing);
+  }
+
+  .post-content h2 + * {
+    margin-block-start: var(--ph-space-4);
   }
 
   .post-content h3 {
-    font-size: var(--ph-text-base);
+    font-size: var(--ph-text-md);
     line-height: var(--ph-lh-snug);
-    margin-block-start: var(--ph-space-5);
+    margin-block-start: var(--ph-prose-section-spacing);
+  }
+
+  .post-content h3 + * {
+    margin-block-start: var(--ph-space-3);
+  }
+
+  .post-content h4 {
+    font-size: var(--ph-text-base);
+    font-weight: 600;
+    line-height: var(--ph-lh-snug);
+    margin-block-start: var(--ph-prose-paragraph-spacing);
   }
 
   .post-content p {
-    font-size: var(--ph-text-base);
-    line-height: var(--ph-lh-relaxed);
-    margin-block-end: var(--ph-space-4);
+    line-height: var(--ph-lh-prose);
+    hyphens: auto;
+    -webkit-hyphens: auto;
   }
 
   .post-content ul,
@@ -1744,8 +1779,11 @@
   }
 
   .post-content li {
-    font-size: var(--ph-text-base);
-    line-height: var(--ph-lh-relaxed);
+    line-height: var(--ph-lh-prose);
+  }
+
+  .post-content li::marker {
+    color: var(--ph-color-fg-subtle);
   }
 
   .post-content a,
@@ -1755,8 +1793,71 @@
     color: var(--ph-color-accent-fg);
   }
 
+  .post-content a {
+    text-decoration-thickness: var(--ph-link-underline-thickness);
+    text-underline-offset: var(--ph-link-underline-offset);
+  }
+
+  .post-content blockquote {
+    margin-block: var(--ph-prose-paragraph-spacing);
+    font-size: inherit;
+  }
+
+  .post-content blockquote p {
+    hyphens: manual;
+    -webkit-hyphens: manual;
+  }
+
+  .post-content pre,
+  .post-content .shiki {
+    font-family: var(--ph-font-mono);
+    font-size: var(--ph-text-sm);
+    line-height: var(--ph-lh-base);
+    margin-block: var(--ph-prose-paragraph-spacing);
+    tab-size: 2;
+  }
+
+  .post-content code {
+    font-family: var(--ph-font-mono);
+  }
+
+  .post-content hr {
+    margin-block: var(--ph-prose-section-spacing);
+  }
+
+  .post-content figure {
+    margin-block: var(--ph-prose-section-spacing);
+  }
+
+  .post-content figure figcaption {
+    font-family: var(--ph-font-sans);
+  }
+
   .post-content img {
     border-radius: var(--ph-radius-md);
+  }
+
+  .post-content table {
+    font-family: var(--ph-font-sans);
+    font-size: var(--ph-text-sm);
+    line-height: var(--ph-lh-base);
+    margin-block: var(--ph-prose-paragraph-spacing);
+  }
+
+  .post-content th,
+  .post-content td {
+    padding: var(--ph-space-2) var(--ph-space-3);
+    border-block-end: 1px solid var(--ph-color-border-muted);
+    text-align: start;
+  }
+
+  .post-content th {
+    font-weight: 600;
+    color: var(--ph-color-fg-muted);
+  }
+
+  .post-content > :first-child {
+    margin-block-start: 0;
   }
 
   .post-code-copy-button {
