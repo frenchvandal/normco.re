@@ -3,16 +3,15 @@ import { describe, it } from "@std/testing/bdd";
 import layoutStyles from "./styles/layout.css" with {
   type: "text",
 };
-import { asLumeData, asLumeHelpers } from "../test/lume.ts";
+import { asLumeData } from "../test/lume.ts";
 
 import page404 from "./404.page.tsx";
 
 const MOCK_DATA = asLumeData({});
-const MOCK_HELPERS = asLumeHelpers({});
 
 describe("404.page.tsx", () => {
   it("renders the shared state panel shell", () => {
-    const html = page404(MOCK_DATA, MOCK_HELPERS);
+    const html = page404(MOCK_DATA);
     assertStringIncludes(
       html,
       'class="site-page-shell site-page-shell--editorial state-page state-page--404"',
@@ -24,30 +23,30 @@ describe("404.page.tsx", () => {
   });
 
   it('displays the "404" eyebrow', () => {
-    const html = page404(MOCK_DATA, MOCK_HELPERS);
+    const html = page404(MOCK_DATA);
     assertStringIncludes(html, 'class="state-panel-eyebrow"');
     assertStringIncludes(html, ">404<");
   });
 
   it("contains a semantic h1 heading", () => {
-    const html = page404(MOCK_DATA, MOCK_HELPERS);
+    const html = page404(MOCK_DATA);
     assertStringIncludes(html, "<h1");
     assertStringIncludes(html, "Page not found");
   });
 
   it("contains a back-to-home link", () => {
-    const html = page404(MOCK_DATA, MOCK_HELPERS);
+    const html = page404(MOCK_DATA);
     assertStringIncludes(html, 'href="/"');
   });
 
   it("marks the 404 code as aria-hidden", () => {
-    const html = page404(MOCK_DATA, MOCK_HELPERS);
+    const html = page404(MOCK_DATA);
     assertStringIncludes(html, 'aria-hidden="true"');
   });
 
   it("localizes message and home link for French data", () => {
     const frenchData = asLumeData({ lang: "fr" });
-    const html = page404(frenchData, MOCK_HELPERS);
+    const html = page404(frenchData);
     assertStringIncludes(html, "Page introuvable");
     assertStringIncludes(html, 'href="/fr/"');
   });

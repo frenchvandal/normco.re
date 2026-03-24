@@ -180,6 +180,15 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'class="post-content"');
     });
 
+    it("uses BCP 47 language tags on localized post content", async () => {
+      const html = await renderComponent(
+        postLayout(makeData({ lang: "zh-hans" }), MOCK_HELPERS),
+      );
+
+      assertStringIncludes(html, 'class="post-content" lang="zh-Hans"');
+      assertNotMatch(html, /lang="zhHans"/);
+    });
+
     it("renders the post rail when tags are present", async () => {
       const html = await renderComponent(
         postLayout(makeData({ tags: ["devops", "cdn"] }), MOCK_HELPERS),

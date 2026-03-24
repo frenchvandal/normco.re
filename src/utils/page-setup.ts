@@ -7,6 +7,7 @@
 
 import {
   getLanguageDataCode,
+  getLanguageTag,
   getPageContext,
   type PageContext,
   resolveSiteLanguage,
@@ -16,6 +17,7 @@ import {
 export type PageSetup = PageContext & {
   language: SiteLanguage;
   languageDataCode: string;
+  languageTag: string;
 };
 
 export function resolvePageSetup(lang: unknown): PageSetup {
@@ -23,6 +25,7 @@ export function resolvePageSetup(lang: unknown): PageSetup {
   return {
     language,
     languageDataCode: getLanguageDataCode(language),
+    languageTag: getLanguageTag(language),
     ...getPageContext(language),
   };
 }
