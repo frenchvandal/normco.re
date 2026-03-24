@@ -69,6 +69,19 @@ Interactive controls should preserve clear, valid semantics.
 - Important dynamic feedback should be announced through an explicit live region
   when needed.
 
+### Typography
+
+Respect language-appropriate typographic signs in editorial copy, comments,
+docs, and user-facing strings.
+
+- Prefer proper typographic apostrophes and quotation marks over straight ASCII
+  punctuation when the surrounding text is prose.
+- Preserve the conventions of the language being written, including French
+  spacing and punctuation when relevant.
+- Do not replace ASCII punctuation inside code literals, identifiers, regexes,
+  selectors, URLs, or other syntax-sensitive strings unless the code itself
+  explicitly requires the typographic character.
+
 ### TypeScript Tests And Faker
 
 Use `faker` in TypeScript tests when fixture values are incidental to the

@@ -2,7 +2,7 @@ import StatePanel from "./_components/StatePanel.tsx";
 import { resolvePageSetup } from "./utils/page-setup.ts";
 
 export const url = "/404.html";
-// Lume's multilanguage plugin does not fan out the configured 404 page.
+// Lume’s multilanguage plugin does not fan out the configured 404 page.
 // Keep this route explicitly English so the source matches the actual build.
 export const lang = "en";
 export const title = "Page not found";
