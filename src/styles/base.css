@@ -36,17 +36,6 @@
 
   body {
     min-block-size: 100dvh;
-    background: linear-gradient(
-      90deg,
-      transparent calc(50% - 0.5px),
-      color-mix(in oklch, var(--ph-grid-rule) 55%, transparent) calc(
-        50% - 0.5px
-      ),
-      color-mix(in oklch, var(--ph-grid-rule) 55%, transparent) calc(
-        50% + 0.5px
-      ),
-      transparent calc(50% + 0.5px)
-    );
     font-family: var(--ph-font-sans);
     font-size: var(--ph-text-base);
     line-height: var(--ph-lh-base);
