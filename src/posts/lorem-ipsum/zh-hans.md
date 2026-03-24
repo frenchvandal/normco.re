@@ -1,5 +1,4 @@
 ---
-slug: lorem-ipsum
 lang: zh-hans
 title: "Lorem Ipsum 与占位文本的艺术"
 description: "关于占位文本的历史、价值，以及它为何仍在现代设计流程中有效。"

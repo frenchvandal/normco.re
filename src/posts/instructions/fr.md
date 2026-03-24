@@ -1,5 +1,4 @@
 ---
-slug: instructions
 lang: fr
 title: "Comment installer ce thème ?"
 description: "Un guide rapide pour configurer le thème Simple Blog avec Lume."

@@ -1,5 +1,4 @@
 ---
-slug: instructions
 lang: zh-hans
 title: "如何安装这个主题？"
 description: "一份快速指南，帮助你为 Lume 配置 Simple Blog 主题。"

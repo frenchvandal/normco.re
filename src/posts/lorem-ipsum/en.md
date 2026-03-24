@@ -1,5 +1,4 @@
 ---
-slug: lorem-ipsum
 lang: en
 title: "Lorem Ipsum and the Art of Placeholder Text"
 description: "A meditation on placeholder text, its history, and why it still matters in modern design workflows."

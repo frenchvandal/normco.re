@@ -131,8 +131,7 @@ function toValidDate(value: unknown): Date | undefined {
 }
 
 function describePage(page: Data): string {
-  return getOptionalString(page.url) ?? getOptionalString(page.slug) ??
-    "(unknown post)";
+  return getOptionalString(page.url) ?? "(unknown post)";
 }
 
 function requireString(
@@ -196,7 +195,7 @@ function createPostsIndexItem(
   page: Data,
   language: SiteLanguage,
 ): PostsIndexItem {
-  const slug = requireString(page, "slug", page.slug);
+  const slug = requireString(page, "basename", page.basename);
   const id = getOptionalString(page.id) ?? slug;
   const webPath = requireString(page, "url", page.url);
   const title = requireString(page, "title", page.title);
@@ -247,8 +246,8 @@ function sortPostPagesByDateDesc(
       return rightDate - leftDate;
     }
 
-    const leftSlug = getOptionalString(left.data.slug) ?? "";
-    const rightSlug = getOptionalString(right.data.slug) ?? "";
+    const leftSlug = getOptionalString(left.data.basename) ?? "";
+    const rightSlug = getOptionalString(right.data.basename) ?? "";
     return leftSlug.localeCompare(rightSlug);
   });
 }
@@ -267,7 +266,7 @@ function createPostDetailAlternates(
       page,
     ]),
   );
-  const slug = requireString(currentPage.data, "slug", currentPage.data.slug);
+  const slug = requireString(currentPage.data, "basename", currentPage.data.basename);
 
   return FEED_VARIANTS.flatMap((variant) => {
     const languageDataCode = LANGUAGE_DATA_CODE[variant.language];
@@ -321,7 +320,7 @@ function createPostDetailDocument(
   siblingPages: ReadonlyArray<PostPage>,
 ): PostDetailDocument {
   const language = resolvePageLanguage(page.data);
-  const slug = requireString(page.data, "slug", page.data.slug);
+  const slug = requireString(page.data, "basename", page.data.basename);
   const id = getOptionalString(page.data.id) ?? slug;
   const webPath = requireString(page.data, "url", page.data.url);
   const title = requireString(page.data, "title", page.data.title);
@@ -359,7 +358,7 @@ function createPostPagesBySlugMap(
   const map = new Map<string, PostPage[]>();
 
   for (const page of postPages) {
-    const slug = requireString(page.data, "slug", page.data.slug);
+    const slug = requireString(page.data, "basename", page.data.basename);
     const existing = map.get(slug);
 
     if (existing) {
@@ -407,7 +406,7 @@ export function createPostDetailPage(
   page: PostPage,
   siblingPages: ReadonlyArray<PostPage>,
 ): Page {
-  const slug = requireString(page.data, "slug", page.data.slug);
+  const slug = requireString(page.data, "basename", page.data.basename);
   const language = resolvePageLanguage(page.data);
 
   return Page.create({
@@ -472,7 +471,7 @@ export function registerMobileContentApi(site: Site): void {
       );
 
       for (const page of localizedPostPages) {
-        const slug = requireString(page.data, "slug", page.data.slug);
+        const slug = requireString(page.data, "basename", page.data.basename);
 
         allPages.push(
           createPostDetailPage(site, page, postPagesBySlug.get(slug) ?? [page]),

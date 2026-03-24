@@ -1,5 +1,4 @@
 ---
-slug: instructions
 lang: en
 title: "How to install this theme?"
 description: "A quick guide to setting up the Simple Blog theme for Lume."

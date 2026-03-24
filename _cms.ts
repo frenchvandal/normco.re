@@ -61,12 +61,6 @@ function createLanguageCollection(
   cms: ReturnType<typeof CMS>,
   collection: PostLanguageCollection,
 ): void {
-  const slugField = {
-    name: "slug",
-    type: "text",
-    label: "Slug",
-    attributes: REQUIRED_FIELD_ATTRIBUTES,
-  } as const;
   const languageField = {
     name: "lang",
     type: "hidden",
@@ -82,7 +76,6 @@ function createLanguageCollection(
       `Edit ${collection.language} Markdown posts stored in src/posts/*/${collection.filename}.`,
     store: `src:posts/*/${collection.filename}`,
     fields: [
-      slugField,
       languageField,
       "title: text!",
       {
@@ -100,9 +93,6 @@ function createLanguageCollection(
         relativePath: true,
       },
     ],
-    documentName(data) {
-      return `${resolveSlug(data.slug)}/${collection.filename}`;
-    },
     documentLabel(name) {
       return toFolderLabel(name, `/${collection.filename}`);
     },
@@ -125,14 +115,9 @@ cms.collection({
   store: "src:posts/*/_data.yml",
   fields: [
     {
-      name: "slug",
-      type: "text",
-      label: "Slug",
-      attributes: REQUIRED_FIELD_ATTRIBUTES,
-    },
-    {
       name: "id",
       type: "text",
+      label: "Slug",
       attributes: REQUIRED_FIELD_ATTRIBUTES,
     },
     {
@@ -152,7 +137,7 @@ cms.collection({
     "tags: list",
   ],
   documentName(data) {
-    return `${resolveSlug(data.slug)}/_data.yml`;
+    return `${resolveSlug(data.id)}/_data.yml`;
   },
   documentLabel(name) {
     return toFolderLabel(name, "/_data.yml");

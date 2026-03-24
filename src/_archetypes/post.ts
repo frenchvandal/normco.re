@@ -21,8 +21,7 @@ export default function* post(
   const tagLines = tags.length > 0
     ? `tags:\n${tags.map((tag) => `  - ${tag}`).join("\n")}\n`
     : "";
-  const metadata = `slug: ${slug}
-id: ${slug}
+  const metadata = `id: ${slug}
 date: ${date}
 url: /posts/${slug}/
 ${tagLines}`.trimEnd() + "\n";
@@ -41,7 +40,6 @@ ${tagLines}`.trimEnd() + "\n";
   for (const language of languages) {
     const frontmatter = [
       "---",
-      `slug: ${slug}`,
       `lang: ${language.code}`,
       `title: ${quote(title)}`,
       `description: ${quote(description)}`,
