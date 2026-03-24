@@ -108,7 +108,7 @@
       "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/lint.ts"
     ],
     "rules": {
-      "tags": ["recommended", "jsr"],
+      "tags": ["recommended", "jsx"],
       "exclude": [
         "no-import-prefix"
       ]
