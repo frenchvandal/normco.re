@@ -91,7 +91,9 @@ const PRIMER_HOME: VariantClasses = {
   header: `cds--header site-header--primer`,
   wrapper: `cds--header__wrapper ${ph("wrapper")}`,
   left: `cds--header__left ${ph("left")}`,
-  menuToggle: `cds--header__action cds--header__menu-toggle btn-octicon ${ph("menu-toggle")}`,
+  menuToggle: `cds--header__action cds--header__menu-toggle btn-octicon ${
+    ph("menu-toggle")
+  }`,
   menuIconClass: `site-menu-icon ${ph("action-icon")}`,
   menuIconSize: 16,
   name: `cds--header__name ${ph("name")}`,
@@ -102,10 +104,15 @@ const PRIMER_HOME: VariantClasses = {
   actionButton: `cds--header__action btn-octicon ${ph("action")}`,
   actionIcon: ph("action-icon"),
   actionIconSize: 16,
-  languageButton: `cds--header__action cds--header__language-toggle btn-octicon ${ph("action")}`,
+  languageButton:
+    `cds--header__action cds--header__language-toggle btn-octicon ${
+      ph("action")
+    }`,
   languageOption: `cds--header__language-option ${ph("menu-option")}`,
   languageMenu: `cds--header__language-menu ${ph("language-menu")}`,
-  languagePanel: `cds--header__panel cds--header__language-panel ${ph("panel")}`,
+  languagePanel: `cds--header__panel cds--header__language-panel ${
+    ph("panel")
+  }`,
   languagePanelContent: `cds--header__panel-content Box ${ph("panel-box")}`,
   searchPanel: `cds--header__panel cds--header__search-panel ${ph("panel")}`,
   searchPanelContent: `cds--header__panel-content Box ${ph("panel-box")}`,
@@ -500,9 +507,7 @@ function renderSideNav(
               <a
                 href={href}
                 class="cds--side-nav__link"
-                {...(isCurrent
-                  ? { "aria-current": "page" as const }
-                  : {})}
+                {...(isCurrent ? { "aria-current": "page" as const } : {})}
               >
                 <span class="cds--side-nav__link-text">{label}</span>
               </a>
@@ -537,7 +542,9 @@ function renderPrimerHomeBrand(
 
 // ── Main export ────────────────────────────────────────────────────────
 
-export default ({ currentUrl, language, languageAlternates = {} }: HeaderProps): El => {
+export default (
+  { currentUrl, language, languageAlternates = {} }: HeaderProps,
+): El => {
   const { homeUrl, translations: t } = getPageContext(language);
   const navItems = buildHeaderNavigation({ currentUrl, language });
   const isHome = currentUrl === homeUrl;
@@ -570,22 +577,20 @@ export default ({ currentUrl, language, languageAlternates = {} }: HeaderProps):
               />
             </button>
 
-            {isHome
-              ? renderPrimerHomeBrand(homeUrl, t)
-              : (
-                <>
-                  <a href={homeUrl} class={v.name}>
-                    <span class="cds--header__name--prefix">normco</span>
-                    .re
-                  </a>
-                  <nav
-                    class={v.nav}
-                    aria-label={t.site.mainNavigationAriaLabel}
-                  >
-                    {renderNavLinks(navItems, v.navLink)}
-                  </nav>
-                </>
-              )}
+            {isHome ? renderPrimerHomeBrand(homeUrl, t) : (
+              <>
+                <a href={homeUrl} class={v.name}>
+                  <span class="cds--header__name--prefix">normco</span>
+                  .re
+                </a>
+                <nav
+                  class={v.nav}
+                  aria-label={t.site.mainNavigationAriaLabel}
+                >
+                  {renderNavLinks(navItems, v.navLink)}
+                </nav>
+              </>
+            )}
           </div>
 
           {isHome && (

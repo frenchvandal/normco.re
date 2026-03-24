@@ -266,7 +266,11 @@ function createPostDetailAlternates(
       page,
     ]),
   );
-  const slug = requireString(currentPage.data, "basename", currentPage.data.basename);
+  const slug = requireString(
+    currentPage.data,
+    "basename",
+    currentPage.data.basename,
+  );
 
   return FEED_VARIANTS.flatMap((variant) => {
     const languageDataCode = LANGUAGE_DATA_CODE[variant.language];

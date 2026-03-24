@@ -863,7 +863,9 @@ type Widen<T> = {
  * Derived from the English translation object shape, with string literals
  * widened so all four languages are assignable to the same type.
  */
-export type SiteTranslations = Widen<typeof SITE_TRANSLATIONS[typeof DEFAULT_LANGUAGE]>;
+export type SiteTranslations = Widen<
+  typeof SITE_TRANSLATIONS[typeof DEFAULT_LANGUAGE]
+>;
 
 export type PageContext = Readonly<{
   translations: SiteTranslations;

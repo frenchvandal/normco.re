@@ -5,11 +5,22 @@
  * then format into a display-ready shape for PostCard rendering.
  */
 
-import { type SiteLanguage, formatReadingTime, formatShortDate } from "./i18n.ts";
-import { resolvePostDate, resolveReadingMinutes } from "../posts/post-metadata.ts";
+import {
+  formatReadingTime,
+  formatShortDate,
+  type SiteLanguage,
+} from "./i18n.ts";
+import {
+  resolvePostDate,
+  resolveReadingMinutes,
+} from "../posts/post-metadata.ts";
 import { formatRfc3339Instant } from "./date-time.ts";
 import { resolveOptionalString } from "./type-guards.ts";
-import type { DateHelper, PostCardProps, PostCardRenderer } from "./lume-helpers.ts";
+import type {
+  DateHelper,
+  PostCardProps,
+  PostCardRenderer,
+} from "./lume-helpers.ts";
 
 export type StoryData = {
   readonly title: string;
@@ -40,7 +51,8 @@ export function toStoryData(
     title: resolveOptionalString(post.title) ?? "",
     url: resolveOptionalString(post.url) ?? "",
     tags: resolvePostTags(post.tags),
-    dateIso: dateFormat(postDate, "ATOM", language) ?? formatRfc3339Instant(postDate),
+    dateIso: dateFormat(postDate, "ATOM", language) ??
+      formatRfc3339Instant(postDate),
     dateLabel: formatShortDate(postDate, language),
     ...(summary !== undefined ? { summary } : {}),
     ...(minutes !== undefined
@@ -61,7 +73,9 @@ export async function renderPostListItem(
     dateStr: story.dateLabel,
     dateIso: story.dateIso,
     ...(story.summary !== undefined ? { summary: story.summary } : {}),
-    ...(story.readingLabel !== undefined ? { readingLabel: story.readingLabel } : {}),
+    ...(story.readingLabel !== undefined
+      ? { readingLabel: story.readingLabel }
+      : {}),
     ...extraProps,
   });
   return `<li class="archive-list-item">${card}</li>`;

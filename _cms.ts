@@ -59,13 +59,29 @@ for (const { code, label, filename } of LANGUAGES) {
   cms.collection({
     name: `posts-${code}`,
     label: `Posts (${label})`,
-    description: `Edit ${code} Markdown posts stored in src/posts/*/${filename}.`,
+    description:
+      `Edit ${code} Markdown posts stored in src/posts/*/${filename}.`,
     store: `src:posts/*/${filename}`,
     fields: [
-      { name: "lang", type: "hidden", init(field: { value?: string | number | boolean }) { field.value = code; } },
+      {
+        name: "lang",
+        type: "hidden",
+        init(field: { value?: string | number | boolean }) {
+          field.value = code;
+        },
+      },
       "title: text!",
-      { name: "description", type: "textarea", attributes: { required: true, maxlength: 180 } },
-      { name: "content", type: "markdown", upload: `post-images:{document_dirname}/images`, relativePath: true },
+      {
+        name: "description",
+        type: "textarea",
+        attributes: { required: true, maxlength: 180 },
+      },
+      {
+        name: "content",
+        type: "markdown",
+        upload: `post-images:{document_dirname}/images`,
+        relativePath: true,
+      },
     ],
     documentLabel(name) {
       return toFolderLabel(name, `/${filename}`);
@@ -77,7 +93,8 @@ for (const { code, label, filename } of LANGUAGES) {
 cms.upload({
   name: "post-images",
   label: "Post images",
-  description: "Images used by Markdown posts, stored alongside each post slug.",
+  description:
+    "Images used by Markdown posts, stored alongside each post slug.",
   store: "src:posts",
   publicPath: "/posts",
 });

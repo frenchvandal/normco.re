@@ -1,8 +1,11 @@
 import { resolvePageSetup } from "../../utils/page-setup.ts";
 import { formatPostCount } from "../../utils/i18n.ts";
-import { toStoryData, renderPostListItem } from "../../utils/story-data.ts";
+import { renderPostListItem, toStoryData } from "../../utils/story-data.ts";
 import { escapeHtml } from "../../utils/html.ts";
-import { resolveDateHelper, resolvePostCardRenderer } from "../../utils/lume-helpers.ts";
+import {
+  resolveDateHelper,
+  resolvePostCardRenderer,
+} from "../../utils/lume-helpers.ts";
 import { renderBreadcrumb } from "../../utils/breadcrumb.ts";
 import { getTagColor } from "../../utils/tags.ts";
 import { isLumeData, resolveOptionalString } from "../../utils/type-guards.ts";
@@ -21,15 +24,18 @@ export default async (
 ): Promise<string> => {
   const PostCard = resolvePostCardRenderer(data.comp);
   const dateFormat = resolveDateHelper(helpers);
-  const { language, homeUrl, archiveUrl, translations: t } =
-    resolvePageSetup(data.lang);
+  const { language, homeUrl, archiveUrl, translations: t } = resolvePageSetup(
+    data.lang,
+  );
   const tagName = resolveOptionalString(data.tagName) ?? "";
   const posts = Array.isArray(data.posts) ? data.posts.filter(isLumeData) : [];
   const postsCountLabel = formatPostCount(posts.length, language);
 
-  const items = (await Promise.all(posts.map((post) =>
-    renderPostListItem(PostCard, toStoryData(post, language, dateFormat))
-  ))).join("\n");
+  const items = (await Promise.all(
+    posts.map((post) =>
+      renderPostListItem(PostCard, toStoryData(post, language, dateFormat))
+    ),
+  )).join("\n");
 
   const breadcrumb = renderBreadcrumb(
     [
@@ -46,22 +52,36 @@ export default async (
       <div class="tag-pagehead-grid">
         <div class="tag-pagehead-copy">
           <p class="pagehead-eyebrow">${escapeHtml(t.tagPage.eyebrow)}</p>
-          <h1 id="tag-page-title" class="tag-page-title">${escapeHtml(tagName)}</h1>
+          <h1 id="tag-page-title" class="tag-page-title">${
+    escapeHtml(tagName)
+  }</h1>
           <p class="pagehead-lead">${escapeHtml(postsCountLabel)}</p>
         </div>
         <div class="tag-pagehead-meta">
-          <span class="cds--tag cds--tag--${getTagColor(tagName)} tag-page-current-tag" title="${escapeHtml(tagName)}">
+          <span class="cds--tag cds--tag--${
+    getTagColor(tagName)
+  } tag-page-current-tag" title="${escapeHtml(tagName)}">
             <span class="cds--tag__label">${escapeHtml(tagName)}</span>
           </span>
-          <a href="${escapeHtml(archiveUrl)}" class="feature-link tag-pagehead-link">${escapeHtml(t.tagPage.archiveLinkLabel)}</a>
+          <a href="${
+    escapeHtml(archiveUrl)
+  }" class="feature-link tag-pagehead-link">${
+    escapeHtml(t.tagPage.archiveLinkLabel)
+  }</a>
         </div>
       </div>
     </section>
-    <section class="tag-page-results" aria-label="${escapeHtml(t.tagPage.postsAriaLabel)}">
+    <section class="tag-page-results" aria-label="${
+    escapeHtml(t.tagPage.postsAriaLabel)
+  }">
       <div class="subhead">
         <h2 class="subhead-heading">${escapeHtml(t.tagPage.postsHeading)}</h2>
       </div>
-      ${posts.length > 0 ? `<ul class="archive-list">${items}</ul>` : `<p class="blankslate">${escapeHtml(t.archive.emptyState)}</p>`}
+      ${
+    posts.length > 0
+      ? `<ul class="archive-list">${items}</ul>`
+      : `<p class="blankslate">${escapeHtml(t.archive.emptyState)}</p>`
+  }
     </section>
   </div>
 </div>`;

@@ -14,7 +14,9 @@ export function renderBreadcrumb(
 ): string {
   const lis = items.map(({ href, label }) =>
     `<li class="cds--breadcrumb-item">
-      <a href="${escapeHtml(href)}" class="cds--breadcrumb-link">${escapeHtml(label)}</a>
+      <a href="${escapeHtml(href)}" class="cds--breadcrumb-link">${
+      escapeHtml(label)
+    }</a>
     </li>`
   ).join("\n");
 

@@ -22,7 +22,16 @@ export type DateHelper = (
 ) => string | undefined;
 
 export function renderFallbackPostCard(
-  { title, url, dateStr, dateIso, className, readingLabel, summary, showSummary }: PostCardProps,
+  {
+    title,
+    url,
+    dateStr,
+    dateIso,
+    className,
+    readingLabel,
+    summary,
+    showSummary,
+  }: PostCardProps,
 ): Promise<string> {
   const cls = ["cds--tile", "post-card", className].filter(Boolean).join(" ");
   const summaryHtml = showSummary && summary
@@ -33,7 +42,15 @@ export function renderFallbackPostCard(
     : "";
 
   return Promise.resolve(
-    `<article class="${escapeHtml(cls)}"><h3 class="post-card-title"><a class="post-card-link" href="${escapeHtml(url)}">${escapeHtml(title)}</a></h3>${summaryHtml}<div class="post-card-meta"><time class="post-card-date" datetime="${escapeHtml(dateIso)}">${escapeHtml(dateStr)}</time>${readingHtml}</div></article>`,
+    `<article class="${
+      escapeHtml(cls)
+    }"><h3 class="post-card-title"><a class="post-card-link" href="${
+      escapeHtml(url)
+    }">${
+      escapeHtml(title)
+    }</a></h3>${summaryHtml}<div class="post-card-meta"><time class="post-card-date" datetime="${
+      escapeHtml(dateIso)
+    }">${escapeHtml(dateStr)}</time>${readingHtml}</div></article>`,
   );
 }
 

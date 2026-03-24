@@ -18,7 +18,14 @@ import { ABOUT_PICTOGRAM_SVG } from "./about.pictogram.ts";
 import type { SiteTranslations } from "./utils/i18n.ts";
 
 function renderContactItem(
-  { contact, translations: t, closeIconMarkup, downloadIconMarkup, qrImageSizes, qrImageTransforms }: {
+  {
+    contact,
+    translations: t,
+    closeIconMarkup,
+    downloadIconMarkup,
+    qrImageSizes,
+    qrImageTransforms,
+  }: {
     readonly contact: AboutContact;
     readonly translations: SiteTranslations;
     readonly closeIconMarkup: string;
@@ -46,8 +53,12 @@ function renderContactItem(
                 data-contact-toggletip-trigger=""
               >
                 <span class="about-contact-trigger-content">
-                  <span class="about-contact-icon ${escapeHtml(contact.iconClass)}" aria-hidden="true"></span>
-                  <span class="about-contact-label">${escapeHtml(contact.label)}</span>
+                  <span class="about-contact-icon ${
+    escapeHtml(contact.iconClass)
+  }" aria-hidden="true"></span>
+                  <span class="about-contact-label">${
+    escapeHtml(contact.label)
+  }</span>
                 </span>
               </button>
 	              <div class="cds--popover" hidden>
@@ -63,15 +74,21 @@ function renderContactItem(
                 >
                   <div class="about-contact-popover-header">
                     <div class="about-contact-popover-brand">
-                      <span class="about-contact-icon about-contact-popover-app ${escapeHtml(contact.iconClass)}" aria-hidden="true"></span>
-                      <span id="${escapeHtml(titleId)}" class="sr-only">${escapeHtml(contact.label)}</span>
+                      <span class="about-contact-icon about-contact-popover-app ${
+    escapeHtml(contact.iconClass)
+  }" aria-hidden="true"></span>
+                      <span id="${escapeHtml(titleId)}" class="sr-only">${
+    escapeHtml(contact.label)
+  }</span>
                     </div>
                     <div class="about-contact-popover-toolbar">
                       <a
                         class="btn cds--btn--ghost about-contact-action about-contact-download"
                         href="${escapeHtml(contact.originalSrc)}"
                         download="${escapeHtml(contact.downloadName)}"
-                        aria-label="${escapeHtml(t.about.contactDownloadJpgLabel)}"
+                        aria-label="${
+    escapeHtml(t.about.contactDownloadJpgLabel)
+  }"
                         title="${escapeHtml(t.about.contactDownloadJpgLabel)}"
                       >
                         <span class="about-contact-action-icon" aria-hidden="true">${downloadIconMarkup}</span>
@@ -108,7 +125,9 @@ function renderContactItem(
 function renderFactItem(fact: AboutFact): string {
   return `<div class="about-facts-row">
       <dt class="about-facts-term">
-        <span class="about-fact-icon ${escapeHtml(fact.iconClass)}" aria-hidden="true">${fact.iconMarkup}</span>
+        <span class="about-fact-icon ${
+    escapeHtml(fact.iconClass)
+  }" aria-hidden="true">${fact.iconMarkup}</span>
         <span class="about-facts-term-label">${escapeHtml(fact.term)}</span>
       </dt>
       <dd class="about-facts-description">${escapeHtml(fact.value)}</dd>
@@ -147,13 +166,16 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const closeIconMarkup = icon("x", "about-contact-action-icon-svg");
   const downloadIconMarkup = icon("download", "about-contact-action-icon-svg");
 
-  const qrImageSizes = "(min-width: 66rem) 16rem, (min-width: 42rem) 14rem, calc(100vw - 6rem)";
+  const qrImageSizes =
+    "(min-width: 66rem) 16rem, (min-width: 42rem) 14rem, calc(100vw - 6rem)";
   const qrImageTransforms = "avif webp jpg 240 360 512";
   const resolveIcon = helpers.icon?.bind(helpers);
   resolveIcon?.("wechat", "simpleicons");
   resolveIcon?.("telegram", "simpleicons");
 
-  const { final: finalSeparator, list: listSeparator } = getAboutFeedSeparators(language);
+  const { final: finalSeparator, list: listSeparator } = getAboutFeedSeparators(
+    language,
+  );
   const contacts = getAboutContacts(language, t.about);
   const facts = getAboutFacts(t.about, {
     location: icon("location", "about-fact-icon-svg"),
@@ -162,7 +184,14 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   });
 
   const contactItems = contacts.map((contact) =>
-    renderContactItem({ contact, translations: t, closeIconMarkup, downloadIconMarkup, qrImageSizes, qrImageTransforms })
+    renderContactItem({
+      contact,
+      translations: t,
+      closeIconMarkup,
+      downloadIconMarkup,
+      qrImageSizes,
+      qrImageTransforms,
+    })
   ).join("");
   const factItems = facts.map(renderFactItem).join("");
 
@@ -182,7 +211,11 @@ ${breadcrumb}
     </div>
     <div class="about-pagehead-meta">
       <p class="about-pagehead-kicker">${escapeHtml(t.about.feedsIntro)}</p>
-      <p class="about-pagehead-feed-links"><a href="${escapeHtml(feedXmlUrl)}">RSS</a>${escapeHtml(listSeparator)}<a href="${escapeHtml(atomXmlUrl)}">Atom</a> ${escapeHtml(finalSeparator)}
+      <p class="about-pagehead-feed-links"><a href="${
+    escapeHtml(feedXmlUrl)
+  }">RSS</a>${escapeHtml(listSeparator)}<a href="${
+    escapeHtml(atomXmlUrl)
+  }">Atom</a> ${escapeHtml(finalSeparator)}
         <a href="${escapeHtml(feedJsonUrl)}">JSON Feed</a>.</p>
     </div>
   </div>
@@ -194,18 +227,24 @@ ${breadcrumb}
       <p>${escapeHtml(t.about.body)}</p>
     </div>
   </div>
-  <aside class="feature-rail about-rail" aria-label="${escapeHtml(t.about.railAriaLabel)}">
+  <aside class="feature-rail about-rail" aria-label="${
+    escapeHtml(t.about.railAriaLabel)
+  }">
     <div class="feature-rail-sticky">
       <section class="feature-card about-rail-card about-contact-card">
         <h2 class="feature-card-title">${escapeHtml(t.about.contactTitle)}</h2>
         <ul class="about-contact-list">${contactItems}</ul>
       </section>
       <section class="feature-card about-rail-card about-facts-card">
-        <h2 class="feature-card-title">${escapeHtml(t.about.atAGlanceTitle)}</h2>
+        <h2 class="feature-card-title">${
+    escapeHtml(t.about.atAGlanceTitle)
+  }</h2>
         <dl class="about-facts">${factItems}</dl>
       </section>
       <section class="feature-card about-rail-card about-notes-card">
-        <h2 class="feature-card-title">${escapeHtml(t.about.siteNotesTitle)}</h2>
+        <h2 class="feature-card-title">${
+    escapeHtml(t.about.siteNotesTitle)
+  }</h2>
         <ul class="about-notes">
           <li>${escapeHtml(t.about.siteNoteOne)}</li>
           <li>${escapeHtml(t.about.siteNoteTwo)}</li>
@@ -213,11 +252,15 @@ ${breadcrumb}
         </ul>
       </section>
       <section class="feature-card about-rail-card about-pictogram-card">
-        <h2 class="feature-card-title">${escapeHtml(t.about.pictogramTitle)}</h2>
+        <h2 class="feature-card-title">${
+    escapeHtml(t.about.pictogramTitle)
+  }</h2>
         <div class="about-pictogram-frame" aria-hidden="true">
           <div class="about-pictogram">${ABOUT_PICTOGRAM_SVG}</div>
         </div>
-        <p class="feature-card-caption">${escapeHtml(t.about.pictogramCaption)}</p>
+        <p class="feature-card-caption">${
+    escapeHtml(t.about.pictogramCaption)
+  }</p>
       </section>
     </div>
   </aside>
