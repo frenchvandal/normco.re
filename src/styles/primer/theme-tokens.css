@@ -3,13 +3,15 @@
     color-scheme: light;
 
     --ph-font-sans:
-      -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
-      Arial, sans-serif;
+      "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      "Noto Sans", Helvetica, Arial, sans-serif;
     --ph-font-serif:
-      Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;
+      Charter, "Iowan Old Style", "Palatino Linotype", "URW Palladio L", P052,
+      "Book Antiqua", Constantia, "Noto Serif", "Bitstream Charter",
+      "Sitka Text", Cambria, Georgia, serif;
     --ph-font-mono:
-      ui-monospace, "Cascadia Code", "Source Code Pro", Menlo,
-      Consolas, "DejaVu Sans Mono", monospace;
+      ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas,
+      "DejaVu Sans Mono", monospace;
 
     --ph-color-canvas-default: light-dark(
       oklch(100% 0 89.88),
@@ -65,23 +67,30 @@
     --ph-text-2xl: 2.441rem;
     --ph-text-3xl: 3.052rem;
 
-    --ph-text-prose: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-    --ph-text-prose-md: clamp(1.2rem, 1.1rem + 0.5vw, 1.4rem);
-    --ph-text-prose-lg: clamp(1.4rem, 1.25rem + 0.75vw, 1.75rem);
-    --ph-text-prose-xl: clamp(1.75rem, 1.5rem + 1.25vw, 2.25rem);
+    --ph-text-prose-sm: clamp(0.9375rem, 0.91rem + 0.14vw, 1rem);
+    --ph-text-prose: clamp(1.0625rem, 1.02rem + 0.24vw, 1.1875rem);
+    --ph-text-prose-md: clamp(1.3125rem, 1.19rem + 0.55vw, 1.5rem);
+    --ph-text-prose-lg: clamp(1.625rem, 1.39rem + 0.95vw, 2rem);
+    --ph-text-prose-xl: clamp(2.125rem, 1.74rem + 1.55vw, 3rem);
 
+    --ph-lh-display: 1.1;
     --ph-lh-tight: 1.2;
     --ph-lh-snug: 1.375;
     --ph-lh-base: 1.5;
-    --ph-lh-relaxed: 1.625;
-    --ph-lh-prose: 1.7;
+    --ph-lh-relaxed: 1.7;
+    --ph-lh-prose: 1.78;
 
     --ph-opentype-body: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "pnum" 1;
     --ph-opentype-heading: "kern" 1, "liga" 1, "calt" 1, "lnum" 1;
     --ph-opentype-code: "kern" 0, "liga" 0, "calt" 1;
 
-    --ph-prose-paragraph-spacing: 1.25em;
-    --ph-prose-section-spacing: 2.5em;
+    --ph-prose-space-xs: clamp(0.75rem, 0.7rem + 0.18vw, 0.875rem);
+    --ph-prose-space-sm: clamp(1rem, 0.93rem + 0.28vw, 1.25rem);
+    --ph-prose-space-md: clamp(1.5rem, 1.34rem + 0.6vw, 1.875rem);
+    --ph-prose-space-lg: clamp(2.25rem, 1.96rem + 1vw, 3rem);
+    --ph-prose-space-xl: clamp(3rem, 2.5rem + 1.6vw, 4.5rem);
+    --ph-prose-paragraph-spacing: var(--ph-prose-space-sm);
+    --ph-prose-section-spacing: var(--ph-prose-space-lg);
 
     --ph-space-1: 4px;
     --ph-space-2: 8px;
@@ -94,8 +103,9 @@
     --ph-space-9: 80px;
     --ph-space-10: 96px;
 
-    --ph-measure: 68ch;
-    --ph-content-max: 860px;
+    --ph-measure: 42rem;
+    --ph-prose-max: 42rem;
+    --ph-content-max: 56rem;
     --ph-site-max: 1280px;
     --ph-sidebar: 240px;
     --ph-wide-max: calc(
@@ -128,6 +138,11 @@
     --ph-skeleton-line-height: 0.875rem;
     --ph-link-underline-thickness: 0.08em;
     --ph-link-underline-offset: 0.18em;
+    --ph-color-link-visited: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 62%,
+      var(--ph-color-fg-muted)
+    );
     --ph-grid-rule: color-mix(
       in oklch,
       var(--ph-color-border-muted) 72%,
@@ -152,6 +167,16 @@
       in oklch,
       var(--ph-color-accent-fg) 14%,
       var(--ph-color-canvas-subtle)
+    );
+    --ph-surface-code: color-mix(
+      in oklch,
+      var(--ph-color-canvas-inset) 92%,
+      var(--ph-color-canvas-default)
+    );
+    --ph-surface-quote: color-mix(
+      in oklch,
+      var(--ph-color-canvas-subtle) 92%,
+      var(--ph-color-canvas-default)
     );
     --ph-shadow-floating: 0 18px 48px color-mix(
       in oklch,

@@ -78,8 +78,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             </nav>
             <div class="post-pagehead-grid">
               <div class="post-pagehead-copy">
-                <h1 class="post-title">{data.title ?? ""}</h1>
-                <div class="post-meta">
+                <h1 id="post-title" class="post-title">{data.title ?? ""}</h1>
+                <p class="post-meta">
                   <time datetime={state.publishedDateIso}>
                     {state.publishedDateLabel}
                   </time>
@@ -91,7 +91,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                       <span>{state.readingTimeLabel}</span>
                     </>
                   )}
-                </div>
+                </p>
               </div>
               {state.showSummaryBlock && (
                 <div class="post-pagehead-context">
@@ -113,9 +113,13 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             </div>
           </header>
 
-          <div class="post-content" lang={languageTag}>
+          <section
+            class="post-content"
+            lang={languageTag}
+            aria-labelledby="post-title"
+          >
             {state.renderedChildren}
-          </div>
+          </section>
 
           <PostDetails
             title={t.post.detailsTitle}

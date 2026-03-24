@@ -174,10 +174,14 @@ describe("post.tsx layout", () => {
       );
 
       assertStringIncludes(html, 'class="post-title"');
+      assertStringIncludes(html, 'id="post-title"');
       assertStringIncludes(html, 'datetime="');
       assertStringIncludes(html, 'href="/posts/entry-title/"');
       assertStringIncludes(html, "Entry summary");
-      assertStringIncludes(html, 'class="post-content"');
+      assertStringIncludes(
+        html,
+        'class="post-content" lang="en" aria-labelledby="post-title"',
+      );
     });
 
     it("uses BCP 47 language tags on localized post content", async () => {
@@ -185,7 +189,10 @@ describe("post.tsx layout", () => {
         postLayout(makeData({ lang: "zh-hans" }), MOCK_HELPERS),
       );
 
-      assertStringIncludes(html, 'class="post-content" lang="zh-Hans"');
+      assertStringIncludes(
+        html,
+        'class="post-content" lang="zh-Hans" aria-labelledby="post-title"',
+      );
       assertNotMatch(html, /lang="zhHans"/);
     });
 

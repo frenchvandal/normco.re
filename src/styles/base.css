@@ -1,6 +1,7 @@
 @layer base {
   ::selection {
     background: var(--ph-color-selection-bg);
+    color: var(--ph-color-fg-default);
   }
 
   html {
@@ -8,6 +9,9 @@
     font-size: 100%;
     line-height: var(--ph-lh-base);
     color: var(--ph-color-fg-default);
+    font-kerning: normal;
+    font-optical-sizing: auto;
+    font-synthesis: none;
     background:
       radial-gradient(
         circle at top right,
@@ -27,6 +31,7 @@
       var(--ph-header-height) + var(--ph-space-5)
     );
     scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
   }
 
   body {
@@ -53,6 +58,8 @@
     font-weight: 600;
     line-height: var(--ph-lh-tight);
     letter-spacing: -0.02em;
+    font-kerning: normal;
+    font-variant-ligatures: common-ligatures contextual;
     text-wrap: balance;
     font-feature-settings: var(--ph-opentype-heading);
   }
@@ -71,6 +78,7 @@
     color: var(--ph-color-accent-fg);
     text-decoration-thickness: var(--ph-link-underline-thickness);
     text-underline-offset: var(--ph-link-underline-offset);
+    text-decoration-skip-ink: auto;
     text-decoration-color: color-mix(
       in oklch,
       currentColor 32%,
@@ -116,10 +124,12 @@
   }
 
   code {
-    display: inline-block;
+    display: inline;
     padding: 2px 4px;
     border-radius: var(--ph-radius-sm);
-    background: var(--ph-color-canvas-inset);
+    background: var(--ph-surface-code);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
     font-size: 0.875em;
     line-height: 1.4;
   }
@@ -128,8 +138,9 @@
   .shiki {
     inline-size: 100%;
     overflow-x: auto;
+    border: 1px solid var(--ph-color-border-muted);
     border-radius: var(--ph-radius-md);
-    background: var(--ph-color-canvas-inset);
+    background: var(--ph-surface-code);
   }
 
   pre {
@@ -185,8 +196,10 @@
   blockquote {
     padding-inline-start: var(--ph-space-5);
     border-inline-start: 3px solid var(--ph-color-border-default);
-    color: var(--ph-color-fg-muted);
-    font-style: italic;
+    background: var(--ph-surface-quote);
+    color: var(--ph-color-fg-default);
+    font-style: normal;
+    line-height: var(--ph-lh-relaxed);
   }
 
   blockquote cite,
@@ -217,7 +230,9 @@
     color: var(--ph-color-fg-muted);
     font-size: var(--ph-text-sm);
     line-height: var(--ph-lh-base);
-    text-align: center;
+    margin-inline: auto;
+    max-inline-size: var(--ph-measure);
+    text-align: start;
   }
 
   mark {
