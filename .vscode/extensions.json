@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "denoland.vscode-deno",
-    "typescriptteam.native-preview",
     "fwcd.kotlin",
     "vscjava.vscode-gradle",
     "redhat.vscode-xml",
