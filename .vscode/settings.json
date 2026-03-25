@@ -86,6 +86,7 @@
   },
   "editor.linkedEditing": true,
   "gradle.nestedProjects": true,
+  "js/ts.validate.enable": true,
   "js/ts.tsserver.experimental.enableProjectDiagnostics": true,
   "js/ts.experimental.useTsgo": true,
   "workbench.startupEditor": "readme"
