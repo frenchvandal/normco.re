@@ -59,7 +59,7 @@
     "jsr:@std/yaml@1.0.11": "1.0.11",
     "jsr:@std/yaml@1.0.12": "1.0.12",
     "jsr:@std/yaml@^1.0.5": "1.0.12",
-    "npm:@faker-js/faker@^10.3.0": "10.3.0",
+    "npm:@faker-js/faker@^10.4.0": "10.4.0",
     "npm:@resvg/resvg-wasm@2.6.2": "2.6.2",
     "npm:autoprefixer@10.4.27": "10.4.27_postcss@8.5.8",
     "npm:date-fns@4.1.0": "4.1.0",
@@ -473,8 +473,8 @@
     "@exodus/bytes@1.15.0": {
       "integrity": "sha512-UY0nlA+feH81UGSHv92sLEPLCeZFjXOuHhrIo0HQydScuQc8s0A7kL/UdgwgDq8g8ilksmuoF35YVTNphV2aBQ=="
     },
-    "@faker-js/faker@10.3.0": {
-      "integrity": "sha512-It0Sne6P3szg7JIi6CgKbvTZoMjxBZhcv91ZrqrNuaZQfB5WoqYYbzCUOq89YR+VY8juY9M1vDWmDDa2TzfXCw=="
+    "@faker-js/faker@10.4.0": {
+      "integrity": "sha512-sDBWI3yLy8EcDzgobvJTWq1MJYzAkQdpjXuPukga9wXonhpMRvd1Izuo2Qgwey2OiEoRIBr35RMU9HJRoOHzpw=="
     },
     "@html-validate/stylish@5.0.0": {
       "integrity": "sha512-xjhRV9k1mWfgsOcpYlwsjUOFy3w3EnCDrqUrEw+DWdvOStMK59ts2H7GLKWZtmLI5m6Npp3qMSNReafQy9K2sA==",
@@ -1781,7 +1781,7 @@
       "jsr:@std/testing@^1.0.17",
       "jsr:@std/text@^1.0.17",
       "jsr:@std/xml@0.1",
-      "npm:@faker-js/faker@^10.3.0",
+      "npm:@faker-js/faker@^10.4.0",
       "npm:date-fns@4.1.0",
       "npm:shiki@4.0.2"
     ]

@@ -23,7 +23,7 @@
     "@std/testing/time": "jsr:@std/testing@^1.0.17/time",
     "@std/text": "jsr:@std/text@^1.0.17",
     "@std/xml": "jsr:@std/xml@^0.1.0",
-    "@faker-js/faker": "npm:@faker-js/faker@^10.3.0",
+    "@faker-js/faker": "npm:@faker-js/faker@^10.4.0",
     "date-fns/locale": "npm:date-fns@4.1.0/locale",
     "shiki": "npm:shiki@4.0.2"
   }
