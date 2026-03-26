@@ -13,7 +13,7 @@ const TAG_COLORS = [
 
 export type TagColor = (typeof TAG_COLORS)[number];
 
-export function getTagSlug(tag: string): string {
+export function getTagSlug(tag: string) {
   return slugify(tag);
 }
 
@@ -29,6 +29,6 @@ export function getTagColor(tag: string): TagColor {
   return TAG_COLORS[hash % TAG_COLORS.length] as TagColor;
 }
 
-export function getTagUrl(tag: string, language: SiteLanguage): string {
+export function getTagUrl(tag: string, language: SiteLanguage) {
   return getLocalizedUrl(`/tags/${getTagSlug(tag)}/`, language);
 }

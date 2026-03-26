@@ -2,6 +2,12 @@ export function isDefined<T>(value: T | undefined): value is T {
   return value !== undefined;
 }
 
+export function isMutableRecord(
+  value: unknown,
+): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
 export function isLumeData(value: unknown): value is Lume.Data {
   return typeof value === "object" && value !== null;
 }

@@ -11,6 +11,10 @@ import {
 } from "../src/utils/json-feed.ts";
 import { FEED_VARIANTS } from "./feeds.ts";
 import { getLanguageTag, type SiteLanguage } from "../src/utils/i18n.ts";
+import {
+  isMutableRecord,
+  resolveOptionalTrimmedString,
+} from "../src/utils/type-guards.ts";
 import { registerContentInvariants } from "../plugins/content_invariants.ts";
 import { registerPostLinkGraph } from "../plugins/post_link_graph.ts";
 
@@ -26,19 +30,6 @@ const MULTILANGUAGE_DATA_ALIASES = {
   "zh-hant": "zhHant",
 } as const;
 const POSTS_SOURCE_SEGMENT = "/posts/";
-
-function isMutableRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
-function getNonEmptyString(value: unknown): string | undefined {
-  if (typeof value !== "string") {
-    return undefined;
-  }
-
-  const trimmedValue = value.trim();
-  return trimmedValue.length > 0 ? trimmedValue : undefined;
-}
 
 function normalizeSourcePath(sourcePath: string): string {
   return sourcePath.replaceAll("\\", "/");
@@ -74,10 +65,10 @@ export function assignMissingPostId(
     return;
   }
 
-  const basename = getNonEmptyString(pageData.basename);
+  const basename = resolveOptionalTrimmedString(pageData.basename);
   const scopeKey = (sourcePath ? getPostIdScopeKey(sourcePath) : undefined) ??
     (basename ? `basename:${basename}` : undefined);
-  const existingId = getNonEmptyString(pageData.id);
+  const existingId = resolveOptionalTrimmedString(pageData.id);
 
   if (existingId !== undefined) {
     if (scopeKey !== undefined) {

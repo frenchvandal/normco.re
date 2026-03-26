@@ -1,4 +1,5 @@
 import { walk } from "@std/fs";
+import { getErrorMessage } from "../scripts/_shared.ts";
 
 type CommandStatus = {
   readonly code: number;
@@ -59,10 +60,6 @@ export const POST_BUILD_TASKS: ReadonlyArray<BuildTask> = [
     ],
   },
 ];
-
-function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
 
 function formatCommand(command: string, args: ReadonlyArray<string>): string {
   return [command, ...args].join(" ");

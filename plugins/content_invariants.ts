@@ -2,6 +2,10 @@ import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
 
 import { parseDateValue } from "../src/utils/date-time.ts";
+import {
+  isMutableRecord,
+  resolveOptionalTrimmedString,
+} from "../src/utils/type-guards.ts";
 
 const REQUIRED_POST_LANGUAGES = ["en", "fr", "zh-hans", "zh-hant"] as const;
 const LANGUAGE_URL_PREFIX = {
@@ -11,19 +15,6 @@ const LANGUAGE_URL_PREFIX = {
   "zh-hant": "/zh-hant",
 } as const;
 const POSTS_SOURCE_SEGMENT = "/src/posts/";
-
-function isMutableRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
-function getNonEmptyString(value: unknown): string | undefined {
-  if (typeof value !== "string") {
-    return undefined;
-  }
-
-  const trimmedValue = value.trim();
-  return trimmedValue.length > 0 ? trimmedValue : undefined;
-}
 
 function normalizeSourcePath(sourcePath: string): string {
   return sourcePath.replaceAll("\\", "/");
@@ -79,11 +70,11 @@ export function registerContentInvariants(site: Site): void {
       const label = getPageLabel(page);
       const { data } = page;
 
-      const id = getNonEmptyString(data.id);
-      const title = getNonEmptyString(data.title);
-      const description = getNonEmptyString(data.description);
-      const url = getNonEmptyString(data.url);
-      const lang = getNonEmptyString(data.lang);
+      const id = resolveOptionalTrimmedString(data.id);
+      const title = resolveOptionalTrimmedString(data.title);
+      const description = resolveOptionalTrimmedString(data.description);
+      const url = resolveOptionalTrimmedString(data.url);
+      const lang = resolveOptionalTrimmedString(data.lang);
       const date = parseDateValue(data.date);
 
       if (id === undefined) {
@@ -158,8 +149,8 @@ export function registerContentInvariants(site: Site): void {
 
       for (const page of scopedPages) {
         const label = getPageLabel(page);
-        const id = getNonEmptyString(page.data.id);
-        const lang = getNonEmptyString(page.data.lang);
+        const id = resolveOptionalTrimmedString(page.data.id);
+        const lang = resolveOptionalTrimmedString(page.data.lang);
 
         if (id !== undefined) {
           scopedIds.add(id);

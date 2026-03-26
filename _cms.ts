@@ -5,11 +5,7 @@ import {
   resolveSlug,
 } from "./src/utils/cms.ts";
 
-export {
-  resolveCmsProdBranch,
-  resolveCurrentDateIso,
-  resolveSlug,
-} from "./src/utils/cms.ts";
+export { resolveCmsProdBranch, resolveCurrentDateIso, resolveSlug };
 
 const LANGUAGES = [
   { code: "en", label: "English", filename: "en.md" },
@@ -18,7 +14,7 @@ const LANGUAGES = [
   { code: "zh-hant", label: "Chinese Traditional", filename: "zh-hant.md" },
 ] as const;
 
-function toFolderLabel(name: string, suffix: string): string {
+function toFolderLabel(name: string, suffix: string) {
   return name.endsWith(suffix) ? name.slice(0, -suffix.length) : name;
 }
 

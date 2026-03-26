@@ -2,6 +2,10 @@ import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
 
 import { parseDateValue } from "../src/utils/date-time.ts";
+import {
+  isMutableRecord,
+  resolveOptionalTrimmedString,
+} from "../src/utils/type-guards.ts";
 
 const SITE_ORIGIN = "https://normco.re";
 const HTML_LINK_PATTERN = /<a\s[^>]*href=(["'])([^"']+)\1/giu;
@@ -13,22 +17,8 @@ export type PostLinkReference = Readonly<{
 }>;
 
 type MutablePostLinkReference = {
-  title: string;
-  url: string;
+  -readonly [K in keyof PostLinkReference]: PostLinkReference[K];
 };
-
-function isMutableRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
-function getNonEmptyString(value: unknown): string | undefined {
-  if (typeof value !== "string") {
-    return undefined;
-  }
-
-  const trimmedValue = value.trim();
-  return trimmedValue.length > 0 ? trimmedValue : undefined;
-}
 
 function isPostPage(page: Page): boolean {
   return isMutableRecord(page.data) && page.data.type === "post" &&
@@ -37,14 +27,14 @@ function isPostPage(page: Page): boolean {
 
 function resolveSourceContent(page: Page): string | undefined {
   if (isMutableRecord(page.data)) {
-    const dataContent = getNonEmptyString(page.data.content);
+    const dataContent = resolveOptionalTrimmedString(page.data.content);
 
     if (dataContent !== undefined) {
       return dataContent;
     }
   }
 
-  return getNonEmptyString(page.content);
+  return resolveOptionalTrimmedString(page.content);
 }
 
 function normalizeInternalTarget(
@@ -164,7 +154,7 @@ export function registerPostLinkGraph(site: Site): void {
     for (const page of postPages) {
       const data = page.data as Record<string, unknown>;
       const url = data.url as string;
-      const title = getNonEmptyString(data.title) ?? url;
+      const title = resolveOptionalTrimmedString(data.title) ?? url;
       const timestamp = parseDateValue(data.date)?.getTime() ?? 0;
 
       postsByUrl.set(url, { page, title, timestamp });
@@ -176,7 +166,8 @@ export function registerPostLinkGraph(site: Site): void {
     for (const page of postPages) {
       const data = page.data as Record<string, unknown>;
       const currentUrl = data.url as string;
-      const currentTitle = getNonEmptyString(data.title) ?? currentUrl;
+      const currentTitle = resolveOptionalTrimmedString(data.title) ??
+        currentUrl;
       const content = resolveSourceContent(page);
 
       if (content === undefined) {

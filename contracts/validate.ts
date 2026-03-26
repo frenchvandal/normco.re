@@ -25,6 +25,7 @@ import {
   JSON_FEED_PATH,
   RSS_FEED_PATH,
 } from "../src/utils/feed-paths.ts";
+import { getErrorMessage } from "../scripts/_shared.ts";
 
 /** Minimal JSON Schema validator for the subset of features we use. */
 export interface SchemaNode {
@@ -54,10 +55,6 @@ type XmlDocument = ReturnType<typeof parse>;
 type XmlElement = XmlDocument["root"];
 type XmlChildNode = XmlElement["children"][number];
 type FilePath = string | URL;
-
-function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);

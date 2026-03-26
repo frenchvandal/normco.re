@@ -23,6 +23,6 @@ export function lineNumberAt(source: string, index: number): number {
   return line;
 }
 
-export function getErrorMessage(error: unknown): string {
+export function getErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error);
 }
