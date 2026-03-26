@@ -16,6 +16,9 @@ const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
 const CANONICAL_ASSET_URLS = [
   "/style.css",
   "/scripts/header-client.js",
+  "/scripts/header-client/init.js",
+  "/scripts/header-client/search.js",
+  "/scripts/header-client/theme.js",
   "/scripts/about-contact-toggletips.js",
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
@@ -50,6 +53,46 @@ function toFingerprintedUrl(urlPath: string, hash: string): string {
     : urlPath;
 
   return `${basePath}.${hash}${extension}`;
+}
+
+function normalizeSlashes(value: string): string {
+  return value.replaceAll("\\", "/");
+}
+
+function toSiteUrl(rootDir: string, outputPath: string): string {
+  const normalizedRootDir = normalizeSlashes(rootDir).replace(/\/+$/, "");
+  const normalizedOutputPath = normalizeSlashes(outputPath);
+  const relativePath = normalizedOutputPath.startsWith(`${normalizedRootDir}/`)
+    ? normalizedOutputPath.slice(normalizedRootDir.length + 1)
+    : normalizedOutputPath;
+  return `/${relativePath}`;
+}
+
+function getUrlDirectory(urlPath: string): string {
+  const lastSlash = urlPath.lastIndexOf("/");
+  return lastSlash > 0 ? urlPath.slice(0, lastSlash) : "/";
+}
+
+function toRelativeUrlPath(fromDir: string, toPath: string): string {
+  const fromSegments = fromDir.split("/").filter((segment) =>
+    segment.length > 0
+  );
+  const toSegments = toPath.split("/").filter((segment) => segment.length > 0);
+  let sharedLength = 0;
+
+  while (
+    sharedLength < fromSegments.length &&
+    sharedLength < toSegments.length &&
+    fromSegments[sharedLength] === toSegments[sharedLength]
+  ) {
+    sharedLength += 1;
+  }
+
+  const upSegments = new Array(fromSegments.length - sharedLength).fill("..");
+  const downSegments = toSegments.slice(sharedLength);
+  const relativePath = [...upSegments, ...downSegments].join("/");
+
+  return relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
 }
 
 async function hashContent(content: Uint8Array): Promise<string> {
@@ -154,7 +197,20 @@ async function rewriteUrlsInSiteOutput(
     }
 
     const original = await Deno.readTextFile(entry.path);
-    const rewritten = applyRewrites(original, rewrites);
+    const currentUrl = toSiteUrl(rootDir, entry.path);
+    const currentDir = getUrlDirectory(currentUrl);
+    const scopedRewrites = extname(entry.path).toLowerCase() === ".js"
+      ? [
+        ...rewrites,
+        ...rewrites.map(([sourceValue, targetValue]) => {
+          return [
+            toRelativeUrlPath(currentDir, sourceValue),
+            toRelativeUrlPath(currentDir, targetValue),
+          ] as [string, string];
+        }),
+      ].sort(([left], [right]) => right.length - left.length)
+      : rewrites;
+    const rewritten = applyRewrites(original, scopedRewrites);
 
     if (rewritten !== original) {
       await Deno.writeTextFile(entry.path, rewritten);

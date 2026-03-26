@@ -19,6 +19,7 @@
 import { parseArgs } from "@std/cli";
 import { walk } from "@std/fs";
 import { bold, green, red, yellow } from "@std/fmt/colors";
+import { escape } from "@std/regexp";
 import { isCData, isElement, isText, parse } from "@std/xml";
 import {
   ATOM_FEED_PATH,
@@ -341,7 +342,7 @@ async function findOutputFiles(
 }
 
 export function createOutputFilePattern(publicPath: string): RegExp {
-  const escapedPath = publicPath.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escapedPath = escape(publicPath);
   return new RegExp(`${escapedPath}$`);
 }
 

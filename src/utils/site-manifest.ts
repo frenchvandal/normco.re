@@ -1,4 +1,4 @@
-export const APP_MANIFEST_MIME_TYPE = "application/manifest+json" as const;
+export { APP_MANIFEST_MIME_TYPE } from "./media-types.ts";
 export const APP_MANIFEST_PATH = "/manifest.webmanifest" as const;
 
 export type SiteChromeData = {

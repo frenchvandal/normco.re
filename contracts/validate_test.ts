@@ -163,6 +163,19 @@ describe("createOutputFilePattern()", () => {
     assertEquals(atomPattern.test("_site/zh-hans/atom.xml"), true);
     assertEquals(atomPattern.test("_site/feed.atom"), false);
   });
+
+  it("escapes regex metacharacters in literal output paths", () => {
+    const pattern = createOutputFilePattern("/archive/v1.0+(preview)?.xml");
+
+    assertEquals(
+      pattern.test("_site/fr/archive/v1.0+(preview)?.xml"),
+      true,
+    );
+    assertEquals(
+      pattern.test("_site/fr/archive/v1x0+(preview)?.xml"),
+      false,
+    );
+  });
 });
 
 describe("readJsonFile()", () => {

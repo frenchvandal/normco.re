@@ -31,11 +31,12 @@ function shouldSkipTarget(rawTarget: string): boolean {
 function stripQueryAndHash(target: string): string {
   const hashIndex = target.indexOf("#");
   const queryIndex = target.indexOf("?");
-  const endIndex = [hashIndex, queryIndex]
-    .filter((index) => index >= 0)
-    .sort((left, right) => left - right)[0];
+  const endIndex = Math.min(
+    hashIndex === -1 ? target.length : hashIndex,
+    queryIndex === -1 ? target.length : queryIndex,
+  );
 
-  return endIndex === undefined ? target : target.slice(0, endIndex);
+  return target.slice(0, endIndex);
 }
 
 function toRoutePath(rootDir: string, filePath: string): string {

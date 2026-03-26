@@ -6,9 +6,14 @@ import {
   type SiteChromeData,
 } from "../../utils/site-manifest.ts";
 import {
+  ATOM_FEED_MIME_TYPE,
+  JSON_FEED_MIME_TYPE,
+  RSS_FEED_MIME_TYPE,
+  SVG_MIME_TYPE,
+} from "../../utils/media-types.ts";
+import {
   DEFAULT_LANGUAGE,
   getLanguageTag,
-  getLocalizedUrl,
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
   tryResolveSiteLanguage,
@@ -102,14 +107,12 @@ function collectAlternateUrls(
     }
     const alternateUrl = typeof alternate.url === "string" ? alternate.url : "";
 
-    if (alternateUrl.length > 0) {
+    if (alternateUrl) {
       urls[language] = alternateUrl;
     }
   }
 
-  if (urls[currentLanguage] === undefined) {
-    urls[currentLanguage] = currentUrl;
-  }
+  urls[currentLanguage] ??= currentUrl;
 
   return urls;
 }
@@ -256,7 +259,7 @@ export default (
           <link
             rel="icon"
             href={resolvedSiteChrome.faviconSvgUrl}
-            type="image/svg+xml"
+            type={SVG_MIME_TYPE}
             sizes="any"
           />
           <link
@@ -286,19 +289,19 @@ export default (
           </script>
           <link
             rel="alternate"
-            type="application/rss+xml"
+            type={RSS_FEED_MIME_TYPE}
             title={resolvedSiteName}
             href={feedXmlUrl}
           />
           <link
             rel="alternate"
-            type="application/atom+xml"
+            type={ATOM_FEED_MIME_TYPE}
             title={`${resolvedSiteName} Atom feed`}
             href={atomXmlUrl}
           />
           <link
             rel="alternate"
-            type="application/feed+json"
+            type={JSON_FEED_MIME_TYPE}
             title={`${resolvedSiteName} JSON feed`}
             href={feedJsonUrl}
           />
@@ -331,6 +334,7 @@ export default (
           </div>
           <script
             src="/scripts/header-client.js"
+            type="module"
             fetchpriority="low"
             defer
           >

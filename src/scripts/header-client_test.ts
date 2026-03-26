@@ -1,6 +1,6 @@
 import { assert, assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import SCRIPT_SOURCE from "./header-client.js" with { type: "text" };
+import { bindHeaderClient } from "./header-client/init.js";
 import { getJSDOM } from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
@@ -425,7 +425,7 @@ async function flush(window: TestWindow, cycles = 4) {
 }
 
 function evaluateScript(window: TestWindow) {
-  window.eval(SCRIPT_SOURCE);
+  bindHeaderClient(window as unknown as Window & typeof globalThis);
 }
 
 function getLanguageToggle(window: TestWindow): HTMLButtonElement {

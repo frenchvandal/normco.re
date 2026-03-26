@@ -166,6 +166,10 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
+        'src="/scripts/header-client.js" type="module"',
+      );
+      assertStringIncludes(
+        html,
         'src="/scripts/about-contact-toggletips.js"',
       );
       assertStringIncludes(

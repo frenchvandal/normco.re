@@ -17,14 +17,22 @@ import {
   tryResolveSiteLanguage,
 } from "../src/utils/i18n.ts";
 import {
+  APP_CONTRACT_VERSION,
+  APP_MANIFEST_API_PATH,
+  getPostDetailApiPath,
+  POSTS_INDEX_API_PATH,
+} from "../src/utils/mobile-content-contract.ts";
+import {
   type ContentBlock,
   parsePostContent,
 } from "../plugins/content-contract.ts";
 import { FEED_VARIANTS, type FeedVariant } from "./feeds.ts";
 
-export const APP_CONTRACT_VERSION = "1" as const;
-export const APP_MANIFEST_API_PATH = "/api/app-manifest.json" as const;
-export const POSTS_INDEX_API_PATH = "/api/posts/index.json" as const;
+export {
+  APP_CONTRACT_VERSION,
+  APP_MANIFEST_API_PATH,
+  POSTS_INDEX_API_PATH,
+} from "../src/utils/mobile-content-contract.ts";
 
 const GENERATED_MOBILE_API_PATH =
   /^\/(?:(?:fr|zh-hans|zh-hant)\/)?api\/(?:app-manifest\.json|posts\/(?:index|[^/]+)\.json)$/;
@@ -184,10 +192,6 @@ function resolvePageLanguage(page: Data): SiteLanguage {
   }
 
   return language;
-}
-
-function getPostDetailApiPath(slug: string, language: SiteLanguage): string {
-  return getLocalizedUrl(`/api/posts/${slug}.json`, language);
 }
 
 function createPostsIndexItem(

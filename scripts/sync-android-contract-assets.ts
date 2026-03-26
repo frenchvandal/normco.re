@@ -107,9 +107,11 @@ export function needsAndroidContractAssetWrite(
   destinationPath: string,
 ): boolean {
   const ignoreGeneratedAt = destinationPath.endsWith("app-manifest.json");
+  const normalizeComparable = (content: string) =>
+    normalizeComparableJson(content, { ignoreGeneratedAt });
 
-  return normalizeComparableJson(sourceContent, { ignoreGeneratedAt }) !==
-    normalizeComparableJson(destinationContent, { ignoreGeneratedAt });
+  return normalizeComparable(sourceContent) !==
+    normalizeComparable(destinationContent);
 }
 
 async function shouldWriteAssetCopy(copy: ContractAssetCopy): Promise<boolean> {

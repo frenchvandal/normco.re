@@ -11,6 +11,10 @@ import { registerAssets } from "./_config/assets.ts";
 import { registerPlugins } from "./_config/plugins.ts";
 import { registerFeeds } from "./_config/feeds.ts";
 import { registerMobileContentApi } from "./_config/mobile_content_api.ts";
+import {
+  SCOPED_UPDATE_MATCHERS,
+  shouldRunPostBuildTasks,
+} from "./_config/runtime_policy.ts";
 import { registerSiteManifest } from "./_config/site_manifest.ts";
 import { registerProcessors } from "./_config/processors.ts";
 import { registerXslStylesheets } from "./_config/xsl_stylesheets.ts";
@@ -117,6 +121,7 @@ const site: Site = lume({
 
 const buildData = getBuildData();
 site.data("build", buildData);
+site.scopedUpdates(...SCOPED_UPDATE_MATCHERS);
 
 const seoIssues: SeoIssue[] = [];
 site.addEventListener("beforeSave", () => {
@@ -132,12 +137,14 @@ registerSiteManifest(site);
 registerProcessors(site);
 registerXslStylesheets(site);
 
-// Ensure generated quality reports are written under a dedicated ignored
-// directory separate from the Lume build cache.
-site.addEventListener("beforeBuild", () => runBuildTasks(PRE_BUILD_TASKS));
+if (shouldRunPostBuildTasks(isServeTask)) {
+  // Ensure generated quality reports are written under a dedicated ignored
+  // directory separate from the Lume build cache.
+  site.addEventListener("beforeBuild", () => runBuildTasks(PRE_BUILD_TASKS));
 
-// Run asset fingerprinting and link/import validation against the final output,
-// after Lume has finished rewriting URLs.
-site.addEventListener("afterBuild", () => runBuildTasks(POST_BUILD_TASKS));
+  // Run asset fingerprinting and link/import validation against the final
+  // output, after Lume has finished rewriting URLs.
+  site.addEventListener("afterBuild", () => runBuildTasks(POST_BUILD_TASKS));
+}
 
 export default site;

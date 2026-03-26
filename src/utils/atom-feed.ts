@@ -1,5 +1,6 @@
 import { escape } from "@std/html";
 import { formatRfc3339Instant } from "./date-time.ts";
+import { ATOM_FEED_MIME_TYPE, HTML_MIME_TYPE } from "./media-types.ts";
 
 export type AtomFeedAuthor = {
   readonly name: string;
@@ -57,7 +58,7 @@ function formatEntry(entry: AtomFeedEntry): string {
     "  <entry>",
     `    <id>${escapeXml(entry.id)}</id>`,
     `    <title>${escapeXml(entry.title)}</title>`,
-    `    <link rel="alternate" type="text/html" href="${
+    `    <link rel="alternate" type="${HTML_MIME_TYPE}" href="${
       escapeXml(entry.url)
     }"/>`,
     `    <updated>${formatRfc3339Instant(entry.updated)}</updated>`,
@@ -101,10 +102,10 @@ export function generateAtomXml(data: AtomFeedData): string {
     }${data.language ? ` xml:lang="${escapeXml(data.language)}"` : ""}>`,
     `  <id>${escapeXml(data.id)}</id>`,
     `  <title>${escapeXml(data.title)}</title>`,
-    `  <link rel="self" type="application/atom+xml" href="${
+    `  <link rel="self" type="${ATOM_FEED_MIME_TYPE}" href="${
       escapeXml(data.feedUrl)
     }"/>`,
-    `  <link rel="alternate" type="text/html" href="${
+    `  <link rel="alternate" type="${HTML_MIME_TYPE}" href="${
       escapeXml(data.siteUrl)
     }"/>`,
     ...(data.complete ? ["  <fh:complete/>"] : []),

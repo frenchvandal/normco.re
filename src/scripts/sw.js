@@ -53,6 +53,9 @@ const STATIC_ASSETS = [
   "/android-chrome-512x512.png",
   "/style.css",
   "/scripts/header-client.js",
+  "/scripts/header-client/init.js",
+  "/scripts/header-client/search.js",
+  "/scripts/header-client/theme.js",
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
   "/scripts/post-code-copy.js",
@@ -82,6 +85,8 @@ const STATIC_ASSETS = [
 ];
 
 const FEED_TTL_MS = 30 * 60 * 1000;
+const HTML_CONTENT_TYPE = "text/html; charset=UTF-8";
+const TEXT_CONTENT_TYPE = "text/plain; charset=UTF-8";
 
 const KNOWN_BOT_PATTERN =
   /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
@@ -315,7 +320,7 @@ async function networkFirstPage(request) {
     }
 
     return new Response(OFFLINE_FALLBACK_HTML, {
-      headers: { "content-type": "text/html; charset=utf-8" },
+      headers: { "content-type": HTML_CONTENT_TYPE },
       status: 503,
       statusText: "Service Unavailable",
     });
@@ -375,7 +380,7 @@ async function staleWhileRevalidateFeed(request) {
   return new Response("Feed unavailable while offline.", {
     status: 503,
     statusText: "Service Unavailable",
-    headers: { "content-type": "text/plain; charset=utf-8" },
+    headers: { "content-type": TEXT_CONTENT_TYPE },
   });
 }
 

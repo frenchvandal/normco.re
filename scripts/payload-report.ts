@@ -206,7 +206,7 @@ function assertPolicyString(
 function normalizeRoute(route: string): string {
   const trimmedRoute = route.trim();
 
-  if (trimmedRoute.length === 0) {
+  if (!trimmedRoute) {
     throw new Error("Route values cannot be empty");
   }
 

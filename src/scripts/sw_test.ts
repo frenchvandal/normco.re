@@ -153,6 +153,81 @@ describe("sw.js", () => {
     assertEquals(await response.text(), "FR offline page");
   });
 
+  it("returns canonical content-type headers for inline offline fallbacks", async () => {
+    const runtime = createRuntime({
+      fetchImpl() {
+        return Promise.reject(new Error("offline"));
+      },
+      cacheStores: {
+        "static-test": {
+          match() {
+            return Promise.resolve(undefined);
+          },
+          put() {
+            return Promise.resolve();
+          },
+        },
+        "pages-test": {
+          match() {
+            return Promise.resolve(undefined);
+          },
+          put() {
+            return Promise.resolve();
+          },
+        },
+        "feeds-test": {
+          match() {
+            return Promise.resolve(undefined);
+          },
+          put() {
+            return Promise.resolve();
+          },
+        },
+      },
+    });
+    const listener = runtime.getFetchListener();
+    let pageResponsePromise: Promise<Response> | undefined;
+    let feedResponsePromise: Promise<Response> | undefined;
+
+    listener({
+      request: {
+        url: "https://normco.re/posts/example/",
+        method: "GET",
+        mode: "navigate",
+        destination: "document",
+        headers: new Headers({ "user-agent": "Mozilla/5.0" }),
+      },
+      respondWith(promise) {
+        pageResponsePromise = promise;
+      },
+    });
+
+    listener({
+      request: {
+        url: "https://normco.re/rss.xml",
+        method: "GET",
+        mode: "cors",
+        destination: "document",
+        headers: new Headers({ "user-agent": "Mozilla/5.0" }),
+      },
+      respondWith(promise) {
+        feedResponsePromise = promise;
+      },
+    });
+
+    const pageResponse = await pageResponsePromise!;
+    const feedResponse = await feedResponsePromise!;
+
+    assertEquals(
+      pageResponse.headers.get("content-type"),
+      "text/html; charset=UTF-8",
+    );
+    assertEquals(
+      feedResponse.headers.get("content-type"),
+      "text/plain; charset=UTF-8",
+    );
+  });
+
   it("bypasses crawler requests without intercepting them", () => {
     const runtime = createRuntime({
       fetchImpl() {

@@ -1,4 +1,16 @@
 import { siteName } from "./_data.ts";
+import {
+  type ContractReference,
+  type ContractReferenceDefinition,
+  type ContractReferenceField,
+  getMobileContractReferenceData,
+} from "./utils/contract-reference.ts";
+import {
+  ATOM_FEED_MIME_TYPE,
+  JSON_FEED_MIME_TYPE,
+  RSS_FEED_MIME_TYPE,
+  XML_MIME_TYPE,
+} from "./utils/media-types.ts";
 import { renderOcticonMarkup } from "./utils/primer-icons.ts";
 import { resolvePageSetup } from "./utils/page-setup.ts";
 import type { SiteLanguage, SiteTranslations } from "./utils/i18n.ts";
@@ -88,6 +100,140 @@ type AccordionItemProps = Readonly<{
   id: string;
   title: string;
 }>;
+
+function renderContractField(
+  field: ContractReferenceField,
+  translations: SiteTranslations,
+): string {
+  const requirementTone = field.required ? "teal" : "gray";
+  const requirementLabel = field.required
+    ? translations.feeds.contractRequiredLabel
+    : translations.feeds.contractOptionalLabel;
+  const constraints = field.constraints.length > 0
+    ? `<p class="contract-reference-field-constraints"><span class="contract-reference-label">${
+      escapeHtml(translations.feeds.contractConstraintsLabel)
+    }:</span> ${
+      field.constraints.map((constraint) =>
+        `<code>${escapeHtml(constraint)}</code>`
+      ).join(" ")
+    }</p>`
+    : "";
+
+  return `<li class="contract-reference-field">
+    <div class="contract-reference-field-head">
+      <code class="contract-reference-code">${escapeHtml(field.name)}</code>
+      <span class="cds--tag cds--tag--${requirementTone} contract-reference-tag" title="${
+    escapeHtml(requirementLabel)
+  }">
+        <span class="cds--tag__label">${escapeHtml(requirementLabel)}</span>
+      </span>
+    </div>
+    <p class="contract-reference-field-type"><code>${
+    escapeHtml(field.typeLabel)
+  }</code></p>
+    ${constraints}
+  </li>`;
+}
+
+function renderContractDefinition(
+  definition: ContractReferenceDefinition,
+  translations: SiteTranslations,
+): string {
+  const description = definition.description
+    ? `<p class="contract-reference-definition-description">${
+      escapeHtml(definition.description)
+    }</p>`
+    : "";
+  const fields = definition.fields.length > 0
+    ? `<ul class="contract-reference-field-list">
+      ${
+      definition.fields.map((field) => renderContractField(field, translations))
+        .join("\n")
+    }
+    </ul>`
+    : "";
+
+  return `<li class="contract-reference-definition">
+    <div class="contract-reference-definition-head">
+      <code class="contract-reference-code">${
+    escapeHtml(definition.name)
+  }</code>
+      <p class="contract-reference-definition-type"><code>${
+    escapeHtml(definition.typeLabel)
+  }</code></p>
+    </div>
+    ${description}
+    ${fields}
+  </li>`;
+}
+
+function renderContractReference(
+  contract: ContractReference,
+  translations: SiteTranslations,
+): string {
+  const schemaId = contract.schemaId
+    ? `<p class="contract-reference-meta-line">
+      <span class="contract-reference-label">${
+      escapeHtml(translations.feeds.contractSchemaIdLabel)
+    }:</span>
+      <code>${escapeHtml(contract.schemaId)}</code>
+    </p>`
+    : "";
+  const endpoints = `<div class="contract-reference-block">
+    <p class="contract-reference-block-title">${
+    escapeHtml(translations.feeds.contractEndpointLabel)
+  }</p>
+    <ul class="contract-reference-endpoints">
+      ${
+    contract.endpointPaths.map((path) =>
+      `<li><code>${escapeHtml(path)}</code></li>`
+    ).join("\n")
+  }
+    </ul>
+  </div>`;
+  const fields = `<div class="contract-reference-block">
+    <p class="contract-reference-block-title">${
+    escapeHtml(translations.feeds.contractFieldsHeading)
+  }</p>
+    <ul class="contract-reference-field-list">
+      ${
+    contract.topLevelFields.map((field) =>
+      renderContractField(field, translations)
+    ).join("\n")
+  }
+    </ul>
+  </div>`;
+  const definitions = contract.definitions.length > 0
+    ? `<div class="contract-reference-block">
+      <p class="contract-reference-block-title">${
+      escapeHtml(translations.feeds.contractDefinitionsHeading)
+    }</p>
+      <ul class="contract-reference-definition-list">
+        ${
+      contract.definitions.map((definition) =>
+        renderContractDefinition(definition, translations)
+      ).join("\n")
+    }
+      </ul>
+    </div>`
+    : "";
+
+  return `<article class="cds--tile contract-reference-card" data-contract-reference="${
+    escapeHtml(contract.id)
+  }">
+    <div class="contract-reference-card-head">
+      <p class="contract-reference-kicker">JSON Schema</p>
+      <h3 class="contract-reference-title">${escapeHtml(contract.title)}</h3>
+      <p class="contract-reference-description">${
+    escapeHtml(contract.description)
+  }</p>
+      ${schemaId}
+    </div>
+    ${endpoints}
+    ${fields}
+    ${definitions}
+  </article>`;
+}
 
 function resolveFeedFormatMeta(mime: string): FormatMeta {
   return mime.includes("json")
@@ -280,28 +426,28 @@ function buildFeedCards(
       title: translations.feeds.rssTitle,
       description: translations.feeds.rssDescription,
       path: getLocalizedRssFeedUrl(language),
-      mime: "application/rss+xml",
+      mime: RSS_FEED_MIME_TYPE,
     },
     {
       id: "atom",
       title: translations.feeds.atomTitle,
       description: translations.feeds.atomDescription,
       path: getLocalizedAtomFeedUrl(language),
-      mime: "application/atom+xml",
+      mime: ATOM_FEED_MIME_TYPE,
     },
     {
       id: "json",
       title: translations.feeds.jsonTitle,
       description: translations.feeds.jsonDescription,
       path: getLocalizedJsonFeedUrl(language),
-      mime: "application/feed+json",
+      mime: JSON_FEED_MIME_TYPE,
     },
     {
       id: "sitemap",
       title: translations.feeds.sitemapTitle,
       description: translations.feeds.sitemapDescription,
       path: "/sitemap.xml",
-      mime: "application/xml",
+      mime: XML_MIME_TYPE,
     },
   ];
 }
@@ -326,6 +472,7 @@ export default (data: Lume.Data): string => {
   const siteOrigin = `https://${siteName}`;
   const feedCards = buildFeedCards(language, translations);
   const feedActions = buildFeedActions(translations);
+  const contractReference = getMobileContractReferenceData();
 
   const cardsHtml = feedCards.map((card) =>
     renderCard(card, siteOrigin, feedActions)
@@ -355,6 +502,10 @@ export default (data: Lume.Data): string => {
       body: translations.feeds.guidanceDiscoveryBody,
     }),
   ].join("\n");
+  const contractCardsHtml = contractReference.contracts.map((contract) =>
+    renderContractReference(contract, translations)
+  ).join("\n");
+  const languagesLabel = contractReference.supportedLanguages.join(", ");
 
   return `<div class="site-page-shell site-page-shell--wide feeds-page">
   <section class="pagehead syndication-pagehead" aria-labelledby="syndication-title">
@@ -488,6 +639,38 @@ export default (data: Lume.Data): string => {
         <ul class="cds--accordion site-accordion" data-site-accordion="">
           ${guidanceAccordion}
         </ul>
+      </section>
+      <section
+        class="syndication-section contract-reference-section"
+        aria-labelledby="contract-reference-title"
+      >
+        <div class="subhead">
+          <h2 id="contract-reference-title" class="subhead-heading">${
+    escapeHtml(translations.feeds.contractsTitle)
+  }</h2>
+        </div>
+        <p class="syndication-guidance-lead">${
+    escapeHtml(translations.feeds.contractsLead)
+  }</p>
+        <div class="contract-reference-summary">
+          <div class="cds--tile contract-reference-summary-card">
+            <p class="contract-reference-meta-line">
+              <span class="contract-reference-label">${
+    escapeHtml(translations.feeds.contractVersionLabel)
+  }:</span>
+              <code>${escapeHtml(contractReference.version)}</code>
+            </p>
+            <p class="contract-reference-meta-line">
+              <span class="contract-reference-label">${
+    escapeHtml(translations.feeds.contractLanguagesLabel)
+  }:</span>
+              <code>${escapeHtml(languagesLabel)}</code>
+            </p>
+          </div>
+        </div>
+        <div class="contract-reference-grid">
+          ${contractCardsHtml}
+        </div>
       </section>
     </div>
   </div>

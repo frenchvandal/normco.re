@@ -89,6 +89,25 @@ describe("syndication.page.tsx", () => {
     assertNotMatch(html, /feeds-overview-callout/);
   });
 
+  it("renders generated mobile contract reference from live schema data", () => {
+    const html = syndicationPage(MOCK_DATA);
+
+    assertStringIncludes(html, "contract-reference-section");
+    assertStringIncludes(html, "App contracts");
+    assertStringIncludes(html, "Contract version");
+    assertStringIncludes(html, "<code>1</code>");
+    assertStringIncludes(html, "App Manifest");
+    assertStringIncludes(html, "Posts Index");
+    assertStringIncludes(html, "Post Detail");
+    assertStringIncludes(html, "<code>/api/app-manifest.json</code>");
+    assertStringIncludes(html, "<code>/fr/api/posts/index.json</code>");
+    assertStringIncludes(html, "<code>/zh-hans/api/posts/{slug}.json</code>");
+    assertStringIncludes(html, "Top-level fields");
+    assertStringIncludes(html, "Definitions");
+    assertStringIncludes(html, "RFC 3339");
+    assertStringIncludes(html, "absolute URI");
+  });
+
   it("loads the shared surface controls and feed copy scripts", () => {
     const html = syndicationPage(MOCK_DATA);
 
@@ -115,6 +134,9 @@ describe("syndication.page.tsx", () => {
       html,
       'data-copy-copied-status="URL de Flux RSS copiée"',
     );
+    assertStringIncludes(html, "Contrats app");
+    assertStringIncludes(html, "Version du contrat");
+    assertStringIncludes(html, "Champs de premier niveau");
     assertNotMatch(html, /cds--breadcrumb-current/);
   });
 });
@@ -150,6 +172,8 @@ describe("syndication CSS contracts", () => {
       layoutStyles,
       ".feeds-copy-notice .cds--inline-notification__details",
     );
+    assertStringIncludes(layoutStyles, ".contract-reference-grid {");
+    assertStringIncludes(layoutStyles, ".contract-reference-field {");
     assertStringIncludes(layoutStyles, ".syndication-pagehead-grid");
     assertStringIncludes(layoutStyles, ".syndication-overview-card");
   });

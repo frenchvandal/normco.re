@@ -21,6 +21,9 @@ export function registerAssets(site: Site): void {
   site.add("/style.css");
 
   site.add("/scripts/header-client.js");
+  site.add("/scripts/header-client/init.js");
+  site.add("/scripts/header-client/search.js");
+  site.add("/scripts/header-client/theme.js");
   site.add("/scripts/about-contact-toggletips.js");
   site.add("/scripts/language-preference.js");
   site.add("/scripts/feed-copy.js");

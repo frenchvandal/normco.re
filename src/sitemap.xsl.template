@@ -301,7 +301,7 @@
         </div>
 
         <script>(()=>{const e=document.getElementById("site-footer-years");if(!e)return;const s=2022,y=new Date().getFullYear();e.textContent=y>s?String(s)+"-"+String(y):String(s)})()</script>
-        <script src="/scripts/header-client.js" defer="defer"></script>
+        <script src="/scripts/header-client.js" type="module" defer="defer"></script>
       </body>
     </html>
   </xsl:template>

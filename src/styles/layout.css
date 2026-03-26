@@ -2329,6 +2329,108 @@
     gap: var(--ph-space-4);
   }
 
+  .contract-reference-summary,
+  .contract-reference-grid,
+  .contract-reference-card,
+  .contract-reference-card-head,
+  .contract-reference-block,
+  .contract-reference-field-list,
+  .contract-reference-definition-list,
+  .contract-reference-definition,
+  .contract-reference-definition-head,
+  .contract-reference-field,
+  .contract-reference-field-head {
+    display: grid;
+    gap: var(--ph-space-3);
+  }
+
+  .contract-reference-summary-card,
+  .contract-reference-card {
+    padding: var(--ph-space-5);
+  }
+
+  .contract-reference-grid {
+    gap: var(--ph-space-4);
+  }
+
+  .contract-reference-kicker,
+  .contract-reference-block-title,
+  .contract-reference-label,
+  .contract-reference-meta-line,
+  .contract-reference-field-type,
+  .contract-reference-definition-type,
+  .contract-reference-definition-description,
+  .contract-reference-field-constraints {
+    margin: 0;
+  }
+
+  .contract-reference-kicker,
+  .contract-reference-label {
+    color: var(--ph-color-fg-muted);
+    font-size: var(--ph-text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .contract-reference-title {
+    margin: 0;
+    color: var(--ph-color-fg-default);
+    font-size: var(--ph-text-md);
+    line-height: var(--ph-lh-snug);
+  }
+
+  .contract-reference-description {
+    margin: 0;
+    color: var(--ph-color-fg-muted);
+  }
+
+  .contract-reference-endpoints,
+  .contract-reference-field-list,
+  .contract-reference-definition-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .contract-reference-definition-list {
+    gap: var(--ph-space-4);
+  }
+
+  .contract-reference-definition {
+    padding-block-start: var(--ph-space-3);
+    border-block-start: 1px solid var(--ph-color-border-muted);
+  }
+
+  .contract-reference-field {
+    padding: var(--ph-space-3);
+    border: 1px solid var(--ph-color-border-muted);
+    border-radius: var(--ph-radius-sm);
+    background: var(--ph-color-canvas-subtle);
+  }
+
+  .contract-reference-field-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+
+  .contract-reference-tag {
+    justify-self: start;
+  }
+
+  .contract-reference-code,
+  .contract-reference-endpoints code,
+  .contract-reference-field-type code,
+  .contract-reference-definition-type code,
+  .contract-reference-field-constraints code,
+  .contract-reference-meta-line code {
+    font-size: var(--ph-text-sm);
+  }
+
+  .contract-reference-endpoints li + li {
+    margin-block-start: var(--ph-space-2);
+  }
+
   .feeds-copy-control {
     display: grid;
     gap: var(--ph-space-3);
@@ -2624,6 +2726,10 @@
     .feeds-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .contract-reference-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 47.999rem) {
@@ -2657,6 +2763,8 @@
     .cds--side-nav,
     .feature-card,
     .feeds-card,
+    .contract-reference-summary-card,
+    .contract-reference-card,
     .syndication-overview-card,
     .about-contact-trigger,
     .about-contact-popover,
