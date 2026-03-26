@@ -23,6 +23,7 @@ import jsonLd from "lume/plugins/json_ld.ts";
 import type Site from "lume/core/site.ts";
 import { enUS, fr as frLocale, zhCN, zhTW } from "date-fns/locale";
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
+import { registerPostDataPreparation } from "./processors.ts";
 import shiki from "../plugins/shiki/mod.ts";
 
 /**
@@ -131,6 +132,9 @@ export function registerPlugins(
       ],
     }),
   );
+
+  registerPostDataPreparation(site);
+
   site.use(
     multilanguage({
       languages: ["en", "fr", "zh-hans", "zh-hant"],

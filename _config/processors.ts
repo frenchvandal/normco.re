@@ -139,11 +139,24 @@ export function decodePageContent(content: unknown): string {
   return String(content);
 }
 
-export function registerProcessors(site: Site): void {
-  // Reuse generated ids across localized siblings and repeated watch rebuilds
-  // within the same process when source metadata omits `id`.
+export function registerPostDataPreparation(site: Site): void {
+  // The multilanguage plugin groups localized siblings by `id` while building
+  // alternates, so post ids and hyphenated language aliases must exist first.
   const generatedPostIdsByScope = new Map<string, string>();
 
+  site.preprocess([".html"], (pages: Page[]) => {
+    for (const page of pages) {
+      applyMultilanguageDataAliases(page.data);
+      assignMissingPostId(
+        page.data,
+        typeof page.sourcePath === "string" ? page.sourcePath : undefined,
+        generatedPostIdsByScope,
+      );
+    }
+  });
+}
+
+export function registerProcessors(site: Site): void {
   // Add `image-size` only on searchable editorial content; other image surfaces
   // are handled separately and should not be pulled into this processor.
   site.process([".html"], (pages: Page[]) => {
@@ -174,17 +187,6 @@ export function registerProcessors(site: Site): void {
     }));
 
     assertEditorialImageDimensions(snapshots);
-  });
-
-  site.preprocess([".html"], (pages: Page[]) => {
-    for (const page of pages) {
-      applyMultilanguageDataAliases(page.data);
-      assignMissingPostId(
-        page.data,
-        typeof page.sourcePath === "string" ? page.sourcePath : undefined,
-        generatedPostIdsByScope,
-      );
-    }
   });
 
   registerPostLinkGraph(site);
