@@ -1,4 +1,5 @@
 import { assertEquals, assertRejects } from "@std/assert";
+import { join } from "@std/path";
 import { describe, it } from "@std/testing/bdd";
 
 import {
@@ -7,7 +8,7 @@ import {
   runBuildTask,
   runBuildTasks,
 } from "./build_tasks.ts";
-import { createDirEntry, withPatchedDeno } from "../test/mock_deno.ts";
+import { withTempDir, writeTextTree } from "../test/temp_fs.ts";
 
 describe("build task definitions", () => {
   it("defines the quality-report pre-build step", () => {
@@ -91,32 +92,25 @@ describe("runBuildTask()", () => {
   });
 
   it("expands HTML and JSON glob arguments before invoking deno fmt", async () => {
-    const htmlDir = "/virtual/site";
-    const nestedDir = `${htmlDir}/posts`;
     const calls: Array<{ command: string; args: ReadonlyArray<string> }> = [];
+    let expectedArgs: ReadonlyArray<string> = [];
 
-    await withPatchedDeno({
-      readDir: (path: string | URL) => {
-        const directory = String(path);
+    await withTempDir("build-tasks-", async (htmlDir) => {
+      const nestedDir = join(htmlDir, "posts");
+      expectedArgs = [
+        "fmt",
+        `${htmlDir}/index.html`,
+        `${nestedDir}/entry.html`,
+        `${htmlDir}/feed.json`,
+        `${nestedDir}/entry.json`,
+      ];
+      await writeTextTree(htmlDir, {
+        "index.html": "",
+        "feed.json": "",
+        "posts/entry.html": "",
+        "posts/entry.json": "",
+      });
 
-        if (directory === htmlDir) {
-          return (async function* () {
-            yield createDirEntry("index.html", "file");
-            yield createDirEntry("feed.json", "file");
-            yield createDirEntry("posts", "directory");
-          })();
-        }
-
-        if (directory === nestedDir) {
-          return (async function* () {
-            yield createDirEntry("entry.html", "file");
-            yield createDirEntry("entry.json", "file");
-          })();
-        }
-
-        return (async function* () {})();
-      },
-    }, async () => {
       await runBuildTask(
         {
           name: "format built HTML and JSON output",
@@ -132,27 +126,19 @@ describe("runBuildTask()", () => {
 
     assertEquals(calls, [{
       command: "deno",
-      args: [
-        "fmt",
-        `${htmlDir}/index.html`,
-        `${nestedDir}/entry.html`,
-        `${htmlDir}/feed.json`,
-        `${nestedDir}/entry.json`,
-      ],
+      args: expectedArgs,
     }]);
   });
 
   it("skips deno fmt when the HTML and JSON globs match no files", async () => {
     let callCount = 0;
 
-    await withPatchedDeno({
-      readDir: () => (async function* () {})(),
-    }, async () => {
+    await withTempDir("build-tasks-empty-", async (rootDir) => {
       await runBuildTask(
         {
           name: "format built HTML and JSON output",
           command: "deno",
-          args: ["fmt", `/virtual/site/**/*.html`, `/virtual/site/**/*.json`],
+          args: ["fmt", `${rootDir}/**/*.html`, `${rootDir}/**/*.json`],
         },
         () => {
           callCount += 1;

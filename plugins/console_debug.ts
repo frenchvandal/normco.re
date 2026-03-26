@@ -24,6 +24,10 @@ const LOG_LEVEL_TO_POLICY = {
   Pick<ConsoleDebugPolicy, "includeTrace" | "level">
 >;
 
+function isLumeLogLevel(value: string): value is LumeLogLevel {
+  return Object.hasOwn(LOG_LEVEL_TO_POLICY, value);
+}
+
 /**
  * Reads a generic, `LUME_LOGS`-driven console debugging policy.
  *
@@ -40,14 +44,8 @@ export function readConsoleDebugPolicy(
 ): ConsoleDebugPolicy {
   const configuredLogLevel = (readEnv("LUME_LOGS") ?? "info").toLowerCase();
 
-  const lumeLogs: LumeLogLevel = configuredLogLevel === "debug"
-    ? "debug"
-    : configuredLogLevel === "warning"
-    ? "warning"
-    : configuredLogLevel === "error"
-    ? "error"
-    : configuredLogLevel === "critical"
-    ? "critical"
+  const lumeLogs = isLumeLogLevel(configuredLogLevel)
+    ? configuredLogLevel
     : "info";
 
   return {

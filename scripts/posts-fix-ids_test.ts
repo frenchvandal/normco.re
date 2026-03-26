@@ -1,4 +1,5 @@
 import { assertEquals } from "@std/assert";
+import { join } from "@std/path";
 import { describe, it } from "@std/testing/bdd";
 import {
   fixMissingPostIds,
@@ -6,6 +7,7 @@ import {
   resolvePostMetadataId,
   upsertPostMetadataId,
 } from "./posts-fix-ids.ts";
+import { withTempDir, writeTextTree } from "../test/temp_fs.ts";
 
 describe("resolvePostMetadataId()", () => {
   it("returns the shared post id when present", () => {
@@ -64,81 +66,64 @@ describe("isPostMetadataFile()", () => {
 
 describe("fixMissingPostIds()", () => {
   it("writes UUIDs only to post metadata files missing an explicit id", async () => {
-    const postsDir = "/repo/src/posts";
-    const missingIdPath = `${postsDir}/missing-id/_data.yml`;
-    const blankIdPath = `${postsDir}/blank-id/_data.yml`;
-    const existingIdPath = `${postsDir}/existing-id/_data.yml`;
     const generatedIds = [
       "019d2978-aac3-7b06-b5c3-7d4c406f2911",
       "019d2979-472f-7d0e-a4bb-2f9aa2509a2a",
     ];
-    const files = new Map<string, string>([
-      [
-        missingIdPath,
-        "date: 2026-03-10\nurl: /posts/missing-id/\n",
-      ],
-      [
-        blankIdPath,
-        "id:   \ndate: 2026-03-11\nurl: /posts/blank-id/\n",
-      ],
-      [
-        existingIdPath,
+    await withTempDir("posts-fix-ids-", async (rootDir) => {
+      const postsDir = join(rootDir, "src", "posts");
+      const missingIdPath = join(postsDir, "missing-id", "_data.yml");
+      const blankIdPath = join(postsDir, "blank-id", "_data.yml");
+      const existingIdPath = join(postsDir, "existing-id", "_data.yml");
+
+      await writeTextTree(rootDir, {
+        "src/posts/missing-id/_data.yml":
+          "date: 2026-03-10\nurl: /posts/missing-id/\n",
+        "src/posts/blank-id/_data.yml":
+          "id:   \ndate: 2026-03-11\nurl: /posts/blank-id/\n",
+        "src/posts/existing-id/_data.yml":
+          "id: existing-id\ndate: 2026-03-12\nurl: /posts/existing-id/\n",
+      });
+
+      const fixedIds = await fixMissingPostIds(postsDir, {
+        generateId: () => {
+          const id = generatedIds.shift();
+
+          if (id === undefined) {
+            throw new Error("Expected another generated id");
+          }
+
+          return id;
+        },
+        log: () => {},
+      });
+
+      assertEquals(
+        fixedIds.map(({ path, id }) => ({ path, id })),
+        [
+          {
+            path: blankIdPath,
+            id: "019d2978-aac3-7b06-b5c3-7d4c406f2911",
+          },
+          {
+            path: missingIdPath,
+            id: "019d2979-472f-7d0e-a4bb-2f9aa2509a2a",
+          },
+        ],
+      );
+
+      assertEquals(
+        await Deno.readTextFile(blankIdPath),
+        "id: 019d2978-aac3-7b06-b5c3-7d4c406f2911\ndate: 2026-03-11\nurl: /posts/blank-id/\n",
+      );
+      assertEquals(
+        await Deno.readTextFile(missingIdPath),
+        "id: 019d2979-472f-7d0e-a4bb-2f9aa2509a2a\ndate: 2026-03-10\nurl: /posts/missing-id/\n",
+      );
+      assertEquals(
+        await Deno.readTextFile(existingIdPath),
         "id: existing-id\ndate: 2026-03-12\nurl: /posts/existing-id/\n",
-      ],
-    ]);
-
-    const fixedIds = await fixMissingPostIds(postsDir, {
-      findMetadataFiles: () => Promise.resolve([...files.keys()].sort()),
-      generateId: () => {
-        const id = generatedIds.shift();
-
-        if (id === undefined) {
-          throw new Error("Expected another generated id");
-        }
-
-        return id;
-      },
-      log: () => {},
-      readTextFile: (path) => {
-        const source = files.get(path);
-
-        if (source === undefined) {
-          throw new Error(`Missing fixture for ${path}`);
-        }
-
-        return Promise.resolve(source);
-      },
-      writeTextFile: (path, data) => {
-        files.set(path, data);
-        return Promise.resolve();
-      },
+      );
     });
-
-    assertEquals(
-      fixedIds.map(({ path, id }) => ({ path, id })),
-      [
-        {
-          path: blankIdPath,
-          id: "019d2978-aac3-7b06-b5c3-7d4c406f2911",
-        },
-        {
-          path: missingIdPath,
-          id: "019d2979-472f-7d0e-a4bb-2f9aa2509a2a",
-        },
-      ],
-    );
-
-    assertEquals(
-      files.get(blankIdPath),
-      "id: 019d2978-aac3-7b06-b5c3-7d4c406f2911\ndate: 2026-03-11\nurl: /posts/blank-id/\n",
-    );
-    assertEquals(
-      files.get(missingIdPath),
-      "id: 019d2979-472f-7d0e-a4bb-2f9aa2509a2a\ndate: 2026-03-10\nurl: /posts/missing-id/\n",
-    );
-    assertEquals(
-      files.get(existingIdPath),
-      "id: existing-id\ndate: 2026-03-12\nurl: /posts/existing-id/\n",
-    );
   });
 });

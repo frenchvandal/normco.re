@@ -1,4 +1,5 @@
 import { assertEquals, assertRejects } from "@std/assert";
+import { join } from "@std/path";
 import { describe, it } from "@std/testing/bdd";
 
 import {
@@ -9,7 +10,7 @@ import {
   validateAtomFeed,
   validateRssFeed,
 } from "./validate.ts";
-import { withPatchedDeno } from "../test/mock_deno.ts";
+import { withTempDir, withTempFile } from "../test/temp_fs.ts";
 
 describe("validate()", () => {
   it("reports invalid schema patterns instead of throwing", () => {
@@ -180,19 +181,15 @@ describe("createOutputFilePattern()", () => {
 
 describe("readJsonFile()", () => {
   it("reads valid JSON files", async () => {
-    await withPatchedDeno({
-      readTextFile: () => Promise.resolve('{"ok":true}'),
-    }, async () => {
-      const filePath = "/virtual/valid.json";
+    await withTempFile("validate-json-", async (filePath) => {
+      await Deno.writeTextFile(filePath, '{"ok":true}');
       assertEquals(await readJsonFile(filePath), { ok: true });
     });
   });
 
   it("wraps JSON parse failures with file context", async () => {
-    await withPatchedDeno({
-      readTextFile: () => Promise.resolve("{"),
-    }, async () => {
-      const filePath = "/virtual/invalid.json";
+    await withTempFile("validate-json-", async (filePath) => {
+      await Deno.writeTextFile(filePath, "{");
       await assertRejects(
         () => readJsonFile(filePath),
         Error,
@@ -202,10 +199,8 @@ describe("readJsonFile()", () => {
   });
 
   it("wraps missing-file reads with file context", async () => {
-    await withPatchedDeno({
-      readTextFile: () => Promise.reject(new Deno.errors.NotFound("missing")),
-    }, async () => {
-      const filePath = "/virtual/missing.json";
+    await withTempDir("validate-json-", async (rootDir) => {
+      const filePath = join(rootDir, "missing.json");
       await assertRejects(
         () => readJsonFile(filePath),
         Error,
@@ -217,10 +212,8 @@ describe("readJsonFile()", () => {
 
 describe("readSchemaFile()", () => {
   it("rejects schema files whose root is not a JSON object", async () => {
-    await withPatchedDeno({
-      readTextFile: () => Promise.resolve('["not","an","object"]'),
-    }, async () => {
-      const filePath = "/virtual/schema.json";
+    await withTempFile("validate-schema-", async (filePath) => {
+      await Deno.writeTextFile(filePath, '["not","an","object"]');
       await assertRejects(
         () => readSchemaFile(filePath),
         Error,

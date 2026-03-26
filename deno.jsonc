@@ -25,7 +25,7 @@
     },
     "test": {
       "description": "Run unit and integration tests",
-      "command": "deno test --allow-env=VSCODE_TEXTMATE_DEBUG"
+      "command": "deno test --allow-env=VSCODE_TEXTMATE_DEBUG --allow-read --allow-write=.tmp/deno-tests"
     },
     "validate": {
       "description": "Run the full local validation suite",

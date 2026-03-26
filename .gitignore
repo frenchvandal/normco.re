@@ -1,6 +1,7 @@
 _cache
 _quality
 _site
+.tmp
 .deno_cache
 .DS_Store
 /**/.DS_Store

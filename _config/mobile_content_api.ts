@@ -17,6 +17,10 @@ import {
   tryResolveSiteLanguage,
 } from "../src/utils/i18n.ts";
 import {
+  isDocumentLike,
+  resolveOptionalStringArray,
+} from "../src/utils/type-guards.ts";
+import {
   APP_CONTRACT_VERSION,
   APP_MANIFEST_API_PATH,
   getPostDetailApiPath,
@@ -111,31 +115,10 @@ function stringifyJson(value: unknown): string {
   return `${JSON.stringify(value, null, 2)}\n`;
 }
 
-function formatDateTime(date: Date): string {
-  return formatRfc3339Instant(date);
-}
-
 function getOptionalString(value: unknown): string | undefined {
   return typeof value === "string" && value.trim().length > 0
     ? value
     : undefined;
-}
-
-function getOptionalStringArray(
-  value: unknown,
-): ReadonlyArray<string> | undefined {
-  if (!Array.isArray(value)) {
-    return undefined;
-  }
-
-  const strings = value.filter((item): item is string =>
-    typeof item === "string"
-  );
-  return strings.length > 0 ? strings : undefined;
-}
-
-function toValidDate(value: unknown): Date | undefined {
-  return parseDateValue(value);
 }
 
 function describePage(page: Data): string {
@@ -172,12 +155,12 @@ function resolvePublishedAt(page: Data): string {
     );
   }
 
-  return formatDateTime(publishedAt);
+  return formatRfc3339Instant(publishedAt);
 }
 
 function resolveUpdatedAt(page: Data): string | undefined {
-  const updatedAt = toValidDate(page.update_date);
-  return updatedAt ? formatDateTime(updatedAt) : undefined;
+  const updatedAt = parseDateValue(page.update_date);
+  return updatedAt ? formatRfc3339Instant(updatedAt) : undefined;
 }
 
 function resolvePageLanguage(page: Data): SiteLanguage {
@@ -207,7 +190,7 @@ function createPostsIndexItem(
   const publishedAt = resolvePublishedAt(page);
   const updatedAt = resolveUpdatedAt(page);
   const readingTime = resolveReadingMinutes(page.readingInfo);
-  const tags = getOptionalStringArray(page.tags);
+  const tags = resolveOptionalStringArray(page.tags);
 
   return {
     id,
@@ -221,13 +204,6 @@ function createPostsIndexItem(
     detailApiUrl: getPostDetailApiPath(slug, language),
     webUrl: site.url(webPath, true),
   };
-}
-
-function isDocumentLike(value: unknown): value is Document {
-  return typeof value === "object" &&
-    value !== null &&
-    "querySelector" in value &&
-    typeof value.querySelector === "function";
 }
 
 function isPostPage(page: LumePage): page is PostPage {
@@ -340,7 +316,7 @@ function createPostDetailDocument(
   const publishedAt = resolvePublishedAt(page.data);
   const updatedAt = resolveUpdatedAt(page.data);
   const readingTime = resolveReadingMinutes(page.data.readingInfo);
-  const tags = getOptionalStringArray(page.data.tags);
+  const tags = resolveOptionalStringArray(page.data.tags);
 
   return {
     version: APP_CONTRACT_VERSION,
@@ -385,7 +361,7 @@ export function createAppManifestDocument(
 ): AppManifestDocument {
   return {
     version: APP_CONTRACT_VERSION,
-    generatedAt: formatDateTime(generatedAt),
+    generatedAt: formatRfc3339Instant(generatedAt),
     defaultLanguage: LANGUAGE_DATA_CODE[DEFAULT_LANGUAGE],
     languages: FEED_VARIANTS.map((variant) =>
       LANGUAGE_DATA_CODE[variant.language]

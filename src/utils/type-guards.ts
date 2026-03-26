@@ -26,3 +26,23 @@ export function resolveOptionalTrimmedString(
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : undefined;
 }
+
+export function resolveOptionalStringArray(
+  value: unknown,
+): ReadonlyArray<string> | undefined {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+
+  const strings = value.filter((item): item is string =>
+    typeof item === "string"
+  );
+  return strings.length > 0 ? strings : undefined;
+}
+
+export function isDocumentLike(value: unknown): value is Document {
+  return typeof value === "object" &&
+    value !== null &&
+    "querySelector" in value &&
+    typeof value.querySelector === "function";
+}
