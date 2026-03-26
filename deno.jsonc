@@ -93,6 +93,8 @@
   // Required for npm packages like esbuild and shiki.
   "nodeModulesDir": "auto",
 
+  "lock": false,
+
   "test": {
     "exclude": [
       "**/*.md"
