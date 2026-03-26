@@ -1,9 +1,6 @@
 import CMS from "lume/cms/mod.ts";
-import {
-  resolveCmsProdBranch,
-  resolveCurrentDateIso,
-  resolveSlug,
-} from "./src/utils/cms.ts";
+import { resolveCmsProdBranch, resolveSlug } from "./src/utils/cms.ts";
+import { resolveCurrentDateIso } from "./src/utils/current-date.ts";
 
 export { resolveCmsProdBranch, resolveCurrentDateIso, resolveSlug };
 

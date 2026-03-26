@@ -139,8 +139,8 @@ export async function collectBrokenOutputLinks(
     for (const reference of references) {
       const resolvedTarget = resolveLocalTarget(routePath, reference);
       const candidates = candidateOutputPaths(rootDir, resolvedTarget);
-      const targetExists = await Promise.all(candidates.map(fileExists)).then(
-        (results) => results.some(Boolean),
+      const targetExists = (await Promise.all(candidates.map(fileExists))).some(
+        Boolean,
       );
 
       if (targetExists) {

@@ -69,7 +69,7 @@ function resolveRef(
   // deno-lint-ignore no-explicit-any
   let current: any = root;
   for (const part of parts) {
-    if (current === undefined || current === null) return undefined;
+    if (current == null) return undefined;
     current = current[part];
   }
   return current as SchemaNode | undefined;

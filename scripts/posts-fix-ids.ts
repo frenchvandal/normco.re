@@ -1,12 +1,12 @@
 import { parseArgs } from "@std/cli";
 import { walk } from "@std/fs";
 import { basename, join } from "@std/path";
-import { parse, type SchemaType, stringify } from "@std/yaml";
+import { parse, stringify } from "@std/yaml";
 import { generate as generateUuidV7 } from "jsr:@std/uuid@^1.1.0/v7";
 
 const REPO_ROOT = join(import.meta.dirname ?? ".", "..");
 const POST_METADATA_FILE_NAME = "_data.yml";
-const YAML_SCHEMA: SchemaType = "core";
+const YAML_SCHEMA = "core" as const;
 
 export const DEFAULT_POSTS_DIR = join(REPO_ROOT, "src", "posts");
 
@@ -42,7 +42,7 @@ function normalizeYamlLineEndings(source: string, lineEnding: string): string {
 function parsePostMetadata(source: string): Record<string, unknown> {
   const parsed = parse(source, { schema: YAML_SCHEMA });
 
-  if (parsed === null || parsed === undefined) {
+  if (parsed == null) {
     return {};
   }
 

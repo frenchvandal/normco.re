@@ -1,11 +1,8 @@
 import { assertEquals, assertThrows } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
-import {
-  resolveCmsProdBranch,
-  resolveCurrentDateIso,
-  resolveSlug,
-} from "./src/utils/cms.ts";
+import { resolveCmsProdBranch, resolveSlug } from "./src/utils/cms.ts";
+import { resolveCurrentDateIso } from "./src/utils/current-date.ts";
 
 describe("resolveSlug", () => {
   it("normalizes valid slugs through slugify", () => {

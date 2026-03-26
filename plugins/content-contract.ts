@@ -102,9 +102,10 @@ function parseBlock(el: Element): ContentBlock | undefined {
     const content = code !== null ? (code.textContent ?? "") : textOf(el);
     const langClass = code?.getAttribute("class") ?? "";
     const langMatch = /language-(\w+)/.exec(langClass);
+    const language = langMatch?.[1];
     const block: CodeBlock = { type: "code", content };
-    if (langMatch !== null && langMatch[1] !== undefined) {
-      return { ...block, language: langMatch[1] };
+    if (language !== undefined) {
+      return { ...block, language };
     }
     return block;
   }

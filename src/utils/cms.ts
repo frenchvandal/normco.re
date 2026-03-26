@@ -3,8 +3,6 @@ import { slugify } from "./slugify.ts";
 const CMS_PROD_BRANCH_ENV_KEY = "CMS_PROD_BRANCH";
 const DEFAULT_CMS_PROD_BRANCH = "master";
 
-export { resolveCurrentDateIso } from "./current-date.ts";
-
 export function resolveSlug(value: unknown): string {
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new Error("Post slug is required.");

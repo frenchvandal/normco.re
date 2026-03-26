@@ -8,6 +8,7 @@ import {
   type SiteLanguage,
 } from "../src/utils/i18n.ts";
 import { parseDateValue } from "../src/utils/date-time.ts";
+import { resolveOptionalString } from "../src/utils/type-guards.ts";
 import {
   absolutizeHtmlUrls,
   type AtomFeedData,
@@ -86,17 +87,9 @@ export function createFeedOptions(variant: FeedVariant) {
   };
 }
 
-function toDate(value: unknown): Date | undefined {
-  return parseDateValue(value);
-}
-
-function getStringValue(value: unknown): string | undefined {
-  return typeof value === "string" && value.length > 0 ? value : undefined;
-}
-
 function getAtomAuthor(site: Site) {
   const rootData = site.source.data.get("/") ?? {};
-  const authorName = getStringValue(rootData.author) ?? "Phiphi";
+  const authorName = resolveOptionalString(rootData.author) ?? "Phiphi";
 
   return {
     name: authorName,
@@ -108,18 +101,19 @@ function buildAtomEntry(
   page: Data,
   fallbackDate: Date,
 ): AtomFeedEntry | undefined {
-  const pagePath = getStringValue(page.url);
-  const title = getStringValue(page.title);
+  const pagePath = resolveOptionalString(page.url);
+  const title = resolveOptionalString(page.title);
 
   if (!pagePath || !title) {
     return undefined;
   }
 
   const absoluteUrl = site.url(pagePath, true);
-  const published = toDate(page.date);
-  const updated = toDate(page.update_date) ?? published ?? fallbackDate;
-  const summary = getStringValue(page.description);
-  const contentHtml = getStringValue(page.children);
+  const published = parseDateValue(page.date);
+  const updated = parseDateValue(page.update_date) ?? published ??
+    fallbackDate;
+  const summary = resolveOptionalString(page.description);
+  const contentHtml = resolveOptionalString(page.children);
 
   return {
     id: absoluteUrl,

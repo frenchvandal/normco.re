@@ -119,13 +119,14 @@ export default async (
     ? ""
     : renderFeaturedStory(featured, language);
 
-  const listingMarkup =
-    (await Promise.all(rest.map((story) =>
-      renderPostListItem(PostCard, story, {
-        className: "primer-home-post primer-home-post--ledger",
-        showSummary: true,
-      }).then((li) => li.replace("archive-list-item", "home-posts-item"))
-    ))).join("\n");
+  const listingMarkup = (await Promise.all(rest.map(async (story) => {
+    const listItem = await renderPostListItem(PostCard, story, {
+      className: "primer-home-post primer-home-post--ledger",
+      showSummary: true,
+    });
+
+    return listItem.replace("archive-list-item", "home-posts-item");
+  }))).join("\n");
 
   const recentSection =
     `<section class="home-recent home-recent--primer" aria-labelledby="home-recent-title">

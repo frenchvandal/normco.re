@@ -126,7 +126,7 @@ async function resolveTaskArgs(
   return resolvedArgs;
 }
 
-async function defaultCommandRunner(
+function defaultCommandRunner(
   command: string,
   args: ReadonlyArray<string>,
 ): Promise<CommandStatus> {
@@ -136,7 +136,7 @@ async function defaultCommandRunner(
     stderr: "inherit",
   }).spawn();
 
-  return await child.status;
+  return child.status;
 }
 
 export async function runBuildTask(

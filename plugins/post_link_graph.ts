@@ -16,10 +16,6 @@ export type PostLinkReference = Readonly<{
   url: string;
 }>;
 
-type MutablePostLinkReference = {
-  -readonly [K in keyof PostLinkReference]: PostLinkReference[K];
-};
-
 function isPostPage(page: Page): boolean {
   return isMutableRecord(page.data) && page.data.type === "post" &&
     typeof page.data.url === "string";
@@ -129,8 +125,8 @@ function extractInternalTargets(
 }
 
 function sortReferences(
-  a: MutablePostLinkReference,
-  b: MutablePostLinkReference,
+  a: PostLinkReference,
+  b: PostLinkReference,
   timestamps: ReadonlyMap<string, number>,
 ): number {
   const timeDelta = (timestamps.get(b.url) ?? 0) - (timestamps.get(a.url) ?? 0);
@@ -174,7 +170,7 @@ export function registerPostLinkGraph(site: Site): void {
         continue;
       }
 
-      const outboundReferences = new Map<string, MutablePostLinkReference>();
+      const outboundReferences = new Map<string, PostLinkReference>();
 
       for (const targetUrl of extractInternalTargets(content, currentUrl)) {
         if (targetUrl === currentUrl) {
@@ -194,7 +190,7 @@ export function registerPostLinkGraph(site: Site): void {
 
         const targetData = target.page.data as Record<string, unknown>;
         const backlinks = Array.isArray(targetData.backlinks)
-          ? targetData.backlinks as MutablePostLinkReference[]
+          ? targetData.backlinks as PostLinkReference[]
           : [];
 
         if (!backlinks.some((reference) => reference.url === currentUrl)) {
@@ -216,7 +212,7 @@ export function registerPostLinkGraph(site: Site): void {
     for (const page of postPages) {
       const data = page.data as Record<string, unknown>;
       const backlinks = Array.isArray(data.backlinks)
-        ? data.backlinks as MutablePostLinkReference[]
+        ? data.backlinks as PostLinkReference[]
         : [];
 
       data.backlinks = backlinks.sort((a, b) =>

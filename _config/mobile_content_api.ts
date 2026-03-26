@@ -1,4 +1,4 @@
-import { type Data, Page, type Page as LumePage } from "lume/core/file.ts";
+import { type Data, Page as LumePage } from "lume/core/file.ts";
 import type Site from "lume/core/site.ts";
 import {
   resolvePostDate,
@@ -409,18 +409,20 @@ export function createPostDetailPage(
   site: SiteUrlResolver,
   page: PostPage,
   siblingPages: ReadonlyArray<PostPage>,
-): Page {
+): LumePage {
   const slug = requireString(page.data, "basename", page.data.basename);
   const language = resolvePageLanguage(page.data);
 
-  return Page.create({
+  return LumePage.create({
     url: getPostDetailApiPath(slug, language),
     content: stringifyJson(createPostDetailDocument(site, page, siblingPages)),
   });
 }
 
-export function createAppManifestPage(generatedAt: Date = new Date()): Page {
-  return Page.create({
+export function createAppManifestPage(
+  generatedAt: Date = new Date(),
+): LumePage {
+  return LumePage.create({
     url: APP_MANIFEST_API_PATH,
     content: stringifyJson(createAppManifestDocument(generatedAt)),
   });
@@ -430,8 +432,8 @@ export function createPostsIndexPage(
   site: SiteUrlResolver,
   variant: FeedVariant,
   pages: ReadonlyArray<Data>,
-): Page {
-  return Page.create({
+): LumePage {
+  return LumePage.create({
     url: getLocalizedUrl(POSTS_INDEX_API_PATH, variant.language),
     content: stringifyJson(
       createPostsIndexDocument(site, variant.language, pages),

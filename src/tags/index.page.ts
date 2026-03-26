@@ -6,11 +6,8 @@ import {
   type SiteLanguage,
   SUPPORTED_LANGUAGES,
 } from "../utils/i18n.ts";
+import { searchPages } from "../utils/lume-data.ts";
 import { getTagSlug } from "../utils/tags.ts";
-
-type SearchHelper = {
-  pages: (query: string, sort?: string) => Lume.Data[];
-};
 
 type TagBucket = {
   readonly tagName: string;
@@ -98,20 +95,15 @@ function getTagSortLabel(
 }
 
 export default function* (data: Lume.Data): Generator<Lume.Data> {
-  const search = data.search as Partial<SearchHelper> | undefined;
-
-  if (typeof search?.pages !== "function") {
-    return;
-  }
-
   const bucketsByLanguage = new Map<SiteLanguage, Map<string, TagBucket>>();
   const tagSlugs = new Set<string>();
 
   for (const language of SUPPORTED_LANGUAGES) {
-    const posts = search.pages(
+    const posts = searchPages(
+      data.search,
       `type=post lang=${getLanguageDataCode(language)}`,
       "date=desc",
-    ) as Lume.Data[];
+    );
 
     const buckets = collectTagBuckets(posts);
     bucketsByLanguage.set(language, buckets);

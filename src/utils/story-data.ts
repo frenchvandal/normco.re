@@ -15,6 +15,7 @@ import {
   resolveReadingMinutes,
 } from "../posts/post-metadata.ts";
 import { formatRfc3339Instant } from "./date-time.ts";
+import { resolveStringTags } from "./lume-data.ts";
 import { resolveOptionalString } from "./type-guards.ts";
 import type {
   DateHelper,
@@ -32,12 +33,6 @@ export type StoryData = {
   readonly readingLabel?: string;
 };
 
-function resolvePostTags(value: unknown): string[] {
-  return Array.isArray(value)
-    ? value.filter((t): t is string => typeof t === "string" && t.length > 0)
-    : [];
-}
-
 export function toStoryData(
   post: Lume.Data,
   language: SiteLanguage,
@@ -50,7 +45,7 @@ export function toStoryData(
   return {
     title: resolveOptionalString(post.title) ?? "",
     url: resolveOptionalString(post.url) ?? "",
-    tags: resolvePostTags(post.tags),
+    tags: resolveStringTags(post.tags),
     dateIso: dateFormat(postDate, "ATOM", language) ??
       formatRfc3339Instant(postDate),
     dateLabel: formatShortDate(postDate, language),

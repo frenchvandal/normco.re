@@ -58,8 +58,8 @@ export function resolvePostCardRenderer(comp: unknown): PostCardRenderer {
   if (typeof comp !== "object" || comp === null) return renderFallbackPostCard;
   const PostCard = Reflect.get(comp, "PostCard");
   if (typeof PostCard === "function") {
-    return (props) =>
-      Promise.resolve(Reflect.apply(PostCard, comp, [props])).then(String);
+    return async (props) =>
+      String(await Reflect.apply(PostCard, comp, [props]));
   }
   return renderFallbackPostCard;
 }
