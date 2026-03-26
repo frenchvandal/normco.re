@@ -3,15 +3,36 @@
     color-scheme: light;
 
     --ph-font-sans:
-      "Segoe UI Variable", -apple-system, BlinkMacSystemFont, "Segoe UI",
-      "Noto Sans", Helvetica, Arial, sans-serif;
+      "Segoe UI Variable",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      "Noto Sans",
+      Helvetica,
+      Arial,
+      sans-serif;
     --ph-font-serif:
-      Charter, "Iowan Old Style", "Palatino Linotype", "URW Palladio L", P052,
-      "Book Antiqua", Constantia, "Noto Serif", "Bitstream Charter",
-      "Sitka Text", Cambria, Georgia, serif;
+      Charter,
+      "Iowan Old Style",
+      "Palatino Linotype",
+      "URW Palladio L",
+      P052,
+      "Book Antiqua",
+      Constantia,
+      "Noto Serif",
+      "Bitstream Charter",
+      "Sitka Text",
+      Cambria,
+      Georgia,
+      serif;
     --ph-font-mono:
-      ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas,
-      "DejaVu Sans Mono", monospace;
+      ui-monospace,
+      "Cascadia Code",
+      "Source Code Pro",
+      Menlo,
+      Consolas,
+      "DejaVu Sans Mono",
+      monospace;
 
     --ph-color-canvas-default: light-dark(
       oklch(100% 0 89.88),
