@@ -101,9 +101,8 @@ The active delivery tracker for that work is:
 These items are explicitly deferred rather than unresolved by accident.
 
 - immutable post identity
-  - keep `id == slug` for now
-  - if slug-independent identity becomes necessary later, add one shared
-    `contentId` in `src/posts/<slug>/_data.yml`
+  - keep one shared explicit `id` in `src/posts/<slug>/_data.yml`
+  - backfill missing shared ids with `deno task posts:fix-ids`
   - do not generate UUIDs independently in localized Markdown files
 - future contract expansion for richer inline content
 - whether `app-manifest` eventually needs fields such as `contentOrigin` or

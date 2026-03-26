@@ -45,7 +45,7 @@ describe("src/posts Markdown contract", () => {
     assert(slugs.length > 0);
 
     for (const { slug, metadata } of POST_CONTRACT_FIXTURES) {
-      assertMatch(metadata, new RegExp(`^id: ${slug}$`, "m"));
+      assertMatch(metadata, /^id:\s*\S.+$/m);
       assertMatch(metadata, new RegExp(`^url: /posts/${slug}/$`, "m"));
       assertMatch(metadata, /^date: \d{4}-\d{2}-\d{2}$/m);
     }

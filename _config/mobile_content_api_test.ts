@@ -25,7 +25,9 @@ function createDocument(markup: string): Document {
 
 function createPostPage(
   options: {
+    id?: string;
     slug?: string;
+    basename?: string;
     lang?: string;
     title?: string;
     description?: string;
@@ -35,13 +37,14 @@ function createPostPage(
   } = {},
 ): Page {
   const slug = options.slug ?? "example-post";
+  const basename = options.basename ?? slug;
   const lang = options.lang ?? "en";
 
   return {
     data: {
       type: "post",
-      id: slug,
-      basename: slug,
+      id: options.id ?? slug,
+      basename,
       lang,
       title: options.title ?? "Example post",
       description: options.description ?? "Contract-backed summary.",
@@ -153,6 +156,37 @@ describe("_config/mobile_content_api.ts", () => {
         },
       ],
     });
+  });
+
+  it("uses Lume `basename` for slug-derived routes while preserving explicit ids", () => {
+    const siteStub = {
+      url(path: string, absolute: boolean): string {
+        if (!absolute) {
+          throw new Error("Expected absolute URL resolution");
+        }
+
+        return `https://normco.re${path}`;
+      },
+    };
+
+    const englishPage = createPostPage({
+      id: "019d2978-aac3-7b06-b5c3-7d4c406f2911",
+      basename: "articles",
+      url: "/posts/articles/",
+    });
+    const detailPage = createPostDetailPage(siteStub, englishPage, [
+      englishPage,
+    ]);
+    const detailJson = JSON.parse(detailPage.content as string) as {
+      readonly id: string;
+      readonly slug: string;
+      readonly webUrl: string;
+    };
+
+    assertEquals(detailPage.data.url, "/api/posts/articles.json");
+    assertEquals(detailJson.id, "019d2978-aac3-7b06-b5c3-7d4c406f2911");
+    assertEquals(detailJson.slug, "articles");
+    assertEquals(detailJson.webUrl, "https://normco.re/posts/articles/");
   });
 
   it("builds post-detail pages with alternates and structured blocks", () => {

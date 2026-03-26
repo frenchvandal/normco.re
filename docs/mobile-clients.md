@@ -251,7 +251,6 @@ See `docs/mobile-contract-tooling.md`.
 
 ## What Is Deferred On Purpose
 
-- immutable post identity beyond `id == slug`
 - richer inline contract modeling beyond the current mobile block usage
 - storefront metadata beyond what runtime clients need
 - a second toolchain for contract work before multi-client pressure exists

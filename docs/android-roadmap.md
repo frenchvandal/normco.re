@@ -416,10 +416,10 @@ Exit criteria:
 - validate startup and scroll performance on real devices and capture a baseline
   profile if needed
 - wire the Play Console / signing / release metadata path
-- defer immutable post-identity work to a later polish pass: keep `id == slug`
-  for now, and if slug-independent identity becomes needed, add a shared
-  `contentId` in `src/posts/<slug>/_data.yml` instead of generating UUIDs
-  separately inside each localized Markdown file
+- keep one shared explicit post `id` in `src/posts/<slug>/_data.yml`, and use
+  `deno task posts:fix-ids` to backfill UUID v7 values for any legacy post that
+  still lacks one instead of generating independent ids inside localized
+  Markdown files
 - defer the Java toolchain upgrade to the end of the project; keep Java 17
   during active delivery, then evaluate a move to a newer supported LTS once app
   behavior, signing, and release wiring are stable

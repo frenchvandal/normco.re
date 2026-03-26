@@ -110,7 +110,7 @@ deno task build
 
 Each post lives in its own slug directory:
 
-- `src/posts/<slug>/_data.yml` stores shared metadata such as `id`, `slug`,
+- `src/posts/<slug>/_data.yml` stores shared metadata such as the stable `id`,
   `date`, `url`, and optional `tags`
 - `src/posts/<slug>/en.md`
 - `src/posts/<slug>/fr.md`
@@ -166,6 +166,15 @@ When editing an existing post:
 1. Update shared metadata in `_data.yml`.
 2. Edit each language body in its Markdown file.
 3. Keep public URLs stable unless a route change is intentional.
+
+If a legacy post is still missing a shared `id`, run:
+
+```sh
+deno task posts:fix-ids
+```
+
+That task writes UUID v7 values into post `_data.yml` files that still lack an
+explicit `id`.
 
 Editorial images should live alongside the post, for example:
 
