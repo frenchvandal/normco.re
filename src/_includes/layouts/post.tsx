@@ -137,6 +137,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             language={language}
             translations={t.post}
             outline={state.outline}
+            backlinks={state.backlinks}
             tags={state.tags}
             prev={neighbors.prev}
             next={neighbors.next}

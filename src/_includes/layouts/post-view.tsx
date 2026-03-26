@@ -24,6 +24,7 @@ import {
   isLumeData,
   resolveOptionalTrimmedString,
 } from "../../utils/type-guards.ts";
+import type { PostLinkReference } from "../../../plugins/post_link_graph.ts";
 
 type El = ReturnType<typeof jsx>;
 type DlItem = Readonly<
@@ -51,6 +52,7 @@ const detailsMetaClasses = {
 } as const;
 
 export type PostState = Readonly<{
+  backlinks: readonly PostLinkReference[];
   includeCodeCopy: boolean;
   hasRail: boolean;
   outline: readonly PostOutlineItem[];
@@ -106,6 +108,35 @@ function isPostCandidate(
     (value.type === undefined || value.type === "post");
 }
 
+function resolvePostLinkReferences(
+  value: unknown,
+): readonly PostLinkReference[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  const references: PostLinkReference[] = [];
+  const seenUrls = new Set<string>();
+
+  for (const reference of value) {
+    if (typeof reference !== "object" || reference === null) {
+      continue;
+    }
+
+    const url = resolveOptionalTrimmedString(Reflect.get(reference, "url"));
+    const title = resolveOptionalTrimmedString(Reflect.get(reference, "title"));
+
+    if (url === undefined || title === undefined || seenUrls.has(url)) {
+      continue;
+    }
+
+    seenUrls.add(url);
+    references.push({ title, url });
+  }
+
+  return references;
+}
+
 export function resolvePostNeighbors(
   data: Lume.Data,
   currentUrl: string,
@@ -156,6 +187,7 @@ export function resolvePostState(
   const postDate = resolvePostDate(data.date);
   const minutes = resolveReadingMinutes(data.readingInfo);
   const tags = resolveStringTags(data.tags);
+  const backlinks = resolvePostLinkReferences(data.backlinks);
   const rawHtml = resolveHtmlChildren(data.children);
   const includeCodeCopy = /<pre>\s*<code\b/i.test(rawHtml ?? "");
   const { html, outline } = rawHtml
@@ -205,8 +237,9 @@ export function resolvePostState(
   ].filter(isDefined);
 
   return {
+    backlinks,
     includeCodeCopy,
-    hasRail: outline.length > 0 || tags.length > 0 ||
+    hasRail: outline.length > 0 || tags.length > 0 || backlinks.length > 0 ||
       neighbors.prev !== undefined || neighbors.next !== undefined,
     outline,
     publishedDateIso,
@@ -267,6 +300,7 @@ export function PostRail(
     language,
     translations,
     outline,
+    backlinks,
     tags,
     prev,
     next,
@@ -274,6 +308,7 @@ export function PostRail(
     language: SiteLanguage;
     translations: PostTranslations;
     outline: readonly PostOutlineItem[];
+    backlinks: readonly PostLinkReference[];
     tags: readonly string[];
     prev: Lume.Data | undefined;
     next: Lume.Data | undefined;
@@ -321,6 +356,21 @@ export function PostRail(
                     title={tag}
                   >
                     <span class="tag-link__label">{tag}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {backlinks.length > 0 && (
+          <section class="feature-card post-rail-card post-backlinks-card">
+            <h2 class="feature-card-title">{translations.backlinksTitle}</h2>
+            <ul class="post-backlinks-list">
+              {backlinks.map((reference) => (
+                <li key={reference.url}>
+                  <a href={reference.url} class="post-backlinks-link">
+                    {reference.title}
                   </a>
                 </li>
               ))}

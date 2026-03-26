@@ -2049,7 +2049,8 @@
     gap: var(--ph-space-3);
   }
 
-  .post-outline-list {
+  .post-outline-list,
+  .post-backlinks-list {
     display: grid;
     gap: var(--ph-space-2);
     list-style: none;
@@ -2060,6 +2061,7 @@
   }
 
   .post-outline-link,
+  .post-backlinks-link,
   .post-nav-title {
     color: var(--ph-color-fg-default);
     text-decoration: none;
@@ -2067,10 +2069,18 @@
 
   .post-outline-link:hover,
   .post-outline-link:focus-visible,
+  .post-backlinks-link:hover,
+  .post-backlinks-link:focus-visible,
   .post-nav-title:hover,
   .post-nav-title:focus-visible {
     color: var(--ph-color-accent-fg);
     text-decoration: underline;
+  }
+
+  .post-backlinks-link {
+    font-size: var(--ph-text-sm);
+    font-weight: 500;
+    line-height: var(--ph-lh-relaxed);
   }
 
   .post-nav-item {

@@ -53,6 +53,7 @@ function makeData(
     url?: string;
     lang?: string;
     tags?: unknown;
+    backlinks?: unknown;
     readingInfo?: { minutes?: number };
     nav?: ReturnType<typeof makeNav>;
     date?: Date;
@@ -69,6 +70,7 @@ function makeData(
     url: defaultUrl,
     date: makePostDate(712),
     readingInfo: undefined,
+    backlinks: undefined,
     nav: makeNav(undefined, undefined),
     ...overrides,
   });
@@ -213,6 +215,27 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'title="cdn"');
       assertStringIncludes(html, 'class="tag-link tag-link--');
       assertNotMatch(html, /class="cds--tag cds--tag--/);
+    });
+
+    it("renders backlinks in the post rail when present", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({
+            backlinks: [
+              { title: "Earlier post", url: "/posts/earlier-post/" },
+              { title: "Later post", url: "/posts/later-post/" },
+            ],
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+
+      assertStringIncludes(html, "Referenced by");
+      assertStringIncludes(html, 'class="post-backlinks-list"');
+      assertStringIncludes(html, 'href="/posts/earlier-post/"');
+      assertStringIncludes(html, 'href="/posts/later-post/"');
+      assertStringIncludes(html, "Earlier post");
+      assertStringIncludes(html, "Later post");
     });
 
     it("does not emit Pagefind filter or sort metadata for posts", async () => {

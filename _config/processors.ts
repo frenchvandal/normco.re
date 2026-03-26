@@ -11,6 +11,8 @@ import {
 } from "../src/utils/json-feed.ts";
 import { FEED_VARIANTS } from "./feeds.ts";
 import { getLanguageTag, type SiteLanguage } from "../src/utils/i18n.ts";
+import { registerContentInvariants } from "../plugins/content_invariants.ts";
+import { registerPostLinkGraph } from "../plugins/post_link_graph.ts";
 
 const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
 const TEXT_DECODER = new TextDecoder();
@@ -193,6 +195,9 @@ export function registerProcessors(site: Site): void {
       );
     }
   });
+
+  registerPostLinkGraph(site);
+  registerContentInvariants(site);
 
   const feedLanguageMap = new Map<string, SiteLanguage>(
     FEED_VARIANTS.map((
