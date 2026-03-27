@@ -105,7 +105,7 @@
       parsedUrl.searchParams.set("debug", swDebugLevel);
 
       const registration = await globalThis.navigator.serviceWorker.register(
-        `${parsedUrl.pathname}${parsedUrl.search}`,
+        parsedUrl.toString(),
         { scope: "/", type: "module", updateViaCache: "none" },
       );
 

@@ -81,7 +81,7 @@ describe("sw-register.js", () => {
     await flush(window);
 
     assertEquals(calls.length, 1);
-    assertEquals(calls[0]?.url, "/sw.js?debug=summary");
+    assertEquals(calls[0]?.url, "https://normco.re/sw.js?debug=summary");
     assertEquals(calls[0]?.options.scope, "/");
     assertEquals(calls[0]?.options.type, "module");
     assertEquals(calls[0]?.options.updateViaCache, "none");

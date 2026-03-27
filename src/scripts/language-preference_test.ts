@@ -58,24 +58,32 @@ describe("language-preference.js", () => {
   it("redirects the root route to the stored preferred language", () => {
     const dom = createDom("/");
     const window = dom.window;
-    const navigationCalls = captureNavigation(window);
-    window.localStorage.setItem("preferred-language", "fr");
+    try {
+      const navigationCalls = captureNavigation(window);
+      window.localStorage.setItem("preferred-language", "fr");
 
-    installScript(window);
+      installScript(window);
 
-    assertEquals(navigationCalls.length, 1);
-    assertEquals(navigationCalls[0]?.kind, "replace");
-    assertEquals(navigationCalls[0]?.targetUrl, "/fr/");
+      assertEquals(navigationCalls.length, 1);
+      assertEquals(navigationCalls[0]?.kind, "replace");
+      assertEquals(navigationCalls[0]?.targetUrl, "/fr/");
+    } finally {
+      window.close();
+    }
   });
 
   it("does not redirect non-root routes even when a different language is preferred", () => {
     const dom = createDom("/about/");
     const window = dom.window;
-    const navigationCalls = captureNavigation(window);
-    window.localStorage.setItem("preferred-language", "fr");
+    try {
+      const navigationCalls = captureNavigation(window);
+      window.localStorage.setItem("preferred-language", "fr");
 
-    installScript(window);
+      installScript(window);
 
-    assertEquals(navigationCalls, []);
+      assertEquals(navigationCalls, []);
+    } finally {
+      window.close();
+    }
   });
 });

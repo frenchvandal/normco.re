@@ -14,7 +14,10 @@ function createRuntime(
     fetchImpl,
     cacheStores,
   }: {
-    fetchImpl: (input: string | { url?: string }) => Promise<Response>;
+    fetchImpl: (
+      input: string | { url?: string },
+      init?: RequestInit,
+    ) => Promise<Response>;
     cacheStores: Record<string, CacheStore>;
   },
 ) {
@@ -295,5 +298,47 @@ describe("sw.js", () => {
 
     const response = await responsePromise!;
     assertEquals(await response.text(), '{"cached":true}');
+  });
+
+  it("passes an abort signal to timed network requests", async () => {
+    const fetchSignals: AbortSignal[] = [];
+    const runtime = createRuntime({
+      fetchImpl(_input, init) {
+        if (init?.signal != null) {
+          fetchSignals.push(init.signal);
+        }
+
+        return Promise.resolve(new Response("<html></html>", { status: 200 }));
+      },
+      cacheStores: {
+        "pages-test": {
+          match() {
+            return Promise.resolve(undefined);
+          },
+          put() {
+            return Promise.resolve();
+          },
+        },
+      },
+    });
+    const listener = runtime.getFetchListener();
+    let responsePromise: Promise<Response> | undefined;
+
+    listener({
+      request: {
+        url: "https://normco.re/posts/example/",
+        method: "GET",
+        mode: "navigate",
+        destination: "document",
+        headers: new Headers({ "user-agent": "Mozilla/5.0" }),
+      },
+      respondWith(promise) {
+        responsePromise = promise;
+      },
+    });
+
+    await responsePromise!;
+    assertEquals(fetchSignals.length, 1);
+    assertEquals(fetchSignals[0]?.aborted, false);
   });
 });

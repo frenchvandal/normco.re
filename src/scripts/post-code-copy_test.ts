@@ -48,6 +48,12 @@ async function flushMicrotasks(cycles = 3) {
   }
 }
 
+async function flushNodeTimers(cycles = 3) {
+  for (let index = 0; index < cycles; index += 1) {
+    await new Promise((resolve) => globalThis.setTimeout(resolve, 0));
+  }
+}
+
 function installFakeTimers(window: TestWindow) {
   let nextTimerId = 1;
   const scheduledCallbacks = new Map<number, TimerHandler>();
@@ -130,7 +136,7 @@ describe("post-code-copy.js", () => {
   it("falls back to execCommand when the async clipboard API is unavailable", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
-    installFakeTimers(window);
+    const timers = installFakeTimers(window);
     const executedCommands: string[] = [];
     (
       window.document as Document & {
@@ -147,8 +153,10 @@ describe("post-code-copy.js", () => {
     assert(button);
     button.click();
     await flushMicrotasks();
+    await flushNodeTimers();
 
     assertEquals(executedCommands, ["copy"]);
     assertEquals(button.textContent, "Code copied");
+    timers.runAll();
   });
 });

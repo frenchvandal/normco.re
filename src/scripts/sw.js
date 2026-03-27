@@ -87,6 +87,10 @@ const STATIC_ASSETS = [
 const FEED_TTL_MS = 30 * 60 * 1000;
 const HTML_CONTENT_TYPE = "text/html; charset=UTF-8";
 const TEXT_CONTENT_TYPE = "text/plain; charset=UTF-8";
+const PRECACHE_FETCH_TIMEOUT_MS = 8_000;
+const STATIC_FETCH_TIMEOUT_MS = 5_000;
+const PAGE_NETWORK_TIMEOUT_MS = 5_000;
+const FEED_NETWORK_TIMEOUT_MS = 5_000;
 
 const KNOWN_BOT_PATTERN =
   /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
@@ -112,6 +116,92 @@ function logSw(event, details = {}) {
   });
 }
 
+/**
+ * Creates a timeout-backed abort signal while preserving an upstream signal
+ * when the incoming request is already abortable.
+ *
+ * @param {number} timeoutMs
+ * @param {AbortSignal | null | undefined} [upstreamSignal]
+ * @returns {{ signal: AbortSignal; cleanup: () => void }}
+ */
+function createTimeoutSignal(timeoutMs, upstreamSignal) {
+  const existingSignal = upstreamSignal ?? undefined;
+  const abortSignalConstructor = globalThis.AbortSignal;
+  const timeoutFactory = abortSignalConstructor?.timeout;
+  const anyFactory = abortSignalConstructor?.any;
+
+  if (typeof timeoutFactory === "function") {
+    const timeoutSignal = timeoutFactory.call(
+      abortSignalConstructor,
+      timeoutMs,
+    );
+
+    if (existingSignal === undefined) {
+      return { signal: timeoutSignal, cleanup() {} };
+    }
+
+    if (typeof anyFactory === "function") {
+      return {
+        signal: anyFactory.call(abortSignalConstructor, [
+          existingSignal,
+          timeoutSignal,
+        ]),
+        cleanup() {},
+      };
+    }
+  }
+
+  const controller = new AbortController();
+  const timeoutId = globalThis.setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
+
+  const abortFromUpstream = () => {
+    controller.abort();
+  };
+
+  if (existingSignal !== undefined) {
+    if (existingSignal.aborted) {
+      abortFromUpstream();
+    } else {
+      existingSignal.addEventListener("abort", abortFromUpstream, {
+        once: true,
+      });
+    }
+  }
+
+  return {
+    signal: controller.signal,
+    cleanup() {
+      globalThis.clearTimeout(timeoutId);
+
+      if (existingSignal !== undefined && !existingSignal.aborted) {
+        existingSignal.removeEventListener("abort", abortFromUpstream);
+      }
+    },
+  };
+}
+
+/**
+ * @param {RequestInfo | URL} input
+ * @param {RequestInit | undefined} init
+ * @param {number} timeoutMs
+ * @returns {Promise<Response>}
+ */
+async function fetchWithTimeout(input, init, timeoutMs) {
+  const { signal, cleanup } = createTimeoutSignal(
+    timeoutMs,
+    init?.signal ?? undefined,
+  );
+
+  try {
+    const requestInit = init === undefined ? { signal } : { ...init, signal };
+    return await fetch(input, requestInit);
+  } finally {
+    cleanup();
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Lifecycle: install → activate → message
 // ---------------------------------------------------------------------------
@@ -131,7 +221,11 @@ async function precacheStaticAssets() {
   await Promise.all(
     STATIC_ASSETS.map(async (url) => {
       try {
-        const response = await fetch(url);
+        const response = await fetchWithTimeout(
+          url,
+          undefined,
+          PRECACHE_FETCH_TIMEOUT_MS,
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
@@ -275,7 +369,11 @@ async function cacheFirst(request) {
     return cached;
   }
 
-  const response = await fetch(request);
+  const response = await fetchWithTimeout(
+    request,
+    undefined,
+    STATIC_FETCH_TIMEOUT_MS,
+  );
 
   if (response.ok) {
     await cache.put(request, response.clone());
@@ -294,7 +392,11 @@ async function networkFirstPage(request) {
   const cache = await caches.open(PAGE_CACHE);
 
   try {
-    const response = await fetch(request);
+    const response = await fetchWithTimeout(
+      request,
+      undefined,
+      PAGE_NETWORK_TIMEOUT_MS,
+    );
 
     if (response.ok) {
       await cache.put(request, response.clone());
@@ -337,7 +439,11 @@ async function staleWhileRevalidateFeed(request) {
   const cache = await caches.open(FEED_CACHE);
   const cached = await cache.match(request);
 
-  const refreshPromise = fetch(request)
+  const refreshPromise = fetchWithTimeout(
+    request,
+    undefined,
+    FEED_NETWORK_TIMEOUT_MS,
+  )
     .then(async (networkResponse) => {
       if (networkResponse.ok) {
         const headers = new Headers(networkResponse.headers);

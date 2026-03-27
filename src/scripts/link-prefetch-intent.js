@@ -68,6 +68,66 @@
     return Boolean(link.relList?.supports?.("prefetch"));
   })();
 
+  /**
+   * Creates a timeout-backed abort signal for speculative network work while
+   * preserving an upstream signal when one is already present.
+   *
+   * @param {number} timeoutMs
+   * @param {AbortSignal | null | undefined} [upstreamSignal]
+   * @returns {{ signal: AbortSignal; cleanup: () => void }}
+   */
+  function createTimeoutSignal(timeoutMs, upstreamSignal) {
+    const existingSignal = upstreamSignal ?? undefined;
+    const controller = new AbortController();
+    const timeoutId = globalThis.setTimeout(() => {
+      controller.abort();
+    }, timeoutMs);
+
+    const abortFromUpstream = () => {
+      controller.abort();
+    };
+
+    if (existingSignal !== undefined) {
+      if (existingSignal.aborted) {
+        abortFromUpstream();
+      } else {
+        existingSignal.addEventListener("abort", abortFromUpstream, {
+          once: true,
+        });
+      }
+    }
+
+    return {
+      signal: controller.signal,
+      cleanup() {
+        globalThis.clearTimeout(timeoutId);
+
+        if (existingSignal !== undefined && !existingSignal.aborted) {
+          existingSignal.removeEventListener("abort", abortFromUpstream);
+        }
+      },
+    };
+  }
+
+  /**
+   * @param {string | URL} input
+   * @param {RequestInit} init
+   * @param {number} timeoutMs
+   * @returns {Promise<Response>}
+   */
+  async function fetchWithTimeout(input, init, timeoutMs) {
+    const { signal, cleanup } = createTimeoutSignal(
+      timeoutMs,
+      init.signal ?? undefined,
+    );
+
+    try {
+      return await globalThis.fetch(input, { ...init, signal });
+    } finally {
+      cleanup();
+    }
+  }
+
   function hasPrefetchBudget() {
     return prefetchedUrls.size + pendingPrefetches.size < PREFETCH_LIMIT;
   }
@@ -164,11 +224,11 @@
         prefetchLink.onerror = () => resolve(false);
         globalThis.document.head.append(prefetchLink);
       })
-      : globalThis.fetch(url, {
+      : fetchWithTimeout(url, {
         mode: "same-origin",
         credentials: "same-origin",
         headers: { accept: "text/html" },
-      }).then((response) => response.ok, () => false))
+      }, PREFETCH_TIMEOUT_MS).then((response) => response.ok, () => false))
       .then((succeeded) => {
         if (succeeded) {
           prefetchedUrls.add(url);

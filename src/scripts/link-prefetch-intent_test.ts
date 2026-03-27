@@ -93,6 +93,7 @@ describe("link-prefetch-intent.js", () => {
     const window = dom.window as TestWindow;
     const observedIds: string[] = [];
     const fetchedUrls: string[] = [];
+    const fetchSignals: AbortSignal[] = [];
     let callback: ((entries: IntersectionEntryLike[]) => void) | undefined;
 
     Object.defineProperty(window.navigator, "connection", {
@@ -125,8 +126,11 @@ describe("link-prefetch-intent.js", () => {
       unobserve() {}
       disconnect() {}
     };
-    window.fetch = (input: string | URL) => {
+    window.fetch = (input: string | URL, init?: RequestInit) => {
       fetchedUrls.push(String(input));
+      if (init?.signal != null) {
+        fetchSignals.push(init.signal);
+      }
       return Promise.resolve(new Response("", { status: 200 }));
     };
 
@@ -143,5 +147,7 @@ describe("link-prefetch-intent.js", () => {
     await flush(window);
 
     assertEquals(fetchedUrls, ["https://normco.re/about/"]);
+    assertEquals(fetchSignals.length, 1);
+    assertEquals(fetchSignals[0]?.aborted, false);
   });
 });

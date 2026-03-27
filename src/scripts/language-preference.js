@@ -195,10 +195,18 @@
   }
 
   /**
+   * @param {URL} url
+   * @returns {string}
+   */
+  function toNavigablePath(url) {
+    return `${url.pathname}${url.search}`;
+  }
+
+  /**
    * @returns {string}
    */
   function getCurrentPath() {
-    return `${globalThis.location.pathname}${globalThis.location.search}`;
+    return toNavigablePath(new URL(globalThis.location.href));
   }
 
   /**
@@ -206,8 +214,7 @@
    * @returns {string}
    */
   function getTargetPath(targetUrl) {
-    const absoluteTarget = new URL(targetUrl, globalThis.location.origin);
-    return `${absoluteTarget.pathname}${absoluteTarget.search}`;
+    return toNavigablePath(new URL(targetUrl, globalThis.location.origin));
   }
 
   /**
