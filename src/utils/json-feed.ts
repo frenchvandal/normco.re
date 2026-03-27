@@ -22,7 +22,7 @@ export function toRfc3339(value: string): string {
   return date ? formatRfc3339Instant(date) : value;
 }
 
-// Lume’s JSON feed output still needs light normalization to match the 1.1
+// Lume's JSON feed output still needs light normalization to match the 1.1
 // fields and date formats expected by downstream consumers.
 export function normalizeJsonFeed(
   feed: JsonFeedDocument,

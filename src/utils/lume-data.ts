@@ -1,5 +1,5 @@
 /**
- * Safe accessors for Lume’s dynamic data objects.
+ * Safe accessors for Lume's dynamic data objects.
  *
  * Lume injects `search`, `nav`, `comp`, and helper methods at runtime via
  * plain objects. These helpers wrap the `Reflect` ceremony into reusable

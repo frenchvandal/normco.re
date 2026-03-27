@@ -29,7 +29,7 @@ parallel feed path.
 - Use HarmonyOS Design as the platform design-system reference.
 - Use HarmonyOS native components and patterns as the baseline for the client.
 - The HarmonyOS client should feel native to HarmonyOS and should not try to
-  reproduce the web site’s Carbon layer.
+  reproduce the web site's Carbon layer.
 
 ## Product Bar
 

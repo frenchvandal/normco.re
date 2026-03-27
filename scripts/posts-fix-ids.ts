@@ -3,10 +3,17 @@ import { walk } from "@std/fs";
 import { basename, join } from "@std/path";
 import { parse, stringify } from "@std/yaml";
 import { generate as generateUuidV7 } from "jsr:@std/uuid@^1.1.0/v7";
+import { createUsageError, hasHelpFlag } from "./_shared.ts";
 
 const REPO_ROOT = join(import.meta.dirname ?? ".", "..");
 const POST_METADATA_FILE_NAME = "_data.yml";
 const YAML_SCHEMA = "core" as const;
+const USAGE = [
+  "Usage: deno run --allow-read --allow-write scripts/posts-fix-ids.ts [--posts-dir=<dir>]",
+  "",
+  "Options:",
+  "  --posts-dir=<dir>  Posts directory to scan (default: repo src/posts)",
+].join("\n");
 
 export const DEFAULT_POSTS_DIR = join(REPO_ROOT, "src", "posts");
 
@@ -138,12 +145,24 @@ export async function fixMissingPostIds(
 }
 
 if (import.meta.main) {
+  if (hasHelpFlag(Deno.args)) {
+    console.info(USAGE);
+    Deno.exit(0);
+  }
+
   const args = parseArgs(Deno.args, {
     string: ["posts-dir"],
     default: {
       "posts-dir": DEFAULT_POSTS_DIR,
     },
   });
+
+  if (args._.length > 0) {
+    throw createUsageError(
+      "posts-fix-ids does not accept positional arguments",
+      USAGE,
+    );
+  }
 
   const postsDir = typeof args["posts-dir"] === "string"
     ? args["posts-dir"]

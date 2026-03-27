@@ -4,10 +4,8 @@ import type Site from "lume/core/site.ts";
 import type { Plugin } from "lume/core/site.ts";
 import {
   type BundledLanguage,
-  bundledLanguages,
   type BundledTheme,
   type CodeToHastOptions,
-  createHighlighter,
   type Highlighter,
 } from "shiki";
 
@@ -20,12 +18,18 @@ import type {
 interface ResolvedShikiPluginOptions {
   readonly extensions: readonly string[];
   readonly cssSelector: string;
-  readonly highlighter: ShikiHighlighterOptions;
+  readonly highlighter: Partial<ShikiHighlighterOptions>;
   readonly render: ShikiRenderOptions;
   readonly concurrency: number;
   readonly onError: "ignore" | "warn";
   readonly resolveLanguage: (element: Element) => string | undefined;
 }
+
+type ShikiModule = typeof import("shiki");
+
+const SHIKI_DEBUG_ENV_NAME = "VSCODE_TEXTMATE_DEBUG";
+let shikiModulePromise: Promise<ShikiModule> | undefined;
+let processEnvMutationQueue = Promise.resolve();
 
 export const defaults = {
   extensions: [".html"],
@@ -116,20 +120,118 @@ function resolveRenderOptions(
   return render as unknown as ShikiRenderOptions;
 }
 
+async function getOptionalEnvVariable(
+  variable: string,
+): Promise<string | undefined> {
+  const permission = await Deno.permissions.query(
+    {
+      name: "env",
+      variable,
+    } as const,
+  );
+
+  if (permission.state !== "granted") {
+    return undefined;
+  }
+
+  return Deno.env.get(variable) ?? undefined;
+}
+
+async function withTemporaryProcessEnv<T>(
+  env: Readonly<Record<string, string>>,
+  callback: () => Promise<T>,
+): Promise<T> {
+  const previousMutation = processEnvMutationQueue;
+  let releaseMutation!: () => void;
+
+  processEnvMutationQueue = new Promise<void>((resolve) => {
+    releaseMutation = resolve;
+  });
+
+  await previousMutation;
+
+  const processDescriptor = Object.getOwnPropertyDescriptor(
+    globalThis,
+    "process",
+  );
+  const currentProcess = Reflect.get(globalThis, "process") as unknown as
+    | Record<string, unknown>
+    | undefined;
+  const nextProcess =
+    typeof currentProcess === "object" && currentProcess !== null
+      ? Object.assign(Object.create(currentProcess), { env: { ...env } })
+      : { env: { ...env } };
+
+  Object.defineProperty(globalThis, "process", {
+    configurable: processDescriptor?.configurable ?? true,
+    enumerable: processDescriptor?.enumerable ?? true,
+    writable: processDescriptor?.writable ?? true,
+    value: nextProcess,
+  });
+
+  try {
+    return await callback();
+  } finally {
+    if (processDescriptor) {
+      Object.defineProperty(globalThis, "process", processDescriptor);
+    } else {
+      Reflect.deleteProperty(globalThis, "process");
+    }
+
+    releaseMutation();
+  }
+}
+
+function importShikiModule(): Promise<ShikiModule> {
+  if (!shikiModulePromise) {
+    shikiModulePromise = import("shiki").catch((error) => {
+      shikiModulePromise = undefined;
+      throw error;
+    });
+  }
+
+  return shikiModulePromise;
+}
+
+async function createShikiHighlighter(
+  options: ResolvedShikiPluginOptions,
+): Promise<Highlighter> {
+  const debugValue = await getOptionalEnvVariable(SHIKI_DEBUG_ENV_NAME);
+  const safeEnv = debugValue === undefined
+    ? {}
+    : { [SHIKI_DEBUG_ENV_NAME]: debugValue };
+
+  // Shiki's vscode-textmate dependency reads `process.env` while its
+  // highlighter stack initializes. In plain `deno test` runs we may not have
+  // env permission for that variable, so cover both module import and
+  // highlighter construction with a temporary process shim.
+  return await withTemporaryProcessEnv(safeEnv, async () => {
+    const shikiModule = await importShikiModule();
+    return await shikiModule.createHighlighter(
+      resolveHighlighterOptions(
+        options.highlighter,
+        options.render,
+        shikiModule,
+      ),
+    );
+  });
+}
+
 function resolveHighlighterOptions(
-  userOptions: ShikiPluginOptions,
+  highlighter: Partial<ShikiHighlighterOptions>,
   render: ShikiRenderOptions,
+  shikiModule: ShikiModule,
 ): ShikiHighlighterOptions {
   const configuredThemes = dedupe(extractConfiguredThemes(render));
-  const configuredLanguages = userOptions.highlighter?.langs?.length
-    ? [...userOptions.highlighter.langs]
-    : Object.keys(bundledLanguages);
+  const configuredLanguages = highlighter.langs?.length
+    ? [...highlighter.langs]
+    : Object.keys(shikiModule.bundledLanguages) as BundledLanguage[];
 
   return {
-    ...(userOptions.highlighter ?? {}),
+    ...highlighter,
     langs: configuredLanguages,
-    themes: userOptions.highlighter?.themes?.length
-      ? dedupe([...userOptions.highlighter.themes])
+    themes: highlighter.themes?.length
+      ? dedupe([...highlighter.themes])
       : (configuredThemes.length > 0 ? configuredThemes : ["vitesse-light"]),
   } as ShikiHighlighterOptions;
 }
@@ -146,7 +248,7 @@ function resolveOptions(
     ),
     cssSelector: userOptions.cssSelector ?? defaults.cssSelector,
     extensions: userOptions.extensions ?? defaults.extensions,
-    highlighter: resolveHighlighterOptions(userOptions, render),
+    highlighter: userOptions.highlighter ?? {},
     onError: userOptions.onError ?? defaults.onError,
     render,
     resolveLanguage: userOptions.resolveLanguage ?? defaultResolveLanguage,
@@ -237,11 +339,10 @@ export default function shiki(userOptions: ShikiPluginOptions = {}): Plugin {
 
   function loadHighlighter(): Promise<Highlighter> {
     if (!highlighterPromise) {
-      highlighterPromise = createHighlighter(options.highlighter)
-        .catch((error) => {
-          highlighterPromise = undefined;
-          throw error;
-        });
+      highlighterPromise = createShikiHighlighter(options).catch((error) => {
+        highlighterPromise = undefined;
+        throw error;
+      });
     }
 
     return highlighterPromise;

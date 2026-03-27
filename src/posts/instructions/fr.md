@@ -9,7 +9,7 @@ charge des tags et des auteurs. Il permet de créer votre blog **en quelques
 secondes**, et fournit des flux Atom et JSON pour vos abonnés.
 
 La manière **la plus simple et la plus rapide** de configurer ce thème est
-d’utiliser la [commande Lume init](https://deno.land/x/lume_init), que vous
+d'utiliser la [commande Lume init](https://deno.land/x/lume_init), que vous
 pouvez aussi copier facilement depuis la
 [page du thème Simple Blog](https://lume.land/theme/simple-blog/). En lançant :
 
@@ -28,7 +28,7 @@ Les articles doivent être enregistrés dans le dossier `posts`. Par exemple :
 
 Pour ajouter ce thème à un projet Lume existant, importez-le dans votre fichier
 `_config.ts` comme module distant. Pour le mettre à jour, changez le numéro de
-version dans l’URL d’import :
+version dans l'URL d'import :
 
 ```ts
 import lume from "lume/mod.ts";

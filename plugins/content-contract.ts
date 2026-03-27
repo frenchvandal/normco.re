@@ -164,7 +164,7 @@ function parseBlock(el: Element): ContentBlock | undefined {
 }
 
 /**
- * Parses a post page’s `.post-content` into an array of content blocks.
+ * Parses a post page's `.post-content` into an array of content blocks.
  * Falls back to the `<article>` or `<main>` element if `.post-content`
  * is not found.
  */
@@ -189,7 +189,7 @@ export function parsePostContent(
   return blocks;
 }
 
-/** Resolves reading time from Lume’s readingInfo data. */
+/** Resolves reading time from Lume's readingInfo data. */
 function resolveReadingTime(readingInfo: unknown): number | undefined {
   if (typeof readingInfo === "object" && readingInfo !== null) {
     const info = readingInfo as Record<string, unknown>;
@@ -211,7 +211,7 @@ export function registerContentContract(site: Site): void {
   site.process([".html"], (pages: Page[], allPages: Page[]) => {
     // In watch mode, processors re-run on incremental rebuilds. These API pages
     // must live only for the current run, otherwise repeated `site.page()`
-    // registration accumulates duplicates in Lume’s scopedPages registry.
+    // registration accumulates duplicates in Lume's scopedPages registry.
     for (let index = allPages.length - 1; index >= 0; index--) {
       const page = allPages[index];
 

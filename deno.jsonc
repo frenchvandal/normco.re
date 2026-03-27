@@ -41,15 +41,23 @@
     },
     "validate": {
       "description": "Run the full local validation suite",
-      "command": "deno task design:guard && deno task check && deno task test && deno task build"
+      "command": "deno task design:guard && deno task typography:guard && deno task check && deno task test && deno task build"
     },
     "design:guard": {
       "description": "Fail when normalized UI literals reappear outside the token bridge or explicit allowlists",
       "command": "deno run --allow-read scripts/design-token-guard.ts"
     },
+    "typography:guard": {
+      "description": "Fail when smart quotes/apostrophes remain in Markdown or code comments",
+      "command": "deno run --allow-read scripts/typography-guard.ts"
+    },
+    "typography:fix": {
+      "description": "Normalize smart quotes/apostrophes in Markdown and code comments",
+      "command": "deno run --allow-read --allow-write scripts/typography-guard.ts --write"
+    },
     "test:doc": {
       "description": "Run documentation tests from inline JSDoc examples in source files",
-      "command": "deno test --doc _config/**/*.ts contracts/**/*.ts plugins/**/*.ts scripts/**/*.ts src/**/*.ts src/**/*.tsx"
+      "command": "deno test --doc --allow-env --allow-read --allow-write=.tmp/deno-tests --allow-sys=homedir --allow-ffi _config/**/*.ts contracts/**/*.ts plugins/**/*.ts scripts/**/*.ts src/**/*.ts src/**/*.tsx"
     },
 
     // Payload budget

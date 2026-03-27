@@ -1,6 +1,6 @@
 # normco.re
 
-normco.re is Phiphi’s multilingual personal site. It is built with
+normco.re is Phiphi's multilingual personal site. It is built with
 [Deno](https://deno.com/) and [Lume](https://lume.land/), rendered with TSX
 templates and Markdown content, styled with a custom Primer-inspired token
 system and deployed as a static site to [normco.re](https://normco.re).
@@ -52,6 +52,9 @@ If your environment requires system CA certificates, prefix commands with
 | Serve         | `deno task serve`              | Starts the local site and LumeCMS                      |
 | Check         | `deno task check`              | Type-checks the codebase                               |
 | Test          | `deno task test`               | Runs unit and integration tests                        |
+| Coverage      | `deno task test:coverage`      | Collects coverage data under `.tmp/deno-coverage`      |
+| Coverage HTML | `deno task coverage:html`      | Generates browsable HTML from the latest coverage run  |
+| Doc tests     | `deno task test:doc`           | Runs JSDoc examples as executable documentation tests  |
 | Build         | `deno task build`              | Builds `_site/` for production                         |
 | Contracts     | `deno task validate-contracts` | Validates feeds structurally and optional JSON outputs |
 | Install hooks | `deno task lefthook:install`   | Installs local Git hooks                               |
@@ -189,7 +192,7 @@ Then reference them from Markdown with relative paths.
 The site uses Carbon Design System v11 Sass modules as its design-system
 foundation.
 
-- Design-system authority: the local `--ph-*` token system and the site’s core
+- Design-system authority: the local `--ph-*` token system and the site's core
   layout layer
 - Local theme bridge: `src/styles/primer/_theme-tokens.scss`
 - Core layout implementation: `src/styles/_layout.scss`

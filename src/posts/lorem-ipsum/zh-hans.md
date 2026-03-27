@@ -24,7 +24,7 @@ culpa qui officia deserunt mollit anim id est laborum.
 它能暴露设计是否能承受不确定性，比如三行标题、没有自然换气点的段落，
 或者一个超出容器长度的长单词。
 
-## 关于“逼真度”的问题
+## 关于"逼真度"的问题
 
 Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit
 laboriosam? 在设计中，真实内容的还原度与抽象带来的自由之间，总是存在张力。

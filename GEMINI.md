@@ -30,7 +30,7 @@ The UI is built on a local Primer-inspired token system defined in
 
 When touching build scripts or repository utilities:
 
-- Prefer Deno’s built-in primitives for low-level work such as `Deno.Command`,
+- Prefer Deno's built-in primitives for low-level work such as `Deno.Command`,
   `Deno.readTextFile`, `Deno.writeTextFile`, `Deno.readDir`, `Deno.stat`,
   `Deno.errors.NotFound`, and `import.meta.main`.
 - Prefer Deno std helpers over ad-hoc implementations for common higher-level

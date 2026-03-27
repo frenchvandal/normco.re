@@ -91,7 +91,7 @@ their own TSX layout.
 
 ### Multilingual Behavior
 
-Lume’s `multilanguage` plugin provides the routing model:
+Lume's `multilanguage` plugin provides the routing model:
 
 - the same canonical slug is preserved across languages
 - localized prefixes are applied at the route level
@@ -148,7 +148,7 @@ from the same generated source of truth before remote refresh.
 - HTML validation
 - JSON-LD
 - Prism highlighting
-- app-contract generation through the repository’s content pipeline
+- app-contract generation through the repository's content pipeline
 
 ### Assets, Feeds, and Processors
 
@@ -175,7 +175,7 @@ The site uses a local Primer-inspired token system as its design foundation.
 Design-system guidance comes from two places:
 
 - the local `--ph-*` token layer in `src/styles/primer/_theme-tokens.scss`
-- the repository’s own layout and utility layers in `src/styles/_layout.scss`
+- the repository's own layout and utility layers in `src/styles/_layout.scss`
   and `src/styles/_utilities.scss`
 
 No exported design-token artifact is treated as authoritative.

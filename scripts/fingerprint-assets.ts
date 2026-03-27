@@ -2,7 +2,12 @@ import { parseArgs } from "@std/cli";
 import { encodeHex } from "@std/encoding/hex";
 import { walk } from "@std/fs";
 import { basename, extname, join } from "@std/path";
-import { fileExists, getErrorMessage } from "./_shared.ts";
+import {
+  createUsageError,
+  fileExists,
+  getErrorMessage,
+  hasHelpFlag,
+} from "./_shared.ts";
 
 const HASH_LENGTH = 10;
 const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
@@ -31,6 +36,12 @@ const SERVICE_WORKER_VERSION_PLACEHOLDER = "__SW_VERSION__";
 const SERVICE_WORKER_VERSION_SOURCES = [
   "/sw.js",
 ] as const;
+const USAGE = [
+  "Usage: deno run --allow-read --allow-write scripts/fingerprint-assets.ts [rootDir]",
+  "",
+  "Arguments:",
+  "  [rootDir]  Built site output directory (default: _site)",
+].join("\n");
 
 type AssetRewrite = {
   sourceUrl: string;
@@ -218,11 +229,26 @@ async function rewriteUrlsInSiteOutput(
   }
 }
 
-function parseCliArgs(args: ReadonlyArray<string>): { rootDir: string } {
+function parseCliArgs(
+  args: ReadonlyArray<string>,
+): { showHelp: boolean; rootDir: string } {
+  if (hasHelpFlag(args)) {
+    return { showHelp: true, rootDir: "_site" };
+  }
+
   const parsedArgs = parseArgs(args);
+
+  if (parsedArgs._.length > 1) {
+    throw createUsageError(
+      "Too many positional arguments for fingerprint-assets",
+      USAGE,
+    );
+  }
+
   const rootDirArg = parsedArgs._[0];
 
   return {
+    showHelp: false,
     rootDir: typeof rootDirArg === "string" ? rootDirArg : "_site",
   };
 }
@@ -256,7 +282,13 @@ async function injectServiceWorkerVersion(rootDir: string): Promise<string> {
 }
 
 async function main(): Promise<void> {
-  const { rootDir } = parseCliArgs(Deno.args);
+  const { rootDir, showHelp } = parseCliArgs(Deno.args);
+
+  if (showHelp) {
+    console.info(USAGE);
+    return;
+  }
+
   const rewrites: [string, string][] = [];
 
   for (const sourceUrl of CANONICAL_ASSET_URLS) {

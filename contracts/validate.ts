@@ -26,7 +26,11 @@ import {
   JSON_FEED_PATH,
   RSS_FEED_PATH,
 } from "../src/utils/feed-paths.ts";
-import { getErrorMessage } from "../scripts/_shared.ts";
+import {
+  createUsageError,
+  getErrorMessage,
+  hasHelpFlag,
+} from "../scripts/_shared.ts";
 
 /** Minimal JSON Schema validator for the subset of features we use. */
 export interface SchemaNode {
@@ -56,6 +60,12 @@ type XmlDocument = ReturnType<typeof parse>;
 type XmlElement = XmlDocument["root"];
 type XmlChildNode = XmlElement["children"][number];
 type FilePath = string | URL;
+const USAGE = [
+  "Usage: deno run --allow-read contracts/validate.ts [--site-dir=<dir>]",
+  "",
+  "Options:",
+  "  --site-dir=<dir>  Built site output directory (default: _site)",
+].join("\n");
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -353,6 +363,14 @@ function parseCliArgs(args: ReadonlyArray<string>): { siteDir: string } {
       "site-dir": "_site",
     },
   });
+
+  if (parsedArgs._.length > 0) {
+    throw createUsageError(
+      "validate-contracts does not accept positional arguments",
+      USAGE,
+    );
+  }
+
   const siteDir = parsedArgs["site-dir"];
 
   return {
@@ -693,6 +711,11 @@ export function validateAtomFeed(
 }
 
 async function main(): Promise<void> {
+  if (hasHelpFlag(Deno.args)) {
+    console.info(USAGE);
+    return;
+  }
+
   const { siteDir } = parseCliArgs(Deno.args);
 
   console.log(bold("Generated feed/content validation"));

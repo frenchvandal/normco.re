@@ -11,7 +11,7 @@ for a formal set of rules or enforcement mechanisms.
 - Treat others with respect and courtesy.
 - Focus on the quality of contributions rather than personal attributes.
 - Resolve disagreements through direct, private communication whenever possible.
-- If a participant’s behaviour violates GitHub’s Terms of Service or Community
+- If a participant's behaviour violates GitHub's Terms of Service or Community
   Guidelines, report it to GitHub directly.
 
 We will not:

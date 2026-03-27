@@ -2,7 +2,7 @@ import { parseArgs } from "@std/cli";
 import { ensureDir, walk } from "@std/fs";
 import { dirname, extname, join, normalize } from "@std/path";
 import { DOMParser } from "lume/deps/dom.ts";
-import { fileExists } from "./_shared.ts";
+import { createUsageError, fileExists, hasHelpFlag } from "./_shared.ts";
 
 const HTML_EXTENSIONS = new Set([".html", ".xml", ".xsl"]);
 const SKIPPED_PREFIXES = [
@@ -15,6 +15,13 @@ const SKIPPED_PREFIXES = [
   "javascript:",
   "#",
 ] as const;
+const USAGE = [
+  "Usage: deno run --allow-read --allow-write scripts/check-output-links.ts [rootDir] [reportPath]",
+  "",
+  "Arguments:",
+  "  [rootDir]     Built site output directory (default: _site)",
+  "  [reportPath]  JSON report path (default: _quality/broken-links.json)",
+].join("\n");
 
 export type BrokenLinksReport = Record<string, string[]>;
 
@@ -166,14 +173,32 @@ export async function collectBrokenOutputLinks(
 function parseCliArgs(
   args: ReadonlyArray<string>,
 ): {
+  showHelp: boolean;
   rootDir: string;
   reportPath: string;
 } {
+  if (hasHelpFlag(args)) {
+    return {
+      showHelp: true,
+      rootDir: "_site",
+      reportPath: "_quality/broken-links.json",
+    };
+  }
+
   const parsedArgs = parseArgs(args);
+
+  if (parsedArgs._.length > 2) {
+    throw createUsageError(
+      "Too many positional arguments for check-output-links",
+      USAGE,
+    );
+  }
+
   const rootDirArg = parsedArgs._[0];
   const reportPathArg = parsedArgs._[1];
 
   return {
+    showHelp: false,
     rootDir: typeof rootDirArg === "string" ? rootDirArg : "_site",
     reportPath: typeof reportPathArg === "string"
       ? reportPathArg
@@ -182,7 +207,13 @@ function parseCliArgs(
 }
 
 async function main(): Promise<void> {
-  const { rootDir, reportPath } = parseCliArgs(Deno.args);
+  const { rootDir, reportPath, showHelp } = parseCliArgs(Deno.args);
+
+  if (showHelp) {
+    console.info(USAGE);
+    return;
+  }
+
   const report = await collectBrokenOutputLinks(rootDir);
 
   await ensureDir(dirname(reportPath));

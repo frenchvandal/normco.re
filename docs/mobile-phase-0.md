@@ -66,7 +66,7 @@ Use this document to:
 
 - Android uses Kotlin, Jetpack Compose, Material 3, Hilt, Room, DataStore, and
   WorkManager.
-- iOS should follow Apple’s native stack and design guidance when work starts.
+- iOS should follow Apple's native stack and design guidance when work starts.
 - HarmonyOS should follow ArkTS, ArkUI, Stage model, and HarmonyOS Design when
   work starts.
 - Native apps must share contracts and information architecture, not a shared

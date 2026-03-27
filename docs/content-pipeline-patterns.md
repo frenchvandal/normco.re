@@ -72,7 +72,7 @@ Why this is useful:
 
 - editorial structure becomes build-time data
 - post relationships can be rendered without any runtime search step
-- future features like “related notes”, “linked essays”, or graph exports can
+- future features like "related notes", "linked essays", or graph exports can
   reuse the same derived data
 
 ## Registration Order

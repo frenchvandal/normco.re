@@ -1,6 +1,7 @@
 import { parseArgs } from "@std/cli";
 import { walk } from "@std/fs";
 import { dirname, join, relative } from "@std/path";
+import { createUsageError, hasHelpFlag } from "./_shared.ts";
 
 const REPO_ROOT = join(import.meta.dirname ?? ".", "..");
 const DEFAULT_SITE_DIR = join(REPO_ROOT, "_site");
@@ -14,6 +15,13 @@ const DEFAULT_ASSETS_DIR = join(
   "assets",
   "bootstrap",
 );
+const USAGE = [
+  "Usage: deno run --allow-read --allow-write scripts/sync-android-contract-assets.ts [options]",
+  "",
+  "Options:",
+  "  --site-dir=<dir>    Built site output directory (default: repo _site)",
+  "  --assets-dir=<dir>  Android bootstrap asset directory",
+].join("\n");
 
 type ContractAssetCopy = {
   readonly source: string;
@@ -160,6 +168,11 @@ export async function syncAndroidContractAssets(
 }
 
 if (import.meta.main) {
+  if (hasHelpFlag(Deno.args)) {
+    console.info(USAGE);
+    Deno.exit(0);
+  }
+
   const args = parseArgs(Deno.args, {
     string: ["site-dir", "assets-dir"],
     default: {
@@ -167,6 +180,13 @@ if (import.meta.main) {
       "assets-dir": DEFAULT_ASSETS_DIR,
     },
   });
+
+  if (args._.length > 0) {
+    throw createUsageError(
+      "sync-android-contract-assets does not accept positional arguments",
+      USAGE,
+    );
+  }
 
   const siteDir = typeof args["site-dir"] === "string"
     ? args["site-dir"]

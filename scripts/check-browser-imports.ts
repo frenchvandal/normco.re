@@ -1,7 +1,7 @@
 import { parseArgs } from "@std/cli";
 import { walk } from "@std/fs";
 import { join } from "@std/path";
-import { lineNumberAt } from "./_shared.ts";
+import { createUsageError, hasHelpFlag, lineNumberAt } from "./_shared.ts";
 
 const NETWORK_PREFIXES = ["http://", "https://"] as const;
 const FORBIDDEN_PREFIXES = [
@@ -17,6 +17,12 @@ const ALLOWED_PREFIXES = [
   "data:",
   "blob:",
 ] as const;
+const USAGE = [
+  "Usage: deno run --allow-read scripts/check-browser-imports.ts [rootDir]",
+  "",
+  "Arguments:",
+  "  [rootDir]  Built site output directory (default: _site)",
+].join("\n");
 
 export type ImportIssueKind =
   | "network-specifier"
@@ -197,17 +203,38 @@ function formatIssue(issue: ImportIssue, rootDir: string): string {
   return `- ${relativePath}:${issue.line} ${issueReason}: "${issue.specifier}"`;
 }
 
-function parseCliArgs(args: ReadonlyArray<string>): { rootDir: string } {
+function parseCliArgs(
+  args: ReadonlyArray<string>,
+): { showHelp: boolean; rootDir: string } {
+  if (hasHelpFlag(args)) {
+    return { showHelp: true, rootDir: "_site" };
+  }
+
   const parsedArgs = parseArgs(args);
+
+  if (parsedArgs._.length > 1) {
+    throw createUsageError(
+      "Too many positional arguments for check-browser-imports",
+      USAGE,
+    );
+  }
+
   const rootDirArg = parsedArgs._[0];
 
   return {
+    showHelp: false,
     rootDir: typeof rootDirArg === "string" ? rootDirArg : "_site",
   };
 }
 
 async function main(): Promise<void> {
-  const { rootDir } = parseCliArgs(Deno.args);
+  const { rootDir, showHelp } = parseCliArgs(Deno.args);
+
+  if (showHelp) {
+    console.info(USAGE);
+    return;
+  }
+
   const scriptFiles = await collectBrowserScriptFiles(rootDir);
   const issues: ImportIssue[] = [];
 

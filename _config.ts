@@ -114,6 +114,9 @@ const site: Site = lume({
 }, {
   markdown: {
     options: {
+      // Let markdown-it handle output-side smart punctuation for rendered
+      // Markdown content. This is distinct from source-level repo hygiene
+      // checks, and a blind text-replacement plugin would be too coarse here.
       typographer: true,
     },
   },

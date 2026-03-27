@@ -1,6 +1,7 @@
+import { parseArgs } from "@std/cli";
 import { walk } from "@std/fs";
 import { join, relative } from "@std/path";
-import { lineNumberAt } from "./_shared.ts";
+import { createUsageError, hasHelpFlag, lineNumberAt } from "./_shared.ts";
 
 export type StyleSource = {
   readonly filePath: string;
@@ -23,6 +24,13 @@ type GuardRule = {
 };
 
 const STYLE_ROOT = "src/styles" as const;
+const DEFAULT_ROOT_DIR = Deno.cwd();
+const USAGE = [
+  "Usage: deno run --allow-read scripts/design-token-guard.ts [--root=<dir>]",
+  "",
+  "Options:",
+  "  --root=<dir>  Repository root to scan (default: current working directory)",
+].join("\n");
 
 const RULES: readonly GuardRule[] = [
   {
@@ -124,8 +132,45 @@ export async function runDesignTokenGuard(
   return scanStyleSources(styleSources);
 }
 
+function parseCliArgs(
+  args: ReadonlyArray<string>,
+): { showHelp: boolean; rootDir: string } {
+  if (hasHelpFlag(args)) {
+    return { showHelp: true, rootDir: DEFAULT_ROOT_DIR };
+  }
+
+  const parsedArgs = parseArgs(args, {
+    string: ["root"],
+    default: {
+      root: DEFAULT_ROOT_DIR,
+    },
+  });
+  const rootDir = parsedArgs.root;
+
+  if (parsedArgs._.length > 0) {
+    throw createUsageError(
+      "design-token-guard does not accept positional arguments",
+      USAGE,
+    );
+  }
+
+  return {
+    showHelp: false,
+    rootDir: typeof rootDir === "string" && rootDir.trim().length > 0
+      ? rootDir
+      : DEFAULT_ROOT_DIR,
+  };
+}
+
 if (import.meta.main) {
-  const issues = await runDesignTokenGuard();
+  const { rootDir, showHelp } = parseCliArgs(Deno.args);
+
+  if (showHelp) {
+    console.info(USAGE);
+    Deno.exit(0);
+  }
+
+  const issues = await runDesignTokenGuard(rootDir);
 
   if (issues.length === 0) {
     console.log("design-token-guard: ok");

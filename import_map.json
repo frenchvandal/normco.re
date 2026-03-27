@@ -22,6 +22,7 @@
     "@std/xml": "jsr:@std/xml@^0.1.0",
     "@faker-js/faker": "npm:@faker-js/faker@^10.4.0",
     "date-fns/locale": "npm:date-fns@4.1.0/locale",
-    "shiki": "npm:shiki@4.0.2"
+    "shiki": "./plugins/shiki/runtime.ts",
+    "shiki-npm": "npm:shiki@4.0.2"
   }
 }
