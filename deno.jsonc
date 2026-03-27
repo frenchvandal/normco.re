@@ -27,6 +27,18 @@
       "description": "Run unit and integration tests",
       "command": "deno test --allow-env=VSCODE_TEXTMATE_DEBUG --allow-read --allow-write=.tmp/deno-tests"
     },
+    "test:coverage": {
+      "description": "Run tests with coverage output written to .tmp/deno-coverage",
+      "command": "deno test --coverage=.tmp/deno-coverage --allow-env=VSCODE_TEXTMATE_DEBUG --allow-read --allow-write=.tmp/deno-tests"
+    },
+    "coverage:summary": {
+      "description": "Print a summary from the latest Deno coverage run",
+      "command": "deno coverage .tmp/deno-coverage"
+    },
+    "coverage:html": {
+      "description": "Generate an HTML report from the latest Deno coverage run",
+      "command": "deno coverage .tmp/deno-coverage --html"
+    },
     "validate": {
       "description": "Run the full local validation suite",
       "command": "deno task design:guard && deno task check && deno task test && deno task build"
@@ -37,7 +49,7 @@
     },
     "test:doc": {
       "description": "Run documentation tests from inline JSDoc examples in source files",
-      "command": "deno test --doc src/**/*.ts src/**/*.tsx plugins/**/*.ts"
+      "command": "deno test --doc _config/**/*.ts contracts/**/*.ts plugins/**/*.ts scripts/**/*.ts src/**/*.ts src/**/*.tsx"
     },
 
     // Payload budget
@@ -77,7 +89,8 @@
 
   "compilerOptions": {
     "types": [
-      "lume/types.ts"
+      "lume/types.ts",
+      "node"
     ],
     "jsx": "react-jsx",
     "jsxImportSource": "lume",
@@ -96,8 +109,6 @@
 
   // Required for npm packages like esbuild and shiki.
   "nodeModulesDir": "auto",
-
-  "lock": false,
 
   "test": {
     "exclude": [
