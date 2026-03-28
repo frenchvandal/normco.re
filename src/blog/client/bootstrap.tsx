@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
-import type { FunctionComponent } from "react";
+import { createElement, type FunctionComponent } from "react";
 import { BLOG_APP_DATA_ID, BLOG_APP_ROOT_ATTRIBUTE } from "../embed.ts";
+import { parseBlogAppData } from "./bootstrap-data.ts";
 
 type MountableProps<TData> = Readonly<{
   data: TData;
@@ -18,6 +19,11 @@ export function mountBlogApp<TData>(
     return;
   }
 
-  const data = JSON.parse(dataElement.textContent) as TData;
-  createRoot(rootElement).render(<App data={data} />);
+  const data = parseBlogAppData<TData>(dataElement.textContent);
+
+  if (!data) {
+    return;
+  }
+
+  createRoot(rootElement).render(createElement(App, { data }));
 }

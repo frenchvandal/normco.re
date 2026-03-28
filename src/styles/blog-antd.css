@@ -679,63 +679,30 @@
     font-size: var(--ph-text-sm);
   }
 
-  .blog-antd-archive-calendar.ant-picker-calendar {
-    padding: clamp(var(--ph-space-3), 2vw, var(--ph-space-4));
-    border: 1px solid
+  .blog-antd-archive-month-groups {
+    display: grid;
+    gap: var(--ph-space-3);
+  }
+
+  .blog-antd-archive-month-group {
+    display: grid;
+    gap: var(--ph-space-3);
+    padding-block-start: var(--ph-space-2);
+    border-block-start: 1px solid
       color-mix(
         in oklch,
-        var(--ph-color-accent-fg) 14%,
+        var(--ph-color-accent-fg) 12%,
         var(--ph-color-border-default)
       );
-    border-radius: calc(var(--ph-radius-lg) * 1.05);
-    background: linear-gradient(
-      180deg,
-      color-mix(
-        in oklch,
-        var(--ph-color-canvas-default) 98%,
-        var(--ph-surface-accent)
-      ),
-      color-mix(
-        in oklch,
-        var(--ph-color-canvas-default) 95%,
-        var(--ph-surface-accent)
-      )
+  }
+
+  .blog-antd-archive-month-group__year {
+    margin: 0;
+    color: color-mix(
+      in oklch,
+      var(--ph-color-fg-default) 88%,
+      var(--ph-color-accent-fg)
     );
-  }
-
-  .blog-antd-archive-calendar .ant-picker-panel {
-    background: transparent;
-  }
-
-  .blog-antd-archive-calendar .ant-picker-body {
-    padding: 0;
-  }
-
-  .blog-antd-archive-calendar .ant-picker-cell {
-    padding: 0.1875rem;
-  }
-
-  .blog-antd-archive-calendar .ant-picker-cell::before {
-    display: none;
-  }
-
-  .blog-antd-archive-calendar .ant-picker-cell-inner {
-    block-size: 100%;
-  }
-
-  .blog-antd-archive-calendar__header {
-    margin-block-end: var(--ph-space-2);
-  }
-
-  .blog-antd-archive-calendar__header .ant-btn {
-    inline-size: 2rem;
-    block-size: 2rem;
-    padding: 0;
-    border-radius: var(--ph-radius-md);
-  }
-
-  .blog-antd-archive-calendar__year {
-    color: var(--ph-color-fg-default);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
     font-weight: 600;
@@ -743,65 +710,184 @@
     text-transform: uppercase;
   }
 
-  .blog-antd-archive-calendar__cell {
+  .blog-antd-archive-anchor.ant-anchor-wrapper {
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .blog-antd-archive-anchor.ant-anchor-wrapper-horizontal {
+    max-block-size: none;
+  }
+
+  .blog-antd-archive-anchor .ant-anchor {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ph-space-2);
+    align-items: stretch;
+  }
+
+  .blog-antd-archive-anchor .ant-anchor-ink {
+    display: none;
+  }
+
+  .blog-antd-archive-anchor .ant-anchor-link {
+    padding: 0;
+    line-height: 1;
+  }
+
+  .blog-antd-archive-anchor .ant-anchor-link-title {
+    color: var(--ph-color-fg-default);
+    text-decoration: none;
+    transition:
+      color var(--ph-duration-default) var(--ph-easing-default),
+      transform var(--ph-duration-default) var(--ph-easing-default);
+  }
+
+  .blog-antd-archive-anchor .ant-anchor-link-title:hover,
+  .blog-antd-archive-anchor .ant-anchor-link-title:focus-visible,
+  .blog-antd-archive-anchor .ant-anchor-link-active > .ant-anchor-link-title {
+    color: var(--ph-color-accent-fg);
+  }
+
+  .blog-antd-archive-anchor .ant-anchor-link-title:focus-visible {
+    outline: 2px solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 34%,
+        transparent
+      );
+    outline-offset: 2px;
+  }
+
+  .blog-antd-archive-anchor__title {
     display: grid;
-    gap: var(--ph-space-1);
-    min-block-size: 4.5rem;
-    padding: var(--ph-space-2);
+    gap: 0.22rem;
+    min-inline-size: 4.25rem;
+    padding: 0.7rem 0.8rem 0.62rem;
     border: 1px solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 12%,
         var(--ph-color-border-default)
       );
-    border-radius: var(--ph-radius-md);
-    background: color-mix(
-      in oklch,
-      var(--ph-color-canvas-default) 98%,
-      var(--ph-surface-accent)
+    border-block-start: 2px solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 26%,
+        var(--ph-color-border-default)
+      );
+    border-radius: calc(var(--ph-radius-md) + 1px);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(
+          in oklch,
+          var(--ph-color-canvas-default) 98%,
+          var(--ph-surface-accent)
+        ),
+        color-mix(
+          in oklch,
+          var(--ph-color-canvas-default) 94%,
+          var(--ph-surface-accent)
+        )
+      ),
+      repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 2.85rem,
+      color-mix(in oklch, var(--ph-grid-rule) 90%, transparent) 2.85rem,
+      color-mix(in oklch, var(--ph-grid-rule) 90%, transparent) calc(
+        2.85rem + 1px
+      )
     );
+    box-shadow: 0 10px 24px
+      color-mix(in oklch, var(--ph-color-fg-default) 4%, transparent);
     transition:
       border-color var(--ph-duration-default) var(--ph-easing-default),
+      border-block-start-color var(--ph-duration-default)
+      var(--ph-easing-default),
       background-color var(--ph-duration-default) var(--ph-easing-default),
-      transform var(--ph-duration-default) var(--ph-easing-default);
+      color var(--ph-duration-default) var(--ph-easing-default),
+      transform var(--ph-duration-default) var(--ph-easing-default),
+      box-shadow var(--ph-duration-default) var(--ph-easing-default);
   }
 
-  .blog-antd-archive-calendar__cell--empty {
-    opacity: 0.4;
-    border-style: dashed;
-    background: transparent;
-  }
-
-  .blog-antd-archive-calendar__cell--selected,
-  .blog-antd-archive-calendar
-    .ant-picker-cell-selected
-    .blog-antd-archive-calendar__cell {
-    border-color: color-mix(
-      in oklch,
-      var(--ph-color-accent-fg) 48%,
-      var(--ph-color-border-default)
-    );
-    background: color-mix(
-      in oklch,
-      var(--ph-color-accent-fg) 10%,
-      var(--ph-color-canvas-default)
-    );
-    transform: translateY(-1px);
-  }
-
-  .blog-antd-archive-calendar__cell-label {
+  .blog-antd-archive-anchor__label {
     color: var(--ph-color-fg-default);
-    font-size: var(--ph-text-sm);
+    font-family: var(--ph-font-sans);
+    font-size: calc(var(--ph-text-sm) * 0.98);
     font-weight: 600;
-    line-height: var(--ph-lh-tight);
+    letter-spacing: -0.02em;
   }
 
-  .blog-antd-archive-calendar__cell-count {
+  .blog-antd-archive-anchor__count {
     color: var(--ph-color-fg-muted);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
+  }
+
+  .blog-antd-archive-anchor
+    .ant-anchor-link-title:hover
+    .blog-antd-archive-anchor__title,
+  .blog-antd-archive-anchor
+    .ant-anchor-link-title:focus-visible
+    .blog-antd-archive-anchor__title,
+  .blog-antd-archive-anchor
+    .ant-anchor-link-active
+    > .ant-anchor-link-title
+    .blog-antd-archive-anchor__title {
+    border-color: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 34%,
+      var(--ph-color-border-default)
+    );
+    border-block-start-color: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 62%,
+      var(--ph-color-border-default)
+    );
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(
+          in oklch,
+          var(--ph-color-accent-fg) 8%,
+          var(--ph-color-canvas-default)
+        ),
+        color-mix(
+          in oklch,
+          var(--ph-color-accent-fg) 4%,
+          var(--ph-color-canvas-default)
+        )
+      ),
+      repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 2.85rem,
+      color-mix(in oklch, var(--ph-grid-rule) 85%, transparent) 2.85rem,
+      color-mix(in oklch, var(--ph-grid-rule) 85%, transparent) calc(
+        2.85rem + 1px
+      )
+    );
+    box-shadow: 0 14px 28px
+      color-mix(in oklch, var(--ph-color-accent-fg) 8%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .blog-antd-archive-anchor
+    .ant-anchor-link-title:hover
+    .blog-antd-archive-anchor__label,
+  .blog-antd-archive-anchor
+    .ant-anchor-link-title:focus-visible
+    .blog-antd-archive-anchor__label,
+  .blog-antd-archive-anchor
+    .ant-anchor-link-active
+    > .ant-anchor-link-title
+    .blog-antd-archive-anchor__label {
+    color: var(--ph-color-accent-fg);
   }
 
   .blog-antd-archive-timeline.ant-timeline {

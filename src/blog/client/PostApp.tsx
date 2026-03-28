@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import type { BlogPostViewData } from "../view-data.ts";
 import { BLOG_ANTD_THEME } from "./theme.ts";
 import {
@@ -28,7 +29,10 @@ import { getBlogTagColor } from "./tag-colors.ts";
 import { MetaLine, ReadingMeter, renderBreadcrumbItems } from "./common.tsx";
 
 function PostView(
-  { data }: { data: BlogPostViewData },
+  { data, interactive = true }: {
+    data: BlogPostViewData;
+    interactive?: boolean | undefined;
+  },
 ) {
   const hasRail = data.outline.length > 0 || data.tags.length > 0 ||
     data.backlinks.length > 0 || data.previous || data.next;
@@ -257,20 +261,25 @@ function PostView(
           </aside>
         )}
       </div>
-      <BackTop
-        visibilityHeight={320}
-        icon={<VerticalAlignTopOutlined />}
-      />
+      {interactive && (
+        <BackTop
+          visibilityHeight={320}
+          icon={<VerticalAlignTopOutlined />}
+        />
+      )}
     </div>
   );
 }
 
 export function BlogAntdPostApp(
-  { data }: { data: BlogPostViewData },
+  { data, interactive = true }: {
+    data: BlogPostViewData;
+    interactive?: boolean | undefined;
+  },
 ) {
   return (
     <ConfigProvider theme={BLOG_ANTD_THEME}>
-      <PostView data={data} />
+      <PostView data={data} interactive={interactive} />
     </ConfigProvider>
   );
 }

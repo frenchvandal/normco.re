@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import dayjs, { type Dayjs } from "dayjs";
 import { useState } from "react";
 import type {
@@ -747,8 +748,8 @@ function ArchiveView(
 function TagView(
   { data }: { data: BlogTagViewData },
 ) {
-  const latestStory = data.posts[0];
   const featuredStory = data.posts[0];
+  const latestStory = data.posts[1];
   const remainingStories = data.posts.slice(1);
 
   return (

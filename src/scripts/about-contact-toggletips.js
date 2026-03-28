@@ -80,7 +80,7 @@
    * @returns {void}
    */
   function syncModalState() {
-    const hasOpenToggletip = containers.some(isOpen);
+    const hasOpenToggletip = containers.some(isOpen) && isMobileViewport();
 
     if (hasOpenToggletip) {
       globalThis.document.body.dataset.contactToggletipModalOpen = "true";
@@ -101,13 +101,35 @@
       if (popover) {
         popover.hidden = !open;
       }
-      panel?.setAttribute(
-        "aria-modal",
-        open ? "true" : "false",
-      );
+      syncPanelModalState(panel, open);
     }
 
     syncModalState();
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  function isMobileViewport() {
+    return mobileMedia?.matches ?? false;
+  }
+
+  /**
+   * @param {HTMLElement | null} panel
+   * @param {boolean} open
+   * @returns {void}
+   */
+  function syncPanelModalState(panel, open) {
+    if (panel === null) {
+      return;
+    }
+
+    if (open && isMobileViewport()) {
+      panel.setAttribute("aria-modal", "true");
+      return;
+    }
+
+    panel.removeAttribute("aria-modal");
   }
 
   /**
@@ -126,10 +148,7 @@
     if (popover) {
       popover.hidden = !open;
     }
-    panel?.setAttribute(
-      "aria-modal",
-      open ? "true" : "false",
-    );
+    syncPanelModalState(panel, open);
   }
 
   /**
@@ -239,7 +258,7 @@
         return;
       }
 
-      if (event.key !== "Tab" || !isOpen(container)) {
+      if (event.key !== "Tab" || !isOpen(container) || !isMobileViewport()) {
         return;
       }
 

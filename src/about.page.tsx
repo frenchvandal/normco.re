@@ -61,12 +61,11 @@ function renderContactItem(
                 </span>
               </button>
 	              <div class="cds--popover" hidden>
-                <span class="cds--popover-caret"></span>
+                <span class="cds--popover-caret" aria-hidden="true"></span>
                 <div
                   id="${escapeHtml(panelId)}"
                   class="cds--popover-content cds--toggletip-content about-contact-popover"
                   role="dialog"
-                  aria-modal="false"
                   aria-labelledby="${escapeHtml(titleId)}"
                   tabindex="-1"
                   data-contact-toggletip-panel=""

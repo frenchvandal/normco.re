@@ -24,8 +24,6 @@ export default (
     readonly readingLabel?: string;
     readonly summary?: string;
     readonly showSummary?: boolean;
-    readonly authorName?: string;
-    readonly authorUrl?: string;
   },
 ) => (
   <article

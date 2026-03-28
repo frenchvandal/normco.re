@@ -1,12 +1,5 @@
-import {
-  BLOG_APP_ROOT_ATTRIBUTE,
-  renderBlogAppBootstrap,
-} from "../../blog/embed.ts";
-import type { BlogPostViewData } from "../../blog/view-data.ts";
 import { resolvePageSetup } from "../../utils/page-setup.ts";
-import { resolveHtmlChildren } from "../../utils/lume-data.ts";
 import { resolveDateHelper } from "../../utils/lume-helpers.ts";
-import { getTagUrl } from "../../utils/tags.ts";
 import {
   PostDetails,
   PostRail,
@@ -46,7 +39,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
 
   const codeCopyAttr = (label: string, fallback: string) =>
     state.includeCodeCopy && label !== fallback ? label : undefined;
-  const contentHtml = resolveHtmlChildren(state.renderedChildren) ?? "";
   const codeCopyLabel = codeCopyAttr(t.post.copyCodeLabel, "Copy code");
   const codeCopyFeedback = codeCopyAttr(
     t.post.copyCodeFeedback,
@@ -56,102 +48,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     t.post.copyCodeFailedFeedback,
     "Cannot copy code",
   );
-  const viewData: BlogPostViewData = {
-    view: "post",
-    languageTag,
-    breadcrumbAriaLabel: t.post.breadcrumbAriaLabel,
-    breadcrumb: [
-      { href: homeUrl, label: t.navigation.home },
-      { href: postsBaseUrl, label: t.navigation.writing },
-    ],
-    title: String(data.title ?? ""),
-    publishedDateIso: state.publishedDateIso,
-    publishedDateLabel: state.publishedDateLabel,
-    ...(state.readingTimeLabel !== undefined
-      ? { readingTimeLabel: state.readingTimeLabel }
-      : {}),
-    summaryEyebrow: t.post.summaryEyebrow,
-    ...(state.visibleSummary !== undefined
-      ? { summary: state.visibleSummary }
-      : {}),
-    summaryItems: [
-      ...(state.readingTimeLabel !== undefined
-        ? [{
-          key: "reading-time",
-          label: t.post.readingLabel,
-          value: state.readingTimeLabel,
-        }]
-        : []),
-      ...(state.outline.length > 0
-        ? [{
-          key: "sections",
-          label: t.post.sectionsLabel,
-          value: state.outline.length,
-        }]
-        : []),
-    ],
-    contentHtml,
-    detailsTitle: t.post.detailsTitle,
-    publicationDetails: [
-      {
-        key: "published",
-        label: t.post.publishedLabel,
-        valueHtml:
-          `<time datetime="${state.publishedDateIso}">${state.publishedDateLabel}</time>`,
-      },
-      ...(state.readingTimeLabel !== undefined
-        ? [{
-          key: "reading-time",
-          label: t.post.readingLabel,
-          valueHtml: state.readingTimeLabel,
-        }]
-        : []),
-      {
-        key: "permalink",
-        label: t.post.permalinkLabel,
-        valueHtml: `<a href="${
-          String(data.url ?? "/")
-        }" class="post-details-link">${String(data.url ?? "/")}</a>`,
-      },
-    ],
-    railAriaLabel: t.post.railAriaLabel,
-    sectionsTitle: t.post.sectionsLabel,
-    outline: state.outline,
-    tagsTitle: t.post.tagsAriaLabel,
-    tags: state.tags.map((tag) => ({
-      label: tag,
-      title: tag,
-      url: getTagUrl(tag, language),
-    })),
-    backlinksTitle: t.post.backlinksTitle,
-    backlinks: state.backlinks,
-    navigationAriaLabel: t.post.navigationAriaLabel,
-    previousLabel: t.post.previousLabel,
-    nextLabel: t.post.nextLabel,
-    ...(neighbors.prev
-      ? {
-        previous: {
-          title: String(neighbors.prev.title ?? ""),
-          url: String(neighbors.prev.url ?? ""),
-        },
-      }
-      : {}),
-    ...(neighbors.next
-      ? {
-        next: {
-          title: String(neighbors.next.title ?? ""),
-          url: String(neighbors.next.url ?? ""),
-        },
-      }
-      : {}),
-    ...(codeCopyLabel !== undefined ? { codeCopyLabel } : {}),
-    ...(codeCopyFeedback !== undefined ? { codeCopyFeedback } : {}),
-    ...(codeCopyFailedFeedback !== undefined ? { codeCopyFailedFeedback } : {}),
-  };
-
   return (
     <>
-      <div class="blog-antd-root" {...{ [BLOG_APP_ROOT_ATTRIBUTE]: "" }}>
+      <div class="blog-antd-root">
         <div class="site-page-shell site-page-shell--wide">
           <div
             class={`feature-layout${
@@ -166,17 +65,17 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             >
               <header class="post-header pagehead post-pagehead">
                 <nav
-                  class="cds--breadcrumb"
+                  class="site-breadcrumb"
                   aria-label={t.post.breadcrumbAriaLabel}
                 >
-                  <ol class="cds--breadcrumb-list">
-                    <li class="cds--breadcrumb-item">
-                      <a href={homeUrl} class="cds--breadcrumb-link">
+                  <ol class="site-breadcrumb-list">
+                    <li class="site-breadcrumb-item">
+                      <a href={homeUrl} class="site-breadcrumb-link">
                         {t.navigation.home}
                       </a>
                     </li>
-                    <li class="cds--breadcrumb-item">
-                      <a href={postsBaseUrl} class="cds--breadcrumb-link">
+                    <li class="site-breadcrumb-item">
+                      <a href={postsBaseUrl} class="site-breadcrumb-link">
                         {t.navigation.writing}
                       </a>
                     </li>
@@ -249,9 +148,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           </div>
         </div>
       </div>
-      <div
-        dangerouslySetInnerHTML={{ __html: renderBlogAppBootstrap(viewData) }}
-      />
       {state.includeCodeCopy && (
         <script src="/scripts/post-code-copy.js" defer></script>
       )}

@@ -156,7 +156,7 @@ function renderHeaderAction(
         {iconMarkup}
       </button>
       <div class="cds--popover" aria-hidden="true">
-        <span class="cds--popover-caret"></span>
+        <span class="cds--popover-caret" aria-hidden="true"></span>
         <div class="cds--popover-content">
           <span class="cds--tooltip-content">{tooltipLabel}</span>
         </div>

@@ -34,8 +34,6 @@ export function registerAssets(site: Site): void {
   site.add("/scripts/link-prefetch-intent.js");
   site.add("/scripts/sw-register.js");
   site.add("/blog/client/archive-main.tsx", "/scripts/blog-antd-archive.js");
-  site.add("/blog/client/tag-main.tsx", "/scripts/blog-antd-tag.js");
-  site.add("/blog/client/post-main.tsx", "/scripts/blog-antd-post.js");
 
   // The service worker must be served from the site root to control the whole
   // origin, so its built asset is remapped out of `/scripts/`.

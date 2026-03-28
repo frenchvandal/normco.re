@@ -883,18 +883,21 @@
     overflow: hidden;
   }
 
-  .cds--breadcrumb {
+  .cds--breadcrumb,
+  .site-breadcrumb {
     margin-block-end: var(--ph-space-6);
   }
 
-  .cds--breadcrumb-list {
+  .cds--breadcrumb-list,
+  .site-breadcrumb-list {
     display: flex;
     flex-wrap: wrap;
     gap: var(--ph-space-2);
     list-style: none;
   }
 
-  .cds--breadcrumb-item {
+  .cds--breadcrumb-item,
+  .site-breadcrumb-item {
     display: inline-flex;
     align-items: center;
     gap: var(--ph-space-2);
@@ -902,18 +905,22 @@
     font-size: var(--ph-text-sm);
   }
 
-  .cds--breadcrumb-item + .cds--breadcrumb-item::before {
+  .cds--breadcrumb-item + .cds--breadcrumb-item::before,
+  .site-breadcrumb-item + .site-breadcrumb-item::before {
     content: "/";
     color: var(--ph-color-fg-subtle);
   }
 
-  .cds--breadcrumb-link {
+  .cds--breadcrumb-link,
+  .site-breadcrumb-link {
     color: inherit;
     text-decoration: none;
   }
 
   .cds--breadcrumb-link:hover,
-  .cds--breadcrumb-link:focus-visible {
+  .cds--breadcrumb-link:focus-visible,
+  .site-breadcrumb-link:hover,
+  .site-breadcrumb-link:focus-visible {
     color: var(--ph-color-accent-fg);
     text-decoration: underline;
   }
@@ -1074,6 +1081,7 @@
   }
 
   .cds--tag,
+  .blog-tag-chip,
   .tag-link {
     display: inline-flex;
     align-items: center;
@@ -1102,6 +1110,7 @@
   }
 
   .cds--tag:hover,
+  .blog-tag-chip:hover,
   .tag-link:hover,
   .tag-link:focus-visible {
     color: var(--ph-color-accent-fg);
@@ -1116,6 +1125,7 @@
   }
 
   .cds--tag__label,
+  .blog-tag-chip__label,
   .tag-link__label {
     min-inline-size: 0;
     overflow: hidden;
@@ -2517,6 +2527,16 @@
     outline: none;
   }
 
+  .about-contact-popover:focus-visible {
+    outline: 2px solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 34%,
+        transparent
+      );
+    outline-offset: 2px;
+  }
+
   .about-contact-popover-header {
     display: flex;
     align-items: center;
@@ -3115,7 +3135,9 @@
     .site-footer-link,
     .site-footer-mark,
     .cds--breadcrumb-link,
+    .site-breadcrumb-link,
     .tag-link,
+    .blog-tag-chip,
     .cds--tag {
       color: LinkText;
     }

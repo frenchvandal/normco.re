@@ -13,6 +13,7 @@ import {
   Tag,
   Title,
 } from "@blog/common-antd";
+/** @jsxImportSource react */
 import type { BlogBreadcrumbItem, BlogStoryCard } from "../view-data.ts";
 import { getBlogTagColor } from "./tag-colors.ts";
 

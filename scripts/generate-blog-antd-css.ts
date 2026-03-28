@@ -1,9 +1,9 @@
 import React from "react";
 import { extractStyle } from "npm:@ant-design/static-style-extract@2.1.0";
 import {
+  Anchor,
   Breadcrumb,
   Button,
-  Calendar,
   Card,
   Col,
   ConfigProvider,
@@ -18,7 +18,6 @@ import {
   Statistic,
   Tag,
   Timeline,
-  Tooltip,
   Typography,
 } from "antd";
 import { dirname, fromFileUrl, join } from "@std/path";
@@ -144,18 +143,14 @@ function createStyleSeed() {
       }],
     }),
     React.createElement(Divider, null),
-    React.createElement(Calendar, {
-      fullscreen: false,
-      mode: "year",
+    React.createElement(Anchor, {
+      affix: false,
+      direction: "horizontal",
+      items: [
+        { key: "march", href: "#march", title: "Mar" },
+        { key: "february", href: "#february", title: "Feb" },
+      ],
     }),
-    React.createElement(
-      Tooltip,
-      {
-        color: "geekblue",
-        title: "March 2026",
-      },
-      React.createElement("span", null, "Month"),
-    ),
     React.createElement(Timeline, {
       items: [
         { content: "Introduction" },

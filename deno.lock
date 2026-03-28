@@ -64,10 +64,10 @@
     "jsr:@std/yaml@^1.0.5": "1.0.12",
     "npm:@ant-design/icons-svg@4.4.2": "4.4.2",
     "npm:@ant-design/icons@6.1.1": "6.1.1_react@19.2.4_react-dom@19.2.4__react@19.2.4",
-    "npm:@ant-design/static-style-extract@2.1.0": "2.1.0_antd@6.3.4__react@19.2.4__react-dom@19.2.4___react@19.2.4__date-fns@4.1.0_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0",
+    "npm:@ant-design/static-style-extract@2.1.0": "2.1.0_antd@6.3.4__react@19.2.4__react-dom@19.2.4___react@19.2.4_react@19.2.4_react-dom@19.2.4__react@19.2.4",
     "npm:@faker-js/faker@^10.4.0": "10.4.0",
     "npm:@resvg/resvg-wasm@2.6.2": "2.6.2",
-    "npm:antd@6.3.4": "6.3.4_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0",
+    "npm:antd@6.3.4": "6.3.4_react@19.2.4_react-dom@19.2.4__react@19.2.4",
     "npm:autoprefixer@10.4.27": "10.4.27_postcss@8.5.8",
     "npm:date-fns@4.1.0": "4.1.0",
     "npm:esbuild@0.27.3": "0.27.3",
@@ -83,9 +83,9 @@
     "npm:pagefind@1.4.0": "1.4.0",
     "npm:postcss-import@16.1.1": "16.1.1_postcss@8.5.8",
     "npm:postcss@8.5.8": "8.5.8",
-    "npm:react-dom@*": "19.2.4_react@19.2.4",
+    "npm:react-dom@19.2.4": "19.2.4_react@19.2.4",
     "npm:react@*": "19.2.4",
-    "npm:react@19.2.0": "19.2.0",
+    "npm:react@19.2.4": "19.2.4",
     "npm:remove-markdown@0.6.3": "0.6.3",
     "npm:schema-dts@1.1.5": "1.1.5",
     "npm:sharp@0.34.5": "0.34.5",
@@ -295,7 +295,7 @@
         "@ant-design/cssinjs",
         "@babel/runtime",
         "@rc-component/util",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -308,7 +308,7 @@
         "@rc-component/util",
         "clsx",
         "csstype",
-        "react@19.2.4",
+        "react",
         "react-dom",
         "stylis"
       ]
@@ -326,7 +326,7 @@
         "@ant-design/icons-svg",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -336,18 +336,18 @@
         "@babel/runtime",
         "clsx",
         "json2mq",
-        "react@19.2.4",
+        "react",
         "react-dom",
         "throttle-debounce"
       ]
     },
-    "@ant-design/static-style-extract@2.1.0_antd@6.3.4__react@19.2.4__react-dom@19.2.4___react@19.2.4__date-fns@4.1.0_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0": {
+    "@ant-design/static-style-extract@2.1.0_antd@6.3.4__react@19.2.4__react-dom@19.2.4___react@19.2.4_react@19.2.4_react-dom@19.2.4__react@19.2.4": {
       "integrity": "sha512-P6PiUZ8IVaiEDUkVSL3fRKyZJNr7xRWnq0MG1HmvxrK6quvGYQ7Vc2qRILJCLuk1svziTp0zWdasR3ndhi2HoA==",
       "dependencies": [
         "@ant-design/cssinjs",
         "@babel/runtime",
         "antd",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -800,7 +800,7 @@
         "@rc-component/tree",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -809,7 +809,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -820,7 +820,7 @@
         "@rc-component/motion",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -830,7 +830,7 @@
         "@ant-design/fast-color",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -838,7 +838,7 @@
       "integrity": "sha512-HyZbYm47s/YqtP6pKXNMjPEMaukyg7P0qVfgMLzr7YiFNMHbK2fKTAGzms9ykfGHSfyf75nBbgWw+hHkp+VImw==",
       "dependencies": [
         "@rc-component/util",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -849,7 +849,7 @@
         "@rc-component/portal",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -860,7 +860,7 @@
         "@rc-component/portal",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -870,7 +870,7 @@
         "@rc-component/trigger",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -880,7 +880,7 @@
         "@rc-component/async-validator",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -891,7 +891,7 @@
         "@rc-component/portal",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -901,7 +901,7 @@
         "@rc-component/mini-decimal",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -910,7 +910,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -923,7 +923,7 @@
         "@rc-component/trigger",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -935,7 +935,7 @@
         "@rc-component/trigger",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -950,7 +950,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -958,7 +958,7 @@
       "integrity": "sha512-AyarjoLU5YlxuValRi+w8JRH2Z84TBbFO2RoGWz9d8bSu0FqT8DtugH3xC3BV7mUwlmROFauyWuXFuq4IFbH+w==",
       "dependencies": [
         "@rc-component/util",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -968,7 +968,7 @@
         "@rc-component/motion",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -979,7 +979,7 @@
         "@rc-component/resize-observer",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -988,7 +988,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1002,7 +1002,7 @@
         "clsx",
         "date-fns",
         "dayjs",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ],
       "optionalPeers": [
@@ -1015,7 +1015,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1024,7 +1024,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1032,7 +1032,7 @@
       "integrity": "sha512-LfLGNymzKdUPjXUbRP+xOhIWY4jQ+YMj5MmWAcgcAq1Ij8XP7tRmAXqyuv96XvLUBE/5cA8hLFl9eO1JQMujrA==",
       "dependencies": [
         "@babel/runtime",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1041,7 +1041,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1049,7 +1049,7 @@
       "integrity": "sha512-t/Bb0W8uvL4PYKAB3YcChC+DlHh0Wt5kM7q/J+0qpVEUMLe7Hk5zuvc9km0hMnTFPSx5Z7Wu/fzCLN6erVLE8Q==",
       "dependencies": [
         "@rc-component/util",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1060,7 +1060,7 @@
         "@rc-component/motion",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1072,7 +1072,7 @@
         "@rc-component/util",
         "@rc-component/virtual-list",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1081,7 +1081,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1090,7 +1090,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1099,7 +1099,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1111,7 +1111,7 @@
         "@rc-component/util",
         "@rc-component/virtual-list",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1124,7 +1124,7 @@
         "@rc-component/resize-observer",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1135,7 +1135,7 @@
         "@rc-component/resize-observer",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1145,7 +1145,7 @@
         "@rc-component/trigger",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1156,7 +1156,7 @@
         "@rc-component/trigger",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1167,7 +1167,7 @@
         "@rc-component/tree",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1178,7 +1178,7 @@
         "@rc-component/util",
         "@rc-component/virtual-list",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1190,7 +1190,7 @@
         "@rc-component/resize-observer",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1199,7 +1199,7 @@
       "dependencies": [
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1207,7 +1207,7 @@
       "integrity": "sha512-aY9GLBuiUdpyfIUpAWSYer4Tu3mVaZCo5A0q9NtXcazT3MRiI3/WNHCR+DUn5VAtR6iRRf0ynCqQUcHli5UdYw==",
       "dependencies": [
         "is-mobile",
-        "react@19.2.4",
+        "react",
         "react-dom",
         "react-is"
       ]
@@ -1219,7 +1219,7 @@
         "@rc-component/resize-observer",
         "@rc-component/util",
         "clsx",
-        "react@19.2.4",
+        "react",
         "react-dom"
       ]
     },
@@ -1319,7 +1319,7 @@
         "require-from-string"
       ]
     },
-    "antd@6.3.4_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0": {
+    "antd@6.3.4_react@19.2.4_react-dom@19.2.4__react@19.2.4": {
       "integrity": "sha512-Bu6JivPP7bFfYIdVj+61dxhwSOz+A3m0W7PlDasFGC3H3sNMYQ9gJXZoo11/rQh7pTlOQa351q5Ig/zjI98XYw==",
       "dependencies": [
         "@ant-design/colors",
@@ -1368,7 +1368,7 @@
         "@rc-component/util",
         "clsx",
         "dayjs",
-        "react@19.2.4",
+        "react",
         "react-dom",
         "scroll-into-view-if-needed",
         "throttle-debounce"
@@ -1843,15 +1843,12 @@
     "react-dom@19.2.4_react@19.2.4": {
       "integrity": "sha512-AXJdLo8kgMbimY95O2aKQqsz2iWi9jMgKJhRBAxECE4IFxfcazB2LmzloIoibJI3C12IlY20+KFaLv+71bUJeQ==",
       "dependencies": [
-        "react@19.2.4",
+        "react",
         "scheduler"
       ]
     },
     "react-is@18.3.1": {
       "integrity": "sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg=="
-    },
-    "react@19.2.0": {
-      "integrity": "sha512-tmbWg6W31tQLeB5cdIBOicJDJRR2KzXsV7uSK9iNfLWQ5bIZfxuPEHp7M8wiHyHnn0DD1i7w3Zmin0FtkrwoCQ=="
     },
     "react@19.2.4": {
       "integrity": "sha512-9nfp2hYpCwOjAN+8TZFGhtWEwgvWHXqESH8qT89AT/lWklpLON22Lc8pEtnpsZz7VmawabSU0gCjnj8aC0euHQ=="
@@ -2439,8 +2436,8 @@
       "npm:antd@6.3.4",
       "npm:date-fns@4.1.0",
       "npm:dayjs@1.11.19",
-      "npm:react-dom@19.2.0",
-      "npm:react@19.2.0",
+      "npm:react-dom@19.2.4",
+      "npm:react@19.2.4",
       "npm:shiki@4.0.2"
     ]
   }

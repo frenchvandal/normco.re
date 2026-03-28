@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import type { BlogTagViewData } from "../view-data.ts";
 import { BLOG_ANTD_THEME } from "./theme.ts";
 import {
@@ -23,10 +24,13 @@ import {
 } from "./common.tsx";
 
 function TagView(
-  { data }: { data: BlogTagViewData },
+  { data, interactive = true }: {
+    data: BlogTagViewData;
+    interactive?: boolean | undefined;
+  },
 ) {
-  const latestStory = data.posts[0];
   const featuredStory = data.posts[0];
+  const latestStory = data.posts[1];
   const remainingStories = data.posts.slice(1);
 
   return (
@@ -98,20 +102,25 @@ function TagView(
             </Card>
           )}
       </div>
-      <BackTop
-        visibilityHeight={280}
-        icon={<VerticalAlignTopOutlined />}
-      />
+      {interactive && (
+        <BackTop
+          visibilityHeight={280}
+          icon={<VerticalAlignTopOutlined />}
+        />
+      )}
     </div>
   );
 }
 
 export function BlogAntdTagApp(
-  { data }: { data: BlogTagViewData },
+  { data, interactive = true }: {
+    data: BlogTagViewData;
+    interactive?: boolean | undefined;
+  },
 ) {
   return (
     <ConfigProvider theme={BLOG_ANTD_THEME}>
-      <TagView data={data} />
+      <TagView data={data} interactive={interactive} />
     </ConfigProvider>
   );
 }

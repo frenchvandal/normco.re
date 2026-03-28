@@ -39,7 +39,6 @@ function createDom(): InstanceType<typeof JSDOM> {
               id="contact-qr-primary"
               class="cds--popover-content cds--toggletip-content about-contact-popover"
               role="dialog"
-              aria-modal="false"
               tabindex="-1"
               data-contact-toggletip-panel=""
             >
@@ -70,7 +69,6 @@ function createDom(): InstanceType<typeof JSDOM> {
               id="contact-qr-wechat"
               class="cds--popover-content cds--toggletip-content about-contact-popover"
               role="dialog"
-              aria-modal="false"
               tabindex="-1"
               data-contact-toggletip-panel=""
             >
@@ -411,7 +409,7 @@ describe("about-contact-toggletips.js", () => {
     }
   });
 
-  it("keeps the dialog modal when the viewport switches between desktop and mobile", async () => {
+  it("toggles modal semantics when the viewport switches between desktop and mobile", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow & {
       matchMedia: (query: string) => MediaQueryList;
@@ -434,10 +432,10 @@ describe("about-contact-toggletips.js", () => {
       );
       assert(panel instanceof window.HTMLElement);
 
-      assertEquals(panel.getAttribute("aria-modal"), "true");
+      assertEquals(panel.hasAttribute("aria-modal"), false);
       assertEquals(
         window.document.body.dataset.contactToggletipModalOpen,
-        "true",
+        undefined,
       );
 
       mediaQueryList.setMatches(true);
@@ -451,10 +449,10 @@ describe("about-contact-toggletips.js", () => {
 
       mediaQueryList.setMatches(false);
 
-      assertEquals(panel.getAttribute("aria-modal"), "true");
+      assertEquals(panel.hasAttribute("aria-modal"), false);
       assertEquals(
         window.document.body.dataset.contactToggletipModalOpen,
-        "true",
+        undefined,
       );
       await flushNodeTimers();
     } finally {

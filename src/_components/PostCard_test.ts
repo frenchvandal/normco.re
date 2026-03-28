@@ -58,19 +58,17 @@ describe("PostCard()", () => {
       assertStringIncludes(html, 'class="post-card-date"');
     });
 
-    it("ignores unused author metadata props and keeps the card clean", async () => {
+    it("keeps the card clean when summary rendering is not requested", async () => {
       const base = makeBase(308);
       const html = await renderComponent(
         PostCard({
           ...base,
           summary: "Summary copy",
-          authorName: "Phiphi",
-          authorUrl: "/about/",
         }),
       );
 
       assertNotMatch(html, /p-summary|p-author|h-card|p-name/);
-      assertNotMatch(html, /\/about\//);
+      assertNotMatch(html, /Summary copy/);
     });
 
     it("renders a visible summary only when explicitly requested", async () => {

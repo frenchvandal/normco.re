@@ -13,15 +13,15 @@ export function renderBreadcrumb(
   ariaLabel: string,
 ): string {
   const lis = items.map(({ href, label }) =>
-    `<li class="cds--breadcrumb-item">
-      <a href="${escapeHtml(href)}" class="cds--breadcrumb-link">${
+    `<li class="site-breadcrumb-item">
+      <a href="${escapeHtml(href)}" class="site-breadcrumb-link">${
       escapeHtml(label)
     }</a>
     </li>`
   ).join("\n");
 
-  return `<nav class="cds--breadcrumb" aria-label="${escapeHtml(ariaLabel)}">
-  <ol class="cds--breadcrumb-list">
+  return `<nav class="site-breadcrumb" aria-label="${escapeHtml(ariaLabel)}">
+  <ol class="site-breadcrumb-list">
     ${lis}
   </ol>
 </nav>`;
