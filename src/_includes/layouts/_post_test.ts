@@ -539,6 +539,10 @@ describe("post mobile visual contracts", () => {
     );
     assertStringIncludes(
       postStyles,
+      "var(--ph-mobile-nav-offset)",
+    );
+    assertStringIncludes(
+      postStyles,
       'html[data-post-mobile-tools-ready="true"] .post-rail',
     );
   });

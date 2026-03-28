@@ -30,4 +30,26 @@ describe("_config/assets.ts", () => {
     });
     assertEquals(calls[2], { method: "copy", args: ["/static", "."] });
   });
+
+  it("registers the mobile header tab bar entry alongside the shared scripts", () => {
+    const adds: string[] = [];
+    const siteStub = {
+      ignore() {
+        return this;
+      },
+      copy() {
+        return this;
+      },
+      add(arg: unknown) {
+        if (typeof arg === "string") {
+          adds.push(arg);
+        }
+        return this;
+      },
+    };
+
+    registerAssets(siteStub as unknown as import("lume/core/site.ts").default);
+
+    assertEquals(adds.includes("/scripts/header-mobile-tabbar.js"), true);
+  });
 });

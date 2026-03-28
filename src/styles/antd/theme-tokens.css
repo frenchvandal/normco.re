@@ -235,6 +235,9 @@
       var(--ph-color-canvas-subtle) 92%,
       var(--ph-color-canvas-default)
     );
+    --ph-mobile-nav-height: 4.25rem;
+    --ph-mobile-nav-inset: max(env(safe-area-inset-bottom), var(--ph-space-3));
+    --ph-mobile-nav-offset: 0px;
     --ph-shadow-floating: 0 18px 48px color-mix(
       in oklch,
       var(--ph-color-fg-default) 12%,

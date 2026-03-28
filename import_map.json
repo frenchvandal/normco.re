@@ -7,6 +7,8 @@
     "dayjs": "npm:dayjs@1.11.19",
     "antd": "npm:antd@6.3.4",
     "@ant-design/icons": "npm:@ant-design/icons@6.1.1",
+    "antd-mobile/global": "npm:antd-mobile@5.42.3/es/global/index.js",
+    "antd-mobile/tab-bar": "npm:antd-mobile@5.42.3/es/components/tab-bar/index.js",
     "@blog/antd-components": "./src/blog/client/antd-components.ts",
     "@blog/antd-icons": "./src/blog/client/antd-icons.ts",
     "@blog/archive-antd": "./src/blog/client/archive-antd.ts",

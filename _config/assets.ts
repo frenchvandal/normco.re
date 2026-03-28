@@ -23,6 +23,7 @@ export function registerAssets(site: Site): void {
   site.add("/styles/blog-antd.css");
 
   site.add("/scripts/header-client.js");
+  site.add("/scripts/header-mobile-tabbar.js");
   site.add("/scripts/header-client/init.js");
   site.add("/scripts/header-client/search.js");
   site.add("/scripts/header-client/theme.js");

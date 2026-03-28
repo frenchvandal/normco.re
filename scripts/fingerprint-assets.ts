@@ -21,6 +21,7 @@ const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
 const CANONICAL_ASSET_URLS = [
   "/style.css",
   "/scripts/header-client.js",
+  "/scripts/header-mobile-tabbar.js",
   "/scripts/header-client/init.js",
   "/scripts/header-client/search.js",
   "/scripts/header-client/theme.js",

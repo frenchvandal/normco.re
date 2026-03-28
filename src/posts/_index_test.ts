@@ -248,6 +248,7 @@ describe("posts/index.page.tsx", () => {
         blogAntdStyles,
         ".blog-antd-archive-mobile__backtop",
       );
+      assertStringIncludes(blogAntdStyles, "var(--ph-mobile-nav-offset)");
     });
   });
 });

@@ -579,7 +579,7 @@
           + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
       );
       inset-block-end: calc(
-        env(safe-area-inset-bottom)
+        var(--ph-mobile-nav-offset)
           + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
       );
       display: inline-flex;
