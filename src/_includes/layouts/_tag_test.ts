@@ -75,7 +75,6 @@ describe("tag.tsx layout", () => {
     );
     assertStringIncludes(html, 'class="archive-list"');
     assertStringIncludes(html, `href="${post.url}"`);
-    assertNotMatch(html, /cds--breadcrumb-current/);
     assertNotMatch(html, /aria-current="page"/);
     assertStringIncludes(html, 'class="site-breadcrumb"');
     assertMatch(

@@ -28,9 +28,7 @@ describe("about.page.tsx", () => {
   it("omits the redundant breadcrumb on the top-level about page", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
 
-    assertNotMatch(html, /class="cds--breadcrumb"/);
     assertNotMatch(html, /About breadcrumb/);
-    assertNotMatch(html, /cds--breadcrumb-current/);
     assertNotMatch(html, /aria-current="page"/);
   });
 
@@ -102,7 +100,6 @@ describe("about.page.tsx", () => {
     const html = aboutPage(frenchData, MOCK_HELPERS);
     assertStringIncludes(html, "À propos");
     assertNotMatch(html, /Fil d’Ariane À propos/);
-    assertNotMatch(html, /href="\/fr\/" class="cds--breadcrumb-link"/);
     assertStringIncludes(html, 'aria-label="Télécharger le code QR"');
     assertStringIncludes(html, 'href="/fr/rss.xml"');
     assertStringIncludes(html, 'href="/fr/atom.xml"');

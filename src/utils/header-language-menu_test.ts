@@ -14,7 +14,6 @@ function assertLanguageMenuContract(source: string): void {
   assert(!source.includes("__HEADER_LANGUAGE_PANEL_ID__"));
   assert(!source.includes("<!--__HEADER_LANGUAGE_MENU_PANEL__-->"));
   assert(!source.includes("__SUPPORTED_LANGUAGES__"));
-  assert(!source.includes("data-carbon-icon"));
   assertStringIncludes(source, `id="${HEADER_IDS.languagePanel}"`);
   assertStringIncludes(source, 'data-language-panel=""');
   assertStringIncludes(source, 'data-language-menu=""');

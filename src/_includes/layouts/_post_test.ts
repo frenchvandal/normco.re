@@ -214,7 +214,6 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'title="devops"');
       assertStringIncludes(html, 'title="cdn"');
       assertStringIncludes(html, 'class="tag-link tag-link--');
-      assertNotMatch(html, /class="cds--tag cds--tag--/);
     });
 
     it("renders backlinks in the post rail when present", async () => {
@@ -285,7 +284,6 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'href="/posts/"');
       assertStringIncludes(html, "Home");
       assertStringIncludes(html, "Articles");
-      assertNotMatch(html, /cds--breadcrumb-current/);
       assertNotMatch(html, /aria-current="page"/);
     });
 

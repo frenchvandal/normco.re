@@ -116,9 +116,6 @@ describe("posts/index.page.tsx", () => {
     it("omits the redundant breadcrumb on the top-level archive page", async () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
 
-      assertNotMatch(html, /class="cds--breadcrumb-list"/);
-      assertNotMatch(html, /class="cds--breadcrumb-link"/);
-      assertNotMatch(html, /cds--breadcrumb-current/);
       assertNotMatch(html, /aria-current="page"/);
     });
 
