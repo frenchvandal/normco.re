@@ -103,9 +103,6 @@ describe("Header()", () => {
       'class="site-side-nav__items ant-menu ant-menu-root ant-menu-inline ant-menu-light"',
     );
     assertStringIncludes(html, 'role="dialog"');
-    assertStringIncludes(html, 'id="site-mobile-tabbar-root"');
-    assertStringIncludes(html, 'id="site-mobile-tabbar-data"');
-    assertStringIncludes(html, "/scripts/header-mobile-tabbar.js");
   });
 
   it("keeps legacy navigation, menu, and icon controls off the home route", async () => {
@@ -268,9 +265,6 @@ describe("Header CSS contracts", () => {
   });
 
   it("styles the mobile side nav as an editorial sheet", () => {
-    assertStringIncludes(layoutStyles, ".site-mobile-tabbar-shell");
-    assertStringIncludes(layoutStyles, ".site-mobile-tabbar-shell__frame");
-    assertStringIncludes(layoutStyles, ".site-mobile-tabbar__label");
     assertStringIncludes(layoutStyles, ".site-side-nav__header");
     assertStringIncludes(layoutStyles, ".site-side-nav__brand");
     assertStringIncludes(layoutStyles, ".site-side-nav__close");
@@ -288,6 +282,5 @@ describe("Header CSS contracts", () => {
       "z-index: calc(var(--ph-layer-header-panel) + 1);",
     );
     assertStringIncludes(layoutStyles, "inset: 0;");
-    assertStringIncludes(layoutStyles, "--ph-mobile-nav-offset: calc(");
   });
 });

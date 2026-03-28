@@ -7,19 +7,11 @@ import {
   type SiteTranslations,
 } from "../utils/i18n.ts";
 import { type IconResolver } from "../utils/site-icons.ts";
-import { serializeJsonForHtml } from "../blog/embed.ts";
 import { buildHeaderNavigation } from "./header-navigation.ts";
 import {
   HEADER_IDS,
   HEADER_LANGUAGE_OPTIONS,
 } from "../utils/header-language-menu.ts";
-import {
-  HEADER_MOBILE_TABBAR_DATA_ID,
-  HEADER_MOBILE_TABBAR_MEDIA_QUERY,
-  HEADER_MOBILE_TABBAR_ROOT_ID,
-  HEADER_MOBILE_TABBAR_SCRIPT_SRC,
-  type HeaderMobileTabBarData,
-} from "../utils/header-mobile-tabbar.ts";
 import SiteIcon from "./SiteIcon.tsx";
 
 type El = ReturnType<typeof jsx>;
@@ -578,66 +570,6 @@ function renderSideNav(
   );
 }
 
-function renderMobileTabBarBootstrap(
-  items: readonly NavigationItem[],
-  t: Translations,
-): El {
-  const data: HeaderMobileTabBarData = {
-    ariaLabel: t.site.mainNavigationAriaLabel,
-    items,
-  };
-  const loader = `{
-  const mediaQuery = window.matchMedia(${
-    serializeJsonForHtml(HEADER_MOBILE_TABBAR_MEDIA_QUERY)
-  });
-  let loaded = false;
-  const load = () => {
-    if (loaded) {
-      return;
-    }
-
-    loaded = true;
-    void import(${serializeJsonForHtml(HEADER_MOBILE_TABBAR_SCRIPT_SRC)});
-  };
-
-  if (mediaQuery.matches) {
-    load();
-  } else if (typeof mediaQuery.addEventListener === "function") {
-    mediaQuery.addEventListener("change", (event) => {
-      if (event.matches) {
-        load();
-      }
-    }, { once: true });
-  } else if (typeof mediaQuery.addListener === "function") {
-    const listener = (event) => {
-      if (!event.matches) {
-        return;
-      }
-
-      mediaQuery.removeListener(listener);
-      load();
-    };
-
-    mediaQuery.addListener(listener);
-  }
-}`;
-
-  return (
-    <>
-      <div id={HEADER_MOBILE_TABBAR_ROOT_ID} hidden></div>
-      <script
-        type="application/json"
-        id={HEADER_MOBILE_TABBAR_DATA_ID}
-        dangerouslySetInnerHTML={{ __html: serializeJsonForHtml(data) }}
-      />
-      <script
-        type="module"
-        dangerouslySetInnerHTML={{ __html: loader }}
-      />
-    </>
-  );
-}
-
 // ── Editorial home brand markup ────────────────────────────────────────
 
 function renderEditorialHomeBrand(
@@ -742,7 +674,6 @@ export default (
         t,
         v,
       )}
-      {renderMobileTabBarBootstrap(navItems, t)}
       <div class="site-side-nav__overlay" aria-hidden="true"></div>
     </>
   );

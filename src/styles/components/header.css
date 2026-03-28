@@ -494,10 +494,4 @@
       );
     }
   }
-
-  @media (max-width: 63.99rem) {
-    html[data-mobile-tabbar-ready="true"] .site-header__menu-toggle {
-      display: none;
-    }
-  }
 }
