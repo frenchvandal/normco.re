@@ -106,18 +106,9 @@
     gap: var(--ph-space-2);
     max-inline-size: 100%;
     padding: 2px 6px;
-    border: var(--ph-border-hairline) solid
-      color-mix(
-        in oklch,
-        currentColor 32%,
-        var(--ph-color-border-muted)
-      );
+    border: var(--ph-border-hairline) solid var(--ph-color-border-muted);
     border-radius: var(--ph-radius-sm);
-    background: color-mix(
-      in oklch,
-      currentColor 8%,
-      transparent
-    );
+    background: transparent;
     color: var(--ph-color-fg-subtle);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
@@ -140,69 +131,178 @@
   .blog-tag-chip:hover,
   .tag-link:hover,
   .tag-link:focus-visible {
-    border-color: color-mix(
-      in oklch,
-      currentColor 48%,
-      var(--ph-color-border-default)
-    );
-    background: color-mix(
-      in oklch,
-      currentColor 14%,
-      var(--ph-color-canvas-default)
-    );
+    color: var(--ph-color-accent-fg);
+    border-color: currentColor;
+    background: var(--ph-surface-accent);
     text-decoration: none;
   }
 
   .site-tag--blue,
   .blog-tag-chip--blue,
   .tag-link--blue {
-    color: var(--ph-tag-preset-blue);
+    --ph-tag-tone: var(--ph-tag-preset-blue);
   }
 
   .site-tag--cyan,
   .blog-tag-chip--cyan,
   .tag-link--cyan {
-    color: var(--ph-tag-preset-cyan);
+    --ph-tag-tone: var(--ph-tag-preset-cyan);
   }
 
   .site-tag--geekblue,
   .blog-tag-chip--geekblue,
   .tag-link--geekblue {
-    color: var(--ph-tag-preset-geekblue);
+    --ph-tag-tone: var(--ph-tag-preset-geekblue);
   }
 
   .site-tag--green,
   .blog-tag-chip--green,
   .tag-link--green {
-    color: var(--ph-tag-preset-green);
+    --ph-tag-tone: var(--ph-tag-preset-green);
   }
 
   .site-tag--lime,
   .blog-tag-chip--lime,
   .tag-link--lime {
-    color: var(--ph-tag-preset-lime);
+    --ph-tag-tone: var(--ph-tag-preset-lime);
   }
 
   .site-tag--gold,
   .blog-tag-chip--gold,
   .tag-link--gold {
-    color: var(--ph-tag-preset-gold);
+    --ph-tag-tone: var(--ph-tag-preset-gold);
   }
 
   .site-tag--purple,
   .blog-tag-chip--purple,
   .tag-link--purple {
-    color: var(--ph-tag-preset-purple);
+    --ph-tag-tone: var(--ph-tag-preset-purple);
   }
 
   .site-tag--volcano,
   .blog-tag-chip--volcano,
   .tag-link--volcano {
-    color: var(--ph-tag-preset-volcano);
+    --ph-tag-tone: var(--ph-tag-preset-volcano);
   }
 
-  .site-tag--teal {
-    color: var(--ph-tag-preset-teal);
+  .site-tag--teal,
+  .blog-tag-chip--teal,
+  .tag-link--teal {
+    --ph-tag-tone: var(--ph-tag-preset-teal);
+  }
+
+  .site-tag--gray,
+  .blog-tag-chip--gray,
+  .tag-link--gray {
+    --ph-tag-tone: var(--ph-tag-preset-gray);
+  }
+
+  .site-tag--blue,
+  .site-tag--cyan,
+  .site-tag--geekblue,
+  .site-tag--green,
+  .site-tag--lime,
+  .site-tag--gold,
+  .site-tag--purple,
+  .site-tag--volcano,
+  .site-tag--teal,
+  .site-tag--gray,
+  .blog-tag-chip--blue,
+  .blog-tag-chip--cyan,
+  .blog-tag-chip--geekblue,
+  .blog-tag-chip--green,
+  .blog-tag-chip--lime,
+  .blog-tag-chip--gold,
+  .blog-tag-chip--purple,
+  .blog-tag-chip--volcano,
+  .blog-tag-chip--teal,
+  .blog-tag-chip--gray,
+  .tag-link--blue,
+  .tag-link--cyan,
+  .tag-link--geekblue,
+  .tag-link--green,
+  .tag-link--lime,
+  .tag-link--gold,
+  .tag-link--purple,
+  .tag-link--volcano,
+  .tag-link--teal,
+  .tag-link--gray {
+    color: var(--ph-color-canvas-default);
+    border-color: var(--ph-tag-tone);
+    background: var(--ph-tag-tone);
+  }
+
+  .site-tag--blue:hover,
+  .site-tag--blue:focus-visible,
+  .site-tag--cyan:hover,
+  .site-tag--cyan:focus-visible,
+  .site-tag--geekblue:hover,
+  .site-tag--geekblue:focus-visible,
+  .site-tag--green:hover,
+  .site-tag--green:focus-visible,
+  .site-tag--lime:hover,
+  .site-tag--lime:focus-visible,
+  .site-tag--gold:hover,
+  .site-tag--gold:focus-visible,
+  .site-tag--purple:hover,
+  .site-tag--purple:focus-visible,
+  .site-tag--volcano:hover,
+  .site-tag--volcano:focus-visible,
+  .site-tag--teal:hover,
+  .site-tag--teal:focus-visible,
+  .site-tag--gray:hover,
+  .site-tag--gray:focus-visible,
+  .blog-tag-chip--blue:hover,
+  .blog-tag-chip--blue:focus-visible,
+  .blog-tag-chip--cyan:hover,
+  .blog-tag-chip--cyan:focus-visible,
+  .blog-tag-chip--geekblue:hover,
+  .blog-tag-chip--geekblue:focus-visible,
+  .blog-tag-chip--green:hover,
+  .blog-tag-chip--green:focus-visible,
+  .blog-tag-chip--lime:hover,
+  .blog-tag-chip--lime:focus-visible,
+  .blog-tag-chip--gold:hover,
+  .blog-tag-chip--gold:focus-visible,
+  .blog-tag-chip--purple:hover,
+  .blog-tag-chip--purple:focus-visible,
+  .blog-tag-chip--volcano:hover,
+  .blog-tag-chip--volcano:focus-visible,
+  .blog-tag-chip--teal:hover,
+  .blog-tag-chip--teal:focus-visible,
+  .blog-tag-chip--gray:hover,
+  .blog-tag-chip--gray:focus-visible,
+  .tag-link--blue:hover,
+  .tag-link--blue:focus-visible,
+  .tag-link--cyan:hover,
+  .tag-link--cyan:focus-visible,
+  .tag-link--geekblue:hover,
+  .tag-link--geekblue:focus-visible,
+  .tag-link--green:hover,
+  .tag-link--green:focus-visible,
+  .tag-link--lime:hover,
+  .tag-link--lime:focus-visible,
+  .tag-link--gold:hover,
+  .tag-link--gold:focus-visible,
+  .tag-link--purple:hover,
+  .tag-link--purple:focus-visible,
+  .tag-link--volcano:hover,
+  .tag-link--volcano:focus-visible,
+  .tag-link--teal:hover,
+  .tag-link--teal:focus-visible,
+  .tag-link--gray:hover,
+  .tag-link--gray:focus-visible {
+    color: var(--ph-color-canvas-default);
+    border-color: color-mix(
+      in oklch,
+      var(--ph-tag-tone) 88%,
+      var(--ph-color-fg-default)
+    );
+    background: color-mix(
+      in oklch,
+      var(--ph-tag-tone) 88%,
+      var(--ph-color-fg-default)
+    );
   }
 
   .tag-link:hover .tag-link__label,

@@ -6,6 +6,7 @@ import {
 import { describe, it } from "@std/testing/bdd";
 import { faker, seedTestFaker } from "../../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../../test/lume.ts";
+import blogAntdStyles from "../styles/blog-antd.css" with { type: "text" };
 
 import postsIndexPage, { searchIndexed } from "./index.page.tsx";
 
@@ -25,6 +26,7 @@ type MockPost = {
   date: unknown;
   readingInfo?: { minutes?: number };
   description?: string;
+  tags?: readonly string[];
 };
 
 function makeData(posts: readonly MockPost[]): Lume.Data {
@@ -142,7 +144,10 @@ describe("posts/index.page.tsx", () => {
       ] as const;
       const [firstPost, secondPost] = posts;
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="blog-antd-archive-layout"');
+      assertStringIncludes(
+        html,
+        'class="blog-antd-archive-layout blog-antd-archive-layout--with-nav"',
+      );
       assertStringIncludes(html, 'class="blog-antd-archive-timeline"');
       assertStringIncludes(html, 'class="blog-antd-archive-anchor-list"');
       assertStringIncludes(html, firstPost.title);
@@ -156,11 +161,14 @@ describe("posts/index.page.tsx", () => {
           makePost(509, {
             date: new Date("2026-01-01"),
             readingInfo: { minutes: 4 },
+            tags: ["design"],
           }),
         ]),
         MOCK_HELPERS,
       );
+      assertNotMatch(html, /blog-antd-archive-layout--with-nav/);
       assertStringIncludes(html, "4 min");
+      assertStringIncludes(html, 'class="tag-link tag-link--volcano"');
     });
 
     it("omits reading-time markup when minutes are absent", async () => {
@@ -196,6 +204,25 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(html, "Unsafe &lt;title&gt;");
       assertStringIncludes(html, 'href="/posts/&quot;unsafe&quot;/"');
       assertStringIncludes(html, 'class="blog-antd-archive-timeline__title"');
+    });
+  });
+
+  describe("archive CSS contracts", () => {
+    it("keeps the timeline lane full width instead of shrinking to its content", () => {
+      assertStringIncludes(
+        blogAntdStyles,
+        "grid-template-columns: minmax(0, 1fr);",
+      );
+      assertStringIncludes(
+        blogAntdStyles,
+        ".blog-antd-archive-layout--with-nav",
+      );
+      assertStringIncludes(blogAntdStyles, "inline-size: 100%;");
+      assertStringIncludes(blogAntdStyles, "min-inline-size: 0;");
+      assertStringIncludes(
+        blogAntdStyles,
+        ".blog-antd-archive-timeline__meta > * + *::before",
+      );
     });
   });
 });

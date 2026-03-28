@@ -491,7 +491,7 @@ describe("post.tsx layout", () => {
 });
 
 describe("tag-link CSS contracts", () => {
-  it("keeps navigational tag links distinct and aligned with outlined tag presets", () => {
+  it("keeps navigational tag links distinct and aligned with solid tag presets", () => {
     assertStringIncludes(featureStyles, ".tag-link::after");
     assertStringIncludes(
       featureStyles,
@@ -499,7 +499,11 @@ describe("tag-link CSS contracts", () => {
     );
     assertStringIncludes(featureStyles, ".tag-link:hover .tag-link__label");
     assertStringIncludes(featureStyles, ".tag-link--blue");
-    assertStringIncludes(featureStyles, "var(--ph-tag-preset-blue)");
+    assertStringIncludes(
+      featureStyles,
+      "--ph-tag-tone: var(--ph-tag-preset-blue);",
+    );
+    assertStringIncludes(featureStyles, "background: var(--ph-tag-tone);");
     assertNotMatch(featureStyles, /var\(--site-tag-/);
   });
 });

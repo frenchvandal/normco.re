@@ -182,7 +182,7 @@ export function PostView(
                       <Tag
                         key={tag.url}
                         color={getBlogTagColor(tag.label)}
-                        variant="outlined"
+                        variant="solid"
                         className="blog-antd-tag"
                       >
                         <a href={tag.url} title={tag.title} rel="tag">

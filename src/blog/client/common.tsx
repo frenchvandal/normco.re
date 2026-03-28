@@ -90,7 +90,7 @@ export function StoryTags({ story }: { story: BlogStoryCard }) {
         <Tag
           key={tag}
           color={getBlogTagColor(tag)}
-          variant="outlined"
+          variant="solid"
           className="blog-antd-tag blog-antd-tag--story"
         >
           {tag}

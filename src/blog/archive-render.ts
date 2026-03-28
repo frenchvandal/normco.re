@@ -6,7 +6,7 @@ import {
 } from "./archive-common.ts";
 import type { SiteLanguage } from "../utils/i18n.ts";
 import { escapeHtml } from "../utils/html.ts";
-import { getTagUrl } from "../utils/tags.ts";
+import { getTagColor, getTagUrl } from "../utils/tags.ts";
 import type { BlogStoryCard } from "./view-data.ts";
 export { formatArchiveIndex, groupArchiveMonths } from "./archive-common.ts";
 
@@ -43,7 +43,7 @@ function renderStoryTags(
   const tags = visibleTags.map((tag) =>
     `<a href="${
       escapeHtml(getTagUrl(tag, language))
-    }" class="tag-link" rel="tag">
+    }" class="tag-link tag-link--${escapeHtml(getTagColor(tag))}" rel="tag">
   <span class="tag-link__label">${escapeHtml(tag)}</span>
 </a>`
   ).join("");

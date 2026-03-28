@@ -20,7 +20,6 @@ import {
   ReadOutlined,
   ScheduleOutlined,
   Tag,
-  Timeline,
   Title,
   VerticalAlignTopOutlined,
 } from "@blog/archive-antd";
@@ -105,21 +104,23 @@ function ArchiveTimeline(
 
   return (
     <section className="blog-antd-archive-timeline-wrap" aria-label={ariaLabel}>
-      <Timeline
-        className="blog-antd-archive-timeline"
-        variant="outlined"
-        items={timelineEntries.map((entry) => ({
-          color: entry.month ? "blue" : "gray",
-          content: (
+      <ul className="blog-antd-archive-timeline">
+        {timelineEntries.map((entry) => (
+          <li
+            key={`${entry.story.url}-${entry.index}`}
+            className={`blog-antd-archive-timeline__entry${
+              entry.isLead ? " blog-antd-archive-timeline__entry--lead" : ""
+            }`}
+          >
             <ArchiveTimelineItem
               story={entry.story}
               index={entry.index}
               isLead={entry.isLead}
               month={entry.month}
             />
-          ),
-        }))}
-      />
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -215,7 +216,13 @@ export function ArchiveView(
 
         {data.posts.length > 0
           ? (
-            <div className="blog-antd-archive-layout">
+            <div
+              className={`blog-antd-archive-layout${
+                archiveMonths.length > 1
+                  ? " blog-antd-archive-layout--with-nav"
+                  : ""
+              }`}
+            >
               {archiveMonths.length > 1 && (
                 <ArchiveMonthNav
                   months={archiveMonths}

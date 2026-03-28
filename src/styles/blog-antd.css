@@ -384,27 +384,20 @@
   }
 
   .blog-antd-tag.ant-tag {
-    border: 1px solid
-      color-mix(
-        in oklch,
-        currentColor 34%,
-        var(--ph-color-border-default)
-      );
-    background: transparent;
+    transition:
+      transform var(--ph-duration-default) var(--ph-easing-default),
+      box-shadow var(--ph-duration-default) var(--ph-easing-default);
   }
 
   .blog-antd-tag.ant-tag:hover,
   .blog-antd-tag.ant-tag:focus-within {
-    border-color: color-mix(
-      in oklch,
-      currentColor 44%,
-      var(--ph-color-border-default)
-    );
-    background: color-mix(
-      in oklch,
-      currentColor 10%,
-      var(--ph-color-canvas-default)
-    );
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px
+      color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 10%,
+        transparent
+      );
   }
 
   .blog-antd-tag.ant-tag a {
@@ -631,6 +624,8 @@
 
   .blog-antd-archive-timeline-wrap {
     position: relative;
+    inline-size: 100%;
+    min-inline-size: 0;
     overflow: hidden;
     padding: clamp(var(--ph-space-5), 4vw, var(--ph-space-7));
     border: 1px solid
@@ -665,6 +660,7 @@
 
   .blog-antd-archive-layout {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: clamp(var(--ph-space-5), 3.5vw, var(--ph-space-7));
     align-items: start;
   }
@@ -989,9 +985,30 @@
   }
 
   .blog-antd-archive-timeline__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ph-space-2) var(--ph-space-3);
     color: var(--ph-color-fg-subtle);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
+  }
+
+  .blog-antd-archive-timeline__meta > * + * {
+    position: relative;
+    padding-inline-start: var(--ph-space-4);
+  }
+
+  .blog-antd-archive-timeline__meta > * + *::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 50%;
+    inline-size: 3px;
+    block-size: 3px;
+    border-radius: var(--ph-radius-pill);
+    background: currentColor;
+    opacity: 0.72;
+    transform: translateY(-50%);
   }
 
   .blog-antd-archive-timeline__title,
@@ -1086,8 +1103,7 @@
     min-block-size: 1.75rem;
   }
 
-  .blog-antd-count-tag--soft.ant-tag,
-  .blog-antd-tag--story.ant-tag {
+  .blog-antd-count-tag--soft.ant-tag {
     background: color-mix(
       in oklch,
       currentColor 16%,
@@ -1286,7 +1302,7 @@
   }
 
   @media (min-width: 72rem) {
-    .blog-antd-archive-layout {
+    .blog-antd-archive-layout--with-nav {
       grid-template-columns: minmax(16rem, 18rem) minmax(0, 1fr);
     }
   }

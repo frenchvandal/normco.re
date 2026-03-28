@@ -54,9 +54,12 @@ export default (
   const stories = posts.map((post) => toStoryData(post, language, dateFormat));
   const postsCountLabel = formatPostCount(posts.length, language);
   const archiveMonths = groupArchiveMonths(stories, languageTag);
+  const archiveLayoutClass = archiveMonths.length > 1
+    ? "blog-antd-archive-layout blog-antd-archive-layout--with-nav"
+    : "blog-antd-archive-layout";
 
   const pageBody = posts.length > 0
-    ? `<div class="blog-antd-archive-layout">
+    ? `<div class="${archiveLayoutClass}">
   ${
       archiveMonths.length > 1
         ? renderArchiveMonthNav(archiveMonths, postsCountLabel)
