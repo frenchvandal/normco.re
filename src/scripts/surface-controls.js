@@ -28,7 +28,7 @@
           ? globalThis.document.getElementById(panelId)
           : null;
 
-        button.classList.toggle("cds--content-switcher--selected", isSelected);
+        button.classList.toggle("site-switcher__button--selected", isSelected);
         button.setAttribute("aria-selected", isSelected ? "true" : "false");
         button.tabIndex = isSelected ? 0 : -1;
 
@@ -133,7 +133,7 @@
     function activate(nextTab, moveFocus) {
       for (const tab of tabs) {
         const isSelected = tab === nextTab;
-        const tabItem = tab.closest(".cds--tabs__nav-item");
+        const tabItem = tab.closest(".site-tabs__nav-item");
         const panelId = tab.getAttribute("aria-controls");
         const panel = typeof panelId === "string" && panelId.length > 0
           ? globalThis.document.getElementById(panelId)
@@ -142,7 +142,7 @@
         tab.setAttribute("aria-selected", isSelected ? "true" : "false");
         tab.tabIndex = isSelected ? 0 : -1;
         if (tabItem instanceof HTMLElement) {
-          tabItem.classList.toggle("cds--tabs__nav-item--selected", isSelected);
+          tabItem.classList.toggle("site-tabs__nav-item--selected", isSelected);
         }
 
         if (panel instanceof HTMLElement) {
@@ -238,7 +238,7 @@
      * @param {boolean} expanded
      */
     function setExpanded(trigger, expanded) {
-      const item = trigger.closest(".cds--accordion__item");
+      const item = trigger.closest(".site-accordion__item");
       const panelId = trigger.getAttribute("aria-controls");
       const panel = typeof panelId === "string" && panelId.length > 0
         ? globalThis.document.getElementById(panelId)
@@ -246,7 +246,7 @@
 
       trigger.setAttribute("aria-expanded", expanded ? "true" : "false");
       if (item instanceof HTMLElement) {
-        item.classList.toggle("cds--accordion__item--active", expanded);
+        item.classList.toggle("site-accordion__item--active", expanded);
       }
 
       if (panel instanceof HTMLElement) {

@@ -101,7 +101,7 @@ describe("PostCard()", () => {
       const base = makeBase(304);
       const html = await renderComponent(PostCard({ ...base }));
       assertStringIncludes(html, "post-card");
-      assertStringIncludes(html, "cds--tile");
+      assertStringIncludes(html, "site-panel");
     });
 
     it("renders a time element with the ISO datetime attribute", async () => {
@@ -129,7 +129,7 @@ describe("PostCard()", () => {
       );
 
       assertStringIncludes(html, "custom-post-card");
-      assertStringIncludes(html, "cds--tile");
+      assertStringIncludes(html, "site-panel");
     });
 
     it("escapes title and URL values before interpolation", async () => {

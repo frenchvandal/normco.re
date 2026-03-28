@@ -79,7 +79,7 @@ function renderContactItem(
                     </div>
                     <div class="about-contact-popover-toolbar">
                       <a
-                        class="btn cds--btn--ghost about-contact-action about-contact-download"
+                        class="btn about-contact-action about-contact-download"
                         href="${escapeHtml(contact.originalSrc)}"
                         download="${escapeHtml(contact.downloadName)}"
                         aria-label="${
@@ -91,7 +91,7 @@ function renderContactItem(
                       </a>
                       <button
                         type="button"
-                        class="btn cds--btn--ghost about-contact-action about-contact-close"
+                        class="btn about-contact-action about-contact-close"
                         aria-label="${escapeHtml(t.about.contactCloseLabel)}"
                         title="${escapeHtml(t.about.contactCloseLabel)}"
                         data-contact-toggletip-close=""

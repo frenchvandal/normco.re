@@ -22,10 +22,10 @@ describe("syndication.page.tsx", () => {
       'class="pagehead syndication-pagehead"',
     );
     assertStringIncludes(html, 'class="syndication-pagehead-grid"');
-    assertNotMatch(html, /class="cds--breadcrumb"/);
+    assertNotMatch(html, /class="site-breadcrumb"/);
     assertNotMatch(html, /Syndication breadcrumb/);
-    assertNotMatch(html, /href="\/" class="cds--breadcrumb-link"/);
-    assertNotMatch(html, /cds--breadcrumb-current/);
+    assertNotMatch(html, /href="\/" class="site-breadcrumb-link"/);
+    assertNotMatch(html, /site-breadcrumb-current/);
     assertNotMatch(html, /aria-current="page"/);
     assertStringIncludes(
       html,
@@ -54,11 +54,11 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(html, 'href="/sitemap.xml"');
     assertStringIncludes(
       html,
-      'class="cds--tag cds--tag--gray feeds-card-tag" title="XML"',
+      'class="site-tag site-tag--gray feeds-card-tag" title="XML"',
     );
     assertStringIncludes(
       html,
-      'class="cds--tag cds--tag--teal feeds-card-tag" title="JSON"',
+      'class="site-tag site-tag--teal feeds-card-tag" title="JSON"',
     );
     assertStringIncludes(html, "application/rss+xml");
     assertStringIncludes(html, "application/atom+xml");
@@ -75,10 +75,10 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(html, 'data-content-switcher=""');
     assertStringIncludes(
       html,
-      'class="site-switcher-icon cds--content-switcher__icon"',
+      'class="site-switcher-icon site-switcher__icon"',
     );
-    assertStringIncludes(html, 'class="cds--content-switcher__label">Cards');
-    assertStringIncludes(html, 'class="cds--content-switcher__label">List');
+    assertStringIncludes(html, 'class="site-switcher__label">Cards');
+    assertStringIncludes(html, 'class="site-switcher__label">List');
     assertStringIncludes(html, "feeds-structured-list");
     assertStringIncludes(html, "syndication-guidance-section");
     assertStringIncludes(html, "Use the endpoint that matches your reader");
@@ -123,7 +123,7 @@ describe("syndication.page.tsx", () => {
       '<h1 id="syndication-title" class="feeds-page-title">Syndication</h1>',
     );
     assertNotMatch(html, /Fil d’Ariane Syndication/);
-    assertNotMatch(html, /href="\/fr\/" class="cds--breadcrumb-link"/);
+    assertNotMatch(html, /href="\/fr\/" class="site-breadcrumb-link"/);
     assertStringIncludes(html, 'href="/fr/rss.xml"');
     assertStringIncludes(html, 'href="/fr/atom.xml"');
     assertStringIncludes(html, 'href="/fr/feed.json"');
@@ -137,7 +137,7 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(html, "Contrats app");
     assertStringIncludes(html, "Version du contrat");
     assertStringIncludes(html, "Champs de premier niveau");
-    assertNotMatch(html, /cds--breadcrumb-current/);
+    assertNotMatch(html, /site-breadcrumb-current/);
   });
 });
 
@@ -165,12 +165,12 @@ describe("syndication CSS contracts", () => {
     );
     assertStringIncludes(
       layoutStyles,
-      ".feeds-structured-list .cds--structured-list-row",
+      ".feeds-structured-list .site-structured-list-row",
     );
     assertStringIncludes(layoutStyles, ".feeds-copy-notice");
     assertStringIncludes(
       layoutStyles,
-      ".feeds-copy-notice .cds--inline-notification__details",
+      ".feeds-copy-notice .site-notification__details",
     );
     assertStringIncludes(layoutStyles, ".contract-reference-grid {");
     assertStringIncludes(layoutStyles, ".contract-reference-field {");
@@ -181,15 +181,15 @@ describe("syndication CSS contracts", () => {
   it("keeps shared switcher focus treatments readable", () => {
     assertStringIncludes(
       layoutStyles,
-      ".cds--content-switcher,",
+      ".site-switcher,",
     );
     assertStringIncludes(
       layoutStyles,
-      ".cds--content-switcher-btn {",
+      ".site-switcher__button {",
     );
     assertStringIncludes(
       layoutStyles,
-      ".cds--content-switcher--selected,",
+      ".site-switcher__button--selected,",
     );
   });
 
@@ -197,7 +197,7 @@ describe("syndication CSS contracts", () => {
     assertStringIncludes(layoutStyles, "@media (max-width: 47.999rem) {");
     assertStringIncludes(
       layoutStyles,
-      ".feeds-structured-list .cds--structured-list-row {",
+      ".feeds-structured-list .site-structured-list-row {",
     );
   });
 });

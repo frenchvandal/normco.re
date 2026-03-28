@@ -41,15 +41,15 @@ const WARNING_FILLED_ICON = renderSiteIconMarkup(
 );
 const VIEW_ICON = renderSiteIconMarkup(
   "eye",
-  "site-switcher-icon cds--content-switcher__icon",
+  "site-switcher-icon site-switcher__icon",
 );
 const LIST_ICON = renderSiteIconMarkup(
   "list-unordered",
-  "site-switcher-icon cds--content-switcher__icon",
+  "site-switcher-icon site-switcher__icon",
 );
 const CHEVRON_DOWN_ICON = renderSiteIconMarkup(
   "chevron-down",
-  "cds--accordion__arrow",
+  "site-accordion__arrow",
 );
 
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
@@ -122,10 +122,10 @@ function renderContractField(
   return `<li class="contract-reference-field">
     <div class="contract-reference-field-head">
       <code class="contract-reference-code">${escapeHtml(field.name)}</code>
-      <span class="cds--tag cds--tag--${requirementTone} contract-reference-tag" title="${
+      <span class="site-tag site-tag--${requirementTone} contract-reference-tag" title="${
     escapeHtml(requirementLabel)
   }">
-        <span class="cds--tag__label">${escapeHtml(requirementLabel)}</span>
+        <span class="site-tag__label">${escapeHtml(requirementLabel)}</span>
       </span>
     </div>
     <p class="contract-reference-field-type"><code>${
@@ -218,7 +218,7 @@ function renderContractReference(
     </div>`
     : "";
 
-  return `<article class="cds--tile contract-reference-card" data-contract-reference="${
+  return `<article class="site-panel contract-reference-card" data-contract-reference="${
     escapeHtml(contract.id)
   }">
     <div class="contract-reference-card-head">
@@ -242,10 +242,10 @@ function resolveFeedFormatMeta(mime: string): FormatMeta {
 }
 
 function renderFormatTag({ label, tone }: FormatMeta): string {
-  return `<span class="cds--tag cds--tag--${
+  return `<span class="site-tag site-tag--${
     escapeHtml(tone)
   } feeds-card-tag" title="${escapeHtml(label)}">
-        <span class="cds--tag__label">${escapeHtml(label)}</span>
+        <span class="site-tag__label">${escapeHtml(label)}</span>
       </span>`;
 }
 
@@ -253,7 +253,7 @@ function renderCopyNotice(
   actions: Pick<FeedActions, "copiedTitle" | "errorTitle">,
 ): string {
   return `<div
-    class="cds--inline-notification cds--inline-notification--success cds--inline-notification--low-contrast feeds-copy-notice"
+    class="site-notification site-notification--success site-notification--low-contrast feeds-copy-notice"
     role="status"
     aria-live="polite"
     aria-atomic="true"
@@ -263,16 +263,16 @@ function renderCopyNotice(
     data-copy-notice-state="idle"
     hidden
   >
-    <div class="cds--inline-notification__details">
+    <div class="site-notification__details">
       <span class="feeds-notice-icons" aria-hidden="true">
         ${CHECKMARK_FILLED_ICON}
         ${WARNING_FILLED_ICON}
       </span>
-      <div class="cds--inline-notification__text-wrapper">
-        <p class="cds--inline-notification__title" data-copy-notice-title="">
+      <div class="site-notification__text-wrapper">
+        <p class="site-notification__title" data-copy-notice-title="">
           ${escapeHtml(actions.copiedTitle)}
         </p>
-        <p class="cds--inline-notification__subtitle" data-copy-notice-message=""></p>
+        <p class="site-notification__subtitle" data-copy-notice-message=""></p>
       </div>
     </div>
   </div>`;
@@ -345,7 +345,7 @@ function renderCard(
 ): string {
   const formatMeta = resolveFeedFormatMeta(card.mime);
 
-  return `<article class="cds--tile feeds-card feeds-card--${
+  return `<article class="site-panel feeds-card feeds-card--${
     escapeHtml(card.id)
   }">
   <div class="feeds-card-head">
@@ -367,8 +367,8 @@ function renderStructuredListRow(
 ): string {
   const formatMeta = resolveFeedFormatMeta(card.mime);
 
-  return `<div class="cds--structured-list-row">
-    <div class="cds--structured-list-td feeds-structured-list-format">
+  return `<div class="site-structured-list-row">
+    <div class="site-structured-list-td feeds-structured-list-format">
       <div class="feeds-structured-list-copy">
         ${renderFormatTag(formatMeta)}
         <div class="feeds-structured-list-meta">
@@ -377,10 +377,10 @@ function renderStructuredListRow(
         </div>
       </div>
     </div>
-    <div class="cds--structured-list-td">
+    <div class="site-structured-list-td">
       ${renderCopyControl(card, siteOrigin, actions, { compact: true })}
     </div>
-    <div class="cds--structured-list-td feeds-structured-list-use">
+    <div class="site-structured-list-td feeds-structured-list-use">
       <p>${escapeHtml(card.description)}</p>
     </div>
   </div>`;
@@ -390,26 +390,26 @@ function renderAccordionItem(
   { body, id, title }: AccordionItemProps,
   expanded = false,
 ): string {
-  return `<li class="cds--accordion__item${
-    expanded ? " cds--accordion__item--active" : ""
+  return `<li class="site-accordion__item${
+    expanded ? " site-accordion__item--active" : ""
   }">
     <button
       type="button"
-      class="cds--accordion__heading"
+      class="site-accordion__heading"
       data-accordion-trigger=""
       aria-expanded="${expanded ? "true" : "false"}"
       aria-controls="${escapeHtml(id)}"
     >
       ${CHEVRON_DOWN_ICON}
-      <span class="cds--accordion__title">${escapeHtml(title)}</span>
+      <span class="site-accordion__title">${escapeHtml(title)}</span>
     </button>
     <div
       id="${escapeHtml(id)}"
-      class="cds--accordion__wrapper"
+      class="site-accordion__wrapper"
       data-accordion-panel=""
       ${expanded ? "" : "hidden"}
     >
-      <div class="cds--accordion__content">
+      <div class="site-accordion__content">
         <p>${escapeHtml(body)}</p>
       </div>
     </div>
@@ -551,12 +551,12 @@ export default (data: Lume.Data): string => {
           <h2 id="syndication-endpoints-title" class="subhead-heading">${
     escapeHtml(translations.feeds.cardsAriaLabel)
   }</h2>
-          <div class="cds--content-switcher site-content-switcher" data-content-switcher="" role="tablist" aria-label="${
+          <div class="site-switcher site-content-switcher" data-content-switcher="" role="tablist" aria-label="${
     escapeHtml(translations.feeds.viewLabel)
   }">
             <button
               type="button"
-              class="cds--content-switcher-btn cds--content-switcher--selected"
+              class="site-switcher__button site-switcher__button--selected"
               id="syndication-endpoints-cards-tab"
               role="tab"
               data-content-switcher-trigger=""
@@ -564,13 +564,13 @@ export default (data: Lume.Data): string => {
               aria-controls="syndication-endpoints-cards"
             >
               ${VIEW_ICON}
-              <span class="cds--content-switcher__label">${
+              <span class="site-switcher__label">${
     escapeHtml(translations.feeds.cardsViewLabel)
   }</span>
             </button>
             <button
               type="button"
-              class="cds--content-switcher-btn"
+              class="site-switcher__button"
               id="syndication-endpoints-list-tab"
               role="tab"
               data-content-switcher-trigger=""
@@ -579,7 +579,7 @@ export default (data: Lume.Data): string => {
               aria-controls="syndication-endpoints-list"
             >
               ${LIST_ICON}
-              <span class="cds--content-switcher__label">${
+              <span class="site-switcher__label">${
     escapeHtml(translations.feeds.listViewLabel)
   }</span>
             </button>
@@ -603,22 +603,22 @@ export default (data: Lume.Data): string => {
           hidden
         >
           <div
-            class="cds--structured-list cds--structured-list--condensed feeds-structured-list"
+            class="site-structured-list site-structured-list--condensed feeds-structured-list"
           >
-            <div class="cds--structured-list-thead">
-              <div class="cds--structured-list-row cds--structured-list-row--header-row">
-                <span class="cds--structured-list-th">${
+            <div class="site-structured-list-thead">
+              <div class="site-structured-list-row site-structured-list-row--header-row">
+                <span class="site-structured-list-th">${
     escapeHtml(translations.feeds.listFormatHeading)
   }</span>
-                <span class="cds--structured-list-th">${
+                <span class="site-structured-list-th">${
     escapeHtml(translations.feeds.listUrlHeading)
   }</span>
-                <span class="cds--structured-list-th">${
+                <span class="site-structured-list-th">${
     escapeHtml(translations.feeds.listUseHeading)
   }</span>
               </div>
             </div>
-            <div class="cds--structured-list-tbody">
+            <div class="site-structured-list-tbody">
               ${listRowsHtml}
             </div>
           </div>
@@ -636,7 +636,7 @@ export default (data: Lume.Data): string => {
         <p class="syndication-guidance-lead">${
     escapeHtml(translations.feeds.guidanceLead)
   }</p>
-        <ul class="cds--accordion site-accordion" data-site-accordion="">
+        <ul class="site-accordion" data-site-accordion="">
           ${guidanceAccordion}
         </ul>
       </section>
@@ -653,7 +653,7 @@ export default (data: Lume.Data): string => {
     escapeHtml(translations.feeds.contractsLead)
   }</p>
         <div class="contract-reference-summary">
-          <div class="cds--tile contract-reference-summary-card">
+          <div class="site-panel contract-reference-summary-card">
             <p class="contract-reference-meta-line">
               <span class="contract-reference-label">${
     escapeHtml(translations.feeds.contractVersionLabel)

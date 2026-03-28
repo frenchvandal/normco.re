@@ -260,32 +260,32 @@ export function PostDetails(
   return (
     <footer class="post-details-section">
       <ul
-        class="cds--accordion site-accordion post-details-accordion"
+        class="site-accordion post-details-accordion"
         data-site-accordion=""
       >
-        <li class="cds--accordion__item">
+        <li class="site-accordion__item">
           <button
             type="button"
-            class="cds--accordion__heading"
+            class="site-accordion__heading"
             data-accordion-trigger=""
             aria-expanded="false"
             aria-controls="post-publication-details"
           >
             <SiteIcon
               name="chevron-down"
-              className="cds--accordion__arrow"
+              className="site-accordion__arrow"
               width={16}
               height={16}
             />
-            <span class="cds--accordion__title">{title}</span>
+            <span class="site-accordion__title">{title}</span>
           </button>
           <div
             id="post-publication-details"
-            class="cds--accordion__wrapper"
+            class="site-accordion__wrapper"
             data-accordion-panel=""
             hidden
           >
-            <div class="cds--accordion__content">
+            <div class="site-accordion__content">
               {renderDefinitionList(items, detailsMetaClasses)}
             </div>
           </div>

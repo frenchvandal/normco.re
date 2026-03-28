@@ -539,10 +539,10 @@
 
           <main class="site-main" id="main-content" data-pagefind-body="">
             <div class="site-page-shell site-page-shell--wide feed-page-shell">
-              <nav class="cds--breadcrumb" aria-label="Breadcrumb">
-                <ol class="cds--breadcrumb-list">
-                  <li class="cds--breadcrumb-item">
-                    <a class="cds--breadcrumb-link">
+              <nav class="site-breadcrumb" aria-label="Breadcrumb">
+                <ol class="site-breadcrumb-list">
+                  <li class="site-breadcrumb-item">
+                    <a class="site-breadcrumb-link">
                       <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
                       <xsl:value-of select="$home-label"/>
                     </a>
@@ -562,7 +562,7 @@
                   </p>
                 </header>
 
-                <section class="cds--tile feed-document-panel" aria-labelledby="feed-entries-title">
+                <section class="site-panel feed-document-panel" aria-labelledby="feed-entries-title">
                   <div class="feed-document-panel-head">
                     <h2 id="feed-entries-title" class="feed-document-panel-title"><xsl:value-of select="$latest-entries-label"/></h2>
                     <p class="feed-document-panel-note"><xsl:value-of select="$sorted-note-label"/></p>

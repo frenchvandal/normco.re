@@ -12,10 +12,10 @@ function createDom(): InstanceType<typeof JSDOM> {
     `<!doctype html>
     <html lang="en">
       <body>
-        <div class="cds--content-switcher" data-content-switcher="">
+        <div class="site-switcher" data-content-switcher="">
           <button
             type="button"
-            class="cds--content-switcher-btn cds--content-switcher--selected"
+            class="site-switcher__button site-switcher__button--selected"
             data-content-switcher-trigger=""
             aria-selected="true"
             aria-controls="switcher-panel-cards"
@@ -24,7 +24,7 @@ function createDom(): InstanceType<typeof JSDOM> {
           </button>
           <button
             type="button"
-            class="cds--content-switcher-btn"
+            class="site-switcher__button"
             data-content-switcher-trigger=""
             aria-selected="false"
             tabindex="-1"
@@ -36,31 +36,31 @@ function createDom(): InstanceType<typeof JSDOM> {
         <section id="switcher-panel-cards" data-content-switcher-panel="">Cards panel</section>
         <section id="switcher-panel-list" data-content-switcher-panel="" hidden>List panel</section>
 
-        <div class="cds--tabs cds--tabs--contained" data-site-tabs="">
-          <ul class="cds--tab--list" role="tablist">
-            <li class="cds--tabs__nav-item cds--tabs__nav-item--selected">
+        <div class="site-tabs site-tabs--contained" data-site-tabs="">
+          <ul class="site-tabs__list" role="tablist">
+            <li class="site-tabs__nav-item site-tabs__nav-item--selected">
               <button
                 type="button"
-                class="cds--tabs__nav-link"
+                class="site-tabs__nav-link"
                 data-tabs-trigger=""
                 role="tab"
                 aria-selected="true"
                 aria-controls="tab-panel-a"
               >
-                <span class="cds--tabs__nav-item-label">A</span>
+                <span class="site-tabs__nav-item-label">A</span>
               </button>
             </li>
-            <li class="cds--tabs__nav-item">
+            <li class="site-tabs__nav-item">
               <button
                 type="button"
-                class="cds--tabs__nav-link"
+                class="site-tabs__nav-link"
                 data-tabs-trigger=""
                 role="tab"
                 aria-selected="false"
                 tabindex="-1"
                 aria-controls="tab-panel-b"
               >
-                <span class="cds--tabs__nav-item-label">B</span>
+                <span class="site-tabs__nav-item-label">B</span>
               </button>
             </li>
           </ul>
@@ -68,11 +68,11 @@ function createDom(): InstanceType<typeof JSDOM> {
         <section id="tab-panel-a" role="tabpanel" data-tabs-panel="">Panel A</section>
         <section id="tab-panel-b" role="tabpanel" data-tabs-panel="" hidden>Panel B</section>
 
-        <ul class="cds--accordion" data-site-accordion="">
-          <li class="cds--accordion__item">
+        <ul class="site-accordion" data-site-accordion="">
+          <li class="site-accordion__item">
             <button
               type="button"
-              class="cds--accordion__heading"
+              class="site-accordion__heading"
               data-accordion-trigger=""
               aria-expanded="false"
               aria-controls="accordion-panel-1"
@@ -119,7 +119,7 @@ describe("surface-controls.js", () => {
 
     assertEquals(listButton.getAttribute("aria-selected"), "true");
     assertEquals(
-      listButton.classList.contains("cds--content-switcher--selected"),
+      listButton.classList.contains("site-switcher__button--selected"),
       true,
     );
     assertEquals(cardsPanel.hidden, true);
@@ -164,8 +164,8 @@ describe("surface-controls.js", () => {
     assert(secondTab);
     secondTab.click();
 
-    const firstItem = tabs[0]?.closest(".cds--tabs__nav-item");
-    const secondItem = secondTab.closest(".cds--tabs__nav-item");
+    const firstItem = tabs[0]?.closest(".site-tabs__nav-item");
+    const secondItem = secondTab.closest(".site-tabs__nav-item");
     const panelA = window.document.getElementById("tab-panel-a");
     const panelB = window.document.getElementById("tab-panel-b");
     if (!(firstItem instanceof window.HTMLElement)) {
@@ -184,11 +184,11 @@ describe("surface-controls.js", () => {
     const secondTabItem = secondItem as HTMLElement;
 
     assertEquals(
-      firstTabItem.classList.contains("cds--tabs__nav-item--selected"),
+      firstTabItem.classList.contains("site-tabs__nav-item--selected"),
       false,
     );
     assertEquals(
-      secondTabItem.classList.contains("cds--tabs__nav-item--selected"),
+      secondTabItem.classList.contains("site-tabs__nav-item--selected"),
       true,
     );
     assertEquals(panelA.hidden, true);
@@ -216,13 +216,13 @@ describe("surface-controls.js", () => {
       }),
     );
 
-    const secondItem = secondTab.closest(".cds--tabs__nav-item");
+    const secondItem = secondTab.closest(".site-tabs__nav-item");
     if (!(secondItem instanceof window.HTMLElement)) {
       throw new Error("Expected the second tab item to exist.");
     }
     const secondTabItem = secondItem as HTMLElement;
     assertEquals(
-      secondTabItem.classList.contains("cds--tabs__nav-item--selected"),
+      secondTabItem.classList.contains("site-tabs__nav-item--selected"),
       true,
     );
     assertEquals(window.document.activeElement === secondTab, false);
@@ -235,7 +235,7 @@ describe("surface-controls.js", () => {
 
     const trigger = window.document.querySelector("[data-accordion-trigger]");
     const panel = window.document.getElementById("accordion-panel-1");
-    const item = trigger?.closest(".cds--accordion__item");
+    const item = trigger?.closest(".site-accordion__item");
     assert(trigger instanceof window.HTMLButtonElement);
     assert(panel instanceof window.HTMLElement);
     assert(item instanceof window.HTMLElement);
@@ -244,6 +244,6 @@ describe("surface-controls.js", () => {
 
     assertEquals(trigger.getAttribute("aria-expanded"), "true");
     assertEquals(panel.hidden, false);
-    assertEquals(item.classList.contains("cds--accordion__item--active"), true);
+    assertEquals(item.classList.contains("site-accordion__item--active"), true);
   });
 });

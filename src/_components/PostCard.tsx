@@ -28,7 +28,7 @@ export default (
 ) => (
   <article
     class={[
-      "cds--tile",
+      "site-panel",
       "post-card",
       className,
     ].filter(Boolean).join(" ")}

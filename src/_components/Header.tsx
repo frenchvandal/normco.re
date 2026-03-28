@@ -388,25 +388,25 @@ function renderSearchPanel(
           hidden
         >
           <div
-            class="cds--inline-loading site-search-inline-loading"
+            class="site-inline-loading site-search-inline-loading"
             data-search-loading=""
             hidden
           >
-            <div class="cds--inline-loading__animation">
-              <div class="cds--loading cds--loading--small">
+            <div class="site-inline-loading__animation">
+              <div class="site-loading site-loading--small">
                 <svg
-                  class="cds--loading__svg"
+                  class="site-loading__svg"
                   viewBox="0 0 100 100"
                   aria-hidden="true"
                 >
                   <circle
-                    class="cds--loading__background"
+                    class="site-loading__background"
                     cx="50"
                     cy="50"
                     r="44"
                   />
                   <circle
-                    class="cds--loading__stroke"
+                    class="site-loading__stroke"
                     cx="50"
                     cy="50"
                     r="44"
@@ -415,7 +415,7 @@ function renderSearchPanel(
               </div>
             </div>
             <p
-              class="cds--inline-loading__text"
+              class="site-inline-loading__text"
               data-search-loading-text=""
             >
               {t.site.searchLoadingLabel}
@@ -427,12 +427,12 @@ function renderSearchPanel(
             hidden
           />
           <div
-            class="cds--inline-notification cds--inline-notification--low-contrast cds--inline-notification--info site-search-notification"
+            class="site-notification site-notification--low-contrast site-notification--info site-search-notification"
             data-search-notification=""
             data-search-notification-tone="info"
             hidden
           >
-            <div class="cds--inline-notification__details">
+            <div class="site-notification__details">
               <span
                 class="site-search-notification-icons"
                 aria-hidden="true"
@@ -450,13 +450,13 @@ function renderSearchPanel(
                   height={20}
                 />
               </span>
-              <div class="cds--inline-notification__text-wrapper">
+              <div class="site-notification__text-wrapper">
                 <p
-                  class="cds--inline-notification__title"
+                  class="site-notification__title"
                   data-search-notification-title=""
                 />
                 <p
-                  class="cds--inline-notification__subtitle"
+                  class="site-notification__subtitle"
                   data-search-notification-subtitle=""
                 />
               </div>
@@ -484,9 +484,9 @@ function renderSearchPanel(
             data-search-skeleton=""
             aria-hidden="true"
           >
-            <span class="cds--skeleton__text site-search-skeleton-line" />
-            <span class="cds--skeleton__text site-search-skeleton-line" />
-            <span class="cds--skeleton__text site-search-skeleton-line" />
+            <span class="site-skeleton__text site-search-skeleton-line" />
+            <span class="site-skeleton__text site-search-skeleton-line" />
+            <span class="site-skeleton__text site-search-skeleton-line" />
           </div>
         </div>
       </div>

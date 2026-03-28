@@ -214,22 +214,22 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
               data-search-status=""
               hidden
             >
-              <div class="cds--inline-loading site-search-inline-loading" data-search-loading="" hidden>
-                <p class="cds--inline-loading__text" data-search-loading-text="">
+              <div class="site-inline-loading site-search-inline-loading" data-search-loading="" hidden>
+                <p class="site-inline-loading__text" data-search-loading-text="">
                   Loading search results.
                 </p>
               </div>
               <p class="site-header__search-status-text" data-search-status-text="" hidden></p>
               <div
-                class="cds--inline-notification cds--inline-notification--low-contrast cds--inline-notification--info site-search-notification"
+                class="site-notification site-notification--low-contrast site-notification--info site-search-notification"
                 data-search-notification=""
                 data-search-notification-tone="info"
                 hidden
               >
-                <div class="cds--inline-notification__details">
-                  <div class="cds--inline-notification__text-wrapper">
-                    <p class="cds--inline-notification__title" data-search-notification-title=""></p>
-                    <p class="cds--inline-notification__subtitle" data-search-notification-subtitle=""></p>
+                <div class="site-notification__details">
+                  <div class="site-notification__text-wrapper">
+                    <p class="site-notification__title" data-search-notification-title=""></p>
+                    <p class="site-notification__subtitle" data-search-notification-subtitle=""></p>
                   </div>
                 </div>
               </div>
@@ -251,9 +251,9 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
               data-search-retry-label="Retry"
             >
               <div class="site-search-skeleton" data-search-skeleton="" aria-hidden="true">
-                <span class="cds--skeleton__text site-search-skeleton-line"></span>
-                <span class="cds--skeleton__text site-search-skeleton-line"></span>
-                <span class="cds--skeleton__text site-search-skeleton-line"></span>
+                <span class="site-skeleton__text site-search-skeleton-line"></span>
+                <span class="site-skeleton__text site-search-skeleton-line"></span>
+                <span class="site-skeleton__text site-search-skeleton-line"></span>
               </div>
             </div>
           </div>

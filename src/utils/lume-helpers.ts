@@ -33,7 +33,7 @@ export function renderFallbackPostCard(
     showSummary,
   }: PostCardProps,
 ): Promise<string> {
-  const cls = ["cds--tile", "post-card", className].filter(Boolean).join(" ");
+  const cls = ["site-panel", "post-card", className].filter(Boolean).join(" ");
   const summaryHtml = showSummary && summary
     ? `<p class="post-card-summary">${escapeHtml(summary)}</p>`
     : "";

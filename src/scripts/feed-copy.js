@@ -162,11 +162,11 @@
 
     notice.dataset.copyNoticeState = state;
     notice.classList.toggle(
-      "cds--inline-notification--success",
+      "site-notification--success",
       state === "copied",
     );
     notice.classList.toggle(
-      "cds--inline-notification--error",
+      "site-notification--error",
       state === "error",
     );
     notice.hidden = !isVisible;
