@@ -62,8 +62,6 @@ export function registerPlugins(
           "@blog/tag-antd": "./src/blog/client/tag-antd.build.ts",
         },
         format: "esm",
-        splitting: true,
-        chunkNames: "scripts/chunks/[name]-[hash]",
       },
     }),
   );
