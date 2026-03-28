@@ -195,7 +195,7 @@ describe("Header()", () => {
     assertStringIncludes(html, 'class="site-header-antd-menu-shell"');
     assertStringIncludes(
       html,
-      'class="site-header__action btn-octicon editorial-home-header__action"',
+      'class="site-header__action editorial-home-header__action"',
     );
     assertStringIncludes(html, 'class="editorial-home-header__action-icon"');
     assertStringIncludes(html, 'data-icon="translation"');
@@ -206,6 +206,9 @@ describe("Header()", () => {
       html,
       'class="site-side-nav editorial-home-header__drawer"',
     );
+    assertNotMatch(html, /\bbtn-octicon\b/);
+    assertNotMatch(html, /\bsubnav-item\b/);
+    assertNotMatch(html, /\bBox\b/);
   });
 
   it("still omits the older pre-shell native navigation fragments", async () => {

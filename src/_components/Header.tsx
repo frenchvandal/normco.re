@@ -91,31 +91,30 @@ const EDITORIAL_HOME: VariantClasses = {
   header: `site-header site-header--editorial-home`,
   wrapper: `site-header__wrapper ${eh("wrapper")}`,
   left: `site-header__left ${eh("left")}`,
-  menuToggle: `site-header__action site-header__menu-toggle btn-octicon ${
+  menuToggle: `site-header__action site-header__menu-toggle ${
     eh("menu-toggle")
   }`,
   menuIconClass: `site-menu-icon ${eh("action-icon")}`,
   menuIconSize: 16,
   name: `site-header__brand ${eh("name")}`,
   nav: `site-header__nav ${eh("nav")}`,
-  navLink: `site-header__menu-item subnav-item ${eh("nav-link")}`,
+  navLink: `site-header__menu-item ${eh("nav-link")}`,
   navLinkLabel: "site-header-menu-item-label",
   global: `site-header__global ${eh("global")}`,
-  actionButton: `site-header__action btn-octicon ${eh("action")}`,
+  actionButton: `site-header__action ${eh("action")}`,
   actionIcon: eh("action-icon"),
   actionIconSize: 16,
-  languageButton:
-    `site-header__action site-header__language-toggle btn-octicon ${
-      eh("action")
-    }`,
+  languageButton: `site-header__action site-header__language-toggle ${
+    eh("action")
+  }`,
   languageOption: `site-header__language-option ${eh("menu-option")}`,
   languageMenu: `site-header__language-menu ${eh("language-menu")}`,
   languagePanel: `site-header__panel site-header__language-panel ${
     eh("panel")
   }`,
-  languagePanelContent: `site-header__panel-content Box ${eh("panel-box")}`,
+  languagePanelContent: `site-header__panel-content ${eh("panel-box")}`,
   searchPanel: `site-header__panel site-header__search-panel ${eh("panel")}`,
-  searchPanelContent: `site-header__panel-content Box ${eh("panel-box")}`,
+  searchPanelContent: `site-header__panel-content ${eh("panel-box")}`,
   searchRoot: `site-header__search-root ${eh("search-root")}`,
   sideNav: `site-side-nav ${eh("drawer")}`,
   sideNavNavigation: `site-side-nav__navigation ${eh("drawer-navigation")}`,

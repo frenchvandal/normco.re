@@ -252,10 +252,6 @@
     padding-inline: var(--ph-space-3);
   }
 
-  .btn-octicon {
-    padding: 0;
-  }
-
   .btn:hover,
   .state-panel-action:hover,
   .feature-link:hover,
@@ -264,10 +260,6 @@
     border-color: var(--ph-color-border-default);
     color: var(--ph-color-fg-default);
     text-decoration: none;
-  }
-
-  .Box {
-    background: transparent;
   }
 
   @view-transition {

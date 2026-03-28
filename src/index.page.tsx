@@ -47,22 +47,11 @@ function renderFeaturedStory(story: StoryData, language: SiteLanguage): string {
   });
 
   return `<article class="editorial-home-featured-story">
-  <div class="editorial-home-featured-story__body">
-    ${topics}
-    <h2 class="editorial-home-featured-story__title">
-      <a class="editorial-home-featured-story__link" href="${
-    escapeHtml(story.url)
-  }">${escapeHtml(story.title)}</a>
-    </h2>
-    ${
-    story.summary === undefined
-      ? ""
-      : `<p class="editorial-home-featured-story__summary">${
-        escapeHtml(story.summary)
-      }</p>`
-  }
-    <div class="editorial-home-featured-story__meta">
-      <time datetime="${escapeHtml(story.dateIso)}">${
+  <div class="editorial-home-featured-story__frame">
+    <div class="editorial-home-featured-story__identity">
+      ${topics}
+      <div class="editorial-home-featured-story__meta">
+        <time datetime="${escapeHtml(story.dateIso)}">${
     escapeHtml(story.dateLabel)
   }</time>${
     story.readingLabel === undefined
@@ -70,6 +59,21 @@ function renderFeaturedStory(story: StoryData, language: SiteLanguage): string {
       : `<span class="editorial-home-featured-story__reading">${
         escapeHtml(story.readingLabel)
       }</span>`
+  }
+      </div>
+    </div>
+    <div class="editorial-home-featured-story__body">
+      <h2 class="editorial-home-featured-story__title">
+        <a class="editorial-home-featured-story__link" href="${
+    escapeHtml(story.url)
+  }">${escapeHtml(story.title)}</a>
+      </h2>
+      ${
+    story.summary === undefined
+      ? ""
+      : `<p class="editorial-home-featured-story__summary">${
+        escapeHtml(story.summary)
+      }</p>`
   }
     </div>
   </div>
