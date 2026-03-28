@@ -2,4 +2,6 @@
 
 import { bindHeaderClient } from "./header-client/init.js";
 
-bindHeaderClient(globalThis);
+if (typeof window !== "undefined") {
+  bindHeaderClient(window);
+}

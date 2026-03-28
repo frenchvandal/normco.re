@@ -19,7 +19,7 @@ import {
   tryResolveSiteLanguage,
 } from "../../utils/i18n.ts";
 import { resolvePageSetup } from "../../utils/page-setup.ts";
-import type { IconResolver } from "../../utils/primer-icons.ts";
+import type { IconResolver } from "../../utils/site-icons.ts";
 import {
   getLocalizedAtomFeedUrl,
   getLocalizedJsonFeedUrl,
@@ -27,7 +27,7 @@ import {
 } from "../../utils/feed-paths.ts";
 import { THEME_BOOTSTRAP_SCRIPT } from "../../utils/theme-bootstrap.ts";
 
-const CANONICAL_BRAND_ICON_NAMES = ["github", "rss"] as const;
+const CANONICAL_BRAND_ICON_NAMES = ["rss"] as const;
 
 // Lume JSX renders a fragment here; the document doctype still has to be
 // injected explicitly ahead of `<html>`.
@@ -52,6 +52,7 @@ type LayoutData = Lume.Data & {
   lang?: string;
   searchIndexed?: boolean;
   unlisted?: boolean;
+  extraStylesheets?: ReadonlyArray<string>;
   alternates?: ReadonlyArray<AlternateData>;
   siteChrome?: SiteChromeData;
   // Populated by `src/_data.ts` in real builds. These stay optional so layout
@@ -171,6 +172,7 @@ export default (
     lang,
     searchIndexed,
     unlisted,
+    extraStylesheets,
     alternates,
     siteChrome,
     siteName,
@@ -277,6 +279,13 @@ export default (
             href="/style.css"
             fetchpriority="high"
           />
+          {extraStylesheets?.map((href) => (
+            <link
+              key={href}
+              rel="stylesheet"
+              href={href}
+            />
+          ))}
           <script>{THEME_BOOTSTRAP}</script>
           <script
             src="/scripts/language-preference.js"

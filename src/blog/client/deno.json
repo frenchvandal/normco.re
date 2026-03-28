@@ -1,0 +1,23 @@
+{
+  "imports": {
+    "@ant-design/icons": "npm:@ant-design/icons@6.1.1",
+    "@blog/archive-antd": "./archive-antd.ts",
+    "@blog/antd-components": "./antd-components.ts",
+    "@blog/antd-icons": "./antd-icons.ts",
+    "@blog/common-antd": "./common-antd.ts",
+    "@blog/post-antd": "./post-antd.ts",
+    "dayjs": "npm:dayjs@1.11.19",
+    "react": "npm:react@19.2.0",
+    "react/jsx-runtime": "npm:react@19.2.0/jsx-runtime",
+    "react-dom/client": "npm:react-dom@19.2.0/client",
+    "@blog/tag-antd": "./tag-antd.ts",
+    "antd": "npm:antd@6.3.4"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "types": ["npm:@types/react@19.2.2"],
+    "lib": ["dom", "dom.iterable", "esnext"]
+  },
+  "nodeModulesDir": "none"
+}

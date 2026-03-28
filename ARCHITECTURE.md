@@ -26,7 +26,6 @@ normco.re/
 ├── _config/
 │   ├── assets.ts
 │   ├── feeds.ts
-│   ├── materialize_sass_npm_packages.ts
 │   ├── plugins.ts
 │   └── processors.ts
 ├── _cms.ts
@@ -49,8 +48,8 @@ normco.re/
 │   ├── about.page.tsx
 │   ├── index.page.tsx
 │   ├── offline.page.tsx
-│   └── style.scss
-└── deno.json
+│   └── style.css
+└── deno.jsonc
 ```
 
 ## Content and Routing Model
@@ -68,9 +67,9 @@ Route-level pages remain TSX modules. The primary routes are:
 
 Localized variants are generated under `/fr/`, `/zh-hans/`, and `/zh-hant/`.
 
-The `/posts/` archive is rendered server-side as a year-grouped listing. When
-multiple years are present, the page includes a built-in year jump navigation in
-the HTML, so archive navigation does not depend on client-side JavaScript.
+The `/posts/` archive is rendered from TSX and enhanced by a route-scoped Ant
+Design client bundle. The client owns the timeline and month navigation so the
+archive no longer duplicates the home page's composition.
 
 ### Posts
 
@@ -139,15 +138,15 @@ from the same generated source of truth before remote refresh.
 `_config/plugins.ts` registers the main plugin stack:
 
 - JSX rendering
-- Carbon Sass compilation
 - PostCSS and Lightning CSS
+- esbuild route splitting for the blog React/Ant Design client
 - localized feeds
 - multilanguage routing
 - navigation helpers
 - Pagefind indexing
 - HTML validation
 - JSON-LD
-- Prism highlighting
+- Shiki highlighting
 - app-contract generation through the repository's content pipeline
 
 ### Assets, Feeds, and Processors
@@ -168,22 +167,24 @@ cache. The main reports are:
 
 ## Styling Architecture
 
-The site uses a local Primer-inspired token system as its design foundation.
+The site uses a local `--ph-*` token system for the global shell and Ant Design
+for the interactive blog islands.
 
 ### Design-System Sources of Truth
 
 Design-system guidance comes from two places:
 
-- the local `--ph-*` token layer in `src/styles/primer/_theme-tokens.scss`
+- the local `--ph-*` token layer in `src/styles/antd/theme-tokens.css`
 - the repository's own layout and utility layers in `src/styles/_layout.scss`
   and `src/styles/_utilities.scss`
+- the route-split React/Ant Design blog client under `src/blog/client/`
 
 No exported design-token artifact is treated as authoritative.
 
 ### Token Model
 
-- `src/styles/primer/_theme-tokens.scss` exposes the `--ph-*` custom properties
-  used across the site
+- `src/styles/antd/theme-tokens.css` exposes the `--ph-*` custom properties used
+  across the site
 - `src/styles/_base.scss`, `src/styles/_layout.scss`, and
   `src/styles/_utilities.scss` consume those values directly
 - new UI work should avoid inventing hard-coded values when an existing token
@@ -191,17 +192,16 @@ No exported design-token artifact is treated as authoritative.
 
 ### Sass and npm Integration
 
-The active stylesheet is local Sass only. The repository still uses:
+The site relies on Deno's npm cache instead of a repo-local `node_modules` tree.
 
-- `nodeModulesDir: "auto"` in `deno.json`
-- `_config/materialize_sass_npm_packages.ts` to centralize Sass load paths for
-  the Lume Sass plugin
-
-This keeps the build predictable under Deno and Lume.
+- `deno.jsonc` uses `nodeModulesDir: "none"` at the repo root
+- `src/blog/client/deno.json` does the same for the frontend bundle graph
+- Lume's esbuild plugin is pointed explicitly at the frontend config through
+  `denoConfig: "src/blog/client/deno.json"`
 
 ### CSS Entrypoint
 
-`src/style.scss` composes the styling layers in order:
+`src/style.css` composes the styling layers in order:
 
 1. reset
 2. tokens
@@ -210,8 +210,23 @@ This keeps the build predictable under Deno and Lume.
 5. utilities
 
 Typography relies on the local system font stacks exposed through
-`src/styles/primer/_theme-tokens.scss`, and the build does not generate bundled
+`src/styles/antd/theme-tokens.css`, and the build does not generate bundled
 webfont assets.
+
+## Blog Client Bundles
+
+The blog archive, tag pages, and post pages now use route-specific React entry
+points under `src/blog/client/`:
+
+- `archive-main.tsx`
+- `tag-main.tsx`
+- `post-main.tsx`
+
+Each entrypoint resolves npm dependencies through `src/blog/client/deno.json`
+and is bundled by Lume's esbuild plugin with code splitting enabled. Shared UI
+helpers live in small local modules, while route-specific Ant Design barrels
+keep `Calendar`, `Timeline`, `Descriptions`, and similar heavy components out of
+pages that do not need them.
 
 ## Client-Side Enhancements
 
@@ -357,10 +372,10 @@ JSON outputs.
 
 1. Editorial post bodies remain Markdown, not TSX.
 2. Pages, layouts, and reusable UI remain TSX.
-3. Carbon documentation and official Carbon npm packages remain the
-   design-system authority.
-4. `src/styles/carbon/_theme-tokens.scss` remains the local bridge for the
-   Carbon-backed custom properties used by the site.
+3. The local `--ph-*` token layer and the route-scoped Ant Design blog client
+   remain the design-system authority for the web stack.
+4. `src/styles/antd/theme-tokens.css` remains the local bridge for the custom
+   properties used by the site shell.
 5. Public URLs remain language-aware and stable.
 6. Quality reports belong under `_quality/`, separate from the Lume build cache.
 7. The authoritative broken-link check runs against final output, after asset

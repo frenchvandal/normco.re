@@ -79,6 +79,14 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(html, 'class="feature-main"');
     });
 
+    it("bootstraps the Ant Design archive app alongside the SSR fallback markup", async () => {
+      const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
+      assertStringIncludes(html, "data-blog-antd-root");
+      assertStringIncludes(html, 'id="blog-antd-data"');
+      assertStringIncludes(html, '"view":"archive"');
+      assertStringIncludes(html, 'src="/scripts/blog-antd-archive.js"');
+    });
+
     it("opts the articles page out of the Pagefind body region", () => {
       assertEquals(searchIndexed, false);
     });

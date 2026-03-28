@@ -71,11 +71,8 @@ describe("Footer()", () => {
     assertStringIncludes(html, 'rel="noopener noreferrer"');
     assertStringIncludes(html, 'aria-label="Open GitHub repository"');
     assertStringIncludes(html, ">GitHub</span>");
-    assertStringIncludes(
-      html,
-      'class="site-footer-icon site-footer-icon--brand site-footer-icon--github"',
-    );
-    assertStringIncludes(html, "site-footer-icon--github");
+    assertStringIncludes(html, 'class="site-footer-icon"');
+    assertStringIncludes(html, 'data-icon="github"');
   });
 
   it("renders the GitHub link before feed links", async () => {

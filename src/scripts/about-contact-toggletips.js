@@ -255,6 +255,12 @@
       const lastFocusable = focusableElements[focusableElements.length - 1];
       const activeElement = globalThis.document.activeElement;
 
+      if (!firstFocusable || !lastFocusable) {
+        event.preventDefault();
+        panel.focus();
+        return;
+      }
+
       if (activeElement === panel) {
         event.preventDefault();
         (event.shiftKey ? lastFocusable : firstFocusable).focus();

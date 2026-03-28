@@ -26,24 +26,24 @@ function createDom(): InstanceType<typeof JSDOM> {
           <button
             type="button"
             class="about-contact-trigger cds--toggletip-button"
-            aria-controls="contact-qr-telegram"
+            aria-controls="contact-qr-primary"
             aria-expanded="false"
             aria-haspopup="dialog"
             data-contact-toggletip-trigger=""
           >
-            Telegram
+            Primary contact
           </button>
           <div class="cds--popover" hidden>
             <span class="cds--popover-caret"></span>
             <div
-              id="contact-qr-telegram"
+              id="contact-qr-primary"
               class="cds--popover-content cds--toggletip-content about-contact-popover"
               role="dialog"
               aria-modal="false"
               tabindex="-1"
               data-contact-toggletip-panel=""
             >
-              <a href="/contact/telegram/contact-telegram.jpg">Download JPG</a>
+              <a href="/contact/wechat/contact-wechat-en.jpg">Download JPG</a>
               <button type="button" data-contact-toggletip-close="">
                 Close
               </button>
@@ -223,24 +223,24 @@ describe("about-contact-toggletips.js", () => {
     try {
       evaluateScript(window);
 
-      const [telegramPopover, wechatPopover] = getPopovers(window);
-      const [telegramContainer, wechatContainer] = getContainers(window);
-      const [telegramTrigger, wechatTrigger] = getTriggers(window);
-      assert(telegramPopover);
+      const [primaryPopover, wechatPopover] = getPopovers(window);
+      const [primaryContainer, wechatContainer] = getContainers(window);
+      const [primaryTrigger, wechatTrigger] = getTriggers(window);
+      assert(primaryPopover);
       assert(wechatPopover);
-      assert(telegramContainer);
+      assert(primaryContainer);
       assert(wechatContainer);
-      assert(telegramTrigger);
+      assert(primaryTrigger);
       assert(wechatTrigger);
 
-      telegramTrigger.click();
+      primaryTrigger.click();
       wechatTrigger.click();
 
       assertEquals(
-        telegramContainer.classList.contains("cds--popover--open"),
+        primaryContainer.classList.contains("cds--popover--open"),
         false,
       );
-      assertEquals(telegramPopover.hidden, true);
+      assertEquals(primaryPopover.hidden, true);
       assertEquals(
         wechatContainer.classList.contains("cds--popover--open"),
         true,

@@ -5,7 +5,7 @@ done. Be humble and honest: NEVER overstate what you got done or what actually
 works in commits, PRs or in messages to the user.
 
 This repository contains a static site built with Deno, Lume, TSX layouts and
-pages, Markdown posts, and Sass.
+pages, Markdown posts, CSS, and a route-split React/Ant Design blog client.
 
 ## Content Model
 
@@ -16,15 +16,17 @@ pages, Markdown posts, and Sass.
 
 ## Design-System Guidance
 
-The UI is built on a local Primer-inspired token system defined in
-`src/styles/primer/_theme-tokens.scss`.
+The UI is built on a local `--ph-*` token system defined in
+`src/styles/antd/theme-tokens.css`, with Ant Design used for the interactive
+blog surfaces under `src/blog/client/`.
 
 - `--ph-*` custom properties are the source of truth for color, type, spacing,
   layout, radius, motion, and focus decisions.
-- `src/style.scss` composes the site from five layers only: reset, tokens, base,
+- `src/style.css` composes the site from five layers only: reset, tokens, base,
   layout, and utilities.
-- The visual language is a Swiss-Primer hybrid: monochrome surfaces, one blue
-  accent family, strict spacing discipline, and minimal decoration.
+- The visual language is Swiss editorial with restrained monochrome surfaces,
+  one blue accent family, strict spacing discipline, and Ant Design only where
+  interaction density actually benefits from it.
 - No exported Figma token file or historical migration document should be
   treated as authoritative.
 
@@ -58,8 +60,18 @@ Prefer:
 - `var(--ph-*)` custom properties already exposed by the theme layer
 
 If a needed token is not yet exposed locally, add it intentionally in
-`src/styles/primer/_theme-tokens.scss` rather than inventing a parallel local
-token source.
+`src/styles/antd/theme-tokens.css` rather than inventing a parallel local token
+source.
+
+### Frontend Deno Config
+
+For browser bundles under `src/blog/client/`:
+
+- Keep frontend npm imports and JSX settings in `src/blog/client/deno.json`.
+- Wire Lume's esbuild plugin to that file via `denoConfig` so the editor,
+  `deno check`, and bundling all resolve the same frontend graph.
+- Prefer Deno's npm cache and import-map aliases over introducing a repo-local
+  `node_modules` workflow.
 
 ### Accessibility
 
@@ -165,7 +177,8 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 17)
 When touching `apps/android`:
 
 - Treat Material Design 3 as the Android design-system source of truth for the
-  native app, just as Carbon is the source of truth for the web stack.
+  native app, just as the local `--ph-*` token layer plus Ant Design islands are
+  the source of truth for the web stack.
 - Before changing Android UI patterns, review the relevant official Material and
   Android Compose component guidance first.
 - Do not invent parallel Android tokens, components, or interaction patterns

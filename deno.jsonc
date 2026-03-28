@@ -21,7 +21,7 @@
     },
     "check": {
       "description": "Type-check the entire project",
-      "command": "deno check _cms.ts _cms_test.ts _config.ts _config/**/*.ts contracts/**/*.ts plugins/**/*.ts scripts/**/*.ts src/**/*.ts src/**/*.tsx test/**/*.ts"
+      "command": "deno run --allow-read --allow-run scripts/check.ts"
     },
     "test": {
       "description": "Run unit and integration tests",
@@ -115,8 +115,8 @@
     "raw-imports"
   ],
 
-  // Required for npm packages like esbuild and shiki.
-  "nodeModulesDir": "auto",
+  // This repo relies on Deno's npm cache instead of a local node_modules tree.
+  "nodeModulesDir": "none",
 
   "test": {
     "exclude": [

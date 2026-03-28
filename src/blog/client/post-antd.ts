@@ -1,0 +1,53 @@
+import {
+  Breadcrumb,
+  Card,
+  Col,
+  ConfigProvider,
+  Descriptions,
+  Divider,
+  Flex,
+  FloatButton,
+  Row,
+  Space,
+  Statistic,
+  Tag,
+  Timeline,
+  Typography,
+} from "antd";
+import {
+  BarChartOutlined,
+  FileTextOutlined,
+  NodeIndexOutlined,
+  ProfileOutlined,
+  SwapOutlined,
+  TagsOutlined,
+  VerticalAlignTopOutlined,
+} from "@ant-design/icons";
+
+const { Paragraph, Title } = Typography;
+const BackTop = FloatButton.BackTop;
+
+export {
+  BackTop,
+  BarChartOutlined,
+  Breadcrumb,
+  Card,
+  Col,
+  ConfigProvider,
+  Descriptions,
+  Divider,
+  FileTextOutlined,
+  Flex,
+  NodeIndexOutlined,
+  Paragraph,
+  ProfileOutlined,
+  Row,
+  Space,
+  Statistic,
+  SwapOutlined,
+  Tag,
+  TagsOutlined,
+  Timeline,
+  Title,
+  VerticalAlignTopOutlined,
+};

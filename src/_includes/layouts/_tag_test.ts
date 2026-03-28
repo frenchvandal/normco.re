@@ -79,6 +79,10 @@ describe("tag.tsx layout", () => {
     assertNotMatch(html, /aria-current="page"/);
     assertMatch(html, /class="cds--tag cds--tag--[a-z]+ tag-page-current-tag"/);
     assertStringIncludes(html, 'title="design"');
+    assertStringIncludes(html, "data-blog-antd-root");
+    assertStringIncludes(html, 'id="blog-antd-data"');
+    assertStringIncludes(html, '"view":"tag"');
+    assertStringIncludes(html, 'src="/scripts/blog-antd-tag.js"');
   });
 
   it("escapes tag labels before interpolating them into the page shell", async () => {

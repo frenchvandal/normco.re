@@ -23,6 +23,16 @@ export const PRE_BUILD_TASKS: ReadonlyArray<BuildTask> = [
     command: "deno",
     args: ["run", "--allow-write", "scripts/ensure-dir.ts", "_quality"],
   },
+  {
+    name: "generate site Ant Design stylesheet",
+    command: "deno",
+    args: ["run", "-A", "scripts/generate-site-antd-css.ts"],
+  },
+  {
+    name: "generate blog Ant Design stylesheet",
+    command: "deno",
+    args: ["run", "-A", "scripts/generate-blog-antd-css.ts"],
+  },
 ];
 
 export const POST_BUILD_TASKS: ReadonlyArray<BuildTask> = [

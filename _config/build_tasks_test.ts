@@ -11,12 +11,24 @@ import {
 import { withTempDir, writeTextTree } from "../test/temp_fs.ts";
 
 describe("build task definitions", () => {
-  it("defines the quality-report pre-build step", () => {
-    assertEquals(PRE_BUILD_TASKS, [{
-      name: "ensure quality report directory",
-      command: "deno",
-      args: ["run", "--allow-write", "scripts/ensure-dir.ts", "_quality"],
-    }]);
+  it("defines the ordered pre-build steps without shell chaining", () => {
+    assertEquals(PRE_BUILD_TASKS, [
+      {
+        name: "ensure quality report directory",
+        command: "deno",
+        args: ["run", "--allow-write", "scripts/ensure-dir.ts", "_quality"],
+      },
+      {
+        name: "generate site Ant Design stylesheet",
+        command: "deno",
+        args: ["run", "-A", "scripts/generate-site-antd-css.ts"],
+      },
+      {
+        name: "generate blog Ant Design stylesheet",
+        command: "deno",
+        args: ["run", "-A", "scripts/generate-blog-antd-css.ts"],
+      },
+    ]);
   });
 
   it("defines ordered post-build steps without shell chaining", () => {

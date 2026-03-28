@@ -1,3 +1,8 @@
+import {
+  BLOG_APP_ROOT_ATTRIBUTE,
+  renderBlogAppBootstrap,
+} from "../../blog/embed.ts";
+import type { BlogTagViewData } from "../../blog/view-data.ts";
 import { resolvePageSetup } from "../../utils/page-setup.ts";
 import { formatPostCount } from "../../utils/i18n.ts";
 import { renderPostListItem, toStoryData } from "../../utils/story-data.ts";
@@ -11,6 +16,7 @@ import { getTagColor } from "../../utils/tags.ts";
 import { isLumeData, resolveOptionalString } from "../../utils/type-guards.ts";
 
 export const layout = "layouts/base.tsx";
+export const extraStylesheets = ["/styles/blog-antd.css"];
 
 type TagPageData = Lume.Data & {
   tagName?: string;
@@ -30,11 +36,10 @@ export default async (
   const tagName = resolveOptionalString(data.tagName) ?? "";
   const posts = Array.isArray(data.posts) ? data.posts.filter(isLumeData) : [];
   const postsCountLabel = formatPostCount(posts.length, language);
+  const stories = posts.map((post) => toStoryData(post, language, dateFormat));
 
   const items = (await Promise.all(
-    posts.map((post) =>
-      renderPostListItem(PostCard, toStoryData(post, language, dateFormat))
-    ),
+    stories.map((story) => renderPostListItem(PostCard, story)),
   )).join("\n");
 
   const breadcrumb = renderBreadcrumb(
@@ -44,8 +49,25 @@ export default async (
     ],
     t.tagPage.breadcrumbAriaLabel,
   );
+  const viewData: BlogTagViewData = {
+    view: "tag",
+    breadcrumbAriaLabel: t.tagPage.breadcrumbAriaLabel,
+    breadcrumb: [
+      { href: homeUrl, label: t.navigation.home },
+      { href: archiveUrl, label: t.navigation.writing },
+    ],
+    eyebrow: t.tagPage.eyebrow,
+    title: tagName,
+    postsCountLabel,
+    postsAriaLabel: t.tagPage.postsAriaLabel,
+    archiveUrl,
+    archiveLinkLabel: t.tagPage.archiveLinkLabel,
+    posts: stories,
+    emptyStateMessage: t.archive.emptyState,
+  };
 
-  return `<div class="site-page-shell site-page-shell--editorial">
+  return `<div class="blog-antd-root" ${BLOG_APP_ROOT_ATTRIBUTE}>
+  <div class="site-page-shell site-page-shell--editorial">
   <div class="feature-main">
     ${breadcrumb}
     <section class="pagehead tag-pagehead" aria-labelledby="tag-page-title">
@@ -81,5 +103,7 @@ export default async (
   }
     </section>
   </div>
-</div>`;
+</div>
+</div>
+${renderBlogAppBootstrap(viewData)}`;
 };

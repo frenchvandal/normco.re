@@ -77,6 +77,12 @@ describe("Header()", () => {
     assertStringIncludes(html, 'class="cds--header__left"');
     assertStringIncludes(html, 'class="cds--header__global"');
     assertStringIncludes(html, 'class="cds--header__nav"');
+    assertStringIncludes(html, 'data-site-header-menu=""');
+    assertStringIncludes(html, 'class="site-header-antd-menu-shell"');
+    assertStringIncludes(
+      html,
+      'class="site-header-antd-menu ant-menu-overflow ant-menu ant-menu-root ant-menu-horizontal',
+    );
     assertStringIncludes(html, 'class="cds--side-nav__navigation"');
   });
 
@@ -91,7 +97,7 @@ describe("Header()", () => {
     );
     assertStringIncludes(html, 'data-icon="three-bars"');
     assertStringIncludes(html, 'data-icon="x"');
-    assertStringIncludes(html, 'data-icon="globe"');
+    assertStringIncludes(html, 'data-icon="translation"');
     assertStringIncludes(html, 'data-icon="sun"');
     assertStringIncludes(html, 'data-icon="moon"');
     assertStringIncludes(html, 'data-icon="device-desktop"');
@@ -166,40 +172,39 @@ describe("Header()", () => {
     );
     assertNotMatch(
       html,
-      /<a[^>]*href="\/fr\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
+      /<a[^>]*href="\/fr\/"[^>]*aria-current="page"/,
     );
-    assertMatch(
-      html,
-      /<a[^>]*href="\/fr\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-    );
+    assertStringIncludes(html, "ant-menu-item-selected");
+    assertStringIncludes(html, 'href="/fr/posts/" aria-current="page"');
   });
 
-  it("switches to the Primer home variant on home routes", async () => {
+  it("switches to the editorial home variant on home routes", async () => {
     const html = await renderComponent(
       Header({ currentUrl: "/", language: "en" }),
     );
 
-    assertMatch(html, /<header[^>]*class="cds--header site-header--primer"/);
-    assertStringIncludes(
+    assertMatch(
       html,
-      'class="cds--header__nav subnav subnav-flush primer-home-header__nav"',
+      /<header[^>]*class="cds--header site-header--editorial-home"/,
     );
     assertStringIncludes(
       html,
-      'class="cds--header__menu-item subnav-item primer-home-header__nav-link"',
+      'class="cds--header__nav editorial-home-header__nav"',
     );
+    assertStringIncludes(html, 'data-site-header-menu=""');
+    assertStringIncludes(html, 'class="site-header-antd-menu-shell"');
     assertStringIncludes(
       html,
-      'class="cds--header__action btn-octicon primer-home-header__action"',
+      'class="cds--header__action btn-octicon editorial-home-header__action"',
     );
-    assertStringIncludes(html, 'class="primer-home-header__action-icon"');
-    assertStringIncludes(html, 'viewBox="0 0 16 16"');
+    assertStringIncludes(html, 'class="editorial-home-header__action-icon"');
+    assertStringIncludes(html, 'data-icon="translation"');
     assertStringIncludes(html, "theme-icon theme-icon--sun");
     assertStringIncludes(html, "theme-icon theme-icon--moon");
     assertStringIncludes(html, "theme-icon theme-icon--system");
     assertStringIncludes(
       html,
-      'class="cds--side-nav primer-home-header__drawer"',
+      'class="cds--side-nav editorial-home-header__drawer"',
     );
   });
 

@@ -328,7 +328,9 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'id="second-section"');
       assertStringIncludes(html, 'class="post-details-section"');
       assertStringIncludes(html, "Publication details");
-      assertStringIncludes(html, 'src="/scripts/surface-controls.js"');
+      assertStringIncludes(html, "data-blog-antd-root");
+      assertStringIncludes(html, 'id="blog-antd-data"');
+      assertStringIncludes(html, 'src="/scripts/blog-antd-post.js"');
       assertNotMatch(html, /post-summary-callout/);
     });
 

@@ -6,7 +6,7 @@ import {
   type SiteLanguage,
   type SiteTranslations,
 } from "../utils/i18n.ts";
-import { type IconResolver } from "../utils/primer-icons.ts";
+import { type IconResolver } from "../utils/site-icons.ts";
 import { buildHeaderNavigation } from "./header-navigation.ts";
 import {
   HEADER_IDS,
@@ -25,7 +25,7 @@ type HeaderProps = Readonly<{
   icon?: IconResolver;
 }>;
 
-/** CSS class sets that differ between the primer-home and standard variants. */
+/** CSS class sets that differ between the editorial-home and standard variants. */
 type VariantClasses = Readonly<{
   header: string;
   wrapper: string;
@@ -84,42 +84,42 @@ const STANDARD: VariantClasses = {
   searchPanelHead: false,
 };
 
-/** Primer home variant extends standard with additional primer classes. */
-const ph = (suffix: string) => `primer-home-header__${suffix}`;
-const PRIMER_HOME: VariantClasses = {
+/** Editorial home variant extends standard with additional home classes. */
+const eh = (suffix: string) => `editorial-home-header__${suffix}`;
+const EDITORIAL_HOME: VariantClasses = {
   ...STANDARD,
-  header: `cds--header site-header--primer`,
-  wrapper: `cds--header__wrapper ${ph("wrapper")}`,
-  left: `cds--header__left ${ph("left")}`,
+  header: `cds--header site-header--editorial-home`,
+  wrapper: `cds--header__wrapper ${eh("wrapper")}`,
+  left: `cds--header__left ${eh("left")}`,
   menuToggle: `cds--header__action cds--header__menu-toggle btn-octicon ${
-    ph("menu-toggle")
+    eh("menu-toggle")
   }`,
-  menuIconClass: `site-menu-icon ${ph("action-icon")}`,
+  menuIconClass: `site-menu-icon ${eh("action-icon")}`,
   menuIconSize: 16,
-  name: `cds--header__name ${ph("name")}`,
-  nav: `cds--header__nav subnav subnav-flush ${ph("nav")}`,
-  navLink: `cds--header__menu-item subnav-item ${ph("nav-link")}`,
+  name: `cds--header__name ${eh("name")}`,
+  nav: `cds--header__nav ${eh("nav")}`,
+  navLink: `cds--header__menu-item subnav-item ${eh("nav-link")}`,
   navLinkLabel: "site-header-menu-item-label",
-  global: `cds--header__global ${ph("global")}`,
-  actionButton: `cds--header__action btn-octicon ${ph("action")}`,
-  actionIcon: ph("action-icon"),
+  global: `cds--header__global ${eh("global")}`,
+  actionButton: `cds--header__action btn-octicon ${eh("action")}`,
+  actionIcon: eh("action-icon"),
   actionIconSize: 16,
   languageButton:
     `cds--header__action cds--header__language-toggle btn-octicon ${
-      ph("action")
+      eh("action")
     }`,
-  languageOption: `cds--header__language-option ${ph("menu-option")}`,
-  languageMenu: `cds--header__language-menu ${ph("language-menu")}`,
+  languageOption: `cds--header__language-option ${eh("menu-option")}`,
+  languageMenu: `cds--header__language-menu ${eh("language-menu")}`,
   languagePanel: `cds--header__panel cds--header__language-panel ${
-    ph("panel")
+    eh("panel")
   }`,
-  languagePanelContent: `cds--header__panel-content Box ${ph("panel-box")}`,
-  searchPanel: `cds--header__panel cds--header__search-panel ${ph("panel")}`,
-  searchPanelContent: `cds--header__panel-content Box ${ph("panel-box")}`,
-  searchRoot: `cds--header__search-root ${ph("search-root")}`,
-  sideNav: `cds--side-nav ${ph("drawer")}`,
-  sideNavNavigation: `cds--side-nav__navigation ${ph("drawer-navigation")}`,
-  sideNavHeader: `cds--side-nav__header ${ph("drawer-header")}`,
+  languagePanelContent: `cds--header__panel-content Box ${eh("panel-box")}`,
+  searchPanel: `cds--header__panel cds--header__search-panel ${eh("panel")}`,
+  searchPanelContent: `cds--header__panel-content Box ${eh("panel-box")}`,
+  searchRoot: `cds--header__search-root ${eh("search-root")}`,
+  sideNav: `cds--side-nav ${eh("drawer")}`,
+  sideNavNavigation: `cds--side-nav__navigation ${eh("drawer-navigation")}`,
+  sideNavHeader: `cds--side-nav__header ${eh("drawer-header")}`,
   panelHead: true,
   searchPanelHead: true,
 };
@@ -224,7 +224,7 @@ function resolveHeaderActions(
       buttonClassName: v.languageButton,
       iconMarkup: (
         <SiteIcon
-          name="globe"
+          name="translation"
           className={v.actionIcon}
           width={v.actionIconSize}
           height={v.actionIconSize}
@@ -248,21 +248,37 @@ function resolveHeaderActions(
   ] as const;
 }
 
-function renderNavLinks(
+function renderDesktopNavigationMenu(
   items: readonly NavigationItem[],
-  className: string,
-  labelClassName?: string,
-): El[] {
-  return items.map(({ href, label, isCurrent }) => (
-    <a
-      key={href}
-      href={href}
-      class={className}
-      {...(isCurrent ? { "aria-current": "page" as const } : {})}
+): El {
+  return (
+    <ul
+      class="site-header-antd-menu ant-menu-overflow ant-menu ant-menu-root ant-menu-horizontal ant-menu-light css-var-_R_0_ ant-menu-css-var"
+      role="menu"
+      tabindex="0"
+      data-menu-list="true"
     >
-      {labelClassName ? <span class={labelClassName}>{label}</span> : label}
-    </a>
-  ));
+      {items.map(({ href, isCurrent, label }) => (
+        <li
+          key={href}
+          class={`ant-menu-overflow-item ant-menu-item ant-menu-item-only-child${
+            isCurrent ? " ant-menu-item-selected" : ""
+          }`}
+          role="menuitem"
+          tabindex="-1"
+        >
+          <span class="ant-menu-title-content">
+            <a
+              href={href}
+              {...(isCurrent ? { "aria-current": "page" as const } : {})}
+            >
+              {label}
+            </a>
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 function renderLanguageOptions(
@@ -519,20 +535,20 @@ function renderSideNav(
   );
 }
 
-// ── Primer home variant brand markup ───────────────────────────────────
+// ── Editorial home brand markup ────────────────────────────────────────
 
-function renderPrimerHomeBrand(
+function renderEditorialHomeBrand(
   homeUrl: string,
   t: Translations,
 ): El {
   return (
-    <a href={homeUrl} class="cds--header__name primer-home-header__name">
-      <span class="primer-home-header__brand-lockup">
-        <span class="primer-home-header__brand-wordmark">
+    <a href={homeUrl} class="cds--header__name editorial-home-header__name">
+      <span class="editorial-home-header__brand-lockup">
+        <span class="editorial-home-header__brand-wordmark">
           <span class="cds--header__name--prefix">normco</span>
           .re
         </span>
-        <span class="primer-home-header__brand-meta">
+        <span class="editorial-home-header__brand-meta">
           {t.home.eyebrow}
         </span>
       </span>
@@ -548,7 +564,7 @@ export default (
   const { homeUrl, translations: t } = getPageContext(language);
   const navItems = buildHeaderNavigation({ currentUrl, language });
   const isHome = currentUrl === homeUrl;
-  const v = isHome ? PRIMER_HOME : STANDARD;
+  const v = isHome ? EDITORIAL_HOME : STANDARD;
   const actions = resolveHeaderActions(t, v);
 
   return (
@@ -577,7 +593,7 @@ export default (
               />
             </button>
 
-            {isHome ? renderPrimerHomeBrand(homeUrl, t) : (
+            {isHome ? renderEditorialHomeBrand(homeUrl, t) : (
               <>
                 <a href={homeUrl} class={v.name}>
                   <span class="cds--header__name--prefix">normco</span>
@@ -587,7 +603,12 @@ export default (
                   class={v.nav}
                   aria-label={t.site.mainNavigationAriaLabel}
                 >
-                  {renderNavLinks(navItems, v.navLink)}
+                  <div
+                    class="site-header-antd-menu-shell"
+                    data-site-header-menu=""
+                  >
+                    {renderDesktopNavigationMenu(navItems)}
+                  </div>
                 </nav>
               </>
             )}
@@ -598,7 +619,9 @@ export default (
               class={v.nav}
               aria-label={t.site.mainNavigationAriaLabel}
             >
-              {renderNavLinks(navItems, v.navLink, v.navLinkLabel)}
+              <div class="site-header-antd-menu-shell" data-site-header-menu="">
+                {renderDesktopNavigationMenu(navItems)}
+              </div>
             </nav>
           )}
 

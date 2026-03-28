@@ -24,6 +24,10 @@ describe("_config/assets.ts", () => {
     registerAssets(siteStub as unknown as import("lume/core/site.ts").default);
 
     assertEquals(calls[0], { method: "ignore", args: ["/static"] });
-    assertEquals(calls[1], { method: "copy", args: ["/static", "."] });
+    assertEquals(calls[1], {
+      method: "ignore",
+      args: ["/blog/client/node_modules"],
+    });
+    assertEquals(calls[2], { method: "copy", args: ["/static", "."] });
   });
 });

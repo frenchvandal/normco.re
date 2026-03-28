@@ -1,0 +1,22 @@
+export const BLOG_ANTD_THEME = {
+  hashed: false,
+  zeroRuntime: true,
+  token: {
+    fontFamily: "var(--ph-font-sans)",
+    fontFamilyCode: "var(--ph-font-mono)",
+    borderRadius: 10,
+    colorPrimary: "var(--ph-color-accent-fg)",
+    colorPrimaryHover: "var(--ph-color-accent-emphasis)",
+    colorPrimaryActive: "var(--ph-color-accent-emphasis)",
+    colorText: "var(--ph-color-fg-default)",
+    colorTextSecondary: "var(--ph-color-fg-muted)",
+    colorBorder: "var(--ph-color-border-default)",
+    colorBgContainer: "var(--ph-color-canvas-default)",
+    colorBgElevated: "var(--ph-surface-raised)",
+    colorFillAlter: "var(--ph-color-canvas-subtle)",
+    colorLink: "var(--ph-color-accent-fg)",
+    colorLinkHover: "var(--ph-color-accent-emphasis)",
+    colorLinkActive: "var(--ph-color-accent-emphasis)",
+    boxShadowSecondary: "var(--ph-shadow-floating)",
+  },
+} as const;

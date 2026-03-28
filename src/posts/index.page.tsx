@@ -1,4 +1,9 @@
 import StatePanel from "../_components/StatePanel.tsx";
+import {
+  BLOG_APP_ROOT_ATTRIBUTE,
+  renderBlogAppBootstrap,
+} from "../blog/embed.ts";
+import type { BlogArchiveViewData } from "../blog/view-data.ts";
 import { resolvePageSetup } from "../utils/page-setup.ts";
 import { searchPages } from "../utils/lume-data.ts";
 import { renderPostListItem, toStoryData } from "../utils/story-data.ts";
@@ -12,6 +17,7 @@ import {
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/posts/";
 export const layout = "layouts/base.tsx";
+export const extraStylesheets = ["/styles/blog-antd.css"];
 // Keep Pagefind focused on canonical post detail pages instead of aggregate
 // listings that repeat the same content.
 export const searchIndexed = false;
@@ -49,16 +55,29 @@ export default async (
     data.search,
     `type=post lang=${languageDataCode}`,
   );
+  const stories = posts.map((post) => toStoryData(post, language, dateFormat));
 
-  const items = (await Promise.all(posts.map((post) =>
+  const items = (await Promise.all(stories.map((story) =>
     renderPostListItem(
       PostCard,
-      toStoryData(post, language, dateFormat),
+      story,
       { className: "archive-post", showSummary: true },
     )
   ))).join("\n");
 
   const postsCountLabel = formatPostCount(posts.length, language);
+  const viewData: BlogArchiveViewData = {
+    view: "archive",
+    title: t.archive.title,
+    lead: t.archive.lead,
+    postsCountLabel,
+    postsAriaLabel: t.archive.activityAriaLabel,
+    posts: stories,
+    emptyStateTitle: t.archive.emptyStateTitle,
+    emptyStateMessage: t.archive.emptyState,
+    emptyStateActionHref: homeUrl,
+    emptyStateActionLabel: t.navigation.home,
+  };
 
   const pageBody = posts.length > 0
     ? `<section class="archive-activity" aria-label="${
@@ -79,7 +98,8 @@ export default async (
       variant: "inline",
     });
 
-  return `<div class="site-page-shell site-page-shell--wide">
+  return `<div class="blog-antd-root" ${BLOG_APP_ROOT_ATTRIBUTE}>
+  <div class="site-page-shell site-page-shell--wide">
   <div class="feature-main">
 <section class="pagehead archive-pagehead" aria-labelledby="archive-title">
   <div class="archive-pagehead-grid">
@@ -104,5 +124,7 @@ export default async (
 </section>
     ${pageBody}
   </div>
-</div>`;
+</div>
+</div>
+${renderBlogAppBootstrap(viewData)}`;
 };

@@ -4,7 +4,7 @@ import {
   getLocalizedJsonFeedUrl,
   getLocalizedRssFeedUrl,
 } from "./utils/feed-paths.ts";
-import { renderOcticonMarkup } from "./utils/primer-icons.ts";
+import { renderSiteIconMarkup } from "./utils/site-icons.ts";
 import { escapeHtml } from "./utils/html.ts";
 import {
   type AboutContact,
@@ -19,6 +19,7 @@ import type { SiteTranslations } from "./utils/i18n.ts";
 function renderContactItem(
   {
     contact,
+    contactIconMarkup,
     translations: t,
     closeIconMarkup,
     downloadIconMarkup,
@@ -26,6 +27,7 @@ function renderContactItem(
     qrImageTransforms,
   }: {
     readonly contact: AboutContact;
+    readonly contactIconMarkup: string;
     readonly translations: SiteTranslations;
     readonly closeIconMarkup: string;
     readonly downloadIconMarkup: string;
@@ -52,9 +54,7 @@ function renderContactItem(
                 data-contact-toggletip-trigger=""
               >
                 <span class="about-contact-trigger-content">
-                  <span class="about-contact-icon ${
-    escapeHtml(contact.iconClass)
-  }" aria-hidden="true"></span>
+                  <span class="about-contact-icon" aria-hidden="true">${contactIconMarkup}</span>
                   <span class="about-contact-label">${
     escapeHtml(contact.label)
   }</span>
@@ -73,9 +73,7 @@ function renderContactItem(
                 >
                   <div class="about-contact-popover-header">
                     <div class="about-contact-popover-brand">
-                      <span class="about-contact-icon about-contact-popover-app ${
-    escapeHtml(contact.iconClass)
-  }" aria-hidden="true"></span>
+                      <span class="about-contact-icon about-contact-popover-app" aria-hidden="true">${contactIconMarkup}</span>
                       <span id="${escapeHtml(titleId)}" class="sr-only">${
     escapeHtml(contact.label)
   }</span>
@@ -154,23 +152,22 @@ export const zhHant = {
   description: "關於 Phiphi：一位在成都寫作的軟體工作者。",
 } as const;
 
-export default (data: Lume.Data, helpers: Lume.Helpers): string => {
+export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
   const { language, translations: t } = resolvePageSetup(data.lang);
   const atomXmlUrl = getLocalizedAtomFeedUrl(language);
   const feedXmlUrl = getLocalizedRssFeedUrl(language);
   const feedJsonUrl = getLocalizedJsonFeedUrl(language);
 
-  const icon = (name: Parameters<typeof renderOcticonMarkup>[0], cls: string) =>
-    renderOcticonMarkup(name, cls);
+  const icon = (
+    name: Parameters<typeof renderSiteIconMarkup>[0],
+    cls: string,
+  ) => renderSiteIconMarkup(name, cls);
   const closeIconMarkup = icon("x", "about-contact-action-icon-svg");
   const downloadIconMarkup = icon("download", "about-contact-action-icon-svg");
 
   const qrImageSizes =
     "(min-width: 66rem) 16rem, (min-width: 42rem) 14rem, calc(100vw - 6rem)";
   const qrImageTransforms = "avif webp jpg 240 360 512";
-  const resolveIcon = helpers.icon?.bind(helpers);
-  resolveIcon?.("wechat", "simpleicons");
-  resolveIcon?.("telegram", "simpleicons");
 
   const { final: finalSeparator, list: listSeparator } = getAboutFeedSeparators(
     language,
@@ -178,13 +175,14 @@ export default (data: Lume.Data, helpers: Lume.Helpers): string => {
   const contacts = getAboutContacts(language, t.about);
   const facts = getAboutFacts(t.about, {
     location: icon("location", "about-fact-icon-svg"),
-    notebook: icon("book", "about-fact-icon-svg"),
-    translate: icon("globe", "about-fact-icon-svg"),
+    topics: icon("profile", "about-fact-icon-svg"),
+    languages: icon("translation", "about-fact-icon-svg"),
   });
 
   const contactItems = contacts.map((contact) =>
     renderContactItem({
       contact,
+      contactIconMarkup: icon(contact.iconName, "about-contact-icon-svg"),
       translations: t,
       closeIconMarkup,
       downloadIconMarkup,
