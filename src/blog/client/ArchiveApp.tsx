@@ -64,6 +64,14 @@ function ArchiveTimelineItem(
             <time dateTime={story.dateIso}>{story.dateLabel}</time>
           </span>
           {story.readingLabel && (
+            <span
+              className="blog-antd-archive-timeline__separator"
+              aria-hidden="true"
+            >
+              ·
+            </span>
+          )}
+          {story.readingLabel && (
             <span className="blog-antd-meta-pill">
               <ReadOutlined />
               <span>{story.readingLabel}</span>

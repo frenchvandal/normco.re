@@ -504,6 +504,8 @@ function renderSideNav(
     <aside
       id={HEADER_IDS.sideNav}
       class={v.sideNav}
+      role="dialog"
+      aria-modal="true"
       aria-label={t.site.mainNavigationAriaLabel}
       hidden
     >
@@ -516,19 +518,31 @@ function renderSideNav(
           </a>
           <p class="site-side-nav__lead">{t.home.lead}</p>
         </div>
-        <ul class="site-side-nav__items">
-          {items.map(({ href, label, isCurrent }) => (
-            <li class="site-side-nav__item" key={href}>
-              <a
-                href={href}
-                class="site-side-nav__link"
-                {...(isCurrent ? { "aria-current": "page" as const } : {})}
+        <div class="site-side-nav__menu-shell">
+          <ul
+            class="site-side-nav__items ant-menu ant-menu-root ant-menu-inline ant-menu-light"
+            data-menu-list="true"
+          >
+            {items.map(({ href, label, isCurrent }) => (
+              <li
+                class={`site-side-nav__item ant-menu-item ant-menu-item-only-child${
+                  isCurrent ? " ant-menu-item-selected" : ""
+                }`}
+                key={href}
               >
-                <span class="site-side-nav__link-text">{label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+                <span class="ant-menu-title-content">
+                  <a
+                    href={href}
+                    class="site-side-nav__link"
+                    {...(isCurrent ? { "aria-current": "page" as const } : {})}
+                  >
+                    <span class="site-side-nav__link-text">{label}</span>
+                  </a>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </nav>
     </aside>
   );

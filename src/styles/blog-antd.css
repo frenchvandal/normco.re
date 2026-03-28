@@ -987,28 +987,15 @@
   .blog-antd-archive-timeline__meta {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: var(--ph-space-2) var(--ph-space-3);
     color: var(--ph-color-fg-subtle);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
   }
 
-  .blog-antd-archive-timeline__meta > * + * {
-    position: relative;
-    padding-inline-start: var(--ph-space-4);
-  }
-
-  .blog-antd-archive-timeline__meta > * + *::before {
-    content: "";
-    position: absolute;
-    inset-inline-start: 0;
-    inset-block-start: 50%;
-    inline-size: 3px;
-    block-size: 3px;
-    border-radius: var(--ph-radius-pill);
-    background: currentColor;
-    opacity: 0.72;
-    transform: translateY(-50%);
+  .blog-antd-archive-timeline__separator {
+    opacity: 0.64;
   }
 
   .blog-antd-archive-timeline__title,

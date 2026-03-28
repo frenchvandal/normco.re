@@ -169,6 +169,10 @@ describe("posts/index.page.tsx", () => {
       assertNotMatch(html, /blog-antd-archive-layout--with-nav/);
       assertStringIncludes(html, "4 min");
       assertStringIncludes(html, 'class="tag-link tag-link--volcano"');
+      assertStringIncludes(
+        html,
+        'class="blog-antd-archive-timeline__separator" aria-hidden="true">·</span>',
+      );
     });
 
     it("omits reading-time markup when minutes are absent", async () => {
@@ -221,7 +225,7 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(blogAntdStyles, "min-inline-size: 0;");
       assertStringIncludes(
         blogAntdStyles,
-        ".blog-antd-archive-timeline__meta > * + *::before",
+        ".blog-antd-archive-timeline__separator",
       );
     });
   });

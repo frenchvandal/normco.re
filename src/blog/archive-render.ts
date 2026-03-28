@@ -26,7 +26,9 @@ function renderMeta(story: BlogStoryCard): string {
   }
 
   return `<div class="blog-antd-archive-timeline__meta">${
-    items.join("")
+    items.join(
+      '<span class="blog-antd-archive-timeline__separator" aria-hidden="true">·</span>',
+    )
   }</div>`;
 }
 

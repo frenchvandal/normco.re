@@ -96,6 +96,11 @@ describe("Header()", () => {
       'class="site-header-antd-menu ant-menu-overflow ant-menu ant-menu-root ant-menu-horizontal',
     );
     assertStringIncludes(html, 'class="site-side-nav__navigation"');
+    assertStringIncludes(
+      html,
+      'class="site-side-nav__items ant-menu ant-menu-root ant-menu-inline ant-menu-light"',
+    );
+    assertStringIncludes(html, 'role="dialog"');
   });
 
   it("keeps legacy navigation, menu, and icon controls off the home route", async () => {
@@ -261,6 +266,8 @@ describe("Header CSS contracts", () => {
     assertStringIncludes(layoutStyles, ".site-side-nav__header");
     assertStringIncludes(layoutStyles, ".site-side-nav__brand");
     assertStringIncludes(layoutStyles, ".site-side-nav__lead");
+    assertStringIncludes(layoutStyles, ".site-side-nav__menu-shell");
+    assertStringIncludes(layoutStyles, ".site-side-nav__items.ant-menu");
     assertStringIncludes(layoutStyles, ".site-side-nav__overlay");
     assertStringIncludes(
       layoutStyles,
