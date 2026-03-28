@@ -59,15 +59,22 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(html, "application/feed+json");
   });
 
-  it("renders copy buttons with Ant Design button classes", () => {
+  it("renders copy controls with Ant Design typography classes", () => {
     const html = syndicationPage(MOCK_DATA);
 
     assertStringIncludes(
       html,
-      'class="css-var-_R_0_ ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-filled feeds-endpoint-copy-button"',
+      'class="css-var-_R_0_ ant-typography ant-typography-actions feeds-endpoint-actions"',
     );
-    assertStringIncludes(html, 'class="ant-btn-icon feeds-copy-icon-stack"');
-    assertStringIncludes(html, 'class="feeds-copy-button-label"');
+    assertStringIncludes(
+      html,
+      'class="ant-typography-copy feeds-endpoint-copy-button"',
+    );
+    assertStringIncludes(
+      html,
+      'class="anticon anticon-copy feeds-copy-icon feeds-copy-icon--default"',
+    );
+    assertStringIncludes(html, 'class="sr-only feeds-copy-button-label"');
     assertStringIncludes(html, 'data-copy-default-label="Copy"');
     assertStringIncludes(
       html,
@@ -109,9 +116,12 @@ describe("syndication CSS contracts", () => {
     assertStringIncludes(layoutStyles, ".feeds-endpoint-row {");
     assertStringIncludes(
       layoutStyles,
-      ".feeds-endpoint-copy-button.ant-btn {",
+      ".feeds-endpoint-actions.ant-typography.ant-typography-actions {",
     );
-    assertStringIncludes(layoutStyles, ".feeds-copy-button-label {");
+    assertStringIncludes(
+      layoutStyles,
+      ".feeds-endpoint-copy-button.ant-typography-copy {",
+    );
     assertStringIncludes(layoutStyles, ".feeds-copy-icon-stack {");
   });
 
@@ -122,11 +132,11 @@ describe("syndication CSS contracts", () => {
     );
     assertStringIncludes(
       layoutStyles,
-      ".feeds-endpoint-copy-button.ant-btn.ant-btn-variant-solid.ant-btn-color-primary {",
+      ".feed-copy-control--copied .feeds-copy-icon--success {",
     );
     assertStringIncludes(
       layoutStyles,
-      ".feeds-endpoint-copy-button.ant-btn.ant-btn-variant-outlined.ant-btn-color-dangerous {",
+      ".feed-copy-control--error .feeds-endpoint-copy-button {",
     );
   });
 

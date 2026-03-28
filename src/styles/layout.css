@@ -2777,53 +2777,62 @@
     font-size: var(--ph-text-sm);
   }
 
-  .feeds-endpoint-copy-button.ant-btn {
+  .feeds-endpoint-actions.ant-typography.ant-typography-actions {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--ph-space-2);
-    position: relative;
-    block-size: 100%;
-    min-block-size: 2.75rem;
-    min-inline-size: 7rem;
-    padding-inline: var(--ph-space-4);
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
+    align-items: stretch;
+    margin-inline-start: 0;
     background: var(--ph-color-canvas-default);
-    color: var(--ph-color-fg-muted);
-    font-size: var(--ph-text-sm);
-    font-weight: 600;
   }
 
-  .feeds-endpoint-copy-button.ant-btn:hover,
-  .feeds-endpoint-copy-button.ant-btn:focus-visible {
+  .feeds-endpoint-copy-button.ant-typography-copy {
+    display: inline-grid;
+    place-items: center;
+    position: relative;
+    block-size: 100%;
+    min-block-size: 3rem;
+    min-inline-size: 3rem;
+    padding: 0;
+    border: 0;
+    border-inline-start: 1px solid var(--ph-color-border-default);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ph-color-fg-subtle);
+    cursor: pointer;
+    transition:
+      color var(--ph-duration-fast) var(--ph-ease-standard),
+      background-color var(--ph-duration-fast) var(--ph-ease-standard);
+  }
+
+  .feeds-endpoint-copy-button.ant-typography-copy:hover,
+  .feeds-endpoint-copy-button.ant-typography-copy:focus-visible {
     color: var(--ph-color-fg-default);
     background: color-mix(
       in oklch,
-      var(--ph-color-canvas-default) 45%,
-      var(--ph-color-canvas-inset)
+      var(--ph-surface-accent) 72%,
+      var(--ph-color-canvas-default)
     );
   }
 
-  .feeds-endpoint-copy-button.ant-btn .ant-btn-icon {
-    position: static;
-    inset: auto;
-    transform: none;
-    display: inline-grid;
-    place-items: center;
+  .feeds-endpoint-copy-button.ant-typography-copy:focus-visible {
+    outline: 2px solid var(--ph-color-accent-emphasis);
+    outline-offset: -2px;
   }
 
   .feeds-copy-icon-stack {
     position: relative;
-    inline-size: 1rem;
-    block-size: 1rem;
-    flex: 0 0 1rem;
+    display: inline-grid;
+    place-items: center;
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+    pointer-events: none;
   }
 
   .feeds-copy-icon {
     position: absolute;
     inset: 0;
+    display: inline-grid;
+    place-items: center;
+    transition: opacity var(--ph-duration-fast) var(--ph-ease-standard);
   }
 
   .feeds-copy-button-label {
@@ -2838,24 +2847,13 @@
     opacity: 1;
   }
 
-  .feeds-endpoint-copy-button.ant-btn.ant-btn-variant-solid.ant-btn-color-primary {
-    background: var(--ph-color-accent-emphasis);
-    color: white;
-  }
-
-  .feeds-endpoint-copy-button.ant-btn.ant-btn-variant-outlined.ant-btn-color-dangerous {
-    background: var(--ph-color-canvas-default);
-    color: var(--ph-color-fg-default);
-    box-shadow: inset 0 0 0 1px
-      color-mix(
-        in oklch,
-        var(--ph-color-accent-emphasis) 22%,
-        var(--ph-color-border-default)
-      );
-  }
-
   .feed-copy-control--copied .feeds-endpoint-copy-button {
-    color: white;
+    color: var(--ph-color-accent-emphasis);
+    background: color-mix(
+      in oklch,
+      var(--ph-surface-accent) 68%,
+      var(--ph-color-canvas-default)
+    );
   }
 
   .feed-copy-control--copied .feeds-copy-icon--default {
@@ -2868,6 +2866,11 @@
 
   .feed-copy-control--error .feeds-endpoint-copy-button {
     color: var(--ph-color-fg-default);
+    background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-inset) 58%,
+      var(--ph-color-canvas-default)
+    );
   }
 
   .feeds-page-title,
@@ -3123,9 +3126,15 @@
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .feeds-endpoint-copy-button.ant-btn {
+    .feeds-endpoint-actions.ant-typography.ant-typography-actions {
+      inline-size: 100%;
+    }
+
+    .feeds-endpoint-copy-button.ant-typography-copy {
       min-inline-size: 100%;
       min-block-size: 3rem;
+      border-inline-start: 0;
+      border-block-start: 1px solid var(--ph-color-border-default);
     }
   }
 

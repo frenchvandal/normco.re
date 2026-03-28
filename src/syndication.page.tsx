@@ -115,26 +115,32 @@ function renderCopyControl(
           <code>${escapeHtml(absoluteUrl)}</code>
         </span>
       </a>
-      <button
-        type="button"
-        class="css-var-_R_0_ ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-filled feeds-endpoint-copy-button"
-        data-copy-button=""
-        data-copy-path="${escapeHtml(item.path)}"
-        data-copy-title="${escapeHtml(copyTitle)}"
-        data-copy-default-label="${escapeHtml(actions.copyAction)}"
-        data-copy-copied-label="${escapeHtml(actions.copiedAction)}"
-        data-copy-error-label="${escapeHtml(actions.errorAction)}"
-        aria-label="${escapeHtml(copyTitle)}"
-        title="${escapeHtml(copyTitle)}"
-      >
-        <span class="ant-btn-icon feeds-copy-icon-stack" aria-hidden="true">
-          ${COPY_ICON}
-          ${COPY_SUCCESS_ICON}
-        </span>
-        <span class="feeds-copy-button-label" data-copy-button-label="">
-          ${escapeHtml(actions.copyAction)}
-        </span>
-      </button>
+      <span class="css-var-_R_0_ ant-typography ant-typography-actions feeds-endpoint-actions">
+        <button
+          type="button"
+          class="ant-typography-copy feeds-endpoint-copy-button"
+          data-copy-button=""
+          data-copy-path="${escapeHtml(item.path)}"
+          data-copy-title="${escapeHtml(copyTitle)}"
+          data-copy-default-label="${escapeHtml(actions.copyAction)}"
+          data-copy-copied-label="${escapeHtml(actions.copiedAction)}"
+          data-copy-error-label="${escapeHtml(actions.errorAction)}"
+          aria-label="${escapeHtml(copyTitle)}"
+          title="${escapeHtml(copyTitle)}"
+        >
+          <span class="feeds-copy-icon-stack" aria-hidden="true">
+            <span role="img" aria-label="copy" class="anticon anticon-copy feeds-copy-icon feeds-copy-icon--default">
+              ${COPY_ICON}
+            </span>
+            <span role="img" aria-label="check" class="anticon anticon-check feeds-copy-icon feeds-copy-icon--success">
+              ${COPY_SUCCESS_ICON}
+            </span>
+          </span>
+          <span class="sr-only feeds-copy-button-label" data-copy-button-label="">
+            ${escapeHtml(actions.copyAction)}
+          </span>
+        </button>
+      </span>
     </div>
     <span class="sr-only" data-copy-status="" aria-live="polite"></span>
   </div>`;
