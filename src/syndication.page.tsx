@@ -155,9 +155,9 @@ function renderFeedRow(
         ${renderFormatTag(formatMeta)}
       </div>
       <h2 class="feeds-entry-title">${escapeHtml(item.title)}</h2>
+      <p class="feeds-entry-kicker">${escapeHtml(item.mime)}</p>
     </div>
     <div class="feeds-description-body">
-      <p class="feeds-entry-kicker">${escapeHtml(item.mime)}</p>
       <p class="feeds-entry-description">${escapeHtml(item.description)}</p>
       ${renderCopyControl(item, siteOrigin, actions)}
     </div>
