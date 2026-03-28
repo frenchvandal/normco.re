@@ -268,6 +268,7 @@ describe("Header CSS contracts", () => {
     assertStringIncludes(layoutStyles, ".site-side-nav__header");
     assertStringIncludes(layoutStyles, ".site-side-nav__brand");
     assertStringIncludes(layoutStyles, ".site-side-nav__close");
+    assertStringIncludes(layoutStyles, ".site-side-nav__close-icon");
     assertStringIncludes(layoutStyles, ".site-side-nav__menu-shell");
     assertStringIncludes(layoutStyles, ".site-side-nav__items.ant-menu");
     assertStringIncludes(layoutStyles, ".site-side-nav__link-text");
@@ -276,5 +277,10 @@ describe("Header CSS contracts", () => {
       layoutStyles,
       "box-shadow: var(--ph-shadow-floating);",
     );
+    assertStringIncludes(
+      layoutStyles,
+      "z-index: calc(var(--ph-layer-header-panel) + 1);",
+    );
+    assertStringIncludes(layoutStyles, "inset: 0;");
   });
 });

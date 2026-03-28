@@ -15,7 +15,7 @@
     inset-block-start: var(--site-side-nav-inset-block-start);
     inset-inline-start: var(--site-side-nav-inset-inline-start);
     inset-inline-end: auto;
-    z-index: var(--ph-layer-side-nav);
+    z-index: calc(var(--ph-layer-header-panel) + 1);
     inline-size: min(
       24rem,
       calc(
@@ -138,6 +138,11 @@
       transform var(--ph-duration-default) var(--ph-easing-default);
   }
 
+  .site-side-nav__close-icon,
+  .site-side-nav__link-icon {
+    pointer-events: none;
+  }
+
   .site-side-nav__close:hover,
   .site-side-nav__close:focus-visible {
     transform: translateY(-1px);
@@ -152,6 +157,11 @@
       var(--ph-color-accent-fg) 12%,
       var(--ph-color-canvas-default)
     );
+  }
+
+  .site-side-nav__close:focus-visible,
+  .site-side-nav__link:focus-visible {
+    outline-offset: calc(var(--ph-focus-offset) + 1px);
   }
 
   .site-side-nav__brand {
@@ -275,8 +285,8 @@
 
   .site-side-nav__overlay {
     position: fixed;
-    inset: var(--ph-header-height) 0 0;
-    z-index: var(--ph-layer-side-nav-overlay);
+    inset: 0;
+    z-index: var(--ph-layer-header-panel);
     background: color-mix(
       in oklch,
       var(--ph-color-fg-default) 22%,

@@ -269,7 +269,9 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
                 aria-label="Close"
                 data-side-nav-close=""
               >
-                Close
+                <svg class="site-side-nav__close-icon" aria-hidden="true">
+                  <path class="site-side-nav__close-icon-path"></path>
+                </svg>
               </button>
             </div>
             <div class="site-side-nav__menu-shell">
@@ -669,6 +671,31 @@ describe("header-client.js", () => {
     await flush(window);
 
     closeButton.click();
+    await flush(window);
+
+    assertEquals(toggle.getAttribute("aria-expanded"), "false");
+    assertEquals(window.document.body.style.overflow, "");
+    assertEquals(window.document.activeElement, toggle);
+  });
+
+  it("closes the side nav when the close icon itself is clicked", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    evaluateScript(window);
+
+    const toggle = getMenuToggle(window);
+    const closeIconPath = window.document.querySelector(
+      ".site-side-nav__close-icon-path",
+    );
+    assert(closeIconPath instanceof window.SVGElement);
+
+    toggle.click();
+    await flush(window);
+
+    closeIconPath.dispatchEvent(
+      new window.MouseEvent("click", { bubbles: true }),
+    );
     await flush(window);
 
     assertEquals(toggle.getAttribute("aria-expanded"), "false");
