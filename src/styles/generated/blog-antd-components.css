@@ -3,6 +3,10 @@
   --ant-alert-default-padding: 8px 12px;
   --ant-alert-with-description-padding: 20px 24px;
 }
+.css-var-_R_0_.ant-anchor-css-var {
+  --ant-anchor-link-padding-block: 4px;
+  --ant-anchor-link-padding-inline-start: 16px;
+}
 .css-var-_R_0_.ant-affix {
   --ant-affix-z-index-popup: 10;
 }
@@ -1913,10 +1917,6 @@
   --ant-divider-text-padding-inline: 1em;
   --ant-divider-orientation-margin: 0.05;
   --ant-divider-vertical-margin-inline: 8px;
-}
-.css-var-_R_0_.ant-anchor-css-var {
-  --ant-anchor-link-padding-block: 4px;
-  --ant-anchor-link-padding-inline-start: 16px;
 }
 .css-var-_R_0_.ant-timeline {
   --ant-timeline-tail-color: rgba(255, 255, 255, 0.94);

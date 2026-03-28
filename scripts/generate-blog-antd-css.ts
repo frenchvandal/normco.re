@@ -1,7 +1,6 @@
 import React from "react";
 import { extractStyle } from "npm:@ant-design/static-style-extract@2.1.0";
 import {
-  Anchor,
   Breadcrumb,
   Button,
   Card,
@@ -143,14 +142,6 @@ function createStyleSeed() {
       }],
     }),
     React.createElement(Divider, null),
-    React.createElement(Anchor, {
-      affix: false,
-      direction: "horizontal",
-      items: [
-        { key: "march", href: "#march", title: "Mar" },
-        { key: "february", href: "#february", title: "Feb" },
-      ],
-    }),
     React.createElement(Timeline, {
       items: [
         { content: "Introduction" },
