@@ -338,6 +338,12 @@ function renderLanguagePanel(
       hidden
     >
       <div class={v.languagePanelContent}>
+        {!v.panelHead && (
+          <PanelHead
+            className="site-header-panel-head site-header-panel-head--language"
+            title={t.site.languageSelectLabel}
+          />
+        )}
         {v.panelHead && (
           <PanelHead
             className="site-header-panel-head"

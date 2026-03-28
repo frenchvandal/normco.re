@@ -6,6 +6,7 @@ export const SITE_TRANSLATIONS = {
   en: {
     site: {
       skipToContent: "Skip to content",
+      closeLabel: "Close",
       mainNavigationAriaLabel: "Main navigation",
       siteLinksAriaLabel: "Site links",
       menuToggleLabel: "Open navigation menu",
@@ -67,6 +68,7 @@ export const SITE_TRANSLATIONS = {
       paginationNext: "Next page",
       paginationPage: "Page",
       viewLabel: "Archive view",
+      backToTopLabel: "Back to top",
       cardsViewLabel: "Cards",
       listViewLabel: "List",
       listDateHeading: "Date",
@@ -221,6 +223,7 @@ export const SITE_TRANSLATIONS = {
   fr: {
     site: {
       skipToContent: "Aller au contenu",
+      closeLabel: "Fermer",
       mainNavigationAriaLabel: "Navigation principale",
       siteLinksAriaLabel: "Liens du site",
       menuToggleLabel: "Ouvrir le menu de navigation",
@@ -282,6 +285,7 @@ export const SITE_TRANSLATIONS = {
       paginationNext: "Page suivante",
       paginationPage: "Page",
       viewLabel: "Vue des archives",
+      backToTopLabel: "Retour en haut",
       cardsViewLabel: "Cartes",
       listViewLabel: "Liste",
       listDateHeading: "Date",
@@ -437,6 +441,7 @@ export const SITE_TRANSLATIONS = {
   zhHans: {
     site: {
       skipToContent: "跳转到内容",
+      closeLabel: "关闭",
       mainNavigationAriaLabel: "主导航",
       siteLinksAriaLabel: "站点链接",
       menuToggleLabel: "打开导航菜单",
@@ -497,6 +502,7 @@ export const SITE_TRANSLATIONS = {
       paginationNext: "下一页",
       paginationPage: "第",
       viewLabel: "归档视图",
+      backToTopLabel: "回到顶部",
       cardsViewLabel: "卡片",
       listViewLabel: "列表",
       listDateHeading: "日期",
@@ -645,6 +651,7 @@ export const SITE_TRANSLATIONS = {
   zhHant: {
     site: {
       skipToContent: "跳至內容",
+      closeLabel: "關閉",
       mainNavigationAriaLabel: "主導覽",
       siteLinksAriaLabel: "網站連結",
       menuToggleLabel: "開啟導覽選單",
@@ -705,6 +712,7 @@ export const SITE_TRANSLATIONS = {
       paginationNext: "下一頁",
       paginationPage: "第",
       viewLabel: "彙整視圖",
+      backToTopLabel: "回到頂部",
       cardsViewLabel: "卡片",
       listViewLabel: "列表",
       listDateHeading: "日期",

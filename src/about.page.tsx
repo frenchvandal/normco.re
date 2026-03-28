@@ -73,6 +73,9 @@ function renderContactItem(
                   <div class="about-contact-popover-header">
                     <div class="about-contact-popover-brand">
                       <span class="about-contact-icon about-contact-popover-app" aria-hidden="true">${contactIconMarkup}</span>
+                      <span class="about-contact-popover-title">${
+    escapeHtml(contact.label)
+  }</span>
                       <span id="${escapeHtml(titleId)}" class="sr-only">${
     escapeHtml(contact.label)
   }</span>
@@ -255,5 +258,6 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
     </div>
   </aside>
 </div>
-</div>`;
+</div>
+<script src="/scripts/about-contact-toggletips.js" fetchpriority="low" defer></script>`;
 };

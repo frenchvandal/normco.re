@@ -304,6 +304,7 @@ export function PostRail(
   {
     language,
     translations,
+    closeLabel,
     outline,
     backlinks,
     tags,
@@ -312,6 +313,7 @@ export function PostRail(
   }: {
     language: SiteLanguage;
     translations: PostTranslations;
+    closeLabel: string;
     outline: readonly PostOutlineItem[];
     backlinks: readonly PostLinkReference[];
     tags: readonly string[];
@@ -319,86 +321,174 @@ export function PostRail(
     next: Lume.Data | undefined;
   },
 ): El {
+  const sections = [
+    outline.length > 0
+      ? {
+        key: "outline",
+        className: "post-outline-card",
+        title: translations.outlineTitle,
+        body: (
+          <nav
+            class="post-outline-nav"
+            aria-label={translations.outlineAriaLabel}
+          >
+            <ul class="post-outline-list">
+              {outline.map((item) => (
+                <li
+                  key={item.id}
+                  class={`post-outline-item post-outline-item--level-${item.level}`}
+                >
+                  <a href={`#${item.id}`} class="post-outline-link">
+                    {item.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ),
+      }
+      : undefined,
+    tags.length > 0
+      ? {
+        key: "tags",
+        className: "post-tags-card",
+        title: translations.tagsAriaLabel,
+        body: (
+          <ul class="post-tags post-tags--rail">
+            {tags.map((tag, i) => (
+              <li key={`${tag}-${i}`}>
+                <a
+                  href={getTagUrl(tag, language)}
+                  class={`tag-link tag-link--${getTagColor(tag)}`}
+                  rel="tag"
+                  title={tag}
+                >
+                  <span class="tag-link__label">{tag}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ),
+      }
+      : undefined,
+    backlinks.length > 0
+      ? {
+        key: "backlinks",
+        className: "post-backlinks-card",
+        title: translations.backlinksTitle,
+        body: (
+          <ul class="post-backlinks-list">
+            {backlinks.map((reference) => (
+              <li key={reference.url}>
+                <a href={reference.url} class="post-backlinks-link">
+                  {reference.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ),
+      }
+      : undefined,
+    (prev || next)
+      ? {
+        key: "navigation",
+        className: "post-nav-card",
+        title: translations.navigationAriaLabel,
+        body: (
+          <nav
+            class="post-nav post-nav--rail"
+            aria-label={translations.navigationAriaLabel}
+          >
+            <PostNavLink post={prev} label={translations.previousLabel} />
+            <PostNavLink
+              post={next}
+              label={translations.nextLabel}
+              isNext
+            />
+          </nav>
+        ),
+      }
+      : undefined,
+  ].filter(isDefined);
+
   return (
-    <aside
-      class="feature-rail post-rail"
-      aria-label={translations.railAriaLabel}
-    >
-      <div class="feature-rail-sticky">
-        {outline.length > 0 && (
-          <section class="feature-card post-rail-card post-outline-card">
-            <h2 class="feature-card-title">{translations.outlineTitle}</h2>
-            <nav
-              class="post-outline-nav"
-              aria-label={translations.outlineAriaLabel}
-            >
-              <ul class="post-outline-list">
-                {outline.map((item) => (
-                  <li
-                    key={item.id}
-                    class={`post-outline-item post-outline-item--level-${item.level}`}
-                  >
-                    <a href={`#${item.id}`} class="post-outline-link">
-                      {item.text}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </section>
-        )}
-
-        {tags.length > 0 && (
-          <section class="feature-card post-rail-card post-tags-card">
-            <h2 class="feature-card-title">{translations.tagsAriaLabel}</h2>
-            <ul class="post-tags post-tags--rail">
-              {tags.map((tag, i) => (
-                <li key={`${tag}-${i}`}>
-                  <a
-                    href={getTagUrl(tag, language)}
-                    class={`tag-link tag-link--${getTagColor(tag)}`}
-                    rel="tag"
-                    title={tag}
-                  >
-                    <span class="tag-link__label">{tag}</span>
-                  </a>
-                </li>
+    <>
+      <div class="post-mobile-tools" aria-label={translations.railAriaLabel}>
+        <button
+          type="button"
+          class="post-mobile-tools-trigger"
+          aria-controls="post-mobile-tools-dialog"
+          aria-expanded="false"
+          data-post-mobile-tools-open=""
+        >
+          <span class="post-mobile-tools-trigger__label">
+            {translations.railAriaLabel}
+          </span>
+        </button>
+        <dialog
+          id="post-mobile-tools-dialog"
+          class="post-mobile-tools-dialog"
+          aria-labelledby="post-mobile-tools-title"
+          data-post-mobile-tools=""
+        >
+          <div class="post-mobile-tools-sheet">
+            <div class="post-mobile-tools-head">
+              <p id="post-mobile-tools-title" class="post-mobile-tools-title">
+                {translations.railAriaLabel}
+              </p>
+              <button
+                type="button"
+                class="btn post-mobile-tools-close"
+                aria-label={closeLabel}
+                data-post-mobile-tools-close=""
+              >
+                <SiteIcon
+                  name="x"
+                  className="post-mobile-tools-close__icon"
+                  width={18}
+                  height={18}
+                />
+              </button>
+            </div>
+            <div class="post-mobile-tools-sections">
+              {sections.map((section, index) => (
+                <details
+                  key={section.key}
+                  class={`post-mobile-tools-section ${section.className}`}
+                  {...(index === 0 ? { open: true } : {})}
+                >
+                  <summary class="post-mobile-tools-section__summary">
+                    <span class="post-mobile-tools-section__title">
+                      {section.title}
+                    </span>
+                  </summary>
+                  <div class="post-mobile-tools-section__body">
+                    {section.body}
+                  </div>
+                </details>
               ))}
-            </ul>
-          </section>
-        )}
-
-        {backlinks.length > 0 && (
-          <section class="feature-card post-rail-card post-backlinks-card">
-            <h2 class="feature-card-title">{translations.backlinksTitle}</h2>
-            <ul class="post-backlinks-list">
-              {backlinks.map((reference) => (
-                <li key={reference.url}>
-                  <a href={reference.url} class="post-backlinks-link">
-                    {reference.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {(prev || next) && (
-          <section class="feature-card post-rail-card post-nav-card">
-            <h2 class="feature-card-title">
-              {translations.navigationAriaLabel}
-            </h2>
-            <nav
-              class="post-nav post-nav--rail"
-              aria-label={translations.navigationAriaLabel}
-            >
-              <PostNavLink post={prev} label={translations.previousLabel} />
-              <PostNavLink post={next} label={translations.nextLabel} isNext />
-            </nav>
-          </section>
-        )}
+            </div>
+          </div>
+        </dialog>
       </div>
-    </aside>
+
+      <aside
+        class="feature-rail post-rail"
+        aria-label={translations.railAriaLabel}
+      >
+        <div class="feature-rail-sticky">
+          {sections.map((section) => (
+            <section
+              key={section.key}
+              class={`feature-card post-rail-card ${section.className}`}
+            >
+              <h2 class="feature-card-title">{section.title}</h2>
+              {section.body}
+            </section>
+          ))}
+        </div>
+      </aside>
+    </>
   );
 }
 

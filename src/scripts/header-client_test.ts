@@ -540,6 +540,73 @@ describe("header-client.js", () => {
     assertEquals(window.document.activeElement, selectedOption);
   });
 
+  it("locks body scroll and traps Tab inside the language panel on mobile", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    const mobileMedia = createMediaQueryList(true);
+    window.matchMedia = () => mobileMedia;
+    evaluateScript(window);
+
+    const toggle = getLanguageToggle(window);
+    const englishOption = window.document.querySelector(
+      '[data-language-option="en"]',
+    );
+    const frenchOption = window.document.querySelector(
+      '[data-language-option="fr"]',
+    );
+    assert(englishOption instanceof window.HTMLAnchorElement);
+    assert(frenchOption instanceof window.HTMLAnchorElement);
+
+    toggle.dispatchEvent(
+      new window.MouseEvent("pointerdown", { bubbles: true }),
+    );
+    toggle.click();
+    await flush(window);
+
+    assertEquals(toggle.getAttribute("aria-expanded"), "true");
+    assertEquals(getLanguagePanel(window).hidden, false);
+    assertEquals(window.document.body.style.overflow, "hidden");
+
+    englishOption.focus();
+    englishOption.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Tab",
+        shiftKey: true,
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    await flush(window);
+
+    assertEquals(window.document.activeElement, frenchOption);
+
+    frenchOption.focus();
+    frenchOption.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Tab",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    await flush(window);
+
+    assertEquals(window.document.activeElement, englishOption);
+
+    window.document.dispatchEvent(
+      new window.KeyboardEvent("keydown", {
+        key: "Escape",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    await flush(window);
+
+    assertEquals(toggle.getAttribute("aria-expanded"), "false");
+    assertEquals(getLanguagePanel(window).hidden, true);
+    assertEquals(window.document.body.style.overflow, "");
+    assertEquals(window.document.activeElement, toggle);
+  });
+
   it("opens the side nav from the keyboard and restores focus from the overlay", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;

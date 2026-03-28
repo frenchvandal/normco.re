@@ -43,6 +43,17 @@ export const POST_BUILD_TASKS: ReadonlyArray<BuildTask> = [
     ],
   },
   {
+    name: "prune non-deployable build output",
+    command: "deno",
+    args: [
+      "run",
+      "--allow-read",
+      "--allow-write",
+      "scripts/prune-build-output.ts",
+      "_site",
+    ],
+  },
+  {
     name: "verify browser imports",
     command: "deno",
     args: ["run", "--allow-read", "scripts/check-browser-imports.ts", "_site"],

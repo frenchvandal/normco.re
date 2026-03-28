@@ -17,6 +17,7 @@ const THEME_TOGGLE_SELECTOR = "#theme-toggle";
 const TOOLTIP_CONTAINER_SELECTOR = "[data-header-tooltip]";
 const TOOLTIP_TRIGGER_SELECTOR = "[data-header-tooltip-trigger]";
 const LANGUAGE_STORAGE_KEY = "preferred-language";
+const MOBILE_PANEL_MEDIA_QUERY = "(max-width: 47.999rem)";
 
 /**
  * @typedef {"keyboard" | "pointer"} InteractionModality
@@ -56,6 +57,9 @@ export function bindHeaderClient(runtime) {
     doc.querySelectorAll(DISCLOSURE_CONTROL_SELECTOR),
   ).filter((candidate) => candidate instanceof resolvedRuntime.HTMLElement);
   const overlay = queryElement(OVERLAY_SELECTOR);
+  const mobilePanels = typeof resolvedRuntime.matchMedia === "function"
+    ? resolvedRuntime.matchMedia(MOBILE_PANEL_MEDIA_QUERY)
+    : null;
   const surfaceByControl = new Map();
   const controlBySurfaceId = new Map();
 
@@ -198,6 +202,13 @@ export function bindHeaderClient(runtime) {
   }
 
   /**
+   * @returns {boolean}
+   */
+  function isMobilePanelViewport() {
+    return mobilePanels?.matches ?? false;
+  }
+
+  /**
    * @param {InteractionModality} modality
    * @returns {void}
    */
@@ -258,7 +269,8 @@ export function bindHeaderClient(runtime) {
    */
   function syncBodyScrollLock() {
     doc.body.style.overflow =
-      isSideNav(openSurface) || search.isSearchPanel(openSurface)
+      isSideNav(openSurface) || search.isSearchPanel(openSurface) ||
+        (isLanguagePanel(openSurface) && isMobilePanelViewport())
         ? "hidden"
         : "";
   }
@@ -938,6 +950,16 @@ export function bindHeaderClient(runtime) {
       sideNavSurface instanceof resolvedRuntime.HTMLElement
     ) {
       trapFocus(event, sideNavSurface);
+      return;
+    }
+
+    if (
+      event.key === "Tab" &&
+      isLanguagePanel(openSurface) &&
+      openSurface instanceof resolvedRuntime.HTMLElement &&
+      isMobilePanelViewport()
+    ) {
+      trapFocus(event, openSurface);
       return;
     }
 

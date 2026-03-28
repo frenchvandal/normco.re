@@ -31,6 +31,7 @@ describe("build task definitions", () => {
       POST_BUILD_TASKS.map((task) => task.name),
       [
         "fingerprint built assets",
+        "prune non-deployable build output",
         "verify browser imports",
         "format built HTML and JSON output",
         "validate built output links",

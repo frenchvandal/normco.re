@@ -55,7 +55,10 @@ function renderStoryTags(
 
 export function renderArchiveMonthNav(
   months: readonly ArchiveMonthGroup[],
-  label: string,
+  { ariaLabel, eyebrowLabel }: {
+    ariaLabel: string;
+    eyebrowLabel: string;
+  },
 ): string {
   const newestMonth = months[0];
   const oldestMonth = months[months.length - 1];
@@ -105,10 +108,10 @@ export function renderArchiveMonthNav(
   ).join("");
 
   return `<aside class="blog-antd-archive-nav" aria-label="${
-    escapeHtml(label)
+    escapeHtml(ariaLabel)
   }">
   <div class="blog-antd-archive-nav__intro">
-    <p class="blog-antd-eyebrow">${escapeHtml(label)}</p>
+    <p class="blog-antd-eyebrow">${escapeHtml(eyebrowLabel)}</p>
     <p class="blog-antd-archive-nav__range">
       ${escapeHtml(oldestMonth.label)} - ${escapeHtml(newestMonth.label)}
     </p>

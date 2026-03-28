@@ -44,10 +44,13 @@ export type BlogTagItem = Readonly<{
 
 export type BlogArchiveViewData = Readonly<{
   view: "archive";
+  language: string;
   title: string;
   lead: string;
   postsCountLabel: string;
   postsAriaLabel: string;
+  yearsAriaLabel: string;
+  backToTopLabel: string;
   posts: readonly BlogStoryCard[];
   emptyStateTitle: string;
   emptyStateMessage: string;

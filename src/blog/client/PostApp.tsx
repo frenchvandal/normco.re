@@ -5,6 +5,7 @@ import {
   BackTop,
   BarChartOutlined,
   Breadcrumb,
+  Button,
   Card,
   Col,
   ConfigProvider,
@@ -232,20 +233,24 @@ export function PostView(
                     className="blog-antd-nav-stack"
                   >
                     {data.previous && (
-                      <a
-                        className="ant-btn ant-btn-default"
+                      <Button
                         href={data.previous.url}
+                        block
+                        rootClassName="blog-antd-nav-button"
+                        type="default"
                       >
                         {data.previousLabel}: {data.previous.title}
-                      </a>
+                      </Button>
                     )}
                     {data.next && (
-                      <a
-                        className="ant-btn ant-btn-primary"
+                      <Button
                         href={data.next.url}
+                        block
+                        rootClassName="blog-antd-nav-button"
+                        type="primary"
                       >
                         {data.nextLabel}: {data.next.title}
-                      </a>
+                      </Button>
                     )}
                   </Space>
                 </Card>

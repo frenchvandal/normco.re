@@ -1,5 +1,6 @@
 import {
   Breadcrumb,
+  Button,
   Card,
   Col,
   ConfigProvider,
@@ -31,6 +32,7 @@ export {
   BackTop,
   BarChartOutlined,
   Breadcrumb,
+  Button,
   Card,
   Col,
   ConfigProvider,

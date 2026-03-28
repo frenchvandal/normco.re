@@ -111,6 +111,13 @@
     gap: var(--ph-space-2);
   }
 
+  .about-contact-popover-title {
+    color: var(--ph-color-fg-default);
+    font-size: var(--ph-text-sm);
+    font-weight: 600;
+    line-height: var(--ph-lh-snug);
+  }
+
   .about-contact-popover-app {
     inline-size: var(--ph-control-size-compact);
     block-size: var(--ph-control-size-compact);
@@ -191,5 +198,70 @@
     inline-size: min(100%, 11rem);
     block-size: auto;
     fill: currentColor;
+  }
+
+  @media (max-width: 47.999rem) {
+    body[data-contact-toggletip-modal-open="true"] {
+      overflow: hidden;
+    }
+
+    .about-contact-toggletip > .site-popover {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      align-items: end;
+      min-inline-size: 0;
+      max-inline-size: none;
+      padding-block-start: max(env(safe-area-inset-top), var(--ph-space-4));
+      padding-inline-start: max(env(safe-area-inset-left), var(--ph-space-4));
+      padding-inline-end: max(env(safe-area-inset-right), var(--ph-space-4));
+      padding-block-end: max(
+        env(safe-area-inset-bottom),
+        var(--ph-space-4)
+      );
+      border: 0;
+      border-radius: 0;
+      background: color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 20%,
+        transparent
+      );
+      box-shadow: none;
+      transform: none;
+    }
+
+    .about-contact-toggletip.site-popover--open > .site-popover,
+    .about-contact-toggletip > .site-popover:not([hidden]) {
+      transform: none;
+    }
+
+    .about-contact-toggletip > .site-popover > .site-popover__caret {
+      display: none;
+    }
+
+    .about-contact-popover {
+      inline-size: min(100%, 30rem);
+      max-block-size: min(80dvh, 38rem);
+      margin-inline: auto;
+      padding: var(--ph-space-4) var(--ph-space-4)
+        calc(env(safe-area-inset-bottom) + var(--ph-space-4));
+      border: var(--ph-border-hairline) solid var(--ph-color-border-default);
+      border-radius: var(--ph-radius-lg) var(--ph-radius-lg) 0 0;
+      background: var(--ph-surface-raised);
+      box-shadow: var(--ph-shadow-floating);
+      overflow: auto;
+    }
+
+    .about-contact-popover-header {
+      align-items: flex-start;
+    }
+
+    .about-contact-popover-brand {
+      min-inline-size: 0;
+    }
+
+    .about-contact-popover-title {
+      overflow-wrap: anywhere;
+    }
   }
 }

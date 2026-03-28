@@ -348,12 +348,6 @@ export default (
             defer
           >
           </script>
-          <script
-            src="/scripts/about-contact-toggletips.js"
-            fetchpriority="low"
-            defer
-          >
-          </script>
           {includeLinkPrefetch && (
             <script
               src="/scripts/link-prefetch-intent.js"

@@ -10,6 +10,7 @@ import {
 
 export const layout = "layouts/base.tsx";
 export const extraStylesheets = ["/styles/blog-antd.css"];
+const POST_MOBILE_TOOLS_MEDIA_QUERY = "(max-width: 65.99rem)";
 
 // ── Layout ───────────────────────────────────────────────────────────────
 
@@ -48,6 +49,39 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     t.post.copyCodeFailedFeedback,
     "Cannot copy code",
   );
+  const postMobileToolsLoader = `{
+  const mediaQuery = window.matchMedia("${POST_MOBILE_TOOLS_MEDIA_QUERY}");
+  let loaded = false;
+  const load = () => {
+    if (loaded) {
+      return;
+    }
+
+    loaded = true;
+    void import("/scripts/post-mobile-tools.js");
+  };
+
+  if (mediaQuery.matches) {
+    load();
+  } else if (typeof mediaQuery.addEventListener === "function") {
+    mediaQuery.addEventListener("change", (event) => {
+      if (event.matches) {
+        load();
+      }
+    }, { once: true });
+  } else if (typeof mediaQuery.addListener === "function") {
+    const listener = (event) => {
+      if (!event.matches) {
+        return;
+      }
+
+      mediaQuery.removeListener(listener);
+      load();
+    };
+
+    mediaQuery.addListener(listener);
+  }
+}`;
   return (
     <>
       <div class="blog-antd-root">
@@ -138,6 +172,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               <PostRail
                 language={language}
                 translations={t.post}
+                closeLabel={t.site.closeLabel}
                 outline={state.outline}
                 backlinks={state.backlinks}
                 tags={state.tags}
@@ -148,6 +183,12 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
           </div>
         </div>
       </div>
+      {state.hasRail && (
+        <script
+          type="module"
+          dangerouslySetInnerHTML={{ __html: postMobileToolsLoader }}
+        />
+      )}
       {state.includeCodeCopy && (
         <script src="/scripts/post-code-copy.js" defer></script>
       )}

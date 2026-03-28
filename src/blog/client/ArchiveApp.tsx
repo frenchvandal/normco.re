@@ -134,7 +134,15 @@ function ArchiveTimeline(
 }
 
 function ArchiveMonthNav(
-  { months, label }: { months: readonly ArchiveMonthGroup[]; label: string },
+  {
+    months,
+    ariaLabel,
+    eyebrowLabel,
+  }: {
+    months: readonly ArchiveMonthGroup[];
+    ariaLabel: string;
+    eyebrowLabel: string;
+  },
 ) {
   const newestMonth = months[0];
   const oldestMonth = months[months.length - 1];
@@ -144,9 +152,9 @@ function ArchiveMonthNav(
   }
 
   return (
-    <aside className="blog-antd-archive-nav" aria-label={label}>
+    <aside className="blog-antd-archive-nav" aria-label={ariaLabel}>
       <div className="blog-antd-archive-nav__intro">
-        <p className="blog-antd-eyebrow">{label}</p>
+        <p className="blog-antd-eyebrow">{eyebrowLabel}</p>
         <Paragraph className="blog-antd-archive-nav__range">
           {oldestMonth.label} - {newestMonth.label}
         </Paragraph>
@@ -234,7 +242,8 @@ export function ArchiveView(
               {archiveMonths.length > 1 && (
                 <ArchiveMonthNav
                   months={archiveMonths}
-                  label={data.postsCountLabel}
+                  ariaLabel={data.yearsAriaLabel}
+                  eyebrowLabel={data.postsCountLabel}
                 />
               )}
               <ArchiveTimeline

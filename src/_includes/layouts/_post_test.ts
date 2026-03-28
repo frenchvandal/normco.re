@@ -371,6 +371,12 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'id="first-section"');
       assertStringIncludes(html, 'id="second-section"');
       assertStringIncludes(html, 'class="post-details-section"');
+      assertStringIncludes(html, 'data-post-mobile-tools-open=""');
+      assertStringIncludes(html, 'data-post-mobile-tools=""');
+      assertStringIncludes(html, "post-mobile-tools.js");
+      assertStringIncludes(html, "window.matchMedia");
+      assertStringIncludes(html, "const load = () => {");
+      assertNotMatch(html, /=&gt;/);
       assertStringIncludes(html, "Publication details");
       assertNotMatch(html, /data-blog-antd-root/);
       assertNotMatch(html, /blog-antd-post\.js/);
@@ -389,6 +395,7 @@ describe("post.tsx layout", () => {
 
       assertStringIncludes(html, 'class="post-pagehead-grid"');
       assertNotMatch(html, /post-pagehead-context/);
+      assertNotMatch(html, /post-mobile-tools\.js/);
     });
 
     it("wraps navigation in nav[aria-label='Post navigation']", async () => {

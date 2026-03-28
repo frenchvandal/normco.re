@@ -62,10 +62,12 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, 'data-contact-toggletip-trigger=""');
     assertStringIncludes(html, 'data-contact-toggletip-close=""');
     assertStringIncludes(html, 'class="site-popover" hidden');
+    assertStringIncludes(html, 'class="about-contact-popover-title"');
     assertStringIncludes(html, 'transform-images="avif webp jpg 240 360 512"');
     assertStringIncludes(html, 'width="1224"');
     assertStringIncludes(html, 'height="1605"');
     assertStringIncludes(html, 'aria-label="Download QR Code"');
+    assertStringIncludes(html, 'src="/scripts/about-contact-toggletips.js"');
     assertStringIncludes(html, 'class="about-contact-icon-svg"');
     assertStringIncludes(html, "At a glance");
     assertStringIncludes(
@@ -141,6 +143,7 @@ describe("about page CSS contracts", () => {
       aboutStyles,
       "inline-size: min(18rem, calc(100vw - var(--ph-shell-gutter) * 2));",
     );
+    assertStringIncludes(aboutStyles, ".about-contact-popover-title {");
     assertStringIncludes(aboutStyles, ".about-contact-trigger:hover,");
   });
 

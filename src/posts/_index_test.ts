@@ -87,11 +87,13 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(html, 'class="feature-main"');
     });
 
-    it("renders the archive statically without a client bootstrap payload", async () => {
+    it("keeps the static archive markup while adding a mobile bootstrap payload", async () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
-      assertNotMatch(html, /data-blog-antd-root/);
-      assertNotMatch(html, /id="blog-antd-data"/);
-      assertNotMatch(html, /blog-antd-archive\.js/);
+      assertStringIncludes(html, "data-blog-antd-root");
+      assertStringIncludes(html, 'id="blog-antd-data"');
+      assertStringIncludes(html, '"view":"archive"');
+      assertStringIncludes(html, "blog-antd-archive.js");
+      assertStringIncludes(html, "window.matchMedia");
     });
 
     it("opts the articles page out of the Pagefind body region", () => {

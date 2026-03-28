@@ -1,0 +1,194 @@
+// @ts-check
+
+const MOBILE_MEDIA_QUERY = "(max-width: 65.99rem)";
+const OPEN_SELECTOR = "[data-post-mobile-tools-open]";
+const CLOSE_SELECTOR = "[data-post-mobile-tools-close]";
+const DIALOG_SELECTOR = "[data-post-mobile-tools]";
+
+/**
+ * @param {Window & typeof globalThis} runtime
+ * @returns {void}
+ */
+export function bindPostMobileTools(runtime) {
+  const resolvedRuntime = runtime ??
+    /** @type {Window & typeof globalThis} */ (globalThis);
+  const HTMLElementCtor = resolvedRuntime.HTMLElement;
+  const HTMLDialogElementCtor = resolvedRuntime.HTMLDialogElement;
+  const HTMLButtonElementCtor = resolvedRuntime.HTMLButtonElement;
+  const doc = resolvedRuntime.document;
+  const root = doc?.documentElement;
+
+  if (
+    typeof HTMLElementCtor !== "function" ||
+    typeof HTMLDialogElementCtor !== "function" ||
+    typeof HTMLButtonElementCtor !== "function" ||
+    !(root instanceof HTMLElementCtor)
+  ) {
+    return;
+  }
+
+  const dialog = doc.querySelector(DIALOG_SELECTOR);
+  const openButton = doc.querySelector(OPEN_SELECTOR);
+
+  if (
+    !(dialog instanceof HTMLDialogElementCtor) ||
+    !(openButton instanceof HTMLButtonElementCtor)
+  ) {
+    return;
+  }
+
+  const mobileDialog = /** @type {HTMLDialogElement} */ (dialog);
+  const triggerButton = /** @type {HTMLButtonElement} */ (openButton);
+
+  if (root.dataset.postMobileToolsBound === "true") {
+    return;
+  }
+
+  root.dataset.postMobileToolsBound = "true";
+
+  const closeButton = mobileDialog.querySelector(CLOSE_SELECTOR);
+  const mobileMedia = typeof resolvedRuntime.matchMedia === "function"
+    ? resolvedRuntime.matchMedia(MOBILE_MEDIA_QUERY)
+    : null;
+
+  /**
+   * @returns {boolean}
+   */
+  function isMobileViewport() {
+    return mobileMedia?.matches ?? false;
+  }
+
+  /**
+   * @param {boolean} ready
+   * @returns {void}
+   */
+  function setReady(ready) {
+    if (ready) {
+      root.dataset.postMobileToolsReady = "true";
+      return;
+    }
+
+    delete root.dataset.postMobileToolsReady;
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  function isDialogOpen() {
+    return mobileDialog.hasAttribute("open");
+  }
+
+  /**
+   * @param {boolean} expanded
+   * @returns {void}
+   */
+  function setExpanded(expanded) {
+    triggerButton.setAttribute("aria-expanded", expanded ? "true" : "false");
+  }
+
+  /**
+   * @returns {void}
+   */
+  function showDialog() {
+    if (!isMobileViewport()) {
+      return;
+    }
+
+    setReady(true);
+    setExpanded(true);
+
+    if (typeof mobileDialog.showModal === "function") {
+      if (!isDialogOpen()) {
+        mobileDialog.showModal();
+      }
+    } else {
+      mobileDialog.setAttribute("open", "");
+    }
+
+    if (closeButton instanceof HTMLElementCtor) {
+      closeButton.focus({ preventScroll: true });
+      return;
+    }
+
+    mobileDialog.focus({ preventScroll: true });
+  }
+
+  /**
+   * @param {boolean} restoreFocus
+   * @returns {void}
+   */
+  function closeDialog(restoreFocus) {
+    if (typeof mobileDialog.close === "function" && isDialogOpen()) {
+      mobileDialog.close();
+    } else {
+      mobileDialog.removeAttribute("open");
+      mobileDialog.dispatchEvent(new resolvedRuntime.Event("close"));
+    }
+
+    setExpanded(false);
+
+    if (restoreFocus) {
+      triggerButton.focus({ preventScroll: true });
+    }
+  }
+
+  /**
+   * @returns {void}
+   */
+  function syncViewportState() {
+    const isMobile = isMobileViewport();
+
+    setReady(isMobile);
+
+    if (!isMobile && isDialogOpen()) {
+      closeDialog(false);
+    }
+  }
+
+  triggerButton.addEventListener("click", () => {
+    if (isDialogOpen()) {
+      closeDialog(true);
+      return;
+    }
+
+    showDialog();
+  });
+
+  if (closeButton instanceof HTMLButtonElementCtor) {
+    closeButton.addEventListener("click", () => {
+      closeDialog(true);
+    });
+  }
+
+  mobileDialog.addEventListener("click", (event) => {
+    if (event.target !== mobileDialog) {
+      return;
+    }
+
+    closeDialog(false);
+  });
+
+  mobileDialog.addEventListener("close", () => {
+    setExpanded(false);
+  });
+
+  syncViewportState();
+
+  if (!mobileMedia) {
+    return;
+  }
+
+  const handleViewportChange = () => {
+    syncViewportState();
+  };
+
+  if (typeof mobileMedia.addEventListener === "function") {
+    mobileMedia.addEventListener("change", handleViewportChange);
+  } else if (typeof mobileMedia.addListener === "function") {
+    mobileMedia.addListener(handleViewportChange);
+  }
+}
+
+bindPostMobileTools(
+  /** @type {Window & typeof globalThis} */ (globalThis),
+);
