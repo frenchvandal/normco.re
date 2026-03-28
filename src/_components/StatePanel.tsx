@@ -6,6 +6,7 @@ export type StatePanelProps = {
   readonly actionHref?: string;
   readonly actionLabel?: string;
   readonly ariaLabel?: string;
+  readonly visual?: string;
   readonly eyebrow?: string;
   readonly eyebrowAriaHidden?: boolean;
   readonly headingTag?: "h1" | "h2" | "h3";
@@ -21,6 +22,7 @@ export default ({
   actionHref,
   actionLabel,
   ariaLabel,
+  visual,
   eyebrow,
   eyebrowAriaHidden = false,
   headingTag = "h2",
@@ -44,6 +46,8 @@ export default ({
       escapeHtml(eyebrow)
     }</p>`
     : "";
+  // Trusted, site-owned HTML used for decorative state illustrations.
+  const visualMarkup = visual ?? "";
   const headingMarkup = `<${safeHeadingTag} class="state-panel-title">${
     escapeHtml(title)
   }</${safeHeadingTag}>`;
@@ -56,6 +60,7 @@ export default ({
     : "";
 
   return `<section class="${escapeHtml(panelClass)}"${ariaLabelAttribute}>
+  ${visualMarkup}
   ${eyebrowMarkup}
   ${headingMarkup}
   <p class="state-panel-message">${escapeHtml(message)}</p>

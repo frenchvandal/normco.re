@@ -139,6 +139,96 @@
     text-align: center;
   }
 
+  .state-panel--offline-page {
+    gap: var(--ph-space-5);
+  }
+
+  .state-panel-visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .state-panel-empty-illustration {
+    inline-size: min(100%, calc(var(--ph-space-9) * 3));
+    block-size: auto;
+    overflow: visible;
+  }
+
+  .state-panel-empty-shadow {
+    fill: color-mix(
+      in oklch,
+      var(--ph-color-fg-default) 8%,
+      transparent
+    );
+  }
+
+  .state-panel-empty-orb {
+    fill: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 10%,
+      var(--ph-color-canvas-subtle)
+    );
+    stroke: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 24%,
+      var(--ph-color-border-muted)
+    );
+    stroke-width: 1.5;
+  }
+
+  .state-panel-empty-card {
+    fill: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 96%,
+      var(--ph-color-accent-fg)
+    );
+    stroke: var(--ph-color-border-default);
+    stroke-width: 2;
+  }
+
+  .state-panel-empty-card-top,
+  .state-panel-empty-card-line {
+    fill: none;
+    stroke: color-mix(
+      in oklch,
+      var(--ph-color-fg-subtle) 72%,
+      transparent
+    );
+    stroke-linecap: round;
+    stroke-width: 2;
+  }
+
+  .state-panel-empty-card-line--short {
+    stroke-width: 1.75;
+  }
+
+  .state-panel-empty-signal {
+    fill: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 14%,
+      var(--ph-color-canvas-subtle)
+    );
+    stroke: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 34%,
+      var(--ph-color-border-default)
+    );
+    stroke-width: 1.5;
+  }
+
+  .state-panel-empty-signal-mark,
+  .state-panel-empty-signal-dot {
+    fill: none;
+    stroke: var(--ph-color-accent-fg);
+    stroke-linecap: round;
+    stroke-width: 2;
+  }
+
+  .state-panel-empty-signal-dot {
+    fill: var(--ph-color-accent-fg);
+    stroke: none;
+  }
+
   .state-panel-eyebrow {
     color: var(--ph-color-fg-subtle);
     font-size: var(--ph-text-3xl);

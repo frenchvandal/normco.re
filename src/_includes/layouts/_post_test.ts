@@ -59,6 +59,16 @@ function makeData(
     readingInfo?: { minutes?: number };
     nav?: ReturnType<typeof makeNav>;
     date?: Date;
+    git_created?: string;
+    git?: {
+      lastCommit?: {
+        sha?: string;
+        shortSha?: string;
+        url?: string;
+        commitUrl?: string;
+      };
+    };
+    update_date?: string;
   },
 ): Lume.Data {
   const defaultTitle = makeSentence(701);
@@ -74,6 +84,9 @@ function makeData(
     readingInfo: undefined,
     backlinks: undefined,
     nav: makeNav(undefined, undefined),
+    git_created: undefined,
+    git: undefined,
+    update_date: undefined,
     ...overrides,
   });
 }
@@ -84,8 +97,13 @@ describe("post.tsx layout", () => {
       const html = await renderComponent(
         postLayout(makeData({ readingInfo: { minutes: 5 } }), MOCK_HELPERS),
       );
+      const readingTimeMatches = html.match(/5 min read/g) ?? [];
+
       assertStringIncludes(html, "5 min read");
       assertStringIncludes(html, "post-meta-separator");
+      assertEquals(readingTimeMatches.length, 1);
+      assertNotMatch(html, /<dt class="post-summary-term">Reading time<\/dt>/);
+      assertNotMatch(html, /<dt class="post-details-term">Reading time<\/dt>/);
     });
 
     it("omits reading time section when absent", async () => {
@@ -185,6 +203,35 @@ describe("post.tsx layout", () => {
       assertStringIncludes(
         html,
         'class="post-content" lang="en" aria-labelledby="post-title"',
+      );
+    });
+
+    it("renders git-created and last-commit metadata when available", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({
+            git_created: "2026-03-14T08:00:00+08:00",
+            update_date: "2026-03-27T10:09:39+08:00",
+            git: {
+              lastCommit: {
+                sha: "515315d176f8c4bd88ae71d4860b676ab1b2366b",
+                shortSha: "515315d",
+                url:
+                  "https://github.com/frenchvandal/normco.re/commits/master/src/posts/example-post/en.md",
+              },
+            },
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+
+      assertStringIncludes(html, "Last updated");
+      assertStringIncludes(html, "Commit");
+      assertStringIncludes(html, "515315d");
+      assertNotMatch(html, /<dt class="post-details-term">Created<\/dt>/);
+      assertStringIncludes(
+        html,
+        'href="https://github.com/frenchvandal/normco.re/commits/master/src/posts/example-post/en.md"',
       );
     });
 
@@ -444,14 +491,15 @@ describe("post.tsx layout", () => {
 });
 
 describe("tag-link CSS contracts", () => {
-  it("keeps navigational tag links distinct and monochrome", () => {
+  it("keeps navigational tag links distinct and aligned with outlined tag presets", () => {
     assertStringIncludes(featureStyles, ".tag-link::after");
     assertStringIncludes(
       featureStyles,
       "font-size: var(--ph-text-xs);",
     );
     assertStringIncludes(featureStyles, ".tag-link:hover .tag-link__label");
-    assertStringIncludes(featureStyles, "var(--ph-color-accent-fg)");
+    assertStringIncludes(featureStyles, ".tag-link--blue");
+    assertStringIncludes(featureStyles, "var(--ph-tag-preset-blue)");
     assertNotMatch(featureStyles, /var\(--site-tag-/);
   });
 });

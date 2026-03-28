@@ -14,5 +14,7 @@ describe("src/posts/_data.ts", () => {
     const data = jsonLd as unknown as Record<string, unknown>;
     assertEquals(data["@type"], "BlogPosting");
     assertEquals(data.mainEntityOfPage, "=url");
+    assertEquals(data.datePublished, "=date");
+    assertEquals(data.dateModified, "=update_date || =date");
   });
 });

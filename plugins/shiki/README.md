@@ -16,8 +16,8 @@ site.use(
     render: {
       defaultColor: false,
       themes: {
-        light: "vitesse-light",
-        dark: "vitesse-dark",
+        light: "github-light-default",
+        dark: "github-dark-default",
       },
     },
   }),

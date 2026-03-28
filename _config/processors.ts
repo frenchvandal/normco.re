@@ -15,8 +15,13 @@ import {
   isMutableRecord,
   resolveOptionalTrimmedString,
 } from "../src/utils/type-guards.ts";
+import {
+  tryResolvePostCreatedDate,
+  tryResolvePostUpdatedDate,
+} from "../src/posts/post-metadata.ts";
 import { registerContentInvariants } from "../plugins/content_invariants.ts";
 import { registerPostLinkGraph } from "../plugins/post_link_graph.ts";
+import { createGitFileHistoryResolver, type GitFileHistory } from "./git.ts";
 
 const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
 const TEXT_DECODER = new TextDecoder();
@@ -95,6 +100,78 @@ export function assignMissingPostId(
   pageData.id = generatedId;
 }
 
+type PostGitMetadata = Readonly<{
+  createdAt?: string;
+  lastCommit?: Readonly<{
+    sha: string;
+    shortSha: string;
+    date: string;
+    path: string;
+    url?: string;
+    commitUrl?: string;
+  }>;
+}>;
+
+export function applyPostGitMetadata(
+  pageData: unknown,
+  sourcePath: string | undefined,
+  resolveGitHistory: (sourcePath: string) => GitFileHistory,
+): void {
+  if (
+    !isMutableRecord(pageData) ||
+    pageData.type !== "post" ||
+    typeof sourcePath !== "string" ||
+    sourcePath.length === 0
+  ) {
+    return;
+  }
+
+  const gitHistory = resolveGitHistory(sourcePath);
+  const lastCommit = gitHistory.lastCommit;
+  const metadata: PostGitMetadata = {
+    ...(gitHistory.createdAt ? { createdAt: gitHistory.createdAt } : {}),
+    ...(lastCommit
+      ? {
+        lastCommit: {
+          sha: lastCommit.sha,
+          shortSha: lastCommit.shortSha,
+          date: lastCommit.committedAt,
+          path: lastCommit.filePath,
+          ...(lastCommit.historyUrl ? { url: lastCommit.historyUrl } : {}),
+          ...(lastCommit.commitUrl ? { commitUrl: lastCommit.commitUrl } : {}),
+        },
+      }
+      : {}),
+  };
+
+  if (gitHistory.createdAt) {
+    pageData.git_created = gitHistory.createdAt;
+  }
+
+  const resolvedCreatedDate = tryResolvePostCreatedDate({
+    date: pageData.date,
+    ...(gitHistory.createdAt ? { git_created: gitHistory.createdAt } : {}),
+  });
+  const resolvedUpdatedDate = tryResolvePostUpdatedDate({
+    date: resolvedCreatedDate ?? pageData.date,
+    update_date: pageData.update_date,
+    ...(gitHistory.createdAt ? { git_created: gitHistory.createdAt } : {}),
+    ...(gitHistory.createdAt || lastCommit ? { git: metadata } : {}),
+  });
+
+  if (resolvedCreatedDate) {
+    pageData.date = resolvedCreatedDate;
+  }
+
+  if (resolvedUpdatedDate) {
+    pageData.update_date = resolvedUpdatedDate;
+  }
+
+  if (gitHistory.createdAt || lastCommit) {
+    pageData.git = metadata;
+  }
+}
+
 export function applyMultilanguageDataAliases(pageData: unknown): void {
   if (!isMutableRecord(pageData)) {
     return;
@@ -143,6 +220,7 @@ export function registerPostDataPreparation(site: Site): void {
   // The multilanguage plugin groups localized siblings by `id` while building
   // alternates, so post ids and hyphenated language aliases must exist first.
   const generatedPostIdsByScope = new Map<string, string>();
+  const resolveGitHistory = createGitFileHistoryResolver();
 
   site.preprocess([".html"], (pages: Page[]) => {
     for (const page of pages) {
@@ -151,6 +229,11 @@ export function registerPostDataPreparation(site: Site): void {
         page.data,
         typeof page.sourcePath === "string" ? page.sourcePath : undefined,
         generatedPostIdsByScope,
+      );
+      applyPostGitMetadata(
+        page.data,
+        typeof page.sourcePath === "string" ? page.sourcePath : undefined,
+        resolveGitHistory,
       );
     }
   });

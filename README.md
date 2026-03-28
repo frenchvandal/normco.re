@@ -11,6 +11,9 @@ route-scoped Ant Design blog islands, and deployed as a static site to
 - Pages, layouts, and shared UI components live in TSX.
 - Editorial post bodies live in Markdown under `src/posts/<slug>/`.
 - Shared post metadata lives in `src/posts/<slug>/_data.yml`.
+- Build processors enrich each localized post with Git-derived created and
+  updated dates, plus a last-commit link, whenever full repository history is
+  available.
 - The site is localized in English, French, Simplified Chinese, and Traditional
   Chinese.
 - The UI is built on a local `--ph-*` token layer in
@@ -235,6 +238,9 @@ Interactive UI is intentionally narrow and explicit:
   recover cleanly while offline after the runtime has been loaded once.
 - Code blocks in posts remain editorial `pre > code` blocks, enhanced only by a
   lightweight copy action when JavaScript is available.
+- Shiki handles fenced-code highlighting with GitHub's default light and dark
+  themes. Ant Design is used for interactive blog surfaces, not syntax
+  highlighting.
 
 ## Quality Gates
 
@@ -260,7 +266,9 @@ kept separate from the Lume build cache. The key reports are:
 The `site` GitHub Actions workflow builds the site, assumes an Alibaba Cloud
 role using GitHub OIDC, syncs `_site/` to OSS, and refreshes or preloads CDN
 paths. The workflow inherits the build-time quality gates, so a failing build or
-link check blocks deployment.
+link check blocks deployment. The checkout step intentionally keeps
+`fetch-depth: 0` so the build can resolve per-file Git creation dates, update
+timestamps, and commit links in CI.
 
 The deployment walkthrough in
 [src/posts/alibaba-cloud-oss-cdn-deployment/en.md](./src/posts/alibaba-cloud-oss-cdn-deployment/en.md)

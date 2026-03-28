@@ -3,6 +3,7 @@ import { describe, it } from "@std/testing/bdd";
 
 import {
   applyMultilanguageDataAliases,
+  applyPostGitMetadata,
   assignMissingPostId,
   decodePageContent,
   getPostIdScopeKey,
@@ -159,5 +160,99 @@ describe("assignMissingPostId", () => {
 
     assertEquals(postPageData.id, "generated-id");
     assertEquals(otherPageData.id, undefined);
+  });
+});
+
+describe("applyPostGitMetadata", () => {
+  it("stores git-created and git-updated metadata for post pages", () => {
+    const pageData: Record<string, unknown> = {
+      type: "post",
+      date: "2026-03-10",
+    };
+
+    applyPostGitMetadata(
+      pageData,
+      "/src/posts/example-post/en.md",
+      () => ({
+        createdAt: "2026-03-14T08:00:00+08:00",
+        lastCommit: {
+          sha: "515315d176f8c4bd88ae71d4860b676ab1b2366b",
+          shortSha: "515315d",
+          committedAt: "2026-03-27T10:09:39+08:00",
+          filePath: "src/posts/example-post/en.md",
+          historyUrl:
+            "https://github.com/frenchvandal/normco.re/commits/master/src/posts/example-post/en.md",
+          commitUrl:
+            "https://github.com/frenchvandal/normco.re/commit/515315d176f8c4bd88ae71d4860b676ab1b2366b",
+        },
+      }),
+    );
+
+    assertEquals(pageData.git_created, "2026-03-14T08:00:00+08:00");
+    assertEquals(
+      pageData.date instanceof Date
+        ? pageData.date.toISOString()
+        : pageData.date,
+      "2026-03-14T00:00:00.000Z",
+    );
+    assertEquals(
+      pageData.update_date instanceof Date
+        ? pageData.update_date.toISOString()
+        : pageData.update_date,
+      "2026-03-27T02:09:39.000Z",
+    );
+    assertEquals(pageData.git, {
+      createdAt: "2026-03-14T08:00:00+08:00",
+      lastCommit: {
+        sha: "515315d176f8c4bd88ae71d4860b676ab1b2366b",
+        shortSha: "515315d",
+        date: "2026-03-27T10:09:39+08:00",
+        path: "src/posts/example-post/en.md",
+        url:
+          "https://github.com/frenchvandal/normco.re/commits/master/src/posts/example-post/en.md",
+        commitUrl:
+          "https://github.com/frenchvandal/normco.re/commit/515315d176f8c4bd88ae71d4860b676ab1b2366b",
+      },
+    });
+  });
+
+  it("falls back from git dates to editorial dates for creation and update", () => {
+    const pageData: Record<string, unknown> = {
+      type: "post",
+      date: "2026-03-10",
+      update_date: "2026-03-12",
+    };
+
+    applyPostGitMetadata(
+      pageData,
+      "/src/posts/example-post/en.md",
+      () => ({}),
+    );
+
+    assertEquals(
+      pageData.date instanceof Date
+        ? pageData.date.toISOString()
+        : pageData.date,
+      "2026-03-10T00:00:00.000Z",
+    );
+    assertEquals(
+      pageData.update_date instanceof Date
+        ? pageData.update_date.toISOString()
+        : pageData.update_date,
+      "2026-03-12T00:00:00.000Z",
+    );
+    assertEquals(pageData.git, undefined);
+  });
+
+  it("ignores non-post page data and missing source paths", () => {
+    const pageData: Record<string, unknown> = { type: "page" };
+
+    applyPostGitMetadata(pageData, undefined, () => ({
+      createdAt: "ignored",
+    }));
+
+    assertEquals(pageData.git_created, undefined);
+    assertEquals(pageData.update_date, undefined);
+    assertEquals(pageData.git, undefined);
   });
 });

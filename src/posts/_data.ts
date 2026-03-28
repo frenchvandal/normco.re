@@ -10,7 +10,7 @@ export const jsonLd: Lume.Data["jsonLd"] = {
   headline: "=title || $ h1.post-title",
   description: "=description",
   datePublished: "=date",
-  dateModified: "=date",
+  dateModified: "=update_date || =date",
   url: "=url",
   mainEntityOfPage: "=url",
   author: {

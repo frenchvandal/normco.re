@@ -158,8 +158,11 @@ from the same generated source of truth before remote refresh.
 
 - `_config/assets.ts` defines the asset surface
 - `_config/feeds.ts` emits localized RSS, Atom, and JSON feeds
+- `_config/git.ts` resolves repository-aware metadata such as default branch,
+  per-file creation dates, update timestamps, and GitHub commit/history URLs
 - `_config/processors.ts` runs post-render processors, including editorial image
-  checks, multilanguage data aliasing, and JSON Feed normalization
+  checks, multilanguage data aliasing, Git metadata enrichment for posts, and
+  JSON Feed normalization
 
 ### Quality Reports
 
@@ -224,7 +227,9 @@ after hydration.
 
 Typography relies on the local system font stacks exposed through
 `src/styles/antd/theme-tokens.css`, and the build does not generate bundled
-webfont assets.
+webfont assets. Fenced code blocks are highlighted by Shiki with GitHub's
+default light and dark themes, while Ant Design stays focused on interactive
+blog surfaces rather than syntax-highlighting concerns.
 
 ## Blog Client Bundles
 
@@ -348,8 +353,9 @@ Implementation sources of truth:
 - keep `description` in each localized Markdown frontmatter because it is reused
   in list cards and feed summaries
 - keep shared post `url`, `date`, and `tags` in `src/posts/<slug>/_data.yml`
-- if the site starts tracking real modification times later, map that field to
-  feed `updated` metadata instead of synthesizing it
+- let build-time Git history supply post creation and update dates when
+  available, then fall back to shared `_data.yml` values and finally to Lume's
+  page date resolution
 
 ## LumeCMS
 

@@ -11,7 +11,7 @@ import {
   type SiteLanguage,
 } from "./i18n.ts";
 import {
-  resolvePostDate,
+  resolvePostCreatedDate,
   resolveReadingMinutes,
 } from "../posts/post-metadata.ts";
 import { formatRfc3339Instant } from "./date-time.ts";
@@ -38,7 +38,7 @@ export function toStoryData(
   language: SiteLanguage,
   dateFormat: DateHelper,
 ): StoryData {
-  const postDate = resolvePostDate(post.date);
+  const postDate = resolvePostCreatedDate(post);
   const minutes = resolveReadingMinutes(post.readingInfo);
   const summary = resolveOptionalString(post.description);
 

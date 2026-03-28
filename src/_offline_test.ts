@@ -14,6 +14,11 @@ describe("offline.page.tsx", () => {
       html,
       'class="state-panel state-panel--page state-panel--offline-page"',
     );
+    assertStringIncludes(
+      html,
+      'class="state-panel-visual state-panel-visual--offline"',
+    );
+    assertStringIncludes(html, 'class="state-panel-empty-illustration"');
     assertStringIncludes(html, "You are offline.");
   });
 

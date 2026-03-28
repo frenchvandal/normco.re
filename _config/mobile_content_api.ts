@@ -1,13 +1,11 @@
 import { type Data, Page as LumePage } from "lume/core/file.ts";
 import type Site from "lume/core/site.ts";
 import {
-  resolvePostDate,
+  resolvePostCreatedDate,
+  resolvePostUpdatedDate,
   resolveReadingMinutes,
 } from "../src/posts/post-metadata.ts";
-import {
-  formatRfc3339Instant,
-  parseDateValue,
-} from "../src/utils/date-time.ts";
+import { formatRfc3339Instant } from "../src/utils/date-time.ts";
 import {
   DEFAULT_LANGUAGE,
   getLanguageDataCode,
@@ -145,7 +143,7 @@ function requireString(
 
 function resolvePublishedAt(page: Data): string {
   const fallback = new Date(NaN);
-  const publishedAt = resolvePostDate(page.date, fallback);
+  const publishedAt = resolvePostCreatedDate(page, fallback);
 
   if (Number.isNaN(publishedAt.getTime())) {
     throw new Error(
@@ -159,8 +157,11 @@ function resolvePublishedAt(page: Data): string {
 }
 
 function resolveUpdatedAt(page: Data): string | undefined {
-  const updatedAt = parseDateValue(page.update_date);
-  return updatedAt ? formatRfc3339Instant(updatedAt) : undefined;
+  const fallback = new Date(NaN);
+  const updatedAt = resolvePostUpdatedDate(page, fallback);
+  return Number.isNaN(updatedAt.getTime())
+    ? undefined
+    : formatRfc3339Instant(updatedAt);
 }
 
 function resolvePageLanguage(page: Data): SiteLanguage {
@@ -219,8 +220,8 @@ function sortPostPagesByDateDesc(
   pages: ReadonlyArray<PostPage>,
 ): ReadonlyArray<PostPage> {
   return [...pages].sort((left, right) => {
-    const leftDate = resolvePostDate(left.data.date, new Date(0)).getTime();
-    const rightDate = resolvePostDate(right.data.date, new Date(0)).getTime();
+    const leftDate = resolvePostCreatedDate(left.data, new Date(0)).getTime();
+    const rightDate = resolvePostCreatedDate(right.data, new Date(0)).getTime();
 
     if (leftDate !== rightDate) {
       return rightDate - leftDate;

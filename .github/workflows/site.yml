@@ -37,6 +37,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
+          # Full history is required for build-time per-file git metadata.
           fetch-depth: 0
 
       - name: Setup Deno environment

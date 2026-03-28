@@ -390,9 +390,19 @@
         currentColor 34%,
         var(--ph-color-border-default)
       );
+    background: transparent;
+  }
+
+  .blog-antd-tag.ant-tag:hover,
+  .blog-antd-tag.ant-tag:focus-within {
+    border-color: color-mix(
+      in oklch,
+      currentColor 44%,
+      var(--ph-color-border-default)
+    );
     background: color-mix(
       in oklch,
-      currentColor 13%,
+      currentColor 10%,
       var(--ph-color-canvas-default)
     );
   }
@@ -403,6 +413,10 @@
   }
 
   .blog-antd-tag.ant-tag a:hover,
+  .blog-antd-tag.ant-tag a:focus-visible {
+    color: inherit;
+  }
+
   .blog-antd-feature-card__title.ant-typography a:hover,
   .blog-antd-story-card__title.ant-typography a:hover {
     color: var(--ph-color-accent-fg);

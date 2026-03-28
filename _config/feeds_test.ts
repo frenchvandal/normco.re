@@ -111,6 +111,7 @@ describe("_config/feeds.ts", () => {
           description: "Summary",
           children: '<p><a href="/about/">Body</a></p>',
           date: new Date("2026-03-11T00:00:00Z"),
+          update_date: "2026-03-27T10:09:39+08:00",
         } as unknown as import("lume/core/file.ts").Data,
       ],
       true,
@@ -134,5 +135,6 @@ describe("_config/feeds.ts", () => {
       xml,
       '<content type="html">&lt;p&gt;&lt;a href=&quot;https://normco.re/about/&quot;&gt;Body&lt;/a&gt;&lt;/p&gt;</content>',
     );
+    assertStringIncludes(xml, "<updated>2026-03-27T02:09:39Z</updated>");
   });
 });

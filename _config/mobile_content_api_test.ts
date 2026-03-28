@@ -115,7 +115,7 @@ describe("_config/mobile_content_api.ts", () => {
     });
   });
 
-  it("builds localized posts-index items from post data without synthesizing updatedAt", () => {
+  it("falls back to the created date when synthesizing updatedAt", () => {
     const siteStub = {
       url(path: string, absolute: boolean): string {
         if (!absolute) {
@@ -149,6 +149,7 @@ describe("_config/mobile_content_api.ts", () => {
           title: "Example post",
           summary: "Contract-backed summary.",
           publishedAt: "2026-03-16T00:00:00Z",
+          updatedAt: "2026-03-16T00:00:00Z",
           readingTime: 2,
           tags: ["android", "compose"],
           detailApiUrl: "/api/posts/example-post.json",
@@ -156,6 +157,58 @@ describe("_config/mobile_content_api.ts", () => {
         },
       ],
     });
+  });
+
+  it("prefers git-created over the editorial date for publishedAt", () => {
+    const siteStub = {
+      url(path: string, absolute: boolean): string {
+        if (!absolute) {
+          throw new Error("Expected absolute URL resolution");
+        }
+
+        return `https://normco.re${path}`;
+      },
+    };
+
+    const index = createPostsIndexDocument(siteStub, "en", [
+      {
+        id: "example-post",
+        basename: "example-post",
+        title: "Example post",
+        description: "Contract-backed summary.",
+        date: "2026-03-10",
+        git_created: "2026-03-16T00:33:44+08:00",
+        url: "/posts/example-post/",
+      } as unknown as Data,
+    ]);
+
+    assertEquals(index.items[0]?.publishedAt, "2026-03-15T16:33:44Z");
+  });
+
+  it("includes updatedAt when commit-derived update_date is present", () => {
+    const siteStub = {
+      url(path: string, absolute: boolean): string {
+        if (!absolute) {
+          throw new Error("Expected absolute URL resolution");
+        }
+
+        return `https://normco.re${path}`;
+      },
+    };
+
+    const index = createPostsIndexDocument(siteStub, "en", [
+      {
+        id: "example-post",
+        basename: "example-post",
+        title: "Example post",
+        description: "Contract-backed summary.",
+        date: new Date("2026-03-16T00:00:00Z"),
+        update_date: "2026-03-27T10:09:39+08:00",
+        url: "/posts/example-post/",
+      } as unknown as Data,
+    ]);
+
+    assertEquals(index.items[0]?.updatedAt, "2026-03-27T02:09:39Z");
   });
 
   it("uses Lume `basename` for slug-derived routes while preserving explicit ids", () => {

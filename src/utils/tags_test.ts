@@ -12,6 +12,7 @@ describe("tags taxonomy utilities", () => {
   it("returns stable deterministic colors for a given tag", () => {
     assertEquals(getTagColor("design"), getTagColor("design"));
     assertEquals(getTagColor("github-actions"), getTagColor("github-actions"));
+    assertEquals(getTagColor("design"), getAntdTagColor("design"));
   });
 
   it("returns stable deterministic Ant Design colors for a given tag", () => {
@@ -20,6 +21,7 @@ describe("tags taxonomy utilities", () => {
       getAntdTagColor("github-actions"),
       getAntdTagColor("github-actions"),
     );
+    assertEquals(getAntdTagColor("design"), getTagColor("design"));
   });
 
   it("builds localized tag URLs with the plural basename", () => {

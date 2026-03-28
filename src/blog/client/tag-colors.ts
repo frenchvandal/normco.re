@@ -1,25 +1,10 @@
-const BLOG_TAG_COLORS = [
-  "blue",
-  "cyan",
-  "geekblue",
-  "green",
-  "lime",
-  "gold",
-  "purple",
-  "volcano",
-] as const;
+import {
+  getTagPresetColor,
+  type TagPresetColor,
+} from "../../utils/tag-preset-colors.ts";
 
-export type BlogTagColor = (typeof BLOG_TAG_COLORS)[number];
-
-function getTagHash(tag: string): number {
-  return tag.split("").reduce(
-    (accumulator, character) => accumulator + character.charCodeAt(0),
-    0,
-  );
-}
+export type BlogTagColor = TagPresetColor;
 
 export function getBlogTagColor(tag: string): BlogTagColor {
-  const hash = getTagHash(tag);
-
-  return BLOG_TAG_COLORS[hash % BLOG_TAG_COLORS.length] as BlogTagColor;
+  return getTagPresetColor(tag);
 }

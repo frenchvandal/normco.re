@@ -26,7 +26,7 @@ import {
   VerticalAlignTopOutlined,
 } from "@blog/post-antd";
 import { getBlogTagColor } from "./tag-colors.ts";
-import { MetaLine, ReadingMeter, renderBreadcrumbItems } from "./common.tsx";
+import { MetaLine, renderBreadcrumbItems } from "./common.tsx";
 
 export function PostView(
   { data, interactive = true }: {
@@ -95,26 +95,18 @@ export function PostView(
                   )}
                 </Flex>
               </Col>
-              <Col xs={24} xl={9}>
-                {(data.summary || data.readingTimeLabel) && (
+              {data.summary && (
+                <Col xs={24} xl={9}>
                   <div className="blog-antd-post-summary blog-antd-post-summary--hero">
-                    {data.summary && (
-                      <>
-                        <p className="blog-antd-eyebrow">
-                          {data.summaryEyebrow}
-                        </p>
-                        <Paragraph className="blog-antd-page-lead blog-antd-page-lead--summary">
-                          {data.summary}
-                        </Paragraph>
-                      </>
-                    )}
-                    <ReadingMeter
-                      readingLabel={data.readingTimeLabel}
-                      className="blog-antd-reading-meter--featured"
-                    />
+                    <p className="blog-antd-eyebrow">
+                      {data.summaryEyebrow}
+                    </p>
+                    <Paragraph className="blog-antd-page-lead blog-antd-page-lead--summary">
+                      {data.summary}
+                    </Paragraph>
                   </div>
-                )}
-              </Col>
+                </Col>
+              )}
             </Row>
           </section>
 
@@ -190,6 +182,7 @@ export function PostView(
                       <Tag
                         key={tag.url}
                         color={getBlogTagColor(tag.label)}
+                        variant="outlined"
                         className="blog-antd-tag"
                       >
                         <a href={tag.url} title={tag.title} rel="tag">

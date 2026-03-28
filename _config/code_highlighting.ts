@@ -9,8 +9,10 @@ export const SHIKI_OPTIONS = {
   render: {
     defaultColor: false,
     themes: {
-      light: "vitesse-light",
-      dark: "vitesse-dark",
+      // GitHub's default themes keep the editorial shell restrained while
+      // giving tokens more contrast than the flatter Vitesse pair.
+      light: "github-light-default",
+      dark: "github-dark-default",
     },
   },
 } satisfies ShikiPluginOptions;

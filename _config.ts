@@ -11,6 +11,7 @@ import { registerAssets } from "./_config/assets.ts";
 import { registerPlugins } from "./_config/plugins.ts";
 import { registerFeeds } from "./_config/feeds.ts";
 import { registerMobileContentApi } from "./_config/mobile_content_api.ts";
+import { getGitRepositoryInfo } from "./_config/git.ts";
 import {
   SCOPED_UPDATE_MATCHERS,
   shouldRunPostBuildTasks,
@@ -30,6 +31,7 @@ const isServeTask = Deno.env.get("LUME_SERVE") === "1" ||
 
 type BuildData = {
   repositoryUrl?: string;
+  defaultBranch?: string;
   swDebugLevel: "off" | "summary" | "verbose";
 };
 
@@ -38,46 +40,18 @@ type SeoIssue = {
   messages: string[];
 };
 
-function runGitCommand(args: string[]): string | undefined {
-  try {
-    const output = new Deno.Command("git", { args }).outputSync();
-
-    if (!output.success) {
-      return undefined;
-    }
-
-    return new TextDecoder().decode(output.stdout).trim();
-  } catch {
-    return undefined;
-  }
-}
-
-function normalizeRepositoryUrl(url: string | undefined): string | undefined {
-  if (!url) {
-    return undefined;
-  }
-
-  if (url.startsWith("git@")) {
-    const sshMatch = /^git@([^:]+):(.+?)(?:\.git)?$/.exec(url);
-
-    if (sshMatch) {
-      const [, host, repoPath] = sshMatch;
-      return `https://${host}/${repoPath}`;
-    }
-  }
-
-  return url.replace(/\.git$/, "");
-}
-
 function getBuildData(): BuildData {
-  const repositoryUrl = normalizeRepositoryUrl(
-    runGitCommand(["config", "--get", "remote.origin.url"]),
-  );
+  const repository = getGitRepositoryInfo();
   const swDebugLevel = isServeTask ? consoleDebugPolicy.level : "off";
 
   return {
     swDebugLevel,
-    ...(repositoryUrl ? { repositoryUrl } : {}),
+    ...(repository?.repositoryUrl
+      ? { repositoryUrl: repository.repositoryUrl }
+      : {}),
+    ...(repository?.defaultBranch
+      ? { defaultBranch: repository.defaultBranch }
+      : {}),
   };
 }
 

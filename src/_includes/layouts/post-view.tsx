@@ -2,7 +2,9 @@ import type { jsx } from "lume/jsx-runtime";
 
 import SiteIcon from "../../_components/SiteIcon.tsx";
 import {
-  resolvePostDate,
+  resolvePostCreatedDate,
+  resolvePostGitLastCommit,
+  resolvePostUpdatedDate,
   resolveReadingMinutes,
 } from "../../posts/post-metadata.ts";
 import { formatRfc3339Instant } from "../../utils/date-time.ts";
@@ -184,7 +186,13 @@ export function resolvePostState(
   neighbors: PostNeighbors,
 ): PostState {
   const currentUrl = typeof data.url === "string" ? data.url : "/";
-  const postDate = resolvePostDate(data.date);
+  const postDate = resolvePostCreatedDate(data);
+  const updatedDate = resolvePostUpdatedDate(data, postDate);
+  const lastCommit = resolvePostGitLastCommit(
+    typeof data.git === "object" && data.git !== null
+      ? Reflect.get(data.git, "lastCommit")
+      : undefined,
+  );
   const minutes = resolveReadingMinutes(data.readingInfo);
   const tags = resolveStringTags(data.tags);
   const backlinks = resolvePostLinkReferences(data.backlinks);
@@ -198,19 +206,17 @@ export function resolvePostState(
     formatRfc3339Instant(postDate);
   const publishedDateLabel = dateFormat(postDate, "HUMAN_DATE", language) ??
     formatRfc3339Instant(postDate);
+  const updatedDateIso = dateFormat(updatedDate, "ATOM", language) ??
+    formatRfc3339Instant(updatedDate);
+  const updatedDateLabel = dateFormat(updatedDate, "HUMAN_DATE", language) ??
+    formatRfc3339Instant(updatedDate);
+  const showUpdatedDate = updatedDate.getTime() !== postDate.getTime();
   const readingTimeLabel = minutes !== undefined
     ? formatReadingTime(minutes, language)
     : undefined;
   const visibleSummary = resolveOptionalTrimmedString(data.description);
 
   const summaryItems = [
-    readingTimeLabel
-      ? {
-        key: "reading-time",
-        term: t.readingLabel,
-        value: readingTimeLabel,
-      }
-      : undefined,
     outline.length > 0
       ? { key: "sections", term: t.sectionsLabel, value: outline.length }
       : undefined,
@@ -222,11 +228,28 @@ export function resolvePostState(
       term: t.publishedLabel,
       value: <time datetime={publishedDateIso}>{publishedDateLabel}</time>,
     },
-    readingTimeLabel
+    showUpdatedDate
       ? {
-        key: "reading-time",
-        term: t.readingLabel,
-        value: readingTimeLabel,
+        key: "updated",
+        term: t.lastUpdatedLabel,
+        value: <time datetime={updatedDateIso}>{updatedDateLabel}</time>,
+      }
+      : undefined,
+    lastCommit
+      ? {
+        key: "commit",
+        term: t.commitLabel,
+        value: lastCommit.url
+          ? (
+            <a
+              href={lastCommit.url}
+              class="post-details-link"
+              title={lastCommit.sha}
+            >
+              {lastCommit.shortSha}
+            </a>
+          )
+          : <span title={lastCommit.sha}>{lastCommit.shortSha}</span>,
       }
       : undefined,
     {

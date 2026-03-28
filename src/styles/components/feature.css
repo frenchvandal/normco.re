@@ -106,9 +106,18 @@
     gap: var(--ph-space-2);
     max-inline-size: 100%;
     padding: 2px 6px;
-    border: var(--ph-border-hairline) solid var(--ph-color-border-muted);
+    border: var(--ph-border-hairline) solid
+      color-mix(
+        in oklch,
+        currentColor 32%,
+        var(--ph-color-border-muted)
+      );
     border-radius: var(--ph-radius-sm);
-    background: transparent;
+    background: color-mix(
+      in oklch,
+      currentColor 8%,
+      transparent
+    );
     color: var(--ph-color-fg-subtle);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
@@ -131,10 +140,69 @@
   .blog-tag-chip:hover,
   .tag-link:hover,
   .tag-link:focus-visible {
-    color: var(--ph-color-accent-fg);
-    border-color: currentColor;
-    background: var(--ph-surface-accent);
+    border-color: color-mix(
+      in oklch,
+      currentColor 48%,
+      var(--ph-color-border-default)
+    );
+    background: color-mix(
+      in oklch,
+      currentColor 14%,
+      var(--ph-color-canvas-default)
+    );
     text-decoration: none;
+  }
+
+  .site-tag--blue,
+  .blog-tag-chip--blue,
+  .tag-link--blue {
+    color: var(--ph-tag-preset-blue);
+  }
+
+  .site-tag--cyan,
+  .blog-tag-chip--cyan,
+  .tag-link--cyan {
+    color: var(--ph-tag-preset-cyan);
+  }
+
+  .site-tag--geekblue,
+  .blog-tag-chip--geekblue,
+  .tag-link--geekblue {
+    color: var(--ph-tag-preset-geekblue);
+  }
+
+  .site-tag--green,
+  .blog-tag-chip--green,
+  .tag-link--green {
+    color: var(--ph-tag-preset-green);
+  }
+
+  .site-tag--lime,
+  .blog-tag-chip--lime,
+  .tag-link--lime {
+    color: var(--ph-tag-preset-lime);
+  }
+
+  .site-tag--gold,
+  .blog-tag-chip--gold,
+  .tag-link--gold {
+    color: var(--ph-tag-preset-gold);
+  }
+
+  .site-tag--purple,
+  .blog-tag-chip--purple,
+  .tag-link--purple {
+    color: var(--ph-tag-preset-purple);
+  }
+
+  .site-tag--volcano,
+  .blog-tag-chip--volcano,
+  .tag-link--volcano {
+    color: var(--ph-tag-preset-volcano);
+  }
+
+  .site-tag--teal {
+    color: var(--ph-tag-preset-teal);
   }
 
   .tag-link:hover .tag-link__label,

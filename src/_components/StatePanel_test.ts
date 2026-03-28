@@ -4,6 +4,19 @@ import { describe, it } from "@std/testing/bdd";
 import StatePanel from "./StatePanel.tsx";
 
 describe("StatePanel", () => {
+  it("renders trusted visual markup when provided", () => {
+    const html = StatePanel({
+      title: "Offline",
+      message: "Please reconnect.",
+      visual: '<div class="state-panel-visual" aria-hidden="true"></div>',
+    });
+
+    assertStringIncludes(
+      html,
+      '<div class="state-panel-visual" aria-hidden="true"></div>',
+    );
+  });
+
   it("escapes dynamic text and attribute values", () => {
     const html = StatePanel({
       title: '<img src=x onerror="alert(1)">',

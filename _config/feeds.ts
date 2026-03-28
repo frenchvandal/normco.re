@@ -7,7 +7,10 @@ import {
   LANGUAGE_DATA_CODE,
   type SiteLanguage,
 } from "../src/utils/i18n.ts";
-import { parseDateValue } from "../src/utils/date-time.ts";
+import {
+  resolvePostCreatedDate,
+  resolvePostUpdatedDate,
+} from "../src/posts/post-metadata.ts";
 import { resolveOptionalString } from "../src/utils/type-guards.ts";
 import {
   absolutizeHtmlUrls,
@@ -109,9 +112,8 @@ function buildAtomEntry(
   }
 
   const absoluteUrl = site.url(pagePath, true);
-  const published = parseDateValue(page.date);
-  const updated = parseDateValue(page.update_date) ?? published ??
-    fallbackDate;
+  const published = resolvePostCreatedDate(page, fallbackDate);
+  const updated = resolvePostUpdatedDate(page, published);
   const summary = resolveOptionalString(page.description);
   const contentHtml = resolveOptionalString(page.children);
 
