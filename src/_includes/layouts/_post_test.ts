@@ -12,7 +12,9 @@ import {
   asLumeHelpers,
   asOptionalLumeData,
 } from "../../../test/lume.ts";
-import layoutStyles from "../../styles/layout.css" with { type: "text" };
+import featureStyles from "../../styles/components/feature.css" with {
+  type: "text",
+};
 
 import postLayout from "./post.tsx";
 
@@ -443,13 +445,13 @@ describe("post.tsx layout", () => {
 
 describe("tag-link CSS contracts", () => {
   it("keeps navigational tag links distinct and monochrome", () => {
-    assertStringIncludes(layoutStyles, ".tag-link::after");
+    assertStringIncludes(featureStyles, ".tag-link::after");
     assertStringIncludes(
-      layoutStyles,
+      featureStyles,
       "font-size: var(--ph-text-xs);",
     );
-    assertStringIncludes(layoutStyles, ".tag-link:hover .tag-link__label");
-    assertStringIncludes(layoutStyles, "var(--ph-color-accent-fg)");
-    assertNotMatch(layoutStyles, /var\(--site-tag-/);
+    assertStringIncludes(featureStyles, ".tag-link:hover .tag-link__label");
+    assertStringIncludes(featureStyles, "var(--ph-color-accent-fg)");
+    assertNotMatch(featureStyles, /var\(--site-tag-/);
   });
 });

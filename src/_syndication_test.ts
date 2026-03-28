@@ -1,6 +1,15 @@
 import { assertNotMatch, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import layoutStyles from "./styles/layout.css" with {
+import archiveStyles from "./styles/components/archive.css" with {
+  type: "text",
+};
+import feedsStyles from "./styles/components/feeds.css" with {
+  type: "text",
+};
+import postStyles from "./styles/components/post.css" with {
+  type: "text",
+};
+import layoutShellStyles from "./styles/layout.css" with {
   type: "text",
 };
 import { asLumeData } from "../test/lume.ts";
@@ -8,6 +17,12 @@ import { asLumeData } from "../test/lume.ts";
 import syndicationPage from "./syndication.page.tsx";
 
 const MOCK_DATA = asLumeData({});
+const layoutStyles = [
+  archiveStyles,
+  feedsStyles,
+  postStyles,
+  layoutShellStyles,
+].join("\n");
 
 describe("syndication.page.tsx", () => {
   it("renders a minimal shell with a single feed descriptions sheet", () => {

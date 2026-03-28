@@ -1,0 +1,204 @@
+@layer layout {
+  .archive-pagehead-grid,
+  .tag-pagehead-grid,
+  .about-pagehead-grid,
+  .syndication-pagehead-grid,
+  .post-pagehead-grid {
+    display: grid;
+    gap: var(--ph-space-6);
+  }
+
+  .archive-page-title,
+  .tag-page-title,
+  .about-title,
+  .feeds-page-title {
+    margin: 0;
+    font-size: clamp(var(--ph-text-xl), 4vw, var(--ph-text-2xl));
+    line-height: var(--ph-lh-tight);
+  }
+
+  .archive-pagehead .pagehead-lead,
+  .about-pagehead .pagehead-lead,
+  .syndication-pagehead .pagehead-lead {
+    font-size: var(--ph-text-md);
+    max-inline-size: 48ch;
+  }
+
+  .archive-page-count,
+  .archive-year-summary,
+  .tag-page-current-tag {
+    inline-size: fit-content;
+  }
+
+  .syndication-pagehead,
+  .syndication-layout {
+    inline-size: min(100%, 70rem);
+    margin-inline: auto;
+  }
+
+  .syndication-pagehead {
+    gap: var(--ph-space-4);
+    padding-block-start: var(--ph-space-2);
+    padding-block-end: var(--ph-space-6);
+    margin-block-end: var(--ph-space-6);
+  }
+
+  .syndication-pagehead-copy {
+    display: grid;
+    gap: var(--ph-space-3);
+  }
+
+  .archive-tools {
+    display: flex;
+    justify-content: flex-start;
+    margin-block-end: var(--ph-space-5);
+  }
+
+  .archive-activity,
+  .archive-activity-main {
+    display: grid;
+    gap: var(--ph-space-6);
+  }
+
+  .archive-year {
+    display: grid;
+    gap: var(--ph-space-3);
+    padding-block-start: var(--ph-space-5);
+    border-block-start: var(--ph-border-hairline) solid
+      var(--ph-color-border-muted);
+    content-visibility: auto;
+    contain-intrinsic-size: auto 18rem;
+  }
+
+  .archive-year-header {
+    margin: 0;
+  }
+
+  .archive-year-heading-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ph-space-3) var(--ph-space-4);
+  }
+
+  .archive-year-heading {
+    font-size: var(--ph-text-lg);
+    line-height: var(--ph-lh-snug);
+    margin: 0;
+  }
+
+  .archive-list {
+    display: grid;
+    list-style: none;
+  }
+
+  .archive-post {
+    padding-block: var(--ph-space-5);
+  }
+
+  .archive-post .post-card-title {
+    font-size: var(--ph-text-md);
+    line-height: var(--ph-lh-tight);
+  }
+
+  .archive-post .post-card-summary {
+    font-size: var(--ph-text-base);
+    max-inline-size: 56ch;
+  }
+
+  .archive-structured-list-date,
+  .archive-structured-list-reading {
+    color: var(--ph-color-fg-muted);
+    font-size: var(--ph-text-sm);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .archive-structured-list-link {
+    color: var(--ph-color-fg-default);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .archive-structured-list-link:hover,
+  .archive-structured-list-link:focus-visible {
+    color: var(--ph-color-accent-fg);
+    text-decoration: underline;
+  }
+
+  .archive-year-nav {
+    display: grid;
+    gap: var(--ph-space-3);
+  }
+
+  .archive-year-nav-list {
+    display: grid;
+    gap: 0;
+    list-style: none;
+    border-block-start: var(--ph-border-hairline) solid
+      var(--ph-color-border-muted);
+  }
+
+  .archive-year-nav-item + .archive-year-nav-item {
+    border-block-start: var(--ph-border-hairline) solid
+      var(--ph-color-border-muted);
+  }
+
+  .archive-year-nav-link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--ph-space-3);
+    padding-block: var(--ph-space-3);
+    color: var(--ph-color-fg-default);
+    font-size: var(--ph-text-sm);
+    text-decoration: none;
+  }
+
+  .archive-year-nav-link:hover,
+  .archive-year-nav-link:focus-visible {
+    color: var(--ph-color-accent-fg);
+    text-decoration: underline;
+  }
+
+  .archive-year-nav-link-label {
+    font-size: var(--ph-text-base);
+    font-weight: 600;
+  }
+
+  .archive-year-nav-link-meta {
+    color: var(--ph-color-fg-muted);
+    font-family: var(--ph-font-mono);
+    font-size: var(--ph-text-xs);
+  }
+
+  .archive-year-nav--inline {
+    gap: var(--ph-space-2);
+    margin-block-end: var(--ph-space-5);
+  }
+
+  .archive-year-nav--inline .archive-year-nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ph-space-2) var(--ph-space-4);
+    border-block-start: 0;
+  }
+
+  .archive-year-nav--inline .archive-year-nav-item + .archive-year-nav-item {
+    border-block-start: 0;
+  }
+
+  .archive-year-nav--inline .archive-year-nav-link {
+    gap: var(--ph-space-2);
+    padding-block: 0;
+  }
+
+  .archive-year-nav--inline .archive-year-nav-link-label {
+    font-size: var(--ph-text-sm);
+  }
+
+  .tag-page-results {
+    display: grid;
+    gap: var(--ph-space-3);
+  }
+}

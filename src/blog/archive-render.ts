@@ -1,84 +1,14 @@
+import {
+  type ArchiveMonthGroup,
+  buildArchiveTimelineEntries,
+  formatArchiveIndex,
+  groupArchiveYears,
+} from "./archive-common.ts";
 import type { SiteLanguage } from "../utils/i18n.ts";
 import { escapeHtml } from "../utils/html.ts";
 import { getTagUrl } from "../utils/tags.ts";
 import type { BlogStoryCard } from "./view-data.ts";
-
-export type ArchiveMonthGroup = Readonly<{
-  key: string;
-  year: number;
-  label: string;
-  shortLabel: string;
-  anchorId: string;
-  posts: readonly BlogStoryCard[];
-}>;
-
-export function formatArchiveIndex(index: number): string {
-  return index.toString().padStart(2, "0");
-}
-
-function formatArchiveMonth(
-  monthKey: string,
-  locale: string,
-): Pick<ArchiveMonthGroup, "label" | "shortLabel" | "year"> {
-  const [yearText = "0", monthText = "1"] = monthKey.split("-");
-  const year = Number.parseInt(yearText, 10);
-  const month = Number.parseInt(monthText, 10);
-  const date = new Date(Date.UTC(year, month - 1, 1));
-
-  return {
-    year,
-    label: new Intl.DateTimeFormat(locale, {
-      month: "long",
-      year: "numeric",
-      timeZone: "UTC",
-    }).format(date),
-    shortLabel: new Intl.DateTimeFormat(locale, {
-      month: "short",
-      timeZone: "UTC",
-    }).format(date),
-  };
-}
-
-export function groupArchiveMonths(
-  posts: readonly BlogStoryCard[],
-  locale: string,
-): readonly ArchiveMonthGroup[] {
-  const months = new Map<string, {
-    year: number;
-    label: string;
-    shortLabel: string;
-    anchorId: string;
-    posts: BlogStoryCard[];
-  }>();
-
-  for (const story of posts) {
-    const key = story.dateIso.slice(0, 7);
-    const existingMonth = months.get(key);
-
-    if (existingMonth) {
-      existingMonth.posts.push(story);
-      continue;
-    }
-
-    const { year, label, shortLabel } = formatArchiveMonth(key, locale);
-    months.set(key, {
-      year,
-      label,
-      shortLabel,
-      anchorId: `archive-month-${key}`,
-      posts: [story],
-    });
-  }
-
-  return Array.from(months, ([key, month]) => ({
-    key,
-    year: month.year,
-    label: month.label,
-    shortLabel: month.shortLabel,
-    anchorId: month.anchorId,
-    posts: month.posts,
-  }));
-}
+export { formatArchiveIndex, groupArchiveMonths } from "./archive-common.ts";
 
 function renderMeta(story: BlogStoryCard): string {
   const items = [
@@ -132,37 +62,30 @@ export function renderArchiveMonthNav(
     return "";
   }
 
-  const yearGroups = new Map<number, ArchiveMonthGroup[]>();
-
-  for (const month of months) {
-    const existingYear = yearGroups.get(month.year) ?? [];
-    existingYear.push(month);
-    yearGroups.set(month.year, existingYear);
-  }
-
-  const groups = Array.from(yearGroups, ([year, yearMonths]) => {
-    const items = yearMonths.map((month) =>
-      `<li class="blog-antd-archive-anchor-item">
+  const groups = groupArchiveYears(months).map(
+    ({ year, months: yearMonths }) => {
+      const items = yearMonths.map((month) =>
+        `<li class="blog-antd-archive-anchor-item">
   <a
     class="blog-antd-archive-anchor-link"
     href="#${escapeHtml(month.anchorId)}"
     title="${escapeHtml(month.label)} • ${
-        formatArchiveIndex(month.posts.length)
-      }"
+          formatArchiveIndex(month.posts.length)
+        }"
   >
     <span class="blog-antd-archive-anchor__title">
       <span class="blog-antd-archive-anchor__label">${
-        escapeHtml(month.shortLabel)
-      }</span>
+          escapeHtml(month.shortLabel)
+        }</span>
       <span class="blog-antd-archive-anchor__count">${
-        formatArchiveIndex(month.posts.length)
-      }</span>
+          formatArchiveIndex(month.posts.length)
+        }</span>
     </span>
   </a>
 </li>`
-    ).join("");
+      ).join("");
 
-    return `<section
+      return `<section
   class="blog-antd-archive-month-group"
   aria-labelledby="archive-year-${year}"
 >
@@ -176,7 +99,8 @@ export function renderArchiveMonthNav(
     ${items}
   </ul>
 </section>`;
-  }).join("");
+    },
+  ).join("");
 
   return `<aside class="blog-antd-archive-nav" aria-label="${
     escapeHtml(label)
@@ -198,53 +122,47 @@ export function renderArchiveTimeline(
   ariaLabel: string,
   language: SiteLanguage,
 ): string {
-  let timelineIndex = 0;
+  const items = buildArchiveTimelineEntries(months).map((entry) => {
+    const { index, isLead, month, story } = entry;
 
-  const items = months.flatMap((month) =>
-    month.posts.map((story, monthIndex) => {
-      const isLead = timelineIndex === 0;
-      const item = `<li class="blog-antd-archive-timeline__entry${
-        isLead ? " blog-antd-archive-timeline__entry--lead" : ""
-      }">
+    return `<li class="blog-antd-archive-timeline__entry${
+      isLead ? " blog-antd-archive-timeline__entry--lead" : ""
+    }">
   <article class="blog-antd-archive-timeline__item${
-        isLead ? " blog-antd-archive-timeline__item--lead" : ""
-      }">
+      isLead ? " blog-antd-archive-timeline__item--lead" : ""
+    }">
     ${
-        monthIndex === 0
-          ? `<div
+      month
+        ? `<div
       id="${escapeHtml(month.anchorId)}"
       class="blog-antd-archive-timeline__month"
     >
       <p class="blog-antd-eyebrow blog-antd-archive-timeline__month-label">${
-            escapeHtml(month.label)
-          }</p>
+          escapeHtml(month.label)
+        }</p>
     </div>`
-          : ""
-      }
+        : ""
+    }
     <div class="blog-antd-archive-timeline__item-head">
       <span class="blog-antd-story-card__index">${
-        formatArchiveIndex(timelineIndex + 1)
-      }</span>
+      formatArchiveIndex(index + 1)
+    }</span>
       ${renderMeta(story)}
     </div>
     <h2 class="blog-antd-archive-timeline__title">
       <a href="${escapeHtml(story.url)}">${escapeHtml(story.title)}</a>
     </h2>
     ${
-        story.summary
-          ? `<p class="blog-antd-archive-timeline__summary">${
-            escapeHtml(story.summary)
-          }</p>`
-          : ""
-      }
+      story.summary
+        ? `<p class="blog-antd-archive-timeline__summary">${
+          escapeHtml(story.summary)
+        }</p>`
+        : ""
+    }
     ${renderStoryTags(story, language)}
   </article>
 </li>`;
-
-      timelineIndex += 1;
-      return item;
-    })
-  ).join("");
+  }).join("");
 
   return `<section class="blog-antd-archive-timeline-wrap" aria-label="${
     escapeHtml(ariaLabel)

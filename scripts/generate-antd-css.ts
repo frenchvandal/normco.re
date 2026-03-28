@@ -33,6 +33,100 @@ const EXTRACT_WARNING_PREFIXES = [
   "Warning: [antd: Input.Group]",
   "Warning: [antd: List]",
 ] as const;
+const GENERATED_TOKEN_REPLACEMENTS = [
+  [
+    "--ant-calendar-item-active-bg: #404040;",
+    "--ant-calendar-item-active-bg: var(--ph-surface-accent-strong);",
+  ],
+  [
+    "--ant-calendar-cell-active-with-range-bg: #404040;",
+    "--ant-calendar-cell-active-with-range-bg: var(--ph-surface-accent-strong);",
+  ],
+  [
+    "--ant-calendar-cell-hover-with-range-bg: #595959;",
+    "--ant-calendar-cell-hover-with-range-bg: var(--ph-surface-accent);",
+  ],
+  [
+    "--ant-calendar-cell-range-border-color: #333333;",
+    "--ant-calendar-cell-range-border-color: var(--ph-color-accent-emphasis);",
+  ],
+  [
+    "--ant-cascader-option-selected-bg: #404040;",
+    "--ant-cascader-option-selected-bg: var(--ph-surface-accent-strong);",
+  ],
+  [
+    "--ant-form-label-required-mark-color: #ff4d4f;",
+    "--ant-form-label-required-mark-color: var(--ph-color-feedback-error);",
+  ],
+  [
+    "--ant-input-active-border-color: #000000;",
+    "--ant-input-active-border-color: var(--ph-color-accent-fg);",
+  ],
+  [
+    "--ant-input-number-active-border-color: #000000;",
+    "--ant-input-number-active-border-color: var(--ph-color-accent-fg);",
+  ],
+  [
+    "--ant-input-number-filled-handle-bg: #000000;",
+    "--ant-input-number-filled-handle-bg: var(--ph-color-accent-fg);",
+  ],
+  [
+    "--ant-input-number-handle-hover-color: #000000;",
+    "--ant-input-number-handle-hover-color: var(--ph-color-accent-fg);",
+  ],
+  [
+    "--ant-layout-color-bg-body: #f5f5f5;",
+    "--ant-layout-color-bg-body: var(--ph-color-canvas-subtle);",
+  ],
+  [
+    "--ant-layout-body-bg: #f5f5f5;",
+    "--ant-layout-body-bg: var(--ph-color-canvas-subtle);",
+  ],
+  [
+    "--ant-layout-footer-bg: #f5f5f5;",
+    "--ant-layout-footer-bg: var(--ph-color-canvas-subtle);",
+  ],
+  [
+    "--ant-button-primary-color: #fff;",
+    "--ant-button-primary-color: var(--ph-color-canvas-default);",
+  ],
+  [
+    "--ant-button-danger-color: #fff;",
+    "--ant-button-danger-color: var(--ph-color-canvas-default);",
+  ],
+  [
+    "--ant-color-primary: #000000;",
+    "--ant-color-primary: var(--ph-color-accent-fg);",
+  ],
+  [
+    "--ant-color-success: #52c41a;",
+    "--ant-color-success: var(--ph-color-feedback-success);",
+  ],
+  [
+    "--ant-color-warning: #faad14;",
+    "--ant-color-warning: var(--ph-color-feedback-warning);",
+  ],
+  [
+    "--ant-color-error: #ff4d4f;",
+    "--ant-color-error: var(--ph-color-feedback-error);",
+  ],
+  [
+    "--ant-color-info: #1677ff;",
+    "--ant-color-info: var(--ph-color-feedback-info);",
+  ],
+  [
+    "--ant-color-link: #000000;",
+    "--ant-color-link: var(--ph-color-accent-fg);",
+  ],
+  [
+    "--ant-color-text-base: #000;",
+    "--ant-color-text-base: var(--ph-color-fg-default);",
+  ],
+  [
+    "--ant-color-bg-base: #fff;",
+    "--ant-color-bg-base: var(--ph-color-canvas-default);",
+  ],
+] as const;
 
 async function formatOutputFile(filePath: string): Promise<void> {
   const command = new Deno.Command(Deno.execPath(), {
@@ -80,6 +174,13 @@ function withSuppressedExtractWarnings<T>(run: () => T): T {
     console.warn = originalWarn;
     console.error = originalError;
   }
+}
+
+function alignGeneratedTokens(css: string): string {
+  return GENERATED_TOKEN_REPLACEMENTS.reduce(
+    (result, [from, to]) => result.replaceAll(from, to),
+    css,
+  );
 }
 
 function createSiteSeed() {
@@ -206,6 +307,6 @@ if (import.meta.main) {
     )
   );
 
-  await Deno.writeTextFile(OUTPUT_PATH, `${css}\n`);
+  await Deno.writeTextFile(OUTPUT_PATH, `${alignGeneratedTokens(css)}\n`);
   await formatOutputFile(OUTPUT_PATH);
 }

@@ -18,8 +18,9 @@ route-scoped Ant Design blog islands, and deployed as a static site to
 - The visual direction is Swiss editorial with restrained monochrome surfaces,
   one blue accent family, generous whitespace, and Ant Design reserved for the
   interactive blog surfaces.
-- The stylesheet entrypoint is `src/style.css`, which composes reset, tokens,
-  base, layout, and utilities layers only.
+- The stylesheet entrypoint is `src/style.css`, which composes the token bridge,
+  generated Ant Design bridge, reset, base, component layout modules, shell
+  layout, and utilities in one ordered pipeline.
 - The writing archive is enhanced by a route-split Ant Design client with a
   timeline and month navigator rather than duplicating the home page.
 - Search exposes inline loading, retry, and result feedback with accessible
@@ -49,18 +50,21 @@ If your environment requires system CA certificates, prefix commands with
 
 ## Daily Commands
 
-| Task          | Command                        | Notes                                                  |
-| ------------- | ------------------------------ | ------------------------------------------------------ |
-| Serve         | `deno task serve`              | Starts the local site and LumeCMS                      |
-| Check         | `deno task check`              | Type-checks the codebase                               |
-| Test          | `deno task test`               | Runs unit and integration tests                        |
-| Coverage      | `deno task test:coverage`      | Collects coverage data under `.tmp/deno-coverage`      |
-| Coverage HTML | `deno task coverage:html`      | Generates browsable HTML from the latest coverage run  |
-| Doc tests     | `deno task test:doc`           | Runs JSDoc examples as executable documentation tests  |
-| Build         | `deno task build`              | Builds `_site/` for production                         |
-| Contracts     | `deno task validate-contracts` | Validates feeds structurally and optional JSON outputs |
-| Install hooks | `deno task lefthook:install`   | Installs local Git hooks                               |
-| Update deps   | `deno task update-deps`        | Updates pinned dependencies and the lockfile           |
+| Task           | Command                        | Notes                                                  |
+| -------------- | ------------------------------ | ------------------------------------------------------ |
+| Serve          | `deno task serve`              | Starts the local site and LumeCMS                      |
+| Check          | `deno task check`              | Type-checks the codebase                               |
+| Test           | `deno task test`               | Runs unit and integration tests                        |
+| Coverage       | `deno task test:coverage`      | Collects coverage data under `.tmp/deno-coverage`      |
+| Coverage HTML  | `deno task coverage:html`      | Generates browsable HTML from the latest coverage run  |
+| Doc tests      | `deno task test:doc`           | Runs JSDoc examples as executable documentation tests  |
+| Design guard   | `deno task design:guard`       | Blocks normalized UI literals outside tokenized paths  |
+| Validate       | `deno task validate`           | Runs guards, check, test, and build                    |
+| Build          | `deno task build`              | Builds `_site/` for production                         |
+| Contracts      | `deno task validate-contracts` | Validates feeds structurally and optional JSON outputs |
+| Payload report | `deno task payload:report`     | Reports route-level JS and CSS from generated output   |
+| Install hooks  | `deno task lefthook:install`   | Installs local Git hooks                               |
+| Update deps    | `deno task update-deps`        | Updates pinned dependencies and the lockfile           |
 
 Recommended verification for a nontrivial change:
 
@@ -85,6 +89,7 @@ deno task build
 ├── scripts/
 ├── src/
 │   ├── _archetypes/
+│   ├── blog/client/
 │   ├── _components/
 │   ├── _includes/layouts/
 │   ├── posts/
@@ -97,7 +102,9 @@ deno task build
 │   ├── tags/
 │   ├── scripts/
 │   ├── styles/
+│   │   └── components/
 │   ├── utils/
+│   │   └── i18n/
 │   ├── 404.page.tsx
 │   ├── about.page.tsx
 │   ├── index.page.tsx
@@ -140,7 +147,9 @@ Localized routes follow the same structure under `/fr/`, `/zh-hans/`, and
 `/zh-hant/`.
 
 The `/posts/` archive is rendered from TSX and enhanced by a small route-scoped
-Ant Design client bundle that adds the timeline and month navigation UI.
+Ant Design client bundle that adds the timeline and month navigation UI. Shared
+archive grouping and formatting logic lives in `src/blog/archive-common.ts` so
+the SSR renderer and client views stay aligned.
 
 ### Feeds
 
@@ -196,9 +205,12 @@ for the interactive blog client bundles.
 - Design-system authority: the local `--ph-*` token system and the site's core
   layout layer
 - Local theme bridge: `src/styles/antd/theme-tokens.css`
-- Core layout implementation: `src/styles/_layout.scss`
+- Generated Ant Design bridge: `src/styles/generated/antd-components.css`
+- Component layout modules: `src/styles/components/*.css`
+- Shell layout implementation: `src/styles/layout.css`
 - Global stylesheet entrypoint: `src/style.css`
 - Frontend React/Ant Design config: `src/blog/client/deno.json`
+- Public i18n module: `src/utils/i18n.ts`, backed by `src/utils/i18n/`
 
 When a local token already exists, do not introduce new hard-coded spacing,
 color, or typography values in UI code. Prefer `var(--ph-*)`.
@@ -206,6 +218,11 @@ color, or typography values in UI code. Prefer `var(--ph-*)`.
 Deno resolves npm packages for the repo from its global cache. The root and
 frontend configs both use `nodeModulesDir: "none"`, so local `node_modules`
 folders are not part of the normal workflow.
+
+In production builds, Lume runs Lightning CSS before PurgeCSS. PurgeCSS is
+configured with an explicit safelist for ARIA/data-state selectors, Pagefind
+runtime classes, and the small set of site-specific state classes that are only
+visible after hydration.
 
 Interactive UI is intentionally narrow and explicit:
 

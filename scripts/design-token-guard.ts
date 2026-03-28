@@ -55,6 +55,25 @@ const RULES: readonly GuardRule[] = [
     allowedFiles: ["src/styles/antd/theme-tokens.css"],
   },
   {
+    name: "shared-letter-spacing-literals",
+    pattern: /letter-spacing:\s*(?:-0\.025em|-0\.015em|0\.08em)/g,
+    message:
+      "Use the shared letter-spacing tokens from `src/styles/antd/theme-tokens.css`.",
+  },
+  {
+    name: "pill-radius-literal",
+    pattern: /\b999px\b/g,
+    message: "Use `--ph-radius-pill` from `src/styles/antd/theme-tokens.css`.",
+    allowedFiles: ["src/styles/antd/theme-tokens.css"],
+  },
+  {
+    name: "frosted-backdrop-literal",
+    pattern: /blur\(16px\)\s+saturate\(1\.1\)/g,
+    message:
+      "Use `--ph-backdrop-frosted` from `src/styles/antd/theme-tokens.css`.",
+    allowedFiles: ["src/styles/antd/theme-tokens.css"],
+  },
+  {
     name: "oklch-outside-allowlist",
     pattern: /oklch\(/g,
     message:

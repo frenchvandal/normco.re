@@ -27,6 +27,7 @@ normco.re/
 │   ├── assets.ts
 │   ├── feeds.ts
 │   ├── plugins.ts
+│   ├── purgecss.ts
 │   └── processors.ts
 ├── _cms.ts
 ├── apps/
@@ -37,13 +38,16 @@ normco.re/
 ├── scripts/
 ├── src/
 │   ├── _archetypes/
+│   ├── blog/client/
 │   ├── _components/
 │   ├── _includes/layouts/
 │   ├── posts/
 │   ├── tags/
 │   ├── scripts/
 │   ├── styles/
+│   │   └── components/
 │   ├── utils/
+│   │   └── i18n/
 │   ├── 404.page.tsx
 │   ├── about.page.tsx
 │   ├── index.page.tsx
@@ -95,7 +99,8 @@ Lume's `multilanguage` plugin provides the routing model:
 - the same canonical slug is preserved across languages
 - localized prefixes are applied at the route level
 - `lang`, `hreflang`, and alternate URLs are resolved centrally through
-  `src/utils/i18n.ts`
+  `src/utils/i18n.ts`, which re-exports the split language, helper, and
+  translation modules under `src/utils/i18n/`
 
 ## Build Pipeline
 
@@ -138,7 +143,7 @@ from the same generated source of truth before remote refresh.
 `_config/plugins.ts` registers the main plugin stack:
 
 - JSX rendering
-- PostCSS and Lightning CSS
+- PostCSS, Lightning CSS, and production-only PurgeCSS
 - esbuild route splitting for the blog React/Ant Design client
 - localized feeds
 - multilanguage routing
@@ -175,8 +180,8 @@ for the interactive blog islands.
 Design-system guidance comes from two places:
 
 - the local `--ph-*` token layer in `src/styles/antd/theme-tokens.css`
-- the repository's own layout and utility layers in `src/styles/_layout.scss`
-  and `src/styles/_utilities.scss`
+- the repository's own base, component, layout, and utility styles under
+  `src/styles/`
 - the route-split React/Ant Design blog client under `src/blog/client/`
 
 No exported design-token artifact is treated as authoritative.
@@ -185,8 +190,10 @@ No exported design-token artifact is treated as authoritative.
 
 - `src/styles/antd/theme-tokens.css` exposes the `--ph-*` custom properties used
   across the site
-- `src/styles/_base.scss`, `src/styles/_layout.scss`, and
-  `src/styles/_utilities.scss` consume those values directly
+- `src/styles/base.css`, `src/styles/layout.css`, `src/styles/utilities.css`,
+  and `src/styles/components/*.css` consume those values directly
+- `scripts/generate-antd-css.ts` aligns selected Ant Design runtime variables
+  back onto the local token vocabulary before the final stylesheet is emitted
 - new UI work should avoid inventing hard-coded values when an existing token
   already covers the need
 
@@ -203,11 +210,17 @@ The site relies on Deno's npm cache instead of a repo-local `node_modules` tree.
 
 `src/style.css` composes the styling layers in order:
 
-1. reset
-2. tokens
+1. token bridge and generated Ant Design bridge
+2. reset
 3. base styles
-4. layout styles
-5. utilities
+4. component layout modules
+5. shell layout styles
+6. utilities
+
+The production pipeline minifies CSS through Lightning CSS first, then runs
+PurgeCSS with a safelist for ARIA/data-state selectors, Pagefind runtime
+classes, and the small set of site-managed state classes that are only present
+after hydration.
 
 Typography relies on the local system font stacks exposed through
 `src/styles/antd/theme-tokens.css`, and the build does not generate bundled
@@ -226,7 +239,9 @@ Each entrypoint resolves npm dependencies through `src/blog/client/deno.json`
 and is bundled by Lume's esbuild plugin with code splitting enabled. Shared UI
 helpers live in small local modules, while route-specific Ant Design barrels
 keep `Calendar`, `Timeline`, `Descriptions`, and similar heavy components out of
-pages that do not need them.
+pages that do not need them. Shared archive month grouping, locale resolution,
+and timeline indexing live in `src/blog/archive-common.ts` so the server-side
+archive renderer and client-side archive route use the same data model.
 
 ## Client-Side Enhancements
 

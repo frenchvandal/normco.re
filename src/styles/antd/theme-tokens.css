@@ -66,6 +66,19 @@
       oklch(45.09% 0.1641 258.18),
       oklch(54.53% 0.1575 259.06)
     );
+    --ph-color-feedback-info: var(--ph-color-accent-fg);
+    --ph-color-feedback-success: light-dark(
+      oklch(67.12% 0.158 148.42),
+      oklch(76.48% 0.122 149.21)
+    );
+    --ph-color-feedback-warning: light-dark(
+      oklch(76.18% 0.159 84.96),
+      oklch(83.44% 0.132 85.87)
+    );
+    --ph-color-feedback-error: light-dark(
+      oklch(63.88% 0.215 26.48),
+      oklch(72.14% 0.171 25.64)
+    );
     --ph-color-border-default: light-dark(
       oklch(87.58% 0.0123 247.97),
       oklch(41.32% 0.0197 254.06)
@@ -100,6 +113,10 @@
     --ph-lh-base: 1.5;
     --ph-lh-relaxed: 1.7;
     --ph-lh-prose: 1.78;
+
+    --ph-letter-spacing-tight: -0.025em;
+    --ph-letter-spacing-snug: -0.015em;
+    --ph-letter-spacing-wide: 0.08em;
 
     --ph-opentype-body: "kern" 1, "liga" 1, "calt" 1, "onum" 1, "pnum" 1;
     --ph-opentype-heading: "kern" 1, "liga" 1, "calt" 1, "lnum" 1;
@@ -136,10 +153,12 @@
     --ph-radius-sm: 3px;
     --ph-radius-md: 6px;
     --ph-radius-lg: 12px;
+    --ph-radius-pill: 999px;
 
     --ph-duration-fast: 80ms;
     --ph-duration-default: 160ms;
     --ph-easing-default: cubic-bezier(0.3, 0, 0.5, 1);
+    --ph-ease-standard: var(--ph-easing-default);
 
     --ph-focus-color: oklch(65% 0.19 255);
     --ph-focus-width: 2px;
@@ -161,6 +180,7 @@
     --ph-side-nav-width: min(20rem, calc(100vw - var(--ph-space-8)));
     --ph-search-field-height: 40px;
     --ph-control-size-compact: 2.25rem;
+    --ph-marker-size-sm: 0.875rem;
     --ph-skeleton-line-height: 0.875rem;
     --ph-link-underline-thickness: 0.08em;
     --ph-link-underline-offset: 0.18em;
@@ -194,6 +214,7 @@
       var(--ph-color-accent-fg) 14%,
       var(--ph-color-canvas-subtle)
     );
+    --ph-backdrop-frosted: blur(16px) saturate(1.1);
     --ph-surface-code: color-mix(
       in oklch,
       var(--ph-color-canvas-inset) 92%,

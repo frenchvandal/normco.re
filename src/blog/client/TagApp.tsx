@@ -23,7 +23,7 @@ import {
   StoryGrid,
 } from "./common.tsx";
 
-function TagView(
+export function TagView(
   { data, interactive = true }: {
     data: BlogTagViewData;
     interactive?: boolean | undefined;

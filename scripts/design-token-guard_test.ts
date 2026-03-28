@@ -45,4 +45,19 @@ describe("scanStyleSources()", () => {
     assertEquals(issues[0]?.rule, "oklch-outside-allowlist");
     assertStringIncludes(issues[0]?.message ?? "", "theme bridge");
   });
+
+  it("flags shared letter-spacing, pill radius, and frosted backdrop literals", () => {
+    const issues = scanStyleSources([
+      {
+        filePath: "src/styles/components/header.css",
+        source:
+          "letter-spacing: 0.08em;\nborder-radius: 999px;\nbackdrop-filter: blur(16px) saturate(1.1);",
+      },
+    ]);
+
+    assertEquals(issues.length, 3);
+    assertEquals(issues[0]?.rule, "shared-letter-spacing-literals");
+    assertEquals(issues[1]?.rule, "pill-radius-literal");
+    assertEquals(issues[2]?.rule, "frosted-backdrop-literal");
+  });
 });

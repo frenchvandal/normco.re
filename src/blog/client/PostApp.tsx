@@ -28,7 +28,7 @@ import {
 import { getBlogTagColor } from "./tag-colors.ts";
 import { MetaLine, ReadingMeter, renderBreadcrumbItems } from "./common.tsx";
 
-function PostView(
+export function PostView(
   { data, interactive = true }: {
     data: BlogPostViewData;
     interactive?: boolean | undefined;

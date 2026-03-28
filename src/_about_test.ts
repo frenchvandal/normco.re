@@ -1,6 +1,6 @@
 import { assertNotMatch, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import layoutStyles from "./styles/layout.css" with { type: "text" };
+import aboutStyles from "./styles/components/about.css" with { type: "text" };
 import { asLumeData, asLumeHelpers } from "../test/lume.ts";
 
 import aboutPage from "./about.page.tsx";
@@ -136,21 +136,21 @@ describe("about.page.tsx", () => {
 
 describe("about page CSS contracts", () => {
   it("keeps the contact popover on the shared raised surface", () => {
-    assertStringIncludes(layoutStyles, ".about-contact-popover {");
+    assertStringIncludes(aboutStyles, ".about-contact-popover {");
     assertStringIncludes(
-      layoutStyles,
+      aboutStyles,
       "inline-size: min(18rem, calc(100vw - var(--ph-shell-gutter) * 2));",
     );
-    assertStringIncludes(layoutStyles, ".about-contact-trigger:hover,");
+    assertStringIncludes(aboutStyles, ".about-contact-trigger:hover,");
   });
 
   it("keeps the QR and pictogram frames on shared neutral panels", () => {
     assertStringIncludes(
-      layoutStyles,
+      aboutStyles,
       ".about-pictogram-frame {",
     );
     assertStringIncludes(
-      layoutStyles,
+      aboutStyles,
       "background: var(--ph-color-canvas-subtle);",
     );
   });

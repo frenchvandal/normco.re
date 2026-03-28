@@ -6,10 +6,22 @@ import {
 } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import { renderComponent } from "lume/jsx-runtime";
-import layoutStyles from "../styles/layout.css" with { type: "text" };
+import headerStyles from "../styles/components/header.css" with {
+  type: "text",
+};
+import layoutShellStyles from "../styles/layout.css" with { type: "text" };
+import navigationStyles from "../styles/components/navigation.css" with {
+  type: "text",
+};
 
 import Header from "./Header.tsx";
 import { ariaCurrent, buildHeaderNavigation } from "./header-navigation.ts";
+
+const layoutStyles = [
+  headerStyles,
+  navigationStyles,
+  layoutShellStyles,
+].join("\n");
 
 describe("header-navigation.ts", () => {
   describe("ariaCurrent()", () => {
@@ -241,7 +253,7 @@ describe("Header CSS contracts", () => {
     assertStringIncludes(layoutStyles, ".site-header__global {");
     assertStringIncludes(
       layoutStyles,
-      "border-inline-start: 1px solid var(--ph-color-border-muted);",
+      "border-inline-start: var(--ph-border-hairline) solid",
     );
   });
 

@@ -1,0 +1,195 @@
+@layer layout {
+  .about-content {
+    display: grid;
+    gap: var(--ph-space-4);
+    inline-size: min(100%, calc(var(--ph-measure) + var(--ph-space-5)));
+  }
+
+  .about-intro {
+    color: var(--ph-color-fg-default);
+    font-size: var(--ph-text-md);
+    line-height: var(--ph-lh-snug);
+    margin: 0;
+    max-inline-size: 32ch;
+  }
+
+  .about-contact-list,
+  .about-notes {
+    display: grid;
+    gap: var(--ph-space-2);
+    list-style: none;
+  }
+
+  .about-contact-item {
+    list-style: none;
+  }
+
+  .about-contact-toggletip {
+    position: relative;
+    display: block;
+  }
+
+  .about-contact-trigger {
+    inline-size: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--ph-space-3);
+    border: var(--ph-border-hairline) solid var(--ph-color-border-muted);
+    border-radius: var(--ph-radius-sm);
+    background: transparent;
+  }
+
+  .about-contact-trigger:hover,
+  .about-contact-trigger:focus-visible,
+  .about-contact-toggletip.site-popover--open > .about-contact-trigger {
+    background: var(--ph-color-canvas-subtle);
+  }
+
+  .about-contact-trigger-content {
+    display: flex;
+    align-items: center;
+    gap: var(--ph-space-3);
+  }
+
+  .about-contact-icon,
+  .about-fact-icon {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2rem;
+    block-size: 2rem;
+    border-radius: var(--ph-radius-sm);
+    background: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 10%,
+      var(--ph-color-canvas-default)
+    );
+    color: var(--ph-color-accent-fg);
+    flex: 0 0 auto;
+  }
+
+  .about-contact-icon svg[data-icon],
+  .about-fact-icon svg[data-icon] {
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+
+  .about-contact-label {
+    color: var(--ph-color-fg-default);
+    font-size: var(--ph-text-sm);
+    font-weight: 600;
+  }
+
+  .about-contact-popover {
+    inline-size: min(18rem, calc(100vw - var(--ph-shell-gutter) * 2));
+    padding: var(--ph-space-4);
+    outline: none;
+  }
+
+  .about-contact-popover:focus-visible {
+    outline: 2px solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 34%,
+        transparent
+      );
+    outline-offset: 2px;
+  }
+
+  .about-contact-popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ph-space-3);
+    margin-block-end: var(--ph-space-4);
+  }
+
+  .about-contact-popover-brand,
+  .about-contact-popover-toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--ph-space-2);
+  }
+
+  .about-contact-popover-app {
+    inline-size: var(--ph-control-size-compact);
+    block-size: var(--ph-control-size-compact);
+  }
+
+  .about-contact-action {
+    inline-size: var(--ph-control-size-compact);
+    block-size: var(--ph-control-size-compact);
+    min-block-size: var(--ph-control-size-compact);
+    padding: 0;
+  }
+
+  .about-contact-action-icon {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .about-contact-qr {
+    margin: 0;
+  }
+
+  .about-contact-qr img {
+    inline-size: 100%;
+    border-radius: var(--ph-radius-md);
+  }
+
+  .about-facts {
+    display: grid;
+    gap: var(--ph-space-2);
+    margin: 0;
+  }
+
+  .about-facts-row {
+    display: grid;
+    gap: var(--ph-space-1);
+    padding-block-start: var(--ph-space-2);
+    border-block-start: var(--ph-border-hairline) solid
+      var(--ph-color-border-muted);
+  }
+
+  .about-facts-row:first-child {
+    padding-block-start: 0;
+    border-block-start: 0;
+  }
+
+  .about-facts-term {
+    display: flex;
+    align-items: center;
+    gap: var(--ph-space-3);
+    color: var(--ph-color-fg-muted);
+    font-size: var(--ph-text-sm);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .about-facts-description {
+    color: var(--ph-color-fg-default);
+    font-size: var(--ph-text-sm);
+    line-height: var(--ph-lh-relaxed);
+    margin: 0;
+  }
+
+  .about-pictogram-frame {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    padding: var(--ph-space-4);
+    border: var(--ph-border-hairline) solid var(--ph-color-border-default);
+    border-radius: var(--ph-radius-md);
+    background: var(--ph-color-canvas-subtle);
+  }
+
+  .about-pictogram {
+    color: var(--ph-color-fg-subtle);
+  }
+
+  .about-pictogram svg {
+    inline-size: min(100%, 11rem);
+    block-size: auto;
+    fill: currentColor;
+  }
+}

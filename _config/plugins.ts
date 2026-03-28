@@ -1,6 +1,7 @@
 import terser from "lume/plugins/terser.ts";
 import postcss from "lume/plugins/postcss.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
+import purgecss from "lume/plugins/purgecss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 import attributes from "lume/plugins/attributes.ts";
 import jsx from "lume/plugins/jsx.ts";
@@ -24,6 +25,7 @@ import esbuild from "lume/plugins/esbuild.ts";
 import type Site from "lume/core/site.ts";
 import { enUS, fr as frLocale, zhCN, zhTW } from "date-fns/locale";
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
+import { createPurgeCssOptions } from "./purgecss.ts";
 import { registerPostDataPreparation } from "./processors.ts";
 import shiki from "../plugins/shiki/mod.ts";
 
@@ -87,6 +89,10 @@ export function registerPlugins(
       },
     }),
   );
+
+  if (!options.isServeTask) {
+    site.use(purgecss(createPurgeCssOptions()));
+  }
 
   // Keep external source maps in both serve and production builds. The
   // post-build asset fingerprinting step already renames `.map` files and

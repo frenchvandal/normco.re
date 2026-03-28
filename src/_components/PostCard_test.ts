@@ -2,7 +2,7 @@ import { assertNotMatch, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker, seedTestFaker } from "../../test/faker.ts";
-import layoutStyles from "../styles/layout.css" with {
+import featureStyles from "../styles/components/feature.css" with {
   type: "text",
 };
 
@@ -150,30 +150,30 @@ describe("PostCard()", () => {
 
   describe("CSS contracts", () => {
     it("defines hover and focus feedback on the primary title link", () => {
-      assertStringIncludes(layoutStyles, ".post-card:hover .post-card-link");
+      assertStringIncludes(featureStyles, ".post-card:hover .post-card-link");
       assertStringIncludes(
-        layoutStyles,
+        featureStyles,
         ".post-card:focus-within .post-card-link",
       );
-      assertStringIncludes(layoutStyles, "var(--ph-color-accent-fg)");
+      assertStringIncludes(featureStyles, "var(--ph-color-accent-fg)");
     });
 
     it("keeps a dedicated class on the primary title link for shared styling", () => {
-      assertStringIncludes(layoutStyles, ".post-card-link");
-      assertStringIncludes(layoutStyles, ".post-card-title {");
+      assertStringIncludes(featureStyles, ".post-card-link");
+      assertStringIncludes(featureStyles, ".post-card-title {");
     });
 
     it("groups post metadata in a shared inline row", () => {
-      assertStringIncludes(layoutStyles, ".post-card-meta");
+      assertStringIncludes(featureStyles, ".post-card-meta");
       assertStringIncludes(
-        layoutStyles,
+        featureStyles,
         ".post-card-meta > * + *::before",
       );
     });
 
     it("defines a dedicated summary block for editorial variants", () => {
-      assertStringIncludes(layoutStyles, ".post-card-summary");
-      assertStringIncludes(layoutStyles, "max-inline-size: 52ch;");
+      assertStringIncludes(featureStyles, ".post-card-summary");
+      assertStringIncludes(featureStyles, "max-inline-size: 52ch;");
     });
   });
 });

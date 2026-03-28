@@ -4,5 +4,14 @@
 @import "./styles/generated/antd-components.css";
 @import "./styles/reset.css";
 @import "./styles/base.css";
+@import "./styles/components/header.css";
+@import "./styles/components/search.css";
+@import "./styles/components/navigation.css";
+@import "./styles/components/feature.css";
+@import "./styles/components/editorial.css";
+@import "./styles/components/archive.css";
+@import "./styles/components/post.css";
+@import "./styles/components/about.css";
+@import "./styles/components/feeds.css";
 @import "./styles/layout.css";
 @import "./styles/utilities.css";

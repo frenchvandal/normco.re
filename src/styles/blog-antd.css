@@ -111,7 +111,7 @@
     color: var(--ph-color-fg-muted);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--ph-letter-spacing-wide);
     text-transform: uppercase;
   }
 
@@ -327,7 +327,7 @@
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--ph-letter-spacing-wide);
     text-transform: uppercase;
   }
 
@@ -363,7 +363,7 @@
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--ph-letter-spacing-wide);
     text-transform: uppercase;
   }
 
@@ -712,7 +712,7 @@
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--ph-letter-spacing-wide);
     text-transform: uppercase;
   }
 
@@ -902,15 +902,15 @@
     position: absolute;
     inset-inline-start: 0;
     inset-block-start: 0.2rem;
-    inline-size: 0.875rem;
-    block-size: 0.875rem;
+    inline-size: var(--ph-marker-size-sm);
+    block-size: var(--ph-marker-size-sm);
     border: 1px solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 20%,
         var(--ph-color-border-default)
       );
-    border-radius: 999px;
+    border-radius: var(--ph-radius-pill);
     background: var(--ph-color-canvas-default);
     box-shadow: 0 0 0 0.25rem
       color-mix(
@@ -1062,7 +1062,7 @@
     inset-block-start: 50%;
     inline-size: 3px;
     block-size: 3px;
-    border-radius: 999px;
+    border-radius: var(--ph-radius-pill);
     background: currentColor;
     opacity: 0.72;
     transform: translateY(-50%);
@@ -1230,7 +1230,7 @@
     color: var(--ph-color-fg-muted);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--ph-letter-spacing-wide);
     text-transform: uppercase;
   }
 
