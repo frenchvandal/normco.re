@@ -431,8 +431,21 @@ export function PostRail(
           aria-expanded="false"
           data-post-mobile-tools-open=""
         >
-          <span class="post-mobile-tools-trigger__label">
-            {translations.railAriaLabel}
+          <span class="post-mobile-tools-trigger__icon" aria-hidden="true">
+            <SiteIcon
+              name="list-unordered"
+              className="post-mobile-tools-trigger__icon-svg"
+              width={18}
+              height={18}
+            />
+          </span>
+          <span class="post-mobile-tools-trigger__body">
+            <span class="post-mobile-tools-trigger__eyebrow">
+              {translations.railTriggerLabel}
+            </span>
+            <span class="post-mobile-tools-trigger__hint">
+              {translations.railTriggerHint}
+            </span>
           </span>
           <span class="post-mobile-tools-trigger__count" aria-hidden="true">
             {String(sections.length).padStart(2, "0")}
@@ -442,14 +455,23 @@ export function PostRail(
           id="post-mobile-tools-dialog"
           class="post-mobile-tools-dialog"
           aria-labelledby="post-mobile-tools-title"
+          aria-describedby="post-mobile-tools-description"
           data-post-mobile-tools=""
         >
           <div class="post-mobile-tools-sheet">
             <span class="post-mobile-tools-handle" aria-hidden="true"></span>
             <div class="post-mobile-tools-head">
-              <p id="post-mobile-tools-title" class="post-mobile-tools-title">
-                {translations.railAriaLabel}
-              </p>
+              <div class="post-mobile-tools-head-copy">
+                <p id="post-mobile-tools-title" class="post-mobile-tools-title">
+                  {translations.railTriggerLabel}
+                </p>
+                <p
+                  id="post-mobile-tools-description"
+                  class="post-mobile-tools-description"
+                >
+                  {translations.railDescription}
+                </p>
+              </div>
               <button
                 type="button"
                 class="btn post-mobile-tools-close"

@@ -55,9 +55,11 @@ function renderStoryTags(
 
 export function renderArchiveMonthNav(
   months: readonly ArchiveMonthGroup[],
-  { ariaLabel, eyebrowLabel }: {
+  { ariaLabel, eyebrowLabel, jumpLabel, latestJumpLabel }: {
     ariaLabel: string;
     eyebrowLabel: string;
+    jumpLabel: string;
+    latestJumpLabel: string;
   },
 ): string {
   const newestMonth = months[0];
@@ -115,10 +117,18 @@ export function renderArchiveMonthNav(
     escapeHtml(ariaLabel)
   }">
   <div class="blog-antd-archive-nav__intro">
-    <p class="blog-antd-eyebrow">${escapeHtml(eyebrowLabel)}</p>
-    <p class="blog-antd-archive-nav__range">
-      ${escapeHtml(oldestMonth.label)} - ${escapeHtml(newestMonth.label)}
-    </p>
+    <div class="blog-antd-archive-nav__copy">
+      <p class="blog-antd-eyebrow">${escapeHtml(eyebrowLabel)}</p>
+      <p class="blog-antd-archive-nav__range">
+        ${escapeHtml(oldestMonth.label)} - ${escapeHtml(newestMonth.label)}
+      </p>
+      <p class="blog-antd-archive-nav__hint">${escapeHtml(jumpLabel)}</p>
+    </div>
+    <a class="blog-antd-archive-nav__latest" href="#${
+    escapeHtml(newestMonth.anchorId)
+  }">
+      ${escapeHtml(latestJumpLabel)}
+    </a>
   </div>
   <div class="blog-antd-archive-month-groups">
     ${groups}
@@ -158,16 +168,18 @@ export function renderArchiveTimeline(
     }</span>
       ${renderMeta(story)}
     </div>
-    <h2 class="blog-antd-archive-timeline__title">
-      <a href="${escapeHtml(story.url)}">${escapeHtml(story.title)}</a>
-    </h2>
-    ${
+    <a class="blog-antd-archive-timeline__link" href="${escapeHtml(story.url)}">
+      <h2 class="blog-antd-archive-timeline__title">${
+      escapeHtml(story.title)
+    }</h2>
+      ${
       story.summary
         ? `<p class="blog-antd-archive-timeline__summary">${
           escapeHtml(story.summary)
         }</p>`
         : ""
     }
+    </a>
     ${renderStoryTags(story, language)}
   </article>
 </li>`;

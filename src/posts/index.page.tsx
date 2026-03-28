@@ -65,6 +65,8 @@ export default (
         ? renderArchiveMonthNav(archiveMonths, {
           ariaLabel: t.archive.yearsAriaLabel,
           eyebrowLabel: postsCountLabel,
+          jumpLabel: t.archive.jumpLabel,
+          latestJumpLabel: t.archive.latestJumpLabel,
         })
         : ""
     }

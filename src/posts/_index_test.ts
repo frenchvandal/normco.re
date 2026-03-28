@@ -155,9 +155,17 @@ describe("posts/index.page.tsx", () => {
         html,
         'class="blog-antd-archive-month-group__year-count"',
       );
+      assertStringIncludes(html, 'class="blog-antd-archive-nav__hint"');
+      assertStringIncludes(html, 'class="blog-antd-archive-nav__latest"');
+      assertStringIncludes(
+        html,
+        "Jump by month or return to the latest entries.",
+      );
+      assertStringIncludes(html, "Latest");
       assertStringIncludes(html, firstPost.title);
       assertStringIncludes(html, secondPost.title);
       assertStringIncludes(html, "2 posts published");
+      assertStringIncludes(html, 'class="blog-antd-archive-timeline__link"');
     });
 
     it("renders reading time when available", async () => {
@@ -231,6 +239,7 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(html, "Unsafe &lt;title&gt;");
       assertStringIncludes(html, 'href="/posts/&quot;unsafe&quot;/"');
       assertStringIncludes(html, 'class="blog-antd-archive-timeline__title"');
+      assertStringIncludes(html, 'class="blog-antd-archive-timeline__link"');
     });
   });
 
@@ -281,6 +290,14 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(
         blogAntdStyles,
         ".blog-antd-archive-month-group__year-count",
+      );
+      assertStringIncludes(
+        blogAntdStyles,
+        ".blog-antd-archive-nav__latest",
+      );
+      assertStringIncludes(
+        blogAntdStyles,
+        ".blog-antd-archive-timeline__link",
       );
       assertStringIncludes(
         blogAntdStyles,

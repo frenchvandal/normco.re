@@ -444,6 +444,12 @@
     background: inherit;
   }
 
+  .post-mobile-tools-head-copy {
+    display: grid;
+    gap: var(--ph-space-1);
+    min-inline-size: 0;
+  }
+
   .post-mobile-tools-title {
     color: var(--ph-color-fg-default);
     font-family: var(--ph-font-mono);
@@ -452,6 +458,14 @@
     letter-spacing: var(--ph-letter-spacing-wide);
     margin: 0;
     text-transform: uppercase;
+  }
+
+  .post-mobile-tools-description {
+    max-inline-size: 30ch;
+    margin: 0;
+    color: var(--ph-color-fg-muted);
+    font-size: var(--ph-text-sm);
+    line-height: var(--ph-lh-relaxed);
   }
 
   .post-mobile-tools-close {
@@ -618,12 +632,13 @@
         var(--ph-mobile-nav-offset)
           + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
       );
-      display: inline-flex;
+      display: inline-grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
       align-items: center;
-      justify-content: space-between;
       gap: var(--ph-space-3);
       min-block-size: 3.25rem;
-      padding: 0.8rem 0.95rem 0.8rem 1rem;
+      max-inline-size: min(21rem, calc(100vw - 2 * var(--ph-space-4)));
+      padding: 0.82rem 0.95rem 0.82rem 0.9rem;
       border: var(--ph-border-hairline) solid
         color-mix(
           in oklch,
@@ -648,13 +663,48 @@
       background: var(--ph-color-accent-emphasis);
     }
 
+    html[data-post-mobile-tools-ready="true"] .post-mobile-tools-trigger__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      inline-size: 2rem;
+      block-size: 2rem;
+      border-radius: var(--ph-radius-pill);
+      background: color-mix(
+        in oklch,
+        var(--ph-color-canvas-default) 18%,
+        transparent
+      );
+    }
+
+    html[data-post-mobile-tools-ready="true"] .post-mobile-tools-trigger__body {
+      display: grid;
+      min-inline-size: 0;
+      gap: 0.18rem;
+    }
+
     html[data-post-mobile-tools-ready="true"]
-      .post-mobile-tools-trigger__label {
+      .post-mobile-tools-trigger__eyebrow {
       font-family: var(--ph-font-mono);
       font-size: var(--ph-text-xs);
       font-weight: 600;
       letter-spacing: var(--ph-letter-spacing-wide);
+      line-height: 1.2;
       text-transform: uppercase;
+    }
+
+    html[data-post-mobile-tools-ready="true"] .post-mobile-tools-trigger__hint {
+      min-inline-size: 0;
+      overflow: hidden;
+      color: color-mix(
+        in oklch,
+        var(--ph-color-canvas-default) 84%,
+        transparent
+      );
+      font-size: var(--ph-text-sm);
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     html[data-post-mobile-tools-ready="true"]

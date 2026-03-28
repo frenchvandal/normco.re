@@ -6,7 +6,6 @@ import {
   resolvePostCardRenderer,
 } from "../../utils/lume-helpers.ts";
 import { escapeHtml } from "../../utils/html.ts";
-import { renderBreadcrumb } from "../../utils/breadcrumb.ts";
 import { getTagColor } from "../../utils/tags.ts";
 import { isLumeData, resolveOptionalString } from "../../utils/type-guards.ts";
 
@@ -25,7 +24,7 @@ export default async (
 ): Promise<string> => {
   const PostCard = resolvePostCardRenderer(data.comp);
   const dateFormat = resolveDateHelper(helpers);
-  const { language, homeUrl, archiveUrl, translations: t } = resolvePageSetup(
+  const { language, archiveUrl, translations: t } = resolvePageSetup(
     data.lang,
   );
   const tagName = resolveOptionalString(data.tagName) ?? "";
@@ -35,18 +34,10 @@ export default async (
   const items = (await Promise.all(
     stories.map((story) => renderPostListItem(PostCard, story)),
   )).join("\n");
-  const breadcrumb = renderBreadcrumb(
-    [
-      { href: homeUrl, label: t.navigation.home },
-      { href: archiveUrl, label: t.navigation.writing },
-    ],
-    t.tagPage.breadcrumbAriaLabel,
-  );
 
   return `<div class="blog-antd-root">
   <div class="site-page-shell site-page-shell--editorial">
   <div class="feature-main">
-    ${breadcrumb}
     <section class="pagehead tag-pagehead" aria-labelledby="tag-page-title">
       <div class="tag-pagehead-grid">
         <div class="tag-pagehead-copy">
@@ -55,13 +46,18 @@ export default async (
     escapeHtml(tagName)
   }</h1>
           <p class="pagehead-lead">${escapeHtml(postsCountLabel)}</p>
+          <p class="tag-pagehead-intro">${escapeHtml(t.tagPage.intro)}</p>
         </div>
         <div class="tag-pagehead-meta">
+          <p class="tag-pagehead-kicker">${
+    escapeHtml(t.tagPage.archiveHintTitle)
+  }</p>
           <span class="blog-tag-chip blog-tag-chip--${
     getTagColor(tagName)
   } tag-page-current-tag" title="${escapeHtml(tagName)}">
             <span class="blog-tag-chip__label">${escapeHtml(tagName)}</span>
           </span>
+          <p class="tag-pagehead-note">${escapeHtml(t.tagPage.archiveHint)}</p>
           <a href="${
     escapeHtml(archiveUrl)
   }" class="feature-link tag-pagehead-link">${

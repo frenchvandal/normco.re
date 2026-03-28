@@ -47,7 +47,7 @@ describe("tag.tsx layout", () => {
     assertNotMatch(html, /class="feature-rail tag-page-rail"/);
   });
 
-  it("renders breadcrumb, post list, and archive return link", async () => {
+  it("renders an editorial tag invitation, post list, and archive return link", async () => {
     const post = makePost(2);
     const html = await renderComponent(
       tagLayout(
@@ -64,11 +64,18 @@ describe("tag.tsx layout", () => {
       ),
     );
 
-    assertStringIncludes(html, 'href="/fr/"');
     assertStringIncludes(html, 'href="/fr/posts/"');
     assertStringIncludes(html, 'class="pagehead tag-pagehead"');
     assertStringIncludes(html, 'class="tag-pagehead-grid"');
+    assertStringIncludes(html, 'class="tag-pagehead-intro"');
+    assertStringIncludes(html, 'class="tag-pagehead-kicker"');
+    assertStringIncludes(html, 'class="tag-pagehead-note"');
     assertStringIncludes(html, "design");
+    assertStringIncludes(
+      html,
+      "Une sélection d’articles rassemblés autour d’un même thème.",
+    );
+    assertStringIncludes(html, "Vue d’ensemble");
     assertStringIncludes(
       html,
       'href="/fr/posts/" class="feature-link tag-pagehead-link"',
@@ -76,7 +83,7 @@ describe("tag.tsx layout", () => {
     assertStringIncludes(html, 'class="archive-list"');
     assertStringIncludes(html, `href="${post.url}"`);
     assertNotMatch(html, /aria-current="page"/);
-    assertStringIncludes(html, 'class="site-breadcrumb"');
+    assertNotMatch(html, /class="site-breadcrumb"/);
     assertMatch(
       html,
       /class="blog-tag-chip blog-tag-chip--[a-z]+ tag-page-current-tag"/,

@@ -30,6 +30,49 @@
     inline-size: fit-content;
   }
 
+  .tag-pagehead-copy {
+    display: grid;
+    gap: var(--ph-space-3);
+  }
+
+  .tag-pagehead-meta {
+    justify-items: start;
+    padding: clamp(var(--ph-space-4), 2.4vw, var(--ph-space-5));
+    border: var(--ph-border-hairline) solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 14%,
+        var(--ph-color-border-default)
+      );
+    border-radius: calc(var(--ph-radius-lg) * 1.05);
+    background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 96%,
+      var(--ph-surface-accent)
+    );
+  }
+
+  .tag-pagehead-intro,
+  .tag-pagehead-note {
+    margin: 0;
+    color: var(--ph-color-fg-muted);
+    line-height: var(--ph-lh-relaxed);
+  }
+
+  .tag-pagehead-intro {
+    max-inline-size: 50ch;
+    font-size: var(--ph-text-base);
+  }
+
+  .tag-pagehead-note {
+    max-inline-size: 34ch;
+    font-size: var(--ph-text-sm);
+  }
+
+  .tag-pagehead-link {
+    margin-block-start: var(--ph-space-1);
+  }
+
   .syndication-pagehead,
   .syndication-layout {
     inline-size: min(100%, 70rem);

@@ -49,6 +49,7 @@
   }
 
   .post-pagehead-kicker,
+  .tag-pagehead-kicker,
   .about-pagehead-kicker,
   .feeds-entry-kicker {
     color: var(--ph-color-fg-muted);

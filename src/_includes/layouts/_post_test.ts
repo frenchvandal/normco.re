@@ -380,6 +380,13 @@ describe("post.tsx layout", () => {
         html,
         `class="post-mobile-tools" aria-label="Post tools"`,
       );
+      assertStringIncludes(html, "Reading tools");
+      assertStringIncludes(
+        html,
+        "Outline, tags, backlinks, and next steps.",
+      );
+      assertStringIncludes(html, 'class="post-mobile-tools-head-copy"');
+      assertStringIncludes(html, 'class="post-mobile-tools-description"');
       assertStringIncludes(html, "post-mobile-tools.js");
       assertStringIncludes(html, "window.matchMedia");
       assertStringIncludes(html, "const load = () => {");
@@ -539,6 +546,10 @@ describe("post mobile visual contracts", () => {
       "padding-block-end: calc(env(safe-area-inset-bottom) + var(--ph-space-4));",
     );
     assertStringIncludes(postStyles, ".post-mobile-tools-handle");
+    assertStringIncludes(postStyles, ".post-mobile-tools-head-copy");
+    assertStringIncludes(postStyles, ".post-mobile-tools-description");
+    assertStringIncludes(postStyles, ".post-mobile-tools-trigger__icon");
+    assertStringIncludes(postStyles, ".post-mobile-tools-trigger__hint");
     assertStringIncludes(postStyles, ".post-mobile-tools-trigger__count");
     assertStringIncludes(postStyles, ".post-mobile-tools-section__count");
     assertStringIncludes(
