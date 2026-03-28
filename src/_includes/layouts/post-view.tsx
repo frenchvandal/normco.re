@@ -259,38 +259,20 @@ export function PostDetails(
 ): El {
   return (
     <footer class="post-details-section">
-      <ul
-        class="site-accordion post-details-accordion"
-        data-site-accordion=""
-      >
-        <li class="site-accordion__item">
-          <button
-            type="button"
-            class="site-accordion__heading"
-            data-accordion-trigger=""
-            aria-expanded="false"
-            aria-controls="post-publication-details"
-          >
-            <SiteIcon
-              name="chevron-down"
-              className="site-accordion__arrow"
-              width={16}
-              height={16}
-            />
-            <span class="site-accordion__title">{title}</span>
-          </button>
-          <div
-            id="post-publication-details"
-            class="site-accordion__wrapper"
-            data-accordion-panel=""
-            hidden
-          >
-            <div class="site-accordion__content">
-              {renderDefinitionList(items, detailsMetaClasses)}
-            </div>
-          </div>
-        </li>
-      </ul>
+      <details class="site-details post-details-disclosure">
+        <summary class="site-details__summary">
+          <SiteIcon
+            name="chevron-down"
+            className="site-details__arrow"
+            width={16}
+            height={16}
+          />
+          <span class="site-details__title">{title}</span>
+        </summary>
+        <div class="site-details__content">
+          {renderDefinitionList(items, detailsMetaClasses)}
+        </div>
+      </details>
     </footer>
   );
 }

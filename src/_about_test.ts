@@ -150,15 +150,11 @@ describe("about page CSS contracts", () => {
   it("keeps the QR and pictogram frames on shared neutral panels", () => {
     assertStringIncludes(
       layoutStyles,
-      ".about-pictogram-frame,",
+      ".about-pictogram-frame {",
     );
     assertStringIncludes(
       layoutStyles,
-      ".syndication-pictogram-frame {",
-    );
-    assertStringIncludes(
-      layoutStyles,
-      "background: var(--ph-color-canvas-default);",
+      "background: var(--ph-color-canvas-subtle);",
     );
   });
 });

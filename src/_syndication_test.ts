@@ -10,60 +10,65 @@ import syndicationPage from "./syndication.page.tsx";
 const MOCK_DATA = asLumeData({});
 
 describe("syndication.page.tsx", () => {
-  it("renders the wide page shell and heading", () => {
+  it("renders a minimal shell with a single feed descriptions sheet", () => {
     const html = syndicationPage(MOCK_DATA);
 
     assertStringIncludes(
       html,
-      'class="site-page-shell site-page-shell--wide feeds-page"',
-    );
-    assertStringIncludes(
-      html,
-      'class="pagehead syndication-pagehead"',
+      'class="site-page-shell site-page-shell--wide feeds-page feeds-page--minimal"',
     );
     assertStringIncludes(html, 'class="syndication-pagehead-grid"');
-    assertNotMatch(html, /class="site-breadcrumb"/);
-    assertNotMatch(html, /Syndication breadcrumb/);
-    assertNotMatch(html, /href="\/" class="site-breadcrumb-link"/);
-    assertNotMatch(html, /site-breadcrumb-current/);
-    assertNotMatch(html, /aria-current="page"/);
     assertStringIncludes(
       html,
       '<h1 id="syndication-title" class="feeds-page-title">Syndication</h1>',
     );
-    assertStringIncludes(html, 'class="syndication-layout"');
+    assertStringIncludes(
+      html,
+      'class="css-var-_R_0_ ant-descriptions feeds-descriptions"',
+    );
+    assertStringIncludes(html, 'class="ant-descriptions-view"');
+    assertNotMatch(html, /syndication-pagehead-meta/);
+    assertNotMatch(html, /syndication-overview-card/);
+    assertNotMatch(html, /contract-reference/);
+    assertNotMatch(html, /guidance/);
   });
 
-  it("renders the overview note and decorative pictogram in the pagehead", () => {
+  it("renders only RSS, Atom, and JSON feed endpoints", () => {
     const html = syndicationPage(MOCK_DATA);
 
-    assertStringIncludes(html, 'class="syndication-pagehead-meta"');
-    assertStringIncludes(html, 'class="syndication-overview-card"');
-    assertStringIncludes(html, "Pick the right endpoint for the job.");
-    assertStringIncludes(html, 'class="syndication-pictogram-frame"');
-    assertStringIncludes(html, 'class="syndication-pictogram"');
-    assertStringIncludes(html, '<path d="M18,13.5');
-  });
-
-  it("renders all machine-readable endpoint cards", () => {
-    const html = syndicationPage(MOCK_DATA);
-
+    assertStringIncludes(
+      html,
+      'class="feeds-description-row feeds-description-row--rss"',
+    );
+    assertStringIncludes(
+      html,
+      'class="feeds-description-row feeds-description-row--atom"',
+    );
+    assertStringIncludes(
+      html,
+      'class="feeds-description-row feeds-description-row--json"',
+    );
+    assertStringIncludes(html, 'class="feeds-description-term"');
+    assertStringIncludes(html, 'class="feeds-description-body"');
     assertStringIncludes(html, 'href="/rss.xml"');
     assertStringIncludes(html, 'href="/atom.xml"');
     assertStringIncludes(html, 'href="/feed.json"');
-    assertStringIncludes(html, 'href="/sitemap.xml"');
-    assertStringIncludes(
-      html,
-      'class="site-tag site-tag--gray feeds-card-tag" title="XML"',
-    );
-    assertStringIncludes(
-      html,
-      'class="site-tag site-tag--teal feeds-card-tag" title="JSON"',
-    );
+    assertNotMatch(html, /sitemap\.xml/);
     assertStringIncludes(html, "application/rss+xml");
     assertStringIncludes(html, "application/atom+xml");
     assertStringIncludes(html, "application/feed+json");
-    assertStringIncludes(html, "application/xml");
+  });
+
+  it("renders copy buttons with Ant Design button classes", () => {
+    const html = syndicationPage(MOCK_DATA);
+
+    assertStringIncludes(
+      html,
+      'class="css-var-_R_0_ ant-btn ant-btn-default ant-btn-color-default ant-btn-variant-filled feeds-endpoint-copy-button"',
+    );
+    assertStringIncludes(html, 'class="ant-btn-icon feeds-copy-icon-stack"');
+    assertStringIncludes(html, 'class="feeds-copy-button-label"');
+    assertStringIncludes(html, 'data-copy-default-label="Copy"');
     assertStringIncludes(
       html,
       'data-copy-copied-status="RSS feed URL copied"',
@@ -72,132 +77,61 @@ describe("syndication.page.tsx", () => {
       html,
       'data-copy-error-status="Cannot copy RSS feed URL"',
     );
-    assertStringIncludes(html, 'data-content-switcher=""');
-    assertStringIncludes(
-      html,
-      'class="site-switcher-icon site-switcher__icon"',
-    );
-    assertStringIncludes(html, 'class="site-switcher__label">Cards');
-    assertStringIncludes(html, 'class="site-switcher__label">List');
-    assertStringIncludes(html, "feeds-structured-list");
-    assertStringIncludes(html, "syndication-guidance-section");
-    assertStringIncludes(html, "Use the endpoint that matches your reader");
-    assertStringIncludes(html, 'data-site-accordion=""');
-    assertStringIncludes(html, 'data-copy-notice=""');
-    assertStringIncludes(html, "feeds-copy-control--compact");
-    assertNotMatch(html, /data-site-tabs=/);
-    assertNotMatch(html, /feeds-overview-callout/);
   });
 
-  it("renders generated mobile contract reference from live schema data", () => {
+  it("loads only the feed copy script", () => {
     const html = syndicationPage(MOCK_DATA);
 
-    assertStringIncludes(html, "contract-reference-section");
-    assertStringIncludes(html, "App contracts");
-    assertStringIncludes(html, "Contract version");
-    assertStringIncludes(html, "<code>1</code>");
-    assertStringIncludes(html, "App Manifest");
-    assertStringIncludes(html, "Posts Index");
-    assertStringIncludes(html, "Post Detail");
-    assertStringIncludes(html, "<code>/api/app-manifest.json</code>");
-    assertStringIncludes(html, "<code>/fr/api/posts/index.json</code>");
-    assertStringIncludes(html, "<code>/zh-hans/api/posts/{slug}.json</code>");
-    assertStringIncludes(html, "Top-level fields");
-    assertStringIncludes(html, "Definitions");
-    assertStringIncludes(html, "RFC 3339");
-    assertStringIncludes(html, "absolute URI");
-  });
-
-  it("loads the shared surface controls and feed copy scripts", () => {
-    const html = syndicationPage(MOCK_DATA);
-
-    assertStringIncludes(html, 'src="/scripts/surface-controls.js"');
     assertStringIncludes(html, 'src="/scripts/feed-copy.js"');
+    assertNotMatch(html, /surface-controls\.js/);
   });
 
-  it("localizes routes and copy labels in French", () => {
+  it("localizes feed routes and copy labels in French", () => {
     const html = syndicationPage(asLumeData({ lang: "fr" }));
 
-    assertStringIncludes(
-      html,
-      '<h1 id="syndication-title" class="feeds-page-title">Syndication</h1>',
-    );
-    assertNotMatch(html, /Fil d’Ariane Syndication/);
-    assertNotMatch(html, /href="\/fr\/" class="site-breadcrumb-link"/);
     assertStringIncludes(html, 'href="/fr/rss.xml"');
     assertStringIncludes(html, 'href="/fr/atom.xml"');
     assertStringIncludes(html, 'href="/fr/feed.json"');
-    assertStringIncludes(html, 'href="/sitemap.xml"');
+    assertNotMatch(html, /sitemap\.xml/);
     assertStringIncludes(html, 'data-copy-default-label="Copier"');
-    assertStringIncludes(html, 'data-copy-notice-success-title="Copié"');
     assertStringIncludes(
       html,
       'data-copy-copied-status="URL de Flux RSS copiée"',
     );
-    assertStringIncludes(html, "Contrats app");
-    assertStringIncludes(html, "Version du contrat");
-    assertStringIncludes(html, "Champs de premier niveau");
-    assertNotMatch(html, /site-breadcrumb-current/);
   });
 });
 
 describe("syndication CSS contracts", () => {
-  it("keeps shared inline copy controls and copy-state feedback", () => {
-    assertStringIncludes(layoutStyles, ".feeds-endpoint-copy-button");
+  it("keeps the minimal descriptions layout and Ant-like copy button styling", () => {
+    assertStringIncludes(layoutStyles, ".feeds-descriptions,");
+    assertStringIncludes(layoutStyles, ".feeds-description-row {");
+    assertStringIncludes(layoutStyles, ".feeds-description-term {");
+    assertStringIncludes(layoutStyles, ".feeds-endpoint-row {");
+    assertStringIncludes(
+      layoutStyles,
+      ".feeds-endpoint-copy-button.ant-btn {",
+    );
+    assertStringIncludes(layoutStyles, ".feeds-copy-button-label {");
+    assertStringIncludes(layoutStyles, ".feeds-copy-icon-stack {");
+  });
+
+  it("keeps copy state styling for copied and error states", () => {
     assertStringIncludes(
       layoutStyles,
       ".feed-copy-control--copied .feeds-endpoint-copy-button {",
     );
     assertStringIncludes(
       layoutStyles,
-      ".feeds-copy-icon--success {",
+      ".feeds-endpoint-copy-button.ant-btn.ant-btn-variant-solid.ant-btn-color-primary {",
+    );
+    assertStringIncludes(
+      layoutStyles,
+      ".feeds-endpoint-copy-button.ant-btn.ant-btn-variant-outlined.ant-btn-color-dangerous {",
     );
   });
 
-  it("keeps endpoint rows on shared panel surfaces", () => {
-    assertStringIncludes(
-      layoutStyles,
-      ".feeds-endpoint-row {",
-    );
-    assertStringIncludes(
-      layoutStyles,
-      "grid-template-columns: minmax(0, 1fr) auto;",
-    );
-    assertStringIncludes(
-      layoutStyles,
-      ".feeds-structured-list .site-structured-list-row",
-    );
-    assertStringIncludes(layoutStyles, ".feeds-copy-notice");
-    assertStringIncludes(
-      layoutStyles,
-      ".feeds-copy-notice .site-notification__details",
-    );
-    assertStringIncludes(layoutStyles, ".contract-reference-grid {");
-    assertStringIncludes(layoutStyles, ".contract-reference-field {");
-    assertStringIncludes(layoutStyles, ".syndication-pagehead-grid");
-    assertStringIncludes(layoutStyles, ".syndication-overview-card");
-  });
-
-  it("keeps shared switcher focus treatments readable", () => {
-    assertStringIncludes(
-      layoutStyles,
-      ".site-switcher,",
-    );
-    assertStringIncludes(
-      layoutStyles,
-      ".site-switcher__button {",
-    );
-    assertStringIncludes(
-      layoutStyles,
-      ".site-switcher__button--selected,",
-    );
-  });
-
-  it("keeps the mobile structured list wide enough for copy controls", () => {
-    assertStringIncludes(layoutStyles, "@media (max-width: 47.999rem) {");
-    assertStringIncludes(
-      layoutStyles,
-      ".feeds-structured-list .site-structured-list-row {",
-    );
+  it("keeps the pagehead narrow and single-purpose", () => {
+    assertStringIncludes(layoutStyles, ".feeds-page-title,");
+    assertStringIncludes(layoutStyles, ".syndication-intro {");
   });
 });

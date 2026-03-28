@@ -1,6 +1,16 @@
 // @ts-check
 (() => {
   /** @typedef {"idle" | "copied" | "error"} CopyState */
+  const ANTD_COPY_STATE_CLASSES = [
+    "ant-btn-default",
+    "ant-btn-primary",
+    "ant-btn-color-default",
+    "ant-btn-color-primary",
+    "ant-btn-color-dangerous",
+    "ant-btn-variant-filled",
+    "ant-btn-variant-solid",
+    "ant-btn-variant-outlined",
+  ];
   const copyControls = globalThis.document.querySelectorAll(
     "[data-copy-control]",
   );
@@ -62,6 +72,39 @@
   function getButtonLabelElement(copyButton) {
     const labelElement = copyButton.querySelector("[data-copy-button-label]");
     return labelElement instanceof HTMLElement ? labelElement : null;
+  }
+
+  /**
+   * @param {HTMLButtonElement} copyButton
+   * @param {CopyState} state
+   * @returns {void}
+   */
+  function setAntdButtonState(copyButton, state) {
+    copyButton.classList.remove(...ANTD_COPY_STATE_CLASSES);
+
+    switch (state) {
+      case "copied":
+        copyButton.classList.add(
+          "ant-btn-primary",
+          "ant-btn-color-primary",
+          "ant-btn-variant-solid",
+        );
+        break;
+      case "error":
+        copyButton.classList.add(
+          "ant-btn-default",
+          "ant-btn-color-dangerous",
+          "ant-btn-variant-outlined",
+        );
+        break;
+      default:
+        copyButton.classList.add(
+          "ant-btn-default",
+          "ant-btn-color-default",
+          "ant-btn-variant-filled",
+        );
+        break;
+    }
   }
 
   /**
@@ -214,6 +257,8 @@
       } else {
         copyButton.textContent = nextLabel;
       }
+
+      setAntdButtonState(copyButton, state);
 
       copyButton.setAttribute(
         "aria-label",
