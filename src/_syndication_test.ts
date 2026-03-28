@@ -39,9 +39,9 @@ describe("syndication.page.tsx", () => {
     );
     assertStringIncludes(
       html,
-      'class="css-var-_R_0_ ant-descriptions feeds-descriptions"',
+      'class="feeds-descriptions"',
     );
-    assertStringIncludes(html, 'class="ant-descriptions-view"');
+    assertStringIncludes(html, 'class="feeds-descriptions__view"');
     assertNotMatch(html, /syndication-pagehead-meta/);
     assertNotMatch(html, /syndication-overview-card/);
     assertNotMatch(html, /contract-reference/);
@@ -74,20 +74,20 @@ describe("syndication.page.tsx", () => {
     assertStringIncludes(html, "application/feed+json");
   });
 
-  it("renders copy controls with Ant Design typography classes", () => {
+  it("renders copy controls with local feed classes", () => {
     const html = syndicationPage(MOCK_DATA);
 
     assertStringIncludes(
       html,
-      'class="css-var-_R_0_ ant-typography ant-typography-actions feeds-endpoint-actions"',
+      'class="feeds-endpoint-actions"',
     );
     assertStringIncludes(
       html,
-      'class="ant-typography-copy feeds-endpoint-copy-button"',
+      'class="feeds-endpoint-copy-button"',
     );
     assertStringIncludes(
       html,
-      'class="anticon anticon-copy feeds-copy-icon feeds-copy-icon--default"',
+      'class="feeds-copy-icon feeds-copy-icon--default"',
     );
     assertStringIncludes(html, 'class="sr-only feeds-copy-button-label"');
     assertStringIncludes(html, 'data-copy-default-label="Copy"');
@@ -131,11 +131,11 @@ describe("syndication CSS contracts", () => {
     assertStringIncludes(layoutStyles, ".feeds-endpoint-row {");
     assertStringIncludes(
       layoutStyles,
-      ".feeds-endpoint-actions.ant-typography.ant-typography-actions {",
+      ".feeds-endpoint-actions {",
     );
     assertStringIncludes(
       layoutStyles,
-      ".feeds-endpoint-copy-button.ant-typography-copy {",
+      ".feeds-endpoint-copy-button {",
     );
     assertStringIncludes(layoutStyles, ".feeds-copy-icon-stack {");
   });

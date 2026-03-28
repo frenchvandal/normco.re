@@ -2,7 +2,8 @@
   .feeds-page,
   .syndication-content,
   .syndication-layout,
-  .syndication-section {
+  .syndication-section,
+  .feeds-descriptions__view {
     display: grid;
     gap: var(--ph-space-5);
   }
@@ -24,7 +25,7 @@
     margin: 0;
   }
 
-  .feeds-descriptions .ant-descriptions-view {
+  .feeds-descriptions__view {
     display: grid;
     border: var(--ph-border-hairline) solid var(--ph-color-border-muted);
     border-radius: calc(var(--ph-radius-lg) * 1.05);
@@ -211,14 +212,14 @@
     font-size: var(--ph-text-sm);
   }
 
-  .feeds-endpoint-actions.ant-typography.ant-typography-actions {
+  .feeds-endpoint-actions {
     display: inline-flex;
     align-items: stretch;
     margin-inline-start: 0;
     background: var(--ph-color-canvas-default);
   }
 
-  .feeds-endpoint-copy-button.ant-typography-copy {
+  .feeds-endpoint-copy-button {
     display: inline-grid;
     place-items: center;
     position: relative;
@@ -238,8 +239,8 @@
       background-color var(--ph-duration-fast) var(--ph-ease-standard);
   }
 
-  .feeds-endpoint-copy-button.ant-typography-copy:hover,
-  .feeds-endpoint-copy-button.ant-typography-copy:focus-visible {
+  .feeds-endpoint-copy-button:hover,
+  .feeds-endpoint-copy-button:focus-visible {
     color: var(--ph-color-fg-default);
     background: color-mix(
       in oklch,
@@ -248,7 +249,7 @@
     );
   }
 
-  .feeds-endpoint-copy-button.ant-typography-copy:focus-visible {
+  .feeds-endpoint-copy-button:focus-visible {
     outline: 2px solid var(--ph-color-accent-emphasis);
     outline-offset: -2px;
   }

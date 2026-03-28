@@ -115,10 +115,10 @@ function renderCopyControl(
           <code>${escapeHtml(absoluteUrl)}</code>
         </span>
       </a>
-      <span class="css-var-_R_0_ ant-typography ant-typography-actions feeds-endpoint-actions">
+      <span class="feeds-endpoint-actions">
         <button
           type="button"
-          class="ant-typography-copy feeds-endpoint-copy-button"
+          class="feeds-endpoint-copy-button"
           data-copy-button=""
           data-copy-path="${escapeHtml(item.path)}"
           data-copy-title="${escapeHtml(copyTitle)}"
@@ -129,10 +129,10 @@ function renderCopyControl(
           title="${escapeHtml(copyTitle)}"
         >
           <span class="feeds-copy-icon-stack" aria-hidden="true">
-            <span role="img" aria-label="copy" class="anticon anticon-copy feeds-copy-icon feeds-copy-icon--default">
+            <span class="feeds-copy-icon feeds-copy-icon--default">
               ${COPY_ICON}
             </span>
-            <span role="img" aria-label="check" class="anticon anticon-check feeds-copy-icon feeds-copy-icon--success">
+            <span class="feeds-copy-icon feeds-copy-icon--success">
               ${COPY_SUCCESS_ICON}
             </span>
           </span>
@@ -242,8 +242,8 @@ export default (data: Lume.Data): string => {
         class="syndication-section"
         aria-label="${escapeHtml(translations.feeds.cardsAriaLabel)}"
       >
-        <div class="css-var-_R_0_ ant-descriptions feeds-descriptions">
-          <div class="ant-descriptions-view">
+        <div class="feeds-descriptions">
+          <div class="feeds-descriptions__view">
             ${feedRowsHtml}
           </div>
         </div>

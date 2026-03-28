@@ -411,11 +411,11 @@
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .feeds-endpoint-actions.ant-typography.ant-typography-actions {
+    .feeds-endpoint-actions {
       inline-size: 100%;
     }
 
-    .feeds-endpoint-copy-button.ant-typography-copy {
+    .feeds-endpoint-copy-button {
       min-inline-size: 100%;
       min-block-size: 3rem;
       border-inline-start: 0;
@@ -434,11 +434,11 @@
   @media (forced-colors: active) {
     .site-header,
     .site-header__panel,
-    .site-header-antd-menu.ant-menu,
+    .site-header__menu-shell,
     .site-side-nav,
     .site-side-nav__close,
     .feature-card,
-    .feeds-descriptions .ant-descriptions-view,
+    .feeds-descriptions__view,
     .feeds-description-row,
     .about-contact-trigger,
     .about-contact-popover,
@@ -452,8 +452,6 @@
     }
 
     .site-header__menu-item,
-    .site-header-antd-menu.ant-menu,
-    .site-header-antd-menu.ant-menu a,
     .site-header__action,
     .site-header__menu-toggle,
     .site-side-nav__close,

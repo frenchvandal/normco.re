@@ -249,34 +249,31 @@ function resolveHeaderActions(
 
 function renderDesktopNavigationMenu(
   items: readonly NavigationItem[],
+  v: VariantClasses,
 ): El {
   return (
-    <ul
-      class="site-header-antd-menu ant-menu-overflow ant-menu ant-menu-root ant-menu-horizontal ant-menu-light css-var-_R_0_ ant-menu-css-var"
-      role="menu"
-      tabindex="0"
-      data-menu-list="true"
-    >
-      {items.map(({ href, isCurrent, label }) => (
-        <li
-          key={href}
-          class={`ant-menu-overflow-item ant-menu-item ant-menu-item-only-child${
-            isCurrent ? " ant-menu-item-selected" : ""
-          }`}
-          role="menuitem"
-          tabindex="-1"
-        >
-          <span class="ant-menu-title-content">
+    <div class="site-header__menu-shell" data-site-header-menu="">
+      <ul class="site-header__menu-list">
+        {items.map(({ href, isCurrent, label }) => (
+          <li
+            key={href}
+            class={`site-header__menu-list-item${
+              isCurrent ? " site-header__menu-list-item--current" : ""
+            }`}
+          >
             <a
               href={href}
+              class={v.navLink}
               {...(isCurrent ? { "aria-current": "page" as const } : {})}
             >
-              {label}
+              {v.navLinkLabel
+                ? <span class={v.navLinkLabel}>{label}</span>
+                : label}
             </a>
-          </span>
-        </li>
-      ))}
-    </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -535,32 +532,27 @@ function renderSideNav(
           </button>
         </div>
         <div class="site-side-nav__menu-shell">
-          <ul
-            class="site-side-nav__items ant-menu ant-menu-root ant-menu-inline ant-menu-light"
-            data-menu-list="true"
-          >
+          <ul class="site-side-nav__items">
             {items.map(({ href, label, isCurrent }) => (
               <li
-                class={`site-side-nav__item ant-menu-item ant-menu-item-only-child${
-                  isCurrent ? " ant-menu-item-selected" : ""
+                class={`site-side-nav__item${
+                  isCurrent ? " site-side-nav__item--current" : ""
                 }`}
                 key={href}
               >
-                <span class="ant-menu-title-content">
-                  <a
-                    href={href}
-                    class="site-side-nav__link"
-                    {...(isCurrent ? { "aria-current": "page" as const } : {})}
-                  >
-                    <span class="site-side-nav__link-text">{label}</span>
-                    <SiteIcon
-                      name="arrow-right"
-                      className="site-side-nav__link-icon"
-                      width={18}
-                      height={18}
-                    />
-                  </a>
-                </span>
+                <a
+                  href={href}
+                  class="site-side-nav__link"
+                  {...(isCurrent ? { "aria-current": "page" as const } : {})}
+                >
+                  <span class="site-side-nav__link-text">{label}</span>
+                  <SiteIcon
+                    name="arrow-right"
+                    className="site-side-nav__link-icon"
+                    width={18}
+                    height={18}
+                  />
+                </a>
               </li>
             ))}
           </ul>
@@ -638,12 +630,7 @@ export default (
                   class={v.nav}
                   aria-label={t.site.mainNavigationAriaLabel}
                 >
-                  <div
-                    class="site-header-antd-menu-shell"
-                    data-site-header-menu=""
-                  >
-                    {renderDesktopNavigationMenu(navItems)}
-                  </div>
+                  {renderDesktopNavigationMenu(navItems, v)}
                 </nav>
               </>
             )}
@@ -654,9 +641,7 @@ export default (
               class={v.nav}
               aria-label={t.site.mainNavigationAriaLabel}
             >
-              <div class="site-header-antd-menu-shell" data-site-header-menu="">
-                {renderDesktopNavigationMenu(navItems)}
-              </div>
+              {renderDesktopNavigationMenu(navItems, v)}
             </nav>
           )}
 

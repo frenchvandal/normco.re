@@ -90,17 +90,18 @@ describe("Header()", () => {
     assertStringIncludes(html, 'class="site-header__global"');
     assertStringIncludes(html, 'class="site-header__nav"');
     assertStringIncludes(html, 'data-site-header-menu=""');
-    assertStringIncludes(html, 'class="site-header-antd-menu-shell"');
+    assertStringIncludes(html, 'class="site-header__menu-shell"');
     assertStringIncludes(
       html,
-      'class="site-header-antd-menu ant-menu-overflow ant-menu ant-menu-root ant-menu-horizontal',
+      'class="site-header__menu-list"',
     );
+    assertStringIncludes(html, 'class="site-header__menu-item"');
     assertStringIncludes(html, 'class="site-side-nav__navigation"');
     assertStringIncludes(html, 'data-side-nav-close=""');
     assertNotMatch(html, /data-side-nav-utility=/);
     assertStringIncludes(
       html,
-      'class="site-side-nav__items ant-menu ant-menu-root ant-menu-inline ant-menu-light"',
+      'class="site-side-nav__items"',
     );
     assertStringIncludes(html, 'role="dialog"');
   });
@@ -193,8 +194,14 @@ describe("Header()", () => {
       html,
       /<a[^>]*href="\/fr\/"[^>]*aria-current="page"/,
     );
-    assertStringIncludes(html, "ant-menu-item-selected");
-    assertStringIncludes(html, 'href="/fr/posts/" aria-current="page"');
+    assertStringIncludes(
+      html,
+      'class="site-side-nav__item site-side-nav__item--current"',
+    );
+    assertMatch(
+      html,
+      /<a[^>]*href="\/fr\/posts\/"[^>]*aria-current="page"/,
+    );
   });
 
   it("switches to the editorial home variant on home routes", async () => {
@@ -211,7 +218,7 @@ describe("Header()", () => {
       'class="site-header__nav editorial-home-header__nav"',
     );
     assertStringIncludes(html, 'data-site-header-menu=""');
-    assertStringIncludes(html, 'class="site-header-antd-menu-shell"');
+    assertStringIncludes(html, 'class="site-header__menu-shell"');
     assertStringIncludes(
       html,
       'class="site-header__action editorial-home-header__action"',
@@ -270,7 +277,7 @@ describe("Header CSS contracts", () => {
     assertStringIncludes(layoutStyles, ".site-side-nav__close");
     assertStringIncludes(layoutStyles, ".site-side-nav__close-icon");
     assertStringIncludes(layoutStyles, ".site-side-nav__menu-shell");
-    assertStringIncludes(layoutStyles, ".site-side-nav__items.ant-menu");
+    assertStringIncludes(layoutStyles, ".site-side-nav__items {");
     assertStringIncludes(layoutStyles, ".site-side-nav__link-text");
     assertStringIncludes(layoutStyles, ".site-side-nav__overlay");
     assertStringIncludes(layoutStyles, "var(--ph-side-nav-width)");
