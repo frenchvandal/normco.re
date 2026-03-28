@@ -53,7 +53,7 @@ const SITEMAP_HREF = {
 
 const HEADER_MENU_ICON_MARKUP = renderSiteIconMarkup(
   "three-bars",
-  "cds--header__menu-icon",
+  "site-header__menu-icon",
   {
     width: 20,
     height: 20,
@@ -61,7 +61,7 @@ const HEADER_MENU_ICON_MARKUP = renderSiteIconMarkup(
 );
 const HEADER_SEARCH_ICON_MARKUP = renderSiteIconMarkup(
   "search",
-  "cds--header__action-icon",
+  "site-header__action-icon",
   {
     width: 20,
     height: 20,
@@ -69,7 +69,7 @@ const HEADER_SEARCH_ICON_MARKUP = renderSiteIconMarkup(
 );
 const HEADER_LANGUAGE_ICON_MARKUP = renderSiteIconMarkup(
   "translation",
-  "cds--header__action-icon",
+  "site-header__action-icon",
   {
     width: 20,
     height: 20,
@@ -78,7 +78,7 @@ const HEADER_LANGUAGE_ICON_MARKUP = renderSiteIconMarkup(
 const HEADER_THEME_ICONS_MARKUP = [
   renderSiteIconMarkup(
     "sun",
-    "cds--header__action-icon theme-icon theme-icon--sun",
+    "site-header__action-icon theme-icon theme-icon--sun",
     {
       width: 20,
       height: 20,
@@ -86,7 +86,7 @@ const HEADER_THEME_ICONS_MARKUP = [
   ),
   renderSiteIconMarkup(
     "moon",
-    "cds--header__action-icon theme-icon theme-icon--moon",
+    "site-header__action-icon theme-icon theme-icon--moon",
     {
       width: 20,
       height: 20,
@@ -94,7 +94,7 @@ const HEADER_THEME_ICONS_MARKUP = [
   ),
   renderSiteIconMarkup(
     "device-desktop",
-    "cds--header__action-icon theme-icon theme-icon--system",
+    "site-header__action-icon theme-icon theme-icon--system",
     {
       width: 20,
       height: 20,
@@ -146,7 +146,7 @@ function renderHeaderLanguageMenuPanelXsl(
 ): string {
   const checkmarkIconMarkup = renderSiteIconMarkup(
     "check",
-    "cds--header__language-check-icon",
+    "site-header__language-check-icon",
     {
       width: 16,
       height: 16,
@@ -154,7 +154,7 @@ function renderHeaderLanguageMenuPanelXsl(
   );
   const languageOptionsMarkup = HEADER_LANGUAGE_OPTIONS.map((option) =>
     [
-      `              <a class="cds--header__language-option" data-language-option="${option.language}" hreflang="${option.tag}" lang="${option.tag}" role="menuitemradio">`,
+      `              <a class="site-header__language-option" data-language-option="${option.language}" hreflang="${option.tag}" lang="${option.tag}" role="menuitemradio">`,
       renderXslAttribute(
         "href",
         context.href(option.language),
@@ -170,10 +170,10 @@ function renderHeaderLanguageMenuPanelXsl(
         context.tabIndex(option.language),
         "                ",
       ),
-      `                <span class="cds--header__language-label">${
+      `                <span class="site-header__language-label">${
         escapeXml(option.label)
       }</span>`,
-      '                <span class="cds--header__language-check" aria-hidden="true">',
+      '                <span class="site-header__language-check" aria-hidden="true">',
       `                  ${checkmarkIconMarkup}`,
       "                </span>",
       "              </a>",
@@ -183,13 +183,13 @@ function renderHeaderLanguageMenuPanelXsl(
   return [
     "          <section",
     `            id="${HEADER_IDS.languagePanel}"`,
-    '            class="cds--header__panel cds--header__language-panel"',
+    '            class="site-header__panel site-header__language-panel"',
     '            data-language-panel=""',
     '            hidden=""',
     "          >",
     renderXslAttribute("aria-label", context.panelLabel, "            "),
     "            <div",
-    '              class="cds--header__panel-content cds--header__language-menu"',
+    '              class="site-header__panel-content site-header__language-menu"',
     '              role="menu"',
     '              data-language-menu=""',
     "            >",

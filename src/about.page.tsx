@@ -41,12 +41,12 @@ function renderContactItem(
 
   return `<li class="about-contact-item">
             <div
-              class="cds--popover-container cds--popover--bottom cds--popover--align-left cds--popover--drop-shadow cds--popover--caret cds--toggletip about-contact-toggletip"
+              class="site-popover-container site-popover--bottom site-popover--align-left site-popover--drop-shadow site-popover--caret site-toggletip about-contact-toggletip"
               data-contact-toggletip=""
             >
               <button
                 type="button"
-                class="about-contact-trigger cds--toggletip-button"
+                class="about-contact-trigger site-toggletip__button"
                 aria-controls="${escapeHtml(panelId)}"
                 aria-expanded="false"
                 aria-haspopup="dialog"
@@ -60,11 +60,11 @@ function renderContactItem(
   }</span>
                 </span>
               </button>
-	              <div class="cds--popover" hidden>
-                <span class="cds--popover-caret" aria-hidden="true"></span>
+	              <div class="site-popover" hidden>
+                <span class="site-popover__caret" aria-hidden="true"></span>
                 <div
                   id="${escapeHtml(panelId)}"
-                  class="cds--popover-content cds--toggletip-content about-contact-popover"
+                  class="site-popover__content site-toggletip__content about-contact-popover"
                   role="dialog"
                   aria-labelledby="${escapeHtml(titleId)}"
                   tabindex="-1"

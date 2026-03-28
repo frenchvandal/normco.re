@@ -26,7 +26,7 @@
    * @returns {HTMLElement | null}
    */
   function getPopover(container) {
-    const popover = container.querySelector(".cds--popover");
+    const popover = container.querySelector(".site-popover");
     return popover instanceof HTMLElement ? popover : null;
   }
 
@@ -142,8 +142,8 @@
     const popover = getPopover(container);
     const panel = getPanel(container);
 
-    container.classList.toggle("cds--popover--open", open);
-    container.classList.toggle("cds--toggletip--open", open);
+    container.classList.toggle("site-popover--open", open);
+    container.classList.toggle("site-toggletip--open", open);
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
     if (popover) {
       popover.hidden = !open;
@@ -195,7 +195,7 @@
    * @returns {boolean}
    */
   function isOpen(container) {
-    return container.classList.contains("cds--popover--open");
+    return container.classList.contains("site-popover--open");
   }
 
   /**

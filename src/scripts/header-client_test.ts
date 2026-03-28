@@ -89,7 +89,7 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
 
         <button
           type="button"
-          class="cds--header__action cds--header__menu-toggle"
+          class="site-header__action site-header__menu-toggle"
           aria-expanded="false"
           aria-controls="site-side-nav"
         >
@@ -97,12 +97,12 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
         </button>
 
         <div
-          class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
+          class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip"
           data-header-tooltip=""
         >
           <button
             type="button"
-            class="cds--header__action"
+            class="site-header__action"
             aria-label="Search"
             aria-expanded="false"
             aria-controls="site-search-panel"
@@ -110,21 +110,21 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
           >
             Search
           </button>
-          <div class="cds--popover" aria-hidden="true">
-            <span class="cds--popover-caret"></span>
-            <div class="cds--popover-content">
-              <span class="cds--tooltip-content">Search</span>
+          <div class="site-popover" aria-hidden="true">
+            <span class="site-popover__caret"></span>
+            <div class="site-popover__content">
+              <span class="site-tooltip__content">Search</span>
             </div>
           </div>
         </div>
 
         <div
-          class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
+          class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip"
           data-header-tooltip=""
         >
           <button
             type="button"
-            class="cds--header__action cds--header__language-toggle"
+            class="site-header__action site-header__language-toggle"
             aria-label="Languages"
             aria-expanded="false"
             aria-controls="site-language-panel"
@@ -133,22 +133,22 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
           >
             Languages
           </button>
-          <div class="cds--popover" aria-hidden="true">
-            <span class="cds--popover-caret"></span>
-            <div class="cds--popover-content">
-              <span class="cds--tooltip-content">Languages</span>
+          <div class="site-popover" aria-hidden="true">
+            <span class="site-popover__caret"></span>
+            <div class="site-popover__content">
+              <span class="site-tooltip__content">Languages</span>
             </div>
           </div>
         </div>
 
         <div
-          class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
+          class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip"
           data-header-tooltip=""
         >
           <button
             id="theme-toggle"
             type="button"
-            class="cds--header__action"
+            class="site-header__action"
             data-label-switch-light="Switch to light theme"
             data-label-switch-dark="Switch to dark theme"
             data-label-follow-system="Follow system theme"
@@ -156,28 +156,28 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
           >
             Theme
           </button>
-          <div class="cds--popover" aria-hidden="true">
-            <span class="cds--popover-caret"></span>
-            <div class="cds--popover-content">
-              <span class="cds--tooltip-content">Theme</span>
+          <div class="site-popover" aria-hidden="true">
+            <span class="site-popover__caret"></span>
+            <div class="site-popover__content">
+              <span class="site-tooltip__content">Theme</span>
             </div>
           </div>
         </div>
 
         <section
           id="site-language-panel"
-          class="cds--header__panel cds--header__language-panel"
+          class="site-header__panel site-header__language-panel"
           data-language-panel=""
           hidden
         >
           <div
-            class="cds--header__panel-content cds--header__language-menu"
+            class="site-header__panel-content site-header__language-menu"
             role="menu"
             data-language-menu=""
           >
             <a
               href="/"
-              class="cds--header__language-option"
+              class="site-header__language-option"
               data-language-option="en"
               role="menuitemradio"
               aria-checked="true"
@@ -187,7 +187,7 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
             </a>
             <a
               href="/fr/"
-              class="cds--header__language-option"
+              class="site-header__language-option"
               data-language-option="fr"
               role="menuitemradio"
               aria-checked="false"
@@ -200,14 +200,14 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
 
         <div
           id="site-search-panel"
-          class="cds--header__panel cds--header__search-panel"
+          class="site-header__panel site-header__search-panel"
           data-search-panel=""
           hidden
         >
-          <div class="cds--header__panel-content">
+          <div class="site-header__panel-content">
             <div
               id="site-search-status"
-              class="cds--header__search-status"
+              class="site-header__search-status"
               role="status"
               aria-live="polite"
               aria-atomic="true"
@@ -219,7 +219,7 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
                   Loading search results.
                 </p>
               </div>
-              <p class="cds--header__search-status-text" data-search-status-text="" hidden></p>
+              <p class="site-header__search-status-text" data-search-status-text="" hidden></p>
               <div
                 class="cds--inline-notification cds--inline-notification--low-contrast cds--inline-notification--info site-search-notification"
                 data-search-notification=""
@@ -236,7 +236,7 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
             </div>
             <div
               id="search"
-              class="cds--header__search-root"
+              class="site-header__search-root"
               data-search-root=""
               aria-busy="false"
               data-search-loading-label="Loading search results."
@@ -259,17 +259,17 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
           </div>
         </div>
 
-        <aside id="site-side-nav" class="cds--side-nav" hidden>
-          <nav class="cds--side-nav__navigation">
-            <ul class="cds--side-nav__items">
-              <li class="cds--side-nav__item">
-                <a href="/posts/" class="cds--side-nav__link">Articles</a>
+        <aside id="site-side-nav" class="site-side-nav" hidden>
+          <nav class="site-side-nav__navigation">
+            <ul class="site-side-nav__items">
+              <li class="site-side-nav__item">
+                <a href="/posts/" class="site-side-nav__link">Articles</a>
               </li>
             </ul>
           </nav>
         </aside>
 
-        <div class="cds--side-nav__overlay" aria-hidden="true"></div>
+        <div class="site-side-nav__overlay" aria-hidden="true"></div>
       </body>
     </html>`,
     {
@@ -429,21 +429,21 @@ function evaluateScript(window: TestWindow) {
 }
 
 function getLanguageToggle(window: TestWindow): HTMLButtonElement {
-  const toggle = window.document.querySelector(".cds--header__language-toggle");
+  const toggle = window.document.querySelector(".site-header__language-toggle");
   assert(toggle instanceof window.HTMLButtonElement);
   return toggle;
 }
 
 function getSearchToggle(window: TestWindow): HTMLButtonElement {
   const toggle = window.document.querySelector(
-    '.cds--header__action[aria-controls="site-search-panel"]',
+    '.site-header__action[aria-controls="site-search-panel"]',
   );
   assert(toggle instanceof window.HTMLButtonElement);
   return toggle;
 }
 
 function getMenuToggle(window: TestWindow): HTMLButtonElement {
-  const toggle = window.document.querySelector(".cds--header__menu-toggle");
+  const toggle = window.document.querySelector(".site-header__menu-toggle");
   assert(toggle instanceof window.HTMLButtonElement);
   return toggle;
 }
@@ -547,8 +547,8 @@ describe("header-client.js", () => {
     evaluateScript(window);
 
     const toggle = getMenuToggle(window);
-    const firstLink = window.document.querySelector(".cds--side-nav__link");
-    const overlay = window.document.querySelector(".cds--side-nav__overlay");
+    const firstLink = window.document.querySelector(".site-side-nav__link");
+    const overlay = window.document.querySelector(".site-side-nav__overlay");
     assert(firstLink instanceof window.HTMLAnchorElement);
     assert(overlay instanceof window.HTMLElement);
 
@@ -588,11 +588,11 @@ describe("header-client.js", () => {
 
     trigger.focus();
     await flush(window);
-    assertEquals(container.classList.contains("cds--popover--open"), true);
+    assertEquals(container.classList.contains("site-popover--open"), true);
 
     outsideButton.focus();
     await flush(window);
-    assertEquals(container.classList.contains("cds--popover--open"), false);
+    assertEquals(container.classList.contains("site-popover--open"), false);
 
     trigger.dispatchEvent(
       new window.MouseEvent("pointerdown", { bubbles: true }),
@@ -602,7 +602,7 @@ describe("header-client.js", () => {
 
     trigger.focus();
     await flush(window);
-    assertEquals(container.classList.contains("cds--popover--open"), false);
+    assertEquals(container.classList.contains("site-popover--open"), false);
   });
 
   it("initializes Pagefind on keyboard open and mirrors result status", async () => {

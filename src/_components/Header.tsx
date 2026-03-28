@@ -58,28 +58,28 @@ type VariantClasses = Readonly<{
 
 /** Standard (non-home) variant - base class names only. */
 const STANDARD: VariantClasses = {
-  header: "cds--header",
-  wrapper: "cds--header__wrapper",
-  left: "cds--header__left",
-  menuToggle: "cds--header__action cds--header__menu-toggle",
-  menuIconClass: "cds--header__menu-icon site-menu-icon",
+  header: "site-header",
+  wrapper: "site-header__wrapper",
+  left: "site-header__left",
+  menuToggle: "site-header__action site-header__menu-toggle",
+  menuIconClass: "site-header__menu-icon site-menu-icon",
   menuIconSize: 20,
-  name: "cds--header__name",
-  nav: "cds--header__nav",
-  navLink: "cds--header__menu-item",
-  global: "cds--header__global",
-  actionButton: "cds--header__action",
-  actionIcon: "cds--header__action-icon",
+  name: "site-header__brand",
+  nav: "site-header__nav",
+  navLink: "site-header__menu-item",
+  global: "site-header__global",
+  actionButton: "site-header__action",
+  actionIcon: "site-header__action-icon",
   actionIconSize: 20,
-  languageButton: "cds--header__action cds--header__language-toggle",
-  languageOption: "cds--header__language-option",
-  languageMenu: "cds--header__language-menu",
-  languagePanel: "cds--header__panel cds--header__language-panel",
-  languagePanelContent: "cds--header__panel-content",
-  searchPanel: "cds--header__panel cds--header__search-panel",
-  searchPanelContent: "cds--header__panel-content",
-  searchRoot: "cds--header__search-root",
-  sideNav: "cds--side-nav",
+  languageButton: "site-header__action site-header__language-toggle",
+  languageOption: "site-header__language-option",
+  languageMenu: "site-header__language-menu",
+  languagePanel: "site-header__panel site-header__language-panel",
+  languagePanelContent: "site-header__panel-content",
+  searchPanel: "site-header__panel site-header__search-panel",
+  searchPanelContent: "site-header__panel-content",
+  searchRoot: "site-header__search-root",
+  sideNav: "site-side-nav",
   panelHead: false,
   searchPanelHead: false,
 };
@@ -88,38 +88,38 @@ const STANDARD: VariantClasses = {
 const eh = (suffix: string) => `editorial-home-header__${suffix}`;
 const EDITORIAL_HOME: VariantClasses = {
   ...STANDARD,
-  header: `cds--header site-header--editorial-home`,
-  wrapper: `cds--header__wrapper ${eh("wrapper")}`,
-  left: `cds--header__left ${eh("left")}`,
-  menuToggle: `cds--header__action cds--header__menu-toggle btn-octicon ${
+  header: `site-header site-header--editorial-home`,
+  wrapper: `site-header__wrapper ${eh("wrapper")}`,
+  left: `site-header__left ${eh("left")}`,
+  menuToggle: `site-header__action site-header__menu-toggle btn-octicon ${
     eh("menu-toggle")
   }`,
   menuIconClass: `site-menu-icon ${eh("action-icon")}`,
   menuIconSize: 16,
-  name: `cds--header__name ${eh("name")}`,
-  nav: `cds--header__nav ${eh("nav")}`,
-  navLink: `cds--header__menu-item subnav-item ${eh("nav-link")}`,
+  name: `site-header__brand ${eh("name")}`,
+  nav: `site-header__nav ${eh("nav")}`,
+  navLink: `site-header__menu-item subnav-item ${eh("nav-link")}`,
   navLinkLabel: "site-header-menu-item-label",
-  global: `cds--header__global ${eh("global")}`,
-  actionButton: `cds--header__action btn-octicon ${eh("action")}`,
+  global: `site-header__global ${eh("global")}`,
+  actionButton: `site-header__action btn-octicon ${eh("action")}`,
   actionIcon: eh("action-icon"),
   actionIconSize: 16,
   languageButton:
-    `cds--header__action cds--header__language-toggle btn-octicon ${
+    `site-header__action site-header__language-toggle btn-octicon ${
       eh("action")
     }`,
-  languageOption: `cds--header__language-option ${eh("menu-option")}`,
-  languageMenu: `cds--header__language-menu ${eh("language-menu")}`,
-  languagePanel: `cds--header__panel cds--header__language-panel ${
+  languageOption: `site-header__language-option ${eh("menu-option")}`,
+  languageMenu: `site-header__language-menu ${eh("language-menu")}`,
+  languagePanel: `site-header__panel site-header__language-panel ${
     eh("panel")
   }`,
-  languagePanelContent: `cds--header__panel-content Box ${eh("panel-box")}`,
-  searchPanel: `cds--header__panel cds--header__search-panel ${eh("panel")}`,
-  searchPanelContent: `cds--header__panel-content Box ${eh("panel-box")}`,
-  searchRoot: `cds--header__search-root ${eh("search-root")}`,
-  sideNav: `cds--side-nav ${eh("drawer")}`,
-  sideNavNavigation: `cds--side-nav__navigation ${eh("drawer-navigation")}`,
-  sideNavHeader: `cds--side-nav__header ${eh("drawer-header")}`,
+  languagePanelContent: `site-header__panel-content Box ${eh("panel-box")}`,
+  searchPanel: `site-header__panel site-header__search-panel ${eh("panel")}`,
+  searchPanelContent: `site-header__panel-content Box ${eh("panel-box")}`,
+  searchRoot: `site-header__search-root ${eh("search-root")}`,
+  sideNav: `site-side-nav ${eh("drawer")}`,
+  sideNavNavigation: `site-side-nav__navigation ${eh("drawer-navigation")}`,
+  sideNavHeader: `site-side-nav__header ${eh("drawer-header")}`,
   panelHead: true,
   searchPanelHead: true,
 };
@@ -129,7 +129,7 @@ const EDITORIAL_HOME: VariantClasses = {
 function renderHeaderAction(
   {
     buttonAttributes,
-    buttonClassName = "cds--header__action",
+    buttonClassName = "site-header__action",
     buttonId,
     iconMarkup,
     tooltipLabel,
@@ -143,7 +143,7 @@ function renderHeaderAction(
 ): El {
   return (
     <div
-      class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip"
+      class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip"
       data-header-tooltip=""
     >
       <button
@@ -155,10 +155,10 @@ function renderHeaderAction(
       >
         {iconMarkup}
       </button>
-      <div class="cds--popover" aria-hidden="true">
-        <span class="cds--popover-caret" aria-hidden="true"></span>
-        <div class="cds--popover-content">
-          <span class="cds--tooltip-content">{tooltipLabel}</span>
+      <div class="site-popover" aria-hidden="true">
+        <span class="site-popover__caret" aria-hidden="true"></span>
+        <div class="site-popover__content">
+          <span class="site-tooltip__content">{tooltipLabel}</span>
         </div>
       </div>
     </div>
@@ -301,11 +301,11 @@ function renderLanguageOptions(
           aria-checked={isSelected ? "true" : "false"}
           tabindex={isSelected ? "0" : "-1"}
         >
-          <span class="cds--header__language-label">{label}</span>
-          <span class="cds--header__language-check" aria-hidden="true">
+          <span class="site-header__language-label">{label}</span>
+          <span class="site-header__language-check" aria-hidden="true">
             <SiteIcon
               name="check"
-              className="cds--header__language-check-icon"
+              className="site-header__language-check-icon"
               width={16}
               height={16}
             />
@@ -319,7 +319,7 @@ function renderLanguageOptions(
 function PanelHead({ className, title }: { className: string; title: string }) {
   return (
     <div class={className}>
-      <p class="cds--header__panel-title">{title}</p>
+      <p class="site-header__panel-title">{title}</p>
     </div>
   );
 }
@@ -380,7 +380,7 @@ function renderSearchPanel(
         )}
         <div
           id={HEADER_IDS.searchStatus}
-          class="cds--header__search-status"
+          class="site-header__search-status"
           role="status"
           aria-live="polite"
           aria-atomic="true"
@@ -422,7 +422,7 @@ function renderSearchPanel(
             </p>
           </div>
           <p
-            class="cds--header__search-status-text"
+            class="site-header__search-status-text"
             data-search-status-text=""
             hidden
           />
@@ -508,24 +508,24 @@ function renderSideNav(
       aria-label={t.site.mainNavigationAriaLabel}
       hidden
     >
-      <nav class={v.sideNavNavigation ?? "cds--side-nav__navigation"}>
-        <div class={v.sideNavHeader ?? "cds--side-nav__header"}>
-          {eyebrow && <p class="cds--side-nav__eyebrow">{eyebrow}</p>}
-          <a href={homeUrl} class="cds--side-nav__brand">
-            <span class="cds--side-nav__brand-prefix">normco</span>
+      <nav class={v.sideNavNavigation ?? "site-side-nav__navigation"}>
+        <div class={v.sideNavHeader ?? "site-side-nav__header"}>
+          {eyebrow && <p class="site-side-nav__eyebrow">{eyebrow}</p>}
+          <a href={homeUrl} class="site-side-nav__brand">
+            <span class="site-side-nav__brand-prefix">normco</span>
             .re
           </a>
-          <p class="cds--side-nav__lead">{t.home.lead}</p>
+          <p class="site-side-nav__lead">{t.home.lead}</p>
         </div>
-        <ul class="cds--side-nav__items">
+        <ul class="site-side-nav__items">
           {items.map(({ href, label, isCurrent }) => (
-            <li class="cds--side-nav__item" key={href}>
+            <li class="site-side-nav__item" key={href}>
               <a
                 href={href}
-                class="cds--side-nav__link"
+                class="site-side-nav__link"
                 {...(isCurrent ? { "aria-current": "page" as const } : {})}
               >
-                <span class="cds--side-nav__link-text">{label}</span>
+                <span class="site-side-nav__link-text">{label}</span>
               </a>
             </li>
           ))}
@@ -542,10 +542,10 @@ function renderEditorialHomeBrand(
   t: Translations,
 ): El {
   return (
-    <a href={homeUrl} class="cds--header__name editorial-home-header__name">
+    <a href={homeUrl} class="site-header__brand editorial-home-header__name">
       <span class="editorial-home-header__brand-lockup">
         <span class="editorial-home-header__brand-wordmark">
-          <span class="cds--header__name--prefix">normco</span>
+          <span class="site-header__brand-prefix">normco</span>
           .re
         </span>
         <span class="editorial-home-header__brand-meta">
@@ -596,7 +596,7 @@ export default (
             {isHome ? renderEditorialHomeBrand(homeUrl, t) : (
               <>
                 <a href={homeUrl} class={v.name}>
-                  <span class="cds--header__name--prefix">normco</span>
+                  <span class="site-header__brand-prefix">normco</span>
                   .re
                 </a>
                 <nav
@@ -640,7 +640,7 @@ export default (
         v,
         isHome ? t.site.mainNavigationAriaLabel : undefined,
       )}
-      <div class="cds--side-nav__overlay" aria-hidden="true"></div>
+      <div class="site-side-nav__overlay" aria-hidden="true"></div>
     </>
   );
 };

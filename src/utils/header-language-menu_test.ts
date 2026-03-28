@@ -43,7 +43,7 @@ function assertLanguageMenuContract(source: string): void {
     assertStringIncludes(source, `lang="${option.tag}"`);
     assertStringIncludes(
       source,
-      `<span class="cds--header__language-label">${option.label}</span>`,
+      `<span class="site-header__language-label">${option.label}</span>`,
     );
   }
 }
