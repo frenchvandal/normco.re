@@ -22,8 +22,9 @@ track is stable.
   reader.
 - Plan iOS and HarmonyOS as later native clients that reuse the same contract
   family and product shape rather than the Android UI itself.
-- Do not try to recreate the site's Carbon UI in native apps. Share content and
-  information architecture, not pixel-identical components.
+- Do not try to recreate the site's web shell or Ant Design treatment in native
+  apps. Share content and information architecture, not pixel-identical
+  components.
 
 ## Current Snapshot
 

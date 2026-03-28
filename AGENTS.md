@@ -263,8 +263,8 @@ Use Android naming that matches the current app shape under
 
 ## Component References
 
-- Header: https://carbondesignsystem.com/components/ui-shell-header/usage/
-- Side navigation: https://carbondesignsystem.com/components/side-nav/usage/
-- Breadcrumb: https://carbondesignsystem.com/components/breadcrumb/usage/
-- Tag: https://carbondesignsystem.com/components/tag/usage/
-- Search: https://carbondesignsystem.com/components/search/usage/
+- Menu: https://ant.design/components/menu/
+- Drawer: https://ant.design/components/drawer/
+- Breadcrumb: https://ant.design/components/breadcrumb/
+- Tag: https://ant.design/components/tag/
+- Input/Search: https://ant.design/components/input/

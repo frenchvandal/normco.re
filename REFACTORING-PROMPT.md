@@ -109,7 +109,7 @@ background: var(--ph-color-canvas-subtle);
 ```
 
 Ce triplet revient dans `.site-search-notification`, `.feeds-copy-notice`,
-`.cds--header__panel`, etc. Crée `.u-surface-subtle` dans `utilities.css`.
+`.site-header__panel`, etc. Crée `.u-surface-subtle` dans `utilities.css`.
 
 ---
 
