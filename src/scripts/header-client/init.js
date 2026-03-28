@@ -5,14 +5,14 @@ import { createThemeController } from "./theme.js";
 
 const DEFERRED_FOCUS_DELAY_MS = 16;
 const DISCLOSURE_CONTROL_SELECTOR =
-  ".cds--header__action[aria-controls], .cds--header__menu-toggle";
-const DISCLOSURE_SURFACE_SELECTOR = ".cds--header__panel, .cds--side-nav";
+  ".site-header__action[aria-controls], .site-header__menu-toggle";
+const DISCLOSURE_SURFACE_SELECTOR = ".site-header__panel, .site-side-nav";
 const FOCUSABLE_SELECTOR =
   "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
 const LANGUAGE_MENU_SELECTOR = "[data-language-menu]";
 const LANGUAGE_OPTION_SELECTOR = '[data-language-option][role="menuitemradio"]';
-const OVERLAY_SELECTOR = ".cds--side-nav__overlay";
-const SIDE_NAV_LINK_SELECTOR = "a.cds--side-nav__link";
+const OVERLAY_SELECTOR = ".site-side-nav__overlay";
+const SIDE_NAV_LINK_SELECTOR = "a.site-side-nav__link";
 const THEME_TOGGLE_SELECTOR = "#theme-toggle";
 const TOOLTIP_CONTAINER_SELECTOR = "[data-header-tooltip]";
 const TOOLTIP_TRIGGER_SELECTOR = "[data-header-tooltip-trigger]";
@@ -194,7 +194,7 @@ export function bindHeaderClient(runtime) {
    */
   function isSideNav(surface) {
     return surface instanceof resolvedRuntime.HTMLElement &&
-      surface.matches(".cds--side-nav");
+      surface.matches(".site-side-nav");
   }
 
   /**
@@ -588,7 +588,7 @@ export function bindHeaderClient(runtime) {
       return;
     }
 
-    container.classList.add("cds--popover--open");
+    container.classList.add("site-popover--open");
   }
 
   /**
@@ -600,7 +600,7 @@ export function bindHeaderClient(runtime) {
       return;
     }
 
-    container.classList.remove("cds--popover--open");
+    container.classList.remove("site-popover--open");
   }
 
   /**

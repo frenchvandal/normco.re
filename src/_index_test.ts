@@ -70,7 +70,7 @@ describe("index.page.tsx", () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertMatch(
         html,
-        /class="[^"]*\bsite-page-shell\b[^"]*\bsite-page-shell--editorial\b[^"]*\bhome-page\b[^"]*\bhome-page--primer\b[^"]*"/,
+        /class="[^"]*\bsite-page-shell\b[^"]*\bsite-page-shell--editorial\b[^"]*\bhome-page\b[^"]*\bhome-page--editorial\b[^"]*"/,
       );
     });
 
@@ -78,21 +78,21 @@ describe("index.page.tsx", () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(
         html,
-        'class="primer-home-intro"',
+        'class="editorial-home-intro"',
       );
       assertStringIncludes(
         html,
-        'class="primer-home-intro__grid"',
+        'class="editorial-home-intro__grid"',
       );
       assertStringIncludes(
         html,
-        'class="primer-home-intro__links"',
+        'class="editorial-home-intro__links"',
       );
       assertStringIncludes(
         html,
-        'class="primer-home-inline-link primer-home-inline-link--primary"',
+        'class="editorial-home-inline-link editorial-home-inline-link--primary"',
       );
-      assertStringIncludes(html, 'class="primer-home-intro__aside"');
+      assertStringIncludes(html, 'class="editorial-home-intro__aside"');
       assertStringIncludes(html, 'href="/posts/"');
       assertStringIncludes(html, 'href="/about/"');
     });
@@ -109,8 +109,8 @@ describe("index.page.tsx", () => {
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
 
-      assertStringIncludes(html, 'class="primer-home-topics"');
-      assertStringIncludes(html, 'class="primer-home-topic-link"');
+      assertStringIncludes(html, 'class="editorial-home-topics"');
+      assertStringIncludes(html, 'class="editorial-home-topic-link"');
       assertStringIncludes(html, 'href="/tags/design/"');
       assertStringIncludes(html, 'href="/tags/writing/"');
       assertStringIncludes(html, 'href="/tags/life/"');
@@ -126,9 +126,9 @@ describe("index.page.tsx", () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(
         html,
-        'class="home-recent home-recent--primer"',
+        'class="home-recent home-recent--editorial"',
       );
-      assertStringIncludes(html, 'class="primer-home-section-title"');
+      assertStringIncludes(html, 'class="editorial-home-section-title"');
       assertNotMatch(html, /h-feed|p-name|h-card|u-url sr-only/);
     });
 
@@ -149,9 +149,9 @@ describe("index.page.tsx", () => {
 
       assertStringIncludes(
         html,
-        'class="primer-home-ledger"',
+        'class="editorial-home-ledger"',
       );
-      assertStringIncludes(html, 'class="primer-home-featured-story"');
+      assertStringIncludes(html, 'class="editorial-home-featured-story"');
       assertStringIncludes(html, "Featured story");
       assertStringIncludes(html, "Secondary story");
     });
@@ -165,7 +165,7 @@ describe("index.page.tsx", () => {
       ];
       const html = await indexPage(makeData(posts), MOCK_HELPERS);
 
-      assertStringIncludes(html, 'class="primer-home-ledger"');
+      assertStringIncludes(html, 'class="editorial-home-ledger"');
       assertStringIncludes(html, 'class="home-posts home-posts--ledger"');
     });
 
@@ -192,7 +192,7 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, 'class="home-posts-item"');
       assertStringIncludes(
         html,
-        'class="post-card primer-home-post primer-home-post--ledger"',
+        'class="post-card editorial-home-post editorial-home-post--ledger"',
       );
     });
 
@@ -231,7 +231,7 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, "Grid card");
       assertStringIncludes(
         html,
-        'class="post-card primer-home-post primer-home-post--ledger"',
+        'class="post-card editorial-home-post editorial-home-post--ledger"',
       );
     });
 
@@ -250,13 +250,13 @@ describe("index.page.tsx", () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(
         html,
-        'class="home-recent home-recent--primer"',
+        'class="home-recent home-recent--editorial"',
       );
     });
 
-    it("renders the Primer empty state when no posts exist", async () => {
+    it("renders the editorial empty state when no posts exist", async () => {
       const html = await indexPage(makeData([]), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="primer-home-empty-state"');
+      assertStringIncludes(html, 'class="editorial-home-empty-state"');
       assertStringIncludes(html, "Nothing published yet.");
       assertStringIncludes(html, 'href="/about/"');
     });

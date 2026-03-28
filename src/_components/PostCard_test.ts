@@ -58,19 +58,17 @@ describe("PostCard()", () => {
       assertStringIncludes(html, 'class="post-card-date"');
     });
 
-    it("ignores unused author metadata props and keeps the card clean", async () => {
+    it("keeps the card clean when summary rendering is not requested", async () => {
       const base = makeBase(308);
       const html = await renderComponent(
         PostCard({
           ...base,
           summary: "Summary copy",
-          authorName: "Phiphi",
-          authorUrl: "/about/",
         }),
       );
 
       assertNotMatch(html, /p-summary|p-author|h-card|p-name/);
-      assertNotMatch(html, /\/about\//);
+      assertNotMatch(html, /Summary copy/);
     });
 
     it("renders a visible summary only when explicitly requested", async () => {
@@ -103,7 +101,7 @@ describe("PostCard()", () => {
       const base = makeBase(304);
       const html = await renderComponent(PostCard({ ...base }));
       assertStringIncludes(html, "post-card");
-      assertStringIncludes(html, "cds--tile");
+      assertStringIncludes(html, "site-panel");
     });
 
     it("renders a time element with the ISO datetime attribute", async () => {
@@ -131,7 +129,7 @@ describe("PostCard()", () => {
       );
 
       assertStringIncludes(html, "custom-post-card");
-      assertStringIncludes(html, "cds--tile");
+      assertStringIncludes(html, "site-panel");
     });
 
     it("escapes title and URL values before interpolation", async () => {

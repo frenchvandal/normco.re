@@ -7,7 +7,7 @@ describe("scanStyleSources()", () => {
   it("accepts bridge and allowlisted syntax-highlighting literals", () => {
     const issues = scanStyleSources([
       {
-        filePath: "src/styles/primer/theme-tokens.css",
+        filePath: "src/styles/antd/theme-tokens.css",
         source:
           "--site-link-underline-thickness: max(1px, 0.08em);\n--site-search-field-size: 2.25rem;\n--site-inline-copy-control-size: 2.375rem;\n--site-tag-blue-bg: oklch(50% 0.1 240 / 20%);",
       },

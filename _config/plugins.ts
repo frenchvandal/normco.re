@@ -20,6 +20,7 @@ import pagefind from "lume/plugins/pagefind.ts";
 import validateHtml from "lume/plugins/validate_html.ts";
 import checkUrls from "lume/plugins/check_urls.ts";
 import jsonLd from "lume/plugins/json_ld.ts";
+import esbuild from "lume/plugins/esbuild.ts";
 import type Site from "lume/core/site.ts";
 import { enUS, fr as frLocale, zhCN, zhTW } from "date-fns/locale";
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
@@ -49,6 +50,22 @@ export function registerPlugins(
   options: { readonly isServeTask: boolean },
 ): void {
   site.use(
+    esbuild({
+      denoConfig: "src/blog/client/deno.json",
+      options: {
+        alias: {
+          "@blog/archive-antd": "./src/blog/client/archive-antd.build.ts",
+          "@blog/antd-components": "./src/blog/client/antd-components.build.ts",
+          "@blog/antd-icons": "./src/blog/client/antd-icons.build.ts",
+          "@blog/common-antd": "./src/blog/client/common-antd.build.ts",
+          "@blog/post-antd": "./src/blog/client/post-antd.build.ts",
+          "@blog/tag-antd": "./src/blog/client/tag-antd.build.ts",
+        },
+        format: "esm",
+      },
+    }),
+  );
+  site.use(
     terser({
       options: {
         compress: true,
@@ -56,7 +73,6 @@ export function registerPlugins(
       },
     }),
   );
-
   site.use(
     postcss({
       useDefaultPlugins: false,

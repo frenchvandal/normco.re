@@ -40,19 +40,19 @@ function createDom(): InstanceType<typeof JSDOM> {
             <span data-copy-button-label="">Copier</span>
           </button>
           <div
-            class="cds--inline-notification cds--inline-notification--success cds--inline-notification--low-contrast feeds-copy-notice"
+            class="site-notification site-notification--success site-notification--low-contrast feeds-copy-notice"
             data-copy-notice=""
             data-copy-notice-success-title="Copié"
             data-copy-notice-error-title="Action impossible"
             data-copy-notice-state="idle"
             hidden
           >
-            <div class="cds--inline-notification__details">
-              <div class="cds--inline-notification__text-wrapper">
-                <p class="cds--inline-notification__title" data-copy-notice-title="">
+            <div class="site-notification__details">
+              <div class="site-notification__text-wrapper">
+                <p class="site-notification__title" data-copy-notice-title="">
                   Copié
                 </p>
-                <p class="cds--inline-notification__subtitle" data-copy-notice-message=""></p>
+                <p class="site-notification__subtitle" data-copy-notice-message=""></p>
               </div>
             </div>
           </div>

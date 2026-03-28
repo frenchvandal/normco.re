@@ -24,13 +24,11 @@ export default (
     readonly readingLabel?: string;
     readonly summary?: string;
     readonly showSummary?: boolean;
-    readonly authorName?: string;
-    readonly authorUrl?: string;
   },
 ) => (
   <article
     class={[
-      "cds--tile",
+      "site-panel",
       "post-card",
       className,
     ].filter(Boolean).join(" ")}

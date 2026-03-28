@@ -37,22 +37,22 @@ const RULES: readonly GuardRule[] = [
     name: "legacy-link-underline-literals",
     pattern: /max\(1px,\s*0\.08em\)|0\.15em/g,
     message:
-      "Use the shared link underline tokens from `src/styles/primer/theme-tokens.css`.",
-    allowedFiles: ["src/styles/primer/theme-tokens.css"],
+      "Use the shared link underline tokens from `src/styles/antd/theme-tokens.css`.",
+    allowedFiles: ["src/styles/antd/theme-tokens.css"],
   },
   {
     name: "search-control-size-literals",
     pattern: /2\.25rem|0\.625rem|0\.875rem/g,
     message:
-      "Use the semantic search control tokens from `src/styles/primer/theme-tokens.css`.",
-    allowedFiles: ["src/styles/primer/theme-tokens.css"],
+      "Use the semantic search control tokens from `src/styles/antd/theme-tokens.css`.",
+    allowedFiles: ["src/styles/antd/theme-tokens.css"],
   },
   {
     name: "inline-copy-control-size-literal",
     pattern: /2\.375rem/g,
     message:
-      "Use `--site-inline-copy-control-size` from `src/styles/primer/theme-tokens.css`.",
-    allowedFiles: ["src/styles/primer/theme-tokens.css"],
+      "Use `--site-inline-copy-control-size` from `src/styles/antd/theme-tokens.css`.",
+    allowedFiles: ["src/styles/antd/theme-tokens.css"],
   },
   {
     name: "oklch-outside-allowlist",
@@ -60,7 +60,7 @@ const RULES: readonly GuardRule[] = [
     message:
       "Move custom palette literals into the theme bridge, except for the Prism syntax-highlighting allowlist.",
     allowedFiles: [
-      "src/styles/primer/theme-tokens.css",
+      "src/styles/antd/theme-tokens.css",
       "src/styles/components/prism.css",
     ],
   },

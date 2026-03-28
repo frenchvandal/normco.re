@@ -214,7 +214,6 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'title="devops"');
       assertStringIncludes(html, 'title="cdn"');
       assertStringIncludes(html, 'class="tag-link tag-link--');
-      assertNotMatch(html, /class="cds--tag cds--tag--/);
     });
 
     it("renders backlinks in the post rail when present", async () => {
@@ -280,12 +279,11 @@ describe("post.tsx layout", () => {
       const html = await renderComponent(
         postLayout(makeData({}), MOCK_HELPERS),
       );
-      assertStringIncludes(html, '<nav class="cds--breadcrumb"');
+      assertStringIncludes(html, '<nav class="site-breadcrumb"');
       assertStringIncludes(html, 'href="/"');
       assertStringIncludes(html, 'href="/posts/"');
       assertStringIncludes(html, "Home");
       assertStringIncludes(html, "Articles");
-      assertNotMatch(html, /cds--breadcrumb-current/);
       assertNotMatch(html, /aria-current="page"/);
     });
 
@@ -300,7 +298,7 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, `<p>${body}</p>`);
     });
 
-    it("renders an integrated pagehead context, table of contents, and publication accordion for longform posts", async () => {
+    it("renders the integrated post shell with outline and publication details", async () => {
       const html = await renderComponent(
         postLayout(
           makeData({
@@ -314,10 +312,7 @@ describe("post.tsx layout", () => {
         ),
       );
 
-      assertStringIncludes(
-        html,
-        'class="post-pagehead-grid"',
-      );
+      assertStringIncludes(html, 'class="post-pagehead-grid"');
       assertStringIncludes(html, 'class="post-pagehead-context"');
       assertStringIncludes(html, 'class="post-pagehead-summary pagehead-lead"');
       assertStringIncludes(html, "Context paragraph.");
@@ -328,11 +323,12 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'id="second-section"');
       assertStringIncludes(html, 'class="post-details-section"');
       assertStringIncludes(html, "Publication details");
-      assertStringIncludes(html, 'src="/scripts/surface-controls.js"');
+      assertNotMatch(html, /data-blog-antd-root/);
+      assertNotMatch(html, /blog-antd-post\.js/);
       assertNotMatch(html, /post-summary-callout/);
     });
 
-    it("keeps the pagehead compact when a post has no summary or outline", async () => {
+    it("omits the summary copy when a post has no editorial summary", async () => {
       const html = await renderComponent(
         postLayout(
           makeData({

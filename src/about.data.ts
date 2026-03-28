@@ -1,8 +1,9 @@
 import type { SiteLanguage, SiteTranslations } from "./utils/i18n.ts";
+import type { SiteIconName } from "./utils/site-icons.ts";
 
 export type AboutContact = Readonly<{
   key: string;
-  iconClass: string;
+  iconName: SiteIconName;
   label: string;
   alt: string;
   originalSrc: string;
@@ -20,8 +21,8 @@ export type AboutFact = Readonly<{
 
 export type AboutFactIcons = Readonly<{
   location: string;
-  notebook: string;
-  translate: string;
+  topics: string;
+  languages: string;
 }>;
 
 type AboutTranslations = SiteTranslations["about"];
@@ -66,18 +67,8 @@ export function getAboutContacts(
 
   return [
     {
-      key: "telegram",
-      iconClass: "about-contact-icon--telegram",
-      label: translations.contactTelegramLabel,
-      alt: translations.contactTelegramQrAlt,
-      originalSrc: "/contact/telegram/contact-telegram.jpg",
-      downloadName: "contact-telegram.jpg",
-      width: 1170,
-      height: 2532,
-    },
-    {
       key: "wechat",
-      iconClass: "about-contact-icon--wechat",
+      iconName: "wechat",
       label: translations.contactWechatLabel,
       alt: translations.contactWechatQrAlt,
       originalSrc:
@@ -101,13 +92,13 @@ export function getAboutFacts(
       value: translations.locationValue,
     },
     {
-      iconMarkup: icons.notebook,
+      iconMarkup: icons.topics,
       iconClass: "about-fact-icon--topics",
       term: translations.topicsLabel,
       value: translations.topicsValue,
     },
     {
-      iconMarkup: icons.translate,
+      iconMarkup: icons.languages,
       iconClass: "about-fact-icon--languages",
       term: translations.languagesLabel,
       value: translations.languagesValue,

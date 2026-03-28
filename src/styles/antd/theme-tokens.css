@@ -147,6 +147,11 @@
 
     --ph-border-hairline: 1px;
     --ph-header-height: 48px;
+    --ph-layer-header: 50;
+    --ph-layer-header-popover: 60;
+    --ph-layer-header-panel: 70;
+    --ph-layer-side-nav: 45;
+    --ph-layer-side-nav-overlay: 40;
     --ph-shell-gutter: clamp(var(--ph-space-4), 4vw, var(--ph-space-8));
     --ph-panel-width: min(28rem, calc(100vw - var(--ph-shell-gutter) * 2));
     --ph-language-panel-width: min(

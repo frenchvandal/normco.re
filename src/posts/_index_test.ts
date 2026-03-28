@@ -10,7 +10,13 @@ import { asLumeData, asLumeHelpers } from "../../test/lume.ts";
 import postsIndexPage, { searchIndexed } from "./index.page.tsx";
 
 const MOCK_HELPERS = asLumeHelpers({
-  date: (_value: unknown, _format: string): string => "Mar 5",
+  date: (value: unknown, format: string): string => {
+    if (format === "ATOM" && value instanceof Date) {
+      return value.toISOString();
+    }
+
+    return "Mar 5";
+  },
 });
 
 type MockPost = {
@@ -74,9 +80,16 @@ describe("posts/index.page.tsx", () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
       assertStringIncludes(
         html,
-        'class="site-page-shell site-page-shell--wide"',
+        'class="site-page-shell site-page-shell--wide blog-antd-page blog-antd-page--archive"',
       );
       assertStringIncludes(html, 'class="feature-main"');
+    });
+
+    it("renders the archive statically without a client bootstrap payload", async () => {
+      const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
+      assertNotMatch(html, /data-blog-antd-root/);
+      assertNotMatch(html, /id="blog-antd-data"/);
+      assertNotMatch(html, /blog-antd-archive\.js/);
     });
 
     it("opts the articles page out of the Pagefind body region", () => {
@@ -103,9 +116,6 @@ describe("posts/index.page.tsx", () => {
     it("omits the redundant breadcrumb on the top-level archive page", async () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
 
-      assertNotMatch(html, /class="cds--breadcrumb-list"/);
-      assertNotMatch(html, /class="cds--breadcrumb-link"/);
-      assertNotMatch(html, /cds--breadcrumb-current/);
       assertNotMatch(html, /aria-current="page"/);
     });
 
@@ -119,7 +129,7 @@ describe("posts/index.page.tsx", () => {
   });
 
   describe("post listing", () => {
-    it("renders a chronological article list with list items and cards", async () => {
+    it("renders a chronological archive timeline with month navigation", async () => {
       const posts = [
         makePost(507, {
           date: new Date("2026-01-01"),
@@ -132,9 +142,9 @@ describe("posts/index.page.tsx", () => {
       ] as const;
       const [firstPost, secondPost] = posts;
       const html = await postsIndexPage(makeData(posts), MOCK_HELPERS);
-      assertStringIncludes(html, 'class="archive-activity"');
-      assertStringIncludes(html, 'class="archive-list"');
-      assertStringIncludes(html, 'class="archive-list-item"');
+      assertStringIncludes(html, 'class="blog-antd-archive-layout"');
+      assertStringIncludes(html, 'class="blog-antd-archive-timeline"');
+      assertStringIncludes(html, 'class="blog-antd-archive-anchor-list"');
       assertStringIncludes(html, firstPost.title);
       assertStringIncludes(html, secondPost.title);
       assertStringIncludes(html, "2 posts published");
@@ -155,15 +165,19 @@ describe("posts/index.page.tsx", () => {
 
     it("omits reading-time markup when minutes are absent", async () => {
       const { readingInfo: _unusedReadingInfo, ...postWithoutReadingInfo } =
-        makePost(510, { date: new Date("2026-01-01") });
+        makePost(510, {
+          date: new Date("2026-01-01"),
+          title: "Quiet article",
+          description: "Plain summary copy.",
+        });
       const html = await postsIndexPage(
         makeData([postWithoutReadingInfo]),
         MOCK_HELPERS,
       );
-      assertNotMatch(html, /post-card-reading-time/);
+      assertNotMatch(html, /\d+\smin/u);
     });
 
-    it("falls back to a safe card renderer when PostCard is unavailable", async () => {
+    it("escapes unsafe archive data before interpolating it into the timeline", async () => {
       seedTestFaker(520);
       const unsafeDate = faker.date.anytime();
       const html = await postsIndexPage(
@@ -175,13 +189,13 @@ describe("posts/index.page.tsx", () => {
               date: unsafeDate,
             }],
           },
-          comp: {},
         }),
         MOCK_HELPERS,
       );
 
       assertStringIncludes(html, "Unsafe &lt;title&gt;");
       assertStringIncludes(html, 'href="/posts/&quot;unsafe&quot;/"');
+      assertStringIncludes(html, 'class="blog-antd-archive-timeline__title"');
     });
   });
 });

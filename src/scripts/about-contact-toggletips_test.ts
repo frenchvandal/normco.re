@@ -20,30 +20,29 @@ function createDom(): InstanceType<typeof JSDOM> {
       <body>
         <button type="button" class="outside-focus">Outside</button>
         <div
-          class="cds--popover-container cds--popover--bottom cds--popover--align-left cds--popover--drop-shadow cds--popover--caret cds--toggletip about-contact-toggletip"
+          class="site-popover-container site-popover--bottom site-popover--align-left site-popover--drop-shadow site-popover--caret site-toggletip about-contact-toggletip"
           data-contact-toggletip=""
         >
           <button
             type="button"
-            class="about-contact-trigger cds--toggletip-button"
-            aria-controls="contact-qr-telegram"
+            class="about-contact-trigger site-toggletip__button"
+            aria-controls="contact-qr-primary"
             aria-expanded="false"
             aria-haspopup="dialog"
             data-contact-toggletip-trigger=""
           >
-            Telegram
+            Primary contact
           </button>
-          <div class="cds--popover" hidden>
-            <span class="cds--popover-caret"></span>
+          <div class="site-popover" hidden>
+            <span class="site-popover__caret"></span>
             <div
-              id="contact-qr-telegram"
-              class="cds--popover-content cds--toggletip-content about-contact-popover"
+              id="contact-qr-primary"
+              class="site-popover__content site-toggletip__content about-contact-popover"
               role="dialog"
-              aria-modal="false"
               tabindex="-1"
               data-contact-toggletip-panel=""
             >
-              <a href="/contact/telegram/contact-telegram.jpg">Download JPG</a>
+              <a href="/contact/wechat/contact-wechat-en.jpg">Download JPG</a>
               <button type="button" data-contact-toggletip-close="">
                 Close
               </button>
@@ -51,12 +50,12 @@ function createDom(): InstanceType<typeof JSDOM> {
           </div>
         </div>
         <div
-          class="cds--popover-container cds--popover--bottom cds--popover--align-left cds--popover--drop-shadow cds--popover--caret cds--toggletip about-contact-toggletip"
+          class="site-popover-container site-popover--bottom site-popover--align-left site-popover--drop-shadow site-popover--caret site-toggletip about-contact-toggletip"
           data-contact-toggletip=""
         >
           <button
             type="button"
-            class="about-contact-trigger cds--toggletip-button"
+            class="about-contact-trigger site-toggletip__button"
             aria-controls="contact-qr-wechat"
             aria-expanded="false"
             aria-haspopup="dialog"
@@ -64,13 +63,12 @@ function createDom(): InstanceType<typeof JSDOM> {
           >
             WeChat
           </button>
-          <div class="cds--popover" hidden>
-            <span class="cds--popover-caret"></span>
+          <div class="site-popover" hidden>
+            <span class="site-popover__caret"></span>
             <div
               id="contact-qr-wechat"
-              class="cds--popover-content cds--toggletip-content about-contact-popover"
+              class="site-popover__content site-toggletip__content about-contact-popover"
               role="dialog"
-              aria-modal="false"
               tabindex="-1"
               data-contact-toggletip-panel=""
             >
@@ -163,7 +161,7 @@ function getTriggers(window: TestWindow): HTMLButtonElement[] {
 }
 
 function getPopovers(window: TestWindow): HTMLElement[] {
-  return Array.from(window.document.querySelectorAll(".cds--popover"))
+  return Array.from(window.document.querySelectorAll(".site-popover"))
     .filter((candidate): candidate is HTMLElement =>
       candidate instanceof window.HTMLElement
     );
@@ -208,8 +206,8 @@ describe("about-contact-toggletips.js", () => {
 
       trigger.click();
 
-      assertEquals(container.classList.contains("cds--popover--open"), true);
-      assertEquals(container.classList.contains("cds--toggletip--open"), true);
+      assertEquals(container.classList.contains("site-popover--open"), true);
+      assertEquals(container.classList.contains("site-toggletip--open"), true);
       assertEquals(trigger.getAttribute("aria-expanded"), "true");
       assertEquals(popover.hidden, false);
     } finally {
@@ -223,26 +221,26 @@ describe("about-contact-toggletips.js", () => {
     try {
       evaluateScript(window);
 
-      const [telegramPopover, wechatPopover] = getPopovers(window);
-      const [telegramContainer, wechatContainer] = getContainers(window);
-      const [telegramTrigger, wechatTrigger] = getTriggers(window);
-      assert(telegramPopover);
+      const [primaryPopover, wechatPopover] = getPopovers(window);
+      const [primaryContainer, wechatContainer] = getContainers(window);
+      const [primaryTrigger, wechatTrigger] = getTriggers(window);
+      assert(primaryPopover);
       assert(wechatPopover);
-      assert(telegramContainer);
+      assert(primaryContainer);
       assert(wechatContainer);
-      assert(telegramTrigger);
+      assert(primaryTrigger);
       assert(wechatTrigger);
 
-      telegramTrigger.click();
+      primaryTrigger.click();
       wechatTrigger.click();
 
       assertEquals(
-        telegramContainer.classList.contains("cds--popover--open"),
+        primaryContainer.classList.contains("site-popover--open"),
         false,
       );
-      assertEquals(telegramPopover.hidden, true);
+      assertEquals(primaryPopover.hidden, true);
       assertEquals(
-        wechatContainer.classList.contains("cds--popover--open"),
+        wechatContainer.classList.contains("site-popover--open"),
         true,
       );
       assertEquals(wechatPopover.hidden, false);
@@ -273,7 +271,7 @@ describe("about-contact-toggletips.js", () => {
 
       closeButton.click();
 
-      assertEquals(container.classList.contains("cds--popover--open"), false);
+      assertEquals(container.classList.contains("site-popover--open"), false);
       assertEquals(trigger.getAttribute("aria-expanded"), "false");
       assertEquals(popover.hidden, true);
       assertEquals(window.document.activeElement, trigger);
@@ -311,7 +309,7 @@ describe("about-contact-toggletips.js", () => {
         }),
       );
 
-      assertEquals(container.classList.contains("cds--popover--open"), false);
+      assertEquals(container.classList.contains("site-popover--open"), false);
       assertEquals(popover.hidden, true);
       assert(window.document.activeElement !== trigger);
     } finally {
@@ -341,7 +339,7 @@ describe("about-contact-toggletips.js", () => {
         new window.MouseEvent("pointerdown", { bubbles: true }),
       );
 
-      assertEquals(container.classList.contains("cds--popover--open"), false);
+      assertEquals(container.classList.contains("site-popover--open"), false);
       assertEquals(popover.hidden, true);
     } finally {
       window.close();
@@ -411,7 +409,7 @@ describe("about-contact-toggletips.js", () => {
     }
   });
 
-  it("keeps the dialog modal when the viewport switches between desktop and mobile", async () => {
+  it("toggles modal semantics when the viewport switches between desktop and mobile", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow & {
       matchMedia: (query: string) => MediaQueryList;
@@ -434,10 +432,10 @@ describe("about-contact-toggletips.js", () => {
       );
       assert(panel instanceof window.HTMLElement);
 
-      assertEquals(panel.getAttribute("aria-modal"), "true");
+      assertEquals(panel.hasAttribute("aria-modal"), false);
       assertEquals(
         window.document.body.dataset.contactToggletipModalOpen,
-        "true",
+        undefined,
       );
 
       mediaQueryList.setMatches(true);
@@ -451,10 +449,10 @@ describe("about-contact-toggletips.js", () => {
 
       mediaQueryList.setMatches(false);
 
-      assertEquals(panel.getAttribute("aria-modal"), "true");
+      assertEquals(panel.hasAttribute("aria-modal"), false);
       assertEquals(
         window.document.body.dataset.contactToggletipModalOpen,
-        "true",
+        undefined,
       );
       await flushNodeTimers();
     } finally {

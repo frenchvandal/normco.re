@@ -1,4 +1,4 @@
-import { assertNotMatch, assertStringIncludes } from "@std/assert";
+import { assertMatch, assertNotMatch, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker, seedTestFaker } from "../../../test/faker.ts";
@@ -21,6 +21,7 @@ function makeData(
   overrides: {
     title?: string;
     description?: string;
+    extraStylesheets?: string[];
     children?: { __html: string };
     url?: string;
     unlisted?: boolean;
@@ -186,6 +187,19 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");
+    });
+
+    it("renders extra page-level stylesheets after the shared bundle", async () => {
+      const html = await renderBase(makeData({
+        extraStylesheets: ["/styles/blog-antd.css"],
+      }));
+
+      assertStringIncludes(html, 'href="/style.css"');
+      assertStringIncludes(html, 'href="/styles/blog-antd.css"');
+      assertMatch(
+        html,
+        /href="\/style\.css".*href="\/styles\/blog-antd\.css"/,
+      );
     });
 
     it("passes service-worker debug level to the register script", async () => {

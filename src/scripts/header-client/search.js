@@ -370,11 +370,11 @@ export function createHeaderSearch(runtime, root, isKeyboardInteraction) {
     nextController.notification.hidden = false;
     nextController.notification.dataset.searchNotificationTone = tone;
     nextController.notification.classList.toggle(
-      "cds--inline-notification--info",
+      "site-notification--info",
       tone === "info",
     );
     nextController.notification.classList.toggle(
-      "cds--inline-notification--warning",
+      "site-notification--warning",
       tone === "warning",
     );
 
@@ -451,10 +451,10 @@ export function createHeaderSearch(runtime, root, isKeyboardInteraction) {
       nextController.notification.hidden = true;
       nextController.notification.dataset.searchNotificationTone = "info";
       nextController.notification.classList.add(
-        "cds--inline-notification--info",
+        "site-notification--info",
       );
       nextController.notification.classList.remove(
-        "cds--inline-notification--warning",
+        "site-notification--warning",
       );
     }
 
@@ -560,7 +560,7 @@ export function createHeaderSearch(runtime, root, isKeyboardInteraction) {
 
     for (let index = 0; index < 3; index += 1) {
       const line = doc.createElement("span");
-      line.className = "cds--skeleton__text site-search-skeleton-line";
+      line.className = "site-skeleton__text site-search-skeleton-line";
       skeleton.append(line);
     }
 

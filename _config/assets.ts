@@ -6,6 +6,7 @@ export function registerAssets(site: Site): void {
   // folder during the normal scan so the extension-based image add below does
   // not emit duplicate /static/* copies.
   site.ignore("/static");
+  site.ignore("/blog/client/node_modules");
   site.copy("/static", ".");
 
   site.add([
@@ -19,6 +20,7 @@ export function registerAssets(site: Site): void {
   ]);
 
   site.add("/style.css");
+  site.add("/styles/blog-antd.css");
 
   site.add("/scripts/header-client.js");
   site.add("/scripts/header-client/init.js");
@@ -28,7 +30,6 @@ export function registerAssets(site: Site): void {
   site.add("/scripts/language-preference.js");
   site.add("/scripts/feed-copy.js");
   site.add("/scripts/post-code-copy.js");
-  site.add("/scripts/surface-controls.js");
   site.add("/scripts/link-prefetch-intent.js");
   site.add("/scripts/sw-register.js");
 

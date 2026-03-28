@@ -72,12 +72,18 @@ describe("Header()", () => {
       Header({ currentUrl: "/posts/", language: "en" }),
     );
 
-    assertMatch(html, /<header[^>]*class="cds--header"/);
-    assertStringIncludes(html, 'class="cds--header__wrapper"');
-    assertStringIncludes(html, 'class="cds--header__left"');
-    assertStringIncludes(html, 'class="cds--header__global"');
-    assertStringIncludes(html, 'class="cds--header__nav"');
-    assertStringIncludes(html, 'class="cds--side-nav__navigation"');
+    assertMatch(html, /<header[^>]*class="site-header"/);
+    assertStringIncludes(html, 'class="site-header__wrapper"');
+    assertStringIncludes(html, 'class="site-header__left"');
+    assertStringIncludes(html, 'class="site-header__global"');
+    assertStringIncludes(html, 'class="site-header__nav"');
+    assertStringIncludes(html, 'data-site-header-menu=""');
+    assertStringIncludes(html, 'class="site-header-antd-menu-shell"');
+    assertStringIncludes(
+      html,
+      'class="site-header-antd-menu ant-menu-overflow ant-menu ant-menu-root ant-menu-horizontal',
+    );
+    assertStringIncludes(html, 'class="site-side-nav__navigation"');
   });
 
   it("keeps legacy navigation, menu, and icon controls off the home route", async () => {
@@ -87,11 +93,11 @@ describe("Header()", () => {
 
     assertMatch(
       html,
-      /<button[^>]*class="cds--header__action cds--header__menu-toggle"[^>]*aria-controls="site-side-nav"/,
+      /<button[^>]*class="site-header__action site-header__menu-toggle"[^>]*aria-controls="site-side-nav"/,
     );
     assertStringIncludes(html, 'data-icon="three-bars"');
     assertStringIncludes(html, 'data-icon="x"');
-    assertStringIncludes(html, 'data-icon="globe"');
+    assertStringIncludes(html, 'data-icon="translation"');
     assertStringIncludes(html, 'data-icon="sun"');
     assertStringIncludes(html, 'data-icon="moon"');
     assertStringIncludes(html, 'data-icon="device-desktop"');
@@ -131,19 +137,19 @@ describe("Header()", () => {
 
     assertStringIncludes(
       html,
-      '<span class="cds--header__language-label">English</span>',
+      '<span class="site-header__language-label">English</span>',
     );
     assertStringIncludes(
       html,
-      '<span class="cds--header__language-label">Français</span>',
+      '<span class="site-header__language-label">Français</span>',
     );
     assertStringIncludes(
       html,
-      'href="/about/" class="cds--header__language-option" data-language-option="en"',
+      'href="/about/" class="site-header__language-option" data-language-option="en"',
     );
     assertStringIncludes(
       html,
-      'href="/fr/about/" class="cds--header__language-option" data-language-option="fr"',
+      'href="/fr/about/" class="site-header__language-option" data-language-option="fr"',
     );
     assertMatch(html, /<a[^>]*href="\/fr\/about\/"[^>]*aria-checked="true"/);
   });
@@ -166,41 +172,43 @@ describe("Header()", () => {
     );
     assertNotMatch(
       html,
-      /<a[^>]*href="\/fr\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
+      /<a[^>]*href="\/fr\/"[^>]*aria-current="page"/,
     );
-    assertMatch(
-      html,
-      /<a[^>]*href="\/fr\/posts\/"[^>]*class="cds--header__menu-item"[^>]*aria-current="page"/,
-    );
+    assertStringIncludes(html, "ant-menu-item-selected");
+    assertStringIncludes(html, 'href="/fr/posts/" aria-current="page"');
   });
 
-  it("switches to the Primer home variant on home routes", async () => {
+  it("switches to the editorial home variant on home routes", async () => {
     const html = await renderComponent(
       Header({ currentUrl: "/", language: "en" }),
     );
 
-    assertMatch(html, /<header[^>]*class="cds--header site-header--primer"/);
-    assertStringIncludes(
+    assertMatch(
       html,
-      'class="cds--header__nav subnav subnav-flush primer-home-header__nav"',
+      /<header[^>]*class="site-header site-header--editorial-home"/,
     );
     assertStringIncludes(
       html,
-      'class="cds--header__menu-item subnav-item primer-home-header__nav-link"',
+      'class="site-header__nav editorial-home-header__nav"',
     );
+    assertStringIncludes(html, 'data-site-header-menu=""');
+    assertStringIncludes(html, 'class="site-header-antd-menu-shell"');
     assertStringIncludes(
       html,
-      'class="cds--header__action btn-octicon primer-home-header__action"',
+      'class="site-header__action editorial-home-header__action"',
     );
-    assertStringIncludes(html, 'class="primer-home-header__action-icon"');
-    assertStringIncludes(html, 'viewBox="0 0 16 16"');
+    assertStringIncludes(html, 'class="editorial-home-header__action-icon"');
+    assertStringIncludes(html, 'data-icon="translation"');
     assertStringIncludes(html, "theme-icon theme-icon--sun");
     assertStringIncludes(html, "theme-icon theme-icon--moon");
     assertStringIncludes(html, "theme-icon theme-icon--system");
     assertStringIncludes(
       html,
-      'class="cds--side-nav primer-home-header__drawer"',
+      'class="site-side-nav editorial-home-header__drawer"',
     );
+    assertNotMatch(html, /\bbtn-octicon\b/);
+    assertNotMatch(html, /\bsubnav-item\b/);
+    assertNotMatch(html, /\bBox\b/);
   });
 
   it("still omits the older pre-shell native navigation fragments", async () => {
@@ -220,7 +228,7 @@ describe("Header CSS contracts", () => {
   it("uses shared focus tokens for inset shell controls", () => {
     assertStringIncludes(
       layoutStyles,
-      ".cds--header__menu-toggle:focus-visible,",
+      ".site-header__menu-toggle:focus-visible,",
     );
     assertStringIncludes(
       layoutStyles,
@@ -230,7 +238,7 @@ describe("Header CSS contracts", () => {
 
   it("keeps the desktop navigation and global actions visually separated", () => {
     assertStringIncludes(layoutStyles, "@media (min-width: 64rem) {");
-    assertStringIncludes(layoutStyles, ".cds--header__global {");
+    assertStringIncludes(layoutStyles, ".site-header__global {");
     assertStringIncludes(
       layoutStyles,
       "border-inline-start: 1px solid var(--ph-color-border-muted);",
@@ -238,10 +246,10 @@ describe("Header CSS contracts", () => {
   });
 
   it("styles the mobile side nav as an editorial sheet", () => {
-    assertStringIncludes(layoutStyles, ".cds--side-nav__header");
-    assertStringIncludes(layoutStyles, ".cds--side-nav__brand");
-    assertStringIncludes(layoutStyles, ".cds--side-nav__lead");
-    assertStringIncludes(layoutStyles, ".cds--side-nav__overlay");
+    assertStringIncludes(layoutStyles, ".site-side-nav__header");
+    assertStringIncludes(layoutStyles, ".site-side-nav__brand");
+    assertStringIncludes(layoutStyles, ".site-side-nav__lead");
+    assertStringIncludes(layoutStyles, ".site-side-nav__overlay");
     assertStringIncludes(
       layoutStyles,
       "box-shadow: var(--ph-shadow-floating);",

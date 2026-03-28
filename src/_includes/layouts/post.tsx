@@ -9,6 +9,7 @@ import {
 } from "./post-view.tsx";
 
 export const layout = "layouts/base.tsx";
+export const extraStylesheets = ["/styles/blog-antd.css"];
 
 // ── Layout ───────────────────────────────────────────────────────────────
 
@@ -38,112 +39,118 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
 
   const codeCopyAttr = (label: string, fallback: string) =>
     state.includeCodeCopy && label !== fallback ? label : undefined;
-
+  const codeCopyLabel = codeCopyAttr(t.post.copyCodeLabel, "Copy code");
+  const codeCopyFeedback = codeCopyAttr(
+    t.post.copyCodeFeedback,
+    "Code copied",
+  );
+  const codeCopyFailedFeedback = codeCopyAttr(
+    t.post.copyCodeFailedFeedback,
+    "Cannot copy code",
+  );
   return (
-    <div class="site-page-shell site-page-shell--wide">
-      <div
-        class={`feature-layout${
-          state.hasRail ? " feature-layout--with-rail" : ""
-        }`}
-      >
-        <article
-          class="post-article feature-main"
-          data-code-copy-label={codeCopyAttr(t.post.copyCodeLabel, "Copy code")}
-          data-code-copy-feedback={codeCopyAttr(
-            t.post.copyCodeFeedback,
-            "Code copied",
-          )}
-          data-code-copy-failed-feedback={codeCopyAttr(
-            t.post.copyCodeFailedFeedback,
-            "Cannot copy code",
-          )}
-        >
-          <header class="post-header pagehead post-pagehead">
-            <nav
-              class="cds--breadcrumb"
-              aria-label={t.post.breadcrumbAriaLabel}
+    <>
+      <div class="blog-antd-root">
+        <div class="site-page-shell site-page-shell--wide">
+          <div
+            class={`feature-layout${
+              state.hasRail ? " feature-layout--with-rail" : ""
+            }`}
+          >
+            <article
+              class="post-article feature-main"
+              data-code-copy-label={codeCopyLabel}
+              data-code-copy-feedback={codeCopyFeedback}
+              data-code-copy-failed-feedback={codeCopyFailedFeedback}
             >
-              <ol class="cds--breadcrumb-list">
-                <li class="cds--breadcrumb-item">
-                  <a href={homeUrl} class="cds--breadcrumb-link">
-                    {t.navigation.home}
-                  </a>
-                </li>
-                <li class="cds--breadcrumb-item">
-                  <a href={postsBaseUrl} class="cds--breadcrumb-link">
-                    {t.navigation.writing}
-                  </a>
-                </li>
-              </ol>
-            </nav>
-            <div class="post-pagehead-grid">
-              <div class="post-pagehead-copy">
-                <h1 id="post-title" class="post-title">{data.title ?? ""}</h1>
-                <p class="post-meta">
-                  <time datetime={state.publishedDateIso}>
-                    {state.publishedDateLabel}
-                  </time>
-                  {state.readingTimeLabel !== undefined && (
-                    <>
-                      <span class="post-meta-separator" aria-hidden="true">
-                        ·
-                      </span>
-                      <span>{state.readingTimeLabel}</span>
-                    </>
-                  )}
-                </p>
-              </div>
-              {state.showSummaryBlock && (
-                <div class="post-pagehead-context">
-                  {state.visibleSummary !== undefined && (
-                    <>
-                      <p class="post-pagehead-kicker">
-                        {t.post.summaryEyebrow}
-                      </p>
-                      <p class="post-pagehead-summary pagehead-lead">
-                        {state.visibleSummary}
-                      </p>
-                    </>
-                  )}
-                  {state.summaryItems.length > 0 && (
-                    <PostSummaryMeta items={state.summaryItems} />
+              <header class="post-header pagehead post-pagehead">
+                <nav
+                  class="site-breadcrumb"
+                  aria-label={t.post.breadcrumbAriaLabel}
+                >
+                  <ol class="site-breadcrumb-list">
+                    <li class="site-breadcrumb-item">
+                      <a href={homeUrl} class="site-breadcrumb-link">
+                        {t.navigation.home}
+                      </a>
+                    </li>
+                    <li class="site-breadcrumb-item">
+                      <a href={postsBaseUrl} class="site-breadcrumb-link">
+                        {t.navigation.writing}
+                      </a>
+                    </li>
+                  </ol>
+                </nav>
+                <div class="post-pagehead-grid">
+                  <div class="post-pagehead-copy">
+                    <h1 id="post-title" class="post-title">
+                      {data.title ?? ""}
+                    </h1>
+                    <p class="post-meta">
+                      <time datetime={state.publishedDateIso}>
+                        {state.publishedDateLabel}
+                      </time>
+                      {state.readingTimeLabel !== undefined && (
+                        <>
+                          <span class="post-meta-separator" aria-hidden="true">
+                            ·
+                          </span>
+                          <span>{state.readingTimeLabel}</span>
+                        </>
+                      )}
+                    </p>
+                  </div>
+                  {state.showSummaryBlock && (
+                    <div class="post-pagehead-context">
+                      {state.visibleSummary !== undefined && (
+                        <>
+                          <p class="post-pagehead-kicker">
+                            {t.post.summaryEyebrow}
+                          </p>
+                          <p class="post-pagehead-summary pagehead-lead">
+                            {state.visibleSummary}
+                          </p>
+                        </>
+                      )}
+                      {state.summaryItems.length > 0 && (
+                        <PostSummaryMeta items={state.summaryItems} />
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
-          </header>
+              </header>
 
-          <section
-            class="post-content"
-            lang={languageTag}
-            aria-labelledby="post-title"
-          >
-            {state.renderedChildren}
-          </section>
+              <section
+                class="post-content"
+                lang={languageTag}
+                aria-labelledby="post-title"
+              >
+                {state.renderedChildren}
+              </section>
 
-          <PostDetails
-            title={t.post.detailsTitle}
-            items={state.publicationDetails}
-          />
+              <PostDetails
+                title={t.post.detailsTitle}
+                items={state.publicationDetails}
+              />
+            </article>
 
-          {state.includeCodeCopy && (
-            <script src="/scripts/post-code-copy.js" defer></script>
-          )}
-          <script src="/scripts/surface-controls.js" defer></script>
-        </article>
-
-        {state.hasRail && (
-          <PostRail
-            language={language}
-            translations={t.post}
-            outline={state.outline}
-            backlinks={state.backlinks}
-            tags={state.tags}
-            prev={neighbors.prev}
-            next={neighbors.next}
-          />
-        )}
+            {state.hasRail && (
+              <PostRail
+                language={language}
+                translations={t.post}
+                outline={state.outline}
+                backlinks={state.backlinks}
+                tags={state.tags}
+                prev={neighbors.prev}
+                next={neighbors.next}
+              />
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+      {state.includeCodeCopy && (
+        <script src="/scripts/post-code-copy.js" defer></script>
+      )}
+    </>
   );
 };

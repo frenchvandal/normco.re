@@ -17,6 +17,13 @@ function assertLanguageMenuContract(source: string): void {
   assertStringIncludes(source, `id="${HEADER_IDS.languagePanel}"`);
   assertStringIncludes(source, 'data-language-panel=""');
   assertStringIncludes(source, 'data-language-menu=""');
+  assertStringIncludes(source, 'data-icon="three-bars"');
+  assertStringIncludes(source, 'data-icon="search"');
+  assertStringIncludes(source, 'data-icon="translation"');
+  assertStringIncludes(source, 'data-icon="sun"');
+  assertStringIncludes(source, 'data-icon="moon"');
+  assertStringIncludes(source, 'data-icon="device-desktop"');
+  assertStringIncludes(source, 'data-icon="github"');
 
   let previousOptionIndex = -1;
 
@@ -35,7 +42,7 @@ function assertLanguageMenuContract(source: string): void {
     assertStringIncludes(source, `lang="${option.tag}"`);
     assertStringIncludes(
       source,
-      `<span class="cds--header__language-label">${option.label}</span>`,
+      `<span class="site-header__language-label">${option.label}</span>`,
     );
   }
 }

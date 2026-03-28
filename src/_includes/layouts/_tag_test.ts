@@ -75,10 +75,14 @@ describe("tag.tsx layout", () => {
     );
     assertStringIncludes(html, 'class="archive-list"');
     assertStringIncludes(html, `href="${post.url}"`);
-    assertNotMatch(html, /cds--breadcrumb-current/);
     assertNotMatch(html, /aria-current="page"/);
-    assertMatch(html, /class="cds--tag cds--tag--[a-z]+ tag-page-current-tag"/);
-    assertStringIncludes(html, 'title="design"');
+    assertStringIncludes(html, 'class="site-breadcrumb"');
+    assertMatch(
+      html,
+      /class="blog-tag-chip blog-tag-chip--[a-z]+ tag-page-current-tag"/,
+    );
+    assertNotMatch(html, /data-blog-antd-root/);
+    assertNotMatch(html, /blog-antd-tag\.js/);
   });
 
   it("escapes tag labels before interpolating them into the page shell", async () => {

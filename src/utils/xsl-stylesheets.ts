@@ -4,13 +4,18 @@ import sitemapStylesheetTemplate from "../sitemap.xsl.template" with {
 };
 
 import { escape } from "@std/html";
-import { renderOcticonMarkup } from "./primer-icons.ts";
+import { renderSiteIconMarkup } from "./site-icons.ts";
 import { HEADER_IDS, HEADER_LANGUAGE_OPTIONS } from "./header-language-menu.ts";
 import { type SiteLanguage, SUPPORTED_LANGUAGES } from "./i18n.ts";
 
 const HEADER_LANGUAGE_MENU_PANEL_TOKEN =
   "<!--__HEADER_LANGUAGE_MENU_PANEL__-->";
+const HEADER_MENU_ICON_TOKEN = "<!--__HEADER_MENU_ICON__-->";
+const HEADER_SEARCH_ICON_TOKEN = "<!--__HEADER_SEARCH_ICON__-->";
+const HEADER_LANGUAGE_ICON_TOKEN = "<!--__HEADER_LANGUAGE_ICON__-->";
+const HEADER_THEME_ICONS_TOKEN = "<!--__HEADER_THEME_ICONS__-->";
 const HEADER_LANGUAGE_PANEL_ID_TOKEN = "__HEADER_LANGUAGE_PANEL_ID__";
+const FOOTER_GITHUB_ICON_TOKEN = "<!--__FOOTER_GITHUB_ICON__-->";
 const SUPPORTED_LANGUAGES_TOKEN = "__SUPPORTED_LANGUAGES__";
 
 type XslAttributeContent = Readonly<
@@ -46,6 +51,65 @@ const SITEMAP_HREF = {
   zhHant: "$zh-hant-home-href",
 } as const satisfies Record<SiteLanguage, string>;
 
+const HEADER_MENU_ICON_MARKUP = renderSiteIconMarkup(
+  "three-bars",
+  "site-header__menu-icon",
+  {
+    width: 20,
+    height: 20,
+  },
+);
+const HEADER_SEARCH_ICON_MARKUP = renderSiteIconMarkup(
+  "search",
+  "site-header__action-icon",
+  {
+    width: 20,
+    height: 20,
+  },
+);
+const HEADER_LANGUAGE_ICON_MARKUP = renderSiteIconMarkup(
+  "translation",
+  "site-header__action-icon",
+  {
+    width: 20,
+    height: 20,
+  },
+);
+const HEADER_THEME_ICONS_MARKUP = [
+  renderSiteIconMarkup(
+    "sun",
+    "site-header__action-icon theme-icon theme-icon--sun",
+    {
+      width: 20,
+      height: 20,
+    },
+  ),
+  renderSiteIconMarkup(
+    "moon",
+    "site-header__action-icon theme-icon theme-icon--moon",
+    {
+      width: 20,
+      height: 20,
+    },
+  ),
+  renderSiteIconMarkup(
+    "device-desktop",
+    "site-header__action-icon theme-icon theme-icon--system",
+    {
+      width: 20,
+      height: 20,
+    },
+  ),
+].join("\n");
+const FOOTER_GITHUB_ICON_MARKUP = renderSiteIconMarkup(
+  "github",
+  "site-footer-icon",
+  {
+    width: 16,
+    height: 16,
+  },
+);
+
 function escapeXml(value: string): string {
   return escape(value).replaceAll("&#39;", "&apos;");
 }
@@ -80,9 +144,9 @@ function renderSelectedLanguageTabIndex(language: SiteLanguage): string {
 function renderHeaderLanguageMenuPanelXsl(
   context: HeaderLanguageMenuXslContext,
 ): string {
-  const checkmarkIconMarkup = renderOcticonMarkup(
+  const checkmarkIconMarkup = renderSiteIconMarkup(
     "check",
-    "cds--header__language-check-icon",
+    "site-header__language-check-icon",
     {
       width: 16,
       height: 16,
@@ -90,7 +154,7 @@ function renderHeaderLanguageMenuPanelXsl(
   );
   const languageOptionsMarkup = HEADER_LANGUAGE_OPTIONS.map((option) =>
     [
-      `              <a class="cds--header__language-option" data-language-option="${option.language}" hreflang="${option.tag}" lang="${option.tag}" role="menuitemradio">`,
+      `              <a class="site-header__language-option" data-language-option="${option.language}" hreflang="${option.tag}" lang="${option.tag}" role="menuitemradio">`,
       renderXslAttribute(
         "href",
         context.href(option.language),
@@ -106,10 +170,10 @@ function renderHeaderLanguageMenuPanelXsl(
         context.tabIndex(option.language),
         "                ",
       ),
-      `                <span class="cds--header__language-label">${
+      `                <span class="site-header__language-label">${
         escapeXml(option.label)
       }</span>`,
-      '                <span class="cds--header__language-check" aria-hidden="true">',
+      '                <span class="site-header__language-check" aria-hidden="true">',
       `                  ${checkmarkIconMarkup}`,
       "                </span>",
       "              </a>",
@@ -119,13 +183,13 @@ function renderHeaderLanguageMenuPanelXsl(
   return [
     "          <section",
     `            id="${HEADER_IDS.languagePanel}"`,
-    '            class="cds--header__panel cds--header__language-panel"',
+    '            class="site-header__panel site-header__language-panel"',
     '            data-language-panel=""',
     '            hidden=""',
     "          >",
     renderXslAttribute("aria-label", context.panelLabel, "            "),
     "            <div",
-    '              class="cds--header__panel-content cds--header__language-menu"',
+    '              class="site-header__panel-content site-header__language-menu"',
     '              role="menu"',
     '              data-language-menu=""',
     "            >",
@@ -192,6 +256,31 @@ function renderStylesheet(
     renderedTemplate,
     HEADER_LANGUAGE_PANEL_ID_TOKEN,
     HEADER_IDS.languagePanel,
+  );
+  renderedTemplate = replaceRequiredToken(
+    renderedTemplate,
+    HEADER_MENU_ICON_TOKEN,
+    HEADER_MENU_ICON_MARKUP,
+  );
+  renderedTemplate = replaceRequiredToken(
+    renderedTemplate,
+    HEADER_SEARCH_ICON_TOKEN,
+    HEADER_SEARCH_ICON_MARKUP,
+  );
+  renderedTemplate = replaceRequiredToken(
+    renderedTemplate,
+    HEADER_LANGUAGE_ICON_TOKEN,
+    HEADER_LANGUAGE_ICON_MARKUP,
+  );
+  renderedTemplate = replaceRequiredToken(
+    renderedTemplate,
+    HEADER_THEME_ICONS_TOKEN,
+    HEADER_THEME_ICONS_MARKUP,
+  );
+  renderedTemplate = replaceRequiredToken(
+    renderedTemplate,
+    FOOTER_GITHUB_ICON_TOKEN,
+    FOOTER_GITHUB_ICON_MARKUP,
   );
 
   return replaceRequiredToken(

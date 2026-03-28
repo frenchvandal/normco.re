@@ -1,5 +1,18 @@
 {
   "imports": {
+    "react": "npm:react@19.2.4",
+    "react/jsx-runtime": "npm:react@19.2.4/jsx-runtime",
+    "react-dom/client": "npm:react-dom@19.2.4/client",
+    "react-dom/server": "npm:react-dom@19.2.4/server",
+    "dayjs": "npm:dayjs@1.11.19",
+    "antd": "npm:antd@6.3.4",
+    "@ant-design/icons": "npm:@ant-design/icons@6.1.1",
+    "@blog/antd-components": "./src/blog/client/antd-components.ts",
+    "@blog/antd-icons": "./src/blog/client/antd-icons.ts",
+    "@blog/archive-antd": "./src/blog/client/archive-antd.ts",
+    "@blog/common-antd": "./src/blog/client/common-antd.ts",
+    "@blog/post-antd": "./src/blog/client/post-antd.ts",
+    "@blog/tag-antd": "./src/blog/client/tag-antd.ts",
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",

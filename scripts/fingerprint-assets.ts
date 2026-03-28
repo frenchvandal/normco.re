@@ -28,7 +28,6 @@ const CANONICAL_ASSET_URLS = [
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
   "/scripts/post-code-copy.js",
-  "/scripts/surface-controls.js",
   "/scripts/link-prefetch-intent.js",
   "/scripts/sw-register.js",
 ] as const;

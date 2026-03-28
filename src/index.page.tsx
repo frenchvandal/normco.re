@@ -41,35 +41,39 @@ function renderTopicList(
 
 function renderFeaturedStory(story: StoryData, language: SiteLanguage): string {
   const topics = renderTopicList(story.tags.slice(0, 2), language, {
-    list: "primer-home-featured-story__topics",
-    item: "primer-home-featured-story__topics-item",
-    link: "primer-home-featured-story__topic-link",
+    list: "editorial-home-featured-story__topics",
+    item: "editorial-home-featured-story__topics-item",
+    link: "editorial-home-featured-story__topic-link",
   });
 
-  return `<article class="primer-home-featured-story">
-  <div class="primer-home-featured-story__body">
-    ${topics}
-    <h2 class="primer-home-featured-story__title">
-      <a class="primer-home-featured-story__link" href="${
-    escapeHtml(story.url)
-  }">${escapeHtml(story.title)}</a>
-    </h2>
-    ${
-    story.summary === undefined
-      ? ""
-      : `<p class="primer-home-featured-story__summary">${
-        escapeHtml(story.summary)
-      }</p>`
-  }
-    <div class="primer-home-featured-story__meta">
-      <time datetime="${escapeHtml(story.dateIso)}">${
+  return `<article class="editorial-home-featured-story">
+  <div class="editorial-home-featured-story__frame">
+    <div class="editorial-home-featured-story__identity">
+      ${topics}
+      <div class="editorial-home-featured-story__meta">
+        <time datetime="${escapeHtml(story.dateIso)}">${
     escapeHtml(story.dateLabel)
   }</time>${
     story.readingLabel === undefined
       ? ""
-      : `<span class="primer-home-featured-story__reading">${
+      : `<span class="editorial-home-featured-story__reading">${
         escapeHtml(story.readingLabel)
       }</span>`
+  }
+      </div>
+    </div>
+    <div class="editorial-home-featured-story__body">
+      <h2 class="editorial-home-featured-story__title">
+        <a class="editorial-home-featured-story__link" href="${
+    escapeHtml(story.url)
+  }">${escapeHtml(story.title)}</a>
+      </h2>
+      ${
+    story.summary === undefined
+      ? ""
+      : `<p class="editorial-home-featured-story__summary">${
+        escapeHtml(story.summary)
+      }</p>`
   }
     </div>
   </div>
@@ -77,8 +81,8 @@ function renderFeaturedStory(story: StoryData, language: SiteLanguage): string {
 }
 
 function renderEmptyState(aboutUrl: string, t: SiteTranslations): string {
-  return `<div class="primer-home-empty-state">
-    <p class="primer-home-section-kicker">${escapeHtml(t.home.eyebrow)}</p>
+  return `<div class="editorial-home-empty-state">
+    <p class="editorial-home-section-kicker">${escapeHtml(t.home.eyebrow)}</p>
     <h3>${escapeHtml(t.home.emptyStateTitle)}</h3>
     <p>${escapeHtml(t.home.emptyState)}</p>
     <a href="${escapeHtml(aboutUrl)}" class="btn btn-sm">${
@@ -109,9 +113,9 @@ export default async (
   );
 
   const introTopicMarkup = renderTopicList(featuredTags, language, {
-    list: "primer-home-topics",
-    item: "primer-home-topics__item",
-    link: "primer-home-topic-link",
+    list: "editorial-home-topics",
+    item: "editorial-home-topics__item",
+    link: "editorial-home-topic-link",
   });
 
   const [featured, ...rest] = stories;
@@ -121,7 +125,7 @@ export default async (
 
   const listingMarkup = (await Promise.all(rest.map(async (story) => {
     const listItem = await renderPostListItem(PostCard, story, {
-      className: "primer-home-post primer-home-post--ledger",
+      className: "editorial-home-post editorial-home-post--ledger",
       showSummary: true,
     });
 
@@ -129,22 +133,24 @@ export default async (
   }))).join("\n");
 
   const recentSection =
-    `<section class="home-recent home-recent--primer" aria-labelledby="home-recent-title">
-  <div class="primer-home-section-head">
-    <div class="primer-home-section-head-copy">
-      <p class="primer-home-section-kicker">${escapeHtml(t.archive.eyebrow)}</p>
-      <h2 id="home-recent-title" class="primer-home-section-title">${
+    `<section class="home-recent home-recent--editorial" aria-labelledby="home-recent-title">
+  <div class="editorial-home-section-head">
+    <div class="editorial-home-section-head-copy">
+      <p class="editorial-home-section-kicker">${
+      escapeHtml(t.archive.eyebrow)
+    }</p>
+      <h2 id="home-recent-title" class="editorial-home-section-title">${
       escapeHtml(t.home.recentHeading)
     }</h2>
     </div>
-    <a href="${escapeHtml(archiveUrl)}" class="primer-home-section-link">${
+    <a href="${escapeHtml(archiveUrl)}" class="editorial-home-section-link">${
       escapeHtml(t.home.archiveLinkLabel)
     }</a>
   </div>
   ${
       recent.length === 0
         ? renderEmptyState(aboutUrl, t)
-        : `<div class="primer-home-ledger">
+        : `<div class="editorial-home-ledger">
     ${featuredStory}
     ${
           listingMarkup.length > 0
@@ -155,32 +161,32 @@ export default async (
     }
 </section>`;
 
-  return `<div class="site-page-shell site-page-shell--editorial home-page home-page--primer">
-<section class="primer-home-intro" aria-labelledby="home-title">
-  <p class="primer-home-kicker">${escapeHtml(t.home.eyebrow)}</p>
-  <div class="primer-home-intro__grid">
-    <div class="primer-home-intro__copy">
-      <h1 id="home-title" class="primer-home-title">normco.re</h1>
-      <p class="primer-home-intro__strap">${escapeHtml(t.home.title)}</p>
-      <p class="primer-home-lead">${escapeHtml(t.home.lead)}</p>
+  return `<div class="site-page-shell site-page-shell--editorial home-page home-page--editorial">
+<section class="editorial-home-intro" aria-labelledby="home-title">
+  <p class="editorial-home-kicker">${escapeHtml(t.home.eyebrow)}</p>
+  <div class="editorial-home-intro__grid">
+    <div class="editorial-home-intro__copy">
+      <h1 id="home-title" class="editorial-home-title">normco.re</h1>
+      <p class="editorial-home-intro__strap">${escapeHtml(t.home.title)}</p>
+      <p class="editorial-home-lead">${escapeHtml(t.home.lead)}</p>
     </div>
-    <div class="primer-home-intro__aside">
-      <nav class="primer-home-intro__links" aria-label="${
+    <div class="editorial-home-intro__aside">
+      <nav class="editorial-home-intro__links" aria-label="${
     escapeHtml(t.site.mainNavigationAriaLabel)
   }">
         <a href="${
     escapeHtml(archiveUrl)
-  }" class="primer-home-inline-link primer-home-inline-link--primary">${
+  }" class="editorial-home-inline-link editorial-home-inline-link--primary">${
     escapeHtml(t.home.archiveLinkLabel)
   }</a>
-        <a href="${escapeHtml(aboutUrl)}" class="primer-home-inline-link">${
+        <a href="${escapeHtml(aboutUrl)}" class="editorial-home-inline-link">${
     escapeHtml(t.navigation.about)
   }</a>
       </nav>
       ${
     introTopicMarkup.length === 0
       ? ""
-      : `<div class="primer-home-intro__topics">${introTopicMarkup}</div>`
+      : `<div class="editorial-home-intro__topics">${introTopicMarkup}</div>`
   }
     </div>
   </div>

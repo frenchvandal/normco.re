@@ -1,4 +1,4 @@
-import { assert, assertNotMatch, assertStringIncludes } from "@std/assert";
+import { assertNotMatch, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import layoutStyles from "./styles/layout.css" with { type: "text" };
 import { asLumeData, asLumeHelpers } from "../test/lume.ts";
@@ -28,9 +28,7 @@ describe("about.page.tsx", () => {
   it("omits the redundant breadcrumb on the top-level about page", () => {
     const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
 
-    assertNotMatch(html, /class="cds--breadcrumb"/);
     assertNotMatch(html, /About breadcrumb/);
-    assertNotMatch(html, /cds--breadcrumb-current/);
     assertNotMatch(html, /aria-current="page"/);
   });
 
@@ -59,18 +57,16 @@ describe("about.page.tsx", () => {
       html,
       'class="feature-card about-rail-card about-notes-card"',
     );
-    assertStringIncludes(html, "about-contact-icon--wechat");
-    assertStringIncludes(html, "about-contact-icon--telegram");
+    assertStringIncludes(html, 'data-icon="wechat"');
     assertStringIncludes(html, 'data-contact-toggletip=""');
     assertStringIncludes(html, 'data-contact-toggletip-trigger=""');
     assertStringIncludes(html, 'data-contact-toggletip-close=""');
-    assertStringIncludes(html, 'class="cds--popover" hidden');
+    assertStringIncludes(html, 'class="site-popover" hidden');
     assertStringIncludes(html, 'transform-images="avif webp jpg 240 360 512"');
-    assertStringIncludes(html, 'width="1170"');
-    assertStringIncludes(html, 'height="2532"');
     assertStringIncludes(html, 'width="1224"');
     assertStringIncludes(html, 'height="1605"');
     assertStringIncludes(html, 'aria-label="Download QR Code"');
+    assertStringIncludes(html, 'class="about-contact-icon-svg"');
     assertStringIncludes(html, "At a glance");
     assertStringIncludes(
       html,
@@ -81,16 +77,6 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, "<svg");
     assertStringIncludes(html, "<path");
     assertNotMatch(html, /data:image\/png;base64,/);
-  });
-
-  it("renders Telegram before WeChat in the contact list", () => {
-    const html = aboutPage(MOCK_DATA, MOCK_HELPERS);
-    const telegramIndex = html.indexOf(">Telegram</span>");
-    const wechatIndex = html.indexOf(">WeChat</span>");
-
-    assert(telegramIndex !== -1);
-    assert(wechatIndex !== -1);
-    assert(telegramIndex < wechatIndex);
   });
 
   it("contains an RSS feed link", () => {
@@ -114,7 +100,6 @@ describe("about.page.tsx", () => {
     const html = aboutPage(frenchData, MOCK_HELPERS);
     assertStringIncludes(html, "À propos");
     assertNotMatch(html, /Fil d’Ariane À propos/);
-    assertNotMatch(html, /href="\/fr\/" class="cds--breadcrumb-link"/);
     assertStringIncludes(html, 'aria-label="Télécharger le code QR"');
     assertStringIncludes(html, 'href="/fr/rss.xml"');
     assertStringIncludes(html, 'href="/fr/atom.xml"');
@@ -128,7 +113,6 @@ describe("about.page.tsx", () => {
     const simplifiedChineseData = asLumeData({ lang: "zh-hans" });
     const html = aboutPage(simplifiedChineseData, MOCK_HELPERS);
 
-    assertStringIncludes(html, ">电报</span>");
     assertStringIncludes(html, ">微信</span>");
     assertStringIncludes(html, 'aria-label="下载二维码"');
     assertStringIncludes(
@@ -137,11 +121,10 @@ describe("about.page.tsx", () => {
     );
   });
 
-  it("renders localized Traditional Chinese WeChat and keeps Telegram in English", () => {
+  it("renders localized Traditional Chinese WeChat contact details", () => {
     const traditionalChineseData = asLumeData({ lang: "zh-hant" });
     const html = aboutPage(traditionalChineseData, MOCK_HELPERS);
 
-    assertStringIncludes(html, ">Telegram</span>");
     assertStringIncludes(html, ">微信</span>");
     assertStringIncludes(html, 'aria-label="下載 QR 碼"');
     assertStringIncludes(
@@ -164,15 +147,11 @@ describe("about page CSS contracts", () => {
   it("keeps the QR and pictogram frames on shared neutral panels", () => {
     assertStringIncludes(
       layoutStyles,
-      ".about-pictogram-frame,",
+      ".about-pictogram-frame {",
     );
     assertStringIncludes(
       layoutStyles,
-      ".syndication-pictogram-frame {",
-    );
-    assertStringIncludes(
-      layoutStyles,
-      "background: var(--ph-color-canvas-default);",
+      "background: var(--ph-color-canvas-subtle);",
     );
   });
 });

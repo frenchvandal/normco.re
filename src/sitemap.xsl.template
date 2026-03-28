@@ -34,119 +34,93 @@
       <body class="feed-document" data-current-language="en">
         <a class="skip-link" href="#main-content">Skip to content</a>
         <div class="site-wrapper">
-          <header class="cds--header">
-            <div class="cds--header__wrapper">
-              <div class="cds--header__left">
+          <header class="site-header">
+            <div class="site-header__wrapper">
+              <div class="site-header__left">
                 <button
                   type="button"
-                  class="cds--header__action cds--header__menu-toggle"
+                  class="site-header__action site-header__menu-toggle"
                   aria-label="Open navigation menu"
                   aria-expanded="false"
                   aria-controls="site-side-nav"
                 >
-                  <svg class="cds--header__menu-icon" width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="menu">
-                    <path d="M2 14.8H18V16H2z"/>
-                    <path d="M2 11.2H18V12.399999999999999H2z"/>
-                    <path d="M2 7.6H18V8.799999999999999H2z"/>
-                    <path d="M2 4H18V5.2H2z"/>
-                  </svg>
+                  <!--__HEADER_MENU_ICON__-->
                 </button>
-                <a class="cds--header__name">
+                <a class="site-header__brand">
                   <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
-                  <span class="cds--header__name--prefix">normco</span>
+                  <span class="site-header__brand-prefix">normco</span>
                   <xsl:text>.re</xsl:text>
                 </a>
-                <nav class="cds--header__nav" aria-label="Main navigation">
-                  <a class="cds--header__menu-item">
+                <nav class="site-header__nav" aria-label="Main navigation">
+                  <a class="site-header__menu-item">
                     <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
                     <xsl:text>Home</xsl:text>
                   </a>
-                  <a class="cds--header__menu-item">
+                  <a class="site-header__menu-item">
                     <xsl:attribute name="href"><xsl:value-of select="$posts-href"/></xsl:attribute>
                     <xsl:text>Articles</xsl:text>
                   </a>
-                  <a class="cds--header__menu-item">
+                  <a class="site-header__menu-item">
                     <xsl:attribute name="href"><xsl:value-of select="$about-href"/></xsl:attribute>
                     <xsl:text>About</xsl:text>
                   </a>
                 </nav>
               </div>
-              <div class="cds--header__global">
-                <div class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip" data-header-tooltip="">
+              <div class="site-header__global">
+                <div class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip" data-header-tooltip="">
                   <button
                     type="button"
-                    class="cds--header__action"
+                    class="site-header__action"
                     aria-label="Search"
                     aria-expanded="false"
                     aria-controls="site-search-panel"
                     data-header-tooltip-trigger=""
                   >
-                    <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="search">
-                      <path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/>
-                    </svg>
+                    <!--__HEADER_SEARCH_ICON__-->
                   </button>
-                  <div class="cds--popover" aria-hidden="true">
-                    <span class="cds--popover-caret"></span>
-                    <div class="cds--popover-content">
-                      <span class="cds--tooltip-content">Search</span>
+                  <div class="site-popover" aria-hidden="true">
+                    <span class="site-popover__caret"></span>
+                    <div class="site-popover__content">
+                      <span class="site-tooltip__content">Search</span>
                     </div>
                   </div>
                 </div>
-                <div class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip" data-header-tooltip="">
+                <div class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip" data-header-tooltip="">
                   <button
                     type="button"
-                    class="cds--header__action cds--header__language-toggle"
+                    class="site-header__action site-header__language-toggle"
                     aria-label="Select language"
                     aria-expanded="false"
                     aria-controls="__HEADER_LANGUAGE_PANEL_ID__"
                     aria-haspopup="menu"
                     data-header-tooltip-trigger=""
                   >
-                    <svg class="cds--header__action-icon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="translate">
-                      <path d="M27.85,29H30L24,14H21.65l-6,15H17.8l1.6-4h6.85ZM20.2,23l2.62-6.56L25.45,23Z"/>
-                      <path d="M18,7V5H11V2H9V5H2V7H12.74a14.71,14.71,0,0,1-3.19,6.18A13.5,13.5,0,0,1,7.26,9H5.16a16.47,16.47,0,0,0,3,5.58A16.84,16.84,0,0,1,3,18l.75,1.86A18.47,18.47,0,0,0,9.53,16a16.92,16.92,0,0,0,5.76,3.84L16,18a14.48,14.48,0,0,1-5.12-3.37A17.64,17.64,0,0,0,14.8,7Z"/>
-                    </svg>
+                    <!--__HEADER_LANGUAGE_ICON__-->
                   </button>
-                  <div class="cds--popover" aria-hidden="true">
-                    <span class="cds--popover-caret"></span>
-                    <div class="cds--popover-content">
-                      <span class="cds--tooltip-content">Language</span>
+                  <div class="site-popover" aria-hidden="true">
+                    <span class="site-popover__caret"></span>
+                    <div class="site-popover__content">
+                      <span class="site-tooltip__content">Language</span>
                     </div>
                   </div>
                 </div>
-                <div class="cds--popover-container cds--icon-tooltip cds--popover--bottom cds--popover--align-center site-header-tooltip" data-header-tooltip="">
+                <div class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip" data-header-tooltip="">
                   <button
                     id="theme-toggle"
                     type="button"
-                    class="cds--header__action"
+                    class="site-header__action"
                     aria-label="Toggle color theme"
                     data-label-switch-light="Switch to light theme"
                     data-label-switch-dark="Switch to dark theme"
                     data-label-follow-system="Follow system theme"
                     data-header-tooltip-trigger=""
                   >
-                    <svg class="cds--header__action-icon theme-icon theme-icon--sun" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="sun">
-                      <path d="M16,12a4,4,0,1,1-4,4,4.0045,4.0045,0,0,1,4-4m0-2a6,6,0,1,0,6,6,6,6,0,0,0-6-6Z" transform="translate(0 .005)"/>
-                      <path d="M6.854 5.375H8.854V10.333H6.854z" transform="rotate(-45 7.86 7.856)"/>
-                      <path d="M2 15.005H7V17.005000000000003H2z"/>
-                      <path d="M5.375 23.147H10.333V25.147H5.375z" transform="rotate(-45 7.86 24.149)"/>
-                      <path d="M15 25.005H17V30.005H15z"/>
-                      <path d="M23.147 21.668H25.147V26.625999999999998H23.147z" transform="rotate(-45 24.152 24.149)"/>
-                      <path d="M25 15.005H30V17.005000000000003H25z"/>
-                      <path d="M21.668 6.854H26.625999999999998V8.854H21.668z" transform="rotate(-45 24.152 7.856)"/>
-                      <path d="M15 2.005H17V7.005H15z"/>
-                    </svg>
-                    <svg class="cds--header__action-icon theme-icon theme-icon--moon" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="moon">
-                      <path d="M13.5025,5.4136A15.0755,15.0755,0,0,0,25.096,23.6082a11.1134,11.1134,0,0,1-7.9749,3.3893c-.1385,0-.2782.0051-.4178,0A11.0944,11.0944,0,0,1,13.5025,5.4136M14.98,3a1.0024,1.0024,0,0,0-.1746.0156A13.0959,13.0959,0,0,0,16.63,28.9973c.1641.006.3282,0,.4909,0a13.0724,13.0724,0,0,0,10.702-5.5556,1.0094,1.0094,0,0,0-.7833-1.5644A13.08,13.08,0,0,1,15.8892,4.38,1.0149,1.0149,0,0,0,14.98,3Z"/>
-                    </svg>
-                    <svg class="cds--header__action-icon theme-icon theme-icon--system" width="20" height="20" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true" focusable="false" data-carbon-icon="screen">
-                      <path d="M28,4H4A2,2,0,0,0,2,6V22a2,2,0,0,0,2,2h8v4H8v2H24V28H20V24h8a2,2,0,0,0,2-2V6A2,2,0,0,0,28,4ZM18,28H14V24h4Zm10-6H4V6H28Z"/>
-                    </svg>
+                    <!--__HEADER_THEME_ICONS__-->
                   </button>
-                  <div class="cds--popover" aria-hidden="true">
-                    <span class="cds--popover-caret"></span>
-                    <div class="cds--popover-content">
-                      <span class="cds--tooltip-content">Toggle color theme</span>
+                  <div class="site-popover" aria-hidden="true">
+                    <span class="site-popover__caret"></span>
+                    <div class="site-popover__content">
+                      <span class="site-tooltip__content">Toggle color theme</span>
                     </div>
                   </div>
                 </div>
@@ -156,16 +130,16 @@
           <!--__HEADER_LANGUAGE_MENU_PANEL__-->
           <div
             id="site-search-panel"
-            class="cds--header__panel cds--header__search-panel"
+            class="site-header__panel site-header__search-panel"
             role="search"
             aria-label="Search"
             hidden=""
             data-search-panel=""
           >
-            <div class="cds--header__panel-content">
+            <div class="site-header__panel-content">
               <p
                 id="site-search-status"
-                class="cds--header__search-status"
+                class="site-header__search-status"
                 role="status"
                 aria-live="polite"
                 aria-atomic="true"
@@ -174,7 +148,7 @@
               ></p>
               <div
                 id="search"
-                class="cds--header__search-root"
+                class="site-header__search-root"
                 data-search-root=""
                 aria-busy="false"
                 data-search-loading-label="Loading search results."
@@ -190,41 +164,41 @@
 
           <aside
             id="site-side-nav"
-            class="cds--side-nav"
+            class="site-side-nav"
             aria-label="Main navigation"
             hidden=""
           >
-            <nav class="cds--side-nav__navigation">
-              <ul class="cds--side-nav__items">
-                <li class="cds--side-nav__item">
-                  <a class="cds--side-nav__link">
+            <nav class="site-side-nav__navigation">
+              <ul class="site-side-nav__items">
+                <li class="site-side-nav__item">
+                  <a class="site-side-nav__link">
                     <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
-                    <span class="cds--side-nav__link-text">Home</span>
+                    <span class="site-side-nav__link-text">Home</span>
                   </a>
                 </li>
-                <li class="cds--side-nav__item">
-                  <a class="cds--side-nav__link">
+                <li class="site-side-nav__item">
+                  <a class="site-side-nav__link">
                     <xsl:attribute name="href"><xsl:value-of select="$posts-href"/></xsl:attribute>
-                    <span class="cds--side-nav__link-text">Articles</span>
+                    <span class="site-side-nav__link-text">Articles</span>
                   </a>
                 </li>
-                <li class="cds--side-nav__item">
-                  <a class="cds--side-nav__link">
+                <li class="site-side-nav__item">
+                  <a class="site-side-nav__link">
                     <xsl:attribute name="href"><xsl:value-of select="$about-href"/></xsl:attribute>
-                    <span class="cds--side-nav__link-text">About</span>
+                    <span class="site-side-nav__link-text">About</span>
                   </a>
                 </li>
               </ul>
             </nav>
           </aside>
-          <div class="cds--side-nav__overlay" aria-hidden="true"></div>
+          <div class="site-side-nav__overlay" aria-hidden="true"></div>
 
           <main class="site-main" id="main-content" data-pagefind-body="">
             <div class="site-page-shell site-page-shell--wide feed-page-shell">
-              <nav class="cds--breadcrumb" aria-label="Breadcrumb">
-                <ol class="cds--breadcrumb-list">
-                  <li class="cds--breadcrumb-item">
-                    <a class="cds--breadcrumb-link">
+              <nav class="site-breadcrumb" aria-label="Breadcrumb">
+                <ol class="site-breadcrumb-list">
+                  <li class="site-breadcrumb-item">
+                    <a class="site-breadcrumb-link">
                       <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
                       <xsl:text>Home</xsl:text>
                     </a>
@@ -243,7 +217,7 @@
                   </p>
                 </header>
 
-                <section class="cds--tile feed-document-panel" aria-labelledby="sitemap-urls-title">
+                <section class="site-panel feed-document-panel" aria-labelledby="sitemap-urls-title">
                   <div class="feed-document-panel-head">
                     <h2 id="sitemap-urls-title" class="feed-document-panel-title">Indexed URLs</h2>
                     <p class="feed-document-panel-note">Sorted alphabetically</p>
@@ -289,7 +263,7 @@
               <nav class="site-footer-nav" aria-label="Site links">
                 <a target="_blank" rel="noopener noreferrer" aria-label="Open GitHub repository">
                   <xsl:attribute name="href">https://github.com/frenchvandal/normco.re</xsl:attribute>
-                  <span class="site-footer-icon site-footer-icon--brand site-footer-icon--github" aria-hidden="true"></span>
+                  <!--__FOOTER_GITHUB_ICON__-->
                 </a>
                 <a aria-label="Open syndication page">
                   <xsl:attribute name="href"><xsl:value-of select="$syndication-href"/></xsl:attribute>

@@ -26,7 +26,7 @@
    * @returns {HTMLElement | null}
    */
   function getPopover(container) {
-    const popover = container.querySelector(".cds--popover");
+    const popover = container.querySelector(".site-popover");
     return popover instanceof HTMLElement ? popover : null;
   }
 
@@ -80,7 +80,7 @@
    * @returns {void}
    */
   function syncModalState() {
-    const hasOpenToggletip = containers.some(isOpen);
+    const hasOpenToggletip = containers.some(isOpen) && isMobileViewport();
 
     if (hasOpenToggletip) {
       globalThis.document.body.dataset.contactToggletipModalOpen = "true";
@@ -101,13 +101,35 @@
       if (popover) {
         popover.hidden = !open;
       }
-      panel?.setAttribute(
-        "aria-modal",
-        open ? "true" : "false",
-      );
+      syncPanelModalState(panel, open);
     }
 
     syncModalState();
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  function isMobileViewport() {
+    return mobileMedia?.matches ?? false;
+  }
+
+  /**
+   * @param {HTMLElement | null} panel
+   * @param {boolean} open
+   * @returns {void}
+   */
+  function syncPanelModalState(panel, open) {
+    if (panel === null) {
+      return;
+    }
+
+    if (open && isMobileViewport()) {
+      panel.setAttribute("aria-modal", "true");
+      return;
+    }
+
+    panel.removeAttribute("aria-modal");
   }
 
   /**
@@ -120,16 +142,13 @@
     const popover = getPopover(container);
     const panel = getPanel(container);
 
-    container.classList.toggle("cds--popover--open", open);
-    container.classList.toggle("cds--toggletip--open", open);
+    container.classList.toggle("site-popover--open", open);
+    container.classList.toggle("site-toggletip--open", open);
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
     if (popover) {
       popover.hidden = !open;
     }
-    panel?.setAttribute(
-      "aria-modal",
-      open ? "true" : "false",
-    );
+    syncPanelModalState(panel, open);
   }
 
   /**
@@ -176,7 +195,7 @@
    * @returns {boolean}
    */
   function isOpen(container) {
-    return container.classList.contains("cds--popover--open");
+    return container.classList.contains("site-popover--open");
   }
 
   /**
@@ -239,7 +258,7 @@
         return;
       }
 
-      if (event.key !== "Tab" || !isOpen(container)) {
+      if (event.key !== "Tab" || !isOpen(container) || !isMobileViewport()) {
         return;
       }
 
@@ -254,6 +273,12 @@
       const firstFocusable = focusableElements[0];
       const lastFocusable = focusableElements[focusableElements.length - 1];
       const activeElement = globalThis.document.activeElement;
+
+      if (!firstFocusable || !lastFocusable) {
+        event.preventDefault();
+        panel.focus();
+        return;
+      }
 
       if (activeElement === panel) {
         event.preventDefault();
