@@ -11,6 +11,7 @@ import {
   Empty,
   Flex,
   FloatButton,
+  Menu,
   Progress,
   Row,
   Space,
@@ -26,12 +27,25 @@ const SCRIPT_DIR = dirname(fromFileUrl(import.meta.url));
 const REPO_ROOT = join(SCRIPT_DIR, "..");
 const OUTPUT_PATH = join(
   REPO_ROOT,
-  "src/styles/generated/blog-antd-components.css",
+  "src/styles/generated/antd-components.css",
 );
 const EXTRACT_WARNING_PREFIXES = [
   "Warning: [antd: Input.Group]",
   "Warning: [antd: List]",
 ] as const;
+
+async function formatOutputFile(filePath: string): Promise<void> {
+  const command = new Deno.Command(Deno.execPath(), {
+    args: ["fmt", filePath],
+    stdout: "null",
+    stderr: "inherit",
+  });
+  const { success } = await command.output();
+
+  if (!success) {
+    throw new Error(`Failed to format generated stylesheet: ${filePath}`);
+  }
+}
 
 function withSuppressedExtractWarnings<T>(run: () => T): T {
   const originalWarn = console.warn;
@@ -68,10 +82,27 @@ function withSuppressedExtractWarnings<T>(run: () => T): T {
   }
 }
 
-function createStyleSeed() {
+function createSiteSeed() {
+  return React.createElement(Menu, {
+    className: "site-header-antd-menu",
+    mode: "horizontal",
+    selectedKeys: ["/posts/"],
+    style: { minWidth: 0, flex: "auto" },
+    items: [
+      { key: "/", label: "Home" },
+      { key: "/posts/", label: "Articles" },
+      { key: "/about/", label: "About" },
+    ],
+  });
+}
+
+function createBlogSeed() {
+  const BackTop = FloatButton.BackTop;
+  const { Paragraph, Title } = Typography;
+
   return React.createElement(
     "div",
-    null,
+    { className: "blog-antd-root" },
     React.createElement(Breadcrumb, {
       items: [{ title: "Home" }, { title: "Articles" }],
     }),
@@ -88,9 +119,9 @@ function createStyleSeed() {
         React.createElement(
           Flex,
           { vertical: true, gap: 12 },
-          React.createElement(Typography.Title, { level: 1 }, "Articles"),
+          React.createElement(Title, { level: 1 }, "Articles"),
           React.createElement(
-            Typography.Paragraph,
+            Paragraph,
             null,
             "A considered archive of writing and shipping notes.",
           ),
@@ -114,7 +145,7 @@ function createStyleSeed() {
     React.createElement(
       Card,
       { title: "Feature card" },
-      React.createElement(Typography.Paragraph, null, "Lead summary."),
+      React.createElement(Paragraph, null, "Lead summary."),
       React.createElement(Progress, {
         percent: 48,
         size: "small",
@@ -124,7 +155,7 @@ function createStyleSeed() {
     React.createElement(
       Card,
       { title: "Article card" },
-      React.createElement(Typography.Paragraph, null, "Summary copy."),
+      React.createElement(Paragraph, null, "Summary copy."),
       React.createElement(Button, { href: "/posts/example/" }, "Read article"),
     ),
     React.createElement(
@@ -152,7 +183,7 @@ function createStyleSeed() {
       description: "No articles yet.",
       image: Empty.PRESENTED_IMAGE_SIMPLE,
     }),
-    React.createElement(FloatButton.BackTop, { visibilityHeight: 200 }),
+    React.createElement(BackTop, { visibilityHeight: 200 }),
   );
 }
 
@@ -164,10 +195,17 @@ if (import.meta.main) {
       React.createElement(
         ConfigProvider,
         { theme: BLOG_ANTD_THEME },
-        React.createElement(React.Fragment, null, node, createStyleSeed()),
+        React.createElement(
+          React.Fragment,
+          null,
+          node,
+          createSiteSeed(),
+          createBlogSeed(),
+        ),
       )
     )
   );
 
   await Deno.writeTextFile(OUTPUT_PATH, `${css}\n`);
+  await formatOutputFile(OUTPUT_PATH);
 }

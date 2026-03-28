@@ -19,14 +19,9 @@ describe("build task definitions", () => {
         args: ["run", "--allow-write", "scripts/ensure-dir.ts", "_quality"],
       },
       {
-        name: "generate site Ant Design stylesheet",
+        name: "generate shared Ant Design stylesheet",
         command: "deno",
-        args: ["run", "-A", "scripts/generate-site-antd-css.ts"],
-      },
-      {
-        name: "generate blog Ant Design stylesheet",
-        command: "deno",
-        args: ["run", "-A", "scripts/generate-blog-antd-css.ts"],
+        args: ["run", "-A", "scripts/generate-antd-css.ts"],
       },
     ]);
   });

@@ -1,7 +1,7 @@
 @layer tokens, reset, base, layout, utilities;
 
 @import "./styles/antd/theme-tokens.css";
-@import "./styles/generated/site-antd-components.css";
+@import "./styles/generated/antd-components.css";
 @import "./styles/reset.css";
 @import "./styles/base.css";
 @import "./styles/layout.css";

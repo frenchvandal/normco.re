@@ -1,5 +1,3 @@
-@import "./generated/blog-antd-components.css";
-
 @layer layout {
   .blog-antd-root {
     min-inline-size: 0;
