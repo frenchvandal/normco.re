@@ -69,6 +69,9 @@ export function renderArchiveMonthNav(
 
   const groups = groupArchiveYears(months).map(
     ({ year, months: yearMonths }) => {
+      const yearPostCount = formatArchiveIndex(
+        yearMonths.reduce((sum, month) => sum + month.posts.length, 0),
+      );
       const items = yearMonths.map((month) =>
         `<li class="blog-antd-archive-anchor-item">
   <a
@@ -98,7 +101,8 @@ export function renderArchiveMonthNav(
     id="archive-year-${year}"
     class="blog-antd-archive-month-group__year"
   >
-    ${year}
+    <span class="blog-antd-archive-month-group__year-label">${year}</span>
+    <span class="blog-antd-archive-month-group__year-count">${yearPostCount}</span>
   </p>
   <ul class="blog-antd-archive-anchor-list">
     ${items}

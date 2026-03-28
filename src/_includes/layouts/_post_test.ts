@@ -505,7 +505,7 @@ describe("post.tsx layout", () => {
 });
 
 describe("tag-link CSS contracts", () => {
-  it("keeps navigational tag links distinct and aligned with solid tag presets", () => {
+  it("keeps navigational tag links distinct while using a restrained accent surface", () => {
     assertStringIncludes(featureStyles, ".tag-link::after");
     assertStringIncludes(
       featureStyles,
@@ -517,7 +517,8 @@ describe("tag-link CSS contracts", () => {
       featureStyles,
       "--ph-tag-tone: var(--ph-tag-preset-blue);",
     );
-    assertStringIncludes(featureStyles, "background: var(--ph-tag-tone);");
+    assertStringIncludes(featureStyles, "var(--ph-tag-tone) 12%");
+    assertStringIncludes(featureStyles, "var(--ph-tag-tone) 18%");
     assertNotMatch(featureStyles, /var\(--site-tag-/);
   });
 });
@@ -537,6 +538,9 @@ describe("post mobile visual contracts", () => {
       postStyles,
       "padding-block-end: calc(env(safe-area-inset-bottom) + var(--ph-space-4));",
     );
+    assertStringIncludes(postStyles, ".post-mobile-tools-handle");
+    assertStringIncludes(postStyles, ".post-mobile-tools-trigger__count");
+    assertStringIncludes(postStyles, ".post-mobile-tools-section__count");
     assertStringIncludes(
       postStyles,
       "var(--ph-mobile-nav-offset)",

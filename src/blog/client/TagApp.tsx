@@ -112,9 +112,23 @@ export function TagView(
             >
               <Empty
                 className="blog-antd-empty"
-                description={data.emptyStateMessage}
+                description={
+                  <span className="blog-antd-empty__description">
+                    {data.emptyStateMessage}
+                  </span>
+                }
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
-              />
+              >
+                <div className="blog-antd-empty-card__actions">
+                  <Button
+                    type="primary"
+                    href={data.archiveUrl}
+                    rootClassName={BLOG_ANTD_PRIMARY_BUTTON_ROOT}
+                  >
+                    {data.archiveLinkLabel}
+                  </Button>
+                </div>
+              </Empty>
             </Card>
           )}
       </div>

@@ -326,6 +326,7 @@ export function PostRail(
       ? {
         key: "outline",
         className: "post-outline-card",
+        countLabel: String(outline.length).padStart(2, "0"),
         title: translations.outlineTitle,
         body: (
           <nav
@@ -352,6 +353,7 @@ export function PostRail(
       ? {
         key: "tags",
         className: "post-tags-card",
+        countLabel: String(tags.length).padStart(2, "0"),
         title: translations.tagsAriaLabel,
         body: (
           <ul class="post-tags post-tags--rail">
@@ -375,6 +377,7 @@ export function PostRail(
       ? {
         key: "backlinks",
         className: "post-backlinks-card",
+        countLabel: String(backlinks.length).padStart(2, "0"),
         title: translations.backlinksTitle,
         body: (
           <ul class="post-backlinks-list">
@@ -393,6 +396,10 @@ export function PostRail(
       ? {
         key: "navigation",
         className: "post-nav-card",
+        countLabel: String([prev, next].filter(Boolean).length).padStart(
+          2,
+          "0",
+        ),
         title: translations.navigationAriaLabel,
         body: (
           <nav
@@ -427,6 +434,9 @@ export function PostRail(
           <span class="post-mobile-tools-trigger__label">
             {translations.railAriaLabel}
           </span>
+          <span class="post-mobile-tools-trigger__count" aria-hidden="true">
+            {String(sections.length).padStart(2, "0")}
+          </span>
         </button>
         <dialog
           id="post-mobile-tools-dialog"
@@ -435,6 +445,7 @@ export function PostRail(
           data-post-mobile-tools=""
         >
           <div class="post-mobile-tools-sheet">
+            <span class="post-mobile-tools-handle" aria-hidden="true"></span>
             <div class="post-mobile-tools-head">
               <p id="post-mobile-tools-title" class="post-mobile-tools-title">
                 {translations.railAriaLabel}
@@ -463,6 +474,12 @@ export function PostRail(
                   <summary class="post-mobile-tools-section__summary">
                     <span class="post-mobile-tools-section__title">
                       {section.title}
+                    </span>
+                    <span
+                      class="post-mobile-tools-section__count"
+                      aria-hidden="true"
+                    >
+                      {section.countLabel}
                     </span>
                   </summary>
                   <div class="post-mobile-tools-section__body">

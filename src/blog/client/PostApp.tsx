@@ -38,7 +38,6 @@ import {
   Title,
   VerticalAlignTopOutlined,
 } from "@blog/post-antd";
-import { getBlogTagColor } from "./tag-colors.ts";
 import { MetaLine, renderBreadcrumbItems } from "./common.tsx";
 
 export function PostView(
@@ -216,12 +215,7 @@ export function PostView(
                   </Flex>
                   <Space wrap>
                     {data.tags.map((tag) => (
-                      <Tag
-                        key={tag.url}
-                        color={getBlogTagColor(tag.label)}
-                        variant="solid"
-                        className="blog-antd-tag"
-                      >
+                      <Tag key={tag.url} className="blog-antd-tag">
                         <a href={tag.url} title={tag.title} rel="tag">
                           {tag.label}
                         </a>

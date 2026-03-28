@@ -9,18 +9,15 @@ describe("tags taxonomy utilities", () => {
     assertEquals(getTagSlug("Crème brûlée"), "creme-brulee");
   });
 
-  it("returns stable deterministic colors for a given tag", () => {
-    assertEquals(getTagColor("design"), getTagColor("design"));
-    assertEquals(getTagColor("github-actions"), getTagColor("github-actions"));
+  it("keeps the shared tag accent restrained and consistent", () => {
+    assertEquals(getTagColor("design"), "blue");
+    assertEquals(getTagColor("github-actions"), "blue");
     assertEquals(getTagColor("design"), getAntdTagColor("design"));
   });
 
-  it("returns stable deterministic Ant Design colors for a given tag", () => {
-    assertEquals(getAntdTagColor("design"), getAntdTagColor("design"));
-    assertEquals(
-      getAntdTagColor("github-actions"),
-      getAntdTagColor("github-actions"),
-    );
+  it("keeps the Ant Design tag accent aligned with the editorial tag accent", () => {
+    assertEquals(getAntdTagColor("design"), "blue");
+    assertEquals(getAntdTagColor("github-actions"), "blue");
     assertEquals(getAntdTagColor("design"), getTagColor("design"));
   });
 

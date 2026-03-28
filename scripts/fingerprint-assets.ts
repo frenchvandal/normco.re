@@ -31,7 +31,6 @@ const CANONICAL_ASSET_URLS = [
   "/scripts/post-mobile-tools.js",
   "/scripts/link-prefetch-intent.js",
   "/scripts/sw-register.js",
-  "/scripts/blog-antd-archive.js",
 ] as const;
 const SERVICE_WORKER_VERSION_PLACEHOLDER = "__SW_VERSION__";
 const SERVICE_WORKER_VERSION_SOURCES = [

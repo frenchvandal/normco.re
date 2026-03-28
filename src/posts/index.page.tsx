@@ -4,11 +4,6 @@ import {
   renderArchiveMonthNav,
   renderArchiveTimeline,
 } from "../blog/archive-render.ts";
-import {
-  BLOG_APP_ROOT_ATTRIBUTE,
-  renderBlogAppBootstrap,
-} from "../blog/embed.ts";
-import type { BlogArchiveViewData } from "../blog/view-data.ts";
 import { resolvePageSetup } from "../utils/page-setup.ts";
 import { searchPages } from "../utils/lume-data.ts";
 import { toStoryData } from "../utils/story-data.ts";
@@ -59,21 +54,6 @@ export default (
   const stories = posts.map((post) => toStoryData(post, language, dateFormat));
   const postsCountLabel = formatPostCount(posts.length, language);
   const archiveMonths = groupArchiveMonths(stories, languageTag);
-  const archiveViewData: BlogArchiveViewData = {
-    view: "archive",
-    language,
-    title: t.archive.title,
-    lead: t.archive.lead,
-    postsCountLabel,
-    postsAriaLabel: t.archive.activityAriaLabel,
-    yearsAriaLabel: t.archive.yearsAriaLabel,
-    backToTopLabel: t.archive.backToTopLabel,
-    posts: stories,
-    emptyStateTitle: t.archive.emptyStateTitle,
-    emptyStateMessage: t.archive.emptyState,
-    emptyStateActionHref: homeUrl,
-    emptyStateActionLabel: t.navigation.home,
-  };
   const archiveLayoutClass = archiveMonths.length > 1
     ? "blog-antd-archive-layout blog-antd-archive-layout--with-nav"
     : "blog-antd-archive-layout";
@@ -98,8 +78,18 @@ export default (
       headingTag: "h2",
       variant: "inline",
     });
+  const backToTopLink = posts.length > 0
+    ? `<a class="blog-antd-archive-backtop" href="#archive-title" aria-label="${
+      escapeHtml(t.archive.backToTopLabel)
+    }">
+  <span class="blog-antd-archive-backtop__arrow" aria-hidden="true"></span>
+  <span class="blog-antd-archive-backtop__label">${
+      escapeHtml(t.archive.backToTopLabel)
+    }</span>
+</a>`
+    : "";
 
-  return `<div class="blog-antd-root" ${BLOG_APP_ROOT_ATTRIBUTE}="">
+  return `<div class="blog-antd-root">
   <div class="site-page-shell site-page-shell--wide blog-antd-page blog-antd-page--archive">
   <div class="feature-main">
 <section class="blog-antd-archive-header" aria-labelledby="archive-title">
@@ -112,8 +102,8 @@ export default (
   </div>
 </section>
     ${pageBody}
+    ${backToTopLink}
   </div>
 </div>
-</div>
-${renderBlogAppBootstrap(archiveViewData)}`;
+</div>`;
 };

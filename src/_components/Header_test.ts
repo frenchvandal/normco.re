@@ -273,6 +273,8 @@ describe("Header CSS contracts", () => {
     assertStringIncludes(layoutStyles, ".site-side-nav__items.ant-menu");
     assertStringIncludes(layoutStyles, ".site-side-nav__link-text");
     assertStringIncludes(layoutStyles, ".site-side-nav__overlay");
+    assertStringIncludes(layoutStyles, "var(--ph-side-nav-width)");
+    assertStringIncludes(layoutStyles, "min-block-size: 3.75rem;");
     assertStringIncludes(
       layoutStyles,
       "box-shadow: var(--ph-shadow-floating);",

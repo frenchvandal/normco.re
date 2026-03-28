@@ -87,13 +87,12 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(html, 'class="feature-main"');
     });
 
-    it("keeps the static archive markup while adding a mobile bootstrap payload", async () => {
+    it("keeps the archive fully static without a mobile bootstrap payload", async () => {
       const html = await postsIndexPage(makeData([]), MOCK_HELPERS);
-      assertStringIncludes(html, "data-blog-antd-root");
-      assertStringIncludes(html, 'id="blog-antd-data"');
-      assertStringIncludes(html, '"view":"archive"');
-      assertStringIncludes(html, "blog-antd-archive.js");
-      assertStringIncludes(html, "window.matchMedia");
+      assertNotMatch(html, /data-blog-antd-root/);
+      assertNotMatch(html, /id="blog-antd-data"/);
+      assertNotMatch(html, /blog-antd-archive\.js/);
+      assertNotMatch(html, /window\.matchMedia/);
     });
 
     it("opts the articles page out of the Pagefind body region", () => {
@@ -152,6 +151,10 @@ describe("posts/index.page.tsx", () => {
       );
       assertStringIncludes(html, 'class="blog-antd-archive-timeline"');
       assertStringIncludes(html, 'class="blog-antd-archive-anchor-list"');
+      assertStringIncludes(
+        html,
+        'class="blog-antd-archive-month-group__year-count"',
+      );
       assertStringIncludes(html, firstPost.title);
       assertStringIncludes(html, secondPost.title);
       assertStringIncludes(html, "2 posts published");
@@ -170,10 +173,28 @@ describe("posts/index.page.tsx", () => {
       );
       assertNotMatch(html, /blog-antd-archive-layout--with-nav/);
       assertStringIncludes(html, "4 min");
-      assertStringIncludes(html, 'class="tag-link tag-link--volcano"');
+      assertStringIncludes(html, 'class="tag-link tag-link--blue"');
       assertStringIncludes(
         html,
         'class="blog-antd-archive-timeline__separator" aria-hidden="true">·</span>',
+      );
+    });
+
+    it("renders a static back-to-top jump link for long archive sessions", async () => {
+      const html = await postsIndexPage(
+        makeData([
+          makePost(511, {
+            date: new Date("2026-02-01"),
+          }),
+        ]),
+        MOCK_HELPERS,
+      );
+
+      assertStringIncludes(html, 'class="blog-antd-archive-backtop"');
+      assertStringIncludes(html, 'href="#archive-title"');
+      assertStringIncludes(
+        html,
+        'class="blog-antd-archive-backtop__label">Back to top</span>',
       );
     });
 
@@ -229,12 +250,17 @@ describe("posts/index.page.tsx", () => {
         blogAntdStyles,
         ".blog-antd-archive-timeline__separator",
       );
-    });
-
-    it("keeps the mobile archive shell sticky and safe-area aware", () => {
+      assertStringIncludes(blogAntdStyles, ".blog-antd-story-card__meta {");
       assertStringIncludes(
         blogAntdStyles,
-        ".blog-antd-archive-mobile__year-tabs",
+        "font-variant-numeric: tabular-nums;",
+      );
+    });
+
+    it("keeps the mobile archive nav sticky and safe-area aware", () => {
+      assertStringIncludes(
+        blogAntdStyles,
+        ".blog-antd-archive-nav",
       );
       assertStringIncludes(
         blogAntdStyles,
@@ -242,11 +268,23 @@ describe("posts/index.page.tsx", () => {
       );
       assertStringIncludes(
         blogAntdStyles,
-        "padding-block-end: calc(env(safe-area-inset-bottom) + var(--ph-space-7));",
+        ".blog-antd-page--archive",
       );
       assertStringIncludes(
         blogAntdStyles,
-        ".blog-antd-archive-mobile__backtop",
+        "env(safe-area-inset-bottom)",
+      );
+      assertStringIncludes(
+        blogAntdStyles,
+        ".blog-antd-archive-backtop",
+      );
+      assertStringIncludes(
+        blogAntdStyles,
+        ".blog-antd-archive-month-group__year-count",
+      );
+      assertStringIncludes(
+        blogAntdStyles,
+        "scroll-snap-type: x proximity;",
       );
       assertStringIncludes(blogAntdStyles, "var(--ph-mobile-nav-offset)");
     });

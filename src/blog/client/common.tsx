@@ -2,7 +2,6 @@ import {
   ArrowRightOutlined,
   Card,
   Col,
-  Divider,
   Flex,
   Paragraph,
   Progress,
@@ -19,7 +18,6 @@ import {
   BLOG_ANTD_CARD_CLASSNAMES,
   BLOG_ANTD_READING_METER_PROGRESS,
 } from "./antd-semantic.ts";
-import { getBlogTagColor } from "./tag-colors.ts";
 
 export function renderBreadcrumbItems(items: readonly BlogBreadcrumbItem[]) {
   return items.map(({ href, label }) => ({
@@ -91,12 +89,7 @@ export function StoryTags({ story }: { story: BlogStoryCard }) {
   return (
     <Space wrap size={[8, 8]} className="blog-antd-story-tags">
       {visibleTags.map((tag) => (
-        <Tag
-          key={tag}
-          color={getBlogTagColor(tag)}
-          variant="solid"
-          className="blog-antd-tag blog-antd-tag--story"
-        >
+        <Tag key={tag} className="blog-antd-tag blog-antd-tag--story">
           {tag}
         </Tag>
       ))}
@@ -161,27 +154,29 @@ function StoryCard({ index, story, summaryVisible = true }: StoryCardProps) {
       classNames={BLOG_ANTD_CARD_CLASSNAMES}
       variant="borderless"
     >
-      <Flex vertical gap={14}>
-        <div className="blog-antd-story-card__index">
-          {formatIndex(index)}
-        </div>
-        <MetaLine
-          dateIso={story.dateIso}
-          dateLabel={story.dateLabel}
-          readingLabel={story.readingLabel}
-          showReadingLabel={false}
-        />
-        <StoryTags story={story} />
-        <Title level={3} className="blog-antd-story-card__title">
-          <a href={story.url}>{story.title}</a>
-        </Title>
-        {summaryVisible && story.summary && (
-          <Paragraph className="blog-antd-story-card__summary">
-            {story.summary}
-          </Paragraph>
-        )}
-        <ReadingMeter readingLabel={story.readingLabel} />
-      </Flex>
+      <a href={story.url} className="blog-antd-story-card__link">
+        <Flex vertical gap={14}>
+          <div className="blog-antd-story-card__index">
+            {formatIndex(index)}
+          </div>
+          <MetaLine
+            dateIso={story.dateIso}
+            dateLabel={story.dateLabel}
+            readingLabel={story.readingLabel}
+            showReadingLabel={false}
+          />
+          <StoryTags story={story} />
+          <Title level={3} className="blog-antd-story-card__title">
+            <span>{story.title}</span>
+          </Title>
+          {summaryVisible && story.summary && (
+            <Paragraph className="blog-antd-story-card__summary">
+              {story.summary}
+            </Paragraph>
+          )}
+          <ReadingMeter readingLabel={story.readingLabel} />
+        </Flex>
+      </a>
     </Card>
   );
 }
@@ -261,6 +256,8 @@ export function FeaturedStory(
     title: string;
   },
 ) {
+  const hasSecondaryStories = secondaryStories.length > 0;
+
   return (
     <Card
       rootClassName="blog-antd-card blog-antd-feature-card"
@@ -268,45 +265,45 @@ export function FeaturedStory(
       variant="borderless"
     >
       <Row gutter={[32, 24]} align="stretch">
-        <Col xs={24} xl={15}>
-          <Flex vertical gap={18} className="blog-antd-feature-card__main">
-            <div className="blog-antd-feature-card__lead">
-              <Tag className="blog-antd-count-tag blog-antd-count-tag--soft">
-                {title}
-              </Tag>
-              <Title
-                level={2}
-                className="blog-antd-feature-card__title"
-              >
-                <a href={story.url}>{story.title}</a>
-              </Title>
-              <MetaLine
-                dateIso={story.dateIso}
-                dateLabel={story.dateLabel}
+        <Col xs={24} xl={hasSecondaryStories ? 15 : 24}>
+          <a href={story.url} className="blog-antd-feature-card__link">
+            <Flex vertical gap={18} className="blog-antd-feature-card__main">
+              <div className="blog-antd-feature-card__lead">
+                <Tag className="blog-antd-count-tag blog-antd-count-tag--soft">
+                  {title}
+                </Tag>
+                <Title
+                  level={2}
+                  className="blog-antd-feature-card__title"
+                >
+                  <span>{story.title}</span>
+                </Title>
+                <MetaLine
+                  dateIso={story.dateIso}
+                  dateLabel={story.dateLabel}
+                  readingLabel={story.readingLabel}
+                />
+                {story.summary && (
+                  <Paragraph className="blog-antd-feature-card__summary">
+                    {story.summary}
+                  </Paragraph>
+                )}
+              </div>
+              <StoryTags story={story} />
+              <ReadingMeter
                 readingLabel={story.readingLabel}
+                className="blog-antd-reading-meter--featured"
               />
-              {story.summary && (
-                <Paragraph className="blog-antd-feature-card__summary">
-                  {story.summary}
-                </Paragraph>
-              )}
+            </Flex>
+          </a>
+        </Col>
+        {hasSecondaryStories && (
+          <Col xs={24} xl={9}>
+            <div className="blog-antd-feature-card__aside">
+              <SignalStories posts={secondaryStories} />
             </div>
-            <StoryTags story={story} />
-            <ReadingMeter
-              readingLabel={story.readingLabel}
-              className="blog-antd-reading-meter--featured"
-            />
-          </Flex>
-        </Col>
-        <Col xs={24} xl={9}>
-          <div className="blog-antd-feature-card__aside">
-            <HeroLatestLink story={story} />
-            {secondaryStories.length > 0 && (
-              <Divider className="blog-antd-feature-card__divider" />
-            )}
-            <SignalStories posts={secondaryStories} />
-          </div>
-        </Col>
+          </Col>
+        )}
       </Row>
     </Card>
   );

@@ -227,9 +227,21 @@
   .tag-link--volcano,
   .tag-link--teal,
   .tag-link--gray {
-    color: var(--ph-color-canvas-default);
-    border-color: var(--ph-tag-tone);
-    background: var(--ph-tag-tone);
+    color: color-mix(
+      in oklch,
+      var(--ph-tag-tone) 76%,
+      var(--ph-color-fg-default)
+    );
+    border-color: color-mix(
+      in oklch,
+      var(--ph-tag-tone) 22%,
+      var(--ph-color-border-default)
+    );
+    background: color-mix(
+      in oklch,
+      var(--ph-tag-tone) 12%,
+      var(--ph-color-canvas-default)
+    );
   }
 
   .site-tag--blue:hover,
@@ -292,16 +304,20 @@
   .tag-link--teal:focus-visible,
   .tag-link--gray:hover,
   .tag-link--gray:focus-visible {
-    color: var(--ph-color-canvas-default);
-    border-color: color-mix(
+    color: color-mix(
       in oklch,
       var(--ph-tag-tone) 88%,
       var(--ph-color-fg-default)
     );
+    border-color: color-mix(
+      in oklch,
+      var(--ph-tag-tone) 32%,
+      var(--ph-color-border-default)
+    );
     background: color-mix(
       in oklch,
-      var(--ph-tag-tone) 88%,
-      var(--ph-color-fg-default)
+      var(--ph-tag-tone) 18%,
+      var(--ph-color-canvas-default)
     );
   }
 

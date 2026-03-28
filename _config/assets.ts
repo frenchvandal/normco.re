@@ -33,7 +33,6 @@ export function registerAssets(site: Site): void {
   site.add("/scripts/post-mobile-tools.js");
   site.add("/scripts/link-prefetch-intent.js");
   site.add("/scripts/sw-register.js");
-  site.add("/scripts/blog-antd-archive.js");
 
   // The service worker must be served from the site root to control the whole
   // origin, so its built asset is remapped out of `/scripts/`.

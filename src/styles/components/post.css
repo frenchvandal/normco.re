@@ -420,11 +420,28 @@
     overflow: auto;
   }
 
+  .post-mobile-tools-handle {
+    inline-size: 3rem;
+    block-size: 0.3rem;
+    margin-inline: auto;
+    border-radius: var(--ph-radius-pill);
+    background: color-mix(
+      in oklch,
+      var(--ph-color-fg-default) 14%,
+      transparent
+    );
+  }
+
   .post-mobile-tools-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--ph-space-3);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding-block-end: var(--ph-space-1);
+    background: inherit;
   }
 
   .post-mobile-tools-title {
@@ -499,6 +516,25 @@
     font-size: var(--ph-text-sm);
     font-weight: 600;
     line-height: var(--ph-lh-snug);
+  }
+
+  .post-mobile-tools-section__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 2.1rem;
+    padding: 0.22rem 0.45rem;
+    border-radius: var(--ph-radius-pill);
+    background: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 10%,
+      var(--ph-color-canvas-default)
+    );
+    color: var(--ph-color-accent-emphasis);
+    font-family: var(--ph-font-mono);
+    font-size: var(--ph-text-xs);
+    font-weight: 600;
+    letter-spacing: var(--ph-letter-spacing-wide);
   }
 
   .post-mobile-tools-section__body {
@@ -584,9 +620,10 @@
       );
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-block-size: 3rem;
-      padding: 0.75rem 1rem;
+      justify-content: space-between;
+      gap: var(--ph-space-3);
+      min-block-size: 3.25rem;
+      padding: 0.8rem 0.95rem 0.8rem 1rem;
       border: var(--ph-border-hairline) solid
         color-mix(
           in oklch,
@@ -618,6 +655,26 @@
       font-weight: 600;
       letter-spacing: var(--ph-letter-spacing-wide);
       text-transform: uppercase;
+    }
+
+    html[data-post-mobile-tools-ready="true"]
+      .post-mobile-tools-trigger__count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-inline-size: 2rem;
+      min-block-size: 2rem;
+      padding-inline: 0.45rem;
+      border-radius: var(--ph-radius-pill);
+      background: color-mix(
+        in oklch,
+        var(--ph-color-canvas-default) 16%,
+        transparent
+      );
+      font-family: var(--ph-font-mono);
+      font-size: var(--ph-text-xs);
+      font-weight: 600;
+      letter-spacing: var(--ph-letter-spacing-wide);
     }
 
     html[data-post-mobile-tools-ready="true"] .post-rail {

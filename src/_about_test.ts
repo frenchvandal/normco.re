@@ -62,6 +62,8 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, 'data-contact-toggletip-trigger=""');
     assertStringIncludes(html, 'data-contact-toggletip-close=""');
     assertStringIncludes(html, 'class="site-popover" hidden');
+    assertStringIncludes(html, 'class="about-contact-trigger-arrow"');
+    assertStringIncludes(html, 'class="about-contact-popover-handle"');
     assertStringIncludes(html, 'class="about-contact-popover-title"');
     assertStringIncludes(html, 'transform-images="avif webp jpg 240 360 512"');
     assertStringIncludes(html, 'width="1224"');
@@ -145,6 +147,8 @@ describe("about page CSS contracts", () => {
     );
     assertStringIncludes(aboutStyles, ".about-contact-popover-title {");
     assertStringIncludes(aboutStyles, ".about-contact-trigger:hover,");
+    assertStringIncludes(aboutStyles, ".about-contact-trigger-arrow {");
+    assertStringIncludes(aboutStyles, ".about-contact-popover-handle {");
   });
 
   it("keeps the QR and pictogram frames on shared neutral panels", () => {

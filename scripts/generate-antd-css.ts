@@ -11,7 +11,6 @@ import {
   Empty,
   Flex,
   FloatButton,
-  Menu,
   Progress,
   Row,
   Space,
@@ -183,20 +182,6 @@ function alignGeneratedTokens(css: string): string {
   );
 }
 
-function createSiteSeed() {
-  return React.createElement(Menu, {
-    className: "site-header-antd-menu",
-    mode: "horizontal",
-    selectedKeys: ["/posts/"],
-    style: { minWidth: 0, flex: "auto" },
-    items: [
-      { key: "/", label: "Home" },
-      { key: "/posts/", label: "Articles" },
-      { key: "/about/", label: "About" },
-    ],
-  });
-}
-
 function createBlogSeed() {
   const BackTop = FloatButton.BackTop;
   const { Paragraph, Title } = Typography;
@@ -300,7 +285,6 @@ if (import.meta.main) {
           React.Fragment,
           null,
           node,
-          createSiteSeed(),
           createBlogSeed(),
         ),
       )

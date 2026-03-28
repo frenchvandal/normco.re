@@ -17,7 +17,7 @@
     inset-inline-end: auto;
     z-index: calc(var(--ph-layer-header-panel) + 1);
     inline-size: min(
-      24rem,
+      var(--ph-side-nav-width),
       calc(
         100vw - var(--site-side-nav-inset-inline-start)
           - var(--site-side-nav-inset-inline-end)
@@ -183,13 +183,13 @@
   }
 
   .site-side-nav__menu-shell {
-    padding: 0 clamp(var(--ph-space-5), 5vw, var(--ph-space-6))
+    padding: var(--ph-space-2) clamp(var(--ph-space-5), 5vw, var(--ph-space-6))
       max(var(--ph-space-5), env(safe-area-inset-bottom));
   }
 
   .site-side-nav__items.ant-menu {
     display: grid;
-    gap: 0;
+    gap: var(--ph-space-2);
     border-inline-end: 0;
     background: transparent;
   }
@@ -216,14 +216,17 @@
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--ph-space-3);
-    padding-block: clamp(var(--ph-space-4), 4vw, var(--ph-space-5));
-    border-block-end: var(--ph-border-hairline) solid
+    min-block-size: 3.75rem;
+    padding-block: clamp(var(--ph-space-3), 3vw, var(--ph-space-4));
+    padding-inline: clamp(var(--ph-space-3), 3vw, var(--ph-space-4));
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 12%,
         var(--ph-color-border-muted)
       );
     border-inline-start: 2px solid transparent;
+    border-radius: calc(var(--ph-radius-md) + 1px);
     color: var(--ph-color-fg-default);
     text-decoration: none;
     transition:

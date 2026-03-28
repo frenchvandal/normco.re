@@ -59,6 +59,7 @@ function renderContactItem(
     escapeHtml(contact.label)
   }</span>
                 </span>
+                <span class="about-contact-trigger-arrow" aria-hidden="true"></span>
               </button>
 	              <div class="site-popover" hidden>
                 <span class="site-popover__caret" aria-hidden="true"></span>
@@ -70,6 +71,7 @@ function renderContactItem(
                   tabindex="-1"
                   data-contact-toggletip-panel=""
                 >
+                  <span class="about-contact-popover-handle" aria-hidden="true"></span>
                   <div class="about-contact-popover-header">
                     <div class="about-contact-popover-brand">
                       <span class="about-contact-icon about-contact-popover-app" aria-hidden="true">${contactIconMarkup}</span>

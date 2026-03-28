@@ -33,23 +33,44 @@
     inline-size: 100%;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    padding: var(--ph-space-3);
+    justify-content: space-between;
+    gap: var(--ph-space-3);
+    min-block-size: 3.5rem;
+    padding: var(--ph-space-3) var(--ph-space-4);
     border: var(--ph-border-hairline) solid var(--ph-color-border-muted);
-    border-radius: var(--ph-radius-sm);
-    background: transparent;
+    border-radius: var(--ph-radius-md);
+    background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 96%,
+      var(--ph-surface-accent)
+    );
+    transition:
+      border-color var(--ph-duration-default) var(--ph-easing-default),
+      background-color var(--ph-duration-default) var(--ph-easing-default),
+      transform var(--ph-duration-default) var(--ph-easing-default);
   }
 
   .about-contact-trigger:hover,
   .about-contact-trigger:focus-visible,
   .about-contact-toggletip.site-popover--open > .about-contact-trigger {
-    background: var(--ph-color-canvas-subtle);
+    transform: translateY(-1px);
+    border-color: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 22%,
+      var(--ph-color-border-default)
+    );
+    background: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 6%,
+      var(--ph-color-canvas-default)
+    );
   }
 
   .about-contact-trigger-content {
     display: flex;
     align-items: center;
     gap: var(--ph-space-3);
+    min-inline-size: 0;
   }
 
   .about-contact-icon,
@@ -80,6 +101,28 @@
     font-weight: 600;
   }
 
+  .about-contact-trigger-arrow {
+    inline-size: 0.6rem;
+    block-size: 0.6rem;
+    border-inline-end: var(--ph-border-hairline) solid currentColor;
+    border-block-end: var(--ph-border-hairline) solid currentColor;
+    color: var(--ph-color-fg-muted);
+    flex: 0 0 auto;
+    transform: rotate(-45deg);
+    transition:
+      color var(--ph-duration-default) var(--ph-easing-default),
+      transform var(--ph-duration-default) var(--ph-easing-default);
+  }
+
+  .about-contact-trigger:hover .about-contact-trigger-arrow,
+  .about-contact-trigger:focus-visible .about-contact-trigger-arrow,
+  .about-contact-toggletip.site-popover--open
+    > .about-contact-trigger
+    .about-contact-trigger-arrow {
+    color: var(--ph-color-accent-fg);
+    transform: translateX(1px) rotate(-45deg);
+  }
+
   .about-contact-popover {
     inline-size: min(18rem, calc(100vw - var(--ph-shell-gutter) * 2));
     padding: var(--ph-space-4);
@@ -94,6 +137,10 @@
         transparent
       );
     outline-offset: 2px;
+  }
+
+  .about-contact-popover-handle {
+    display: none;
   }
 
   .about-contact-popover-header {
@@ -240,10 +287,12 @@
     }
 
     .about-contact-popover {
+      display: grid;
+      gap: var(--ph-space-4);
       inline-size: min(100%, 30rem);
       max-block-size: min(80dvh, 38rem);
       margin-inline: auto;
-      padding: var(--ph-space-4) var(--ph-space-4)
+      padding: var(--ph-space-3) var(--ph-space-4)
         calc(env(safe-area-inset-bottom) + var(--ph-space-4));
       border: var(--ph-border-hairline) solid var(--ph-color-border-default);
       border-radius: var(--ph-radius-lg) var(--ph-radius-lg) 0 0;
@@ -252,8 +301,27 @@
       overflow: auto;
     }
 
+    .about-contact-popover-handle {
+      display: block;
+      inline-size: 3rem;
+      block-size: 0.3rem;
+      margin-inline: auto;
+      border-radius: var(--ph-radius-pill);
+      background: color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 14%,
+        transparent
+      );
+    }
+
     .about-contact-popover-header {
       align-items: flex-start;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      margin-block-end: 0;
+      padding-block-end: var(--ph-space-3);
+      background: inherit;
     }
 
     .about-contact-popover-brand {
