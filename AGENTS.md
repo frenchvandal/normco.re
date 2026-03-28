@@ -1,5 +1,9 @@
 # AGENTS.md
 
+All changes must be tested: if you are not testing your changes, you are not
+done. Be humble and honest: NEVER overstate what you got done or what actually
+works in commits, PRs or in messages to the user.
+
 This repository contains a static site built with Deno, Lume, TSX layouts and
 pages, Markdown posts, and Sass.
 
