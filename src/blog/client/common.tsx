@@ -15,6 +15,10 @@ import {
 } from "@blog/common-antd";
 /** @jsxImportSource react */
 import type { BlogBreadcrumbItem, BlogStoryCard } from "../view-data.ts";
+import {
+  BLOG_ANTD_CARD_CLASSNAMES,
+  BLOG_ANTD_READING_METER_PROGRESS,
+} from "./antd-semantic.ts";
 import { getBlogTagColor } from "./tag-colors.ts";
 
 export function renderBreadcrumbItems(items: readonly BlogBreadcrumbItem[]) {
@@ -114,7 +118,13 @@ export function ReadingMeter(
 
   return (
     <div className={`blog-antd-reading-meter ${className}`.trim()}>
-      <Progress percent={percent} showInfo={false} size="small" />
+      <Progress
+        percent={percent}
+        showInfo={false}
+        size="small"
+        rootClassName="blog-antd-progress"
+        {...BLOG_ANTD_READING_METER_PROGRESS}
+      />
       <span className="blog-antd-reading-meter__label">{readingLabel}</span>
     </div>
   );
@@ -146,7 +156,11 @@ type StoryCardProps = Readonly<{
 
 function StoryCard({ index, story, summaryVisible = true }: StoryCardProps) {
   return (
-    <Card className="blog-antd-story-card" bordered={false}>
+    <Card
+      rootClassName="blog-antd-card blog-antd-story-card"
+      classNames={BLOG_ANTD_CARD_CLASSNAMES}
+      variant="borderless"
+    >
       <Flex vertical gap={14}>
         <div className="blog-antd-story-card__index">
           {formatIndex(index)}
@@ -187,7 +201,7 @@ export function StoryGrid(
 ) {
   return (
     <div className="blog-antd-story-grid" role="list" aria-label={ariaLabel}>
-      <Row gutter={[24, 24]}>
+      <Row gutter={[24, 24]} className="blog-antd-story-grid__row">
         {posts.map((story, index) => (
           <Col key={story.url} xs={24} md={12} role="listitem">
             <div className="blog-antd-story-grid__item">
@@ -248,7 +262,11 @@ export function FeaturedStory(
   },
 ) {
   return (
-    <Card className="blog-antd-feature-card" bordered={false}>
+    <Card
+      rootClassName="blog-antd-card blog-antd-feature-card"
+      classNames={BLOG_ANTD_CARD_CLASSNAMES}
+      variant="borderless"
+    >
       <Row gutter={[32, 24]} align="stretch">
         <Col xs={24} xl={15}>
           <Flex vertical gap={18} className="blog-antd-feature-card__main">

@@ -1,5 +1,17 @@
 /** @jsxImportSource react */
 import type { BlogPostViewData } from "../view-data.ts";
+import {
+  BLOG_ANTD_BACKTOP_CLASSNAMES,
+  BLOG_ANTD_BREADCRUMB_CLASSNAMES,
+  BLOG_ANTD_CARD_CLASSNAMES,
+  BLOG_ANTD_DEFAULT_BUTTON_ROOT,
+  BLOG_ANTD_DESCRIPTIONS_CLASSNAMES,
+  BLOG_ANTD_METRIC_CARD_CLASSNAMES,
+  BLOG_ANTD_OUTLINE_TIMELINE_CLASSNAMES,
+  BLOG_ANTD_PRIMARY_BUTTON_ROOT,
+  BLOG_ANTD_RAIL_CARD_CLASSNAMES,
+  BLOG_ANTD_STATISTIC_CLASSNAMES,
+} from "./antd-semantic.ts";
 import { BLOG_ANTD_THEME } from "./theme.ts";
 import {
   BackTop,
@@ -53,7 +65,8 @@ export function PostView(
         >
           <nav aria-label={data.breadcrumbAriaLabel}>
             <Breadcrumb
-              className="blog-antd-breadcrumb"
+              rootClassName="blog-antd-breadcrumb"
+              classNames={BLOG_ANTD_BREADCRUMB_CLASSNAMES}
               items={renderBreadcrumbItems(data.breadcrumb)}
             />
           </nav>
@@ -82,10 +95,12 @@ export function PostView(
                       {data.summaryItems.map((item) => (
                         <Card
                           key={item.key}
-                          className="blog-antd-post-metric-card"
-                          bordered={false}
+                          rootClassName="blog-antd-card blog-antd-post-metric-card"
+                          classNames={BLOG_ANTD_METRIC_CARD_CLASSNAMES}
+                          variant="borderless"
                         >
                           <Statistic
+                            classNames={BLOG_ANTD_STATISTIC_CLASSNAMES}
                             title={item.label}
                             value={item.value}
                             prefix={<BarChartOutlined />}
@@ -120,7 +135,11 @@ export function PostView(
             dangerouslySetInnerHTML={{ __html: data.contentHtml }}
           />
 
-          <Card className="blog-antd-details-card" bordered={false}>
+          <Card
+            rootClassName="blog-antd-card blog-antd-details-card"
+            classNames={BLOG_ANTD_CARD_CLASSNAMES}
+            variant="borderless"
+          >
             <Flex align="center" gap={10} className="blog-antd-rail-head">
               <FileTextOutlined />
               <Title level={4} className="blog-antd-rail-title">
@@ -129,6 +148,7 @@ export function PostView(
             </Flex>
             <Descriptions
               column={1}
+              classNames={BLOG_ANTD_DESCRIPTIONS_CLASSNAMES}
               items={data.publicationDetails.map((item) => ({
                 key: item.key,
                 label: item.label,
@@ -147,7 +167,11 @@ export function PostView(
           >
             <div className="feature-rail-sticky blog-antd-rail-stack">
               {data.outline.length > 0 && (
-                <Card className="blog-antd-rail-card" bordered={false}>
+                <Card
+                  rootClassName="blog-antd-card blog-antd-rail-card"
+                  classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
+                  variant="borderless"
+                >
                   <Flex align="center" gap={10} className="blog-antd-rail-head">
                     <ProfileOutlined />
                     <Title
@@ -159,16 +183,28 @@ export function PostView(
                   </Flex>
                   <Timeline
                     className="blog-antd-outline-timeline"
+                    classNames={BLOG_ANTD_OUTLINE_TIMELINE_CLASSNAMES}
                     items={data.outline.map((item) => ({
                       color: item.level === 2 ? "blue" : "gray",
-                      content: <a href={`#${item.id}`}>{item.text}</a>,
+                      content: (
+                        <a
+                          href={`#${item.id}`}
+                          className="blog-antd-outline-link"
+                        >
+                          {item.text}
+                        </a>
+                      ),
                     }))}
                   />
                 </Card>
               )}
 
               {data.tags.length > 0 && (
-                <Card className="blog-antd-rail-card" bordered={false}>
+                <Card
+                  rootClassName="blog-antd-card blog-antd-rail-card"
+                  classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
+                  variant="borderless"
+                >
                   <Flex align="center" gap={10} className="blog-antd-rail-head">
                     <TagsOutlined />
                     <Title
@@ -196,7 +232,11 @@ export function PostView(
               )}
 
               {data.backlinks.length > 0 && (
-                <Card className="blog-antd-rail-card" bordered={false}>
+                <Card
+                  rootClassName="blog-antd-card blog-antd-rail-card"
+                  classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
+                  variant="borderless"
+                >
                   <Flex align="center" gap={10} className="blog-antd-rail-head">
                     <NodeIndexOutlined />
                     <Title
@@ -217,7 +257,11 @@ export function PostView(
               )}
 
               {(data.previous || data.next) && (
-                <Card className="blog-antd-rail-card" bordered={false}>
+                <Card
+                  rootClassName="blog-antd-card blog-antd-rail-card"
+                  classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
+                  variant="borderless"
+                >
                   <Flex align="center" gap={10} className="blog-antd-rail-head">
                     <SwapOutlined />
                     <Title
@@ -227,16 +271,12 @@ export function PostView(
                       {data.navigationAriaLabel}
                     </Title>
                   </Flex>
-                  <Space
-                    direction="vertical"
-                    size="small"
-                    className="blog-antd-nav-stack"
-                  >
+                  <div className="blog-antd-nav-stack">
                     {data.previous && (
                       <Button
                         href={data.previous.url}
                         block
-                        rootClassName="blog-antd-nav-button"
+                        rootClassName={`${BLOG_ANTD_DEFAULT_BUTTON_ROOT} blog-antd-nav-button`}
                         type="default"
                       >
                         {data.previousLabel}: {data.previous.title}
@@ -246,13 +286,13 @@ export function PostView(
                       <Button
                         href={data.next.url}
                         block
-                        rootClassName="blog-antd-nav-button"
+                        rootClassName={`${BLOG_ANTD_PRIMARY_BUTTON_ROOT} blog-antd-nav-button`}
                         type="primary"
                       >
                         {data.nextLabel}: {data.next.title}
                       </Button>
                     )}
-                  </Space>
+                  </div>
                 </Card>
               )}
             </div>
@@ -262,6 +302,8 @@ export function PostView(
       {interactive && (
         <BackTop
           visibilityHeight={320}
+          rootClassName="blog-antd-backtop"
+          classNames={BLOG_ANTD_BACKTOP_CLASSNAMES}
           icon={<VerticalAlignTopOutlined />}
         />
       )}

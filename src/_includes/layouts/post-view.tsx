@@ -413,7 +413,10 @@ export function PostRail(
 
   return (
     <>
-      <div class="post-mobile-tools" aria-label={translations.railAriaLabel}>
+      <section
+        class="post-mobile-tools"
+        aria-label={translations.railAriaLabel}
+      >
         <button
           type="button"
           class="post-mobile-tools-trigger"
@@ -470,7 +473,7 @@ export function PostRail(
             </div>
           </div>
         </dialog>
-      </div>
+      </section>
 
       <aside
         class="feature-rail post-rail"

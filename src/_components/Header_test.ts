@@ -96,6 +96,8 @@ describe("Header()", () => {
       'class="site-header-antd-menu ant-menu-overflow ant-menu ant-menu-root ant-menu-horizontal',
     );
     assertStringIncludes(html, 'class="site-side-nav__navigation"');
+    assertStringIncludes(html, 'data-side-nav-close=""');
+    assertNotMatch(html, /data-side-nav-utility=/);
     assertStringIncludes(
       html,
       'class="site-side-nav__items ant-menu ant-menu-root ant-menu-inline ant-menu-light"',
@@ -265,9 +267,10 @@ describe("Header CSS contracts", () => {
   it("styles the mobile side nav as an editorial sheet", () => {
     assertStringIncludes(layoutStyles, ".site-side-nav__header");
     assertStringIncludes(layoutStyles, ".site-side-nav__brand");
-    assertStringIncludes(layoutStyles, ".site-side-nav__lead");
+    assertStringIncludes(layoutStyles, ".site-side-nav__close");
     assertStringIncludes(layoutStyles, ".site-side-nav__menu-shell");
     assertStringIncludes(layoutStyles, ".site-side-nav__items.ant-menu");
+    assertStringIncludes(layoutStyles, ".site-side-nav__link-text");
     assertStringIncludes(layoutStyles, ".site-side-nav__overlay");
     assertStringIncludes(
       layoutStyles,

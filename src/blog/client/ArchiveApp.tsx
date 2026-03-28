@@ -10,6 +10,11 @@ import {
 } from "../archive-common.ts";
 import { BLOG_ANTD_THEME } from "./theme.ts";
 import {
+  BLOG_ANTD_BACKTOP_CLASSNAMES,
+  BLOG_ANTD_CARD_CLASSNAMES,
+  BLOG_ANTD_PRIMARY_BUTTON_ROOT,
+} from "./antd-semantic.ts";
+import {
   Anchor,
   BackTop,
   Button,
@@ -253,12 +258,20 @@ export function ArchiveView(
             </div>
           )
           : (
-            <Card className="blog-antd-empty-card" bordered={false}>
+            <Card
+              rootClassName="blog-antd-card blog-antd-empty-card"
+              classNames={BLOG_ANTD_CARD_CLASSNAMES}
+              variant="borderless"
+            >
               <Title level={4} className="blog-antd-rail-title">
                 {data.emptyStateTitle}
               </Title>
               <div className="blog-antd-empty-card__actions">
-                <Button type="primary" href={data.emptyStateActionHref}>
+                <Button
+                  type="primary"
+                  href={data.emptyStateActionHref}
+                  rootClassName={BLOG_ANTD_PRIMARY_BUTTON_ROOT}
+                >
                   {data.emptyStateActionLabel}
                 </Button>
               </div>
@@ -267,6 +280,8 @@ export function ArchiveView(
       </div>
       <BackTop
         visibilityHeight={280}
+        rootClassName="blog-antd-backtop"
+        classNames={BLOG_ANTD_BACKTOP_CLASSNAMES}
         icon={<VerticalAlignTopOutlined />}
       />
     </div>

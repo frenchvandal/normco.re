@@ -15,6 +15,9 @@ import {
 import featureStyles from "../../styles/components/feature.css" with {
   type: "text",
 };
+import postStyles from "../../styles/components/post.css" with {
+  type: "text",
+};
 
 import postLayout from "./post.tsx";
 
@@ -373,6 +376,10 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'class="post-details-section"');
       assertStringIncludes(html, 'data-post-mobile-tools-open=""');
       assertStringIncludes(html, 'data-post-mobile-tools=""');
+      assertStringIncludes(
+        html,
+        `class="post-mobile-tools" aria-label="Post tools"`,
+      );
       assertStringIncludes(html, "post-mobile-tools.js");
       assertStringIncludes(html, "window.matchMedia");
       assertStringIncludes(html, "const load = () => {");
@@ -512,5 +519,27 @@ describe("tag-link CSS contracts", () => {
     );
     assertStringIncludes(featureStyles, "background: var(--ph-tag-tone);");
     assertNotMatch(featureStyles, /var\(--site-tag-/);
+  });
+});
+
+describe("post mobile visual contracts", () => {
+  it("keeps the mobile tools sheet safe-area aware and rail-aware", () => {
+    assertStringIncludes(postStyles, ".post-mobile-tools-dialog");
+    assertStringIncludes(
+      postStyles,
+      "inset-inline-start: max(var(--ph-shell-gutter), env(safe-area-inset-left));",
+    );
+    assertStringIncludes(
+      postStyles,
+      "inset-inline-end: max(var(--ph-shell-gutter), env(safe-area-inset-right));",
+    );
+    assertStringIncludes(
+      postStyles,
+      "padding-block-end: calc(env(safe-area-inset-bottom) + var(--ph-space-4));",
+    );
+    assertStringIncludes(
+      postStyles,
+      'html[data-post-mobile-tools-ready="true"] .post-rail',
+    );
   });
 });

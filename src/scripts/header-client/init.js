@@ -12,6 +12,7 @@ const FOCUSABLE_SELECTOR =
 const LANGUAGE_MENU_SELECTOR = "[data-language-menu]";
 const LANGUAGE_OPTION_SELECTOR = '[data-language-option][role="menuitemradio"]';
 const OVERLAY_SELECTOR = ".site-side-nav__overlay";
+const SIDE_NAV_CLOSE_SELECTOR = "[data-side-nav-close]";
 const SIDE_NAV_LINK_SELECTOR = "a.site-side-nav__link";
 const THEME_TOGGLE_SELECTOR = "#theme-toggle";
 const TOOLTIP_CONTAINER_SELECTOR = "[data-header-tooltip]";
@@ -785,6 +786,13 @@ export function bindHeaderClient(runtime) {
         event instanceof resolvedRuntime.MouseEvent
       ) {
         handleLanguageOptionClick(event, languageOption);
+        return;
+      }
+
+      const sideNavClose = closestElement(target, SIDE_NAV_CLOSE_SELECTOR);
+
+      if (sideNavClose instanceof resolvedRuntime.HTMLElement) {
+        closeCurrentDisclosure(true);
         return;
       }
 

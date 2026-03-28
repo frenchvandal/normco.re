@@ -1,5 +1,11 @@
 /** @jsxImportSource react */
 import type { BlogTagViewData } from "../view-data.ts";
+import {
+  BLOG_ANTD_BACKTOP_CLASSNAMES,
+  BLOG_ANTD_BREADCRUMB_CLASSNAMES,
+  BLOG_ANTD_CARD_CLASSNAMES,
+  BLOG_ANTD_PRIMARY_BUTTON_ROOT,
+} from "./antd-semantic.ts";
 import { BLOG_ANTD_THEME } from "./theme.ts";
 import {
   BackTop,
@@ -38,7 +44,8 @@ export function TagView(
       <div className="blog-antd-stack">
         <nav aria-label={data.breadcrumbAriaLabel}>
           <Breadcrumb
-            className="blog-antd-breadcrumb"
+            rootClassName="blog-antd-breadcrumb"
+            classNames={BLOG_ANTD_BREADCRUMB_CLASSNAMES}
             items={renderBreadcrumbItems(data.breadcrumb)}
           />
         </nav>
@@ -65,7 +72,11 @@ export function TagView(
                 <Tag className="blog-antd-count-tag blog-antd-count-tag--soft">
                   {data.title}
                 </Tag>
-                <Button type="primary" href={data.archiveUrl}>
+                <Button
+                  type="primary"
+                  href={data.archiveUrl}
+                  rootClassName={BLOG_ANTD_PRIMARY_BUTTON_ROOT}
+                >
                   {data.archiveLinkLabel}
                 </Button>
                 {latestStory && <HeroLatestLink story={latestStory} />}
@@ -94,8 +105,13 @@ export function TagView(
             </>
           )
           : (
-            <Card className="blog-antd-empty-card" bordered={false}>
+            <Card
+              rootClassName="blog-antd-card blog-antd-empty-card"
+              classNames={BLOG_ANTD_CARD_CLASSNAMES}
+              variant="borderless"
+            >
               <Empty
+                className="blog-antd-empty"
                 description={data.emptyStateMessage}
                 image={Empty.PRESENTED_IMAGE_SIMPLE}
               />
@@ -105,6 +121,8 @@ export function TagView(
       {interactive && (
         <BackTop
           visibilityHeight={280}
+          rootClassName="blog-antd-backtop"
+          classNames={BLOG_ANTD_BACKTOP_CLASSNAMES}
           icon={<VerticalAlignTopOutlined />}
         />
       )}

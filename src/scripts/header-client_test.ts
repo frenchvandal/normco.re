@@ -261,11 +261,24 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
 
         <aside id="site-side-nav" class="site-side-nav" hidden>
           <nav class="site-side-nav__navigation">
-            <ul class="site-side-nav__items">
-              <li class="site-side-nav__item">
-                <a href="/posts/" class="site-side-nav__link">Articles</a>
-              </li>
-            </ul>
+            <div class="site-side-nav__header">
+              <a href="/" class="site-side-nav__brand">normco.re</a>
+              <button
+                type="button"
+                class="site-side-nav__close"
+                aria-label="Close"
+                data-side-nav-close=""
+              >
+                Close
+              </button>
+            </div>
+            <div class="site-side-nav__menu-shell">
+              <ul class="site-side-nav__items">
+                <li class="site-side-nav__item">
+                  <a href="/posts/" class="site-side-nav__link">Articles</a>
+                </li>
+              </ul>
+            </div>
           </nav>
         </aside>
 
@@ -640,6 +653,27 @@ describe("header-client.js", () => {
     assertEquals(window.document.activeElement, toggle);
     assertEquals(window.document.body.style.overflow, "");
     assertEquals(overlay.getAttribute("aria-hidden"), "true");
+  });
+
+  it("closes the side nav from the internal close button and restores focus", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    evaluateScript(window);
+
+    const toggle = getMenuToggle(window);
+    const closeButton = window.document.querySelector("[data-side-nav-close]");
+    assert(closeButton instanceof window.HTMLButtonElement);
+
+    toggle.click();
+    await flush(window);
+
+    closeButton.click();
+    await flush(window);
+
+    assertEquals(toggle.getAttribute("aria-expanded"), "false");
+    assertEquals(window.document.body.style.overflow, "");
+    assertEquals(window.document.activeElement, toggle);
   });
 
   it("drives header tooltips from delegated focus events and suppresses them while a panel is expanded", async () => {

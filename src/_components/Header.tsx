@@ -504,7 +504,6 @@ function renderSideNav(
   homeUrl: string,
   t: Translations,
   v: VariantClasses,
-  eyebrow?: string,
 ): El {
   return (
     <aside
@@ -517,12 +516,23 @@ function renderSideNav(
     >
       <nav class={v.sideNavNavigation ?? "site-side-nav__navigation"}>
         <div class={v.sideNavHeader ?? "site-side-nav__header"}>
-          {eyebrow && <p class="site-side-nav__eyebrow">{eyebrow}</p>}
           <a href={homeUrl} class="site-side-nav__brand">
             <span class="site-side-nav__brand-prefix">normco</span>
             .re
           </a>
-          <p class="site-side-nav__lead">{t.home.lead}</p>
+          <button
+            type="button"
+            class="site-side-nav__close"
+            aria-label={t.site.closeLabel}
+            data-side-nav-close=""
+          >
+            <SiteIcon
+              name="x"
+              className="site-side-nav__close-icon"
+              width={18}
+              height={18}
+            />
+          </button>
         </div>
         <div class="site-side-nav__menu-shell">
           <ul
@@ -543,6 +553,12 @@ function renderSideNav(
                     {...(isCurrent ? { "aria-current": "page" as const } : {})}
                   >
                     <span class="site-side-nav__link-text">{label}</span>
+                    <SiteIcon
+                      name="arrow-right"
+                      className="site-side-nav__link-icon"
+                      width={18}
+                      height={18}
+                    />
                   </a>
                 </span>
               </li>
@@ -657,7 +673,6 @@ export default (
         homeUrl,
         t,
         v,
-        isHome ? t.site.mainNavigationAriaLabel : undefined,
       )}
       <div class="site-side-nav__overlay" aria-hidden="true"></div>
     </>

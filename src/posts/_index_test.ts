@@ -230,5 +230,24 @@ describe("posts/index.page.tsx", () => {
         ".blog-antd-archive-timeline__separator",
       );
     });
+
+    it("keeps the mobile archive shell sticky and safe-area aware", () => {
+      assertStringIncludes(
+        blogAntdStyles,
+        ".blog-antd-archive-mobile__year-tabs",
+      );
+      assertStringIncludes(
+        blogAntdStyles,
+        "top: calc(var(--ph-header-height) + var(--ph-space-2));",
+      );
+      assertStringIncludes(
+        blogAntdStyles,
+        "padding-block-end: calc(env(safe-area-inset-bottom) + var(--ph-space-7));",
+      );
+      assertStringIncludes(
+        blogAntdStyles,
+        ".blog-antd-archive-mobile__backtop",
+      );
+    });
   });
 });
