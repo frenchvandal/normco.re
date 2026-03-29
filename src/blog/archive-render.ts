@@ -1,13 +1,12 @@
-import { type ArchiveMonthGroup } from "./archive-common.ts";
 import {
-  buildArchiveMonthNavModel,
-  buildArchiveTimelineItemModels,
+  type ArchiveMonthNavModel,
+  type ArchiveTimelineItemModel,
 } from "./archive-view-model.ts";
 import type { SiteLanguage } from "../utils/i18n.ts";
 import { escapeHtml } from "../utils/html.ts";
 import { getTagColor, getTagUrl } from "../utils/tags.ts";
 import type { BlogStoryCard } from "./view-data.ts";
-export { formatArchiveIndex, groupArchiveMonths } from "./archive-common.ts";
+export { formatArchiveIndex } from "./archive-common.ts";
 
 function renderMeta(story: BlogStoryCard): string {
   const items = [
@@ -53,7 +52,7 @@ function renderStoryTags(
 }
 
 export function renderArchiveMonthNav(
-  months: readonly ArchiveMonthGroup[],
+  model: ArchiveMonthNavModel | undefined,
   { ariaLabel, eyebrowLabel, jumpLabel, latestJumpLabel }: {
     ariaLabel: string;
     eyebrowLabel: string;
@@ -61,8 +60,6 @@ export function renderArchiveMonthNav(
     latestJumpLabel: string;
   },
 ): string {
-  const model = buildArchiveMonthNavModel(months);
-
   if (!model) {
     return "";
   }
@@ -128,11 +125,15 @@ export function renderArchiveMonthNav(
 }
 
 export function renderArchiveTimeline(
-  months: readonly ArchiveMonthGroup[],
+  items: readonly ArchiveTimelineItemModel[],
   ariaLabel: string,
   language: SiteLanguage,
 ): string {
-  const items = buildArchiveTimelineItemModels(months).map((entry) => {
+  if (items.length === 0) {
+    return "";
+  }
+
+  const timelineItems = items.map((entry) => {
     const { indexLabel, isLead, month, story } = entry;
 
     return `<li class="blog-antd-archive-timeline__entry${
@@ -178,7 +179,7 @@ export function renderArchiveTimeline(
     escapeHtml(ariaLabel)
   }">
   <ul class="blog-antd-archive-timeline">
-    ${items}
+    ${timelineItems}
   </ul>
 </section>`;
 }

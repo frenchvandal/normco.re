@@ -13,16 +13,13 @@ import {
   VerticalAlignTopOutlined,
 } from "@blog/archive-antd";
 
-import type { BlogArchiveViewData, BlogStoryCard } from "../view-data.ts";
+import type { BlogArchiveViewData } from "../view-data.ts";
 import {
-  type ArchiveMonthGroup,
-  groupArchiveMonths,
-  resolveArchiveLocaleFromDocument,
-} from "../archive-common.ts";
-import {
-  buildArchiveMonthNavModel,
-  buildArchiveTimelineItemModels,
+  type ArchiveMonthNavModel,
+  type ArchiveTimelineItemModel,
+  buildArchiveViewModel,
 } from "../archive-view-model.ts";
+import { resolveArchiveLocaleFromDocument } from "../archive-common.ts";
 import {
   BLOG_ANTD_BACKTOP_CLASSNAMES,
   BLOG_ANTD_CARD_CLASSNAMES,
@@ -37,10 +34,10 @@ function ArchiveTimelineItem(
     isLead = false,
     month,
   }: {
-    story: BlogStoryCard;
+    story: ArchiveTimelineItemModel["story"];
     indexLabel: string;
     isLead?: boolean | undefined;
-    month?: ArchiveMonthGroup | undefined;
+    month?: ArchiveTimelineItemModel["month"];
   },
 ) {
   return (
@@ -100,23 +97,21 @@ function ArchiveTimelineItem(
 
 function ArchiveTimeline(
   {
-    months,
+    items,
     ariaLabel,
   }: {
-    months: readonly ArchiveMonthGroup[];
+    items: readonly ArchiveTimelineItemModel[];
     ariaLabel: string;
   },
 ) {
-  if (months.length === 0) {
+  if (items.length === 0) {
     return null;
   }
-
-  const timelineEntries = buildArchiveTimelineItemModels(months);
 
   return (
     <section className="blog-antd-archive-timeline-wrap" aria-label={ariaLabel}>
       <ul className="blog-antd-archive-timeline">
-        {timelineEntries.map((entry) => (
+        {items.map((entry) => (
           <li
             key={entry.key}
             className={`blog-antd-archive-timeline__entry${
@@ -138,17 +133,15 @@ function ArchiveTimeline(
 
 function ArchiveMonthNav(
   {
-    months,
+    model,
     ariaLabel,
     eyebrowLabel,
   }: {
-    months: readonly ArchiveMonthGroup[];
+    model?: ArchiveMonthNavModel | undefined;
     ariaLabel: string;
     eyebrowLabel: string;
   },
 ) {
-  const model = buildArchiveMonthNavModel(months);
-
   if (!model) {
     return null;
   }
@@ -216,7 +209,7 @@ export function ArchiveView(
     interactive?: boolean | undefined;
   },
 ) {
-  const archiveMonths = groupArchiveMonths(
+  const archiveView = buildArchiveViewModel(
     data.posts,
     resolveArchiveLocaleFromDocument(),
   );
@@ -238,24 +231,18 @@ export function ArchiveView(
           </Flex>
         </section>
 
-        {data.posts.length > 0
+        {archiveView.hasPosts
           ? (
-            <div
-              className={`blog-antd-archive-layout${
-                archiveMonths.length > 1
-                  ? " blog-antd-archive-layout--with-nav"
-                  : ""
-              }`}
-            >
-              {archiveMonths.length > 1 && (
+            <div className={archiveView.layoutClassName}>
+              {archiveView.monthNav && (
                 <ArchiveMonthNav
-                  months={archiveMonths}
+                  model={archiveView.monthNav}
                   ariaLabel={data.yearsAriaLabel}
                   eyebrowLabel={data.postsCountLabel}
                 />
               )}
               <ArchiveTimeline
-                months={archiveMonths}
+                items={archiveView.timelineItems}
                 ariaLabel={data.postsAriaLabel}
               />
             </div>

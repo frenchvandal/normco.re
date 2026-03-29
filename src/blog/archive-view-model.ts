@@ -3,8 +3,10 @@ import {
   type ArchiveTimelineEntry,
   buildArchiveTimelineEntries,
   formatArchiveIndex,
+  groupArchiveMonths,
   groupArchiveYears,
 } from "./archive-common.ts";
+import type { BlogStoryCard } from "./view-data.ts";
 
 export type ArchiveMonthNavItemModel = Readonly<{
   anchorId: string;
@@ -35,6 +37,17 @@ export type ArchiveTimelineItemModel = Readonly<{
   month?: ArchiveMonthGroup | undefined;
   story: ArchiveTimelineEntry["story"];
 }>;
+
+export type ArchiveViewModel = Readonly<{
+  hasPosts: boolean;
+  layoutClassName: string;
+  monthNav?: ArchiveMonthNavModel | undefined;
+  timelineItems: readonly ArchiveTimelineItemModel[];
+}>;
+
+const ARCHIVE_LAYOUT_CLASS = "blog-antd-archive-layout";
+const ARCHIVE_LAYOUT_WITH_NAV_CLASS =
+  `${ARCHIVE_LAYOUT_CLASS} blog-antd-archive-layout--with-nav`;
 
 export function buildArchiveMonthNavModel(
   months: readonly ArchiveMonthGroup[],
@@ -77,4 +90,23 @@ export function buildArchiveTimelineItemModels(
     month: entry.month,
     story: entry.story,
   }));
+}
+
+export function buildArchiveViewModel(
+  posts: readonly BlogStoryCard[],
+  locale: string,
+): ArchiveViewModel {
+  const months = groupArchiveMonths(posts, locale);
+  const monthNav = months.length > 1
+    ? buildArchiveMonthNavModel(months)
+    : undefined;
+
+  return {
+    hasPosts: posts.length > 0,
+    layoutClassName: monthNav
+      ? ARCHIVE_LAYOUT_WITH_NAV_CLASS
+      : ARCHIVE_LAYOUT_CLASS,
+    monthNav,
+    timelineItems: buildArchiveTimelineItemModels(months),
+  };
 }

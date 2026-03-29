@@ -4,6 +4,7 @@ import { describe, it } from "@std/testing/bdd";
 import {
   buildArchiveMonthNavModel,
   buildArchiveTimelineItemModels,
+  buildArchiveViewModel,
 } from "./archive-view-model.ts";
 import { groupArchiveMonths } from "./archive-common.ts";
 import type { BlogStoryCard } from "./view-data.ts";
@@ -85,5 +86,50 @@ describe("buildArchiveTimelineItemModels()", () => {
         },
       ],
     );
+  });
+});
+
+describe("buildArchiveViewModel()", () => {
+  it("shares the archive layout decision and month nav gating", () => {
+    const stories = [
+      makeStory("latest", "2026-03-20T08:00:00.000Z"),
+      makeStory("older", "2025-02-10T08:00:00.000Z"),
+    ] as const;
+
+    const model = buildArchiveViewModel(stories, "en");
+
+    assertStrictEquals(model.hasPosts, true);
+    assertStrictEquals(
+      model.layoutClassName,
+      "blog-antd-archive-layout blog-antd-archive-layout--with-nav",
+    );
+    assertStrictEquals(
+      model.monthNav?.newestMonthAnchorId,
+      "archive-month-2026-03",
+    );
+    assertEquals(
+      model.timelineItems.map((item) => item.story.title),
+      ["latest", "older"],
+    );
+  });
+
+  it("keeps single-month archives on the simpler layout without nav", () => {
+    const model = buildArchiveViewModel([
+      makeStory("only", "2026-03-20T08:00:00.000Z"),
+    ], "en");
+
+    assertStrictEquals(model.hasPosts, true);
+    assertStrictEquals(model.layoutClassName, "blog-antd-archive-layout");
+    assertStrictEquals(model.monthNav, undefined);
+    assertEquals(model.timelineItems.length, 1);
+  });
+
+  it("returns an empty archive model when no stories exist", () => {
+    const model = buildArchiveViewModel([], "en");
+
+    assertStrictEquals(model.hasPosts, false);
+    assertStrictEquals(model.layoutClassName, "blog-antd-archive-layout");
+    assertStrictEquals(model.monthNav, undefined);
+    assertEquals(model.timelineItems, []);
   });
 });

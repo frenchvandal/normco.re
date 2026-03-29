@@ -1,6 +1,6 @@
 import StatePanel from "../_components/StatePanel.tsx";
+import { buildArchiveViewModel } from "../blog/archive-view-model.ts";
 import {
-  groupArchiveMonths,
   renderArchiveMonthNav,
   renderArchiveTimeline,
 } from "../blog/archive-render.ts";
@@ -54,24 +54,25 @@ export default (
   );
   const stories = posts.map((post) => toStoryData(post, language, dateFormat));
   const postsCountLabel = formatPostCount(posts.length, language);
-  const archiveMonths = groupArchiveMonths(stories, languageTag);
-  const archiveLayoutClass = archiveMonths.length > 1
-    ? "blog-antd-archive-layout blog-antd-archive-layout--with-nav"
-    : "blog-antd-archive-layout";
+  const archiveView = buildArchiveViewModel(stories, languageTag);
 
-  const pageBody = posts.length > 0
-    ? `<div class="${archiveLayoutClass}">
+  const pageBody = archiveView.hasPosts
+    ? `<div class="${archiveView.layoutClassName}">
   ${
-      archiveMonths.length > 1
-        ? renderArchiveMonthNav(archiveMonths, {
-          ariaLabel: t.archive.yearsAriaLabel,
-          eyebrowLabel: postsCountLabel,
-          jumpLabel: t.archive.jumpLabel,
-          latestJumpLabel: t.archive.latestJumpLabel,
-        })
-        : ""
+      renderArchiveMonthNav(archiveView.monthNav, {
+        ariaLabel: t.archive.yearsAriaLabel,
+        eyebrowLabel: postsCountLabel,
+        jumpLabel: t.archive.jumpLabel,
+        latestJumpLabel: t.archive.latestJumpLabel,
+      })
     }
-  ${renderArchiveTimeline(archiveMonths, t.archive.activityAriaLabel, language)}
+  ${
+      renderArchiveTimeline(
+        archiveView.timelineItems,
+        t.archive.activityAriaLabel,
+        language,
+      )
+    }
 </div>`
     : StatePanel({
       title: t.archive.emptyStateTitle,
@@ -81,7 +82,7 @@ export default (
       headingTag: "h2",
       variant: "inline",
     });
-  const backToTopLink = posts.length > 0
+  const backToTopLink = archiveView.hasPosts
     ? `<a class="blog-antd-backtop blog-antd-archive-backtop" href="#archive-title" aria-label="${
       escapeHtml(t.archive.backToTopLabel)
     }">
