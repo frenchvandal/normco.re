@@ -1,8 +1,11 @@
 # AGENTS.md
 
-All changes must be tested: if you are not testing your changes, you are not
-done. Be humble and honest: NEVER overstate what you got done or what actually
-works in commits, PRs or in messages to the user.
+All changes must be tested: if you have not tested your changes, you are not
+done.\
+Be humble and honest: **NEVER** overstate what you have accomplished or what
+actually works in commits, pull requests, or messages to the user.\
+Do not be lazy: never ask the human user to do something you can reasonably
+handle by yourself.
 
 This repository contains a static site built with Deno, Lume, TSX layouts and
 pages, Markdown posts, CSS, and a route-split React/Ant Design blog client.
