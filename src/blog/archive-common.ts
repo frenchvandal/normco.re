@@ -132,16 +132,19 @@ export function groupArchiveYears(
 export function buildArchiveTimelineEntries(
   months: readonly ArchiveMonthGroup[],
 ): readonly ArchiveTimelineEntry[] {
-  return months.flatMap((month) =>
-    month.posts.map((story, monthIndex) => ({
-      month,
-      monthIndex,
-      story,
-    }))
-  ).map(({ month, monthIndex, story }, index) => ({
-    index,
-    isLead: index === 0,
-    month: monthIndex === 0 ? month : undefined,
-    story,
-  }));
+  const entries: ArchiveTimelineEntry[] = [];
+
+  for (const month of months) {
+    for (const [monthIndex, story] of month.posts.entries()) {
+      const index = entries.length;
+      entries.push({
+        index,
+        isLead: index === 0,
+        month: monthIndex === 0 ? month : undefined,
+        story,
+      });
+    }
+  }
+
+  return entries;
 }

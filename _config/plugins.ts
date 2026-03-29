@@ -28,6 +28,7 @@ import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns/locale";
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
 import { createPurgeCssOptions } from "./purgecss.ts";
 import { registerPostDataPreparation } from "./processors.ts";
+import { buildRobotsRules } from "./robots_rules.ts";
 import { shouldEmitSourceMaps } from "./runtime_policy.ts";
 import shiki from "../plugins/shiki/mod.ts";
 
@@ -141,20 +142,7 @@ export function registerPlugins(
   );
   site.use(
     robots({
-      rules: [
-        { userAgent: "*", allow: "/" },
-        { userAgent: "*", disallow: "/404" },
-        { userAgent: "*", disallow: "/404.html" },
-        { userAgent: "*", disallow: "/offline" },
-        { userAgent: "*", disallow: "/offline.html" },
-        { userAgent: "*", disallow: "/fr/offline" },
-        { userAgent: "*", disallow: "/fr/offline/" },
-        { userAgent: "*", disallow: "/zh-hans/offline" },
-        { userAgent: "*", disallow: "/zh-hans/offline/" },
-        { userAgent: "*", disallow: "/zh-hant/offline" },
-        { userAgent: "*", disallow: "/zh-hant/offline/" },
-        { sitemap: "https://normco.re/sitemap.xml" },
-      ],
+      rules: buildRobotsRules(),
     }),
   );
 

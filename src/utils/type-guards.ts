@@ -24,8 +24,14 @@ export function getRecordMethod(
     : undefined;
 }
 
-export function isLumeData(value: unknown): value is Lume.Data {
-  return typeof value === "object" && value !== null;
+/**
+ * Lume exposes page data as plain mutable records at runtime.
+ *
+ * This intentionally validates only the dynamic object boundary; callers still
+ * need to check any page-specific fields they rely on afterward.
+ */
+export function isLumeRecord(value: unknown): value is Lume.Data {
+  return isMutableRecord(value);
 }
 
 export function resolveOptionalString(value: unknown): string | undefined {

@@ -74,8 +74,11 @@ export function formatIndex(index: number): string {
   return index.toString().padStart(2, "0");
 }
 
+const READING_METER_MIN_PERCENT = 16;
+const READING_METER_PERCENT_PER_MINUTE = 9;
+
 function extractNumericValue(text?: string): number | undefined {
-  const match = text?.match(/\d+/u);
+  const match = text?.match(/\d+/);
 
   if (!match) {
     return undefined;
@@ -91,7 +94,14 @@ function renderReadingPercent(readingLabel?: string): number | undefined {
     return undefined;
   }
 
-  return Math.min(100, Math.max(16, readingValue * 9));
+  // Keep short reads visible without letting long reads overflow the compact meter.
+  return Math.min(
+    100,
+    Math.max(
+      READING_METER_MIN_PERCENT,
+      readingValue * READING_METER_PERCENT_PER_MINUTE,
+    ),
+  );
 }
 
 export function MetaLine(

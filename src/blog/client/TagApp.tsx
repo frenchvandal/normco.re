@@ -1,5 +1,6 @@
 /** @jsxImportSource npm/react */
 import type { BlogTagViewData } from "../view-data.ts";
+import { resolveTagStorySections } from "../tag-layout.ts";
 import {
   BLOG_ANTD_BACKTOP_CLASSNAMES,
   BLOG_ANTD_BREADCRUMB_CLASSNAMES,
@@ -33,9 +34,13 @@ export function TagView(
     interactive?: boolean | undefined;
   },
 ) {
-  const featuredStory = data.posts[0];
-  const latestStory = data.posts[1];
-  const remainingStories = data.posts.slice(1);
+  const {
+    featuredStory,
+    latestStory,
+    secondaryStories,
+    gridStories,
+    gridStartIndex,
+  } = resolveTagStorySections(data.posts);
 
   return (
     <div className="site-page-shell site-page-shell--editorial blog-antd-page blog-antd-page--tag">
@@ -89,15 +94,15 @@ export function TagView(
               {featuredStory && (
                 <FeaturedStory
                   story={featuredStory}
-                  secondaryStories={remainingStories.slice(0, 3)}
+                  secondaryStories={secondaryStories}
                   title={data.postsCountLabel}
                 />
               )}
-              {remainingStories.length > 0 && (
+              {gridStories.length > 0 && (
                 <StoryGrid
-                  posts={remainingStories}
+                  posts={gridStories}
                   ariaLabel={data.postsAriaLabel}
-                  startIndex={2}
+                  startIndex={gridStartIndex}
                 />
               )}
             </>

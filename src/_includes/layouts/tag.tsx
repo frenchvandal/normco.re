@@ -7,7 +7,10 @@ import {
 } from "../../utils/lume-helpers.ts";
 import { escapeHtml } from "../../utils/html.ts";
 import { getTagColor } from "../../utils/tags.ts";
-import { isLumeData, resolveOptionalString } from "../../utils/type-guards.ts";
+import {
+  isLumeRecord,
+  resolveOptionalString,
+} from "../../utils/type-guards.ts";
 
 export const layout = "layouts/base.tsx";
 export const extraStylesheets = ["/styles/blog-antd.css"];
@@ -28,7 +31,9 @@ export default async (
     data.lang,
   );
   const tagName = resolveOptionalString(data.tagName) ?? "";
-  const posts = Array.isArray(data.posts) ? data.posts.filter(isLumeData) : [];
+  const posts = Array.isArray(data.posts)
+    ? data.posts.filter(isLumeRecord)
+    : [];
   const postsCountLabel = formatPostCount(posts.length, language);
   const stories = posts.map((post) => toStoryData(post, language, dateFormat));
   const items = (await Promise.all(

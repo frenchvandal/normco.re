@@ -40,6 +40,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     neighbors,
   );
 
+  // Only ship localized copy overrides. The client script already knows the
+  // English defaults, so duplicating them in data attributes adds noise.
   const codeCopyAttr = (label: string, fallback: string) =>
     state.includeCodeCopy && label !== fallback ? label : undefined;
   const codeCopyLabel = codeCopyAttr(t.post.copyCodeLabel, "Copy code");

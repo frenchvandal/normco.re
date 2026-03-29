@@ -579,6 +579,10 @@ describe("tag preset token contracts", () => {
 });
 
 describe("post mobile visual contracts", () => {
+  it("keeps inline code sizing bound to the shared token layer", () => {
+    assertStringIncludes(postStyles, "font-size: var(--ph-text-code-inline);");
+  });
+
   it("keeps the mobile tools sheet safe-area aware and rail-aware", () => {
     assertStringIncludes(postStyles, ".post-mobile-tools-dialog");
     assertStringIncludes(postStyles, ".post-inline-anchor");

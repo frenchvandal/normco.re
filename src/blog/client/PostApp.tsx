@@ -43,6 +43,11 @@ import {
   TrustedHtmlSpan,
 } from "./common.tsx";
 
+const OUTLINE_TIMELINE_COLORS = {
+  primary: "var(--ph-color-accent-fg)",
+  secondary: "var(--ph-color-fg-muted)",
+} as const;
+
 export function PostView(
   { data, interactive = true }: {
     data: BlogPostViewData;
@@ -185,7 +190,9 @@ export function PostView(
                     className="blog-antd-outline-timeline"
                     classNames={BLOG_ANTD_OUTLINE_TIMELINE_CLASSNAMES}
                     items={data.outline.map((item) => ({
-                      color: item.level === 2 ? "blue" : "gray",
+                      color: item.level === 2
+                        ? OUTLINE_TIMELINE_COLORS.primary
+                        : OUTLINE_TIMELINE_COLORS.secondary,
                       content: (
                         <a
                           href={`#${item.id}`}

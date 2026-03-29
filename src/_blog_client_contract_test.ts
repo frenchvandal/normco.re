@@ -16,6 +16,9 @@ const postAntdBuild = Deno.readTextFileSync(
 const postAppSource = Deno.readTextFileSync(
   new URL("./blog/client/PostApp.tsx", import.meta.url),
 );
+const archiveAppSource = Deno.readTextFileSync(
+  new URL("./blog/client/ArchiveApp.tsx", import.meta.url),
+);
 
 describe("blog client interaction contracts", () => {
   it("uses full-card links for story and featured cards", () => {
@@ -47,5 +50,10 @@ describe("blog client interaction contracts", () => {
     assertStringIncludes(commonSource, "export function TrustedHtmlSpan(");
     assertStringIncludes(postAppSource, "<TrustedHtmlSection");
     assertStringIncludes(postAppSource, "<TrustedHtmlSpan");
+  });
+
+  it("keeps archive BackTop optional for non-interactive renders", () => {
+    assertStringIncludes(archiveAppSource, "interactive = true");
+    assertStringIncludes(archiveAppSource, "{interactive && (");
   });
 });

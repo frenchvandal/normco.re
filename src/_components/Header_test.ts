@@ -272,6 +272,18 @@ describe("Header CSS contracts", () => {
     );
   });
 
+  it("uses shared spacing and compact-control tokens for header actions", () => {
+    assertStringIncludes(layoutStyles, "gap: var(--ph-space-1-5);");
+    assertStringIncludes(
+      layoutStyles,
+      "inline-size: var(--ph-control-size-compact);",
+    );
+    assertStringIncludes(
+      layoutStyles,
+      "block-size: var(--ph-control-size-compact);",
+    );
+  });
+
   it("styles the mobile side nav as a true drawer", () => {
     assertStringIncludes(layoutStyles, ".site-side-nav__header");
     assertStringIncludes(layoutStyles, ".site-side-nav__brand");

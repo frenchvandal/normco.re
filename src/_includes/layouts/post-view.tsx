@@ -24,7 +24,7 @@ import { getTagColor, getTagUrl } from "../../utils/tags.ts";
 import {
   getRecordValue,
   isDefined,
-  isLumeData,
+  isLumeRecord,
   resolveOptionalTrimmedString,
 } from "../../utils/type-guards.ts";
 import type { PostLinkReference } from "../../../plugins/post_link_graph.ts";
@@ -106,7 +106,7 @@ function isPostCandidate(
   value: unknown,
   postsBaseUrl: string,
 ): value is Lume.Data {
-  return isLumeData(value) && typeof value.url === "string" &&
+  return isLumeRecord(value) && typeof value.url === "string" &&
     value.url.startsWith(postsBaseUrl) && value.url !== postsBaseUrl &&
     (value.type === undefined || value.type === "post");
 }
@@ -146,7 +146,7 @@ export function resolvePostNeighbors(
 ): PostNeighbors {
   const posts =
     (callMethod<unknown[]>(data.search, "pages", postQuery, "date=asc") ?? [])
-      .filter(isLumeData);
+      .filter(isLumeRecord);
   const idx = posts.findIndex((post) => post.url === currentUrl);
   let prev = idx > 0 ? posts[idx - 1] : undefined;
   let next = idx >= 0 && idx < posts.length - 1 ? posts[idx + 1] : undefined;

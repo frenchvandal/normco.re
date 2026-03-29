@@ -209,7 +209,10 @@ function ArchiveMonthNav(
 }
 
 export function ArchiveView(
-  { data }: { data: BlogArchiveViewData },
+  { data, interactive = true }: {
+    data: BlogArchiveViewData;
+    interactive?: boolean | undefined;
+  },
 ) {
   const archiveMonths = groupArchiveMonths(
     data.posts,
@@ -276,12 +279,14 @@ export function ArchiveView(
             </Card>
           )}
       </div>
-      <BackTop
-        visibilityHeight={280}
-        rootClassName="blog-antd-backtop"
-        classNames={BLOG_ANTD_BACKTOP_CLASSNAMES}
-        icon={<VerticalAlignTopOutlined />}
-      />
+      {interactive && (
+        <BackTop
+          visibilityHeight={280}
+          rootClassName="blog-antd-backtop"
+          classNames={BLOG_ANTD_BACKTOP_CLASSNAMES}
+          icon={<VerticalAlignTopOutlined />}
+        />
+      )}
     </div>
   );
 }

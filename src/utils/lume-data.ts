@@ -9,7 +9,7 @@
 import {
   getRecordMethod,
   getRecordValue,
-  isLumeData,
+  isLumeRecord,
   isMutableRecord,
 } from "./type-guards.ts";
 
@@ -34,7 +34,7 @@ export function searchPages(
   const args: unknown[] = [query, sort];
   if (limit !== undefined) args.push(limit);
   const results = callMethod<unknown[]>(search, "pages", ...args);
-  return Array.isArray(results) ? results.filter(isLumeData) : [];
+  return Array.isArray(results) ? results.filter(isLumeRecord) : [];
 }
 
 /** Resolve raw `children` (string or `{ __html }`) into an HTML string. */

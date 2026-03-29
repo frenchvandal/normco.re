@@ -286,7 +286,7 @@
       );
     border-radius: var(--ph-radius-sm);
     background: var(--ph-surface-code);
-    font-size: 0.9em;
+    font-size: var(--ph-text-code-inline);
     overflow-wrap: anywhere;
   }
 

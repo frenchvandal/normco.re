@@ -184,7 +184,7 @@
   .site-header__global {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--ph-space-1-5);
     margin-inline-start: auto;
   }
 
@@ -195,8 +195,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    inline-size: 36px;
-    block-size: 36px;
+    inline-size: var(--ph-control-size-compact);
+    block-size: var(--ph-control-size-compact);
     border: var(--ph-border-hairline) solid transparent;
     border-radius: var(--ph-radius-md);
     color: var(--ph-color-fg-subtle);
