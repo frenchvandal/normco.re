@@ -8,6 +8,7 @@ import TagsOutlined from "npm:@ant-design/icons@6.1.1/TagsOutlined.js";
 import VerticalAlignTopOutlined from "npm:@ant-design/icons@6.1.1/VerticalAlignTopOutlined.js";
 import BackTop from "npm:antd@6.3.4/lib/float-button/BackTop.js";
 import Breadcrumb from "npm:antd@6.3.4/lib/breadcrumb/index.js";
+import Button from "npm:antd@6.3.4/lib/button/index.js";
 import Card from "npm:antd@6.3.4/lib/card/index.js";
 import Col from "npm:antd@6.3.4/lib/col/index.js";
 import ConfigProvider from "npm:antd@6.3.4/lib/config-provider/index.js";
@@ -26,6 +27,7 @@ export {
   BackTop,
   BarChartOutlined,
   Breadcrumb,
+  Button,
   Card,
   Col,
   ConfigProvider,
