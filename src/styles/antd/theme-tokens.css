@@ -154,7 +154,7 @@
     --ph-space-10: 96px;
 
     --ph-measure: 42rem;
-    --ph-prose-max: 42rem;
+    --ph-prose-max: var(--ph-measure);
     --ph-content-max: 56rem;
     --ph-site-max: 1280px;
     --ph-panel-max: 30rem;

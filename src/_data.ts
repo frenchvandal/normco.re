@@ -3,6 +3,7 @@ import {
   type SiteManifestData,
 } from "./utils/site-manifest.ts";
 import {
+  getDefaultSiteDescription,
   getSiteName,
   SITE_AUTHOR,
   SITE_NAME,
@@ -31,7 +32,7 @@ export const author = SITE_AUTHOR;
 
 export const metas = {
   site: siteName,
-  description: `Personal blog by ${author}, based in Chengdu, China.`,
+  description: getDefaultSiteDescription(author),
   lang: "en",
 } as const satisfies Record<string, string>;
 

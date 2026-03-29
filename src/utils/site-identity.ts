@@ -18,6 +18,12 @@ export const SITE_NAME_BY_LANGUAGE = {
 export const SITE_NAME = SITE_NAME_BY_LANGUAGE.en;
 export const SITE_SHORT_NAME = "PhiPhi" as const;
 
+export function getDefaultSiteDescription(
+  author: string = SITE_AUTHOR,
+): string {
+  return `Personal blog by ${author}, based in Chengdu, China.`;
+}
+
 export function getSiteName(language: SiteLanguage): string {
   return SITE_NAME_BY_LANGUAGE[language];
 }

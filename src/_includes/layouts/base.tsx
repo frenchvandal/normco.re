@@ -25,6 +25,7 @@ import {
   getLocalizedRssFeedUrl,
 } from "../../utils/feed-paths.ts";
 import {
+  getDefaultSiteDescription,
   SITE_AUTHOR,
   SITE_NAME,
   SITE_ORIGIN,
@@ -192,7 +193,7 @@ export default (
   const { language, translations, homeUrl, syndicationPageUrl } =
     resolvePageSetup(lang);
   const metaDescription = description ?? metas?.description ??
-    `Personal blog by ${SITE_AUTHOR}, based in Chengdu, China.`;
+    getDefaultSiteDescription(resolvedAuthor);
   const documentLanguage = getLanguageTag(language);
   const currentUrl = typeof url === "string" && url ? url : "/";
   const isIndexable = unlisted !== true;
