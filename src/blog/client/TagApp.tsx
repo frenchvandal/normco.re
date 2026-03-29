@@ -1,4 +1,4 @@
-/** @jsxImportSource react */
+/** @jsxImportSource npm/react */
 import type { BlogTagViewData } from "../view-data.ts";
 import {
   BLOG_ANTD_BACKTOP_CLASSNAMES,

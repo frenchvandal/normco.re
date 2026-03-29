@@ -1,5 +1,6 @@
-import { createRoot } from "react-dom/client";
-import { createElement, type FunctionComponent } from "react";
+import { createRoot } from "npm/react-dom/client";
+import { createElement, type FunctionComponent } from "npm/react";
+
 import { BLOG_APP_DATA_ID, BLOG_APP_ROOT_ATTRIBUTE } from "../embed.ts";
 import {
   type BlogAppDataValidator,

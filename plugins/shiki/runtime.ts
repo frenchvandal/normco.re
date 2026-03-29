@@ -13,14 +13,14 @@
  * the codebase using the normal `"shiki"` specifier without baking permission
  * workarounds into every caller.
  *
- * The actual npm dependency stays declared in the import map as `"shiki-npm"`,
+ * The actual npm dependency stays declared in the import map as `"npm/shiki"`,
  * so `deno outdated --update --latest` can still update it cleanly.
  */
-import type { createHighlighter as createHighlighterType } from "shiki-npm";
+import type { createHighlighter as createHighlighterType } from "npm/shiki";
 
 const SHIKI_DEBUG_ENV_NAME = "VSCODE_TEXTMATE_DEBUG";
 
-type NpmShikiModule = typeof import("shiki-npm");
+type NpmShikiModule = typeof import("npm/shiki");
 
 let npmShikiModulePromise: Promise<NpmShikiModule> | undefined;
 let processEnvMutationQueue = Promise.resolve();
@@ -100,7 +100,7 @@ function importNpmShiki(): Promise<NpmShikiModule> {
 
       return await withTemporaryProcessEnv(
         safeEnv,
-        () => import("shiki-npm"),
+        () => import("npm/shiki"),
       );
     })().catch((error) => {
       npmShikiModulePromise = undefined;
@@ -134,4 +134,4 @@ export type {
   CodeOptionsSingleTheme,
   CodeToHastOptions,
   Highlighter,
-} from "shiki-npm";
+} from "npm/shiki";

@@ -8,12 +8,12 @@ import {
   Space,
   Tag,
   Typography,
-} from "antd";
+} from "npm/antd";
 import {
   ArrowRightOutlined,
   ReadOutlined,
   ScheduleOutlined,
-} from "@ant-design/icons";
+} from "npm/ant-design-icons";
 
 const { Paragraph, Title } = Typography;
 

@@ -10,8 +10,8 @@ import {
   Row,
   Tag,
   Typography,
-} from "antd";
-import { VerticalAlignTopOutlined } from "@ant-design/icons";
+} from "npm/antd";
+import { VerticalAlignTopOutlined } from "npm/ant-design-icons";
 
 const { Paragraph, Title } = Typography;
 const BackTop = FloatButton.BackTop;

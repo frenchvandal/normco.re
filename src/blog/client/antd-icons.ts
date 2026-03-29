@@ -11,7 +11,7 @@ import {
   SwapOutlined,
   TagsOutlined,
   VerticalAlignTopOutlined,
-} from "@ant-design/icons";
+} from "npm/ant-design-icons";
 
 export {
   ArrowRightOutlined,

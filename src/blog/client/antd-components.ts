@@ -1,3 +1,3 @@
-import { ConfigProvider } from "antd";
+import { ConfigProvider } from "npm/antd";
 
 export { ConfigProvider };

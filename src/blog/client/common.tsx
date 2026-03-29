@@ -1,4 +1,4 @@
-/** @jsxImportSource react */
+/** @jsxImportSource npm/react */
 import {
   ArrowRightOutlined,
   Card,

@@ -8,12 +8,12 @@ import {
   Tag,
   Timeline,
   Typography,
-} from "antd";
+} from "npm/antd";
 import {
   ReadOutlined,
   ScheduleOutlined,
   VerticalAlignTopOutlined,
-} from "@ant-design/icons";
+} from "npm/ant-design-icons";
 
 const { Paragraph, Title } = Typography;
 const BackTop = FloatButton.BackTop;

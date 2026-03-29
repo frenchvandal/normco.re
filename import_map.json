@@ -1,7 +1,7 @@
 {
   "imports": {
-    "react": "npm:react@19.2.4",
-    "antd": "npm:antd@6.3.4",
+    "npm/react": "npm:react@19.2.4",
+    "npm/antd": "npm:antd@6.3.4",
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",
@@ -25,8 +25,8 @@
     "@std/yaml": "jsr:@std/yaml@^1.0.12",
     "@std/xml": "jsr:@std/xml@^0.1.0",
     "npm/faker-js": "npm:@faker-js/faker@^10.4.0",
-    "date-fns/locale": "npm:date-fns@4.1.0/locale",
+    "npm/date-fns/locale": "npm:date-fns@4.1.0/locale",
     "shiki": "./plugins/shiki/runtime.ts",
-    "shiki-npm": "npm:shiki@4.0.2"
+    "npm/shiki": "npm:shiki@4.0.2"
   }
 }

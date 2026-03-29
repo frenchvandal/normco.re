@@ -1,4 +1,4 @@
-import React from "react";
+import React from "npm/react";
 import { extractStyle } from "npm:@ant-design/static-style-extract@2.1.0";
 import {
   Breadcrumb,
@@ -18,8 +18,9 @@ import {
   Tag,
   Timeline,
   Typography,
-} from "antd";
+} from "npm/antd";
 import { dirname, fromFileUrl, join } from "@std/path";
+
 import { BLOG_ANTD_THEME } from "../src/blog/client/theme.ts";
 
 const SCRIPT_DIR = dirname(fromFileUrl(import.meta.url));

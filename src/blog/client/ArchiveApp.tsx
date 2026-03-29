@@ -1,4 +1,4 @@
-/** @jsxImportSource react */
+/** @jsxImportSource npm/react */
 import type { BlogArchiveViewData, BlogStoryCard } from "../view-data.ts";
 import {
   type ArchiveMonthGroup,
