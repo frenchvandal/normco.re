@@ -1,7 +1,7 @@
 // @ts-check
 
-const FOCUSABLE_SELECTOR =
-  "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
+import { FOCUSABLE_SELECTOR } from "./focusable-selector.js";
+
 const SEARCH_CONTAINER_SELECTOR = "[data-search-root]";
 const SEARCH_PANEL_SELECTOR = "[data-search-panel]";
 const PAGEFIND_SCRIPT_URL = "/pagefind/pagefind-ui.js";
@@ -97,6 +97,25 @@ export function createHeaderSearch(runtime, root, isKeyboardInteraction) {
         focusable.push(candidate);
       }
     }
+
+    // Selector-list queries do not always preserve DOM order consistently.
+    focusable.sort((left, right) => {
+      if (left === right) {
+        return 0;
+      }
+
+      const position = left.compareDocumentPosition(right);
+
+      if (position & runtime.Node.DOCUMENT_POSITION_FOLLOWING) {
+        return -1;
+      }
+
+      if (position & runtime.Node.DOCUMENT_POSITION_PRECEDING) {
+        return 1;
+      }
+
+      return 0;
+    });
 
     return focusable;
   }

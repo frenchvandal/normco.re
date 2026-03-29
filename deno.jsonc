@@ -130,7 +130,7 @@
   },
   "lint": {
     "plugins": [
-      "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/lint.ts"
+      "./plugins/lume_lint.ts"
     ],
     "rules": {
       "tags": ["recommended", "jsx"],

@@ -1,7 +1,9 @@
 import { assert, assertEquals, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import { bindHeaderClient } from "./header-client/init.js";
-import headerClientSource from "./header-client/init.js" with { type: "text" };
+import focusableSelectorSource from "./header-client/focusable-selector.js" with {
+  type: "text",
+};
 import { getJSDOM } from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
@@ -522,14 +524,14 @@ function captureNavigation(window: TestWindow): NavigationDetail[] {
 
 describe("header-client.js", () => {
   it("keeps the focus trap selector aligned with richer interactive elements", () => {
-    assertStringIncludes(headerClientSource, "audio[controls]");
-    assertStringIncludes(headerClientSource, "video[controls]");
+    assertStringIncludes(focusableSelectorSource, "audio[controls]");
+    assertStringIncludes(focusableSelectorSource, "video[controls]");
     assertStringIncludes(
-      headerClientSource,
+      focusableSelectorSource,
       "details > summary:first-of-type",
     );
     assertStringIncludes(
-      headerClientSource,
+      focusableSelectorSource,
       "[contenteditable]:not([contenteditable='false'])",
     );
   });

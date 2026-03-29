@@ -1,5 +1,6 @@
 // @ts-check
 
+import { FOCUSABLE_SELECTOR } from "./focusable-selector.js";
 import { createHeaderSearch } from "./search.js";
 import { createThemeController } from "./theme.js";
 
@@ -7,18 +8,6 @@ const DEFERRED_FOCUS_DELAY_MS = 16;
 const DISCLOSURE_CONTROL_SELECTOR =
   ".site-header__action[aria-controls], .site-header__menu-toggle";
 const DISCLOSURE_SURFACE_SELECTOR = ".site-header__panel, .site-side-nav";
-const FOCUSABLE_SELECTOR = [
-  "a[href]",
-  "button:not([disabled])",
-  "input:not([disabled])",
-  "select:not([disabled])",
-  "textarea:not([disabled])",
-  "audio[controls]",
-  "video[controls]",
-  "details > summary:first-of-type",
-  "[contenteditable]:not([contenteditable='false'])",
-  "[tabindex]:not([tabindex='-1'])",
-].join(", ");
 const LANGUAGE_MENU_SELECTOR = "[data-language-menu]";
 const LANGUAGE_OPTION_SELECTOR = '[data-language-option][role="menuitemradio"]';
 const OVERLAY_SELECTOR = ".site-side-nav__overlay";
@@ -360,6 +349,25 @@ export function bindHeaderClient(runtime) {
         focusable.push(candidate);
       }
     }
+
+    // Selector-list queries do not always preserve DOM order consistently.
+    focusable.sort((left, right) => {
+      if (left === right) {
+        return 0;
+      }
+
+      const position = left.compareDocumentPosition(right);
+
+      if (position & resolvedRuntime.Node.DOCUMENT_POSITION_FOLLOWING) {
+        return -1;
+      }
+
+      if (position & resolvedRuntime.Node.DOCUMENT_POSITION_PRECEDING) {
+        return 1;
+      }
+
+      return 0;
+    });
 
     return focusable;
   }
@@ -772,12 +780,6 @@ export function bindHeaderClient(runtime) {
       setInteractionModality("pointer");
     }, true);
 
-    doc.addEventListener("keydown", (event) => {
-      if (!event.metaKey && !event.ctrlKey && !event.altKey) {
-        setInteractionModality("keyboard");
-      }
-    }, true);
-
     doc.addEventListener("click", (event) => {
       const target = event.target;
 
@@ -838,6 +840,10 @@ export function bindHeaderClient(runtime) {
     });
 
     doc.addEventListener("keydown", (event) => {
+      if (!event.metaKey && !event.ctrlKey && !event.altKey) {
+        setInteractionModality("keyboard");
+      }
+
       handleGlobalKeydown(event);
     });
 

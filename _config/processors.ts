@@ -1,6 +1,6 @@
 import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
-import { generate as generateUuidV7 } from "jsr:@std/uuid@^1.1.0/v7";
+import { generate as generateUuidV7 } from "@std/uuid/v7";
 import {
   dirname as posixDirname,
   normalize as normalizePosix,

@@ -2,7 +2,7 @@ import { parseArgs } from "@std/cli";
 import { walk } from "@std/fs";
 import { basename, join } from "@std/path";
 import { parse, stringify } from "@std/yaml";
-import { generate as generateUuidV7 } from "jsr:@std/uuid@^1.1.0/v7";
+import { generate as generateUuidV7 } from "@std/uuid/v7";
 import { createUsageError, hasHelpFlag } from "./_shared.ts";
 
 const REPO_ROOT = join(import.meta.dirname ?? ".", "..");

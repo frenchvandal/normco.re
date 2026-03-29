@@ -1,5 +1,5 @@
-import { assertEquals } from "jsr:@std/assert@^1.0.19";
-import { describe, it } from "jsr:@std/testing@^1.0.17/bdd";
+import { assertEquals } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
 import { isBlogAppViewData, parseBlogAppData } from "./bootstrap-data.ts";
 
 const VALID_POST_VIEW_DATA = JSON.stringify({

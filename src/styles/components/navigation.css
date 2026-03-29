@@ -254,7 +254,7 @@
     padding-block: clamp(var(--ph-space-4), 4vw, var(--ph-space-5));
     padding-inline: clamp(var(--ph-space-4), 5vw, var(--ph-space-6));
     border: 0;
-    border-inline-start: 3px solid transparent;
+    border-inline-start: var(--ph-border-accent) solid transparent;
     border-radius: 0;
     color: var(--ph-color-fg-default);
     text-decoration: none;

@@ -51,7 +51,7 @@ type VariantClasses = Readonly<{
   sideNav: string;
   sideNavNavigation?: string;
   sideNavHeader?: string;
-  panelHead: boolean;
+  languagePanelHeadClassName: string;
   searchPanelHead: boolean;
 }>;
 
@@ -79,7 +79,8 @@ const STANDARD: VariantClasses = {
   searchPanelContent: "site-header__panel-content",
   searchRoot: "site-header__search-root",
   sideNav: "site-side-nav",
-  panelHead: false,
+  languagePanelHeadClassName:
+    "site-header-panel-head site-header-panel-head--language",
   searchPanelHead: false,
 };
 
@@ -118,7 +119,7 @@ const EDITORIAL_HOME: VariantClasses = {
   sideNav: `site-side-nav ${eh("drawer")}`,
   sideNavNavigation: `site-side-nav__navigation ${eh("drawer-navigation")}`,
   sideNavHeader: `site-side-nav__header ${eh("drawer-header")}`,
-  panelHead: true,
+  languagePanelHeadClassName: "site-header-panel-head",
   searchPanelHead: true,
 };
 
@@ -325,10 +326,6 @@ function renderLanguagePanel(
   t: Translations,
   v: VariantClasses,
 ): El {
-  const panelHeadClassName = v.panelHead
-    ? "site-header-panel-head"
-    : "site-header-panel-head site-header-panel-head--language";
-
   return (
     <div
       id={HEADER_IDS.languagePanel}
@@ -338,7 +335,7 @@ function renderLanguagePanel(
     >
       <div class={v.languagePanelContent}>
         <PanelHead
-          className={panelHeadClassName}
+          className={v.languagePanelHeadClassName}
           title={t.site.languageSelectLabel}
         />
         <div
