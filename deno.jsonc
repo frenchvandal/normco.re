@@ -97,8 +97,7 @@
 
   "compilerOptions": {
     "types": [
-      "lume/types.ts",
-      "node"
+      "lume/types.ts"
     ],
     "jsx": "react-jsx",
     "jsxImportSource": "lume",
