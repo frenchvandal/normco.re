@@ -30,6 +30,7 @@ export function registerAssets(site: Site): void {
   site.add("/scripts/language-preference.js");
   site.add("/scripts/feed-copy.js");
   site.add("/scripts/post-code-copy.js");
+  site.add("/scripts/post-mobile-tools-loader.js");
   site.add("/scripts/post-mobile-tools.js");
   site.add("/scripts/link-prefetch-intent.js");
   site.add("/scripts/sw-register.js");

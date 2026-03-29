@@ -53,39 +53,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   );
   const hasMobileTools = state.tags.length > 0 || state.backlinks.length > 0 ||
     neighbors.prev !== undefined || neighbors.next !== undefined;
-  const postMobileToolsLoader = `{
-  const mediaQuery = window.matchMedia("${POST_MOBILE_TOOLS_MEDIA_QUERY}");
-  let loaded = false;
-  const load = () => {
-    if (loaded) {
-      return;
-    }
-
-    loaded = true;
-    void import("/scripts/post-mobile-tools.js");
-  };
-
-  if (mediaQuery.matches) {
-    load();
-  } else if (typeof mediaQuery.addEventListener === "function") {
-    mediaQuery.addEventListener("change", (event) => {
-      if (event.matches) {
-        load();
-      }
-    }, { once: true });
-  } else if (typeof mediaQuery.addListener === "function") {
-    const listener = (event) => {
-      if (!event.matches) {
-        return;
-      }
-
-      mediaQuery.removeListener(listener);
-      load();
-    };
-
-    mediaQuery.addListener(listener);
-  }
-}`;
   return (
     <>
       <div class="blog-antd-root">
@@ -197,7 +164,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
       {hasMobileTools && (
         <script
           type="module"
-          dangerouslySetInnerHTML={{ __html: postMobileToolsLoader }}
+          src="/scripts/post-mobile-tools-loader.js"
+          data-media-query={POST_MOBILE_TOOLS_MEDIA_QUERY}
         />
       )}
       {state.includeCodeCopy && (

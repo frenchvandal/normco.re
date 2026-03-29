@@ -116,9 +116,11 @@ export function groupArchiveYears(
   const yearGroups = new Map<number, ArchiveMonthGroup[]>();
 
   for (const month of months) {
-    const existingYear = yearGroups.get(month.year) ?? [];
-    existingYear.push(month);
-    yearGroups.set(month.year, existingYear);
+    if (!yearGroups.has(month.year)) {
+      yearGroups.set(month.year, []);
+    }
+
+    yearGroups.get(month.year)?.push(month);
   }
 
   return Array.from(yearGroups, ([year, groupedMonths]) => ({

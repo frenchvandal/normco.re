@@ -1,3 +1,7 @@
+@view-transition {
+  navigation: auto;
+}
+
 @layer base {
   ::selection {
     background: var(--ph-color-selection-bg);
@@ -40,7 +44,7 @@
     color: var(--ph-color-fg-default);
     font-weight: 600;
     line-height: var(--ph-lh-tight);
-    letter-spacing: -0.02em;
+    letter-spacing: var(--ph-letter-spacing-heading);
     font-kerning: normal;
     font-variant-ligatures: common-ligatures contextual;
     text-wrap: balance;
@@ -108,20 +112,21 @@
 
   code {
     display: inline;
-    padding: 2px 4px;
+    padding-block: calc(var(--ph-space-1) / 2);
+    padding-inline: var(--ph-space-1);
     border-radius: var(--ph-radius-sm);
     background: var(--ph-surface-code);
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
-    font-size: 0.875em;
-    line-height: 1.4;
+    font-size: var(--ph-text-code-inline);
+    line-height: var(--ph-lh-code-inline);
   }
 
   pre,
   .shiki {
     inline-size: 100%;
     overflow-x: auto;
-    border: 1px solid var(--ph-color-border-muted);
+    border: var(--ph-border-hairline) solid var(--ph-color-border-muted);
     border-radius: var(--ph-radius-md);
     background: var(--ph-surface-code);
   }
@@ -178,7 +183,8 @@
 
   blockquote {
     padding-inline-start: var(--ph-space-5);
-    border-inline-start: 3px solid var(--ph-color-border-default);
+    border-inline-start: var(--ph-border-accent) solid
+      var(--ph-color-border-default);
     background: var(--ph-surface-quote);
     color: var(--ph-color-fg-default);
     font-style: normal;
@@ -200,7 +206,8 @@
 
   hr {
     border: 0;
-    border-block-start: 1px solid var(--ph-color-border-muted);
+    border-block-start: var(--ph-border-hairline) solid
+      var(--ph-color-border-muted);
     margin-block: var(--ph-space-8);
   }
 
@@ -237,7 +244,7 @@
     gap: var(--ph-space-2);
     min-block-size: 2.5rem;
     padding-inline: var(--ph-space-4);
-    border: 1px solid var(--ph-color-border-default);
+    border: var(--ph-border-hairline) solid var(--ph-color-border-default);
     border-radius: var(--ph-radius-sm);
     background: var(--ph-color-canvas-default);
     color: var(--ph-color-fg-default);
@@ -260,10 +267,6 @@
     border-color: var(--ph-color-border-default);
     color: var(--ph-color-fg-default);
     text-decoration: none;
-  }
-
-  @view-transition {
-    navigation: auto;
   }
 
   ::view-transition-old(root),

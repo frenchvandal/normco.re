@@ -646,7 +646,7 @@ describe("header-client.js", () => {
 
     assertEquals(window.document.activeElement, firstLink);
     assertEquals(window.document.body.style.overflow, "hidden");
-    assertEquals(overlay.getAttribute("aria-hidden"), "false");
+    assertEquals(overlay.getAttribute("aria-hidden"), "true");
 
     overlay.dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
     await flush(window);

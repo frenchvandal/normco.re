@@ -57,7 +57,7 @@
     },
     "test:doc": {
       "description": "Run documentation tests from inline JSDoc examples in source files",
-      "command": "deno test --doc --allow-env --allow-read --allow-write=.tmp/deno-tests --allow-sys=homedir --allow-ffi _config/**/*.ts contracts/**/*.ts plugins/**/*.ts scripts/**/*.ts src/**/*.ts src/**/*.tsx"
+      "command": "deno test --doc --allow-env=VSCODE_TEXTMATE_DEBUG --allow-read --allow-write=.tmp/deno-tests --allow-sys=homedir --allow-ffi _config contracts plugins scripts src"
     },
 
     // Payload budget
@@ -106,7 +106,8 @@
     "verbatimModuleSyntax": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "strict": true
   },
 
   // Needed for importing non-TS assets as raw text.

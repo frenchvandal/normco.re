@@ -114,7 +114,7 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, "<!doctype html>");
       assertStringIncludes(
         html,
-        '<html lang="en" data-color-mode="light" data-light-theme="light" data-dark-theme="dark">',
+        '<html lang="en" data-color-mode="light">',
       );
     });
 

@@ -19,7 +19,6 @@ import {
   tryResolveSiteLanguage,
 } from "../../utils/i18n.ts";
 import { resolvePageSetup } from "../../utils/page-setup.ts";
-import type { IconResolver } from "../../utils/site-icons.ts";
 import {
   getLocalizedAtomFeedUrl,
   getLocalizedJsonFeedUrl,
@@ -32,8 +31,6 @@ import {
   SITE_SHORT_NAME,
 } from "../../utils/site-identity.ts";
 import { THEME_BOOTSTRAP_SCRIPT } from "../../utils/theme-bootstrap.ts";
-
-const CANONICAL_BRAND_ICON_NAMES = ["rss"] as const;
 
 // Lume JSX renders a fragment here; the document doctype still has to be
 // injected explicitly ahead of `<html>`.
@@ -84,7 +81,6 @@ type HeaderProps = Readonly<{
   currentUrl: string;
   language: SiteLanguage;
   languageAlternates?: Partial<Record<SiteLanguage, string>>;
-  icon?: IconResolver;
 }>;
 type FooterProps = Readonly<{
   author: string;
@@ -137,13 +133,14 @@ function resolveComponent<TProps>(
   value: unknown,
   key: ComponentKey,
 ): LayoutComponent<TProps> {
-  if (typeof value === "object" && value !== null) {
-    const component = Reflect.get(value, key);
+  if (typeof value !== "object" || value === null) {
+    return () => "";
+  }
 
-    if (typeof component === "function") {
-      return (props) =>
-        Reflect.apply(component, value, [props]) as AwaitableLayoutRenderable;
-    }
+  const component = (value as Partial<Record<ComponentKey, unknown>>)[key];
+
+  if (typeof component === "function") {
+    return component as LayoutComponent<TProps>;
   }
 
   return () => "";
@@ -158,14 +155,6 @@ function resolveSiteChromeData(siteChrome?: SiteChromeData): SiteChromeData {
     themeColorDark: "#262626",
     ...siteChrome,
   };
-}
-
-function resolveIconResolver(
-  helpers: Lume.Helpers,
-): IconResolver | undefined {
-  return typeof helpers.icon === "function"
-    ? helpers.icon.bind(helpers)
-    : undefined;
 }
 
 export default (
@@ -223,23 +212,11 @@ export default (
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
   const Header = resolveComponent<HeaderProps>(comp, "Header");
   const Footer = resolveComponent<FooterProps>(comp, "Footer");
-  const iconResolver = resolveIconResolver(_helpers);
-
-  // Resolve shared Simple Icons during render so missing plugin wiring fails
-  // eagerly instead of only on the pages that happen to use these logos.
-  for (const iconName of CANONICAL_BRAND_ICON_NAMES) {
-    iconResolver?.(iconName, "simpleicons");
-  }
 
   return (
     <>
       {DOCTYPE}
-      <html
-        lang={documentLanguage}
-        data-color-mode="light"
-        data-light-theme="light"
-        data-dark-theme="dark"
-      >
+      <html lang={documentLanguage} data-color-mode="light">
         <head>
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -334,7 +311,6 @@ export default (
               currentUrl={currentUrl}
               language={language}
               languageAlternates={alternateUrls}
-              {...(iconResolver ? { icon: iconResolver } : {})}
             />
             <main
               class="site-main"

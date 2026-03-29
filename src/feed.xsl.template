@@ -357,7 +357,7 @@
       </xsl:choose>
     </xsl:variable>
 
-    <html data-color-mode="light" data-light-theme="light" data-dark-theme="dark">
+    <html data-color-mode="light">
       <xsl:attribute name="lang"><xsl:value-of select="$page-language"/></xsl:attribute>
       <head>
         <meta charset="utf-8"/>
@@ -365,7 +365,7 @@
         <meta name="color-scheme" content="light dark"/>
         <title><xsl:value-of select="$feed-title"/> — <xsl:value-of select="$feed-format-label"/></title>
         <link rel="stylesheet" href="/style.css"/>
-        <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{const s=localStorage.getItem("color-mode");if(s==="light"||s==="dark"||s==="system")v=s;else{const l=localStorage.getItem("color-scheme");v=l==="light"||l==="dark"?l:null}}catch{v=null}const p=v??"system",t=p==="light"||p==="dark"?p:m.matches?"dark":"light";r.setAttribute("data-light-theme","light");r.setAttribute("data-dark-theme","dark");r.setAttribute("data-color-mode",t);r.setAttribute("data-theme-preference",p);r.setAttribute("data-color-scheme",t);document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("theme-toggle");if(e){const l=e.getAttribute("data-label-switch-light")??"Switch to light theme",d=e.getAttribute("data-label-switch-dark")??"Switch to dark theme",s=e.getAttribute("data-label-follow-system")??"Follow system theme",n=p==="light"?d:p==="dark"?s:l;e.setAttribute("aria-label",n);e.setAttribute("title",n)}})})()</script>
+        <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{const s=localStorage.getItem("color-mode");if(s==="light"||s==="dark"||s==="system")v=s;else{const l=localStorage.getItem("color-scheme");v=l==="light"||l==="dark"?l:null}}catch{v=null}const p=v??"system",t=p==="light"||p==="dark"?p:m.matches?"dark":"light";r.setAttribute("data-color-mode",t);r.setAttribute("data-theme-preference",p);r.setAttribute("data-color-scheme",t);document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("theme-toggle");if(e){const l=e.getAttribute("data-label-switch-light")??"Switch to light theme",d=e.getAttribute("data-label-switch-dark")??"Switch to dark theme",s=e.getAttribute("data-label-follow-system")??"Follow system theme",n=p==="light"?d:p==="dark"?s:l;e.setAttribute("aria-label",n);e.setAttribute("title",n)}})})()</script>
         <script src="/scripts/language-preference.js" data-supported-languages="__SUPPORTED_LANGUAGES__" data-default-language="en" defer="defer">
           <xsl:attribute name="data-current-language"><xsl:value-of select="$page-language-key"/></xsl:attribute>
           <xsl:attribute name="data-language-alternates">

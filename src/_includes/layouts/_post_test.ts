@@ -390,10 +390,8 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, "Tags, backlinks, and what to read next.");
       assertStringIncludes(html, 'class="post-mobile-tools-head-copy"');
       assertStringIncludes(html, 'class="post-mobile-tools-description"');
-      assertStringIncludes(html, "post-mobile-tools.js");
-      assertStringIncludes(html, "window.matchMedia");
-      assertStringIncludes(html, "const load = () => {");
-      assertNotMatch(html, /=&gt;/);
+      assertStringIncludes(html, 'src="/scripts/post-mobile-tools-loader.js"');
+      assertStringIncludes(html, 'data-media-query="(max-width: 65.99rem)"');
       assertStringIncludes(html, "Publication details");
       assertStringIncludes(html, 'class="post-backtop"');
       assertNotMatch(html, /data-blog-antd-root/);
@@ -424,7 +422,7 @@ describe("post.tsx layout", () => {
         'class="feature-rail post-rail post-rail--outline-only"',
       );
       assertStringIncludes(html, 'class="post-backtop"');
-      assertNotMatch(html, /post-mobile-tools\.js/);
+      assertNotMatch(html, /post-mobile-tools-loader\.js/);
       assertNotMatch(html, /data-post-mobile-tools-open=""/);
     });
 
@@ -440,7 +438,7 @@ describe("post.tsx layout", () => {
 
       assertStringIncludes(html, 'class="post-pagehead-grid"');
       assertNotMatch(html, /post-pagehead-context/);
-      assertNotMatch(html, /post-mobile-tools\.js/);
+      assertNotMatch(html, /post-mobile-tools-loader\.js/);
     });
 
     it("wraps navigation in nav[aria-label='Post navigation']", async () => {

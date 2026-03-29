@@ -61,6 +61,7 @@ const STATIC_ASSETS = [
   "/scripts/language-preference.js",
   "/scripts/feed-copy.js",
   "/scripts/post-code-copy.js",
+  "/scripts/post-mobile-tools-loader.js",
   "/scripts/link-prefetch-intent.js",
   "/atom.xml",
   "/rss.xml",

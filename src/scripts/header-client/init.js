@@ -29,8 +29,7 @@ const MOBILE_PANEL_MEDIA_QUERY = "(max-width: 47.999rem)";
  * @returns {void}
  */
 export function bindHeaderClient(runtime) {
-  const resolvedRuntime = runtime ??
-    /** @type {Window & typeof globalThis} */ (globalThis);
+  const resolvedRuntime = runtime;
   const doc = resolvedRuntime.document;
   const root = doc?.documentElement;
 
@@ -259,10 +258,7 @@ export function bindHeaderClient(runtime) {
       return;
     }
 
-    overlay.setAttribute(
-      "aria-hidden",
-      isSideNav(openSurface) ? "false" : "true",
-    );
+    overlay.setAttribute("aria-hidden", "true");
   }
 
   /**
@@ -1036,7 +1032,7 @@ export function bindHeaderClient(runtime) {
       return;
     }
 
-    if (event.key === " " || event.key === "Spacebar") {
+    if (event.key === " ") {
       event.preventDefault();
       target.click();
     }

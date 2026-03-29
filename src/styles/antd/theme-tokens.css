@@ -126,6 +126,7 @@
     --ph-lh-prose: 1.78;
 
     --ph-letter-spacing-tight: -0.025em;
+    --ph-letter-spacing-heading: -0.02em;
     --ph-letter-spacing-snug: -0.015em;
     --ph-letter-spacing-wide: 0.08em;
 
@@ -156,6 +157,7 @@
     --ph-prose-max: 42rem;
     --ph-content-max: 56rem;
     --ph-site-max: 1280px;
+    --ph-panel-max: 30rem;
     --ph-sidebar: 240px;
     --ph-wide-max: calc(
       var(--ph-content-max) + var(--ph-sidebar) + var(--ph-space-8)
@@ -166,16 +168,18 @@
     --ph-radius-lg: 12px;
     --ph-radius-pill: 999px;
 
+    --ph-text-code-inline: 0.875em;
     --ph-duration-fast: 80ms;
     --ph-duration-default: 160ms;
     --ph-easing-default: cubic-bezier(0.3, 0, 0.5, 1);
-    --ph-ease-standard: var(--ph-easing-default);
+    --ph-lh-code-inline: 1.4;
 
     --ph-focus-color: var(--ph-color-accent-emphasis);
     --ph-focus-width: 2px;
     --ph-focus-offset: 2px;
 
     --ph-border-hairline: 1px;
+    --ph-border-accent: 3px;
     --ph-header-height: 48px;
     --ph-layer-header: 50;
     --ph-layer-header-popover: 60;
@@ -236,7 +240,7 @@
       var(--ph-color-canvas-subtle) 92%,
       var(--ph-color-canvas-default)
     );
-    --ph-mobile-nav-offset: 0px;
+    --ph-mobile-nav-offset: 0;
     --ph-shadow-floating:
       0 6px 16px 0 rgb(0 0 0 / 0.08),
       0 3px 6px -4px rgb(0 0 0 / 0.12),

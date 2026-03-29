@@ -40,7 +40,7 @@
   }
 
   .u-surface-subtle {
-    border: 1px solid var(--ph-color-border-default);
+    border: var(--ph-border-hairline) solid var(--ph-color-border-default);
     border-radius: var(--ph-radius-md);
     background: var(--ph-color-canvas-subtle);
   }

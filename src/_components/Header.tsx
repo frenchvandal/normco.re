@@ -6,7 +6,6 @@ import {
   type SiteLanguage,
   type SiteTranslations,
 } from "../utils/i18n.ts";
-import { type IconResolver } from "../utils/site-icons.ts";
 import { buildHeaderNavigation } from "./header-navigation.ts";
 import {
   HEADER_IDS,
@@ -23,7 +22,6 @@ type HeaderProps = Readonly<{
   currentUrl: string;
   language: SiteLanguage;
   languageAlternates?: LanguageAlternates;
-  icon?: IconResolver;
 }>;
 
 /** CSS class sets that differ between the editorial-home and standard variants. */
@@ -327,6 +325,10 @@ function renderLanguagePanel(
   t: Translations,
   v: VariantClasses,
 ): El {
+  const panelHeadClassName = v.panelHead
+    ? "site-header-panel-head"
+    : "site-header-panel-head site-header-panel-head--language";
+
   return (
     <section
       id={HEADER_IDS.languagePanel}
@@ -336,18 +338,10 @@ function renderLanguagePanel(
       hidden
     >
       <div class={v.languagePanelContent}>
-        {!v.panelHead && (
-          <PanelHead
-            className="site-header-panel-head site-header-panel-head--language"
-            title={t.site.languageSelectLabel}
-          />
-        )}
-        {v.panelHead && (
-          <PanelHead
-            className="site-header-panel-head"
-            title={t.site.languageSelectLabel}
-          />
-        )}
+        <PanelHead
+          className={panelHeadClassName}
+          title={t.site.languageSelectLabel}
+        />
         <div
           class={v.languageMenu}
           role="menu"

@@ -55,7 +55,10 @@ describe("404.page.tsx", () => {
 describe("state panel CSS contracts", () => {
   it("keeps the page state centered in a narrow editorial column", () => {
     assertStringIncludes(layoutStyles, ".state-panel--page {");
-    assertStringIncludes(layoutStyles, "inline-size: min(100%, 480px);");
+    assertStringIncludes(
+      layoutStyles,
+      "inline-size: min(100%, var(--ph-panel-max));",
+    );
     assertStringIncludes(layoutStyles, ".state-panel-actions {");
   });
 

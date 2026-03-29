@@ -82,8 +82,6 @@ export function createThemeController(runtime, root, options = {}) {
    */
   function applyThemePreference(preference) {
     const mode = resolveThemeMode(preference);
-    root.setAttribute("data-light-theme", "light");
-    root.setAttribute("data-dark-theme", "dark");
     root.setAttribute("data-color-mode", mode);
     root.setAttribute("data-theme-preference", preference);
     root.setAttribute("data-color-scheme", mode);

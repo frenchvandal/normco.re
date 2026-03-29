@@ -42,7 +42,6 @@
     inline-size: 100%;
     block-size: 100%;
     background: currentColor;
-    -webkit-mask: var(--site-footer-brand-icon) center / contain no-repeat;
     mask: var(--site-footer-brand-icon) center / contain no-repeat;
   }
 
@@ -134,7 +133,7 @@
   }
 
   .state-panel--page {
-    inline-size: min(100%, 480px);
+    inline-size: min(100%, var(--ph-panel-max));
     text-align: center;
   }
 
