@@ -10,6 +10,10 @@ type RegisterCall = {
   options: RegistrationOptions;
 };
 
+type ServiceWorkerRegistrationStub = {
+  unregister: () => Promise<boolean>;
+};
+
 type TestWindow = InstanceType<typeof JSDOM>["window"] & {
   requestIdleCallback?: (
     callback: IdleRequestCallback,
@@ -128,5 +132,78 @@ describe("sw-register.js", () => {
     await flush(window);
 
     assertEquals(registerCalls, 0);
+  });
+
+  it("unregisters existing service workers on localhost instead of registering", async () => {
+    const dom = new JSDOM(
+      '<!doctype html><html lang="en"><body></body></html>',
+      {
+        pretendToBeVisual: true,
+        runScripts: "dangerously",
+        url: "http://localhost:3000/",
+      },
+    );
+    const window = dom.window as TestWindow;
+    let registerCalls = 0;
+    let unregisterCalls = 0;
+    const registrations: ServiceWorkerRegistrationStub[] = [
+      {
+        unregister() {
+          unregisterCalls += 1;
+          return Promise.resolve(true);
+        },
+      },
+    ];
+    const deletedCaches: string[] = [];
+
+    window.requestIdleCallback = (callback: IdleRequestCallback) => {
+      callback({
+        didTimeout: false,
+        timeRemaining: () => 10,
+      });
+      return 1;
+    };
+
+    Object.defineProperty(window.navigator, "serviceWorker", {
+      configurable: true,
+      value: {
+        controller: { state: "activated" },
+        addEventListener() {},
+        getRegistrations() {
+          return Promise.resolve(registrations);
+        },
+        register() {
+          registerCalls += 1;
+          return Promise.resolve({
+            active: null,
+            installing: null,
+            waiting: null,
+            addEventListener() {},
+          });
+        },
+      },
+    });
+    Object.defineProperty(window, "caches", {
+      configurable: true,
+      value: {
+        keys() {
+          return Promise.resolve(["pages-dev", "static-dev"]);
+        },
+        delete(cacheKey: string) {
+          deletedCaches.push(cacheKey);
+          return Promise.resolve(true);
+        },
+      },
+    });
+    installScript(window, {
+      swUrl: "/sw.js",
+      swDebugLevel: "summary",
+    });
+    await flush(window, 4);
+
+    assertEquals(registerCalls, 0);
+    assertEquals(unregisterCalls, 1);
+    assertEquals(deletedCaches, ["pages-dev", "static-dev"]);
+    assertEquals(window.sessionStorage.getItem("sw-localhost-reset"), "true");
   });
 });

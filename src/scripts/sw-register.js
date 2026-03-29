@@ -4,6 +4,8 @@
     return;
   }
 
+  const localHostPattern =
+    /^(localhost|127(?:\.\d{1,3}){3}|\[::1\]|0\.0\.0\.0)$/i;
   const knownCrawlerPattern =
     /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
 
@@ -18,6 +20,10 @@
   const swDebugLevel = currentScript instanceof HTMLScriptElement
     ? currentScript.dataset.swDebugLevel ?? "off"
     : "off";
+  const sessionStorage = globalThis.sessionStorage;
+  const isLocalDevelopmentHost = localHostPattern.test(
+    globalThis.location.hostname,
+  );
   let controllerWasPresent = globalThis.navigator.serviceWorker.controller !==
     null;
   let didReloadForUpdate = false;
@@ -33,6 +39,50 @@
     }
 
     console.info("[SW register]", event, { swUrl, swDebugLevel, ...details });
+  }
+
+  async function disableServiceWorkerForLocalDevelopment() {
+    const registrations = typeof globalThis.navigator.serviceWorker
+        .getRegistrations === "function"
+      ? await globalThis.navigator.serviceWorker.getRegistrations()
+      : [];
+    const hadController = globalThis.navigator.serviceWorker.controller !==
+      null;
+    const cacheStorage = globalThis.caches;
+    const cacheKeys = cacheStorage && typeof cacheStorage.keys === "function"
+      ? await cacheStorage.keys()
+      : [];
+
+    log("localhost detected -> unregistering service workers", {
+      registrations: registrations.length,
+      hadController,
+      cacheKeys,
+    });
+
+    await Promise.all(registrations.map((registration) =>
+      registration
+        .unregister()
+    ));
+
+    if (cacheStorage && typeof cacheStorage.delete === "function") {
+      await Promise.all(cacheKeys.map((cacheKey) =>
+        cacheStorage.delete(
+          cacheKey,
+        )
+      ));
+    }
+
+    if (!hadController) {
+      sessionStorage?.removeItem("sw-localhost-reset");
+      return;
+    }
+
+    if (sessionStorage?.getItem("sw-localhost-reset") === "true") {
+      return;
+    }
+
+    sessionStorage?.setItem("sw-localhost-reset", "true");
+    globalThis.location.reload();
   }
 
   /**
@@ -80,6 +130,11 @@
   }
 
   async function registerServiceWorker() {
+    if (isLocalDevelopmentHost) {
+      await disableServiceWorkerForLocalDevelopment();
+      return;
+    }
+
     globalThis.navigator.serviceWorker.addEventListener(
       "controllerchange",
       () => {

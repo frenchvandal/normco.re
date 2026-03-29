@@ -13,17 +13,26 @@ function createRuntime(
   {
     fetchImpl,
     cacheStores,
+    serviceWorkerUrl = "https://normco.re/sw.js?v=test&debug=off",
+    registration = {
+      unregister() {
+        return Promise.resolve(true);
+      },
+    },
   }: {
     fetchImpl: (
       input: string | { url?: string },
       init?: RequestInit,
     ) => Promise<Response>;
     cacheStores: Record<string, CacheStore>;
+    serviceWorkerUrl?: string;
+    registration?: { unregister: () => Promise<boolean> };
   },
 ) {
   const listeners: ListenerMap = new Map();
   const selfObject = {
-    location: new URL("https://normco.re/sw.js?v=test&debug=off"),
+    location: new URL(serviceWorkerUrl),
+    registration,
     clients: {
       claim() {
         return Promise.resolve();
@@ -340,5 +349,32 @@ describe("sw.js", () => {
     await responsePromise!;
     assertEquals(fetchSignals.length, 1);
     assertEquals(fetchSignals[0]?.aborted, false);
+  });
+
+  it("bypasses all fetch interception on localhost service workers", () => {
+    const runtime = createRuntime({
+      fetchImpl() {
+        return Promise.resolve(new Response("", { status: 200 }));
+      },
+      cacheStores: {},
+      serviceWorkerUrl: "http://localhost:3000/sw.js?v=test&debug=off",
+    });
+    const listener = runtime.getFetchListener();
+    let intercepted = false;
+
+    listener({
+      request: {
+        url: "http://localhost:3000/scripts/post-mobile-tools.js",
+        method: "GET",
+        mode: "cors",
+        destination: "script",
+        headers: new Headers({ "user-agent": "Mozilla/5.0" }),
+      },
+      respondWith() {
+        intercepted = true;
+      },
+    });
+
+    assertEquals(intercepted, false);
   });
 });

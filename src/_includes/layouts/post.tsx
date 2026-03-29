@@ -1,7 +1,9 @@
 import { resolvePageSetup } from "../../utils/page-setup.ts";
 import { resolveDateHelper } from "../../utils/lume-helpers.ts";
 import {
+  PostBackToTop,
   PostDetails,
+  PostInlineAnchor,
   PostRail,
   PostSummaryMeta,
   resolvePostNeighbors,
@@ -49,6 +51,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     t.post.copyCodeFailedFeedback,
     "Cannot copy code",
   );
+  const hasMobileTools = state.tags.length > 0 || state.backlinks.length > 0 ||
+    neighbors.prev !== undefined || neighbors.next !== undefined;
   const postMobileToolsLoader = `{
   const mediaQuery = window.matchMedia("${POST_MOBILE_TOOLS_MEDIA_QUERY}");
   let loaded = false;
@@ -154,6 +158,12 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                 </div>
               </header>
 
+              <PostInlineAnchor
+                outline={state.outline}
+                title={t.post.outlineTitle}
+                ariaLabel={t.post.outlineAriaLabel}
+              />
+
               <section
                 class="post-content"
                 lang={languageTag}
@@ -182,8 +192,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             )}
           </div>
         </div>
+        <PostBackToTop label={t.post.backToTopLabel} />
       </div>
-      {state.hasRail && (
+      {hasMobileTools && (
         <script
           type="module"
           dangerouslySetInnerHTML={{ __html: postMobileToolsLoader }}

@@ -97,9 +97,15 @@ export function bindPostMobileTools(runtime) {
     setReady(true);
     setExpanded(true);
 
+    if (isDialogOpen()) {
+      return;
+    }
+
     if (typeof mobileDialog.showModal === "function") {
-      if (!isDialogOpen()) {
+      try {
         mobileDialog.showModal();
+      } catch {
+        mobileDialog.setAttribute("open", "");
       }
     } else {
       mobileDialog.setAttribute("open", "");
@@ -119,7 +125,12 @@ export function bindPostMobileTools(runtime) {
    */
   function closeDialog(restoreFocus) {
     if (typeof mobileDialog.close === "function" && isDialogOpen()) {
-      mobileDialog.close();
+      try {
+        mobileDialog.close();
+      } catch {
+        mobileDialog.removeAttribute("open");
+        mobileDialog.dispatchEvent(new resolvedRuntime.Event("close"));
+      }
     } else {
       mobileDialog.removeAttribute("open");
       mobileDialog.dispatchEvent(new resolvedRuntime.Event("close"));

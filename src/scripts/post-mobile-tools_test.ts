@@ -195,4 +195,51 @@ describe("post-mobile-tools.js", () => {
       dom.window.close();
     }
   });
+
+  it("falls back to the open attribute when showModal throws", async () => {
+    const dom = createDom();
+    try {
+      const window = dom.window as TestWindow;
+      const mediaQuery = createMediaQueryList(true);
+      window.matchMedia = () => mediaQuery;
+
+      const dialog = window.document.querySelector("dialog");
+      const openButton = window.document.querySelector(
+        "[data-post-mobile-tools-open]",
+      );
+      const closeButton = window.document.querySelector(
+        "[data-post-mobile-tools-close]",
+      );
+
+      assert(dialog instanceof window.HTMLElement);
+      assert(openButton instanceof window.HTMLButtonElement);
+      assert(closeButton instanceof window.HTMLButtonElement);
+
+      Reflect.set(dialog, "showModal", () => {
+        throw new window.DOMException(
+          "Unsupported operation",
+          "InvalidStateError",
+        );
+      });
+      Reflect.set(dialog, "close", () => {
+        dialog.removeAttribute("open");
+        dialog.dispatchEvent(new window.Event("close"));
+      });
+
+      bindPostMobileTools(window);
+      openButton.click();
+      await flush(window);
+
+      assertEquals(openButton.getAttribute("aria-expanded"), "true");
+      assertEquals(dialog.hasAttribute("open"), true);
+
+      closeButton.click();
+      await flush(window);
+
+      assertEquals(openButton.getAttribute("aria-expanded"), "false");
+      assertEquals(dialog.hasAttribute("open"), false);
+    } finally {
+      dom.window.close();
+    }
+  });
 });

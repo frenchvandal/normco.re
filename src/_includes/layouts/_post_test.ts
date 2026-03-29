@@ -355,6 +355,7 @@ describe("post.tsx layout", () => {
         postLayout(
           makeData({
             description: "Context paragraph.",
+            tags: ["design"],
             children: {
               __html:
                 "<h2>First section</h2><p>Alpha.</p><h3>Second section</h3><p>Beta.</p>",
@@ -369,6 +370,11 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'class="post-pagehead-summary pagehead-lead"');
       assertStringIncludes(html, "Context paragraph.");
       assertStringIncludes(html, 'class="post-summary-meta"');
+      assertStringIncludes(html, 'class="post-inline-anchor"');
+      assertStringIncludes(
+        html,
+        'class="post-outline-nav post-outline-nav--inline"',
+      );
       assertStringIncludes(html, 'href="#first-section"');
       assertStringIncludes(html, 'href="#second-section"');
       assertStringIncludes(html, 'id="first-section"');
@@ -381,10 +387,7 @@ describe("post.tsx layout", () => {
         `class="post-mobile-tools" aria-label="Post tools"`,
       );
       assertStringIncludes(html, "Reading tools");
-      assertStringIncludes(
-        html,
-        "Outline, tags, backlinks, and next steps.",
-      );
+      assertStringIncludes(html, "Tags, backlinks, and what to read next.");
       assertStringIncludes(html, 'class="post-mobile-tools-head-copy"');
       assertStringIncludes(html, 'class="post-mobile-tools-description"');
       assertStringIncludes(html, "post-mobile-tools.js");
@@ -392,9 +395,37 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, "const load = () => {");
       assertNotMatch(html, /=&gt;/);
       assertStringIncludes(html, "Publication details");
+      assertStringIncludes(html, 'class="blog-antd-backtop post-backtop"');
       assertNotMatch(html, /data-blog-antd-root/);
       assertNotMatch(html, /blog-antd-post\.js/);
       assertNotMatch(html, /post-summary-callout/);
+    });
+
+    it("keeps the outline above the article body on mobile without loading the tools sheet when it is the only helper", async () => {
+      const html = await renderComponent(
+        postLayout(
+          makeData({
+            children: {
+              __html:
+                "<h2>Section one</h2><p>Alpha.</p><h3>Section two</h3><p>Beta.</p>",
+            },
+          }),
+          MOCK_HELPERS,
+        ),
+      );
+
+      assertStringIncludes(html, 'class="post-inline-anchor"');
+      assertStringIncludes(
+        html,
+        'class="post-outline-nav post-outline-nav--inline"',
+      );
+      assertStringIncludes(
+        html,
+        'class="feature-rail post-rail post-rail--outline-only"',
+      );
+      assertStringIncludes(html, 'class="blog-antd-backtop post-backtop"');
+      assertNotMatch(html, /post-mobile-tools\.js/);
+      assertNotMatch(html, /data-post-mobile-tools-open=""/);
     });
 
     it("omits the summary copy when a post has no editorial summary", async () => {
@@ -533,6 +564,12 @@ describe("tag-link CSS contracts", () => {
 describe("post mobile visual contracts", () => {
   it("keeps the mobile tools sheet safe-area aware and rail-aware", () => {
     assertStringIncludes(postStyles, ".post-mobile-tools-dialog");
+    assertStringIncludes(postStyles, ".post-inline-anchor");
+    assertStringIncludes(postStyles, ".post-outline-nav--inline");
+    assertStringIncludes(postStyles, ".post-outline-nav--rail");
+    assertStringIncludes(postStyles, ".post-backtop");
+    assertStringIncludes(postStyles, ".post-backtop__button");
+    assertStringIncludes(postStyles, ".post-backtop__icon");
     assertStringIncludes(
       postStyles,
       "inset-inline-start: max(var(--ph-shell-gutter), env(safe-area-inset-left));",
@@ -555,6 +592,10 @@ describe("post mobile visual contracts", () => {
     assertStringIncludes(
       postStyles,
       "var(--ph-mobile-nav-offset)",
+    );
+    assertStringIncludes(
+      postStyles,
+      "inset-inline-start: calc(",
     );
     assertStringIncludes(
       postStyles,

@@ -93,6 +93,11 @@ const FEED_NETWORK_TIMEOUT_MS = 5_000;
 
 const KNOWN_BOT_PATTERN =
   /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
+const LOCAL_DEVELOPMENT_HOST_PATTERN =
+  /^(localhost|127(?:\.\d{1,3}){3}|\[::1\]|0\.0\.0\.0)$/i;
+const IS_LOCAL_DEVELOPMENT_HOST = LOCAL_DEVELOPMENT_HOST_PATTERN.test(
+  SW_URL.hostname,
+);
 
 // ---------------------------------------------------------------------------
 // Logging
@@ -249,6 +254,12 @@ async function precacheStaticAssets() {
 sw.addEventListener(
   "install",
   /** @param {ExtendableEvent} event */ (event) => {
+    if (IS_LOCAL_DEVELOPMENT_HOST) {
+      logSw("install: localhost detected -> skipping precache");
+      event.waitUntil(sw.skipWaiting());
+      return;
+    }
+
     logSw("install", {
       staticCache: STATIC_CACHE,
       assets: STATIC_ASSETS.length,
@@ -264,6 +275,15 @@ sw.addEventListener(
 sw.addEventListener(
   "activate",
   /** @param {ExtendableEvent} event */ (event) => {
+    if (IS_LOCAL_DEVELOPMENT_HOST) {
+      event.waitUntil((async () => {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((key) => caches.delete(key)));
+        await sw.registration.unregister();
+      })());
+      return;
+    }
+
     logSw("activate", {
       staticCache: STATIC_CACHE,
       pageCache: PAGE_CACHE,
@@ -491,6 +511,10 @@ async function staleWhileRevalidateFeed(request) {
 
 sw.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
   const { request } = event;
+
+  if (IS_LOCAL_DEVELOPMENT_HOST) {
+    return;
+  }
 
   if (SW_DEBUG_LEVEL === "verbose") {
     logSw("fetch", {

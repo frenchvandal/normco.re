@@ -10,6 +10,7 @@ import { toStoryData } from "../utils/story-data.ts";
 import { formatPostCount } from "../utils/i18n.ts";
 import { escapeHtml } from "../utils/html.ts";
 import { resolveDateHelper } from "../utils/lume-helpers.ts";
+import { renderSiteIconMarkup } from "../utils/site-icons.ts";
 
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/posts/";
@@ -81,13 +82,21 @@ export default (
       variant: "inline",
     });
   const backToTopLink = posts.length > 0
-    ? `<a class="blog-antd-archive-backtop" href="#archive-title" aria-label="${
+    ? `<a class="blog-antd-backtop blog-antd-archive-backtop" href="#archive-title" aria-label="${
       escapeHtml(t.archive.backToTopLabel)
     }">
-  <span class="blog-antd-archive-backtop__arrow" aria-hidden="true"></span>
-  <span class="blog-antd-archive-backtop__label">${
+  <span class="blog-antd-backtop__button blog-antd-archive-backtop__button">
+  ${
+      renderSiteIconMarkup(
+        "arrow-right",
+        "blog-antd-backtop__icon blog-antd-archive-backtop__icon",
+        { width: 16, height: 16 },
+      )
+    }
+  <span class="sr-only blog-antd-archive-backtop__label">${
       escapeHtml(t.archive.backToTopLabel)
     }</span>
+</span>
 </a>`
     : "";
 

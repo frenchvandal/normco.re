@@ -198,11 +198,15 @@ describe("posts/index.page.tsx", () => {
         MOCK_HELPERS,
       );
 
-      assertStringIncludes(html, 'class="blog-antd-archive-backtop"');
+      assertStringIncludes(html, "blog-antd-archive-backtop");
       assertStringIncludes(html, 'href="#archive-title"');
       assertStringIncludes(
         html,
-        'class="blog-antd-archive-backtop__label">Back to top</span>',
+        'class="blog-antd-backtop__button blog-antd-archive-backtop__button"',
+      );
+      assertStringIncludes(
+        html,
+        'class="sr-only blog-antd-archive-backtop__label">Back to top</span>',
       );
     });
 
@@ -286,6 +290,10 @@ describe("posts/index.page.tsx", () => {
       assertStringIncludes(
         blogAntdStyles,
         ".blog-antd-archive-backtop",
+      );
+      assertStringIncludes(
+        blogAntdStyles,
+        ".blog-antd-archive-backtop__button",
       );
       assertStringIncludes(
         blogAntdStyles,

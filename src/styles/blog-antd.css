@@ -1164,27 +1164,36 @@
 
   .blog-antd-archive-backtop {
     display: none;
-    align-items: center;
-    gap: 0.6rem;
-    color: var(--ph-color-canvas-default);
     text-decoration: none;
   }
 
-  .blog-antd-archive-backtop__arrow {
-    inline-size: 0.56rem;
-    block-size: 0.56rem;
-    border-inline-start: 1.5px solid currentColor;
-    border-block-start: 1.5px solid currentColor;
-    transform: translateY(1px) rotate(45deg);
+  .blog-antd-backtop__icon {
+    display: inline-flex;
+    color: inherit;
   }
 
-  .blog-antd-archive-backtop__label {
-    font-family: var(--ph-font-mono);
-    font-size: 0.85rem;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+  .blog-antd-archive-backtop__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 3rem;
+    block-size: 3rem;
+    border-radius: 999px;
+    box-shadow: var(--ph-shadow-floating);
+    color: var(--ph-color-accent-emphasis);
+  }
+
+  .blog-antd-archive-backtop__icon {
+    transform: rotate(-90deg);
+  }
+
+  .blog-antd-archive-backtop:focus-visible {
+    outline: none;
+  }
+
+  .blog-antd-archive-backtop:focus-visible .blog-antd-archive-backtop__button {
+    outline: var(--ph-focus-width) solid var(--ph-focus-color);
+    outline-offset: var(--ph-focus-offset);
   }
 
   .blog-antd-story-card {
@@ -1491,6 +1500,7 @@
       var(--ph-color-canvas-default) 84%,
       var(--ph-surface-accent)
     );
+    color: var(--ph-color-accent-emphasis);
   }
 
   @media (max-width: 63.99rem) {
@@ -1675,38 +1685,20 @@
       );
       z-index: 4;
       display: inline-flex;
-      min-inline-size: 3rem;
-      min-block-size: 3rem;
-      padding: 0 0.95rem;
-      border: 1px solid
-        color-mix(
-          in oklch,
-          var(--ph-color-accent-emphasis) 54%,
-          transparent
-        );
-      border-radius: 999px;
+    }
+
+    .blog-antd-archive-backtop:hover .blog-antd-archive-backtop__button,
+    .blog-antd-archive-backtop:focus-visible
+      .blog-antd-archive-backtop__button {
       background: color-mix(
         in oklch,
-        var(--ph-color-accent-emphasis) 90%,
-        var(--ph-color-accent-fg)
+        var(--ph-color-canvas-default) 78%,
+        var(--ph-surface-accent)
       );
-      box-shadow: 0 14px 32px
-        color-mix(in oklch, var(--ph-color-accent-fg) 18%, transparent);
-    }
-
-    .blog-antd-archive-backtop:hover,
-    .blog-antd-archive-backtop:focus-visible {
-      background: var(--ph-color-accent-emphasis);
     }
 
     .blog-antd-archive-backtop:focus-visible {
-      outline: 2px solid
-        color-mix(
-          in oklch,
-          var(--ph-color-accent-fg) 35%,
-          transparent
-        );
-      outline-offset: 3px;
+      outline: none;
     }
 
     .blog-antd-feature-card__aside,
