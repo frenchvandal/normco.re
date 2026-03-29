@@ -250,8 +250,8 @@
   }
 
   .feeds-endpoint-copy-button:focus-visible {
-    outline: 2px solid var(--ph-color-accent-emphasis);
-    outline-offset: -2px;
+    outline: var(--ph-focus-width) solid var(--ph-color-accent-emphasis);
+    outline-offset: calc(var(--ph-focus-offset) * -1);
   }
 
   .feeds-copy-icon-stack {

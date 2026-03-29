@@ -130,13 +130,13 @@
   }
 
   .about-contact-popover:focus-visible {
-    outline: 2px solid
+    outline: var(--ph-focus-width) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 34%,
         transparent
       );
-    outline-offset: 2px;
+    outline-offset: var(--ph-focus-offset);
   }
 
   .about-contact-popover-handle {

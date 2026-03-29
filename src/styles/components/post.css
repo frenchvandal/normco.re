@@ -278,7 +278,7 @@
   .post-content :where(p, li, figcaption, td, th, blockquote) > code {
     display: inline;
     padding: 0.12em 0.34em;
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-border-muted) 78%,
@@ -293,7 +293,7 @@
   .post-content pre,
   .post-content .shiki {
     padding: var(--ph-space-4) var(--ph-space-5);
-    border: 1px solid var(--ph-color-border-muted);
+    border: var(--ph-border-hairline) solid var(--ph-color-border-muted);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-prose-sm);
     line-height: var(--ph-lh-base);
@@ -656,7 +656,7 @@
     position: absolute;
     inset-inline-start: calc(var(--ph-space-4) * 0.5 - 1px);
     inset-block: var(--ph-space-1) var(--ph-space-1);
-    inline-size: 1px;
+    inline-size: var(--ph-border-hairline);
     background: color-mix(
       in oklch,
       var(--ph-color-accent-fg) 18%,
@@ -877,7 +877,7 @@
       min-inline-size: 1.35rem;
       min-block-size: 1.35rem;
       padding-inline: 0.2rem;
-      border: 1px solid
+      border: var(--ph-border-hairline) solid
         color-mix(
           in oklch,
           var(--ph-color-accent-fg) 18%,

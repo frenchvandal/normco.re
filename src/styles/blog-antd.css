@@ -180,7 +180,7 @@
     position: relative;
     overflow: hidden;
     padding: clamp(var(--ph-space-6), 5vw, var(--ph-space-8));
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 16%,
@@ -245,7 +245,7 @@
   .blog-antd-hero::after {
     inset-block-end: 0;
     inset-inline: 0;
-    block-size: 1px;
+    block-size: var(--ph-border-hairline);
     background: linear-gradient(
       90deg,
       transparent,
@@ -268,7 +268,7 @@
 
   .blog-antd-archive-header {
     padding-block-end: clamp(var(--ph-space-4), 2vw, var(--ph-space-5));
-    border-block-end: 1px solid
+    border-block-end: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 16%,
@@ -343,7 +343,7 @@
     margin: 0;
     padding-inline: 0.75rem;
     padding-block: 0.3rem;
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 22%,
@@ -358,7 +358,7 @@
   }
 
   .blog-antd-count-tag {
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 22%,
@@ -444,7 +444,7 @@
     display: grid;
     gap: var(--ph-space-4);
     padding-inline-start: clamp(0px, 2vw, var(--ph-space-6));
-    border-inline-start: 1px solid
+    border-inline-start: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 18%,
@@ -454,7 +454,7 @@
 
   .blog-antd-hero-note--tag {
     padding-inline-start: clamp(var(--ph-space-4), 2vw, var(--ph-space-5));
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 18%,
@@ -512,7 +512,7 @@
   }
 
   .blog-antd-feature-card {
-    border-block-start: 3px solid
+    border-block-start: var(--ph-border-accent) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-emphasis) 68%,
@@ -546,7 +546,7 @@
     display: grid;
     gap: var(--ph-space-4);
     padding-inline-start: clamp(var(--ph-space-3), 2vw, var(--ph-space-4));
-    border-inline-start: 1px solid
+    border-inline-start: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 16%,
@@ -645,7 +645,7 @@
     min-inline-size: 0;
     overflow: hidden;
     padding: clamp(var(--ph-space-5), 4vw, var(--ph-space-7));
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 14%,
@@ -691,7 +691,7 @@
     display: grid;
     gap: var(--ph-space-2);
     padding: clamp(var(--ph-space-4), 2.4vw, var(--ph-space-5));
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 14%,
@@ -731,7 +731,7 @@
     inline-size: fit-content;
     min-block-size: var(--ph-control-size-compact);
     padding: 0.4rem 0.82rem;
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 18%,
@@ -769,7 +769,7 @@
     display: grid;
     gap: var(--ph-space-3);
     padding-block-start: var(--ph-space-2);
-    border-block-start: 1px solid
+    border-block-start: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 12%,
@@ -805,7 +805,7 @@
     justify-content: center;
     min-inline-size: 2.5rem;
     padding: 0.32rem 0.5rem;
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 16%,
@@ -851,13 +851,13 @@
   }
 
   .blog-antd-archive-anchor-link:focus-visible {
-    outline: 2px solid
+    outline: var(--ph-focus-width) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 34%,
         transparent
       );
-    outline-offset: 2px;
+    outline-offset: var(--ph-focus-offset);
   }
 
   .blog-antd-archive-anchor__title {
@@ -865,7 +865,7 @@
     gap: 0.22rem;
     min-inline-size: 4.25rem;
     padding: 0.7rem 0.8rem 0.62rem;
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 12%,
@@ -990,7 +990,7 @@
     position: absolute;
     inset-block: 0.25rem 0.25rem;
     inset-inline-start: 0.4375rem;
-    inline-size: 1px;
+    inline-size: var(--ph-border-hairline);
     background: color-mix(
       in oklch,
       var(--ph-color-accent-fg) 16%,
@@ -1010,7 +1010,7 @@
     inset-block-start: 0.2rem;
     inline-size: var(--ph-marker-size-sm);
     block-size: var(--ph-marker-size-sm);
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 20%,
@@ -1048,7 +1048,7 @@
 
   .blog-antd-archive-timeline__month {
     padding-block-end: var(--ph-space-2);
-    border-block-end: 1px solid
+    border-block-end: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 14%,
@@ -1146,7 +1146,7 @@
   }
 
   .blog-antd-archive-timeline__link:focus-visible {
-    outline: 2px solid
+    outline: var(--ph-focus-width) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 36%,
@@ -1251,13 +1251,13 @@
   }
 
   .blog-antd-archive-mobile__backtop:focus-visible {
-    outline: 2px solid
+    outline: var(--ph-focus-width) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 35%,
         transparent
       );
-    outline-offset: 3px;
+    outline-offset: calc(var(--ph-focus-offset) + var(--ph-border-hairline));
   }
 
   .blog-antd-archive-mobile__backtop-label {
@@ -1377,7 +1377,7 @@
     display: grid;
     gap: var(--ph-space-3);
     padding: clamp(var(--ph-space-4), 2vw, var(--ph-space-5));
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 18%,
@@ -1489,7 +1489,7 @@
   }
 
   .blog-antd-backtop__button {
-    border: 1px solid
+    border: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 16%,
@@ -1518,7 +1518,7 @@
       z-index: 3;
       gap: var(--ph-space-3);
       padding: clamp(var(--ph-space-3), 3vw, var(--ph-space-4));
-      border: 1px solid
+      border: var(--ph-border-hairline) solid
         color-mix(
           in oklch,
           var(--ph-color-accent-fg) 14%,
@@ -1615,7 +1615,7 @@
     .blog-antd-archive-timeline__item {
       gap: var(--ph-space-3);
       padding: clamp(var(--ph-space-4), 4vw, var(--ph-space-5));
-      border: 1px solid
+      border: var(--ph-border-hairline) solid
         color-mix(
           in oklch,
           var(--ph-color-accent-fg) 12%,
@@ -1705,7 +1705,7 @@
     .blog-antd-hero-note {
       padding-inline-start: 0;
       border-inline-start: 0;
-      border-block-start: 1px solid
+      border-block-start: var(--ph-border-hairline) solid
         color-mix(
           in oklch,
           var(--ph-color-accent-fg) 18%,

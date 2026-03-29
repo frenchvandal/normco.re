@@ -10,8 +10,7 @@ const DIALOG_SELECTOR = "[data-post-mobile-tools]";
  * @returns {void}
  */
 export function bindPostMobileTools(runtime) {
-  const resolvedRuntime = runtime ??
-    /** @type {Window & typeof globalThis} */ (globalThis);
+  const resolvedRuntime = runtime;
   const HTMLElementCtor = resolvedRuntime.HTMLElement;
   const HTMLDialogElementCtor = resolvedRuntime.HTMLDialogElement;
   const HTMLButtonElementCtor = resolvedRuntime.HTMLButtonElement;
