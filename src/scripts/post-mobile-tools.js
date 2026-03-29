@@ -1,6 +1,7 @@
 // @ts-check
 
-const MOBILE_MEDIA_QUERY = "(max-width: 65.99rem)";
+const POST_RAIL_BREAKPOINT = "66rem";
+const MOBILE_MEDIA_QUERY = `(width < ${POST_RAIL_BREAKPOINT})`;
 const OPEN_SELECTOR = "[data-post-mobile-tools-open]";
 const CLOSE_SELECTOR = "[data-post-mobile-tools-close]";
 const DIALOG_SELECTOR = "[data-post-mobile-tools]";

@@ -757,7 +757,7 @@
     line-height: var(--ph-lh-relaxed);
   }
 
-  @media (max-width: 65.99rem) {
+  @media (width < 66rem) {
     .post-inline-anchor {
       display: grid;
       gap: var(--ph-space-3);

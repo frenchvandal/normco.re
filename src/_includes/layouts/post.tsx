@@ -12,7 +12,10 @@ import {
 
 export const layout = "layouts/base.tsx";
 export const extraStylesheets = ["/styles/blog-antd.css"];
-const POST_MOBILE_TOOLS_MEDIA_QUERY = "(max-width: 65.99rem)";
+const POST_RAIL_BREAKPOINT = "66rem";
+// Keep the mobile tools loader aligned with the post rail breakpoint in
+// src/styles/layout.css so the script only boots for the single-column layout.
+const POST_MOBILE_TOOLS_MEDIA_QUERY = `(width < ${POST_RAIL_BREAKPOINT})`;
 
 // ── Layout ───────────────────────────────────────────────────────────────
 

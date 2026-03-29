@@ -394,7 +394,7 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'class="post-mobile-tools-head-copy"');
       assertStringIncludes(html, 'class="post-mobile-tools-description"');
       assertStringIncludes(html, 'src="/scripts/post-mobile-tools-loader.js"');
-      assertStringIncludes(html, 'data-media-query="(max-width: 65.99rem)"');
+      assertStringIncludes(html, 'data-media-query="(width < 66rem)"');
       assertStringIncludes(html, "Publication details");
       assertStringIncludes(html, 'class="post-backtop"');
       assertNotMatch(html, /data-blog-antd-root/);

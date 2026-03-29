@@ -16,7 +16,7 @@ type TestWindow = InstanceType<typeof JSDOM>["window"] & {
 function createMediaQueryList(matches = false): TestMediaQueryList {
   const listeners = new Set<(event: MediaQueryListEvent) => void>();
   const mediaQuery = {
-    media: "(max-width: 65.99rem)",
+    media: "(width < 66rem)",
     matches,
     onchange: null,
     addListener(listener: (event: MediaQueryListEvent) => void) {
