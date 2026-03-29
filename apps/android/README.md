@@ -1,30 +1,31 @@
 # phiphi Android
 
-This directory contains the Android app bootstrap for phiphi.
+This directory contains the Android app for phiphi.
 
 Current status:
 
-- native Android track initialized
-- Gradle Kotlin DSL project files in place
-- Compose + Material 3 shell in place
-- dependency catalog aligned with current Google guidance
+- Home, Archive, Post detail, and Settings are implemented
 - provisional app name set to `phiphi`
-- Gradle wrapper committed
-- first Home slice wired to bundled `app-manifest` and `posts-index` contracts
-- archive slice wired to bundled generated `posts-index` contracts
-- post detail slice wired to bundled generated `post-detail` contracts
-- Android bootstrap assets can now be refreshed from the generated site
-  contracts
-- Room now persists the bootstrap manifest and posts locally
-- the repository seeds from assets, then reads Home, Archive, and Post from Room
-- DataStore now persists reader preferences
-- the Settings slice now exposes real language and offline preferences
-- Home, Archive, and Post now react to the selected content language
+- generated site contracts are mirrored into Android bootstrap assets
+- Room stores manifest, index, and detail content as the local source of truth
+- the repository seeds from assets, then refreshes from remote contract URLs
+- DataStore persists language, offline, bookmark, recent-reading, and
+  reading-progress preferences
+- the Settings slice exposes real language, offline, and background-sync
+  preferences
+- Home surfaces recent reading and saved reading
+- Archive supports local search, bookmarked-only filtering, tag filters, and
+  pull-to-refresh
+- Post detail supports bookmark, share, `Open in Browser`, in-article language
+  switching, table of contents, code copy, reading-position restore, and
+  pull-to-refresh
+- WorkManager schedules background content sync
+- canonical `https://normco.re/...` post URLs deep-link into the app
 - Hilt installed for app wiring and `ViewModel` injection
 - `kotlinx.serialization` installed for contract parsing
 - Coil installed for Compose image loading
 - Spotless + ktfmt, Detekt, and Android lint wired as the local quality gate
-- shared `PostSummaryCard` UI is now reused between Home and Archive
+- shared `PostSummaryCard` UI is reused between Home and Archive
 
 ## Repository Role
 
@@ -48,8 +49,8 @@ Current status:
 - Coil
 - Room
 - DataStore
-- Paging 3 and WorkManager reserved in the version catalog for the next
-  data-layer phase
+- WorkManager
+- Paging 3 remains deferred unless the feed size later justifies it
 
 ## What To Install On The MacBook
 

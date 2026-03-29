@@ -3,7 +3,7 @@
 This document tracks the actual state and recommended direction for the native
 mobile clients of normco.re.
 
-Updated: 2026-03-21
+Updated: 2026-03-29
 
 Current implementation priority: Android. iOS and HarmonyOS remain follow-on
 clients and should consume the same content contracts once the Android release
@@ -59,7 +59,7 @@ Current Android state:
 - Post detail supports bookmark, share, `Open in Browser`, in-article language
   switching, table of contents, code copy, reading-position restore, and
   pull-to-refresh
-- feeds and article detail support pull-to-refresh
+- Home, Archive, and Post detail support pull-to-refresh
 - canonical post URLs open the app through Android deep links
 
 What remains before Android release hardening is mostly:
@@ -175,9 +175,10 @@ No native client should depend directly on:
 - Lume page-data internals
 - TSX rendering logic
 
-The repository still contains legacy prototype artifacts such as
-`contracts/post.schema.json` and `plugins/content-contract.ts`, but those should
-not define the active mobile architecture.
+The repository still contains the earlier `contracts/post.schema.json` post-only
+path, but that schema should not define the active mobile architecture.
+`plugins/content-contract.ts` still matters because its shared block parser is
+reused when generating the active `post-detail` payloads.
 
 ## Platform Directions
 

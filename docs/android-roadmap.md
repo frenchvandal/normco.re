@@ -2,7 +2,7 @@
 
 This document is the execution roadmap for the Android app track.
 
-Updated: 2026-03-21
+Updated: 2026-03-29
 
 This roadmap supersedes the earlier iOS-first implementation order for active
 delivery. The shared contract-first direction from the mobile docs remains in
@@ -94,7 +94,8 @@ force.
   - Coil for remote images
   - offline-first local source of truth
   - Room for persisted content bootstrap
-  - Paging 3 and WorkManager as the next data-layer steps
+  - WorkManager for scheduled sync
+  - Paging 3 only if feed size later justifies it
   - DataStore for persisted user preferences
 - Keep mobile clients bound to the JSON contracts in `contracts/`, not to HTML
   pages, feeds, or Lume internals.
@@ -112,7 +113,7 @@ force.
   - settings
   - language preference
   - offline cache for indexes and opened posts
-  - explicit "Save for Offline"
+  - offline-saving preference for opened posts
   - per-device bookmarks
   - per-device reading progress
   - share sheet
@@ -315,7 +316,6 @@ Deliverables:
 
 - repository interfaces for manifest, index, and detail payloads
 - local persistence with Room
-- list paging with Paging 3 where the feed size justifies it
 - preferences with DataStore
 - sync scheduling with WorkManager
 - cache policy for manifest, indexes, and detail payloads
@@ -345,7 +345,7 @@ Deliverables:
 - settings screen
 - bookmarks
 - reading progress
-- explicit "Save for Offline"
+- offline-saving preference for opened posts
 - language switching
 - local archive search and filters
 - pull-to-refresh on Home, Archive, and Post
@@ -430,8 +430,9 @@ Exit criteria:
 
 - Local Android builds depend on Java 17 and a full Android SDK install on each
   MacBook that works on the repo.
-- The repository still documents an older content-contract prototype; Phase 1
-  must replace that drift with the manifest/index/detail path.
+- The repository still carries an older post-only schema alongside the active
+  manifest / index / detail family, so contributors need to be explicit about
+  which contract path they mean.
 - The exact editorial source for `updatedAt`, future block types, and some app
   metadata still need to be finalized before the contract family is frozen.
 

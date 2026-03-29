@@ -3,7 +3,7 @@
 This document records the Phase 0 decisions that are now considered locked for
 the mobile program.
 
-Updated: 2026-03-21
+Updated: 2026-03-29
 
 Phase 0 is complete. Android is now the active native implementation track, and
 this file should be read as the shared decision record that remains in force
@@ -52,15 +52,17 @@ Use this document to:
   `contracts/post-detail.schema.json` are the shared app-contract family.
 - `contracts/post.schema.json` is legacy and must not drive current client
   architecture.
+- `plugins/content-contract.ts` still provides the shared DOM-to-block parser
+  used when generating the active `post-detail` payloads.
 - `updatedAt` remains optional.
 - when `updatedAt` is absent, generators omit it rather than copying
   `publishedAt`
 - `heroImage` remains optional
 - app-facing media URLs are absolute HTTPS URLs
 - the content model remains block-based and native-renderable
-- current mobile clients still decode the existing block shape; richer inline
-  content remains a later contract evolution, not a blocker for the current
-  Android app
+- current mobile clients still decode the existing simple block shape (`text`,
+  `content`, string list items, image fields); richer inline content remains a
+  later contract evolution, not a blocker for the current Android app
 
 ### Platform Direction
 
@@ -81,7 +83,7 @@ Use this document to:
 
 ## Phase 0 Outcome Snapshot
 
-The Phase 0 plan is no longer theoretical. As of 2026-03-21:
+The Phase 0 plan is no longer theoretical. As of 2026-03-29:
 
 - Android has a working native reader in `apps/android`
 - the site generates the app-manifest / posts-index / post-detail JSON outputs

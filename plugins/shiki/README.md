@@ -47,5 +47,6 @@ import shiki from "https://cdn.jsdelivr.net/gh/<owner>/<repo>@v0.1.0/mod.ts";
 ## CSS note
 
 The plugin does not ship theme CSS. The stylesheet
-[src/styles/components/_shiki.scss](/Users/normcore/Code/normco.re/src/styles/components/_shiki.scss)
-is intentionally site-specific.
+[src/styles/base.css](/Users/normcore/Code/normco.re/src/styles/base.css) and
+[src/styles/components/post.css](/Users/normcore/Code/normco.re/src/styles/components/post.css)
+are intentionally site-specific.

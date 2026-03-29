@@ -60,7 +60,7 @@ normco.re/
 
 ### Pages
 
-Route-level pages remain TSX modules. The primary routes are:
+Route-level pages are TypeScript entry modules. The primary routes are:
 
 - `/`
 - `/about/`
@@ -211,14 +211,17 @@ The site relies on Deno's npm cache instead of a repo-local `node_modules` tree.
 
 ### CSS Entrypoint
 
-`src/style.css` composes the styling layers in order:
+`src/style.css` declares five cascade layers in order:
 
-1. token bridge and generated Ant Design bridge
-2. reset
-3. base styles
-4. component layout modules
-5. shell layout styles
-6. utilities
+1. `tokens`
+2. `reset`
+3. `base`
+4. `layout`
+5. `utilities`
+
+Within that order, the file imports the generated Ant Design bridge alongside
+the token layer and keeps site-specific component modules inside the shared
+`layout` layer.
 
 The production pipeline minifies CSS through Lightning CSS first, then runs
 PurgeCSS with a safelist for ARIA/data-state selectors, Pagefind runtime
@@ -233,17 +236,19 @@ blog surfaces rather than syntax-highlighting concerns.
 
 ## Blog Client Bundles
 
-The blog archive, tag pages, and post pages now use route-specific React entry
+The blog archive, tag pages, and post pages use route-specific React entry
 points under `src/blog/client/`:
 
-- `archive-main.tsx`
+- `main.tsx` for the archive bundle
 - `tag-main.tsx`
 - `post-main.tsx`
 
-Each entrypoint resolves npm dependencies through `src/blog/client/deno.json`
-and is bundled by Lume's esbuild plugin with code splitting enabled. Shared UI
-helpers live in small local modules, while route-specific Ant Design barrels
-keep `Calendar`, `Timeline`, `Descriptions`, and similar heavy components out of
+`main.tsx` mounts the archive app directly, while `tag-main.tsx` and
+`post-main.tsx` share the generic mount helper in `bootstrap.tsx`. Each
+entrypoint resolves npm dependencies through `src/blog/client/deno.json` and is
+bundled by Lume's esbuild plugin with code splitting enabled. Shared UI helpers
+live in small local modules, while route-specific Ant Design barrels keep
+`Calendar`, `Timeline`, `Descriptions`, and similar heavy components out of
 pages that do not need them. Shared archive month grouping, locale resolution,
 and timeline indexing live in `src/blog/archive-common.ts` so the server-side
 archive renderer and client-side archive route use the same data model.
@@ -392,7 +397,8 @@ JSON outputs.
 ## Architectural Invariants
 
 1. Editorial post bodies remain Markdown, not TSX.
-2. Pages, layouts, and reusable UI remain TSX.
+2. Pages, layouts, and reusable UI remain TypeScript-authored, with TSX handling
+   the rendered site shell and layouts.
 3. The local `--ph-*` token layer and the route-scoped Ant Design blog client
    remain the design-system authority for the web stack.
 4. `src/styles/antd/theme-tokens.css` remains the local bridge for the custom
