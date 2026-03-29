@@ -298,19 +298,27 @@
       var(--ph-color-fg-subtle) 88%,
       var(--ph-color-accent-fg)
     );
-    --about-pictogram-shift-x: calc(var(--ph-space-2) * -0.75);
-    --about-pictogram-shift-y: calc(var(--ph-space-2) * -0.5);
+    --about-pictogram-surface: transparent;
+    --about-pictogram-surface-shadow: none;
+    --about-pictogram-shift-x: calc(var(--ph-space-2) * -0.35);
+    --about-pictogram-shift-y: calc(var(--ph-space-2) * 0.6);
     position: relative;
     z-index: 1;
-    inline-size: min(100%, 13rem);
+    box-sizing: border-box;
+    inline-size: min(100%, 12.5rem);
     block-size: 100%;
     display: grid;
     place-items: center;
+    padding: var(--ph-space-2);
+    overflow: hidden;
+    border-radius: calc(var(--ph-radius-md) - 1px);
+    background: var(--about-pictogram-surface);
+    box-shadow: var(--about-pictogram-surface-shadow);
     color: var(--about-pictogram-ink);
   }
 
   .about-pictogram svg {
-    inline-size: min(100%, 11.5rem);
+    inline-size: min(100%, 10.9rem);
     block-size: auto;
     fill: currentColor;
     transform: translate(
@@ -357,10 +365,34 @@
 
   :root:is([data-color-mode="dark"], [data-theme-preference="dark"])
     .about-pictogram {
+    --about-pictogram-surface: linear-gradient(
+      180deg,
+      color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 46%,
+        transparent
+      ),
+      color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 38%,
+        transparent
+      )
+    );
+    --about-pictogram-surface-shadow:
+      inset 0 0 0 1px color-mix(
+      in oklch,
+      var(--ph-color-fg-default) 18%,
+      transparent
+    ),
+      0 0.75rem 1.5rem -1.35rem color-mix(
+      in oklch,
+      var(--ph-color-fg-default) 12%,
+      transparent
+    );
     --about-pictogram-ink: color-mix(
       in oklch,
-      var(--ph-color-fg-default) 74%,
-      var(--ph-color-accent-emphasis)
+      var(--ph-color-canvas-inset) 72%,
+      var(--ph-color-fg-muted)
     );
   }
 
@@ -403,10 +435,34 @@
 
     :root:not([data-color-mode="light"]):not([data-theme-preference="light"])
       .about-pictogram {
+      --about-pictogram-surface: linear-gradient(
+        180deg,
+        color-mix(
+          in oklch,
+          var(--ph-color-fg-default) 46%,
+          transparent
+        ),
+        color-mix(
+          in oklch,
+          var(--ph-color-fg-default) 38%,
+          transparent
+        )
+      );
+      --about-pictogram-surface-shadow:
+        inset 0 0 0 1px color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 18%,
+        transparent
+      ),
+        0 0.75rem 1.5rem -1.35rem color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 12%,
+        transparent
+      );
       --about-pictogram-ink: color-mix(
         in oklch,
-        var(--ph-color-fg-default) 74%,
-        var(--ph-color-accent-emphasis)
+        var(--ph-color-canvas-inset) 72%,
+        var(--ph-color-fg-muted)
       );
     }
   }
@@ -497,18 +553,28 @@
     }
 
     .about-pictogram-frame {
-      min-block-size: clamp(12.5rem, 58vw, 15rem);
-      place-items: center;
-      padding: var(--ph-space-3);
+      inline-size: min(100%, 14.5rem);
+      block-size: auto;
+      margin-inline: auto;
+      aspect-ratio: 1;
+      place-items: end center;
+      padding: var(--ph-space-4);
+    }
+
+    .about-pictogram-frame::before {
+      inset: var(--ph-space-3);
     }
 
     .about-pictogram {
-      inline-size: min(100%, 13.75rem);
+      --about-pictogram-shift-y: calc(var(--ph-space-2) * 1.2);
+      inline-size: min(100%, 12.5rem);
+      block-size: 100%;
+      padding: var(--ph-space-2);
       transform: none;
     }
 
     .about-pictogram svg {
-      inline-size: min(100%, 13rem);
+      inline-size: min(100%, 10rem);
     }
   }
 }

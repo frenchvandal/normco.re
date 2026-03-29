@@ -162,7 +162,19 @@ describe("about page CSS contracts", () => {
     );
     assertStringIncludes(
       aboutStyles,
-      "--about-pictogram-shift-x: calc(var(--ph-space-2) * -0.75);",
+      "--about-pictogram-shift-x: calc(var(--ph-space-2) * -0.35);",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "--about-pictogram-shift-y: calc(var(--ph-space-2) * 0.6);",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "overflow: hidden;",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "background: var(--about-pictogram-surface);",
     );
     assertStringIncludes(
       aboutStyles,
@@ -174,7 +186,22 @@ describe("about page CSS contracts", () => {
     );
     assertStringIncludes(
       aboutStyles,
-      "min-block-size: clamp(12.5rem, 58vw, 15rem);",
+      "aspect-ratio: 1;",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "inline-size: min(100%, 14.5rem);",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      `.about-pictogram {
+      --about-pictogram-shift-y: calc(var(--ph-space-2) * 1.2);
+      inline-size: min(100%, 12.5rem);
+      block-size: 100%;`,
+    );
+    assertStringIncludes(
+      aboutStyles,
+      ".about-pictogram svg {\n      inline-size: min(100%, 10rem);",
     );
     assertStringIncludes(
       aboutStyles,
@@ -182,7 +209,7 @@ describe("about page CSS contracts", () => {
     );
     assertStringIncludes(
       aboutStyles,
-      "--about-pictogram-frame-background: linear-gradient(",
+      "--about-pictogram-surface: linear-gradient(",
     );
   });
 });
