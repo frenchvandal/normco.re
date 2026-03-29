@@ -102,6 +102,28 @@ describe("index.page.tsx", () => {
       assertStringIncludes(html, "<h1");
     });
 
+    it("uses a stacked wordmark treatment for Chinese home titles", async () => {
+      const html = await indexPage(
+        asLumeData({
+          ...makeData([]),
+          lang: "zh-hans",
+        }),
+        MOCK_HELPERS,
+      );
+
+      assertStringIncludes(
+        html,
+        'class="editorial-home-intro editorial-home-intro--han"',
+      );
+      assertStringIncludes(
+        html,
+        'class="editorial-home-title editorial-home-title--han"',
+      );
+      assertStringIncludes(html, 'lang="zh-Hans"');
+      assertStringIncludes(html, "PhiPhi的");
+      assertStringIncludes(html, "奇妙冒险");
+    });
+
     it("renders featured topic links when recent posts provide tags", async () => {
       const posts = [
         makePost(407, { tags: ["design", "writing"] }),

@@ -62,7 +62,7 @@ describe("_config/feeds.ts", () => {
           limit: FEED_LIMIT,
           stylesheet: FEED_STYLESHEET,
           info: {
-            title: "PhiPhi的奇妙冒險 (简体中文)",
+            title: "PhiPhi的奇妙冒险 (简体中文)",
             description: "Phiphi 的个人博客，写于中国成都。",
             lang: "zh-Hans",
             generator: false,

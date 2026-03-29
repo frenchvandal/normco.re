@@ -34,7 +34,7 @@ describe("src/_data.ts", () => {
     assertEquals(siteOrigin, "https://normco.re");
     assertEquals(metas.site, "PhiPhi’s Bizarre Aventure");
     assertEquals(fr.metas.lang, "fr");
-    assertEquals(zhHans.metas.site, "PhiPhi的奇妙冒險");
+    assertEquals(zhHans.metas.site, "PhiPhi的奇妙冒险");
   });
 
   it("defines shared browser chrome and manifest metadata", () => {

@@ -81,6 +81,48 @@ function renderFeaturedStory(story: StoryData, language: SiteLanguage): string {
 </article>`;
 }
 
+function isHanLanguage(language: SiteLanguage): boolean {
+  return language === "zhHans" || language === "zhHant";
+}
+
+function renderHomeTitle(
+  siteName: string,
+  language: SiteLanguage,
+  languageTag: string,
+): string {
+  const className = `editorial-home-title${
+    isHanLanguage(language) ? " editorial-home-title--han" : ""
+  }`;
+
+  if (!isHanLanguage(language)) {
+    return `<h1 id="home-title" class="${className}" lang="${
+      escapeHtml(languageTag)
+    }">${escapeHtml(siteName)}</h1>`;
+  }
+
+  const separator = "的";
+  const splitIndex = siteName.indexOf(separator);
+  if (splitIndex === -1) {
+    return `<h1 id="home-title" class="${className}" lang="${
+      escapeHtml(languageTag)
+    }">${escapeHtml(siteName)}</h1>`;
+  }
+
+  const prefix = siteName.slice(0, splitIndex + separator.length);
+  const name = siteName.slice(splitIndex + separator.length);
+
+  return `<h1 id="home-title" class="${className}" lang="${
+    escapeHtml(languageTag)
+  }">
+      <span class="editorial-home-title__line editorial-home-title__line--intro">${
+    escapeHtml(prefix)
+  }</span>
+      <span class="editorial-home-title__line editorial-home-title__line--name">${
+    escapeHtml(name)
+  }</span>
+    </h1>`;
+}
+
 function renderEmptyState(aboutUrl: string, t: SiteTranslations): string {
   return `<div class="editorial-home-empty-state">
     <p class="editorial-home-section-kicker">${escapeHtml(t.home.eyebrow)}</p>
@@ -98,8 +140,14 @@ export default async (
 ): Promise<string> => {
   const PostCard = resolvePostCardRenderer(data.comp);
   const dateFormat = resolveDateHelper(helpers);
-  const { language, languageDataCode, aboutUrl, archiveUrl, translations: t } =
-    resolvePageSetup(data.lang);
+  const {
+    language,
+    languageDataCode,
+    languageTag,
+    aboutUrl,
+    archiveUrl,
+    translations: t,
+  } = resolvePageSetup(data.lang);
   const siteName = getSiteName(language);
 
   const recent = searchPages(
@@ -164,13 +212,13 @@ export default async (
 </section>`;
 
   return `<div class="site-page-shell site-page-shell--editorial home-page home-page--editorial">
-<section class="editorial-home-intro" aria-labelledby="home-title">
+<section class="editorial-home-intro${
+    isHanLanguage(language) ? " editorial-home-intro--han" : ""
+  }" aria-labelledby="home-title">
   <p class="editorial-home-kicker">${escapeHtml(t.home.eyebrow)}</p>
   <div class="editorial-home-intro__grid">
     <div class="editorial-home-intro__copy">
-      <h1 id="home-title" class="editorial-home-title">${
-    escapeHtml(siteName)
-  }</h1>
+      ${renderHomeTitle(siteName, language, languageTag)}
       <p class="editorial-home-intro__strap">${escapeHtml(t.home.title)}</p>
       <p class="editorial-home-lead">${escapeHtml(t.home.lead)}</p>
     </div>
