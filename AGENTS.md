@@ -76,6 +76,29 @@ For browser bundles under `src/blog/client/`:
 - Prefer Deno's npm cache and import-map aliases over introducing a repo-local
   `node_modules` workflow.
 
+### Imports
+
+When adding or rewriting imports:
+
+- Import order must be: (1) Node built-ins (`node:*`) -> (2) external
+  dependencies -> (3) local modules.
+- Separate each import group with one blank line.
+- Use `import type` for type-only imports, as enforced by
+  `compilerOptions.verbatimModuleSyntax`.
+- All external imports must be aliased in the relevant Deno config:
+  `import_map.json` for the main repo, and `src/blog/client/deno.json` for
+  browser bundles under `src/blog/client/`.
+- Alias values must use provider schemes:
+  - Use `jsr:` for JSR packages.
+  - Use `npm:` for npm packages.
+  - Use `node:` for Node built-ins.
+- Alias keys must be concise, stable, and kebab-case when the alias itself is
+  repo-defined.
+- Prefer provider-scoped alias keys such as `npm/faker-js` for repo-defined
+  aliases rather than introducing new bare package keys.
+- Do not import external packages directly via `jsr:`, `npm:`, `node:`, or URL
+  specifiers from source files when an alias is expected.
+
 ### Accessibility
 
 Interactive controls should preserve clear, valid semantics.
