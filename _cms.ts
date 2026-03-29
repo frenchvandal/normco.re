@@ -1,6 +1,7 @@
 import CMS from "lume/cms/mod.ts";
 import { resolveCmsProdBranch, resolveSlug } from "./src/utils/cms.ts";
 import { resolveCurrentDateIso } from "./src/utils/current-date.ts";
+import { SITE_NAME } from "./src/utils/site-identity.ts";
 
 export { resolveCmsProdBranch, resolveCurrentDateIso, resolveSlug };
 
@@ -17,7 +18,7 @@ function toFolderLabel(name: string, suffix: string) {
 
 const cms: ReturnType<typeof CMS> = CMS({
   site: {
-    name: "normco.re CMS",
+    name: `${SITE_NAME} CMS`,
     description: "Local editor for blog posts and media assets.",
   },
 });

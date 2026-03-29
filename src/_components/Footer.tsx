@@ -2,6 +2,7 @@ import type { jsx } from "lume/jsx-runtime";
 
 import { getSiteTranslations, type SiteLanguage } from "../utils/i18n.ts";
 import { formatCopyrightYears } from "../utils/copyright.ts";
+import { getSiteName } from "../utils/site-identity.ts";
 import SiteIcon from "./SiteIcon.tsx";
 
 const repositoryUrl = "https://github.com/frenchvandal/normco.re" as const;
@@ -66,13 +67,14 @@ export default (
 ): El => {
   const copyrightYears = formatCopyrightYears(blogStartYear, currentYear);
   const translations = getSiteTranslations(language);
+  const siteName = getSiteName(language);
 
   return (
     <footer class="site-footer">
       <div class="site-footer-inner">
         <div class="site-footer-brand">
           <a href={homeUrl} class="site-footer-mark">
-            normco.re
+            {siteName}
           </a>
           <p class="site-footer-copy">
             © {copyrightYears} {author}

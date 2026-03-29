@@ -36,7 +36,7 @@ describe("absolutizeHtmlUrls()", () => {
 describe("generateAtomXml()", () => {
   const baseFeed: AtomFeedData = {
     id: "https://normco.re/atom.xml",
-    title: "normco.re",
+    title: "PhiPhi’s Bizarre Aventure",
     subtitle: "Feed subtitle",
     siteUrl: "https://normco.re/",
     feedUrl: "https://normco.re/atom.xml",
@@ -71,7 +71,7 @@ describe("generateAtomXml()", () => {
       '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:fh="http://purl.org/syndication/history/1.0" xml:lang="en">',
     );
     assertStringIncludes(xml, "<id>https://normco.re/atom.xml</id>");
-    assertStringIncludes(xml, "<title>normco.re</title>");
+    assertStringIncludes(xml, "<title>PhiPhi’s Bizarre Aventure</title>");
     assertStringIncludes(xml, "<fh:complete/>");
     assertStringIncludes(xml, "<name>Phiphi</name>");
   });

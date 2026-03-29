@@ -11,8 +11,8 @@ import {
 const SITE_MANIFEST: SiteManifestData = {
   dir: "ltr",
   lang: "en",
-  name: "normco.re",
-  shortName: "normco.re",
+  name: "PhiPhi’s Bizarre Aventure",
+  shortName: "PhiPhi",
   startUrl: "/",
   id: "/",
   scope: "/",

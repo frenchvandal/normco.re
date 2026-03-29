@@ -1,6 +1,8 @@
 // @ts-check
 /// <reference lib="webworker" />
 
+import { SITE_NAME } from "../utils/site-identity.ts";
+
 /** @type {ServiceWorkerGlobalScope} */
 const sw = /** @type {ServiceWorkerGlobalScope} */ (
   /** @type {unknown} */ (self)
@@ -29,7 +31,7 @@ const OFFLINE_FALLBACK_HTML = `<!doctype html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Offline — normco.re</title>
+    <title>Offline — ${SITE_NAME}</title>
   </head>
   <body>
     <main>

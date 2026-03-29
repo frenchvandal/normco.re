@@ -169,7 +169,7 @@ describe("Footer()", () => {
     );
 
     assertStringIncludes(html, 'href="/" class="site-footer-mark"');
-    assertStringIncludes(html, ">normco.re<");
+    assertStringIncludes(html, ">PhiPhi’s Bizarre Aventure<");
     assertStringIncludes(html, 'class="site-footer-copy"');
   });
 });

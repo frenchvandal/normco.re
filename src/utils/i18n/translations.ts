@@ -44,7 +44,7 @@ export const SITE_TRANSLATIONS = {
     },
     home: {
       eyebrow: "Personal blog",
-      title: "Writing about things that matter.",
+      title: "Finding liberation into being nothing special",
       lead:
         "A personal blog by Phiphi—software, culture, and everyday life from Chengdu.",
       recentHeading: "Recent writing",
@@ -115,7 +115,7 @@ export const SITE_TRANSLATIONS = {
       breadcrumbAriaLabel: "Syndication breadcrumb",
       eyebrow: "Endpoints",
       title: "Syndication",
-      lead: "Structured endpoints for feeds and site indexing on normco.re.",
+      lead: "Structured endpoints for feeds and site indexing.",
       intro:
         "Open a format directly or copy its URL for a reader, crawler, or script. Feed autodiscovery remains enabled in the site head.",
       cardsAriaLabel: "Syndication endpoints",
@@ -272,7 +272,7 @@ export const SITE_TRANSLATIONS = {
     },
     home: {
       eyebrow: "Blog personnel",
-      title: "Écrire sur ce qui compte.",
+      title: "trouver une libération dans l’indistinction",
       lead:
         "Un blog personnel de Phiphi — logiciel, culture et vie quotidienne depuis Chengdu.",
       recentHeading: "Articles récents",
@@ -344,8 +344,7 @@ export const SITE_TRANSLATIONS = {
       breadcrumbAriaLabel: "Fil d’Ariane Syndication",
       eyebrow: "Points d’accès",
       title: "Syndication",
-      lead:
-        "Points d’accès structurés pour les flux et l’indexation de normco.re.",
+      lead: "Points d’accès structurés pour les flux et l’indexation du site.",
       intro:
         "Ouvrez le format voulu directement ou copiez son URL pour un lecteur, un robot ou un script. L’autodécouverte des flux reste activée dans l’en-tête du site.",
       cardsAriaLabel: "Points d’accès de syndication",
@@ -502,7 +501,7 @@ export const SITE_TRANSLATIONS = {
     },
     home: {
       eyebrow: "个人博客",
-      title: "写下真正重要的事。",
+      title: "在寻常中释放真我",
       lead: "Phiphi 的个人博客，记录软件、文化与在成都的日常生活。",
       recentHeading: "最新文章",
       archiveLinkLabel: "查看文章",
@@ -571,7 +570,7 @@ export const SITE_TRANSLATIONS = {
       breadcrumbAriaLabel: "聚合页面包屑导航",
       eyebrow: "端点",
       title: "聚合",
-      lead: "用于访问 normco.re 订阅与索引入口的结构化端点。",
+      lead: "用于访问站点订阅与索引入口的结构化端点。",
       intro:
         "可以直接打开所需格式，或复制其地址给阅读器、爬虫或脚本使用。站点头部中的 feed 自动发现仍然保留。",
       cardsAriaLabel: "聚合端点",
@@ -721,7 +720,7 @@ export const SITE_TRANSLATIONS = {
     },
     home: {
       eyebrow: "個人部落格",
-      title: "寫下真正重要的事。",
+      title: "在尋常中釋放真我",
       lead: "Phiphi 的個人部落格，記錄軟體、文化與在成都的日常生活。",
       recentHeading: "最新文章",
       archiveLinkLabel: "查看文章",
@@ -790,7 +789,7 @@ export const SITE_TRANSLATIONS = {
       breadcrumbAriaLabel: "聚合頁麵包屑導覽",
       eyebrow: "端點",
       title: "聚合",
-      lead: "用於存取 normco.re 訂閱與索引入口的結構化端點。",
+      lead: "用於存取站點訂閱與索引入口的結構化端點。",
       intro:
         "可以直接開啟所需格式，或複製其位址給閱讀器、爬蟲或腳本使用。站點頭部中的 feed 自動發現仍然保留。",
       cardsAriaLabel: "聚合端點",

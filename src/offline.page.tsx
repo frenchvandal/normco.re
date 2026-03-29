@@ -5,7 +5,7 @@ export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/offline/";
 export const title = "Offline";
 export const description =
-  "Offline fallback page for normco.re when connectivity is unavailable.";
+  "Offline fallback page when connectivity is unavailable.";
 // Keep the offline fallback out of sitemap and search surfaces.
 export const unlisted = true;
 export const unmatchedLangUrl = false;

@@ -1,6 +1,7 @@
 import { assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import SCRIPT_SOURCE from "./sw.js" with { type: "text" };
+import { SITE_NAME } from "../utils/site-identity.ts";
 
 type ListenerMap = Map<string, EventListenerOrEventListenerObject>;
 
@@ -8,6 +9,11 @@ type CacheStore = {
   match(request: string | { url?: string }): Promise<Response | undefined>;
   put(_request: string | { url?: string }, _response: Response): Promise<void>;
 };
+
+const EVALUABLE_SCRIPT_SOURCE = SCRIPT_SOURCE.replace(
+  'import { SITE_NAME } from "../utils/site-identity.ts";\n\n',
+  "",
+);
 
 function createRuntime(
   {
@@ -78,7 +84,8 @@ function createRuntime(
     "URL",
     "console",
     "Date",
-    SCRIPT_SOURCE,
+    "SITE_NAME",
+    EVALUABLE_SCRIPT_SOURCE,
   );
 
   evaluateScript(
@@ -90,6 +97,7 @@ function createRuntime(
     URL,
     console,
     Date,
+    SITE_NAME,
   );
 
   return {

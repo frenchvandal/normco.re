@@ -14,6 +14,7 @@ import {
 } from "./utils/lume-helpers.ts";
 import { getTagUrl } from "./utils/tags.ts";
 import type { SiteLanguage, SiteTranslations } from "./utils/i18n.ts";
+import { getSiteName } from "./utils/site-identity.ts";
 
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/";
@@ -99,6 +100,7 @@ export default async (
   const dateFormat = resolveDateHelper(helpers);
   const { language, languageDataCode, aboutUrl, archiveUrl, translations: t } =
     resolvePageSetup(data.lang);
+  const siteName = getSiteName(language);
 
   const recent = searchPages(
     data.search,
@@ -166,7 +168,9 @@ export default async (
   <p class="editorial-home-kicker">${escapeHtml(t.home.eyebrow)}</p>
   <div class="editorial-home-intro__grid">
     <div class="editorial-home-intro__copy">
-      <h1 id="home-title" class="editorial-home-title">normco.re</h1>
+      <h1 id="home-title" class="editorial-home-title">${
+    escapeHtml(siteName)
+  }</h1>
       <p class="editorial-home-intro__strap">${escapeHtml(t.home.title)}</p>
       <p class="editorial-home-lead">${escapeHtml(t.home.lead)}</p>
     </div>

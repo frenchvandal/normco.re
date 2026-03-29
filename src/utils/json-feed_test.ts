@@ -26,7 +26,7 @@ describe("normalizeJsonFeed()", () => {
     const normalized = normalizeJsonFeed(
       {
         version: "https://jsonfeed.org/version/1",
-        title: "normco.re",
+        title: "PhiPhi’s Bizarre Aventure",
         items: [
           {
             id: "https://normco.re/posts/hello/",

@@ -2,6 +2,13 @@ import {
   type SiteChromeData,
   type SiteManifestData,
 } from "./utils/site-manifest.ts";
+import {
+  getSiteName,
+  SITE_AUTHOR,
+  SITE_NAME,
+  SITE_ORIGIN,
+  SITE_SHORT_NAME,
+} from "./utils/site-identity.ts";
 
 export const lang = "en";
 
@@ -16,9 +23,11 @@ export const layout = "layouts/base.tsx";
 // the English variant when alternates exist.
 export const unmatchedLangUrl = "en" as const;
 
-export const siteName = "normco.re" as const;
+export const siteName = SITE_NAME;
 
-export const author = "Phiphi" as const;
+export const siteOrigin = SITE_ORIGIN;
+
+export const author = SITE_AUTHOR;
 
 export const metas = {
   site: siteName,
@@ -43,7 +52,7 @@ export const siteManifest = {
   dir: "ltr",
   lang,
   name: siteName,
-  shortName: siteName,
+  shortName: SITE_SHORT_NAME,
   startUrl: "/",
   id: "/",
   scope: "/",
@@ -79,26 +88,41 @@ export const siteManifest = {
 } as const satisfies SiteManifestData;
 
 export const fr = {
+  siteName: getSiteName("fr"),
   metas: {
-    site: siteName,
+    site: getSiteName("fr"),
     description: `Blog personnel de ${author}, basé à Chengdu, en Chine.`,
     lang: "fr",
+  },
+  jsonLd: {
+    name: getSiteName("fr"),
+    headline: `=title || ${getSiteName("fr")}`,
   },
 } as const;
 
 export const zhHans = {
+  siteName: getSiteName("zhHans"),
   metas: {
-    site: siteName,
+    site: getSiteName("zhHans"),
     description: `${author} 的个人博客，写于中国成都。`,
     lang: "zh-Hans",
+  },
+  jsonLd: {
+    name: getSiteName("zhHans"),
+    headline: `=title || ${getSiteName("zhHans")}`,
   },
 } as const;
 
 export const zhHant = {
+  siteName: getSiteName("zhHant"),
   metas: {
-    site: siteName,
+    site: getSiteName("zhHant"),
     description: `${author} 的個人部落格，寫於中國成都。`,
     lang: "zh-Hant",
+  },
+  jsonLd: {
+    name: getSiteName("zhHant"),
+    headline: `=title || ${getSiteName("zhHant")}`,
   },
 } as const;
 

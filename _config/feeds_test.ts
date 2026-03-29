@@ -34,7 +34,7 @@ describe("_config/feeds.ts", () => {
           limit: FEED_LIMIT,
           stylesheet: FEED_STYLESHEET,
           info: {
-            title: "normco.re",
+            title: "PhiPhi’s Bizarre Aventure",
             description: "Personal blog by Phiphi, based in Chengdu, China.",
             lang: "en",
             generator: false,
@@ -48,7 +48,7 @@ describe("_config/feeds.ts", () => {
           limit: FEED_LIMIT,
           stylesheet: FEED_STYLESHEET,
           info: {
-            title: "normco.re (fr)",
+            title: "PhiPhi’s Bizarre Aventure (fr)",
             description: "Blog personnel de Phiphi, basé à Chengdu, en Chine.",
             lang: "fr",
             generator: false,
@@ -62,7 +62,7 @@ describe("_config/feeds.ts", () => {
           limit: FEED_LIMIT,
           stylesheet: FEED_STYLESHEET,
           info: {
-            title: "normco.re (简体中文)",
+            title: "PhiPhi的奇妙冒險 (简体中文)",
             description: "Phiphi 的个人博客，写于中国成都。",
             lang: "zh-Hans",
             generator: false,
@@ -76,7 +76,7 @@ describe("_config/feeds.ts", () => {
           limit: FEED_LIMIT,
           stylesheet: FEED_STYLESHEET,
           info: {
-            title: "normco.re (繁體中文)",
+            title: "PhiPhi的奇妙冒險 (繁體中文)",
             description: "Phiphi 的個人部落格，寫於中國成都。",
             lang: "zh-Hant",
             generator: false,

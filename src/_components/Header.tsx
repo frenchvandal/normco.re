@@ -12,6 +12,7 @@ import {
   HEADER_IDS,
   HEADER_LANGUAGE_OPTIONS,
 } from "../utils/header-language-menu.ts";
+import { getSiteName } from "../utils/site-identity.ts";
 import SiteIcon from "./SiteIcon.tsx";
 
 type El = ReturnType<typeof jsx>;
@@ -499,6 +500,7 @@ function renderSearchPanel(
 function renderSideNav(
   items: readonly NavigationItem[],
   homeUrl: string,
+  siteName: string,
   t: Translations,
   v: VariantClasses,
 ): El {
@@ -513,10 +515,7 @@ function renderSideNav(
     >
       <nav class={v.sideNavNavigation ?? "site-side-nav__navigation"}>
         <div class={v.sideNavHeader ?? "site-side-nav__header"}>
-          <a href={homeUrl} class="site-side-nav__brand">
-            <span class="site-side-nav__brand-prefix">normco</span>
-            .re
-          </a>
+          <a href={homeUrl} class="site-side-nav__brand">{siteName}</a>
           <button
             type="button"
             class="site-side-nav__close"
@@ -566,15 +565,13 @@ function renderSideNav(
 
 function renderEditorialHomeBrand(
   homeUrl: string,
+  siteName: string,
   t: Translations,
 ): El {
   return (
     <a href={homeUrl} class="site-header__brand editorial-home-header__name">
       <span class="editorial-home-header__brand-lockup">
-        <span class="editorial-home-header__brand-wordmark">
-          <span class="site-header__brand-prefix">normco</span>
-          .re
-        </span>
+        <span class="editorial-home-header__brand-wordmark">{siteName}</span>
         <span class="editorial-home-header__brand-meta">
           {t.home.eyebrow}
         </span>
@@ -589,6 +586,7 @@ export default (
   { currentUrl, language, languageAlternates = {} }: HeaderProps,
 ): El => {
   const { homeUrl, translations: t } = getPageContext(language);
+  const siteName = getSiteName(language);
   const navItems = buildHeaderNavigation({ currentUrl, language });
   const isHome = currentUrl === homeUrl;
   const v = isHome ? EDITORIAL_HOME : STANDARD;
@@ -620,12 +618,9 @@ export default (
               />
             </button>
 
-            {isHome ? renderEditorialHomeBrand(homeUrl, t) : (
+            {isHome ? renderEditorialHomeBrand(homeUrl, siteName, t) : (
               <>
-                <a href={homeUrl} class={v.name}>
-                  <span class="site-header__brand-prefix">normco</span>
-                  .re
-                </a>
+                <a href={homeUrl} class={v.name}>{siteName}</a>
                 <nav
                   class={v.nav}
                   aria-label={t.site.mainNavigationAriaLabel}
@@ -656,6 +651,7 @@ export default (
       {renderSideNav(
         navItems,
         homeUrl,
+        siteName,
         t,
         v,
       )}

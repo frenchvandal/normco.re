@@ -9,7 +9,10 @@ import {
   metas,
   siteChrome,
   siteManifest,
+  siteName,
+  siteOrigin,
   unmatchedLangUrl,
+  zhHans,
 } from "./_data.ts";
 
 describe("src/_data.ts", () => {
@@ -27,13 +30,18 @@ describe("src/_data.ts", () => {
   });
 
   it("keeps metas aligned with the site identity", () => {
-    assertEquals(metas.site, "normco.re");
+    assertEquals(siteName, "PhiPhi’s Bizarre Aventure");
+    assertEquals(siteOrigin, "https://normco.re");
+    assertEquals(metas.site, "PhiPhi’s Bizarre Aventure");
     assertEquals(fr.metas.lang, "fr");
+    assertEquals(zhHans.metas.site, "PhiPhi的奇妙冒險");
   });
 
   it("defines shared browser chrome and manifest metadata", () => {
     assertEquals(siteChrome.faviconIcoUrl, "/favicon.ico");
     assertEquals(siteChrome.appleTouchIconUrl, "/apple-touch-icon.png");
+    assertEquals(siteManifest.name, "PhiPhi’s Bizarre Aventure");
+    assertEquals(siteManifest.shortName, "PhiPhi");
     assertEquals(siteManifest.startUrl, "/");
     assertEquals(siteManifest.id, "/");
     assertEquals(siteManifest.scope, "/");

@@ -26,6 +26,7 @@ function makeData(
     url?: string;
     unlisted?: boolean;
     siteName?: string;
+    siteOrigin?: string;
     author?: string;
     metas?: { site?: string; description?: string };
     siteChrome?: {
@@ -46,10 +47,11 @@ function makeData(
     children: { __html: "<p>Page body.</p>" },
     url: "/",
     unlisted: false,
-    siteName: "normco.re",
+    siteName: "PhiPhi’s Bizarre Aventure",
+    siteOrigin: "https://normco.re",
     author: "Phiphi",
     metas: {
-      site: "normco.re",
+      site: "PhiPhi’s Bizarre Aventure",
       description: "Personal blog by Phiphi, based in Chengdu, China.",
     },
     siteChrome: {
@@ -69,20 +71,25 @@ function makeData(
 
 describe("base.tsx layout", () => {
   describe("page title", () => {
-    it('renders "normco.re" when no title is provided', async () => {
+    it('renders "PhiPhi’s Bizarre Aventure" when no title is provided', async () => {
       const html = await renderBase(makeData({}));
-      assertStringIncludes(html, "<title>normco.re</title>");
+      assertStringIncludes(html, "<title>PhiPhi’s Bizarre Aventure</title>");
     });
 
-    it('formats title as "<title> - normco.re"', async () => {
+    it('formats title as "<title> - PhiPhi"', async () => {
       const randomTitle = makeSentence(601);
       const html = await renderBase(makeData({ title: randomTitle }));
-      assertStringIncludes(html, `<title>${randomTitle} - normco.re</title>`);
+      assertStringIncludes(
+        html,
+        `<title>${randomTitle} - PhiPhi</title>`,
+      );
     });
 
     it("does not duplicate the site name when title already matches it", async () => {
-      const html = await renderBase(makeData({ title: "normco.re" }));
-      assertStringIncludes(html, "<title>normco.re</title>");
+      const html = await renderBase(makeData({
+        title: "PhiPhi’s Bizarre Aventure",
+      }));
+      assertStringIncludes(html, "<title>PhiPhi’s Bizarre Aventure</title>");
     });
   });
 

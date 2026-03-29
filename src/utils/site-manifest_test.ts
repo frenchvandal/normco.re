@@ -8,8 +8,8 @@ describe("src/utils/site-manifest.ts", () => {
     const serialized = buildSiteManifest({
       dir: "ltr",
       lang: "en",
-      name: "normco.re",
-      shortName: "normco.re",
+      name: "PhiPhi’s Bizarre Aventure",
+      shortName: "PhiPhi",
       startUrl: "/",
       id: "/",
       scope: "/",
@@ -36,8 +36,8 @@ describe("src/utils/site-manifest.ts", () => {
     assertEquals(serialized, {
       dir: "ltr",
       lang: "en",
-      name: "normco.re",
-      short_name: "normco.re",
+      name: "PhiPhi’s Bizarre Aventure",
+      short_name: "PhiPhi",
       start_url: "/",
       id: "/",
       scope: "/",
@@ -64,8 +64,8 @@ describe("src/utils/site-manifest.ts", () => {
 
   it("writes a trailing newline and omits non-core top-level metadata", () => {
     const manifest = stringifySiteManifest({
-      name: "normco.re",
-      shortName: "normco.re",
+      name: "PhiPhi’s Bizarre Aventure",
+      shortName: "PhiPhi",
       startUrl: "/",
       id: "/",
       scope: "/",

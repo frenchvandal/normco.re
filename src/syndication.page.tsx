@@ -1,4 +1,3 @@
-import { siteName } from "./_data.ts";
 import {
   ATOM_FEED_MIME_TYPE,
   JSON_FEED_MIME_TYPE,
@@ -13,6 +12,7 @@ import {
   getLocalizedRssFeedUrl,
 } from "./utils/feed-paths.ts";
 import { escapeHtml } from "./utils/html.ts";
+import { SITE_ORIGIN } from "./utils/site-identity.ts";
 
 const COPY_ICON = renderSiteIconMarkup(
   "copy",
@@ -27,22 +27,21 @@ export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/syndication/";
 export const title = "Syndication";
 export const description =
-  "Machine-readable syndication endpoints for normco.re.";
+  "Machine-readable syndication endpoints for the site.";
 
 export const fr = {
   title: "Syndication",
-  description:
-    "Points d’accès de syndication structurés pour le contenu de normco.re.",
+  description: "Points d’accès de syndication structurés pour le site.",
 } as const;
 
 export const zhHans = {
   title: "聚合",
-  description: "normco.re 的结构化订阅与索引入口。",
+  description: "站点的结构化订阅与索引入口。",
 } as const;
 
 export const zhHant = {
   title: "聚合",
-  description: "normco.re 的結構化訂閱與索引入口。",
+  description: "站點的結構化訂閱與索引入口。",
 } as const;
 
 type FeedItem = Readonly<{
@@ -212,11 +211,10 @@ function buildFeedActions(translations: SiteTranslations): FeedActions {
 
 export default (data: Lume.Data): string => {
   const { language, translations } = resolvePageSetup(data.lang);
-  const siteOrigin = `https://${siteName}`;
   const feedItems = buildFeedItems(language, translations);
   const feedActions = buildFeedActions(translations);
   const feedRowsHtml = feedItems.map((item) =>
-    renderFeedRow(item, siteOrigin, feedActions)
+    renderFeedRow(item, SITE_ORIGIN, feedActions)
   ).join("\n");
 
   return `<div class="site-page-shell site-page-shell--wide feeds-page feeds-page--minimal">

@@ -25,6 +25,12 @@ import {
   getLocalizedJsonFeedUrl,
   getLocalizedRssFeedUrl,
 } from "../../utils/feed-paths.ts";
+import {
+  SITE_AUTHOR,
+  SITE_NAME,
+  SITE_ORIGIN,
+  SITE_SHORT_NAME,
+} from "../../utils/site-identity.ts";
 import { THEME_BOOTSTRAP_SCRIPT } from "../../utils/theme-bootstrap.ts";
 
 const CANONICAL_BRAND_ICON_NAMES = ["rss"] as const;
@@ -58,6 +64,7 @@ type LayoutData = Lume.Data & {
   // Populated by `src/_data.ts` in real builds. These stay optional so layout
   // tests can render with partial data.
   siteName?: string;
+  siteOrigin?: string;
   author?: string;
   metas?: { readonly site?: string; readonly description?: string };
   blogStartYear?: number;
@@ -176,6 +183,7 @@ export default (
     alternates,
     siteChrome,
     siteName,
+    siteOrigin,
     author,
     metas,
     blogStartYear,
@@ -184,21 +192,23 @@ export default (
 ) => {
   // The real site injects these via `src/_data.ts`; fallbacks keep tests and
   // isolated renders from depending on the full Lume data pipeline.
-  const resolvedSiteName = siteName ?? "normco.re";
-  const resolvedAuthor = author ?? "Phiphi";
+  const resolvedSiteName = metas?.site ?? siteName ?? SITE_NAME;
+  const resolvedSiteOrigin = siteOrigin ?? SITE_ORIGIN;
+  const resolvedAuthor = author ?? SITE_AUTHOR;
   const resolvedSiteChrome = resolveSiteChromeData(siteChrome);
-  const pageTitle = title && title !== resolvedSiteName
-    ? `${title} - ${resolvedSiteName}`
+  const pageTitle = title && title !== resolvedSiteName &&
+      title !== SITE_SHORT_NAME
+    ? `${title} - ${SITE_SHORT_NAME}`
     : resolvedSiteName;
   const { language, translations, homeUrl, syndicationPageUrl } =
     resolvePageSetup(lang);
   const metaDescription = description ?? metas?.description ??
-    "Personal blog by Phiphi, based in Chengdu, China.";
+    `Personal blog by ${SITE_AUTHOR}, based in Chengdu, China.`;
   const documentLanguage = getLanguageTag(language);
   const currentUrl = typeof url === "string" && url ? url : "/";
   const isIndexable = unlisted !== true;
   const canonicalUrl = isIndexable
-    ? new URL(currentUrl, `https://${resolvedSiteName}`).href
+    ? new URL(currentUrl, resolvedSiteOrigin).href
     : undefined;
   const includeLinkPrefetch = !isPostDetailUrl(currentUrl) &&
     !isPostsArchiveUrl(currentUrl);
