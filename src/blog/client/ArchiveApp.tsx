@@ -1,18 +1,4 @@
 /** @jsxImportSource npm/react */
-import type { BlogArchiveViewData, BlogStoryCard } from "../view-data.ts";
-import {
-  type ArchiveMonthGroup,
-  buildArchiveTimelineEntries,
-  formatArchiveIndex,
-  groupArchiveMonths,
-  groupArchiveYears,
-  resolveArchiveLocaleFromDocument,
-} from "../archive-common.ts";
-import {
-  BLOG_ANTD_BACKTOP_CLASSNAMES,
-  BLOG_ANTD_CARD_CLASSNAMES,
-  BLOG_ANTD_PRIMARY_BUTTON_ROOT,
-} from "./antd-semantic.ts";
 import {
   Anchor,
   BackTop,
@@ -26,17 +12,33 @@ import {
   Title,
   VerticalAlignTopOutlined,
 } from "@blog/archive-antd";
+
+import type { BlogArchiveViewData, BlogStoryCard } from "../view-data.ts";
+import {
+  type ArchiveMonthGroup,
+  groupArchiveMonths,
+  resolveArchiveLocaleFromDocument,
+} from "../archive-common.ts";
+import {
+  buildArchiveMonthNavModel,
+  buildArchiveTimelineItemModels,
+} from "../archive-view-model.ts";
+import {
+  BLOG_ANTD_BACKTOP_CLASSNAMES,
+  BLOG_ANTD_CARD_CLASSNAMES,
+  BLOG_ANTD_PRIMARY_BUTTON_ROOT,
+} from "./antd-semantic.ts";
 import { StoryTags } from "./common.tsx";
 
 function ArchiveTimelineItem(
   {
     story,
-    index,
+    indexLabel,
     isLead = false,
     month,
   }: {
     story: BlogStoryCard;
-    index: number;
+    indexLabel: string;
     isLead?: boolean | undefined;
     month?: ArchiveMonthGroup | undefined;
   },
@@ -58,9 +60,7 @@ function ArchiveTimelineItem(
         </div>
       )}
       <div className="blog-antd-archive-timeline__item-head">
-        <span className="blog-antd-story-card__index">
-          {formatArchiveIndex(index + 1)}
-        </span>
+        <span className="blog-antd-story-card__index">{indexLabel}</span>
         <Flex wrap gap={12} className="blog-antd-archive-timeline__meta">
           <span className="blog-antd-meta-pill">
             <ScheduleOutlined />
@@ -111,21 +111,21 @@ function ArchiveTimeline(
     return null;
   }
 
-  const timelineEntries = buildArchiveTimelineEntries(months);
+  const timelineEntries = buildArchiveTimelineItemModels(months);
 
   return (
     <section className="blog-antd-archive-timeline-wrap" aria-label={ariaLabel}>
       <ul className="blog-antd-archive-timeline">
         {timelineEntries.map((entry) => (
           <li
-            key={`${entry.story.url}-${entry.index}`}
+            key={entry.key}
             className={`blog-antd-archive-timeline__entry${
               entry.isLead ? " blog-antd-archive-timeline__entry--lead" : ""
             }`}
           >
             <ArchiveTimelineItem
               story={entry.story}
-              index={entry.index}
+              indexLabel={entry.indexLabel}
               isLead={entry.isLead}
               month={entry.month}
             />
@@ -147,10 +147,9 @@ function ArchiveMonthNav(
     eyebrowLabel: string;
   },
 ) {
-  const newestMonth = months[0];
-  const oldestMonth = months[months.length - 1];
+  const model = buildArchiveMonthNavModel(months);
 
-  if (!newestMonth || !oldestMonth) {
+  if (!model) {
     return null;
   }
 
@@ -159,21 +158,26 @@ function ArchiveMonthNav(
       <div className="blog-antd-archive-nav__intro">
         <p className="blog-antd-eyebrow">{eyebrowLabel}</p>
         <Paragraph className="blog-antd-archive-nav__range">
-          {oldestMonth.label} - {newestMonth.label}
+          {model.oldestMonthLabel} - {model.newestMonthLabel}
         </Paragraph>
       </div>
       <div className="blog-antd-archive-month-groups">
-        {groupArchiveYears(months).map(({ year, months: yearMonths }) => (
+        {model.years.map((yearGroup) => (
           <section
-            key={year}
+            key={yearGroup.year}
             className="blog-antd-archive-month-group"
-            aria-labelledby={`archive-year-${year}`}
+            aria-labelledby={yearGroup.labelId}
           >
             <p
-              id={`archive-year-${year}`}
+              id={yearGroup.labelId}
               className="blog-antd-archive-month-group__year"
             >
-              {year}
+              <span className="blog-antd-archive-month-group__year-label">
+                {yearGroup.year}
+              </span>
+              <span className="blog-antd-archive-month-group__year-count">
+                {yearGroup.yearCountLabel}
+              </span>
             </p>
             <Anchor
               affix={false}
@@ -181,21 +185,19 @@ function ArchiveMonthNav(
               direction="horizontal"
               replace
               targetOffset={112}
-              items={yearMonths.map((month) => ({
+              items={yearGroup.months.map((month) => ({
                 key: month.key,
                 href: `#${month.anchorId}`,
                 title: (
                   <span
                     className="blog-antd-archive-anchor__title"
-                    title={`${month.label} • ${
-                      formatArchiveIndex(month.posts.length)
-                    }`}
+                    title={month.title}
                   >
                     <span className="blog-antd-archive-anchor__label">
                       {month.shortLabel}
                     </span>
                     <span className="blog-antd-archive-anchor__count">
-                      {formatArchiveIndex(month.posts.length)}
+                      {month.countLabel}
                     </span>
                   </span>
                 ),

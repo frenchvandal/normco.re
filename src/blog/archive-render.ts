@@ -1,9 +1,8 @@
+import { type ArchiveMonthGroup } from "./archive-common.ts";
 import {
-  type ArchiveMonthGroup,
-  buildArchiveTimelineEntries,
-  formatArchiveIndex,
-  groupArchiveYears,
-} from "./archive-common.ts";
+  buildArchiveMonthNavModel,
+  buildArchiveTimelineItemModels,
+} from "./archive-view-model.ts";
 import type { SiteLanguage } from "../utils/i18n.ts";
 import { escapeHtml } from "../utils/html.ts";
 import { getTagColor, getTagUrl } from "../utils/tags.ts";
@@ -62,56 +61,46 @@ export function renderArchiveMonthNav(
     latestJumpLabel: string;
   },
 ): string {
-  const newestMonth = months[0];
-  const oldestMonth = months[months.length - 1];
+  const model = buildArchiveMonthNavModel(months);
 
-  if (!newestMonth || !oldestMonth) {
+  if (!model) {
     return "";
   }
 
-  const groups = groupArchiveYears(months).map(
-    ({ year, months: yearMonths }) => {
-      const yearPostCount = formatArchiveIndex(
-        yearMonths.reduce((sum, month) => sum + month.posts.length, 0),
-      );
-      const items = yearMonths.map((month) =>
-        `<li class="blog-antd-archive-anchor-item">
+  const groups = model.years.map((yearGroup) => {
+    const items = yearGroup.months.map((month) =>
+      `<li class="blog-antd-archive-anchor-item">
   <a
     class="blog-antd-archive-anchor-link"
     href="#${escapeHtml(month.anchorId)}"
-    title="${escapeHtml(month.label)} • ${
-          formatArchiveIndex(month.posts.length)
-        }"
+    title="${escapeHtml(month.title)}"
   >
     <span class="blog-antd-archive-anchor__title">
       <span class="blog-antd-archive-anchor__label">${
-          escapeHtml(month.shortLabel)
-        }</span>
-      <span class="blog-antd-archive-anchor__count">${
-          formatArchiveIndex(month.posts.length)
-        }</span>
+        escapeHtml(month.shortLabel)
+      }</span>
+      <span class="blog-antd-archive-anchor__count">${month.countLabel}</span>
     </span>
   </a>
 </li>`
-      ).join("");
+    ).join("");
 
-      return `<section
+    return `<section
   class="blog-antd-archive-month-group"
-  aria-labelledby="archive-year-${year}"
+  aria-labelledby="${escapeHtml(yearGroup.labelId)}"
 >
   <p
-    id="archive-year-${year}"
+    id="${escapeHtml(yearGroup.labelId)}"
     class="blog-antd-archive-month-group__year"
   >
-    <span class="blog-antd-archive-month-group__year-label">${year}</span>
-    <span class="blog-antd-archive-month-group__year-count">${yearPostCount}</span>
+    <span class="blog-antd-archive-month-group__year-label">${yearGroup.year}</span>
+    <span class="blog-antd-archive-month-group__year-count">${yearGroup.yearCountLabel}</span>
   </p>
   <ul class="blog-antd-archive-anchor-list">
     ${items}
   </ul>
 </section>`;
-    },
-  ).join("");
+  }).join("");
 
   return `<aside class="blog-antd-archive-nav" aria-label="${
     escapeHtml(ariaLabel)
@@ -120,12 +109,14 @@ export function renderArchiveMonthNav(
     <div class="blog-antd-archive-nav__copy">
       <p class="blog-antd-eyebrow">${escapeHtml(eyebrowLabel)}</p>
       <p class="blog-antd-archive-nav__range">
-        ${escapeHtml(oldestMonth.label)} - ${escapeHtml(newestMonth.label)}
+        ${escapeHtml(model.oldestMonthLabel)} - ${
+    escapeHtml(model.newestMonthLabel)
+  }
       </p>
       <p class="blog-antd-archive-nav__hint">${escapeHtml(jumpLabel)}</p>
     </div>
     <a class="blog-antd-archive-nav__latest" href="#${
-    escapeHtml(newestMonth.anchorId)
+    escapeHtml(model.newestMonthAnchorId)
   }">
       ${escapeHtml(latestJumpLabel)}
     </a>
@@ -141,8 +132,8 @@ export function renderArchiveTimeline(
   ariaLabel: string,
   language: SiteLanguage,
 ): string {
-  const items = buildArchiveTimelineEntries(months).map((entry) => {
-    const { index, isLead, month, story } = entry;
+  const items = buildArchiveTimelineItemModels(months).map((entry) => {
+    const { indexLabel, isLead, month, story } = entry;
 
     return `<li class="blog-antd-archive-timeline__entry${
       isLead ? " blog-antd-archive-timeline__entry--lead" : ""
@@ -163,9 +154,7 @@ export function renderArchiveTimeline(
         : ""
     }
     <div class="blog-antd-archive-timeline__item-head">
-      <span class="blog-antd-story-card__index">${
-      formatArchiveIndex(index + 1)
-    }</span>
+      <span class="blog-antd-story-card__index">${indexLabel}</span>
       ${renderMeta(story)}
     </div>
     <a class="blog-antd-archive-timeline__link" href="${escapeHtml(story.url)}">
