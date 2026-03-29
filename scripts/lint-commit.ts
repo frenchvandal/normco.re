@@ -1,334 +1,59 @@
 /**
- * Commit message linter — Conventional Commits specification.
+ * Commit-message lint CLI backed by `@miscellaneous/commitlint`.
  *
  * Reads the commit message from `.git/COMMIT_EDITMSG` (default) or the file
- * path supplied as the first CLI argument, then validates it against the rules
- * defined by `@commitlint/config-conventional` and prints a formatted report.
+ * path supplied as the first CLI argument, then validates it against the
+ * Conventional Commits rules exposed by the shared JSR package.
  *
  * Exit codes:
  *   0 — message is valid
- *   1 — one or more errors found
+ *   1 — one or more errors found, or the input file could not be read
  *
  * @example
  * ```sh
- * # Validate the last commit message (Lefthook commit-msg hook):
- * DENO_TLS_CA_STORE=system deno task lint-commit .git/COMMIT_EDITMSG
- *
- * # Validate an arbitrary message (CI):
- * echo "feat: add search" | DENO_TLS_CA_STORE=system deno task lint-commit /dev/stdin
+ * deno task lint-commit .git/COMMIT_EDITMSG
  * ```
  */
 
 import { parseArgs } from "@std/cli";
-import { closestString, levenshteinDistance } from "@std/text";
+import { stripAnsiCode } from "@std/fmt/colors";
+import {
+  formatReport,
+  lintCommit,
+  type LintIssue,
+  type LintReport,
+  type Severity,
+} from "jsr/miscellaneous-commitlint";
 
-// ── Types ──────────────────────────────────────────────────────────────────
+export { lintCommit };
+export type { LintIssue, LintReport, Severity };
 
-/** Severity level of a lint issue. */
-export type Severity = "error" | "warning";
-
-/** A single validation issue produced by the commit linter. */
-export type LintIssue = {
-  readonly rule: string;
-  readonly severity: Severity;
-  readonly message: string;
+export type FormatLintCommitReportOptions = {
+  readonly color?: boolean;
 };
 
-/** Full validation report returned by `lintCommit`. */
-export type LintReport = {
-  readonly input: string;
-  readonly valid: boolean;
-  readonly errors: ReadonlyArray<LintIssue>;
-  readonly warnings: ReadonlyArray<LintIssue>;
-};
+const TEXT_ENCODER = new TextEncoder();
 
-// ── Constants (mirrors @commitlint/config-conventional) ────────────────────
-
-/** Allowed commit types from `@commitlint/config-conventional`. */
-const ALLOWED_TYPE_LIST = [
-  "build",
-  "chore",
-  "ci",
-  "docs",
-  "feat",
-  "fix",
-  "perf",
-  "refactor",
-  "revert",
-  "style",
-  "test",
-] as const;
-
-const ALLOWED_TYPES = new Set(
-  ALLOWED_TYPE_LIST,
-);
-
-/** Maximum character count for the header line. */
-const HEADER_MAX_LENGTH = 100 as const;
-
-/** Maximum character count for body and footer lines. */
-const BODY_MAX_LINE_LENGTH = 100 as const;
-
-/**
- * Conventional Commits header pattern.
- * Captures type, optional scope, optional breaking-change marker, and subject.
- */
-const HEADER_PATTERN =
-  /^(?<type>[a-zA-Z]+)(?:\((?<scope>[^()]+)\))?(?<breaking>!)?:[ \t]+(?<subject>.+)$/;
-
-// ── Parser ─────────────────────────────────────────────────────────────────
-
-type ParsedHeader = {
-  readonly type: string;
-  readonly scope: string | undefined;
-  readonly breaking: boolean;
-  readonly subject: string;
-};
-
-/** Parses the Conventional Commits header line. Returns `undefined` on mismatch. */
-function parseHeader(header: string): ParsedHeader | undefined {
-  const match = HEADER_PATTERN.exec(header);
-  if (match === null) return undefined;
-
-  const groups = match.groups as Record<string, string | undefined>;
-  const type = groups["type"] ?? "";
-  const scope = groups["scope"];
-  const breaking = groups["breaking"] === "!";
-  const subject = groups["subject"] ?? "";
-
-  return { type, scope, breaking, subject };
-}
-
-function getClosestAllowedType(type: string): string | undefined {
-  const suggestion = closestString(type, [...ALLOWED_TYPE_LIST]);
-  const maxDistance = Math.max(
-    1,
-    Math.floor(Math.max(type.length, suggestion.length) / 2),
-  );
-
-  return levenshteinDistance(type, suggestion) <= maxDistance
-    ? suggestion
-    : undefined;
-}
-
-// ── Rules ──────────────────────────────────────────────────────────────────
-
-/** Validates the commit message and returns a lint report. */
-export function lintCommit(input: string): LintReport {
-  const issues: LintIssue[] = [];
-
-  // Strip trailing newline (common in COMMIT_EDITMSG files) and comment lines.
-  const cleaned = input
-    .split("\n")
-    .filter((line) => !/^#\s/.test(line))
-    .join("\n")
-    .trimEnd();
-
-  const lines = cleaned.split("\n");
-  const header = lines[0] ?? "";
-
-  // ── header-max-length ──────────────────────────────────────────────────
-  if (header.length > HEADER_MAX_LENGTH) {
-    issues.push({
-      rule: "header-max-length",
-      severity: "error",
-      message:
-        `Header must not exceed ${HEADER_MAX_LENGTH} characters (got ${header.length}).`,
-    });
-  }
-
-  // ── header-trim ────────────────────────────────────────────────────────
-  if (header !== header.trim()) {
-    issues.push({
-      rule: "header-trim",
-      severity: "error",
-      message: "Header must not have leading or trailing whitespace.",
-    });
-  }
-
-  // ── Parse the header ───────────────────────────────────────────────────
-  const parsed = parseHeader(header);
-
-  if (parsed === undefined) {
-    issues.push({
-      rule: "header-pattern",
-      severity: "error",
-      message:
-        `Header does not match Conventional Commits format: "<type>[optional scope]: <description>". Got: "${header}"`,
-    });
-  } else {
-    // ── type-enum ──────────────────────────────────────────────────────
-    if (
-      !ALLOWED_TYPES.has(parsed.type as Parameters<typeof ALLOWED_TYPES.has>[0])
-    ) {
-      const suggestion = getClosestAllowedType(parsed.type);
-
-      issues.push({
-        rule: "type-enum",
-        severity: "error",
-        message: `Type "${parsed.type}" is not allowed. Allowed types: ${
-          [...ALLOWED_TYPES].join(", ")
-        }.${suggestion ? ` Did you mean "${suggestion}"?` : ""}`,
-      });
-    }
-
-    // ── type-case ─────────────────────────────────────────────────────
-    if (parsed.type !== parsed.type.toLowerCase()) {
-      issues.push({
-        rule: "type-case",
-        severity: "error",
-        message: `Type "${parsed.type}" must be lower-case.`,
-      });
-    }
-
-    // ── type-empty ────────────────────────────────────────────────────
-    if (parsed.type.trim().length === 0) {
-      issues.push({
-        rule: "type-empty",
-        severity: "error",
-        message: "Type must not be empty.",
-      });
-    }
-
-    // ── subject-empty ─────────────────────────────────────────────────
-    if (parsed.subject.trim().length === 0) {
-      issues.push({
-        rule: "subject-empty",
-        severity: "error",
-        message: "Subject must not be empty.",
-      });
-    }
-
-    // ── subject-full-stop ─────────────────────────────────────────────
-    if (parsed.subject.trimEnd().endsWith(".")) {
-      issues.push({
-        rule: "subject-full-stop",
-        severity: "error",
-        message: 'Subject must not end with a full stop (".").',
-      });
-    }
-
-    // ── subject-case ──────────────────────────────────────────────────
-    // config-conventional enforces sentence-case.
-    const first = parsed.subject.trimStart()[0];
-    if (first !== undefined && first !== first.toLowerCase()) {
-      issues.push({
-        rule: "subject-case",
-        severity: "warning",
-        message:
-          `Subject should start with a lower-case letter (got "${first}").`,
-      });
-    }
-
-    // ── scope-case ────────────────────────────────────────────────────
-    if (
-      parsed.scope !== undefined &&
-      parsed.scope !== parsed.scope.toLowerCase()
-    ) {
-      issues.push({
-        rule: "scope-case",
-        severity: "error",
-        message: `Scope "${parsed.scope}" must be lower-case.`,
-      });
-    }
-  }
-
-  // ── body-max-line-length ─────────────────────────────────────────────
-  for (const [index, line] of lines.slice(2).entries()) {
-    if (line.length > BODY_MAX_LINE_LENGTH) {
-      issues.push({
-        rule: "body-max-line-length",
-        severity: "error",
-        message: `Body line ${
-          index + 3
-        } must not exceed ${BODY_MAX_LINE_LENGTH} characters (got ${line.length}).`,
-      });
-    }
-  }
-
-  // ── body-leading-blank ───────────────────────────────────────────────
-  if (lines.length > 1 && lines[1] !== "") {
-    issues.push({
-      rule: "body-leading-blank",
-      severity: "warning",
-      message: "Body must be separated from the header by a blank line.",
-    });
-  }
-
-  const errors = issues.filter((i) => i.severity === "error");
-  const warnings = issues.filter((i) => i.severity === "warning");
-
-  return {
-    input: cleaned,
-    valid: errors.length === 0,
-    errors,
-    warnings,
-  };
-}
-
-// ── Formatter ──────────────────────────────────────────────────────────────
-
-const ANSI = {
-  reset: "\x1b[0m",
-  red: "\x1b[31m",
-  yellow: "\x1b[33m",
-  green: "\x1b[32m",
-  dim: "\x1b[2m",
-  bold: "\x1b[1m",
-} as const;
-
-/** Returns true when stdout is a real TTY (colors enabled). */
 function supportsColor(): boolean {
   return Deno.stdout.isTerminal();
 }
 
-/** Formats and prints the lint report to stdout. */
-function printReport(report: LintReport): void {
-  const color = supportsColor();
+export function formatLintCommitReport(
+  report: LintReport,
+  options: FormatLintCommitReportOptions = {},
+): string {
+  const color = options.color ?? supportsColor();
+  const formatted = formatReport(report, { color });
 
-  const style = (text: string, ...codes: ReadonlyArray<string>) =>
-    color ? `${codes.join("")}${text}${ANSI.reset}` : text;
-
-  console.log();
-  console.log(style(`  commit: ${report.input.split("\n")[0]}`, ANSI.dim));
-  console.log();
-
-  for (const issue of [...report.errors, ...report.warnings]) {
-    const prefix = issue.severity === "error"
-      ? style("  ✖ error", ANSI.red)
-      : style("  ⚠ warning", ANSI.yellow);
-    const rule = style(`  [${issue.rule}]`, ANSI.dim);
-    console.log(`${prefix}  ${issue.message}`);
-    console.log(`${rule}`);
-    console.log();
-  }
-
-  const errorCount = report.errors.length;
-  const warningCount = report.warnings.length;
-
-  if (report.valid) {
-    console.log(
-      style("  ✔ commit message is valid", ANSI.green, ANSI.bold),
-    );
-  } else {
-    console.log(
-      style(
-        `  ✖ found ${errorCount} error${errorCount !== 1 ? "s" : ""}` +
-          (warningCount > 0
-            ? ` and ${warningCount} warning${warningCount !== 1 ? "s" : ""}`
-            : ""),
-        ANSI.red,
-        ANSI.bold,
-      ),
-    );
-  }
-
-  console.log();
+  return color ? formatted : stripAnsiCode(formatted);
 }
 
-// ── Entry point ────────────────────────────────────────────────────────────
+async function writeReport(report: LintReport): Promise<void> {
+  await Deno.stdout.write(
+    TEXT_ENCODER.encode(formatLintCommitReport(report)),
+  );
+}
 
-/** Reads the commit message, runs the linter, and exits with the appropriate code. */
 async function main(): Promise<void> {
   const parsedArgs = parseArgs(Deno.args);
   const commitMsgPathArg = parsedArgs._[0];
@@ -339,20 +64,25 @@ async function main(): Promise<void> {
   let raw: string;
   try {
     raw = await Deno.readTextFile(commitMsgPath);
-  } catch (err) {
-    if (err instanceof Deno.errors.NotFound) {
+  } catch (error) {
+    if (error instanceof Deno.errors.NotFound) {
       console.error(
         `lint-commit: cannot read commit message file: ${commitMsgPath}`,
       );
       Deno.exit(1);
     }
-    throw err;
+
+    throw error;
   }
 
   const report = lintCommit(raw);
-  printReport(report);
+  await writeReport(report);
 
-  if (!report.valid) Deno.exit(1);
+  if (!report.valid) {
+    Deno.exit(1);
+  }
 }
 
-if (import.meta.main) await main();
+if (import.meta.main) {
+  await main();
+}

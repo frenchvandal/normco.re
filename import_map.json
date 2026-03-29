@@ -1,5 +1,6 @@
 {
   "imports": {
+    "jsr/miscellaneous-commitlint": "jsr:@miscellaneous/commitlint@^0.1.0",
     "npm/react": "npm:react@19.2.4",
     "npm/antd": "npm:antd@6.3.4",
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/",

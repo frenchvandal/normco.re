@@ -74,7 +74,7 @@
       "command": "deno task build && deno run --allow-read --allow-write scripts/payload-report.ts --policy=scripts/payload-policy.json --policy-baseline --output=.tmp/payload-policy-baseline.json --markdown=.tmp/payload-policy-baseline.md"
     },
     "lint-commit": {
-      "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",
+      "description": "Validate the commit message with @miscellaneous/commitlint (reads .git/COMMIT_EDITMSG by default)",
       "command": "deno run --allow-read scripts/lint-commit.ts"
     },
     "validate-contracts": {

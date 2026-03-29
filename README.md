@@ -55,24 +55,25 @@ If your environment requires system CA certificates, prefix commands with
 
 ## Daily Commands
 
-| Task             | Command                                  | Notes                                                      |
-| ---------------- | ---------------------------------------- | ---------------------------------------------------------- |
-| Serve            | `deno task serve`                        | Starts the local site and LumeCMS                          |
-| Check            | `deno task check`                        | Type-checks the codebase                                   |
-| Test             | `deno task test`                         | Runs unit and integration tests                            |
-| Coverage         | `deno task test:coverage`                | Collects coverage data under `.tmp/deno-coverage`          |
-| Coverage summary | `deno task coverage:summary`             | Prints the latest coverage summary                         |
-| Coverage HTML    | `deno task coverage:html`                | Generates browsable HTML from the latest coverage run      |
-| Doc tests        | `deno task test:doc`                     | Runs JSDoc examples as executable documentation tests      |
-| Design guard     | `deno task design:guard`                 | Blocks normalized UI literals outside tokenized paths      |
-| Typography guard | `deno task typography:guard`             | Fails on smart quotes/apostrophes in Markdown/comments     |
-| Validate         | `deno task validate`                     | Runs both guards, check, test, and build                   |
-| Build            | `deno task build`                        | Builds `_site/` for production                             |
-| Contracts        | `deno task validate-contracts`           | Validates feeds structurally and optional JSON outputs     |
-| Android assets   | `deno task android:sync-contract-assets` | Builds site contracts and mirrors Android bootstrap assets |
-| Payload report   | `deno task payload:report`               | Reports route-level JS and CSS from generated output       |
-| Install hooks    | `deno task lefthook:install`             | Installs local Git hooks                                   |
-| Update deps      | `deno task update-deps`                  | Updates pinned dependencies and the lockfile               |
+| Task             | Command                                     | Notes                                                       |
+| ---------------- | ------------------------------------------- | ----------------------------------------------------------- |
+| Serve            | `deno task serve`                           | Starts the local site and LumeCMS                           |
+| Check            | `deno task check`                           | Type-checks the codebase                                    |
+| Test             | `deno task test`                            | Runs unit and integration tests                             |
+| Coverage         | `deno task test:coverage`                   | Collects coverage data under `.tmp/deno-coverage`           |
+| Coverage summary | `deno task coverage:summary`                | Prints the latest coverage summary                          |
+| Coverage HTML    | `deno task coverage:html`                   | Generates browsable HTML from the latest coverage run       |
+| Doc tests        | `deno task test:doc`                        | Runs JSDoc examples as executable documentation tests       |
+| Design guard     | `deno task design:guard`                    | Blocks normalized UI literals outside tokenized paths       |
+| Typography guard | `deno task typography:guard`                | Fails on smart quotes/apostrophes in Markdown/comments      |
+| Lint commit      | `deno task lint-commit .git/COMMIT_EDITMSG` | Validates a commit message with `@miscellaneous/commitlint` |
+| Validate         | `deno task validate`                        | Runs both guards, check, test, and build                    |
+| Build            | `deno task build`                           | Builds `_site/` for production                              |
+| Contracts        | `deno task validate-contracts`              | Validates feeds structurally and optional JSON outputs      |
+| Android assets   | `deno task android:sync-contract-assets`    | Builds site contracts and mirrors Android bootstrap assets  |
+| Payload report   | `deno task payload:report`                  | Reports route-level JS and CSS from generated output        |
+| Install hooks    | `deno task lefthook:install`                | Installs local Git hooks                                    |
+| Update deps      | `deno task update-deps`                     | Updates pinned dependencies and the lockfile                |
 
 Recommended verification for a nontrivial change:
 
