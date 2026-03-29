@@ -1,3 +1,4 @@
+import { POST_MOBILE_TOOLS_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
 import { resolvePageSetup } from "../../utils/page-setup.ts";
 import { resolveDateHelper } from "../../utils/lume-helpers.ts";
 import {
@@ -12,10 +13,8 @@ import {
 
 export const layout = "layouts/base.tsx";
 export const extraStylesheets = ["/styles/blog-antd.css"];
-const POST_RAIL_BREAKPOINT = "66rem";
 // Keep the mobile tools loader aligned with the post rail breakpoint in
 // src/styles/layout.css so the script only boots for the single-column layout.
-const POST_MOBILE_TOOLS_MEDIA_QUERY = `(width < ${POST_RAIL_BREAKPOINT})`;
 
 // ── Layout ───────────────────────────────────────────────────────────────
 

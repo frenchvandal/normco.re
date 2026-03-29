@@ -312,8 +312,8 @@
   }
 
   /*
-   * The header sits outside the content containers, so its structural switch
-   * stays viewport-based even though the interior layouts use container queries.
+   * The rail can wait for 66rem of container width, while the header flips at
+   * 64rem of viewport width because it sits outside the content containers.
    */
   @media (min-width: 64rem) {
     .site-header__nav {

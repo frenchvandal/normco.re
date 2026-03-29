@@ -21,6 +21,7 @@ import featureStyles from "../../styles/components/feature.css" with {
 import postStyles from "../../styles/components/post.css" with {
   type: "text",
 };
+import { POST_MOBILE_TOOLS_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
 
 import postLayout from "./post.tsx";
 
@@ -394,7 +395,10 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'class="post-mobile-tools-head-copy"');
       assertStringIncludes(html, 'class="post-mobile-tools-description"');
       assertStringIncludes(html, 'src="/scripts/post-mobile-tools-loader.js"');
-      assertStringIncludes(html, 'data-media-query="(width < 66rem)"');
+      assertStringIncludes(
+        html,
+        `data-media-query="${POST_MOBILE_TOOLS_MEDIA_QUERY}"`,
+      );
       assertStringIncludes(html, "Publication details");
       assertStringIncludes(html, 'class="post-backtop"');
       assertNotMatch(html, /data-blog-antd-root/);

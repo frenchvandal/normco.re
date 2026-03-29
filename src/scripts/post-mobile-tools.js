@@ -1,5 +1,7 @@
 // @ts-check
 
+// Mirrors POST_RAIL_BREAKPOINT in src/utils/layout-breakpoints.ts and the
+// single-column post rail query in src/styles/components/post.css.
 const POST_RAIL_BREAKPOINT = "66rem";
 const MOBILE_MEDIA_QUERY = `(width < ${POST_RAIL_BREAKPOINT})`;
 const OPEN_SELECTOR = "[data-post-mobile-tools-open]";
