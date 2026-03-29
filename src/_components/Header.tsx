@@ -493,7 +493,7 @@ function renderSideNav(
       aria-label={t.site.mainNavigationAriaLabel}
       hidden
     >
-      <nav
+      <div
         class={headerClass(
           variant,
           "site-side-nav__navigation",
@@ -544,7 +544,7 @@ function renderSideNav(
             ))}
           </ul>
         </div>
-      </nav>
+      </div>
     </aside>
   );
 }

@@ -71,9 +71,10 @@ export default async (
         </div>
       </div>
     </section>
-    <section class="tag-page-results" aria-label="${
+    <section class="tag-page-results" aria-labelledby="tag-page-results-title">
+      <h2 id="tag-page-results-title" class="sr-only">${
     escapeHtml(t.tagPage.postsAriaLabel)
-  }">
+  }</h2>
       ${
     posts.length > 0
       ? `<ul class="archive-list">${items}</ul>`

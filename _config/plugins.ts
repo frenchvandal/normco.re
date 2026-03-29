@@ -166,11 +166,9 @@ export function registerPlugins(
       output: "_quality/html-issues.json",
       rules: {
         "require-sri": "off",
-        "heading-level": "off",
         "script-type": "off",
         "attribute-boolean-style": "off",
         "attribute-empty-style": "off",
-        "unique-landmark": "off",
       },
     }),
   );

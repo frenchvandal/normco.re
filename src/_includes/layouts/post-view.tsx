@@ -413,12 +413,9 @@ export function PostRail(
       countLabel: String(outline.length).padStart(2, "0"),
       title: translations.outlineTitle,
       body: (
-        <nav
-          class="post-outline-nav post-outline-nav--rail"
-          aria-label={translations.outlineAriaLabel}
-        >
+        <div class="post-outline-nav post-outline-nav--rail">
           <PostOutlineList outline={outline} />
-        </nav>
+        </div>
       ),
     }
     : undefined;
@@ -488,6 +485,16 @@ export function PostRail(
               isNext
             />
           </nav>
+        ),
+        mobileBody: (
+          <div class="post-nav post-nav--rail">
+            <PostNavLink post={prev} label={translations.previousLabel} />
+            <PostNavLink
+              post={next}
+              label={translations.nextLabel}
+              isNext
+            />
+          </div>
         ),
       }
       : undefined,
@@ -594,7 +601,7 @@ export function PostRail(
                       </span>
                     </summary>
                     <div class="post-mobile-tools-section__body">
-                      {section.body}
+                      {section.mobileBody ?? section.body}
                     </div>
                   </details>
                 ))}

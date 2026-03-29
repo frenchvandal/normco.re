@@ -234,10 +234,7 @@ export default async (
             <p class="editorial-home-lead">{t.home.lead}</p>
           </div>
           <div class="editorial-home-intro__aside">
-            <nav
-              class="editorial-home-intro__links"
-              aria-label={t.site.mainNavigationAriaLabel}
-            >
+            <div class="editorial-home-intro__links">
               <a
                 href={archiveUrl}
                 class="editorial-home-inline-link editorial-home-inline-link--primary"
@@ -247,7 +244,7 @@ export default async (
               <a href={aboutUrl} class="editorial-home-inline-link">
                 {t.navigation.about}
               </a>
-            </nav>
+            </div>
             {featuredTags.length > 0 && (
               <div class="editorial-home-intro__topics">
                 <TopicList

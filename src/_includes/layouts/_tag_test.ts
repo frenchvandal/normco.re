@@ -70,6 +70,7 @@ describe("tag.tsx layout", () => {
     assertStringIncludes(html, 'class="tag-pagehead-intro"');
     assertStringIncludes(html, 'class="tag-pagehead-kicker"');
     assertStringIncludes(html, 'class="tag-pagehead-note"');
+    assertStringIncludes(html, 'id="tag-page-results-title" class="sr-only"');
     assertStringIncludes(html, "design");
     assertStringIncludes(
       html,
