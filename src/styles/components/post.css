@@ -16,7 +16,7 @@
   }
 
   .post-title {
-    font-family: var(--ph-font-serif);
+    font-family: var(--ph-font-heading);
     font-size: clamp(var(--ph-text-prose-lg), 2.8vw, var(--ph-text-prose-xl));
     font-weight: 600;
     line-height: var(--ph-lh-display);
@@ -27,7 +27,7 @@
 
   .post-pagehead-summary {
     color: var(--ph-color-fg-muted);
-    font-family: var(--ph-font-serif);
+    font-family: var(--ph-font-reading);
     font-size: var(--ph-text-prose);
     line-height: var(--ph-lh-relaxed);
     font-feature-settings: var(--ph-opentype-body);
@@ -100,7 +100,7 @@
   .post-content {
     display: grid;
     gap: 0;
-    font-family: var(--ph-font-serif);
+    font-family: var(--ph-font-reading);
     font-size: var(--ph-text-prose);
     line-height: var(--ph-lh-prose);
     font-feature-settings: var(--ph-opentype-body);
@@ -154,7 +154,7 @@
   }
 
   .post-content > :where(h2, h3, h4, h5, h6) {
-    font-family: var(--ph-font-serif);
+    font-family: var(--ph-font-heading);
     font-feature-settings: var(--ph-opentype-heading);
     scroll-margin-block-start: calc(
       var(--ph-header-height) + var(--ph-space-6)

@@ -3,14 +3,20 @@
     color-scheme: light;
 
     --ph-font-sans:
-      "Segoe UI Variable",
       -apple-system,
       BlinkMacSystemFont,
       "Segoe UI",
-      "Noto Sans",
-      Helvetica,
+      Roboto,
+      "Helvetica Neue",
       Arial,
-      sans-serif;
+      "Noto Sans",
+      sans-serif,
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji";
+    --ph-font-reading: var(--ph-font-sans);
+    --ph-font-heading: var(--ph-font-sans);
     --ph-font-serif:
       Charter,
       "Iowan Old Style",
@@ -58,14 +64,9 @@
       oklch(56.51% 0.0189 250.97),
       oklch(53.36% 0.0244 252.64)
     );
-    --ph-color-accent-fg: light-dark(
-      oklch(53.99% 0.1906 257.48),
-      oklch(68.41% 0.152 255.12)
-    );
-    --ph-color-accent-emphasis: light-dark(
-      oklch(45.09% 0.1641 258.18),
-      oklch(54.53% 0.1575 259.06)
-    );
+    --ph-color-accent-fg: light-dark(#1677ff, #1668dc);
+    --ph-color-accent-emphasis: light-dark(#4096ff, #3c89e8);
+    --ph-color-accent-active: light-dark(#0958d9, #1554ad);
     --ph-color-feedback-info: var(--ph-color-accent-fg);
     --ph-color-feedback-success: light-dark(
       oklch(67.12% 0.158 148.42),
@@ -170,7 +171,7 @@
     --ph-easing-default: cubic-bezier(0.3, 0, 0.5, 1);
     --ph-ease-standard: var(--ph-easing-default);
 
-    --ph-focus-color: oklch(65% 0.19 255);
+    --ph-focus-color: var(--ph-color-accent-emphasis);
     --ph-focus-width: 2px;
     --ph-focus-offset: 2px;
 
@@ -236,11 +237,10 @@
       var(--ph-color-canvas-default)
     );
     --ph-mobile-nav-offset: 0px;
-    --ph-shadow-floating: 0 18px 48px color-mix(
-      in oklch,
-      var(--ph-color-fg-default) 12%,
-      transparent
-    );
+    --ph-shadow-floating:
+      0 6px 16px 0 rgb(0 0 0 / 0.08),
+      0 3px 6px -4px rgb(0 0 0 / 0.12),
+      0 9px 28px 8px rgb(0 0 0 / 0.05);
   }
 
   :root[data-color-mode="dark"],

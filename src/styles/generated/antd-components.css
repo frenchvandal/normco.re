@@ -136,7 +136,11 @@
   --ant-input-addon-bg: var(--ph-color-canvas-subtle);
   --ant-input-active-border-color: #000000;
   --ant-input-hover-border-color: var(--ph-color-accent-emphasis);
-  --ant-input-active-shadow: 0 0 0 2px rgba(246, 246, 246, 0.26);
+  --ant-input-active-shadow: 0 0 0 2px color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-input-error-active-shadow: 0 0 0 2px rgb(255, 242, 240);
   --ant-input-warning-active-shadow: 0 0 0 2px rgb(255, 251, 230);
   --ant-input-hover-bg: var(--ph-color-canvas-default);
@@ -155,7 +159,11 @@
   --ant-input-addon-bg: var(--ph-color-canvas-subtle);
   --ant-input-active-border-color: #000000;
   --ant-input-hover-border-color: var(--ph-color-accent-emphasis);
-  --ant-input-active-shadow: 0 0 0 2px rgba(246, 246, 246, 0.26);
+  --ant-input-active-shadow: 0 0 0 2px color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-input-error-active-shadow: 0 0 0 2px rgb(255, 242, 240);
   --ant-input-warning-active-shadow: 0 0 0 2px rgb(255, 251, 230);
   --ant-input-hover-bg: var(--ph-color-canvas-default);
@@ -174,7 +182,11 @@
   --ant-input-addon-bg: var(--ph-color-canvas-subtle);
   --ant-input-active-border-color: #000000;
   --ant-input-hover-border-color: var(--ph-color-accent-emphasis);
-  --ant-input-active-shadow: 0 0 0 2px rgba(246, 246, 246, 0.26);
+  --ant-input-active-shadow: 0 0 0 2px color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-input-error-active-shadow: 0 0 0 2px rgb(255, 242, 240);
   --ant-input-warning-active-shadow: 0 0 0 2px rgb(255, 251, 230);
   --ant-input-hover-bg: var(--ph-color-canvas-default);
@@ -193,7 +205,11 @@
   --ant-input-number-addon-bg: var(--ph-color-canvas-subtle);
   --ant-input-number-active-border-color: #000000;
   --ant-input-number-hover-border-color: var(--ph-color-accent-emphasis);
-  --ant-input-number-active-shadow: 0 0 0 2px rgba(246, 246, 246, 0.26);
+  --ant-input-number-active-shadow: 0 0 0 2px color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-input-number-error-active-shadow: 0 0 0 2px rgb(255, 242, 240);
   --ant-input-number-warning-active-shadow: 0 0 0 2px rgb(255, 251, 230);
   --ant-input-number-hover-bg: var(--ph-color-canvas-default);
@@ -278,7 +294,11 @@
   --ant-mentions-addon-bg: var(--ph-color-canvas-subtle);
   --ant-mentions-active-border-color: #000000;
   --ant-mentions-hover-border-color: var(--ph-color-accent-emphasis);
-  --ant-mentions-active-shadow: 0 0 0 2px rgba(246, 246, 246, 0.26);
+  --ant-mentions-active-shadow: 0 0 0 2px color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-mentions-error-active-shadow: 0 0 0 2px rgb(255, 242, 240);
   --ant-mentions-warning-active-shadow: 0 0 0 2px rgb(255, 251, 230);
   --ant-mentions-hover-bg: var(--ph-color-canvas-default);
@@ -296,8 +316,8 @@
   --ant-menu-z-index-popup: 1050;
   --ant-menu-radius-item: 12px;
   --ant-menu-item-border-radius: 12px;
-  --ant-menu-radius-sub-menu-item: 6px;
-  --ant-menu-sub-menu-item-border-radius: 6px;
+  --ant-menu-radius-sub-menu-item: 3px;
+  --ant-menu-sub-menu-item-border-radius: 3px;
   --ant-menu-color-item-text: var(--ph-color-fg-default);
   --ant-menu-item-color: var(--ph-color-fg-default);
   --ant-menu-color-item-text-hover: var(--ph-color-fg-default);
@@ -429,7 +449,11 @@
   --ant-button-font-weight: 400;
   --ant-button-icon-gap: 8px;
   --ant-button-default-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);
-  --ant-button-primary-shadow: 0 2px 0 rgba(246, 246, 246, 0.26);
+  --ant-button-primary-shadow: 0 2px 0 color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-button-danger-shadow: 0 2px 0 rgb(255, 242, 240);
   --ant-button-primary-color: #fff;
   --ant-button-danger-color: #fff;
@@ -457,8 +481,8 @@
   --ant-button-default-hover-color: var(--ph-color-accent-emphasis);
   --ant-button-default-hover-border-color: var(--ph-color-accent-emphasis);
   --ant-button-default-active-bg: var(--ph-color-canvas-default);
-  --ant-button-default-active-color: var(--ph-color-accent-emphasis);
-  --ant-button-default-active-border-color: var(--ph-color-accent-emphasis);
+  --ant-button-default-active-color: var(--ph-color-accent-active);
+  --ant-button-default-active-border-color: var(--ph-color-accent-active);
   --ant-button-solid-text-color: #fff;
   --ant-button-content-font-size: 14px;
   --ant-button-content-font-size-sm: 14px;
@@ -507,7 +531,7 @@
   --ant-motion-ease-in-back: cubic-bezier(0.71, -0.46, 0.88, 0.6);
   --ant-motion-ease-in-quint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   --ant-motion-ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
-  --ant-border-radius: 10px;
+  --ant-border-radius: 6px;
   --ant-size-unit: 4px;
   --ant-size-step: 4px;
   --ant-size-popup-arrow: 16px;
@@ -515,16 +539,25 @@
   --ant-z-index-base: 0;
   --ant-z-index-popup-base: 0;
   --ant-opacity-image: 1;
+  --ant-border-radius-sm: 3px;
+  --ant-border-radius-lg: 12px;
   --ant-color-primary-hover: var(--ph-color-accent-emphasis);
-  --ant-color-primary-active: var(--ph-color-accent-emphasis);
+  --ant-color-primary-active: var(--ph-color-accent-active);
   --ant-color-text: var(--ph-color-fg-default);
   --ant-color-text-secondary: var(--ph-color-fg-muted);
   --ant-color-border: var(--ph-color-border-default);
   --ant-color-bg-container: var(--ph-color-canvas-default);
   --ant-color-bg-elevated: var(--ph-surface-raised);
   --ant-color-fill-alter: var(--ph-color-canvas-subtle);
+  --ant-control-outline: color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
+  --ant-control-outline-width: 2px;
   --ant-color-link-hover: var(--ph-color-accent-emphasis);
-  --ant-color-link-active: var(--ph-color-accent-emphasis);
+  --ant-color-link-active: var(--ph-color-accent-active);
+  --ant-box-shadow: var(--ph-shadow-floating);
   --ant-box-shadow-secondary: var(--ph-shadow-floating);
   --ant-blue-1: #e6f4ff;
   --ant-blue-2: #bae0ff;
@@ -779,9 +812,7 @@
   --ant-motion-duration-slow: 0s;
   --ant-line-width-bold: 2px;
   --ant-border-radius-xs: 2px;
-  --ant-border-radius-sm: 6px;
-  --ant-border-radius-lg: 12px;
-  --ant-border-radius-outer: 6px;
+  --ant-border-radius-outer: 4px;
   --ant-color-fill-content: rgba(0, 0, 0, 0.06);
   --ant-color-fill-content-hover: rgba(0, 0, 0, 0.15);
   --ant-color-bg-container-disabled: rgba(0, 0, 0, 0.04);
@@ -802,14 +833,12 @@
   --ant-color-warning-outline: rgb(255, 251, 230);
   --ant-font-size-icon: 12px;
   --ant-line-width-focus: 3px;
-  --ant-control-outline-width: 2px;
   --ant-control-interactive-size: 16px;
   --ant-control-item-bg-hover: rgba(0, 0, 0, 0.04);
   --ant-control-item-bg-active: #404040;
   --ant-control-item-bg-active-hover: #333333;
   --ant-control-item-bg-active-disabled: rgba(0, 0, 0, 0.15);
   --ant-control-tmp-outline: rgba(0, 0, 0, 0.02);
-  --ant-control-outline: rgba(246, 246, 246, 0.26);
   --ant-font-weight-strong: 600;
   --ant-opacity-loading: 0.65;
   --ant-link-decoration: none;
@@ -838,10 +867,6 @@
   --ant-margin-lg: 24px;
   --ant-margin-xl: 32px;
   --ant-margin-xxl: 48px;
-  --ant-box-shadow:
-    0 6px 16px 0 rgba(0, 0, 0, 0.08),
-    0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 9px 28px 8px rgba(0, 0, 0, 0.05);
   --ant-box-shadow-tertiary:
     0 1px 2px 0 rgba(0, 0, 0, 0.03),
     0 1px 6px -1px rgba(0, 0, 0, 0.02),
@@ -924,7 +949,11 @@
   --ant-button-font-weight: 400;
   --ant-button-icon-gap: 8px;
   --ant-button-default-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);
-  --ant-button-primary-shadow: 0 2px 0 rgba(246, 246, 246, 0.26);
+  --ant-button-primary-shadow: 0 2px 0 color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-button-danger-shadow: 0 2px 0 rgb(255, 242, 240);
   --ant-button-primary-color: #fff;
   --ant-button-danger-color: #fff;
@@ -952,8 +981,8 @@
   --ant-button-default-hover-color: var(--ph-color-accent-emphasis);
   --ant-button-default-hover-border-color: var(--ph-color-accent-emphasis);
   --ant-button-default-active-bg: var(--ph-color-canvas-default);
-  --ant-button-default-active-color: var(--ph-color-accent-emphasis);
-  --ant-button-default-active-border-color: var(--ph-color-accent-emphasis);
+  --ant-button-default-active-color: var(--ph-color-accent-active);
+  --ant-button-default-active-border-color: var(--ph-color-accent-active);
   --ant-button-solid-text-color: #fff;
   --ant-button-content-font-size: 14px;
   --ant-button-content-font-size-sm: 14px;
@@ -1002,7 +1031,7 @@
   --ant-motion-ease-in-back: cubic-bezier(0.71, -0.46, 0.88, 0.6);
   --ant-motion-ease-in-quint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   --ant-motion-ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
-  --ant-border-radius: 10px;
+  --ant-border-radius: 6px;
   --ant-size-unit: 4px;
   --ant-size-step: 4px;
   --ant-size-popup-arrow: 16px;
@@ -1010,16 +1039,25 @@
   --ant-z-index-base: 0;
   --ant-z-index-popup-base: 0;
   --ant-opacity-image: 1;
+  --ant-border-radius-sm: 3px;
+  --ant-border-radius-lg: 12px;
   --ant-color-primary-hover: var(--ph-color-accent-emphasis);
-  --ant-color-primary-active: var(--ph-color-accent-emphasis);
+  --ant-color-primary-active: var(--ph-color-accent-active);
   --ant-color-text: var(--ph-color-fg-default);
   --ant-color-text-secondary: var(--ph-color-fg-muted);
   --ant-color-border: var(--ph-color-border-default);
   --ant-color-bg-container: var(--ph-color-canvas-default);
   --ant-color-bg-elevated: var(--ph-surface-raised);
   --ant-color-fill-alter: var(--ph-color-canvas-subtle);
+  --ant-control-outline: color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
+  --ant-control-outline-width: 2px;
   --ant-color-link-hover: var(--ph-color-accent-emphasis);
-  --ant-color-link-active: var(--ph-color-accent-emphasis);
+  --ant-color-link-active: var(--ph-color-accent-active);
+  --ant-box-shadow: var(--ph-shadow-floating);
   --ant-box-shadow-secondary: var(--ph-shadow-floating);
   --ant-blue-1: #e6f4ff;
   --ant-blue-2: #bae0ff;
@@ -1274,9 +1312,7 @@
   --ant-motion-duration-slow: 0s;
   --ant-line-width-bold: 2px;
   --ant-border-radius-xs: 2px;
-  --ant-border-radius-sm: 6px;
-  --ant-border-radius-lg: 12px;
-  --ant-border-radius-outer: 6px;
+  --ant-border-radius-outer: 4px;
   --ant-color-fill-content: rgba(0, 0, 0, 0.06);
   --ant-color-fill-content-hover: rgba(0, 0, 0, 0.15);
   --ant-color-bg-container-disabled: rgba(0, 0, 0, 0.04);
@@ -1297,14 +1333,12 @@
   --ant-color-warning-outline: rgb(255, 251, 230);
   --ant-font-size-icon: 12px;
   --ant-line-width-focus: 3px;
-  --ant-control-outline-width: 2px;
   --ant-control-interactive-size: 16px;
   --ant-control-item-bg-hover: rgba(0, 0, 0, 0.04);
   --ant-control-item-bg-active: #404040;
   --ant-control-item-bg-active-hover: #333333;
   --ant-control-item-bg-active-disabled: rgba(0, 0, 0, 0.15);
   --ant-control-tmp-outline: rgba(0, 0, 0, 0.02);
-  --ant-control-outline: rgba(246, 246, 246, 0.26);
   --ant-font-weight-strong: 600;
   --ant-opacity-loading: 0.65;
   --ant-link-decoration: none;
@@ -1333,10 +1367,6 @@
   --ant-margin-lg: 24px;
   --ant-margin-xl: 32px;
   --ant-margin-xxl: 48px;
-  --ant-box-shadow:
-    0 6px 16px 0 rgba(0, 0, 0, 0.08),
-    0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 9px 28px 8px rgba(0, 0, 0, 0.05);
   --ant-box-shadow-tertiary:
     0 1px 2px 0 rgba(0, 0, 0, 0.03),
     0 1px 6px -1px rgba(0, 0, 0, 0.02),
@@ -1404,7 +1434,11 @@
   --ant-pagination-addon-bg: var(--ph-color-canvas-subtle);
   --ant-pagination-active-border-color: #000000;
   --ant-pagination-hover-border-color: var(--ph-color-accent-emphasis);
-  --ant-pagination-active-shadow: 0 0 0 2px rgba(246, 246, 246, 0.26);
+  --ant-pagination-active-shadow: 0 0 0 2px color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-pagination-error-active-shadow: 0 0 0 2px rgb(255, 242, 240);
   --ant-pagination-warning-active-shadow: 0 0 0 2px rgb(255, 251, 230);
   --ant-pagination-hover-bg: var(--ph-color-canvas-default);
@@ -1419,15 +1453,15 @@
 .css-var-_R_0_.ant-popover {
   --ant-popover-title-min-width: 177px;
   --ant-popover-z-index-popup: 1030;
-  --ant-popover-arrow-shadow-width: 7.7989898732233325px;
+  --ant-popover-arrow-shadow-width: 8.970562748477143px;
   --ant-popover-arrow-path: path(
-    "M 0 8 A 6 6 0 0 0 4.242640687119285 6.242640687119285 L 6.585786437626905 3.899494936611666 A 2 2 0 0 1 9.414213562373096 3.899494936611666 L 11.757359312880716 6.242640687119285 A 6 6 0 0 0 16 8 Z"
+    "M 0 8 A 4 4 0 0 0 2.82842712474619 6.82842712474619 L 6.585786437626905 3.0710678118654755 A 2 2 0 0 1 9.414213562373096 3.0710678118654755 L 13.17157287525381 6.82842712474619 A 4 4 0 0 0 16 8 Z"
   );
   --ant-popover-arrow-polygon: polygon(
-    2.485281374238571px 100%,
-    50% 2.485281374238571px,
-    13.514718625761429px 100%,
-    2.485281374238571px 100%
+    1.6568542494923806px 100%,
+    50% 1.6568542494923806px,
+    14.34314575050762px 100%,
+    1.6568542494923806px 100%
   );
   --ant-popover-arrow-offset-horizontal: 12px;
   --ant-popover-arrow-offset-vertical: 8px;
@@ -1463,7 +1497,7 @@
   --ant-radio-button-solid-checked-color: #fff;
   --ant-radio-button-solid-checked-bg: #000000;
   --ant-radio-button-solid-checked-hover-bg: var(--ph-color-accent-emphasis);
-  --ant-radio-button-solid-checked-active-bg: var(--ph-color-accent-emphasis);
+  --ant-radio-button-solid-checked-active-bg: var(--ph-color-accent-active);
   --ant-radio-button-bg: var(--ph-color-canvas-default);
   --ant-radio-button-checked-bg: var(--ph-color-canvas-default);
   --ant-radio-button-color: var(--ph-color-fg-default);
@@ -1609,7 +1643,7 @@
   --ant-tabs-item-color: var(--ph-color-fg-default);
   --ant-tabs-item-selected-color: #000000;
   --ant-tabs-item-hover-color: var(--ph-color-accent-emphasis);
-  --ant-tabs-item-active-color: var(--ph-color-accent-emphasis);
+  --ant-tabs-item-active-color: var(--ph-color-accent-active);
   --ant-tabs-card-gutter: 2px;
 }
 .css-var-_R_0_.ant-picker-css-var {
@@ -1622,7 +1656,11 @@
   --ant-date-picker-addon-bg: var(--ph-color-canvas-subtle);
   --ant-date-picker-active-border-color: #000000;
   --ant-date-picker-hover-border-color: var(--ph-color-accent-emphasis);
-  --ant-date-picker-active-shadow: 0 0 0 2px rgba(246, 246, 246, 0.26);
+  --ant-date-picker-active-shadow: 0 0 0 2px color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-date-picker-error-active-shadow: 0 0 0 2px rgb(255, 242, 240);
   --ant-date-picker-warning-active-shadow: 0 0 0 2px rgb(255, 251, 230);
   --ant-date-picker-hover-bg: var(--ph-color-canvas-default);
@@ -1651,15 +1689,15 @@
   --ant-date-picker-multiple-selector-bg-disabled: rgba(0, 0, 0, 0.04);
   --ant-date-picker-multiple-item-color-disabled: rgba(0, 0, 0, 0.25);
   --ant-date-picker-multiple-item-border-color-disabled: transparent;
-  --ant-date-picker-arrow-shadow-width: 7.7989898732233325px;
+  --ant-date-picker-arrow-shadow-width: 8.970562748477143px;
   --ant-date-picker-arrow-path: path(
-    "M 0 8 A 6 6 0 0 0 4.242640687119285 6.242640687119285 L 6.585786437626905 3.899494936611666 A 2 2 0 0 1 9.414213562373096 3.899494936611666 L 11.757359312880716 6.242640687119285 A 6 6 0 0 0 16 8 Z"
+    "M 0 8 A 4 4 0 0 0 2.82842712474619 6.82842712474619 L 6.585786437626905 3.0710678118654755 A 2 2 0 0 1 9.414213562373096 3.0710678118654755 L 13.17157287525381 6.82842712474619 A 4 4 0 0 0 16 8 Z"
   );
   --ant-date-picker-arrow-polygon: polygon(
-    2.485281374238571px 100%,
-    50% 2.485281374238571px,
-    13.514718625761429px 100%,
-    2.485281374238571px 100%
+    1.6568542494923806px 100%,
+    50% 1.6568542494923806px,
+    14.34314575050762px 100%,
+    1.6568542494923806px 100%
   );
   --ant-date-picker-presets-width: 120px;
   --ant-date-picker-presets-max-width: 200px;
@@ -1688,15 +1726,15 @@
   --ant-tour-primary-next-btn-hover-bg: rgb(240, 240, 240);
   --ant-tour-arrow-offset-horizontal: 12px;
   --ant-tour-arrow-offset-vertical: 8px;
-  --ant-tour-arrow-shadow-width: 7.7989898732233325px;
+  --ant-tour-arrow-shadow-width: 8.970562748477143px;
   --ant-tour-arrow-path: path(
-    "M 0 8 A 6 6 0 0 0 4.242640687119285 6.242640687119285 L 6.585786437626905 3.899494936611666 A 2 2 0 0 1 9.414213562373096 3.899494936611666 L 11.757359312880716 6.242640687119285 A 6 6 0 0 0 16 8 Z"
+    "M 0 8 A 4 4 0 0 0 2.82842712474619 6.82842712474619 L 6.585786437626905 3.0710678118654755 A 2 2 0 0 1 9.414213562373096 3.0710678118654755 L 13.17157287525381 6.82842712474619 A 4 4 0 0 0 16 8 Z"
   );
   --ant-tour-arrow-polygon: polygon(
-    2.485281374238571px 100%,
-    50% 2.485281374238571px,
-    13.514718625761429px 100%,
-    2.485281374238571px 100%
+    1.6568542494923806px 100%,
+    50% 1.6568542494923806px,
+    14.34314575050762px 100%,
+    1.6568542494923806px 100%
   );
 }
 .css-var-_R_0_.ant-transfer {
@@ -1713,15 +1751,15 @@
   --ant-dropdown-padding-block: 5px;
   --ant-dropdown-arrow-offset-horizontal: 12px;
   --ant-dropdown-arrow-offset-vertical: 8px;
-  --ant-dropdown-arrow-shadow-width: 7.7989898732233325px;
+  --ant-dropdown-arrow-shadow-width: 8.970562748477143px;
   --ant-dropdown-arrow-path: path(
-    "M 0 8 A 6 6 0 0 0 4.242640687119285 6.242640687119285 L 6.585786437626905 3.899494936611666 A 2 2 0 0 1 9.414213562373096 3.899494936611666 L 11.757359312880716 6.242640687119285 A 6 6 0 0 0 16 8 Z"
+    "M 0 8 A 4 4 0 0 0 2.82842712474619 6.82842712474619 L 6.585786437626905 3.0710678118654755 A 2 2 0 0 1 9.414213562373096 3.0710678118654755 L 13.17157287525381 6.82842712474619 A 4 4 0 0 0 16 8 Z"
   );
   --ant-dropdown-arrow-polygon: polygon(
-    2.485281374238571px 100%,
-    50% 2.485281374238571px,
-    13.514718625761429px 100%,
-    2.485281374238571px 100%
+    1.6568542494923806px 100%,
+    50% 1.6568542494923806px,
+    14.34314575050762px 100%,
+    1.6568542494923806px 100%
   );
 }
 .css-var-_R_0_.ant-tree {
@@ -1760,7 +1798,11 @@
   --ant-select-show-arrow-padding-inline-end: 18px;
   --ant-select-hover-border-color: var(--ph-color-accent-emphasis);
   --ant-select-active-border-color: #000000;
-  --ant-select-active-outline-color: rgba(246, 246, 246, 0.26);
+  --ant-select-active-outline-color: color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-select-select-affix-padding: 4px;
 }
 .css-var-_R_0_.ant-tree-select-css-var {
@@ -1805,7 +1847,7 @@
   --ant-skeleton-gradient-from-color: rgba(0, 0, 0, 0.06);
   --ant-skeleton-gradient-to-color: rgba(0, 0, 0, 0.15);
   --ant-skeleton-title-height: 16px;
-  --ant-skeleton-block-radius: 6px;
+  --ant-skeleton-block-radius: 3px;
   --ant-skeleton-paragraph-margin-top: 28px;
   --ant-skeleton-paragraph-li-height: 16px;
 }
@@ -1853,7 +1895,11 @@
   --ant-button-font-weight: 400;
   --ant-button-icon-gap: 8px;
   --ant-button-default-shadow: 0 2px 0 rgba(0, 0, 0, 0.02);
-  --ant-button-primary-shadow: 0 2px 0 rgba(246, 246, 246, 0.26);
+  --ant-button-primary-shadow: 0 2px 0 color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
   --ant-button-danger-shadow: 0 2px 0 rgb(255, 242, 240);
   --ant-button-primary-color: #fff;
   --ant-button-danger-color: #fff;
@@ -1881,8 +1927,8 @@
   --ant-button-default-hover-color: var(--ph-color-accent-emphasis);
   --ant-button-default-hover-border-color: var(--ph-color-accent-emphasis);
   --ant-button-default-active-bg: var(--ph-color-canvas-default);
-  --ant-button-default-active-color: var(--ph-color-accent-emphasis);
-  --ant-button-default-active-border-color: var(--ph-color-accent-emphasis);
+  --ant-button-default-active-color: var(--ph-color-accent-active);
+  --ant-button-default-active-border-color: var(--ph-color-accent-active);
   --ant-button-solid-text-color: #fff;
   --ant-button-content-font-size: 14px;
   --ant-button-content-font-size-sm: 14px;
@@ -1978,7 +2024,7 @@
   --ant-motion-ease-in-back: cubic-bezier(0.71, -0.46, 0.88, 0.6);
   --ant-motion-ease-in-quint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   --ant-motion-ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
-  --ant-border-radius: 10px;
+  --ant-border-radius: 6px;
   --ant-size-unit: 4px;
   --ant-size-step: 4px;
   --ant-size-popup-arrow: 16px;
@@ -1986,16 +2032,25 @@
   --ant-z-index-base: 0;
   --ant-z-index-popup-base: 1000;
   --ant-opacity-image: 1;
+  --ant-border-radius-sm: 3px;
+  --ant-border-radius-lg: 12px;
   --ant-color-primary-hover: var(--ph-color-accent-emphasis);
-  --ant-color-primary-active: var(--ph-color-accent-emphasis);
+  --ant-color-primary-active: var(--ph-color-accent-active);
   --ant-color-text: var(--ph-color-fg-default);
   --ant-color-text-secondary: var(--ph-color-fg-muted);
   --ant-color-border: var(--ph-color-border-default);
   --ant-color-bg-container: var(--ph-color-canvas-default);
   --ant-color-bg-elevated: var(--ph-surface-raised);
   --ant-color-fill-alter: var(--ph-color-canvas-subtle);
+  --ant-control-outline: color-mix(
+    in oklch,
+    var(--ph-color-accent-fg) 22%,
+    transparent
+  );
+  --ant-control-outline-width: 2px;
   --ant-color-link-hover: var(--ph-color-accent-emphasis);
-  --ant-color-link-active: var(--ph-color-accent-emphasis);
+  --ant-color-link-active: var(--ph-color-accent-active);
+  --ant-box-shadow: var(--ph-shadow-floating);
   --ant-box-shadow-secondary: var(--ph-shadow-floating);
   --ant-blue-1: #e6f4ff;
   --ant-blue-2: #bae0ff;
@@ -2250,9 +2305,7 @@
   --ant-motion-duration-slow: 0.3s;
   --ant-line-width-bold: 2px;
   --ant-border-radius-xs: 2px;
-  --ant-border-radius-sm: 6px;
-  --ant-border-radius-lg: 12px;
-  --ant-border-radius-outer: 6px;
+  --ant-border-radius-outer: 4px;
   --ant-color-fill-content: rgba(0, 0, 0, 0.06);
   --ant-color-fill-content-hover: rgba(0, 0, 0, 0.15);
   --ant-color-bg-container-disabled: rgba(0, 0, 0, 0.04);
@@ -2273,14 +2326,12 @@
   --ant-color-warning-outline: rgb(255, 251, 230);
   --ant-font-size-icon: 12px;
   --ant-line-width-focus: 3px;
-  --ant-control-outline-width: 2px;
   --ant-control-interactive-size: 16px;
   --ant-control-item-bg-hover: rgba(0, 0, 0, 0.04);
   --ant-control-item-bg-active: #404040;
   --ant-control-item-bg-active-hover: #333333;
   --ant-control-item-bg-active-disabled: rgba(0, 0, 0, 0.15);
   --ant-control-tmp-outline: rgba(0, 0, 0, 0.02);
-  --ant-control-outline: rgba(246, 246, 246, 0.26);
   --ant-font-weight-strong: 600;
   --ant-opacity-loading: 0.65;
   --ant-link-decoration: none;
@@ -2309,10 +2360,6 @@
   --ant-margin-lg: 24px;
   --ant-margin-xl: 32px;
   --ant-margin-xxl: 48px;
-  --ant-box-shadow:
-    0 6px 16px 0 rgba(0, 0, 0, 0.08),
-    0 3px 6px -4px rgba(0, 0, 0, 0.12),
-    0 9px 28px 8px rgba(0, 0, 0, 0.05);
   --ant-box-shadow-tertiary:
     0 1px 2px 0 rgba(0, 0, 0, 0.03),
     0 1px 6px -1px rgba(0, 0, 0, 0.02),
