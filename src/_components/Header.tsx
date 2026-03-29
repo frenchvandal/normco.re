@@ -18,68 +18,15 @@ type El = ReturnType<typeof jsx>;
 type Translations = SiteTranslations;
 type LanguageAlternates = Partial<Record<SiteLanguage, string>>;
 type NavigationItem = ReturnType<typeof buildHeaderNavigation>[number];
+type HeaderVariant = "editorial-home" | "standard";
 type HeaderProps = Readonly<{
   currentUrl: string;
   language: SiteLanguage;
   languageAlternates?: LanguageAlternates;
 }>;
 
-const eh = (suffix: string) => `editorial-home-header__${suffix}`;
-type HeaderVariantState = Readonly<{
-  isEditorialHome: boolean;
-  actionIconSize: number;
-  menuIconSize: number;
-}>;
-
-function cx(...classes: ReadonlyArray<string | false | undefined>): string {
-  return classes.filter((value): value is string => Boolean(value)).join(" ");
-}
-
-function editorialClass(
-  variant: HeaderVariantState,
-  suffix: string,
-): string | undefined {
-  return variant.isEditorialHome ? eh(suffix) : undefined;
-}
-
-function headerClass(
-  variant: HeaderVariantState,
-  baseClassName: string,
-  editorialSuffix?: string,
-): string {
-  return cx(
-    baseClassName,
-    editorialSuffix ? editorialClass(variant, editorialSuffix) : undefined,
-  );
-}
-
-function resolveHeaderVariant(isEditorialHome: boolean): HeaderVariantState {
-  return {
-    isEditorialHome,
-    actionIconSize: isEditorialHome ? 16 : 20,
-    menuIconSize: isEditorialHome ? 16 : 20,
-  };
-}
-
-function resolveActionIconClass(variant: HeaderVariantState): string {
-  return variant.isEditorialHome
-    ? eh("action-icon")
-    : "site-header__action-icon";
-}
-
-function resolveMenuIconClass(variant: HeaderVariantState): string {
-  return variant.isEditorialHome
-    ? cx("site-menu-icon", editorialClass(variant, "action-icon"))
-    : "site-header__menu-icon site-menu-icon";
-}
-
-function resolvePanelHeadClass(
-  variant: HeaderVariantState,
-  panel: "language" | "search",
-): string {
-  return variant.isEditorialHome
-    ? "site-header-panel-head"
-    : `site-header-panel-head site-header-panel-head--${panel}`;
+function resolveHeaderVariant(isEditorialHome: boolean): HeaderVariant {
+  return isEditorialHome ? "editorial-home" : "standard";
 }
 
 // ── Shared sub-components ──────────────────────────────────────────────
@@ -123,26 +70,20 @@ function renderHeaderAction(
   );
 }
 
-function renderThemeIcons(className: string, size = 16): El {
+function renderThemeIcons(className: string): El {
   return (
     <>
       <SiteIcon
         name="sun"
         className={`theme-icon theme-icon--sun ${className}`}
-        width={size}
-        height={size}
       />
       <SiteIcon
         name="moon"
         className={`theme-icon theme-icon--moon ${className}`}
-        width={size}
-        height={size}
       />
       <SiteIcon
         name="device-desktop"
         className={`theme-icon theme-icon--system ${className}`}
-        width={size}
-        height={size}
       />
     </>
   );
@@ -150,7 +91,6 @@ function renderThemeIcons(className: string, size = 16): El {
 
 function resolveHeaderActions(
   t: Translations,
-  variant: HeaderVariantState,
 ) {
   return [
     {
@@ -160,13 +100,10 @@ function resolveHeaderActions(
         "aria-expanded": "false",
         "aria-controls": HEADER_IDS.searchPanel,
       },
-      buttonClassName: headerClass(variant, "site-header__action", "action"),
       iconMarkup: (
         <SiteIcon
           name="search"
-          className={resolveActionIconClass(variant)}
-          width={variant.actionIconSize}
-          height={variant.actionIconSize}
+          className="site-header__action-icon"
         />
       ),
       tooltipLabel: t.site.searchLabel,
@@ -179,17 +116,11 @@ function resolveHeaderActions(
         "aria-controls": HEADER_IDS.languagePanel,
         "aria-haspopup": "menu",
       },
-      buttonClassName: headerClass(
-        variant,
-        "site-header__action site-header__language-toggle",
-        "action",
-      ),
+      buttonClassName: "site-header__action site-header__language-toggle",
       iconMarkup: (
         <SiteIcon
           name="translation"
-          className={resolveActionIconClass(variant)}
-          width={variant.actionIconSize}
-          height={variant.actionIconSize}
+          className="site-header__action-icon"
         />
       ),
       tooltipLabel: t.site.languageSelectLabel,
@@ -202,12 +133,8 @@ function resolveHeaderActions(
         "data-label-switch-dark": t.site.switchToDarkThemeLabel,
         "data-label-follow-system": t.site.followSystemThemeLabel,
       },
-      buttonClassName: headerClass(variant, "site-header__action", "action"),
       buttonId: HEADER_IDS.themeToggle,
-      iconMarkup: renderThemeIcons(
-        resolveActionIconClass(variant),
-        variant.actionIconSize,
-      ),
+      iconMarkup: renderThemeIcons("site-header__action-icon"),
       tooltipLabel: t.site.themeToggleLabel,
     },
   ] as const;
@@ -215,7 +142,6 @@ function resolveHeaderActions(
 
 function renderDesktopNavigationMenu(
   items: readonly NavigationItem[],
-  variant: HeaderVariantState,
 ): El {
   return (
     <div class="site-header__menu-shell" data-site-header-menu="">
@@ -229,12 +155,10 @@ function renderDesktopNavigationMenu(
           >
             <a
               href={href}
-              class={headerClass(variant, "site-header__menu-item", "nav-link")}
+              class="site-header__menu-item"
               {...(isCurrent ? { "aria-current": "page" as const } : {})}
             >
-              {variant.isEditorialHome
-                ? <span class="site-header-menu-item-label">{label}</span>
-                : label}
+              {label}
             </a>
           </li>
         ))}
@@ -290,32 +214,23 @@ function renderLanguagePanel(
   language: SiteLanguage,
   alternates: LanguageAlternates,
   t: Translations,
-  variant: HeaderVariantState,
+  variant: HeaderVariant,
 ): El {
   return (
     <div
       id={HEADER_IDS.languagePanel}
-      class={headerClass(
-        variant,
-        "site-header__panel site-header__language-panel",
-        "panel",
-      )}
+      class="site-header__panel site-header__language-panel"
+      data-header-variant={variant}
       data-language-panel=""
       hidden
     >
-      <div
-        class={headerClass(variant, "site-header__panel-content", "panel-box")}
-      >
+      <div class="site-header__panel-content">
         <PanelHead
-          className={resolvePanelHeadClass(variant, "language")}
+          className="site-header-panel-head site-header-panel-head--language"
           title={t.site.languageSelectLabel}
         />
         <div
-          class={headerClass(
-            variant,
-            "site-header__language-menu",
-            "language-menu",
-          )}
+          class="site-header__language-menu"
           role="menu"
           aria-label={t.site.languageSelectLabel}
           data-language-menu=""
@@ -323,7 +238,7 @@ function renderLanguagePanel(
           {renderLanguageOptions(
             language,
             alternates,
-            headerClass(variant, "site-header__language-option", "menu-option"),
+            "site-header__language-option",
           )}
         </div>
       </div>
@@ -333,30 +248,23 @@ function renderLanguagePanel(
 
 function renderSearchPanel(
   t: Translations,
-  variant: HeaderVariantState,
+  variant: HeaderVariant,
 ): El {
   return (
     <div
       id={HEADER_IDS.searchPanel}
-      class={headerClass(
-        variant,
-        "site-header__panel site-header__search-panel",
-        "panel",
-      )}
+      class="site-header__panel site-header__search-panel"
+      data-header-variant={variant}
       role="search"
       aria-label={t.site.searchLabel}
       hidden
       data-search-panel=""
     >
-      <div
-        class={headerClass(variant, "site-header__panel-content", "panel-box")}
-      >
-        {variant.isEditorialHome && (
-          <PanelHead
-            className={resolvePanelHeadClass(variant, "search")}
-            title={t.site.searchLabel}
-          />
-        )}
+      <div class="site-header__panel-content">
+        <PanelHead
+          className="site-header-panel-head site-header-panel-head--search"
+          title={t.site.searchLabel}
+        />
         <div
           id={HEADER_IDS.searchStatus}
           class="site-header__search-status"
@@ -444,11 +352,7 @@ function renderSearchPanel(
         </div>
         <div
           id={HEADER_IDS.searchContainer}
-          class={headerClass(
-            variant,
-            "site-header__search-root",
-            "search-root",
-          )}
+          class="site-header__search-root"
           data-search-root=""
           aria-busy="false"
           data-search-loading-label={t.site.searchLoadingLabel}
@@ -482,27 +386,18 @@ function renderSideNav(
   homeUrl: string,
   siteName: string,
   t: Translations,
-  variant: HeaderVariantState,
 ): El {
   return (
     <aside
       id={HEADER_IDS.sideNav}
-      class={headerClass(variant, "site-side-nav", "drawer")}
+      class="site-side-nav"
       role="dialog"
       aria-modal="true"
       aria-label={t.site.mainNavigationAriaLabel}
       hidden
     >
-      <div
-        class={headerClass(
-          variant,
-          "site-side-nav__navigation",
-          "drawer-navigation",
-        )}
-      >
-        <div
-          class={headerClass(variant, "site-side-nav__header", "drawer-header")}
-        >
+      <div class="site-side-nav__navigation">
+        <div class="site-side-nav__header">
           <a href={homeUrl} class="site-side-nav__brand">{siteName}</a>
           <button
             type="button"
@@ -578,41 +473,27 @@ export default (
   const navItems = buildHeaderNavigation({ currentUrl, language });
   const isHome = currentUrl === homeUrl;
   const variant = resolveHeaderVariant(isHome);
-  const actions = resolveHeaderActions(t, variant);
+  const actions = resolveHeaderActions(t);
 
   return (
     <>
-      <header
-        class={cx("site-header", isHome && "site-header--editorial-home")}
-      >
-        <div class={headerClass(variant, "site-header__wrapper", "wrapper")}>
-          <div class={headerClass(variant, "site-header__left", "left")}>
+      <header class="site-header" data-header-variant={variant}>
+        <div class="site-header__wrapper">
+          <div class="site-header__left">
             <button
               type="button"
-              class={headerClass(
-                variant,
-                "site-header__action site-header__menu-toggle",
-                "menu-toggle",
-              )}
+              class="site-header__action site-header__menu-toggle"
               aria-label={t.site.menuToggleLabel}
               aria-expanded="false"
               aria-controls={HEADER_IDS.sideNav}
             >
               <SiteIcon
                 name="three-bars"
-                className={`${
-                  resolveMenuIconClass(variant)
-                } site-menu-icon--menu`}
-                width={variant.menuIconSize}
-                height={variant.menuIconSize}
+                className="site-header__menu-icon site-menu-icon site-menu-icon--menu"
               />
               <SiteIcon
                 name="x"
-                className={`${
-                  resolveMenuIconClass(variant)
-                } site-menu-icon--close`}
-                width={variant.menuIconSize}
-                height={variant.menuIconSize}
+                className="site-header__menu-icon site-menu-icon site-menu-icon--close"
               />
             </button>
 
@@ -620,10 +501,10 @@ export default (
               <>
                 <a href={homeUrl} class="site-header__brand">{siteName}</a>
                 <nav
-                  class={headerClass(variant, "site-header__nav", "nav")}
+                  class="site-header__nav"
                   aria-label={t.site.mainNavigationAriaLabel}
                 >
-                  {renderDesktopNavigationMenu(navItems, variant)}
+                  {renderDesktopNavigationMenu(navItems)}
                 </nav>
               </>
             )}
@@ -631,14 +512,14 @@ export default (
 
           {isHome && (
             <nav
-              class={headerClass(variant, "site-header__nav", "nav")}
+              class="site-header__nav"
               aria-label={t.site.mainNavigationAriaLabel}
             >
-              {renderDesktopNavigationMenu(navItems, variant)}
+              {renderDesktopNavigationMenu(navItems)}
             </nav>
           )}
 
-          <div class={headerClass(variant, "site-header__global", "global")}>
+          <div class="site-header__global">
             {actions.map((action) => renderHeaderAction(action))}
           </div>
         </div>
@@ -646,13 +527,7 @@ export default (
 
       {renderLanguagePanel(language, languageAlternates, t, variant)}
       {renderSearchPanel(t, variant)}
-      {renderSideNav(
-        navItems,
-        homeUrl,
-        siteName,
-        t,
-        variant,
-      )}
+      {renderSideNav(navItems, homeUrl, siteName, t)}
       <div class="site-side-nav__overlay" aria-hidden="true"></div>
     </>
   );

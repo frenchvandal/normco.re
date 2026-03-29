@@ -330,7 +330,7 @@
         var(--ph-color-border-muted);
     }
 
-    .site-header--editorial-home .site-header__global {
+    .site-header[data-header-variant="editorial-home"] .site-header__global {
       padding-inline-start: 0;
       border-inline-start: 0;
     }

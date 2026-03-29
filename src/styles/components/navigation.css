@@ -113,8 +113,7 @@
     }
   }
 
-  .site-side-nav__navigation,
-  .editorial-home-header__drawer-navigation {
+  .site-side-nav__navigation {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     gap: 0;
@@ -125,8 +124,7 @@
     overscroll-behavior: contain;
   }
 
-  .site-side-nav__header,
-  .editorial-home-header__drawer-header {
+  .site-side-nav__header {
     display: flex;
     align-items: center;
     justify-content: space-between;

@@ -212,26 +212,21 @@ describe("Header()", () => {
 
     assertMatch(
       html,
-      /<header[^>]*class="site-header site-header--editorial-home"/,
+      /<header[^>]*class="site-header"[^>]*data-header-variant="editorial-home"/,
     );
-    assertStringIncludes(
-      html,
-      'class="site-header__nav editorial-home-header__nav"',
-    );
+    assertStringIncludes(html, 'class="site-header__nav"');
     assertStringIncludes(html, 'data-site-header-menu=""');
     assertStringIncludes(html, 'class="site-header__menu-shell"');
-    assertStringIncludes(
-      html,
-      'class="site-header__action editorial-home-header__action"',
-    );
-    assertStringIncludes(html, 'class="editorial-home-header__action-icon"');
+    assertStringIncludes(html, 'class="site-header__action"');
+    assertStringIncludes(html, 'class="site-header__action-icon"');
     assertStringIncludes(html, 'data-icon="translation"');
     assertStringIncludes(html, "theme-icon theme-icon--sun");
     assertStringIncludes(html, "theme-icon theme-icon--moon");
     assertStringIncludes(html, "theme-icon theme-icon--system");
+    assertStringIncludes(html, 'class="site-side-nav"');
     assertStringIncludes(
       html,
-      'class="site-side-nav editorial-home-header__drawer"',
+      'class="site-header__panel site-header__search-panel" data-header-variant="editorial-home"',
     );
     assertNotMatch(html, /\bbtn-octicon\b/);
     assertNotMatch(html, /\bsubnav-item\b/);
@@ -282,6 +277,8 @@ describe("Header CSS contracts", () => {
       layoutStyles,
       "block-size: var(--ph-control-size-compact);",
     );
+    assertStringIncludes(layoutStyles, 'data-header-variant="editorial-home"');
+    assertStringIncludes(layoutStyles, "--ph-header-action-icon-size: 1rem;");
   });
 
   it("styles the mobile side nav as a true drawer", () => {

@@ -1,5 +1,7 @@
 @layer layout {
   .site-header {
+    --ph-header-action-icon-size: 1.25rem;
+    --ph-header-menu-icon-size: 1.25rem;
     position: sticky;
     inset-block-start: 0;
     z-index: var(--ph-layer-header);
@@ -12,6 +14,11 @@
       var(--ph-color-canvas-subtle)
     );
     backdrop-filter: var(--ph-backdrop-frosted);
+  }
+
+  .site-header[data-header-variant="editorial-home"] {
+    --ph-header-action-icon-size: 1rem;
+    --ph-header-menu-icon-size: 1rem;
   }
 
   .site-header__wrapper {
@@ -70,12 +77,8 @@
     text-transform: uppercase;
   }
 
-  .site-header--editorial-home .site-header__wrapper {
-    inline-size: min(100%, var(--ph-wide-max));
-  }
-
-  .editorial-home-header__left,
-  .editorial-home-header__global {
+  .site-header[data-header-variant="editorial-home"] .site-header__left,
+  .site-header[data-header-variant="editorial-home"] .site-header__global {
     gap: var(--ph-space-2);
   }
 
@@ -86,16 +89,17 @@
     text-transform: none;
   }
 
-  .site-header--editorial-home .editorial-home-header__brand-meta {
+  .site-header[data-header-variant="editorial-home"]
+    .editorial-home-header__brand-meta {
     display: none;
   }
 
-  .editorial-home-header__nav {
+  .site-header[data-header-variant="editorial-home"] .site-header__nav {
     margin-inline-start: auto;
     justify-content: flex-end;
   }
 
-  .editorial-home-header__nav-link {
+  .site-header[data-header-variant="editorial-home"] .site-header__menu-item {
     padding-inline: 0;
     font-weight: 500;
   }
@@ -189,9 +193,7 @@
   }
 
   .site-header__action,
-  .site-header__menu-toggle,
-  .editorial-home-header__action,
-  .editorial-home-header__menu-toggle {
+  .site-header__menu-toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -206,6 +208,22 @@
       color var(--ph-duration-default) var(--ph-easing-default),
       background-color var(--ph-duration-default) var(--ph-easing-default),
       border-color var(--ph-duration-default) var(--ph-easing-default);
+  }
+
+  .site-header__action-icon,
+  .site-header__menu-icon {
+    color: currentColor;
+    flex: none;
+  }
+
+  .site-header__action-icon {
+    inline-size: var(--ph-header-action-icon-size);
+    block-size: var(--ph-header-action-icon-size);
+  }
+
+  .site-header__menu-icon {
+    inline-size: var(--ph-header-menu-icon-size);
+    block-size: var(--ph-header-menu-icon-size);
   }
 
   .site-header__action:hover,
@@ -359,8 +377,16 @@
       var(--ph-color-border-muted);
   }
 
-  .site-header-panel-head--language {
+  .site-header-panel-head--language,
+  .site-header-panel-head--search {
     display: none;
+  }
+
+  .site-header__panel[data-header-variant="editorial-home"]
+    .site-header-panel-head--language,
+  .site-header__panel[data-header-variant="editorial-home"]
+    .site-header-panel-head--search {
+    display: flex;
   }
 
   .site-header__panel-title {
