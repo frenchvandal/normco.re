@@ -26,6 +26,50 @@ export function renderBreadcrumbItems(items: readonly BlogBreadcrumbItem[]) {
   }));
 }
 
+/**
+ * Blog client payloads already carry trusted server-rendered HTML. Keep the
+ * React sink behind named helpers so raw markup remains explicit and rare.
+ */
+export function TrustedHtmlSection(
+  {
+    html,
+    className,
+    lang,
+    ariaLabelledby,
+  }: {
+    html: string;
+    className?: string | undefined;
+    lang?: string | undefined;
+    ariaLabelledby?: string | undefined;
+  },
+) {
+  return (
+    <section
+      className={className}
+      lang={lang}
+      aria-labelledby={ariaLabelledby}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
+
+export function TrustedHtmlSpan(
+  {
+    html,
+    className,
+  }: {
+    html: string;
+    className?: string | undefined;
+  },
+) {
+  return (
+    <span
+      className={className}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
+
 export function formatIndex(index: number): string {
   return index.toString().padStart(2, "0");
 }

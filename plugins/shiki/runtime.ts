@@ -23,6 +23,8 @@ const SHIKI_DEBUG_ENV_NAME = "VSCODE_TEXTMATE_DEBUG";
 type NpmShikiModule = typeof import("npm/shiki");
 
 let npmShikiModulePromise: Promise<NpmShikiModule> | undefined;
+// Serialize temporary `globalThis.process` shims so concurrent imports or
+// highlighter creation cannot stomp on each other's minimal env state.
 let processEnvMutationQueue = Promise.resolve();
 
 async function getOptionalEnvVariable(
@@ -103,6 +105,8 @@ function importNpmShiki(): Promise<NpmShikiModule> {
         () => import("npm/shiki"),
       );
     })().catch((error) => {
+      // Reset the cache on failure so a later call can retry after permissions
+      // or dependency issues have been fixed.
       npmShikiModulePromise = undefined;
       throw error;
     });
@@ -120,6 +124,8 @@ export async function createHighlighter(
 ): ReturnType<typeof createHighlighterType> {
   const safeEnv = await getSafeEnv();
 
+  // Shiki can consult the debug env during highlighter construction as well as
+  // module initialization, so we reapply the same narrow shim here.
   return await withTemporaryProcessEnv(
     safeEnv,
     () => npmShiki.createHighlighter(...args),

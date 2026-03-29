@@ -36,7 +36,12 @@ import {
   Title,
   VerticalAlignTopOutlined,
 } from "@blog/post-antd";
-import { MetaLine, renderBreadcrumbItems } from "./common.tsx";
+import {
+  MetaLine,
+  renderBreadcrumbItems,
+  TrustedHtmlSection,
+  TrustedHtmlSpan,
+} from "./common.tsx";
 
 export function PostView(
   { data, interactive = true }: {
@@ -125,11 +130,11 @@ export function PostView(
 
           <Divider className="blog-antd-section-divider" />
 
-          <section
+          <TrustedHtmlSection
             className="post-content"
             lang={data.languageTag}
-            aria-labelledby="post-title"
-            dangerouslySetInnerHTML={{ __html: data.contentHtml }}
+            ariaLabelledby="post-title"
+            html={data.contentHtml}
           />
 
           <Card
@@ -149,9 +154,7 @@ export function PostView(
               items={data.publicationDetails.map((item) => ({
                 key: item.key,
                 label: item.label,
-                children: (
-                  <span dangerouslySetInnerHTML={{ __html: item.valueHtml }} />
-                ),
+                children: <TrustedHtmlSpan html={item.valueHtml} />,
               }))}
             />
           </Card>

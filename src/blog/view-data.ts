@@ -9,8 +9,8 @@ export type BlogStoryCard = Readonly<{
   url: string;
   dateIso: string;
   dateLabel: string;
-  summary?: string;
-  readingLabel?: string;
+  summary?: string | undefined;
+  readingLabel?: string | undefined;
   tags?: readonly string[];
 }>;
 
@@ -80,9 +80,9 @@ export type BlogPostViewData = Readonly<{
   title: string;
   publishedDateIso: string;
   publishedDateLabel: string;
-  readingTimeLabel?: string;
+  readingTimeLabel?: string | undefined;
   summaryEyebrow: string;
-  summary?: string;
+  summary?: string | undefined;
   summaryItems: readonly BlogSummaryItem[];
   contentHtml: string;
   detailsTitle: string;

@@ -13,6 +13,9 @@ const postAntdSource = Deno.readTextFileSync(
 const postAntdBuild = Deno.readTextFileSync(
   new URL("./blog/client/post-antd.build.ts", import.meta.url),
 );
+const postAppSource = Deno.readTextFileSync(
+  new URL("./blog/client/PostApp.tsx", import.meta.url),
+);
 
 describe("blog client interaction contracts", () => {
   it("uses full-card links for story and featured cards", () => {
@@ -37,5 +40,12 @@ describe("blog client interaction contracts", () => {
     assertStringIncludes(postAntdSource, "Breadcrumb,\n  Button,");
     assertStringIncludes(postAntdBuild, "Breadcrumb,\n  Button,");
     assertStringIncludes(postAntdBuild, "import Button");
+  });
+
+  it("routes trusted post HTML through named helpers instead of inline sinks", () => {
+    assertStringIncludes(commonSource, "export function TrustedHtmlSection(");
+    assertStringIncludes(commonSource, "export function TrustedHtmlSpan(");
+    assertStringIncludes(postAppSource, "<TrustedHtmlSection");
+    assertStringIncludes(postAppSource, "<TrustedHtmlSpan");
   });
 });

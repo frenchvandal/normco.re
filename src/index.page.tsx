@@ -174,10 +174,8 @@ async function renderHomePostItems(
       dateIso: story.dateIso,
       className: "editorial-home-post editorial-home-post--ledger",
       showSummary: true,
-      ...(story.summary !== undefined ? { summary: story.summary } : {}),
-      ...(story.readingLabel !== undefined
-        ? { readingLabel: story.readingLabel }
-        : {}),
+      summary: story.summary,
+      readingLabel: story.readingLabel,
     });
 
     return {

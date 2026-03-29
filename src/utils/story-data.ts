@@ -26,11 +26,11 @@ import type {
 export type StoryData = {
   readonly title: string;
   readonly url: string;
-  readonly summary?: string;
+  readonly summary?: string | undefined;
   readonly tags: readonly string[];
   readonly dateIso: string;
   readonly dateLabel: string;
-  readonly readingLabel?: string;
+  readonly readingLabel?: string | undefined;
 };
 
 export function toStoryData(
@@ -49,10 +49,10 @@ export function toStoryData(
     dateIso: dateFormat(postDate, "ATOM", language) ??
       formatRfc3339Instant(postDate),
     dateLabel: formatShortDate(postDate, language),
-    ...(summary !== undefined ? { summary } : {}),
-    ...(minutes !== undefined
-      ? { readingLabel: formatReadingTime(minutes, language) }
-      : {}),
+    summary,
+    readingLabel: minutes !== undefined
+      ? formatReadingTime(minutes, language)
+      : undefined,
   };
 }
 
@@ -67,10 +67,8 @@ export async function renderPostListItem(
     url: story.url,
     dateStr: story.dateLabel,
     dateIso: story.dateIso,
-    ...(story.summary !== undefined ? { summary: story.summary } : {}),
-    ...(story.readingLabel !== undefined
-      ? { readingLabel: story.readingLabel }
-      : {}),
+    summary: story.summary,
+    readingLabel: story.readingLabel,
     ...extraProps,
   });
   return `<li class="archive-list-item">${card}</li>`;

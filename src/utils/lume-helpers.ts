@@ -7,8 +7,8 @@ export type PostCardProps = Readonly<{
   dateStr: string;
   dateIso: string;
   className?: string;
-  readingLabel?: string;
-  summary?: string;
+  readingLabel?: string | undefined;
+  summary?: string | undefined;
   showSummary?: boolean;
   authorName?: string;
   authorUrl?: string;

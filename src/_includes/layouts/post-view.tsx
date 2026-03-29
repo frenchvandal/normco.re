@@ -62,12 +62,12 @@ export type PostState = Readonly<{
   publishedDateIso: string;
   publishedDateLabel: string;
   publicationDetails: readonly DlItem[];
-  readingTimeLabel?: string;
+  readingTimeLabel?: string | undefined;
   renderedChildren: Lume.Data["children"];
   showSummaryBlock: boolean;
   summaryItems: readonly DlItem[];
   tags: readonly string[];
-  visibleSummary?: string;
+  visibleSummary?: string | undefined;
 }>;
 
 function renderDefinitionList(
@@ -265,12 +265,12 @@ export function resolvePostState(
     publishedDateIso,
     publishedDateLabel,
     publicationDetails,
-    ...(readingTimeLabel !== undefined ? { readingTimeLabel } : {}),
+    readingTimeLabel,
     renderedChildren,
     showSummaryBlock: visibleSummary !== undefined || outline.length > 0,
     summaryItems,
     tags,
-    ...(visibleSummary !== undefined ? { visibleSummary } : {}),
+    visibleSummary,
   };
 }
 
