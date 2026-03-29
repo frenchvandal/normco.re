@@ -372,7 +372,7 @@ export function PostBackToTop(
   return (
     <a
       href="#post-title"
-      class="blog-antd-backtop post-backtop"
+      class="post-backtop"
       aria-label={label}
     >
       <span class="blog-antd-backtop__button post-backtop__button">

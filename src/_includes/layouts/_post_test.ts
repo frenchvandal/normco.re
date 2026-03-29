@@ -395,7 +395,7 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, "const load = () => {");
       assertNotMatch(html, /=&gt;/);
       assertStringIncludes(html, "Publication details");
-      assertStringIncludes(html, 'class="blog-antd-backtop post-backtop"');
+      assertStringIncludes(html, 'class="post-backtop"');
       assertNotMatch(html, /data-blog-antd-root/);
       assertNotMatch(html, /blog-antd-post\.js/);
       assertNotMatch(html, /post-summary-callout/);
@@ -423,7 +423,7 @@ describe("post.tsx layout", () => {
         html,
         'class="feature-rail post-rail post-rail--outline-only"',
       );
-      assertStringIncludes(html, 'class="blog-antd-backtop post-backtop"');
+      assertStringIncludes(html, 'class="post-backtop"');
       assertNotMatch(html, /post-mobile-tools\.js/);
       assertNotMatch(html, /data-post-mobile-tools-open=""/);
     });
