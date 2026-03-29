@@ -24,104 +24,63 @@ type HeaderProps = Readonly<{
   languageAlternates?: LanguageAlternates;
 }>;
 
-/** CSS class sets that differ between the editorial-home and standard variants. */
-type VariantClasses = Readonly<{
-  header: string;
-  wrapper: string;
-  left: string;
-  menuToggle: string;
-  menuIconClass: string;
-  menuIconSize: number;
-  name: string;
-  nav: string;
-  navLink: string;
-  navLinkLabel?: string;
-  global: string;
-  actionButton: string;
-  actionIcon: string;
+const eh = (suffix: string) => `editorial-home-header__${suffix}`;
+type HeaderVariantState = Readonly<{
+  isEditorialHome: boolean;
   actionIconSize: number;
-  languageButton: string;
-  languageOption: string;
-  languageMenu: string;
-  languagePanel: string;
-  languagePanelContent: string;
-  searchPanel: string;
-  searchPanelContent: string;
-  searchRoot: string;
-  sideNav: string;
-  sideNavNavigation?: string;
-  sideNavHeader?: string;
-  languagePanelHeadClassName: string;
-  searchPanelHead: boolean;
+  menuIconSize: number;
 }>;
 
-/** Standard (non-home) variant - base class names only. */
-const STANDARD: VariantClasses = {
-  header: "site-header",
-  wrapper: "site-header__wrapper",
-  left: "site-header__left",
-  menuToggle: "site-header__action site-header__menu-toggle",
-  menuIconClass: "site-header__menu-icon site-menu-icon",
-  menuIconSize: 20,
-  name: "site-header__brand",
-  nav: "site-header__nav",
-  navLink: "site-header__menu-item",
-  global: "site-header__global",
-  actionButton: "site-header__action",
-  actionIcon: "site-header__action-icon",
-  actionIconSize: 20,
-  languageButton: "site-header__action site-header__language-toggle",
-  languageOption: "site-header__language-option",
-  languageMenu: "site-header__language-menu",
-  languagePanel: "site-header__panel site-header__language-panel",
-  languagePanelContent: "site-header__panel-content",
-  searchPanel: "site-header__panel site-header__search-panel",
-  searchPanelContent: "site-header__panel-content",
-  searchRoot: "site-header__search-root",
-  sideNav: "site-side-nav",
-  languagePanelHeadClassName:
-    "site-header-panel-head site-header-panel-head--language",
-  searchPanelHead: false,
-};
+function cx(...classes: ReadonlyArray<string | false | undefined>): string {
+  return classes.filter((value): value is string => Boolean(value)).join(" ");
+}
 
-/** Editorial home variant extends standard with additional home classes. */
-const eh = (suffix: string) => `editorial-home-header__${suffix}`;
-const EDITORIAL_HOME: VariantClasses = {
-  ...STANDARD,
-  header: `site-header site-header--editorial-home`,
-  wrapper: `site-header__wrapper ${eh("wrapper")}`,
-  left: `site-header__left ${eh("left")}`,
-  menuToggle: `site-header__action site-header__menu-toggle ${
-    eh("menu-toggle")
-  }`,
-  menuIconClass: `site-menu-icon ${eh("action-icon")}`,
-  menuIconSize: 16,
-  name: `site-header__brand ${eh("name")}`,
-  nav: `site-header__nav ${eh("nav")}`,
-  navLink: `site-header__menu-item ${eh("nav-link")}`,
-  navLinkLabel: "site-header-menu-item-label",
-  global: `site-header__global ${eh("global")}`,
-  actionButton: `site-header__action ${eh("action")}`,
-  actionIcon: eh("action-icon"),
-  actionIconSize: 16,
-  languageButton: `site-header__action site-header__language-toggle ${
-    eh("action")
-  }`,
-  languageOption: `site-header__language-option ${eh("menu-option")}`,
-  languageMenu: `site-header__language-menu ${eh("language-menu")}`,
-  languagePanel: `site-header__panel site-header__language-panel ${
-    eh("panel")
-  }`,
-  languagePanelContent: `site-header__panel-content ${eh("panel-box")}`,
-  searchPanel: `site-header__panel site-header__search-panel ${eh("panel")}`,
-  searchPanelContent: `site-header__panel-content ${eh("panel-box")}`,
-  searchRoot: `site-header__search-root ${eh("search-root")}`,
-  sideNav: `site-side-nav ${eh("drawer")}`,
-  sideNavNavigation: `site-side-nav__navigation ${eh("drawer-navigation")}`,
-  sideNavHeader: `site-side-nav__header ${eh("drawer-header")}`,
-  languagePanelHeadClassName: "site-header-panel-head",
-  searchPanelHead: true,
-};
+function editorialClass(
+  variant: HeaderVariantState,
+  suffix: string,
+): string | undefined {
+  return variant.isEditorialHome ? eh(suffix) : undefined;
+}
+
+function headerClass(
+  variant: HeaderVariantState,
+  baseClassName: string,
+  editorialSuffix?: string,
+): string {
+  return cx(
+    baseClassName,
+    editorialSuffix ? editorialClass(variant, editorialSuffix) : undefined,
+  );
+}
+
+function resolveHeaderVariant(isEditorialHome: boolean): HeaderVariantState {
+  return {
+    isEditorialHome,
+    actionIconSize: isEditorialHome ? 16 : 20,
+    menuIconSize: isEditorialHome ? 16 : 20,
+  };
+}
+
+function resolveActionIconClass(variant: HeaderVariantState): string {
+  return variant.isEditorialHome
+    ? eh("action-icon")
+    : "site-header__action-icon";
+}
+
+function resolveMenuIconClass(variant: HeaderVariantState): string {
+  return variant.isEditorialHome
+    ? cx("site-menu-icon", editorialClass(variant, "action-icon"))
+    : "site-header__menu-icon site-menu-icon";
+}
+
+function resolvePanelHeadClass(
+  variant: HeaderVariantState,
+  panel: "language" | "search",
+): string {
+  return variant.isEditorialHome
+    ? "site-header-panel-head"
+    : `site-header-panel-head site-header-panel-head--${panel}`;
+}
 
 // ── Shared sub-components ──────────────────────────────────────────────
 
@@ -191,7 +150,7 @@ function renderThemeIcons(className: string, size = 16): El {
 
 function resolveHeaderActions(
   t: Translations,
-  v: VariantClasses,
+  variant: HeaderVariantState,
 ) {
   return [
     {
@@ -201,13 +160,13 @@ function resolveHeaderActions(
         "aria-expanded": "false",
         "aria-controls": HEADER_IDS.searchPanel,
       },
-      buttonClassName: v.actionButton,
+      buttonClassName: headerClass(variant, "site-header__action", "action"),
       iconMarkup: (
         <SiteIcon
           name="search"
-          className={v.actionIcon}
-          width={v.actionIconSize}
-          height={v.actionIconSize}
+          className={resolveActionIconClass(variant)}
+          width={variant.actionIconSize}
+          height={variant.actionIconSize}
         />
       ),
       tooltipLabel: t.site.searchLabel,
@@ -220,13 +179,17 @@ function resolveHeaderActions(
         "aria-controls": HEADER_IDS.languagePanel,
         "aria-haspopup": "menu",
       },
-      buttonClassName: v.languageButton,
+      buttonClassName: headerClass(
+        variant,
+        "site-header__action site-header__language-toggle",
+        "action",
+      ),
       iconMarkup: (
         <SiteIcon
           name="translation"
-          className={v.actionIcon}
-          width={v.actionIconSize}
-          height={v.actionIconSize}
+          className={resolveActionIconClass(variant)}
+          width={variant.actionIconSize}
+          height={variant.actionIconSize}
         />
       ),
       tooltipLabel: t.site.languageSelectLabel,
@@ -239,9 +202,12 @@ function resolveHeaderActions(
         "data-label-switch-dark": t.site.switchToDarkThemeLabel,
         "data-label-follow-system": t.site.followSystemThemeLabel,
       },
-      buttonClassName: v.actionButton,
+      buttonClassName: headerClass(variant, "site-header__action", "action"),
       buttonId: HEADER_IDS.themeToggle,
-      iconMarkup: renderThemeIcons(v.actionIcon, v.actionIconSize),
+      iconMarkup: renderThemeIcons(
+        resolveActionIconClass(variant),
+        variant.actionIconSize,
+      ),
       tooltipLabel: t.site.themeToggleLabel,
     },
   ] as const;
@@ -249,7 +215,7 @@ function resolveHeaderActions(
 
 function renderDesktopNavigationMenu(
   items: readonly NavigationItem[],
-  v: VariantClasses,
+  variant: HeaderVariantState,
 ): El {
   return (
     <div class="site-header__menu-shell" data-site-header-menu="">
@@ -263,11 +229,11 @@ function renderDesktopNavigationMenu(
           >
             <a
               href={href}
-              class={v.navLink}
+              class={headerClass(variant, "site-header__menu-item", "nav-link")}
               {...(isCurrent ? { "aria-current": "page" as const } : {})}
             >
-              {v.navLinkLabel
-                ? <span class={v.navLinkLabel}>{label}</span>
+              {variant.isEditorialHome
+                ? <span class="site-header-menu-item-label">{label}</span>
                 : label}
             </a>
           </li>
@@ -324,27 +290,41 @@ function renderLanguagePanel(
   language: SiteLanguage,
   alternates: LanguageAlternates,
   t: Translations,
-  v: VariantClasses,
+  variant: HeaderVariantState,
 ): El {
   return (
     <div
       id={HEADER_IDS.languagePanel}
-      class={v.languagePanel}
+      class={headerClass(
+        variant,
+        "site-header__panel site-header__language-panel",
+        "panel",
+      )}
       data-language-panel=""
       hidden
     >
-      <div class={v.languagePanelContent}>
+      <div
+        class={headerClass(variant, "site-header__panel-content", "panel-box")}
+      >
         <PanelHead
-          className={v.languagePanelHeadClassName}
+          className={resolvePanelHeadClass(variant, "language")}
           title={t.site.languageSelectLabel}
         />
         <div
-          class={v.languageMenu}
+          class={headerClass(
+            variant,
+            "site-header__language-menu",
+            "language-menu",
+          )}
           role="menu"
           aria-label={t.site.languageSelectLabel}
           data-language-menu=""
         >
-          {renderLanguageOptions(language, alternates, v.languageOption)}
+          {renderLanguageOptions(
+            language,
+            alternates,
+            headerClass(variant, "site-header__language-option", "menu-option"),
+          )}
         </div>
       </div>
     </div>
@@ -353,21 +333,27 @@ function renderLanguagePanel(
 
 function renderSearchPanel(
   t: Translations,
-  v: VariantClasses,
+  variant: HeaderVariantState,
 ): El {
   return (
     <div
       id={HEADER_IDS.searchPanel}
-      class={v.searchPanel}
+      class={headerClass(
+        variant,
+        "site-header__panel site-header__search-panel",
+        "panel",
+      )}
       role="search"
       aria-label={t.site.searchLabel}
       hidden
       data-search-panel=""
     >
-      <div class={v.searchPanelContent}>
-        {v.searchPanelHead && (
+      <div
+        class={headerClass(variant, "site-header__panel-content", "panel-box")}
+      >
+        {variant.isEditorialHome && (
           <PanelHead
-            className="site-header-panel-head site-header-panel-head--search"
+            className={resolvePanelHeadClass(variant, "search")}
             title={t.site.searchLabel}
           />
         )}
@@ -458,7 +444,11 @@ function renderSearchPanel(
         </div>
         <div
           id={HEADER_IDS.searchContainer}
-          class={v.searchRoot}
+          class={headerClass(
+            variant,
+            "site-header__search-root",
+            "search-root",
+          )}
           data-search-root=""
           aria-busy="false"
           data-search-loading-label={t.site.searchLoadingLabel}
@@ -492,19 +482,27 @@ function renderSideNav(
   homeUrl: string,
   siteName: string,
   t: Translations,
-  v: VariantClasses,
+  variant: HeaderVariantState,
 ): El {
   return (
     <aside
       id={HEADER_IDS.sideNav}
-      class={v.sideNav}
+      class={headerClass(variant, "site-side-nav", "drawer")}
       role="dialog"
       aria-modal="true"
       aria-label={t.site.mainNavigationAriaLabel}
       hidden
     >
-      <nav class={v.sideNavNavigation ?? "site-side-nav__navigation"}>
-        <div class={v.sideNavHeader ?? "site-side-nav__header"}>
+      <nav
+        class={headerClass(
+          variant,
+          "site-side-nav__navigation",
+          "drawer-navigation",
+        )}
+      >
+        <div
+          class={headerClass(variant, "site-side-nav__header", "drawer-header")}
+        >
           <a href={homeUrl} class="site-side-nav__brand">{siteName}</a>
           <button
             type="button"
@@ -579,43 +577,53 @@ export default (
   const siteName = getSiteName(language);
   const navItems = buildHeaderNavigation({ currentUrl, language });
   const isHome = currentUrl === homeUrl;
-  const v = isHome ? EDITORIAL_HOME : STANDARD;
-  const actions = resolveHeaderActions(t, v);
+  const variant = resolveHeaderVariant(isHome);
+  const actions = resolveHeaderActions(t, variant);
 
   return (
     <>
-      <header class={v.header}>
-        <div class={v.wrapper}>
-          <div class={v.left}>
+      <header
+        class={cx("site-header", isHome && "site-header--editorial-home")}
+      >
+        <div class={headerClass(variant, "site-header__wrapper", "wrapper")}>
+          <div class={headerClass(variant, "site-header__left", "left")}>
             <button
               type="button"
-              class={v.menuToggle}
+              class={headerClass(
+                variant,
+                "site-header__action site-header__menu-toggle",
+                "menu-toggle",
+              )}
               aria-label={t.site.menuToggleLabel}
               aria-expanded="false"
               aria-controls={HEADER_IDS.sideNav}
             >
               <SiteIcon
                 name="three-bars"
-                className={`${v.menuIconClass} site-menu-icon--menu`}
-                width={v.menuIconSize}
-                height={v.menuIconSize}
+                className={`${
+                  resolveMenuIconClass(variant)
+                } site-menu-icon--menu`}
+                width={variant.menuIconSize}
+                height={variant.menuIconSize}
               />
               <SiteIcon
                 name="x"
-                className={`${v.menuIconClass} site-menu-icon--close`}
-                width={v.menuIconSize}
-                height={v.menuIconSize}
+                className={`${
+                  resolveMenuIconClass(variant)
+                } site-menu-icon--close`}
+                width={variant.menuIconSize}
+                height={variant.menuIconSize}
               />
             </button>
 
             {isHome ? renderEditorialHomeBrand(homeUrl, siteName, t) : (
               <>
-                <a href={homeUrl} class={v.name}>{siteName}</a>
+                <a href={homeUrl} class="site-header__brand">{siteName}</a>
                 <nav
-                  class={v.nav}
+                  class={headerClass(variant, "site-header__nav", "nav")}
                   aria-label={t.site.mainNavigationAriaLabel}
                 >
-                  {renderDesktopNavigationMenu(navItems, v)}
+                  {renderDesktopNavigationMenu(navItems, variant)}
                 </nav>
               </>
             )}
@@ -623,27 +631,27 @@ export default (
 
           {isHome && (
             <nav
-              class={v.nav}
+              class={headerClass(variant, "site-header__nav", "nav")}
               aria-label={t.site.mainNavigationAriaLabel}
             >
-              {renderDesktopNavigationMenu(navItems, v)}
+              {renderDesktopNavigationMenu(navItems, variant)}
             </nav>
           )}
 
-          <div class={v.global}>
+          <div class={headerClass(variant, "site-header__global", "global")}>
             {actions.map((action) => renderHeaderAction(action))}
           </div>
         </div>
       </header>
 
-      {renderLanguagePanel(language, languageAlternates, t, v)}
-      {renderSearchPanel(t, v)}
+      {renderLanguagePanel(language, languageAlternates, t, variant)}
+      {renderSearchPanel(t, variant)}
       {renderSideNav(
         navItems,
         homeUrl,
         siteName,
         t,
-        v,
+        variant,
       )}
       <div class="site-side-nav__overlay" aria-hidden="true"></div>
     </>
