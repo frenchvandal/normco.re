@@ -151,14 +151,38 @@ describe("about page CSS contracts", () => {
     assertStringIncludes(aboutStyles, ".about-contact-popover-handle {");
   });
 
-  it("keeps the QR and pictogram frames on shared neutral panels", () => {
+  it("keeps the QR frame neutral and gives the field note a restrained mobile and dark treatment", () => {
     assertStringIncludes(
       aboutStyles,
       ".about-pictogram-frame {",
     );
     assertStringIncludes(
       aboutStyles,
-      "background: var(--ph-color-canvas-subtle);",
+      "place-items: end center;",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "--about-pictogram-shift-x: calc(var(--ph-space-2) * -0.75);",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      ".about-pictogram-frame::before {",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "radial-gradient(",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "min-block-size: clamp(12.5rem, 58vw, 15rem);",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      ':root:is([data-color-mode="dark"], [data-theme-preference="dark"])',
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "--about-pictogram-frame-background: linear-gradient(",
     );
   });
 });

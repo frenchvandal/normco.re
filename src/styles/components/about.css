@@ -228,23 +228,187 @@
   }
 
   .about-pictogram-frame {
+    --about-pictogram-frame-border: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 12%,
+      var(--ph-color-border-default)
+    );
+    --about-pictogram-frame-background: linear-gradient(
+      180deg,
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-default) 96%,
+        var(--ph-surface-accent)
+      ),
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-subtle) 94%,
+        var(--ph-surface-accent)
+      )
+    );
+    --about-pictogram-frame-inner-border: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 10%,
+      var(--ph-color-border-muted)
+    );
+    --about-pictogram-frame-glow: radial-gradient(
+      ellipse at center bottom,
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 12%,
+        transparent
+      ),
+      transparent 72%
+    );
+    position: relative;
     display: grid;
-    place-items: center;
+    place-items: end center;
     aspect-ratio: 1;
+    overflow: hidden;
     padding: var(--ph-space-4);
-    border: var(--ph-border-hairline) solid var(--ph-color-border-default);
+    border: var(--ph-border-hairline) solid var(--about-pictogram-frame-border);
     border-radius: var(--ph-radius-md);
-    background: var(--ph-color-canvas-subtle);
+    background: var(--about-pictogram-frame-background);
+  }
+
+  .about-pictogram-frame::before,
+  .about-pictogram-frame::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .about-pictogram-frame::before {
+    inset: var(--ph-space-3);
+    border: var(--ph-border-hairline) solid
+      var(--about-pictogram-frame-inner-border);
+    border-radius: calc(var(--ph-radius-md) - 1px);
+  }
+
+  .about-pictogram-frame::after {
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 46%;
+    background: var(--about-pictogram-frame-glow);
   }
 
   .about-pictogram {
-    color: var(--ph-color-fg-subtle);
+    --about-pictogram-ink: color-mix(
+      in oklch,
+      var(--ph-color-fg-subtle) 88%,
+      var(--ph-color-accent-fg)
+    );
+    --about-pictogram-shift-x: calc(var(--ph-space-2) * -0.75);
+    --about-pictogram-shift-y: calc(var(--ph-space-2) * -0.5);
+    position: relative;
+    z-index: 1;
+    inline-size: min(100%, 13rem);
+    block-size: 100%;
+    display: grid;
+    place-items: center;
+    color: var(--about-pictogram-ink);
   }
 
   .about-pictogram svg {
-    inline-size: min(100%, 11rem);
+    inline-size: min(100%, 11.5rem);
     block-size: auto;
     fill: currentColor;
+    transform: translate(
+      var(--about-pictogram-shift-x),
+      var(--about-pictogram-shift-y)
+    );
+  }
+
+  :root:is([data-color-mode="dark"], [data-theme-preference="dark"])
+    .about-pictogram-frame {
+    --about-pictogram-frame-border: color-mix(
+      in oklch,
+      var(--ph-color-border-default) 84%,
+      var(--ph-color-canvas-default)
+    );
+    --about-pictogram-frame-background: linear-gradient(
+      180deg,
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-inset) 84%,
+        var(--ph-color-canvas-default)
+      ),
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-subtle) 72%,
+        var(--ph-color-canvas-inset)
+      )
+    );
+    --about-pictogram-frame-inner-border: color-mix(
+      in oklch,
+      var(--ph-color-border-muted) 82%,
+      transparent
+    );
+    --about-pictogram-frame-glow: radial-gradient(
+      ellipse at center 82%,
+      color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 8%,
+        transparent
+      ),
+      transparent 76%
+    );
+  }
+
+  :root:is([data-color-mode="dark"], [data-theme-preference="dark"])
+    .about-pictogram {
+    --about-pictogram-ink: color-mix(
+      in oklch,
+      var(--ph-color-fg-default) 74%,
+      var(--ph-color-accent-emphasis)
+    );
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-color-mode="light"]):not([data-theme-preference="light"])
+      .about-pictogram-frame {
+      --about-pictogram-frame-border: color-mix(
+        in oklch,
+        var(--ph-color-border-default) 84%,
+        var(--ph-color-canvas-default)
+      );
+      --about-pictogram-frame-background: linear-gradient(
+        180deg,
+        color-mix(
+          in oklch,
+          var(--ph-color-canvas-inset) 84%,
+          var(--ph-color-canvas-default)
+        ),
+        color-mix(
+          in oklch,
+          var(--ph-color-canvas-subtle) 72%,
+          var(--ph-color-canvas-inset)
+        )
+      );
+      --about-pictogram-frame-inner-border: color-mix(
+        in oklch,
+        var(--ph-color-border-muted) 82%,
+        transparent
+      );
+      --about-pictogram-frame-glow: radial-gradient(
+        ellipse at center 82%,
+        color-mix(
+          in oklch,
+          var(--ph-color-fg-default) 8%,
+          transparent
+        ),
+        transparent 76%
+      );
+    }
+
+    :root:not([data-color-mode="light"]):not([data-theme-preference="light"])
+      .about-pictogram {
+      --about-pictogram-ink: color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 74%,
+        var(--ph-color-accent-emphasis)
+      );
+    }
   }
 
   @media (max-width: 47.999rem) {
@@ -330,6 +494,21 @@
 
     .about-contact-popover-title {
       overflow-wrap: anywhere;
+    }
+
+    .about-pictogram-frame {
+      min-block-size: clamp(12.5rem, 58vw, 15rem);
+      place-items: center;
+      padding: var(--ph-space-3);
+    }
+
+    .about-pictogram {
+      inline-size: min(100%, 13.75rem);
+      transform: none;
+    }
+
+    .about-pictogram svg {
+      inline-size: min(100%, 13rem);
     }
   }
 }
