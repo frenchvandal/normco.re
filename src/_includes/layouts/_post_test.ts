@@ -12,6 +12,9 @@ import {
   asLumeHelpers,
   asOptionalLumeData,
 } from "../../../test/lume.ts";
+import themeTokens from "../../styles/antd/theme-tokens.css" with {
+  type: "text",
+};
 import featureStyles from "../../styles/components/feature.css" with {
   type: "text",
 };
@@ -556,6 +559,24 @@ describe("tag-link CSS contracts", () => {
     assertStringIncludes(featureStyles, "var(--ph-tag-tone) 12%");
     assertStringIncludes(featureStyles, "var(--ph-tag-tone) 18%");
     assertNotMatch(featureStyles, /var\(--site-tag-/);
+  });
+});
+
+describe("tag preset token contracts", () => {
+  it("keeps preset tag tones color-scheme aware", () => {
+    const tagPresetMatches = themeTokens.match(
+      /--ph-tag-preset-[a-z]+:\s*light-dark\(/g,
+    ) ?? [];
+
+    assertEquals(tagPresetMatches.length, 10);
+    assertStringIncludes(
+      themeTokens,
+      "--ph-tag-preset-blue: light-dark(#1677ff, #69b1ff);",
+    );
+    assertStringIncludes(
+      themeTokens,
+      "--ph-tag-preset-gray: light-dark(#8c8c8c, #bfbfbf);",
+    );
   });
 });
 

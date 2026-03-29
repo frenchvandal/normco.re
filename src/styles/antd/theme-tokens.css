@@ -92,16 +92,16 @@
       oklch(91.24% 0.0439 250.42 / 0.78),
       oklch(41.09% 0.0835 250.08 / 0.72)
     );
-    --ph-tag-preset-blue: #1677ff;
-    --ph-tag-preset-cyan: #13c2c2;
-    --ph-tag-preset-geekblue: #2f54eb;
-    --ph-tag-preset-green: #52c41a;
-    --ph-tag-preset-lime: #a0d911;
-    --ph-tag-preset-gold: #faad14;
-    --ph-tag-preset-purple: #722ed1;
-    --ph-tag-preset-volcano: #fa541c;
-    --ph-tag-preset-teal: #08979c;
-    --ph-tag-preset-gray: #8c8c8c;
+    --ph-tag-preset-blue: light-dark(#1677ff, #69b1ff);
+    --ph-tag-preset-cyan: light-dark(#13c2c2, #5cdbd3);
+    --ph-tag-preset-geekblue: light-dark(#2f54eb, #85a5ff);
+    --ph-tag-preset-green: light-dark(#52c41a, #95de64);
+    --ph-tag-preset-lime: light-dark(#a0d911, #d3f261);
+    --ph-tag-preset-gold: light-dark(#faad14, #ffd666);
+    --ph-tag-preset-purple: light-dark(#722ed1, #b37feb);
+    --ph-tag-preset-volcano: light-dark(#fa541c, #ff9c6e);
+    --ph-tag-preset-teal: light-dark(#08979c, #36cfc9);
+    --ph-tag-preset-gray: light-dark(#8c8c8c, #bfbfbf);
 
     --ph-text-xs: 0.64rem;
     --ph-text-sm: 0.8rem;
