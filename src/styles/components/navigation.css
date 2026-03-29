@@ -1,73 +1,101 @@
 @layer layout {
   .site-side-nav {
-    --site-side-nav-inset-block-start: calc(
-      var(--ph-header-height) + max(var(--ph-space-2), env(safe-area-inset-top))
-    );
-    --site-side-nav-inset-inline-start: max(
-      var(--ph-shell-gutter),
-      env(safe-area-inset-left)
-    );
-    --site-side-nav-inset-inline-end: max(
-      var(--ph-shell-gutter),
+    --site-side-nav-safe-top: max(var(--ph-space-4), env(safe-area-inset-top));
+    --site-side-nav-safe-right: max(
+      var(--ph-space-4),
       env(safe-area-inset-right)
     );
+    --site-side-nav-safe-bottom: max(
+      var(--ph-space-4),
+      env(safe-area-inset-bottom)
+    );
     position: fixed;
-    inset-block-start: var(--site-side-nav-inset-block-start);
-    inset-inline-start: var(--site-side-nav-inset-inline-start);
+    inset-block: 0;
+    inset-inline-start: 0;
     inset-inline-end: auto;
     z-index: calc(var(--ph-layer-header-panel) + 1);
     inline-size: min(
       var(--ph-side-nav-width),
-      calc(
-        100vw - var(--site-side-nav-inset-inline-start)
-          - var(--site-side-nav-inset-inline-end)
-      )
+      calc(100vw - var(--site-side-nav-safe-right))
     );
-    max-inline-size: calc(
-      100vw - var(--site-side-nav-inset-inline-start)
-        - var(--site-side-nav-inset-inline-end)
+    max-inline-size: min(
+      var(--ph-side-nav-width),
+      calc(100vw - var(--site-side-nav-safe-right))
     );
-    max-block-size: calc(
-      100dvh - var(--site-side-nav-inset-block-start)
-        - max(var(--ph-space-4), env(safe-area-inset-bottom))
-    );
+    block-size: 100dvh;
+    max-block-size: 100dvh;
     overflow: hidden;
-    border: var(--ph-border-hairline) solid
+    border-block: 0;
+    border-inline-start: 0;
+    border-inline-end: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
-        var(--ph-color-accent-fg) 14%,
+        var(--ph-color-accent-fg) 16%,
         var(--ph-color-border-default)
       );
-    border-radius: calc(var(--ph-radius-lg) * 1.4);
-    background: linear-gradient(
-      180deg,
-      color-mix(
-        in oklch,
-        var(--ph-surface-raised) 90%,
-        var(--ph-color-canvas-default)
+    border-radius: 0 calc(var(--ph-radius-xl) * 1.15)
+      calc(var(--ph-radius-xl) * 1.15) 0;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(
+          in oklch,
+          var(--ph-surface-raised) 94%,
+          var(--ph-color-canvas-default)
+        ),
+        color-mix(
+          in oklch,
+          var(--ph-color-canvas-default) 92%,
+          var(--ph-surface-accent)
+        )
       ),
+      linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--ph-color-accent-fg) 7%, transparent),
+      transparent 34%
+    );
+    box-shadow:
+      var(--ph-shadow-floating),
+      1.25rem 0 3rem
       color-mix(
         in oklch,
-        var(--ph-color-canvas-default) 94%,
-        var(--ph-surface-accent)
-      )
-    );
-    box-shadow: var(--ph-shadow-floating);
-    backdrop-filter: var(--ph-backdrop-frosted);
+        var(--ph-color-fg-default) 9%,
+        transparent
+      );
+    transform-origin: left center;
+    will-change: transform, opacity;
   }
 
   .site-side-nav::before {
     content: "";
     position: absolute;
-    inset: 0 0 auto;
-    block-size: 0.2rem;
+    inset: var(--site-side-nav-safe-top) auto var(--site-side-nav-safe-bottom)
+      0;
+    inline-size: 1px;
     background: linear-gradient(
-      90deg,
-      color-mix(in oklch, var(--ph-color-accent-fg) 26%, transparent),
-      color-mix(in oklch, var(--ph-color-accent-emphasis) 48%, transparent),
-      color-mix(in oklch, var(--ph-color-accent-fg) 22%, transparent)
+      180deg,
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 0%,
+        transparent
+      ),
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 38%,
+        transparent
+      ),
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-emphasis) 18%,
+        transparent
+      ),
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 0%,
+        transparent
+      )
     );
-    opacity: 0.9;
+    opacity: 0.96;
     pointer-events: none;
   }
 
@@ -77,11 +105,11 @@
 
   .site-side-nav:not([hidden]) {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
 
     @starting-style {
       opacity: 0;
-      transform: translate3d(calc(var(--ph-space-3) * -1), 0, 0) scale(0.985);
+      transform: translate3d(calc(var(--ph-space-8) * -1), 0, 0);
     }
   }
 
@@ -103,7 +131,11 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--ph-space-4);
-    padding: clamp(var(--ph-space-5), 5vw, var(--ph-space-6));
+    padding-block-start: calc(
+      var(--site-side-nav-safe-top) + var(--ph-space-4)
+    );
+    padding-block-end: clamp(var(--ph-space-4), 4vw, var(--ph-space-5));
+    padding-inline: clamp(var(--ph-space-4), 5vw, var(--ph-space-6));
     border-block-end: var(--ph-border-hairline) solid
       color-mix(
         in oklch,
@@ -166,9 +198,9 @@
 
   .site-side-nav__brand {
     color: var(--ph-color-fg-default);
-    font-size: clamp(1.35rem, 1.18rem + 0.7vw, 1.8rem);
-    font-weight: 700;
-    letter-spacing: -0.045em;
+    font-size: clamp(1.42rem, 1.22rem + 0.84vw, 1.92rem);
+    font-weight: 720;
+    letter-spacing: -0.05em;
     line-height: 1;
     text-decoration: none;
   }
@@ -179,15 +211,24 @@
 
   .site-side-nav__items {
     display: grid;
-    gap: var(--ph-space-2);
+    gap: 0;
     list-style: none;
     margin: 0;
     padding: 0;
+    border-block-start: var(--ph-border-hairline) solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 10%,
+        var(--ph-color-border-muted)
+      );
   }
 
   .site-side-nav__menu-shell {
-    padding: var(--ph-space-2) clamp(var(--ph-space-5), 5vw, var(--ph-space-6))
-      max(var(--ph-space-5), env(safe-area-inset-bottom));
+    padding: var(--ph-space-1) 0
+      max(
+        calc(var(--ph-space-6) + env(safe-area-inset-bottom)),
+        var(--ph-space-6)
+      );
   }
 
   .site-side-nav__item {
@@ -195,22 +236,26 @@
     margin: 0;
   }
 
+  .site-side-nav__item + .site-side-nav__item {
+    border-block-start: var(--ph-border-hairline) solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 9%,
+        var(--ph-color-border-muted)
+      );
+  }
+
   .site-side-nav__link {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: var(--ph-space-3);
-    min-block-size: 3.75rem;
-    padding-block: clamp(var(--ph-space-3), 3vw, var(--ph-space-4));
-    padding-inline: clamp(var(--ph-space-3), 3vw, var(--ph-space-4));
-    border: var(--ph-border-hairline) solid
-      color-mix(
-        in oklch,
-        var(--ph-color-accent-fg) 12%,
-        var(--ph-color-border-muted)
-      );
-    border-inline-start: 2px solid transparent;
-    border-radius: calc(var(--ph-radius-md) + 1px);
+    min-block-size: 4.125rem;
+    padding-block: clamp(var(--ph-space-4), 4vw, var(--ph-space-5));
+    padding-inline: clamp(var(--ph-space-4), 5vw, var(--ph-space-6));
+    border: 0;
+    border-inline-start: 3px solid transparent;
+    border-radius: 0;
     color: var(--ph-color-fg-default);
     text-decoration: none;
     transition:
@@ -224,9 +269,9 @@
 
   .site-side-nav__link-text {
     color: inherit;
-    font-size: clamp(1.2rem, 1.02rem + 0.75vw, 1.7rem);
-    font-weight: 640;
-    letter-spacing: -0.032em;
+    font-size: clamp(1.12rem, 0.98rem + 0.82vw, 1.52rem);
+    font-weight: 650;
+    letter-spacing: -0.03em;
     line-height: 1.06;
     min-inline-size: 0;
   }
@@ -243,7 +288,7 @@
   .site-side-nav__link:focus-visible,
   .site-side-nav__link[aria-current="page"],
   .site-side-nav__item--current .site-side-nav__link {
-    transform: translateX(2px);
+    transform: translateX(0);
     color: var(--ph-color-accent-fg);
     border-inline-start-color: color-mix(
       in oklch,
@@ -254,10 +299,10 @@
       90deg,
       color-mix(
         in oklch,
-        var(--ph-color-accent-fg) 8%,
+        var(--ph-color-accent-fg) 10%,
         var(--ph-color-canvas-default)
       ),
-      transparent 72%
+      transparent 82%
     );
     text-decoration: none;
   }
@@ -276,7 +321,7 @@
     z-index: var(--ph-layer-header-panel);
     background: color-mix(
       in oklch,
-      var(--ph-color-fg-default) 22%,
+      var(--ph-color-fg-default) 28%,
       transparent
     );
     opacity: 0;

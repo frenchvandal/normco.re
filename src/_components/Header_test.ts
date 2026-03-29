@@ -271,7 +271,7 @@ describe("Header CSS contracts", () => {
     );
   });
 
-  it("styles the mobile side nav as an editorial sheet", () => {
+  it("styles the mobile side nav as a true drawer", () => {
     assertStringIncludes(layoutStyles, ".site-side-nav__header");
     assertStringIncludes(layoutStyles, ".site-side-nav__brand");
     assertStringIncludes(layoutStyles, ".site-side-nav__close");
@@ -281,7 +281,7 @@ describe("Header CSS contracts", () => {
     assertStringIncludes(layoutStyles, ".site-side-nav__link-text");
     assertStringIncludes(layoutStyles, ".site-side-nav__overlay");
     assertStringIncludes(layoutStyles, "var(--ph-side-nav-width)");
-    assertStringIncludes(layoutStyles, "min-block-size: 3.75rem;");
+    assertStringIncludes(layoutStyles, "min-block-size: 4.125rem;");
     assertStringIncludes(
       layoutStyles,
       "box-shadow: var(--ph-shadow-floating);",
