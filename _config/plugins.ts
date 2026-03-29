@@ -27,6 +27,7 @@ import { enUS, fr as frLocale, zhCN, zhTW } from "date-fns/locale";
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
 import { createPurgeCssOptions } from "./purgecss.ts";
 import { registerPostDataPreparation } from "./processors.ts";
+import { shouldEmitSourceMaps } from "./runtime_policy.ts";
 import shiki from "../plugins/shiki/mod.ts";
 
 /**
@@ -94,10 +95,12 @@ export function registerPlugins(
     site.use(purgecss(createPurgeCssOptions()));
   }
 
-  // Keep external source maps in both serve and production builds. The
-  // post-build asset fingerprinting step already renames `.map` files and
-  // rewrites `sourceMappingURL` comments to the hashed filenames.
-  site.use(sourceMaps());
+  // External source maps stay enabled for local `serve` workflows, where they
+  // materially improve browser debugging. Production builds prune `.map` files
+  // from deployable output, so skip generating them there and save the work.
+  if (shouldEmitSourceMaps(options.isServeTask)) {
+    site.use(sourceMaps());
+  }
 
   site.use(attributes());
   site.use(jsx());

@@ -18,6 +18,10 @@ export function shouldRunPostBuildTasks(isServeTask: boolean): boolean {
   return !isServeTask;
 }
 
+export function shouldEmitSourceMaps(isServeTask: boolean): boolean {
+  return isServeTask;
+}
+
 export const SCOPED_UPDATE_MATCHERS: readonly ScopedUpdateMatcher[] = [
   isStylesheetAsset,
   isScriptAsset,

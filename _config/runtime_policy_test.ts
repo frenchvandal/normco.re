@@ -6,6 +6,7 @@ import {
   isScriptAsset,
   isStylesheetAsset,
   SCOPED_UPDATE_MATCHERS,
+  shouldEmitSourceMaps,
   shouldRunPostBuildTasks,
 } from "./runtime_policy.ts";
 
@@ -13,6 +14,11 @@ describe("runtime policy", () => {
   it("skips post-build tasks during serve mode", () => {
     assertEquals(shouldRunPostBuildTasks(true), false);
     assertEquals(shouldRunPostBuildTasks(false), true);
+  });
+
+  it("keeps source maps for serve mode only", () => {
+    assertEquals(shouldEmitSourceMaps(true), true);
+    assertEquals(shouldEmitSourceMaps(false), false);
   });
 
   it("defines scoped update matchers for styles, scripts, and images", () => {
