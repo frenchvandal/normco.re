@@ -22,6 +22,7 @@ import {
 } from "../../utils/post-outline.ts";
 import { getTagColor, getTagUrl } from "../../utils/tags.ts";
 import {
+  getRecordValue,
   isDefined,
   isLumeData,
   resolveOptionalTrimmedString,
@@ -121,12 +122,10 @@ function resolvePostLinkReferences(
   const seenUrls = new Set<string>();
 
   for (const reference of value) {
-    if (typeof reference !== "object" || reference === null) {
-      continue;
-    }
-
-    const url = resolveOptionalTrimmedString(Reflect.get(reference, "url"));
-    const title = resolveOptionalTrimmedString(Reflect.get(reference, "title"));
+    const url = resolveOptionalTrimmedString(getRecordValue(reference, "url"));
+    const title = resolveOptionalTrimmedString(
+      getRecordValue(reference, "title"),
+    );
 
     if (url === undefined || title === undefined || seenUrls.has(url)) {
       continue;
@@ -189,9 +188,7 @@ export function resolvePostState(
   const postDate = resolvePostCreatedDate(data);
   const updatedDate = resolvePostUpdatedDate(data, postDate);
   const lastCommit = resolvePostGitLastCommit(
-    typeof data.git === "object" && data.git !== null
-      ? Reflect.get(data.git, "lastCommit")
-      : undefined,
+    getRecordValue(data.git, "lastCommit"),
   );
   const minutes = resolveReadingMinutes(data.readingInfo);
   const tags = resolveStringTags(data.tags);

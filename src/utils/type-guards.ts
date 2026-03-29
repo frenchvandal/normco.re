@@ -8,6 +8,22 @@ export function isMutableRecord(
   return typeof value === "object" && value !== null;
 }
 
+export function getRecordValue(value: unknown, key: string): unknown {
+  return isMutableRecord(value) ? value[key] : undefined;
+}
+
+export type RecordMethod = (this: unknown, ...args: unknown[]) => unknown;
+
+export function getRecordMethod(
+  value: unknown,
+  key: string,
+): RecordMethod | undefined {
+  const candidate = getRecordValue(value, key);
+  return typeof candidate === "function"
+    ? candidate as RecordMethod
+    : undefined;
+}
+
 export function isLumeData(value: unknown): value is Lume.Data {
   return typeof value === "object" && value !== null;
 }

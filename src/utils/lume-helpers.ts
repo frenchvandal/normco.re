@@ -1,4 +1,5 @@
 import { escapeHtml } from "./html.ts";
+import { getRecordMethod, getRecordValue } from "./type-guards.ts";
 
 export type PostCardProps = Readonly<{
   title: string;
@@ -20,6 +21,11 @@ export type DateHelper = (
   pattern?: string,
   lang?: string,
 ) => string | undefined;
+
+type DynamicPostCard = (
+  this: unknown,
+  props: PostCardProps,
+) => unknown | Promise<unknown>;
 
 export function renderFallbackPostCard(
   {
@@ -55,21 +61,23 @@ export function renderFallbackPostCard(
 }
 
 export function resolvePostCardRenderer(comp: unknown): PostCardRenderer {
-  if (typeof comp !== "object" || comp === null) return renderFallbackPostCard;
-  const PostCard = Reflect.get(comp, "PostCard");
+  const PostCard = getRecordValue(comp, "PostCard");
+
   if (typeof PostCard === "function") {
-    return async (props) =>
-      String(await Reflect.apply(PostCard, comp, [props]));
+    const render = PostCard as DynamicPostCard;
+    return async (props) => String(await render.call(comp, props));
   }
+
   return renderFallbackPostCard;
 }
 
 export function resolveDateHelper(helpers: Lume.Helpers): DateHelper {
-  const date = Reflect.get(helpers, "date");
-  if (typeof date !== "function") return () => undefined;
+  const date = getRecordMethod(helpers, "date");
+
+  if (!date) return () => undefined;
 
   return (value, pattern, lang) => {
-    const result = Reflect.apply(date, helpers, [value, pattern, lang]);
+    const result = date.call(helpers, value, pattern, lang);
     return typeof result === "string" ? result : undefined;
   };
 }

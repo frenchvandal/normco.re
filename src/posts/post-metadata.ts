@@ -1,5 +1,8 @@
 import { parseDateValue } from "../utils/date-time.ts";
-import { resolveOptionalTrimmedString } from "../utils/type-guards.ts";
+import {
+  getRecordValue,
+  resolveOptionalTrimmedString,
+} from "../utils/type-guards.ts";
 
 /**
  * Resolves a post date value into a valid `Date` instance.
@@ -37,19 +40,11 @@ function tryResolveDateValues(values: readonly unknown[]): Date | undefined {
 }
 
 function tryResolveGitLastCommitDate(gitValue: unknown): Date | undefined {
-  if (typeof gitValue !== "object" || gitValue === null) {
-    return undefined;
-  }
-
-  const lastCommit = Reflect.get(gitValue, "lastCommit");
-
-  if (typeof lastCommit !== "object" || lastCommit === null) {
-    return undefined;
-  }
+  const lastCommit = getRecordValue(gitValue, "lastCommit");
 
   return tryResolveDateValues([
-    Reflect.get(lastCommit, "date"),
-    Reflect.get(lastCommit, "committedAt"),
+    getRecordValue(lastCommit, "date"),
+    getRecordValue(lastCommit, "committedAt"),
   ]);
 }
 
@@ -110,21 +105,19 @@ export type PostGitLastCommit = Readonly<{
 export function resolvePostGitLastCommit(
   value: unknown,
 ): PostGitLastCommit | undefined {
-  if (typeof value !== "object" || value === null) {
-    return undefined;
-  }
-
-  const sha = resolveOptionalTrimmedString(Reflect.get(value, "sha"));
-  const shortSha = resolveOptionalTrimmedString(Reflect.get(value, "shortSha"));
+  const sha = resolveOptionalTrimmedString(getRecordValue(value, "sha"));
+  const shortSha = resolveOptionalTrimmedString(
+    getRecordValue(value, "shortSha"),
+  );
 
   if (sha === undefined || shortSha === undefined) {
     return undefined;
   }
 
-  const url = resolveOptionalTrimmedString(Reflect.get(value, "url"));
-  const date = resolveOptionalTrimmedString(Reflect.get(value, "date"));
+  const url = resolveOptionalTrimmedString(getRecordValue(value, "url"));
+  const date = resolveOptionalTrimmedString(getRecordValue(value, "date"));
   const commitUrl = resolveOptionalTrimmedString(
-    Reflect.get(value, "commitUrl"),
+    getRecordValue(value, "commitUrl"),
   );
 
   return {

@@ -6,7 +6,12 @@
  * one-liners so page and layout code stays concise.
  */
 
-import { isLumeData } from "./type-guards.ts";
+import {
+  getRecordMethod,
+  getRecordValue,
+  isLumeData,
+  isMutableRecord,
+} from "./type-guards.ts";
 
 /** Call a method on a dynamic Lume object, returning `undefined` on failure. */
 export function callMethod<T>(
@@ -14,11 +19,9 @@ export function callMethod<T>(
   key: string,
   ...args: unknown[]
 ): T | undefined {
-  if (typeof obj !== "object" || obj === null) return undefined;
-  const fn = Reflect.get(obj, key);
-  return typeof fn === "function"
-    ? Reflect.apply(fn, obj, args) as T
-    : undefined;
+  if (!isMutableRecord(obj)) return undefined;
+  const fn = getRecordMethod(obj, key);
+  return fn ? fn.call(obj, ...args) as T : undefined;
 }
 
 /** Query `search.pages(query, sort?, limit?)` safely. */
@@ -37,11 +40,8 @@ export function searchPages(
 /** Resolve raw `children` (string or `{ __html }`) into an HTML string. */
 export function resolveHtmlChildren(children: unknown): string | undefined {
   if (typeof children === "string") return children;
-  if (typeof children === "object" && children !== null) {
-    const html = Reflect.get(children, "__html");
-    return typeof html === "string" ? html : undefined;
-  }
-  return undefined;
+  const html = getRecordValue(children, "__html");
+  return typeof html === "string" ? html : undefined;
 }
 
 /** Extract string tags from Lume page data. */

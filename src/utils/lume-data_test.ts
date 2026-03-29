@@ -10,15 +10,15 @@ import {
 } from "./lume-data.ts";
 
 describe("callMethod()", () => {
-  it("invokes a method when present on the object", () => {
+  it("invokes a method when present on the object and preserves its context", () => {
     const result = callMethod<number>(
       {
-        sum(a: number, b: number) {
-          return a + b;
+        base: 2,
+        sum(this: { base: number }, increment: number) {
+          return this.base + increment;
         },
       },
       "sum",
-      2,
       3,
     );
 
