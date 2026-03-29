@@ -312,7 +312,7 @@
   .site-side-nav__link[aria-current="page"] .site-side-nav__link-icon,
   .site-side-nav__item--current .site-side-nav__link-icon {
     opacity: 1;
-    transform: translateX(2px);
+    transform: translateX(calc(var(--ph-space-1) / 2));
   }
 
   .site-side-nav__overlay {

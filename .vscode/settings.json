@@ -79,7 +79,6 @@
     "http",
     "net"
   ],
-  "deno.config": "./deno.jsonc",
   "deno.suggest.imports.hosts": {
     "https://cdn.jsdelivr.net": true,
     "https://deno.land": true

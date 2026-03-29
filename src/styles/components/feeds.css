@@ -127,7 +127,7 @@
   }
 
   .feeds-card-tag.site-tag {
-    padding: 3px 8px;
+    padding: calc(var(--ph-space-1) * 3 / 4) var(--ph-space-2);
     border-color: color-mix(
       in oklch,
       var(--ph-color-accent-emphasis) 18%,

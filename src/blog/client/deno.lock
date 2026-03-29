@@ -6,10 +6,9 @@
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/testing@^1.0.17": "1.0.17",
     "npm:@ant-design/icons@6.1.1": "6.1.1_react@19.2.4_react-dom@19.2.4__react@19.2.4",
-    "npm:@types/react@19.2.2": "19.2.2",
+    "npm:@types/react@19.2.4": "19.2.4",
     "npm:antd@6.3.4": "6.3.4_react@19.2.4_react-dom@19.2.4__react@19.2.4",
     "npm:jsdom@29.0.0": "29.0.0",
-    "npm:react-dom@19.2.4": "19.2.4_react@19.2.4",
     "npm:react@19.2.4": "19.2.4"
   },
   "jsr": {
@@ -602,8 +601,8 @@
         "react-dom"
       ]
     },
-    "@types/react@19.2.2": {
-      "integrity": "sha512-6mDvHUFSjyT2B2yeNx2nUgMxh9LtOWvkhIU3uePn2I2oyNymUAX1NIsdgviM4CH+JSrp2D2hsMvJOkxY+0wNRA==",
+    "@types/react@19.2.4": {
+      "integrity": "sha512-tBFxBp9Nfyy5rsmefN+WXc1JeW/j2BpBHFdLZbEVfs9wn3E3NRFxwV0pJg8M1qQAexFpvz73hJXFofV0ZAu92A==",
       "dependencies": [
         "csstype"
       ]
@@ -863,10 +862,9 @@
       "jsr:@std/assert@^1.0.19",
       "jsr:@std/testing@^1.0.17",
       "npm:@ant-design/icons@6.1.1",
-      "npm:@types/react@19.2.2",
+      "npm:@types/react@19.2.4",
       "npm:antd@6.3.4",
       "npm:dayjs@1.11.19",
-      "npm:react-dom@19.2.4",
       "npm:react@19.2.4"
     ]
   }

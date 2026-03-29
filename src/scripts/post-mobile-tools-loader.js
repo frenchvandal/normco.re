@@ -33,6 +33,7 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
       }
     }, { once: true });
   } else if (typeof mediaQuery.addListener === "function") {
+    /** @param {MediaQueryListEvent} event */
     const listener = (event) => {
       if (!event.matches) {
         return;

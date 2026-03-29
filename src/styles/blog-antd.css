@@ -564,7 +564,7 @@
     grid-template-columns: auto 1fr;
     gap: var(--ph-space-3);
     padding: var(--ph-space-3);
-    border-inline-start: 2px solid
+    border-inline-start: calc(var(--ph-border-hairline) * 2) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-emphasis) 54%,
@@ -584,7 +584,7 @@
   }
 
   .blog-antd-signal-list__item:hover {
-    transform: translateX(3px);
+    transform: translateX(calc(var(--ph-space-3) / 4));
     background: color-mix(
       in oklch,
       var(--ph-color-canvas-default) 91%,
@@ -871,7 +871,7 @@
         var(--ph-color-accent-fg) 12%,
         var(--ph-color-border-default)
       );
-    border-block-start: 2px solid
+    border-block-start: calc(var(--ph-border-hairline) * 2) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 26%,
@@ -1197,7 +1197,7 @@
   }
 
   .blog-antd-story-card {
-    border-block-start: 2px solid
+    border-block-start: calc(var(--ph-border-hairline) * 2) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-emphasis) 48%,
@@ -1211,7 +1211,7 @@
 
   .blog-antd-story-card:hover,
   .blog-antd-story-card:focus-within {
-    transform: translateY(-2px);
+    transform: translateY(calc(var(--ph-space-1) / -2));
     border-color: color-mix(
       in oklch,
       var(--ph-color-accent-fg) 38%,
@@ -1294,8 +1294,8 @@
     position: absolute;
     inset-inline-start: 0;
     inset-block-start: 50%;
-    inline-size: 3px;
-    block-size: 3px;
+    inline-size: calc(var(--ph-space-3) / 4);
+    block-size: calc(var(--ph-space-3) / 4);
     border-radius: var(--ph-radius-pill);
     background: currentColor;
     opacity: 0.72;
