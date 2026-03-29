@@ -71,7 +71,7 @@
     },
     "payload:baseline": {
       "description": "Build and generate a policy-compatible baseline report (`deno task payload:baseline [--output=/path/to/baseline.json --markdown=/path/to/baseline.md]`)",
-      "command": "deno task build && deno run --allow-read --allow-write scripts/payload-report.ts --policy=scripts/payload-policy.json --policy-baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md"
+      "command": "deno task build && deno run --allow-read --allow-write scripts/payload-report.ts --policy=scripts/payload-policy.json --policy-baseline --output=.tmp/payload-policy-baseline.json --markdown=.tmp/payload-policy-baseline.md"
     },
     "lint-commit": {
       "description": "Validate the commit message against Conventional Commits (reads .git/COMMIT_EDITMSG by default)",

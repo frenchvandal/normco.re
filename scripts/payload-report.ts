@@ -1,5 +1,5 @@
 import { pooledMap } from "@std/async";
-import { extname, join } from "@std/path";
+import { dirname, extname, join } from "@std/path";
 import { closestString, levenshteinDistance } from "@std/text";
 
 const DEFAULT_ROUTES = [
@@ -1132,7 +1132,7 @@ export function assertBaselineMetadataCoherence(
         "- Missing or incompatible fields:",
         ...missingBaselinePolicyFields.map((field) => `  - ${field}`),
         "This baseline is not fully policy-baseline compatible and cannot be compared in policy mode.",
-        "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=/tmp/payload-policy-baseline.json --markdown=/tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
+        "Regenerate a policy-compatible baseline with `deno task payload:baseline --output=.tmp/payload-policy-baseline.json --markdown=.tmp/payload-policy-baseline.md`, then rerun the comparison with that baseline file.",
       ].join("\n"),
     );
   }
@@ -1471,6 +1471,11 @@ function renderMarkdownReport(
   return lines.join("\n");
 }
 
+async function writeReportFile(path: string, content: string): Promise<void> {
+  await Deno.mkdir(dirname(path), { recursive: true });
+  await Deno.writeTextFile(path, content);
+}
+
 async function main(): Promise<void> {
   const parsedCliOptions = parseCliOptions(Deno.args);
   let options = parsedCliOptions.options;
@@ -1556,7 +1561,7 @@ async function main(): Promise<void> {
   }
 
   if (options.outputPath) {
-    await Deno.writeTextFile(
+    await writeReportFile(
       options.outputPath,
       JSON.stringify(report, null, 2),
     );
@@ -1565,7 +1570,7 @@ async function main(): Promise<void> {
   const markdownReport = renderMarkdownReport(options, report, baselineReport);
 
   if (options.markdownPath) {
-    await Deno.writeTextFile(options.markdownPath, `${markdownReport}\n`);
+    await writeReportFile(options.markdownPath, `${markdownReport}\n`);
   }
 
   if (baselineReport && usesRegressionGuard) {

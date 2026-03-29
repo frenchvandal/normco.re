@@ -43,14 +43,14 @@ describe("formatCopyrightYears", () => {
     assert(result === `${pastYear}-${TEST_CURRENT_YEAR}`);
   });
 
-  it("logs warning and returns start year when start year is in the future", () => {
+  it("logs warning and returns current year when start year is in the future", () => {
     seedTestFaker(TEST_SEED + 2);
     const futureYear = TEST_CURRENT_YEAR +
       faker.number.int({ min: 1, max: 10 });
 
     const warningMessage = captureConsoleWarning(() => {
       const result = formatCopyrightYears(futureYear, TEST_CURRENT_YEAR);
-      assert(result === String(futureYear));
+      assert(result === String(TEST_CURRENT_YEAR));
     });
 
     assert(
@@ -98,6 +98,21 @@ describe("formatCopyrightYears", () => {
     assert(result === `${pastYear}-${TEST_CURRENT_YEAR}`);
   });
 
+  it("rejects strings that are not a strict YYYY value", () => {
+    const invalidYear = "2022oops";
+
+    const warningMessage = captureConsoleWarning(() => {
+      const result = formatCopyrightYears(invalidYear, TEST_CURRENT_YEAR);
+      assert(result === String(TEST_CURRENT_YEAR));
+    });
+
+    assert(
+      warningMessage.includes(
+        `blogStartYear value "${invalidYear}" is not in a valid YYYY format`,
+      ),
+    );
+  });
+
   it("uses current year from Date.now() when not provided", () => {
     seedTestFaker(TEST_SEED + 6);
     const time = new FakeTime(TEST_FAKER_REF_DATE);
@@ -131,7 +146,7 @@ describe("formatCopyrightYears", () => {
 
     const warningMessage = captureConsoleWarning(() => {
       const result = formatCopyrightYears(futureYear, TEST_CURRENT_YEAR);
-      assert(result === String(futureYear));
+      assert(result === String(TEST_CURRENT_YEAR));
     });
 
     assert(

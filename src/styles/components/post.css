@@ -427,7 +427,7 @@
     justify-content: center;
     inline-size: 3rem;
     block-size: 3rem;
-    border-radius: 999px;
+    border-radius: var(--ph-radius-pill);
     box-shadow: var(--ph-shadow-floating);
     color: var(--ph-color-accent-emphasis);
   }
@@ -706,7 +706,7 @@
     inset-block-start: 0.55em;
     inline-size: 0.5rem;
     block-size: 0.5rem;
-    border-radius: 999px;
+    border-radius: var(--ph-radius-pill);
     background: var(--ph-color-canvas-default);
     box-shadow: inset 0 0 0 1.5px
       color-mix(

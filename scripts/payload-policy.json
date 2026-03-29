@@ -13,6 +13,6 @@
   "requireBaseline": true,
   "maxTotalDeltaBytes": 0,
   "maxRouteDeltaBytes": 0,
-  "outputPath": "/tmp/payload-current.json",
-  "markdownPath": "/tmp/payload-pr-comment.md"
+  "outputPath": ".tmp/payload-current.json",
+  "markdownPath": ".tmp/payload-pr-comment.md"
 }

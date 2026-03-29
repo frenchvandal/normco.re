@@ -59,11 +59,18 @@ const MARKUP_COMMENT_SUFFIXES = [
 ];
 const SKIP_DIRECTORY_NAMES = new Set([
   ".git",
+  ".claude",
   ".tmp",
   "_site",
+  "antd",
   "node_modules",
   "coverage",
 ]);
+const SKIP_DIRECTORY_PATTERN = new RegExp(
+  Array.from(SKIP_DIRECTORY_NAMES)
+    .map((name) => `(?:^|/)${name}(?:/|$)`)
+    .join("|"),
+);
 const USAGE =
   "Usage: deno run --allow-read [--allow-write] scripts/typography-guard.ts [--write] [--root=<path>]";
 
@@ -98,6 +105,10 @@ function shouldCheckFile(filePath: string): boolean {
     isSlashCommentFile(filePath) ||
     isHashCommentFile(filePath) ||
     isMarkupCommentFile(filePath);
+}
+
+export function shouldSkipEntryPath(filePath: string): boolean {
+  return SKIP_DIRECTORY_PATTERN.test(filePath.replaceAll("\\", "/"));
 }
 
 function normalizeSlashCommentSource(source: string): string {
@@ -303,13 +314,7 @@ async function collectCandidateFiles(root: string): Promise<string[]> {
     const entry of walk(root, {
       includeDirs: false,
       includeFiles: true,
-      skip: [
-        new RegExp(
-          Array.from(SKIP_DIRECTORY_NAMES)
-            .map((name) => `(?:^|/)${name}(?:/|$)`)
-            .join("|"),
-        ),
-      ],
+      skip: [SKIP_DIRECTORY_PATTERN],
     })
   ) {
     if (shouldCheckFile(entry.path)) {

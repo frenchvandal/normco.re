@@ -3,6 +3,7 @@ import { assertEquals } from "@std/assert";
 import {
   collectTypographyIssues,
   normalizeTypographyForFile,
+  shouldSkipEntryPath,
 } from "./typography-guard.ts";
 
 Deno.test("normalizeTypographyForFile() normalizes all Markdown prose", () => {
@@ -108,5 +109,20 @@ Deno.test("collectTypographyIssues() reports smart typography positions", () => 
         line: 2,
       },
     ],
+  );
+});
+
+Deno.test("shouldSkipEntryPath() skips ignored local ballast directories", () => {
+  assertEquals(
+    shouldSkipEntryPath("/Users/normcore/Code/normco.re/antd/vendor.js"),
+    true,
+  );
+  assertEquals(
+    shouldSkipEntryPath("/Users/normcore/Code/normco.re/.claude/notes.md"),
+    true,
+  );
+  assertEquals(
+    shouldSkipEntryPath("/Users/normcore/Code/normco.re/src/posts/README.md"),
+    false,
   );
 });
