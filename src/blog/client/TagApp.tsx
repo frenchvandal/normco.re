@@ -6,14 +6,12 @@ import {
   BLOG_ANTD_CARD_CLASSNAMES,
   BLOG_ANTD_PRIMARY_BUTTON_ROOT,
 } from "./antd-semantic.ts";
-import { BLOG_ANTD_THEME } from "./theme.ts";
 import {
   BackTop,
   Breadcrumb,
   Button,
   Card,
   Col,
-  ConfigProvider,
   Empty,
   Flex,
   Paragraph,
@@ -141,18 +139,5 @@ export function TagView(
         />
       )}
     </div>
-  );
-}
-
-export function BlogAntdTagApp(
-  { data, interactive = true }: {
-    data: BlogTagViewData;
-    interactive?: boolean | undefined;
-  },
-) {
-  return (
-    <ConfigProvider theme={BLOG_ANTD_THEME}>
-      <TagView data={data} interactive={interactive} />
-    </ConfigProvider>
   );
 }

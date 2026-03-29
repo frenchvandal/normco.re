@@ -59,7 +59,6 @@ export function registerPlugins(
       options: {
         alias: {
           "@blog/archive-antd": "./src/blog/client/archive-antd.build.ts",
-          "@blog/antd-components": "./src/blog/client/antd-components.build.ts",
           "@blog/antd-icons": "./src/blog/client/antd-icons.build.ts",
           "@blog/common-antd": "./src/blog/client/common-antd.build.ts",
           "@blog/post-antd": "./src/blog/client/post-antd.build.ts",

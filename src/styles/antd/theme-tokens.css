@@ -64,9 +64,18 @@
       oklch(56.51% 0.0189 250.97),
       oklch(53.36% 0.0244 252.64)
     );
-    --ph-color-accent-fg: light-dark(#1677ff, #1668dc);
-    --ph-color-accent-emphasis: light-dark(#4096ff, #3c89e8);
-    --ph-color-accent-active: light-dark(#0958d9, #1554ad);
+    --ph-color-accent-fg: light-dark(
+      oklch(59.87% 0.2194 259.04),
+      oklch(54.10% 0.1928 258.89)
+    );
+    --ph-color-accent-emphasis: light-dark(
+      oklch(67.26% 0.1760 255.3),
+      oklch(62.92% 0.162 255.39)
+    );
+    --ph-color-accent-active: light-dark(
+      oklch(50.44% 0.2095 260.97),
+      oklch(46.15% 0.1555 258.49)
+    );
     --ph-color-feedback-info: var(--ph-color-accent-fg);
     --ph-color-feedback-success: light-dark(
       oklch(67.12% 0.158 148.42),
@@ -92,16 +101,46 @@
       oklch(91.24% 0.0439 250.42 / 0.78),
       oklch(41.09% 0.0835 250.08 / 0.72)
     );
-    --ph-tag-preset-blue: light-dark(#1677ff, #69b1ff);
-    --ph-tag-preset-cyan: light-dark(#13c2c2, #5cdbd3);
-    --ph-tag-preset-geekblue: light-dark(#2f54eb, #85a5ff);
-    --ph-tag-preset-green: light-dark(#52c41a, #95de64);
-    --ph-tag-preset-lime: light-dark(#a0d911, #d3f261);
-    --ph-tag-preset-gold: light-dark(#faad14, #ffd666);
-    --ph-tag-preset-purple: light-dark(#722ed1, #b37feb);
-    --ph-tag-preset-volcano: light-dark(#fa541c, #ff9c6e);
-    --ph-tag-preset-teal: light-dark(#08979c, #36cfc9);
-    --ph-tag-preset-gray: light-dark(#8c8c8c, #bfbfbf);
+    --ph-tag-preset-blue: light-dark(
+      oklch(59.87% 0.2194 259.04),
+      oklch(74.6% 0.1348 251.78)
+    );
+    --ph-tag-preset-cyan: light-dark(
+      oklch(73.81% 0.1238 194.8),
+      oklch(81.86% 0.1125 189.47)
+    );
+    --ph-tag-preset-geekblue: light-dark(
+      oklch(52.18% 0.2301 266.85),
+      oklch(73.57% 0.1357 268.13)
+    );
+    --ph-tag-preset-green: light-dark(
+      oklch(72.56% 0.2182 138.49),
+      oklch(82.65% 0.1719 134.43)
+    );
+    --ph-tag-preset-lime: light-dark(
+      oklch(81.57% 0.2061 126.53),
+      oklch(91.11% 0.1725 120.15)
+    );
+    --ph-tag-preset-gold: light-dark(
+      oklch(80.16% 0.1651 76),
+      oklch(89% 0.1375 89.24)
+    );
+    --ph-tag-preset-purple: light-dark(
+      oklch(49.42% 0.2284 295.58),
+      oklch(69.17% 0.1608 304.78)
+    );
+    --ph-tag-preset-volcano: light-dark(
+      oklch(66.76% 0.2112 36.9),
+      oklch(78.51% 0.1334 45.22)
+    );
+    --ph-tag-preset-teal: light-dark(
+      oklch(61.49% 0.1034 199),
+      oklch(77.7% 0.1226 190.94)
+    );
+    --ph-tag-preset-gray: light-dark(
+      oklch(64.01% 0 89.88),
+      oklch(80.47% 0 89.88)
+    );
 
     --ph-text-xs: 0.64rem;
     --ph-text-sm: 0.8rem;

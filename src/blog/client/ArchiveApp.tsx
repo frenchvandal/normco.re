@@ -8,7 +8,6 @@ import {
   groupArchiveYears,
   resolveArchiveLocaleFromDocument,
 } from "../archive-common.ts";
-import { BLOG_ANTD_THEME } from "./theme.ts";
 import {
   BLOG_ANTD_BACKTOP_CLASSNAMES,
   BLOG_ANTD_CARD_CLASSNAMES,
@@ -19,7 +18,6 @@ import {
   BackTop,
   Button,
   Card,
-  ConfigProvider,
   Flex,
   Paragraph,
   ReadOutlined,
@@ -285,15 +283,5 @@ export function ArchiveView(
         icon={<VerticalAlignTopOutlined />}
       />
     </div>
-  );
-}
-
-export function BlogAntdArchiveApp(
-  { data }: { data: BlogArchiveViewData },
-) {
-  return (
-    <ConfigProvider theme={BLOG_ANTD_THEME}>
-      <ArchiveView data={data} />
-    </ConfigProvider>
   );
 }

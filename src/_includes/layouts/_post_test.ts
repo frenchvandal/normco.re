@@ -567,16 +567,14 @@ describe("tag preset token contracts", () => {
     const tagPresetMatches = themeTokens.match(
       /--ph-tag-preset-[a-z]+:\s*light-dark\(/g,
     ) ?? [];
+    const oklchPresetMatches = themeTokens.match(
+      /--ph-tag-preset-[a-z]+:\s*light-dark\(\s*oklch\([^)]*\),\s*oklch\([^)]*\)\s*\);/g,
+    ) ?? [];
 
     assertEquals(tagPresetMatches.length, 10);
-    assertStringIncludes(
-      themeTokens,
-      "--ph-tag-preset-blue: light-dark(#1677ff, #69b1ff);",
-    );
-    assertStringIncludes(
-      themeTokens,
-      "--ph-tag-preset-gray: light-dark(#8c8c8c, #bfbfbf);",
-    );
+    assertEquals(oklchPresetMatches.length, 10);
+    assertStringIncludes(themeTokens, "--ph-tag-preset-blue:");
+    assertStringIncludes(themeTokens, "--ph-tag-preset-gray:");
   });
 });
 

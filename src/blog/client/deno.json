@@ -4,7 +4,6 @@
     "@std/testing/": "jsr:/@std/testing@^1.0.17/",
     "npm/ant-design-icons": "npm:@ant-design/icons@6.1.1",
     "@blog/archive-antd": "./archive-antd.ts",
-    "@blog/antd-components": "./antd-components.ts",
     "@blog/antd-icons": "./antd-icons.ts",
     "@blog/common-antd": "./common-antd.ts",
     "@blog/post-antd": "./post-antd.ts",

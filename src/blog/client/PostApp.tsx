@@ -12,7 +12,6 @@ import {
   BLOG_ANTD_RAIL_CARD_CLASSNAMES,
   BLOG_ANTD_STATISTIC_CLASSNAMES,
 } from "./antd-semantic.ts";
-import { BLOG_ANTD_THEME } from "./theme.ts";
 import {
   BackTop,
   BarChartOutlined,
@@ -20,7 +19,6 @@ import {
   Button,
   Card,
   Col,
-  ConfigProvider,
   Descriptions,
   Divider,
   FileTextOutlined,
@@ -302,18 +300,5 @@ export function PostView(
         />
       )}
     </div>
-  );
-}
-
-export function BlogAntdPostApp(
-  { data, interactive = true }: {
-    data: BlogPostViewData;
-    interactive?: boolean | undefined;
-  },
-) {
-  return (
-    <ConfigProvider theme={BLOG_ANTD_THEME}>
-      <PostView data={data} interactive={interactive} />
-    </ConfigProvider>
   );
 }

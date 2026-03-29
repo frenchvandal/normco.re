@@ -311,6 +311,10 @@
     }
   }
 
+  /*
+   * The header sits outside the content containers, so its structural switch
+   * stays viewport-based even though the interior layouts use container queries.
+   */
   @media (min-width: 64rem) {
     .site-header__nav {
       display: flex;
