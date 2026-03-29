@@ -1,6 +1,7 @@
 import { pooledMap } from "@std/async";
-import { dirname, extname, join } from "@std/path";
+import { dirname, extname } from "@std/path";
 import { closestString, levenshteinDistance } from "@std/text";
+import { toOutputPath } from "./_url_paths.ts";
 
 const DEFAULT_ROUTES = [
   "/index.html",
@@ -716,13 +717,6 @@ function stripQueryAndHash(url: string): string {
   }
 
   return url.slice(0, queryOrHashIndex);
-}
-
-function toOutputPath(rootDir: string, url: string): string {
-  return join(
-    rootDir,
-    ...url.split("/").filter((segment) => segment.length > 0),
-  );
 }
 
 function isSupportedAssetUrl(url: string): boolean {

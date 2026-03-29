@@ -1,13 +1,19 @@
 import { parseArgs } from "@std/cli";
 import { encodeHex } from "@std/encoding/hex";
 import { walk } from "@std/fs";
-import { basename, extname, join } from "@std/path";
+import { basename, extname } from "@std/path";
 import {
   createUsageError,
   fileExists,
   getErrorMessage,
   hasHelpFlag,
 } from "./_shared.ts";
+import {
+  getUrlDirectory,
+  toOutputPath,
+  toRelativeUrlPath,
+  toSiteUrl,
+} from "./_url_paths.ts";
 
 const HASH_LENGTH = 10;
 const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
@@ -50,13 +56,6 @@ type AssetRewrite = {
   fingerprintedMapUrl?: string;
 };
 
-function toOutputPath(rootDir: string, urlPath: string): string {
-  return join(
-    rootDir,
-    ...urlPath.split("/").filter((segment) => segment.length > 0),
-  );
-}
-
 function toFingerprintedUrl(urlPath: string, hash: string): string {
   const extension = extname(urlPath);
   const basePath = extension.length > 0
@@ -64,46 +63,6 @@ function toFingerprintedUrl(urlPath: string, hash: string): string {
     : urlPath;
 
   return `${basePath}.${hash}${extension}`;
-}
-
-function normalizeSlashes(value: string): string {
-  return value.replaceAll("\\", "/");
-}
-
-function toSiteUrl(rootDir: string, outputPath: string): string {
-  const normalizedRootDir = normalizeSlashes(rootDir).replace(/\/+$/, "");
-  const normalizedOutputPath = normalizeSlashes(outputPath);
-  const relativePath = normalizedOutputPath.startsWith(`${normalizedRootDir}/`)
-    ? normalizedOutputPath.slice(normalizedRootDir.length + 1)
-    : normalizedOutputPath;
-  return `/${relativePath}`;
-}
-
-function getUrlDirectory(urlPath: string): string {
-  const lastSlash = urlPath.lastIndexOf("/");
-  return lastSlash > 0 ? urlPath.slice(0, lastSlash) : "/";
-}
-
-function toRelativeUrlPath(fromDir: string, toPath: string): string {
-  const fromSegments = fromDir.split("/").filter((segment) =>
-    segment.length > 0
-  );
-  const toSegments = toPath.split("/").filter((segment) => segment.length > 0);
-  let sharedLength = 0;
-
-  while (
-    sharedLength < fromSegments.length &&
-    sharedLength < toSegments.length &&
-    fromSegments[sharedLength] === toSegments[sharedLength]
-  ) {
-    sharedLength += 1;
-  }
-
-  const upSegments = new Array(fromSegments.length - sharedLength).fill("..");
-  const downSegments = toSegments.slice(sharedLength);
-  const relativePath = [...upSegments, ...downSegments].join("/");
-
-  return relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
 }
 
 async function hashContent(content: Uint8Array): Promise<string> {

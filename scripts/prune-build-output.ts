@@ -1,12 +1,13 @@
 import { parseArgs } from "@std/cli";
 import { walk } from "@std/fs";
-import { extname, join } from "@std/path";
+import { extname } from "@std/path";
 import {
   createUsageError,
   fileExists,
   getErrorMessage,
   hasHelpFlag,
 } from "./_shared.ts";
+import { getUrlBasename, toOutputPath } from "./_url_paths.ts";
 
 const USAGE = [
   "Usage: deno run --allow-read --allow-write scripts/prune-build-output.ts [rootDir]",
@@ -40,13 +41,6 @@ type ParsedArgs = Readonly<{
   rootDir: string;
   showHelp: boolean;
 }>;
-
-function toOutputPath(rootDir: string, urlPath: string): string {
-  return join(
-    rootDir,
-    ...urlPath.split("/").filter((segment) => segment.length > 0),
-  );
-}
 
 function isTextFile(path: string): boolean {
   return TEXT_EXTENSIONS.has(extname(path).toLowerCase());
@@ -137,7 +131,7 @@ async function outputContainsReference(
   rootDir: string,
   urlPath: string,
 ): Promise<boolean> {
-  const basename = urlPath.split("/").filter(Boolean).at(-1);
+  const basename = getUrlBasename(urlPath);
   const markers = [
     urlPath,
     basename ? `./${basename}` : undefined,

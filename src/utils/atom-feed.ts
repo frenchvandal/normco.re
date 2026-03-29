@@ -1,5 +1,5 @@
-import { escape } from "@std/html";
 import { formatRfc3339Instant } from "./date-time.ts";
+import { escapeXml } from "./html.ts";
 import { ATOM_FEED_MIME_TYPE, HTML_MIME_TYPE } from "./media-types.ts";
 
 export type AtomFeedAuthor = {
@@ -30,10 +30,6 @@ export type AtomFeedData = {
   readonly entries: ReadonlyArray<AtomFeedEntry>;
   readonly stylesheetHref?: string;
 };
-
-export function escapeXml(value: string): string {
-  return escape(value).replaceAll("&#39;", "&apos;");
-}
 
 export function absolutizeHtmlUrls(baseUrl: string, html: string): string {
   return html.replaceAll(

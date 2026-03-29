@@ -8,9 +8,9 @@ import { describe, it } from "@std/testing/bdd";
 import {
   absolutizeHtmlUrls,
   type AtomFeedData,
-  escapeXml,
   generateAtomXml,
 } from "./atom-feed.ts";
+import { escapeXml } from "./html.ts";
 
 describe("escapeXml()", () => {
   it("escapes XML-special characters", () => {

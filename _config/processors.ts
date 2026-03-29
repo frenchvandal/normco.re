@@ -2,6 +2,10 @@ import type Site from "lume/core/site.ts";
 import type { Page } from "lume/core/file.ts";
 import { generate as generateUuidV7 } from "jsr:@std/uuid@^1.1.0/v7";
 import {
+  dirname as posixDirname,
+  normalize as normalizePosix,
+} from "@std/path/posix";
+import {
   assertEditorialImageDimensions,
   type EditorialImagePageSnapshot,
 } from "../src/utils/editorial-image-dimensions.ts";
@@ -37,7 +41,7 @@ const MULTILANGUAGE_DATA_ALIASES = {
 const POSTS_SOURCE_SEGMENT = "/posts/";
 
 function normalizeSourcePath(sourcePath: string): string {
-  return sourcePath.replaceAll("\\", "/");
+  return normalizePosix(sourcePath.replaceAll("\\", "/"));
 }
 
 export function getPostIdScopeKey(sourcePath: string): string | undefined {
@@ -52,12 +56,12 @@ export function getPostIdScopeKey(sourcePath: string): string | undefined {
     return undefined;
   }
 
-  const lastSeparatorIndex = normalizedSourcePath.lastIndexOf("/");
-  if (lastSeparatorIndex <= postsSegmentIndex + POSTS_SOURCE_SEGMENT.length) {
+  const scopeDir = posixDirname(normalizedSourcePath);
+  if (scopeDir.length <= postsSegmentIndex + POSTS_SOURCE_SEGMENT.length - 1) {
     return undefined;
   }
 
-  return normalizedSourcePath.slice(0, lastSeparatorIndex);
+  return scopeDir;
 }
 
 export function assignMissingPostId(

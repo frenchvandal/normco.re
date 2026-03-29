@@ -3,7 +3,7 @@ import sitemapStylesheetTemplate from "../sitemap.xsl.template" with {
   type: "text",
 };
 
-import { escape } from "@std/html";
+import { escapeXml } from "./html.ts";
 import { renderSiteIconMarkup } from "./site-icons.ts";
 import { HEADER_IDS, HEADER_LANGUAGE_OPTIONS } from "./header-language-menu.ts";
 import { type SiteLanguage, SUPPORTED_LANGUAGES } from "./i18n.ts";
@@ -109,10 +109,6 @@ const FOOTER_GITHUB_ICON_MARKUP = renderSiteIconMarkup(
     height: 16,
   },
 );
-
-function escapeXml(value: string): string {
-  return escape(value).replaceAll("&#39;", "&apos;");
-}
 
 function literalAttribute(value: string): XslAttributeContent {
   return { kind: "literal", value };
