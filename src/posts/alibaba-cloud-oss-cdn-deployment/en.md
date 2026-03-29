@@ -17,7 +17,7 @@ without adding repository-specific deploy scripts.
 
 ## Pipeline at a glance
 
-In steady-state production, this repository's workflow now does three things:
+In steady-state production, this repository’s workflow now does three things:
 
 1. Checks out the repository.
 2. Installs Deno with the pinned version from `.tool-versions` and enables the
@@ -82,7 +82,7 @@ jobs:
 ```
 
 In this repository, I currently keep `cdn-actions: refresh`. The action still
-supports `refresh,preload`, but this site's workflow no longer enables preload
+supports `refresh,preload`, but this site’s workflow no longer enables preload
 on every deployment.
 
 ## Why OIDC instead of access keys

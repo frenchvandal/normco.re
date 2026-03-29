@@ -9,7 +9,7 @@ to describe a plant that aids digestion, smooths a passage, clears an
 obstruction. As a philosophy for building software, it translates remarkably
 well.
 
-Good software reduces friction. It anticipates the user's next step. It provides
+Good software reduces friction. It anticipates the user’s next step. It provides
 the right affordance at the right moment. It gets out of the way.
 
 ## The friction inventory
@@ -48,7 +48,7 @@ of the user, the context, and the failure modes. It demands more work from the
 builder so that less work falls on the user.
 
 This is why ease is a form of generosity. Every unnecessary step you remove from
-your user's path is time returned to them—time they can spend on the thing that
+your user’s path is time returned to them—time they can spend on the thing that
 actually matters.
 
 ## Facilisis in practice
