@@ -1,6 +1,7 @@
-import { assert, assertEquals } from "@std/assert";
+import { assert, assertEquals, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import { bindHeaderClient } from "./header-client/init.js";
+import headerClientSource from "./header-client/init.js" with { type: "text" };
 import { getJSDOM } from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
@@ -164,7 +165,7 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
           </div>
         </div>
 
-        <section
+        <div
           id="site-language-panel"
           class="site-header__panel site-header__language-panel"
           data-language-panel=""
@@ -196,7 +197,7 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
               Francais
             </a>
           </div>
-        </section>
+        </div>
 
         <div
           id="site-search-panel"
@@ -520,6 +521,19 @@ function captureNavigation(window: TestWindow): NavigationDetail[] {
 }
 
 describe("header-client.js", () => {
+  it("keeps the focus trap selector aligned with richer interactive elements", () => {
+    assertStringIncludes(headerClientSource, "audio[controls]");
+    assertStringIncludes(headerClientSource, "video[controls]");
+    assertStringIncludes(
+      headerClientSource,
+      "details > summary:first-of-type",
+    );
+    assertStringIncludes(
+      headerClientSource,
+      "[contenteditable]:not([contenteditable='false'])",
+    );
+  });
+
   it("keeps focus on the language trigger for pointer opens and moves focus into the menu from ArrowDown", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;

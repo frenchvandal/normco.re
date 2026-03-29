@@ -7,8 +7,18 @@ const DEFERRED_FOCUS_DELAY_MS = 16;
 const DISCLOSURE_CONTROL_SELECTOR =
   ".site-header__action[aria-controls], .site-header__menu-toggle";
 const DISCLOSURE_SURFACE_SELECTOR = ".site-header__panel, .site-side-nav";
-const FOCUSABLE_SELECTOR =
-  "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "audio[controls]",
+  "video[controls]",
+  "details > summary:first-of-type",
+  "[contenteditable]:not([contenteditable='false'])",
+  "[tabindex]:not([tabindex='-1'])",
+].join(", ");
 const LANGUAGE_MENU_SELECTOR = "[data-language-menu]";
 const LANGUAGE_OPTION_SELECTOR = '[data-language-option][role="menuitemradio"]';
 const OVERLAY_SELECTOR = ".site-side-nav__overlay";

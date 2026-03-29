@@ -1,7 +1,10 @@
 import { createRoot } from "react-dom/client";
 import { createElement, type FunctionComponent } from "react";
 import { BLOG_APP_DATA_ID, BLOG_APP_ROOT_ATTRIBUTE } from "../embed.ts";
-import { parseBlogAppData } from "./bootstrap-data.ts";
+import {
+  type BlogAppDataValidator,
+  parseBlogAppData,
+} from "./bootstrap-data.ts";
 
 type MountableProps<TData> = Readonly<{
   data: TData;
@@ -9,6 +12,7 @@ type MountableProps<TData> = Readonly<{
 
 export function mountBlogApp<TData>(
   App: FunctionComponent<MountableProps<TData>>,
+  isExpectedData: BlogAppDataValidator<TData>,
 ): void {
   const rootElement = document.querySelector<HTMLElement>(
     `[${BLOG_APP_ROOT_ATTRIBUTE}]`,
@@ -19,7 +23,7 @@ export function mountBlogApp<TData>(
     return;
   }
 
-  const data = parseBlogAppData<TData>(dataElement.textContent);
+  const data = parseBlogAppData<TData>(dataElement.textContent, isExpectedData);
 
   if (!data) {
     return;

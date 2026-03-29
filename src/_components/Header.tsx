@@ -330,10 +330,9 @@ function renderLanguagePanel(
     : "site-header-panel-head site-header-panel-head--language";
 
   return (
-    <section
+    <div
       id={HEADER_IDS.languagePanel}
       class={v.languagePanel}
-      aria-label={t.site.languageSelectLabel}
       data-language-panel=""
       hidden
     >
@@ -351,7 +350,7 @@ function renderLanguagePanel(
           {renderLanguageOptions(language, alternates, v.languageOption)}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 

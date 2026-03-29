@@ -132,7 +132,8 @@ describe("Header()", () => {
     assertStringIncludes(html, 'id="site-search-panel"');
     assertStringIncludes(html, 'data-search-status=""');
     assertStringIncludes(html, 'data-search-root=""');
-    assertStringIncludes(html, 'id="site-language-panel"');
+    assertMatch(html, /<div[^>]*id="site-language-panel"/);
+    assertNotMatch(html, /<section[^>]*id="site-language-panel"/);
     assertStringIncludes(html, 'data-language-menu=""');
     assertStringIncludes(html, 'id="theme-toggle"');
     assertStringIncludes(
