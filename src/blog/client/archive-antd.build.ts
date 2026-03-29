@@ -6,7 +6,6 @@ import Anchor from "npm:antd@6.3.4/lib/anchor/index.js";
 import BackTop from "npm:antd@6.3.4/lib/float-button/BackTop.js";
 import Button from "npm:antd@6.3.4/lib/button/index.js";
 import Card from "npm:antd@6.3.4/lib/card/index.js";
-import ConfigProvider from "npm:antd@6.3.4/lib/config-provider/index.js";
 import Flex from "npm:antd@6.3.4/lib/flex/index.js";
 import Paragraph from "npm:antd@6.3.4/lib/typography/Paragraph.js";
 import Tag from "npm:antd@6.3.4/lib/tag/index.js";
@@ -18,7 +17,6 @@ export {
   BackTop,
   Button,
   Card,
-  ConfigProvider,
   Flex,
   Paragraph,
   ReadOutlined,
