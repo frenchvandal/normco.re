@@ -19,6 +19,7 @@ describe("createPurgeCssOptions()", () => {
     for (
       const selector of [
         '.site-header__action[aria-expanded="true"]',
+        'html[data-post-mobile-tools-ready="true"] .post-mobile-tools-trigger',
         '.site-search-notification[data-search-notification-tone="warning"]',
         '.feeds-copy-notice[data-copy-notice-state="copied"]',
         ':root[data-theme-preference="dark"]',

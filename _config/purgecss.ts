@@ -10,6 +10,7 @@ export const PURGECSS_CONTENT_EXTENSIONS = [
 const PURGECSS_SAFE_SELECTOR_PATTERNS = [
   /\[aria-(?:checked|current|expanded)="(?:true|page)"\]/,
   /\[data-copy-notice-state="(?:copied|error)"\]/,
+  /data-post-mobile-tools-ready/,
   /\[data-search-notification-tone="(?:info|warning)"\]/,
   /\[data-(?:color-mode|theme-preference)=/,
   /feed-copy-control--(?:copied|error)/,
