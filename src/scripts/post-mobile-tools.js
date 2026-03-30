@@ -1,9 +1,9 @@
 // @ts-check
 
-// Mirrors POST_RAIL_BREAKPOINT in src/utils/layout-breakpoints.ts and the
-// single-column post rail query in src/styles/components/post.css.
-const POST_RAIL_BREAKPOINT = "66rem";
-const MOBILE_MEDIA_QUERY = `(width < ${POST_RAIL_BREAKPOINT})`;
+// Mirrors POST_MOBILE_TOOLS_MEDIA_QUERY in src/utils/layout-breakpoints.ts and
+// the single-column post rail query in src/styles/components/post.css.
+const POST_MOBILE_TOOLS_MAX_WIDTH = "65.99rem";
+const MOBILE_MEDIA_QUERY = `(max-width: ${POST_MOBILE_TOOLS_MAX_WIDTH})`;
 const OPEN_SELECTOR = "[data-post-mobile-tools-open]";
 const CLOSE_SELECTOR = "[data-post-mobile-tools-close]";
 const DIALOG_SELECTOR = "[data-post-mobile-tools]";

@@ -1221,11 +1221,8 @@
 
   .blog-antd-archive-mobile__backtop {
     position: fixed;
-    inset-inline-end: clamp(var(--ph-space-4), 4vw, var(--ph-space-5));
-    inset-block-end: calc(
-      var(--ph-mobile-nav-offset)
-        + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
-    );
+    right: clamp(var(--ph-space-4), 4vw, var(--ph-space-5));
+    bottom: calc(var(--ph-mobile-nav-offset) + var(--ph-space-4));
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1678,10 +1675,10 @@
 
     .blog-antd-archive-backtop {
       position: fixed;
-      inset-inline-end: clamp(var(--ph-space-4), 4vw, var(--ph-space-5));
-      inset-block-end: calc(
+      right: clamp(var(--ph-space-4), 4vw, var(--ph-space-5));
+      bottom: calc(
         var(--ph-mobile-nav-offset) + env(safe-area-inset-bottom)
-          + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
+          + var(--ph-space-4)
       );
       z-index: 4;
       display: inline-flex;

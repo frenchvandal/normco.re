@@ -57,6 +57,11 @@ type LayoutData = Lume.Data & {
   searchIndexed?: boolean;
   unlisted?: boolean;
   extraStylesheets?: ReadonlyArray<string>;
+  afterMainContent?: LayoutRenderable;
+  renderAfterMainContent?: (
+    data: LayoutData,
+    helpers: Lume.Helpers,
+  ) => AwaitableLayoutRenderable;
   alternates?: ReadonlyArray<AlternateData>;
   siteChrome?: SiteChromeData;
   // Populated by `src/_data.ts` in real builds. These stay optional so layout
@@ -158,8 +163,11 @@ function resolveSiteChromeData(siteChrome?: SiteChromeData): SiteChromeData {
   };
 }
 
-export default (
-  {
+export default async (
+  data: LayoutData,
+  _helpers: Lume.Helpers,
+) => {
+  const {
     title,
     description,
     url,
@@ -170,6 +178,8 @@ export default (
     searchIndexed,
     unlisted,
     extraStylesheets,
+    afterMainContent,
+    renderAfterMainContent,
     alternates,
     siteChrome,
     siteName,
@@ -177,9 +187,7 @@ export default (
     author,
     metas,
     blogStartYear,
-  }: LayoutData,
-  _helpers: Lume.Helpers,
-) => {
+  } = data;
   // The real site injects these via `src/_data.ts`; fallbacks keep tests and
   // isolated renders from depending on the full Lume data pipeline.
   const resolvedSiteName = metas?.site ?? siteName ?? SITE_NAME;
@@ -210,6 +218,9 @@ export default (
   const atomXmlUrl = getLocalizedAtomFeedUrl(language);
   const feedXmlUrl = getLocalizedRssFeedUrl(language);
   const feedJsonUrl = getLocalizedJsonFeedUrl(language);
+  const resolvedAfterMainContent = typeof renderAfterMainContent === "function"
+    ? await renderAfterMainContent(data, _helpers)
+    : afterMainContent;
   const alternateUrls = collectAlternateUrls(alternates, language, currentUrl);
   const Header = resolveComponent<HeaderProps>(comp, "Header");
   const Footer = resolveComponent<FooterProps>(comp, "Footer");
@@ -320,6 +331,7 @@ export default (
             >
               {children}
             </main>
+            {resolvedAfterMainContent}
             <Footer
               author={resolvedAuthor}
               language={language}

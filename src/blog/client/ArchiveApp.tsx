@@ -27,6 +27,7 @@ import {
   BLOG_ANTD_CARD_CLASSNAMES,
   BLOG_ANTD_PRIMARY_BUTTON_ROOT,
 } from "./antd-semantic.ts";
+import { BLOG_ANTD_SPACE_3, BLOG_ANTD_SPACE_4 } from "./spacing.ts";
 import { StoryTags } from "./common.tsx";
 
 type ArchiveMonthNavYearGroup = ArchiveMonthNavModel["years"][number];
@@ -72,7 +73,11 @@ function ArchiveTimelineItem(
       )}
       <div className="blog-antd-archive-timeline__item-head">
         <span className="blog-antd-story-card__index">{indexLabel}</span>
-        <Flex wrap gap={12} className="blog-antd-archive-timeline__meta">
+        <Flex
+          wrap
+          gap={BLOG_ANTD_SPACE_3}
+          className="blog-antd-archive-timeline__meta"
+        >
           <span className="blog-antd-meta-pill">
             <ScheduleOutlined />
             <time dateTime={story.dateIso}>{story.dateLabel}</time>
@@ -244,58 +249,64 @@ export function ArchiveView(
   );
 
   return (
-    <div className="site-page-shell site-page-shell--wide blog-antd-page blog-antd-page--archive">
-      <div className="blog-antd-stack">
-        <section className="blog-antd-archive-header">
-          <Flex vertical gap={16} className="blog-antd-archive-header__copy">
-            <Tag className="blog-antd-count-tag">
-              {data.postsCountLabel}
-            </Tag>
-            <Title level={1} className="blog-antd-page-title">
-              {data.title}
-            </Title>
-            <Paragraph className="blog-antd-page-lead">
-              {data.lead}
-            </Paragraph>
-          </Flex>
-        </section>
-
-        {archiveView.hasPosts
-          ? (
-            <div className={archiveView.layoutClassName}>
-              {archiveView.monthNav && (
-                <ArchiveMonthNav
-                  model={archiveView.monthNav}
-                  ariaLabel={data.yearsAriaLabel}
-                  eyebrowLabel={data.postsCountLabel}
-                />
-              )}
-              <ArchiveTimeline
-                items={archiveView.timelineItems}
-                ariaLabel={data.postsAriaLabel}
-              />
-            </div>
-          )
-          : (
-            <Card
-              rootClassName="blog-antd-card blog-antd-empty-card"
-              classNames={BLOG_ANTD_CARD_CLASSNAMES}
-              variant="borderless"
+    <>
+      <div className="site-page-shell site-page-shell--wide blog-antd-page blog-antd-page--archive">
+        <div className="blog-antd-stack">
+          <section className="blog-antd-archive-header">
+            <Flex
+              vertical
+              gap={BLOG_ANTD_SPACE_4}
+              className="blog-antd-archive-header__copy"
             >
-              <Title level={4} className="blog-antd-rail-title">
-                {data.emptyStateTitle}
+              <Tag className="blog-antd-count-tag">
+                {data.postsCountLabel}
+              </Tag>
+              <Title level={1} className="blog-antd-page-title">
+                {data.title}
               </Title>
-              <div className="blog-antd-empty-card__actions">
-                <Button
-                  type="primary"
-                  href={data.emptyStateActionHref}
-                  rootClassName={BLOG_ANTD_PRIMARY_BUTTON_ROOT}
-                >
-                  {data.emptyStateActionLabel}
-                </Button>
+              <Paragraph className="blog-antd-page-lead">
+                {data.lead}
+              </Paragraph>
+            </Flex>
+          </section>
+
+          {archiveView.hasPosts
+            ? (
+              <div className={archiveView.layoutClassName}>
+                {archiveView.monthNav && (
+                  <ArchiveMonthNav
+                    model={archiveView.monthNav}
+                    ariaLabel={data.yearsAriaLabel}
+                    eyebrowLabel={data.postsCountLabel}
+                  />
+                )}
+                <ArchiveTimeline
+                  items={archiveView.timelineItems}
+                  ariaLabel={data.postsAriaLabel}
+                />
               </div>
-            </Card>
-          )}
+            )
+            : (
+              <Card
+                rootClassName="blog-antd-card blog-antd-empty-card"
+                classNames={BLOG_ANTD_CARD_CLASSNAMES}
+                variant="borderless"
+              >
+                <Title level={4} className="blog-antd-rail-title">
+                  {data.emptyStateTitle}
+                </Title>
+                <div className="blog-antd-empty-card__actions">
+                  <Button
+                    type="primary"
+                    href={data.emptyStateActionHref}
+                    rootClassName={BLOG_ANTD_PRIMARY_BUTTON_ROOT}
+                  >
+                    {data.emptyStateActionLabel}
+                  </Button>
+                </div>
+              </Card>
+            )}
+        </div>
       </div>
       {interactive && (
         <BackTop
@@ -305,6 +316,6 @@ export function ArchiveView(
           icon={<VerticalAlignTopOutlined />}
         />
       )}
-    </div>
+    </>
   );
 }

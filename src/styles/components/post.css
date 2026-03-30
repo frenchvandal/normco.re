@@ -409,14 +409,11 @@
   .post-backtop {
     display: none;
     position: fixed;
-    inset-inline-start: calc(
+    left: calc(
       env(safe-area-inset-left)
         + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
     );
-    inset-block-end: calc(
-      var(--ph-mobile-nav-offset)
-        + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
-    );
+    bottom: calc(var(--ph-mobile-nav-offset) + var(--ph-space-4));
     z-index: var(--ph-layer-header-panel);
     text-decoration: none;
   }
@@ -461,9 +458,9 @@
 
   .post-mobile-tools-dialog {
     position: fixed;
-    inset-inline-start: max(var(--ph-shell-gutter), env(safe-area-inset-left));
-    inset-inline-end: max(var(--ph-shell-gutter), env(safe-area-inset-right));
-    inset-block-end: 0;
+    left: max(var(--ph-shell-gutter), env(safe-area-inset-left));
+    right: max(var(--ph-shell-gutter), env(safe-area-inset-right));
+    bottom: 0;
     margin: 0 auto;
     padding: 0;
     border: 0;
@@ -758,7 +755,7 @@
     line-height: var(--ph-lh-relaxed);
   }
 
-  @media (width < 66rem) {
+  @media (max-width: 65.99rem) {
     .post-inline-anchor {
       display: grid;
       gap: var(--ph-space-3);
@@ -803,14 +800,11 @@
 
     html[data-post-mobile-tools-ready="true"] .post-mobile-tools-trigger {
       position: fixed;
-      inset-inline-end: calc(
+      right: calc(
         env(safe-area-inset-right)
           + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
       );
-      inset-block-end: calc(
-        var(--ph-mobile-nav-offset)
-          + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
-      );
+      bottom: calc(var(--ph-mobile-nav-offset) + var(--ph-space-4));
       display: inline-flex;
       align-items: center;
       justify-content: center;

@@ -330,11 +330,6 @@
         var(--ph-color-border-muted);
     }
 
-    .site-header[data-header-variant="editorial-home"] .site-header__global {
-      padding-inline-start: 0;
-      border-inline-start: 0;
-    }
-
     .editorial-home-intro__grid {
       grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.7fr);
       align-items: start;

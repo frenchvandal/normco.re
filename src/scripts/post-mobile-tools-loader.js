@@ -1,7 +1,7 @@
 // @ts-check
 
-const POST_RAIL_BREAKPOINT = "66rem";
-const DEFAULT_MEDIA_QUERY = `(width < ${POST_RAIL_BREAKPOINT})`;
+const POST_MOBILE_TOOLS_MAX_WIDTH = "65.99rem";
+const DEFAULT_MEDIA_QUERY = `(max-width: ${POST_MOBILE_TOOLS_MAX_WIDTH})`;
 
 if (typeof window !== "undefined" && typeof document !== "undefined") {
   const currentScript = document.currentScript instanceof HTMLScriptElement

@@ -323,7 +323,7 @@
     --ph-decorative-marker-opacity: 0.72;
     --ph-archive-timeline-separator-opacity: 0.64;
     --ph-archive-timeline-chevron-opacity: 0.54;
-    --ph-mobile-nav-offset: 0;
+    --ph-mobile-nav-offset: 0px;
     --ph-shadow-floating:
       0 6px 16px 0 rgb(0 0 0 / 0.08),
       0 3px 6px -4px rgb(0 0 0 / 0.12),

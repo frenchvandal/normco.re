@@ -1,19 +1,6 @@
 /** @jsxImportSource npm/react */
 import { useMemo } from "npm/react";
 
-import type { BlogPostViewData } from "../view-data.ts";
-import {
-  BLOG_ANTD_BACKTOP_CLASSNAMES,
-  BLOG_ANTD_BREADCRUMB_CLASSNAMES,
-  BLOG_ANTD_CARD_CLASSNAMES,
-  BLOG_ANTD_DEFAULT_BUTTON_ROOT,
-  BLOG_ANTD_DESCRIPTIONS_CLASSNAMES,
-  BLOG_ANTD_METRIC_CARD_CLASSNAMES,
-  BLOG_ANTD_OUTLINE_TIMELINE_CLASSNAMES,
-  BLOG_ANTD_PRIMARY_BUTTON_ROOT,
-  BLOG_ANTD_RAIL_CARD_CLASSNAMES,
-  BLOG_ANTD_STATISTIC_CLASSNAMES,
-} from "./antd-semantic.ts";
 import {
   BackTop,
   BarChartOutlined,
@@ -38,6 +25,25 @@ import {
   Title,
   VerticalAlignTopOutlined,
 } from "@blog/post-antd";
+
+import type { BlogPostViewData } from "../view-data.ts";
+import {
+  BLOG_ANTD_BACKTOP_CLASSNAMES,
+  BLOG_ANTD_BREADCRUMB_CLASSNAMES,
+  BLOG_ANTD_CARD_CLASSNAMES,
+  BLOG_ANTD_DEFAULT_BUTTON_ROOT,
+  BLOG_ANTD_DESCRIPTIONS_CLASSNAMES,
+  BLOG_ANTD_METRIC_CARD_CLASSNAMES,
+  BLOG_ANTD_OUTLINE_TIMELINE_CLASSNAMES,
+  BLOG_ANTD_PRIMARY_BUTTON_ROOT,
+  BLOG_ANTD_RAIL_CARD_CLASSNAMES,
+  BLOG_ANTD_STATISTIC_CLASSNAMES,
+} from "./antd-semantic.ts";
+import {
+  BLOG_ANTD_ROW_GUTTER_SECTION,
+  BLOG_ANTD_SPACE_3,
+  BLOG_ANTD_SPACE_4,
+} from "./spacing.ts";
 import {
   MetaLine,
   renderBreadcrumbItems,
@@ -87,232 +93,258 @@ export function PostView(
     })), [data.outline]);
 
   return (
-    <div className="site-page-shell site-page-shell--wide blog-antd-page blog-antd-page--post">
-      <div
-        className={`feature-layout${
-          hasRail ? " feature-layout--with-rail" : ""
-        }`}
-      >
-        <article
-          className="post-article feature-main blog-antd-post-article"
-          data-code-copy-label={data.codeCopyLabel}
-          data-code-copy-feedback={data.codeCopyFeedback}
-          data-code-copy-failed-feedback={data.codeCopyFailedFeedback}
+    <>
+      <div className="site-page-shell site-page-shell--wide blog-antd-page blog-antd-page--post">
+        <div
+          className={`feature-layout${
+            hasRail ? " feature-layout--with-rail" : ""
+          }`}
         >
-          <nav aria-label={data.breadcrumbAriaLabel}>
-            <Breadcrumb
-              rootClassName="blog-antd-breadcrumb"
-              classNames={BLOG_ANTD_BREADCRUMB_CLASSNAMES}
-              items={breadcrumbItems}
-            />
-          </nav>
+          <article
+            className="post-article feature-main blog-antd-post-article"
+            data-code-copy-label={data.codeCopyLabel}
+            data-code-copy-feedback={data.codeCopyFeedback}
+            data-code-copy-failed-feedback={data.codeCopyFailedFeedback}
+          >
+            <nav aria-label={data.breadcrumbAriaLabel}>
+              <Breadcrumb
+                rootClassName="blog-antd-breadcrumb"
+                classNames={BLOG_ANTD_BREADCRUMB_CLASSNAMES}
+                items={breadcrumbItems}
+              />
+            </nav>
 
-          <section className="blog-antd-hero blog-antd-hero--post">
-            <Row gutter={[32, 24]} align="top">
-              <Col xs={24} xl={15}>
-                <Flex vertical gap={16} className="blog-antd-post-header__copy">
-                  <Tag className="blog-antd-count-tag blog-antd-count-tag--soft">
-                    {data.publishedDateLabel}
-                  </Tag>
-                  <Title
-                    id="post-title"
-                    level={1}
-                    className="blog-antd-page-title"
+            <section className="blog-antd-hero blog-antd-hero--post">
+              <Row gutter={BLOG_ANTD_ROW_GUTTER_SECTION} align="top">
+                <Col xs={24} xl={15}>
+                  <Flex
+                    vertical
+                    gap={BLOG_ANTD_SPACE_4}
+                    className="blog-antd-post-header__copy"
                   >
-                    {data.title}
-                  </Title>
-                  <MetaLine
-                    dateIso={data.publishedDateIso}
-                    dateLabel={data.publishedDateLabel}
-                    readingLabel={data.readingTimeLabel}
-                  />
-                  {data.summaryItems.length > 0 && (
-                    <div className="blog-antd-post-metrics">
-                      {data.summaryItems.map((item) => (
-                        <Card
-                          key={item.key}
-                          rootClassName="blog-antd-card blog-antd-post-metric-card"
-                          classNames={BLOG_ANTD_METRIC_CARD_CLASSNAMES}
-                          variant="borderless"
-                        >
-                          <Statistic
-                            classNames={BLOG_ANTD_STATISTIC_CLASSNAMES}
-                            title={item.label}
-                            value={item.value}
-                            prefix={<BarChartOutlined />}
-                          />
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-                </Flex>
-              </Col>
-              {data.summary && (
-                <Col xs={24} xl={9}>
-                  <div className="blog-antd-post-summary blog-antd-post-summary--hero">
-                    <p className="blog-antd-eyebrow">
-                      {data.summaryEyebrow}
-                    </p>
-                    <Paragraph className="blog-antd-page-lead blog-antd-page-lead--summary">
-                      {data.summary}
-                    </Paragraph>
-                  </div>
+                    <Tag className="blog-antd-count-tag blog-antd-count-tag--soft">
+                      {data.publishedDateLabel}
+                    </Tag>
+                    <Title
+                      id="post-title"
+                      level={1}
+                      className="blog-antd-page-title"
+                    >
+                      {data.title}
+                    </Title>
+                    <MetaLine
+                      dateIso={data.publishedDateIso}
+                      dateLabel={data.publishedDateLabel}
+                      readingLabel={data.readingTimeLabel}
+                    />
+                    {data.summaryItems.length > 0 && (
+                      <div className="blog-antd-post-metrics">
+                        {data.summaryItems.map((item) => (
+                          <Card
+                            key={item.key}
+                            rootClassName="blog-antd-card blog-antd-post-metric-card"
+                            classNames={BLOG_ANTD_METRIC_CARD_CLASSNAMES}
+                            variant="borderless"
+                          >
+                            <Statistic
+                              classNames={BLOG_ANTD_STATISTIC_CLASSNAMES}
+                              title={item.label}
+                              value={item.value}
+                              prefix={<BarChartOutlined />}
+                            />
+                          </Card>
+                        ))}
+                      </div>
+                    )}
+                  </Flex>
                 </Col>
-              )}
-            </Row>
-          </section>
+                {data.summary && (
+                  <Col xs={24} xl={9}>
+                    <div className="blog-antd-post-summary blog-antd-post-summary--hero">
+                      <p className="blog-antd-eyebrow">
+                        {data.summaryEyebrow}
+                      </p>
+                      <Paragraph className="blog-antd-page-lead blog-antd-page-lead--summary">
+                        {data.summary}
+                      </Paragraph>
+                    </div>
+                  </Col>
+                )}
+              </Row>
+            </section>
 
-          <Divider className="blog-antd-section-divider" />
+            <Divider className="blog-antd-section-divider" />
 
-          <TrustedHtmlSection
-            className="post-content"
-            lang={data.languageTag}
-            ariaLabelledby="post-title"
-            html={data.contentHtml}
-          />
-
-          <Card
-            rootClassName="blog-antd-card blog-antd-details-card"
-            classNames={BLOG_ANTD_CARD_CLASSNAMES}
-            variant="borderless"
-          >
-            <Flex align="center" gap={10} className="blog-antd-rail-head">
-              <FileTextOutlined />
-              <Title level={4} className="blog-antd-rail-title">
-                {data.detailsTitle}
-              </Title>
-            </Flex>
-            <Descriptions
-              column={1}
-              classNames={BLOG_ANTD_DESCRIPTIONS_CLASSNAMES}
-              items={publicationDetailItems}
+            <TrustedHtmlSection
+              className="post-content"
+              lang={data.languageTag}
+              ariaLabelledby="post-title"
+              html={data.contentHtml}
             />
-          </Card>
-        </article>
 
-        {hasRail && (
-          <aside
-            className="feature-rail post-rail blog-antd-rail"
-            aria-label={data.railAriaLabel}
-          >
-            <div className="feature-rail-sticky blog-antd-rail-stack">
-              {data.outline.length > 0 && (
-                <Card
-                  rootClassName="blog-antd-card blog-antd-rail-card"
-                  classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
-                  variant="borderless"
-                >
-                  <Flex align="center" gap={10} className="blog-antd-rail-head">
-                    <ProfileOutlined />
-                    <Title
-                      level={4}
-                      className="blog-antd-rail-title"
-                    >
-                      {data.sectionsTitle}
-                    </Title>
-                  </Flex>
-                  <Timeline
-                    className="blog-antd-outline-timeline"
-                    classNames={BLOG_ANTD_OUTLINE_TIMELINE_CLASSNAMES}
-                    items={outlineItems}
-                  />
-                </Card>
-              )}
+            <Card
+              rootClassName="blog-antd-card blog-antd-details-card"
+              classNames={BLOG_ANTD_CARD_CLASSNAMES}
+              variant="borderless"
+            >
+              <Flex
+                align="center"
+                gap={BLOG_ANTD_SPACE_3}
+                className="blog-antd-rail-head"
+              >
+                <FileTextOutlined />
+                <Title level={4} className="blog-antd-rail-title">
+                  {data.detailsTitle}
+                </Title>
+              </Flex>
+              <Descriptions
+                column={1}
+                classNames={BLOG_ANTD_DESCRIPTIONS_CLASSNAMES}
+                items={publicationDetailItems}
+              />
+            </Card>
+          </article>
 
-              {data.tags.length > 0 && (
-                <Card
-                  rootClassName="blog-antd-card blog-antd-rail-card"
-                  classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
-                  variant="borderless"
-                >
-                  <Flex align="center" gap={10} className="blog-antd-rail-head">
-                    <TagsOutlined />
-                    <Title
-                      level={4}
-                      className="blog-antd-rail-title"
+          {hasRail && (
+            <aside
+              className="feature-rail post-rail blog-antd-rail"
+              aria-label={data.railAriaLabel}
+            >
+              <div className="feature-rail-sticky blog-antd-rail-stack">
+                {data.outline.length > 0 && (
+                  <Card
+                    rootClassName="blog-antd-card blog-antd-rail-card"
+                    classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
+                    variant="borderless"
+                  >
+                    <Flex
+                      align="center"
+                      gap={BLOG_ANTD_SPACE_3}
+                      className="blog-antd-rail-head"
                     >
-                      {data.tagsTitle}
-                    </Title>
-                  </Flex>
-                  <Space wrap>
-                    {data.tags.map((tag) => (
-                      <Tag key={tag.url} className="blog-antd-tag">
-                        <a href={tag.url} title={tag.title} rel="tag">
-                          {tag.label}
-                        </a>
-                      </Tag>
-                    ))}
-                  </Space>
-                </Card>
-              )}
-
-              {data.backlinks.length > 0 && (
-                <Card
-                  rootClassName="blog-antd-card blog-antd-rail-card"
-                  classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
-                  variant="borderless"
-                >
-                  <Flex align="center" gap={10} className="blog-antd-rail-head">
-                    <NodeIndexOutlined />
-                    <Title
-                      level={4}
-                      className="blog-antd-rail-title"
-                    >
-                      {data.backlinksTitle}
-                    </Title>
-                  </Flex>
-                  <ul className="blog-antd-link-list">
-                    {data.backlinks.map((item) => (
-                      <li key={item.url}>
-                        <a href={item.url}>{item.title}</a>
-                      </li>
-                    ))}
-                  </ul>
-                </Card>
-              )}
-
-              {(data.previous || data.next) && (
-                <Card
-                  rootClassName="blog-antd-card blog-antd-rail-card"
-                  classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
-                  variant="borderless"
-                >
-                  <Flex align="center" gap={10} className="blog-antd-rail-head">
-                    <SwapOutlined />
-                    <Title
-                      level={4}
-                      className="blog-antd-rail-title"
-                    >
-                      {data.navigationAriaLabel}
-                    </Title>
-                  </Flex>
-                  <div className="blog-antd-nav-stack">
-                    {data.previous && (
-                      <Button
-                        href={data.previous.url}
-                        block
-                        rootClassName={`${BLOG_ANTD_DEFAULT_BUTTON_ROOT} blog-antd-nav-button`}
-                        type="default"
+                      <ProfileOutlined />
+                      <Title
+                        level={4}
+                        className="blog-antd-rail-title"
                       >
-                        {data.previousLabel}: {data.previous.title}
-                      </Button>
-                    )}
-                    {data.next && (
-                      <Button
-                        href={data.next.url}
-                        block
-                        rootClassName={`${BLOG_ANTD_PRIMARY_BUTTON_ROOT} blog-antd-nav-button`}
-                        type="primary"
+                        {data.sectionsTitle}
+                      </Title>
+                    </Flex>
+                    <Timeline
+                      className="blog-antd-outline-timeline"
+                      classNames={BLOG_ANTD_OUTLINE_TIMELINE_CLASSNAMES}
+                      items={outlineItems}
+                    />
+                  </Card>
+                )}
+
+                {data.tags.length > 0 && (
+                  <Card
+                    rootClassName="blog-antd-card blog-antd-rail-card"
+                    classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
+                    variant="borderless"
+                  >
+                    <Flex
+                      align="center"
+                      gap={BLOG_ANTD_SPACE_3}
+                      className="blog-antd-rail-head"
+                    >
+                      <TagsOutlined />
+                      <Title
+                        level={4}
+                        className="blog-antd-rail-title"
                       >
-                        {data.nextLabel}: {data.next.title}
-                      </Button>
-                    )}
-                  </div>
-                </Card>
-              )}
-            </div>
-          </aside>
-        )}
+                        {data.tagsTitle}
+                      </Title>
+                    </Flex>
+                    <Space wrap>
+                      {data.tags.map((tag) => (
+                        <Tag key={tag.url} className="blog-antd-tag">
+                          <a href={tag.url} title={tag.title} rel="tag">
+                            {tag.label}
+                          </a>
+                        </Tag>
+                      ))}
+                    </Space>
+                  </Card>
+                )}
+
+                {data.backlinks.length > 0 && (
+                  <Card
+                    rootClassName="blog-antd-card blog-antd-rail-card"
+                    classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
+                    variant="borderless"
+                  >
+                    <Flex
+                      align="center"
+                      gap={BLOG_ANTD_SPACE_3}
+                      className="blog-antd-rail-head"
+                    >
+                      <NodeIndexOutlined />
+                      <Title
+                        level={4}
+                        className="blog-antd-rail-title"
+                      >
+                        {data.backlinksTitle}
+                      </Title>
+                    </Flex>
+                    <ul className="blog-antd-link-list">
+                      {data.backlinks.map((item) => (
+                        <li key={item.url}>
+                          <a href={item.url}>{item.title}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </Card>
+                )}
+
+                {(data.previous || data.next) && (
+                  <Card
+                    rootClassName="blog-antd-card blog-antd-rail-card"
+                    classNames={BLOG_ANTD_RAIL_CARD_CLASSNAMES}
+                    variant="borderless"
+                  >
+                    <Flex
+                      align="center"
+                      gap={BLOG_ANTD_SPACE_3}
+                      className="blog-antd-rail-head"
+                    >
+                      <SwapOutlined />
+                      <Title
+                        level={4}
+                        className="blog-antd-rail-title"
+                      >
+                        {data.navigationAriaLabel}
+                      </Title>
+                    </Flex>
+                    <div className="blog-antd-nav-stack">
+                      {data.previous && (
+                        <Button
+                          href={data.previous.url}
+                          block
+                          rootClassName={`${BLOG_ANTD_DEFAULT_BUTTON_ROOT} blog-antd-nav-button`}
+                          type="default"
+                        >
+                          {data.previousLabel}: {data.previous.title}
+                        </Button>
+                      )}
+                      {data.next && (
+                        <Button
+                          href={data.next.url}
+                          block
+                          rootClassName={`${BLOG_ANTD_PRIMARY_BUTTON_ROOT} blog-antd-nav-button`}
+                          type="primary"
+                        >
+                          {data.nextLabel}: {data.next.title}
+                        </Button>
+                      )}
+                    </div>
+                  </Card>
+                )}
+              </div>
+            </aside>
+          )}
+        </div>
       </div>
       {interactive && (
         <BackTop
@@ -322,6 +354,6 @@ export function PostView(
           icon={<VerticalAlignTopOutlined />}
         />
       )}
-    </div>
+    </>
   );
 }

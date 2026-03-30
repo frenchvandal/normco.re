@@ -23,6 +23,7 @@ function makeData(
     description?: string;
     extraStylesheets?: string[];
     children?: { __html: string };
+    afterMainContent?: { __html: string };
     url?: string;
     unlisted?: boolean;
     siteName?: string;
@@ -45,6 +46,7 @@ function makeData(
     title: undefined,
     description: undefined,
     children: { __html: "<p>Page body.</p>" },
+    afterMainContent: undefined,
     url: "/",
     unlisted: false,
     siteName: "PhiPhi’s Bizarre Aventure",
@@ -244,6 +246,19 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(html, `<p>${randomBody}</p>`);
       assertStringIncludes(html, 'id="main-content" data-pagefind-body=""');
+    });
+
+    it("renders optional after-main content outside <main>", async () => {
+      const html = await renderBase(
+        makeData({
+          afterMainContent: { __html: '<div class="floating-ui">Float</div>' },
+        }),
+      );
+
+      assertMatch(
+        html,
+        /<\/main><div class="floating-ui">Float<\/div><footer>/,
+      );
     });
 
     it("omits `data-pagefind-body` on unlisted pages", async () => {
