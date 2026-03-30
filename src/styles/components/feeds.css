@@ -28,7 +28,7 @@
   .feeds-descriptions__view {
     display: grid;
     border: var(--ph-border-hairline) solid var(--ph-color-border-muted);
-    border-radius: calc(var(--ph-radius-lg) * 1.05);
+    border-radius: var(--ph-radius-surface-sm);
     background: color-mix(
       in oklch,
       var(--ph-color-canvas-default) 94%,

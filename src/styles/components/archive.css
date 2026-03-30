@@ -44,7 +44,7 @@
         var(--ph-color-accent-fg) 14%,
         var(--ph-color-border-default)
       );
-    border-radius: calc(var(--ph-radius-lg) * 1.05);
+    border-radius: var(--ph-radius-surface-sm);
     background: color-mix(
       in oklch,
       var(--ph-color-canvas-default) 96%,

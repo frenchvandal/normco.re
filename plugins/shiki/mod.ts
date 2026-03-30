@@ -142,11 +142,16 @@ async function withTemporaryProcessEnv<T>(
   callback: () => Promise<T>,
 ): Promise<T> {
   const previousMutation = processEnvMutationQueue;
-  let releaseMutation!: () => void;
-
-  processEnvMutationQueue = new Promise<void>((resolve) => {
+  let releaseMutation: (() => void) | undefined;
+  const nextMutation = new Promise<void>((resolve) => {
     releaseMutation = resolve;
   });
+  if (!releaseMutation) {
+    throw new Error(
+      "Failed to initialize the Shiki process env mutation gate.",
+    );
+  }
+  processEnvMutationQueue = nextMutation;
 
   await previousMutation;
 

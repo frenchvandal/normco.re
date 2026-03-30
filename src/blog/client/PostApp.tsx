@@ -58,6 +58,10 @@ export function PostView(
 ) {
   const hasRail = data.outline.length > 0 || data.tags.length > 0 ||
     data.backlinks.length > 0 || data.previous || data.next;
+  const breadcrumbItems = useMemo(
+    () => renderBreadcrumbItems(data.breadcrumb),
+    [data.breadcrumb],
+  );
   const publicationDetailItems = useMemo(
     () =>
       data.publicationDetails.map((item) => ({
@@ -99,7 +103,7 @@ export function PostView(
             <Breadcrumb
               rootClassName="blog-antd-breadcrumb"
               classNames={BLOG_ANTD_BREADCRUMB_CLASSNAMES}
-              items={renderBreadcrumbItems(data.breadcrumb)}
+              items={breadcrumbItems}
             />
           </nav>
 

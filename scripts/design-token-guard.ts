@@ -61,6 +61,28 @@ const RULES: readonly GuardRule[] = [
       "Use the shared letter-spacing tokens from `src/styles/antd/theme-tokens.css`.",
   },
   {
+    name: "shared-radius-multipliers",
+    pattern:
+      /calc\(var\(--ph-radius-(?:lg|xl)\)\s*\*\s*(?:1\.05|1\.1|1\.15|1\.25)\)/g,
+    message:
+      "Use the shared surface radius tokens from `src/styles/antd/theme-tokens.css`.",
+    allowedFiles: ["src/styles/antd/theme-tokens.css"],
+  },
+  {
+    name: "shared-border-width-multiplier",
+    pattern: /calc\(var\(--ph-border-hairline\)\s*\*\s*2\)/g,
+    message:
+      "Use the shared border width tokens from `src/styles/antd/theme-tokens.css`.",
+    allowedFiles: ["src/styles/antd/theme-tokens.css"],
+  },
+  {
+    name: "shared-archive-type-scale-multipliers",
+    pattern: /calc\(var\(--ph-text-(?:xs|sm)\)\s*\*\s*(?:0\.94|0\.98)\)/g,
+    message:
+      "Use the shared archive type scale tokens from `src/styles/antd/theme-tokens.css`.",
+    allowedFiles: ["src/styles/antd/theme-tokens.css"],
+  },
+  {
     name: "pill-radius-literal",
     pattern: /\b999px\b/g,
     message: "Use `--ph-radius-pill` from `src/styles/antd/theme-tokens.css`.",
@@ -71,6 +93,13 @@ const RULES: readonly GuardRule[] = [
     pattern: /blur\(16px\)\s+saturate\(1\.1\)/g,
     message:
       "Use `--ph-backdrop-frosted` from `src/styles/antd/theme-tokens.css`.",
+    allowedFiles: ["src/styles/antd/theme-tokens.css"],
+  },
+  {
+    name: "shared-decorative-opacity-literal",
+    pattern: /opacity:\s*0\.72/g,
+    message:
+      "Use the shared decorative opacity tokens from `src/styles/antd/theme-tokens.css`.",
     allowedFiles: ["src/styles/antd/theme-tokens.css"],
   },
   {

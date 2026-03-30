@@ -1,4 +1,6 @@
 /** @jsxImportSource npm/react */
+import { useMemo } from "npm/react";
+
 import type { BlogTagViewData } from "../view-data.ts";
 import { resolveTagStorySections } from "../tag-layout.ts";
 import {
@@ -41,6 +43,10 @@ export function TagView(
     gridStories,
     gridStartIndex,
   } = resolveTagStorySections(data.posts);
+  const breadcrumbItems = useMemo(
+    () => renderBreadcrumbItems(data.breadcrumb),
+    [data.breadcrumb],
+  );
 
   return (
     <div className="site-page-shell site-page-shell--editorial blog-antd-page blog-antd-page--tag">
@@ -49,7 +55,7 @@ export function TagView(
           <Breadcrumb
             rootClassName="blog-antd-breadcrumb"
             classNames={BLOG_ANTD_BREADCRUMB_CLASSNAMES}
-            items={renderBreadcrumbItems(data.breadcrumb)}
+            items={breadcrumbItems}
           />
         </nav>
 

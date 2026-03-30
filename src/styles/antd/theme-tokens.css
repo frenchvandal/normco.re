@@ -228,6 +228,7 @@
     --ph-focus-offset: 2px;
 
     --ph-border-hairline: 1px;
+    --ph-border-strong-width: calc(var(--ph-border-hairline) * 2);
     --ph-border-accent: 3px;
     --ph-header-height: 48px;
     --ph-header-action-icon-size-default: 1.25rem;
@@ -255,8 +256,15 @@
     --ph-post-mobile-tools-count-padding-block: 0.22rem;
     --ph-post-mobile-tools-count-padding-inline: 0.45rem;
     --ph-blog-meta-pill-gap: 0.45rem;
+    --ph-text-blog-archive-count: calc(var(--ph-text-xs) * 0.94);
+    --ph-text-blog-archive-anchor: calc(var(--ph-text-sm) * 0.98);
     --ph-marker-size-sm: 0.875rem;
     --ph-skeleton-line-height: 0.875rem;
+    --ph-radius-surface-sm: calc(var(--ph-radius-lg) * 1.05);
+    --ph-radius-surface-md: calc(var(--ph-radius-lg) * 1.1);
+    --ph-radius-surface-lg: calc(var(--ph-radius-lg) * 1.15);
+    --ph-radius-surface-xl: calc(var(--ph-radius-lg) * 1.25);
+    --ph-radius-side-nav-sheet: calc(var(--ph-radius-xl) * 1.15);
     --ph-link-underline-thickness: 0.08em;
     --ph-link-underline-offset: 0.18em;
     --ph-feeds-description-columns: minmax(15rem, 0.78fr) minmax(0, 1.22fr);
@@ -309,7 +317,12 @@
     --ph-header-brand-prefix-opacity: 0.78;
     --ph-header-menu-item-underline-opacity: 0.9;
     --ph-side-nav-accent-opacity: 0.96;
+    --ph-side-nav-brand-prefix-opacity: 0.76;
+    --ph-side-nav-link-icon-opacity: 0.42;
     --ph-blog-card-overlay-opacity: 0.35;
+    --ph-decorative-marker-opacity: 0.72;
+    --ph-archive-timeline-separator-opacity: 0.64;
+    --ph-archive-timeline-chevron-opacity: 0.54;
     --ph-mobile-nav-offset: 0;
     --ph-shadow-floating:
       0 6px 16px 0 rgb(0 0 0 / 0.08),

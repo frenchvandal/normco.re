@@ -33,8 +33,8 @@
         var(--ph-color-accent-fg) 16%,
         var(--ph-color-border-default)
       );
-    border-radius: 0 calc(var(--ph-radius-xl) * 1.15)
-      calc(var(--ph-radius-xl) * 1.15) 0;
+    border-radius: 0 var(--ph-radius-side-nav-sheet)
+      var(--ph-radius-side-nav-sheet) 0;
     background:
       linear-gradient(
         180deg,
@@ -204,7 +204,7 @@
   }
 
   .site-side-nav__brand-prefix {
-    opacity: 0.76;
+    opacity: var(--ph-side-nav-brand-prefix-opacity);
   }
 
   .site-side-nav__items {
@@ -276,7 +276,7 @@
 
   .site-side-nav__link-icon {
     color: currentColor;
-    opacity: 0.42;
+    opacity: var(--ph-side-nav-link-icon-opacity);
     transition:
       transform var(--ph-duration-default) var(--ph-easing-default),
       opacity var(--ph-duration-default) var(--ph-easing-default);

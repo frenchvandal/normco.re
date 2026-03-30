@@ -50,7 +50,7 @@
       var(--ph-color-accent-fg) 10%,
       var(--ph-color-border-default)
     );
-    border-radius: calc(var(--ph-radius-lg) * 1.25);
+    border-radius: var(--ph-radius-surface-xl);
     background: linear-gradient(
       180deg,
       color-mix(
@@ -186,7 +186,7 @@
         var(--ph-color-accent-fg) 16%,
         var(--ph-color-border-default)
       );
-    border-radius: calc(var(--ph-radius-lg) * 1.25);
+    border-radius: var(--ph-radius-surface-xl);
     background:
       linear-gradient(
         180deg,
@@ -460,7 +460,7 @@
         var(--ph-color-accent-fg) 18%,
         var(--ph-color-border-default)
       );
-    border-radius: calc(var(--ph-radius-lg) * 1.1);
+    border-radius: var(--ph-radius-surface-md);
     background: color-mix(
       in oklch,
       var(--ph-color-canvas-default) 95%,
@@ -564,7 +564,7 @@
     grid-template-columns: auto 1fr;
     gap: var(--ph-space-3);
     padding: var(--ph-space-3);
-    border-inline-start: calc(var(--ph-border-hairline) * 2) solid
+    border-inline-start: var(--ph-border-strong-width) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-emphasis) 54%,
@@ -651,7 +651,7 @@
         var(--ph-color-accent-fg) 14%,
         var(--ph-color-border-default)
       );
-    border-radius: calc(var(--ph-radius-lg) * 1.15);
+    border-radius: var(--ph-radius-surface-lg);
     background:
       linear-gradient(
         180deg,
@@ -697,7 +697,7 @@
         var(--ph-color-accent-fg) 14%,
         var(--ph-color-border-default)
       );
-    border-radius: calc(var(--ph-radius-lg) * 1.05);
+    border-radius: var(--ph-radius-surface-sm);
     background: color-mix(
       in oklch,
       var(--ph-color-canvas-default) 96%,
@@ -818,7 +818,7 @@
       var(--ph-color-canvas-default)
     );
     color: var(--ph-color-fg-muted);
-    font-size: calc(var(--ph-text-xs) * 0.94);
+    font-size: var(--ph-text-blog-archive-count);
     line-height: 1;
   }
 
@@ -871,7 +871,7 @@
         var(--ph-color-accent-fg) 12%,
         var(--ph-color-border-default)
       );
-    border-block-start: calc(var(--ph-border-hairline) * 2) solid
+    border-block-start: var(--ph-border-strong-width) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-fg) 26%,
@@ -916,7 +916,7 @@
   .blog-antd-archive-anchor__label {
     color: var(--ph-color-fg-default);
     font-family: var(--ph-font-sans);
-    font-size: calc(var(--ph-text-sm) * 0.98);
+    font-size: var(--ph-text-blog-archive-anchor);
     font-weight: 600;
     letter-spacing: -0.02em;
   }
@@ -1092,7 +1092,7 @@
   }
 
   .blog-antd-archive-timeline__separator {
-    opacity: 0.64;
+    opacity: var(--ph-archive-timeline-separator-opacity);
   }
 
   .blog-antd-archive-timeline__title {
@@ -1126,7 +1126,7 @@
     block-size: 0.58rem;
     border-block-start: 1.5px solid currentColor;
     border-inline-end: 1.5px solid currentColor;
-    opacity: 0.54;
+    opacity: var(--ph-archive-timeline-chevron-opacity);
     transform: rotate(45deg);
     transition:
       transform var(--ph-duration-default) var(--ph-easing-default),
@@ -1197,7 +1197,7 @@
   }
 
   .blog-antd-story-card {
-    border-block-start: calc(var(--ph-border-hairline) * 2) solid
+    border-block-start: var(--ph-border-strong-width) solid
       color-mix(
         in oklch,
         var(--ph-color-accent-emphasis) 48%,
@@ -1298,7 +1298,7 @@
     block-size: calc(var(--ph-space-3) / 4);
     border-radius: var(--ph-radius-pill);
     background: currentColor;
-    opacity: 0.72;
+    opacity: var(--ph-decorative-marker-opacity);
     transform: translateY(-50%);
   }
 
@@ -1383,7 +1383,7 @@
         var(--ph-color-accent-fg) 18%,
         var(--ph-color-border-default)
       );
-    border-radius: calc(var(--ph-radius-lg) * 1.1);
+    border-radius: var(--ph-radius-surface-md);
     background:
       linear-gradient(
         180deg,
@@ -1524,7 +1524,7 @@
           var(--ph-color-accent-fg) 14%,
           var(--ph-color-border-default)
         );
-      border-radius: calc(var(--ph-radius-lg) * 1.05);
+      border-radius: var(--ph-radius-surface-sm);
       background:
         linear-gradient(
           180deg,
@@ -1621,7 +1621,7 @@
           var(--ph-color-accent-fg) 12%,
           var(--ph-color-border-default)
         );
-      border-radius: calc(var(--ph-radius-lg) * 1.05);
+      border-radius: var(--ph-radius-surface-sm);
       background:
         linear-gradient(
           180deg,

@@ -60,4 +60,24 @@ describe("scanStyleSources()", () => {
     assertEquals(issues[1]?.rule, "pill-radius-literal");
     assertEquals(issues[2]?.rule, "frosted-backdrop-literal");
   });
+
+  it("flags shared radius, border-width, archive scale, and decorative opacity literals", () => {
+    const issues = scanStyleSources([
+      {
+        filePath: "src/styles/components/archive.css",
+        source: [
+          "border-radius: calc(var(--ph-radius-lg) * 1.05);",
+          "border-inline-start-width: calc(var(--ph-border-hairline) * 2);",
+          "font-size: calc(var(--ph-text-sm) * 0.98);",
+          "opacity: 0.72;",
+        ].join("\n"),
+      },
+    ]);
+
+    assertEquals(issues.length, 4);
+    assertEquals(issues[0]?.rule, "shared-radius-multipliers");
+    assertEquals(issues[1]?.rule, "shared-border-width-multiplier");
+    assertEquals(issues[2]?.rule, "shared-archive-type-scale-multipliers");
+    assertEquals(issues[3]?.rule, "shared-decorative-opacity-literal");
+  });
 });

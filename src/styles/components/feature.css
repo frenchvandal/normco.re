@@ -125,7 +125,7 @@
     border-inline-end: var(--ph-border-hairline) solid currentColor;
     border-block-end: var(--ph-border-hairline) solid currentColor;
     transform: rotate(-45deg);
-    opacity: 0.72;
+    opacity: var(--ph-decorative-marker-opacity);
   }
 
   .site-tag:hover,
@@ -427,7 +427,7 @@
     block-size: calc(var(--ph-space-3) / 4);
     border-radius: var(--ph-radius-pill);
     background: currentColor;
-    opacity: 0.72;
+    opacity: var(--ph-decorative-marker-opacity);
     transform: translateY(-50%);
   }
 
