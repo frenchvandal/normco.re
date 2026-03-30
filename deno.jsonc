@@ -16,8 +16,8 @@
       "command": "LUME_SERVE=1 deno task lume -s"
     },
     "update-deps": {
-      "description": "Update declared Deno dependencies and regenerate lock file",
-      "command": "deno outdated --update --latest"
+      "description": "Update declared Deno dependencies and regenerate lock files",
+      "command": "deno outdated --update --latest && (cd src/blog/client && deno outdated --update --latest)"
     },
     "check": {
       "description": "Type-check the entire project",

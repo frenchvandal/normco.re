@@ -73,7 +73,7 @@ If your environment requires system CA certificates, prefix commands with
 | Android assets   | `deno task android:sync-contract-assets`    | Builds site contracts and mirrors Android bootstrap assets  |
 | Payload report   | `deno task payload:report`                  | Reports route-level JS and CSS from generated output        |
 | Install hooks    | `deno task lefthook:install`                | Installs local Git hooks                                    |
-| Update deps      | `deno task update-deps`                     | Updates pinned dependencies and the lockfile                |
+| Update deps      | `deno task update-deps`                     | Updates pinned dependencies and the lockfiles               |
 
 Recommended verification for a nontrivial change:
 
