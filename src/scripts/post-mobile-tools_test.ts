@@ -1,6 +1,7 @@
 import { assert, assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import { getJSDOM } from "../../test/jsdom.ts";
+import { POST_MOBILE_TOOLS_MEDIA_QUERY } from "../utils/layout-breakpoints.ts";
 import { bindPostMobileTools } from "./post-mobile-tools.js";
 
 const JSDOM = await getJSDOM();
@@ -16,7 +17,7 @@ type TestWindow = InstanceType<typeof JSDOM>["window"] & {
 function createMediaQueryList(matches = false): TestMediaQueryList {
   const listeners = new Set<(event: MediaQueryListEvent) => void>();
   const mediaQuery = {
-    media: "(width < 66rem)",
+    media: POST_MOBILE_TOOLS_MEDIA_QUERY,
     matches,
     onchange: null,
     addListener(listener: (event: MediaQueryListEvent) => void) {

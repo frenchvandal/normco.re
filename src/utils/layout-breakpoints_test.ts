@@ -14,6 +14,7 @@ import {
   FEATURE_RAIL_BREAKPOINT,
   HEADER_NAV_BREAKPOINT,
   PAGEHEAD_CONTEXT_BREAKPOINT,
+  POST_MOBILE_TOOLS_MAX_WIDTH,
   POST_MOBILE_TOOLS_MEDIA_QUERY,
   POST_RAIL_BREAKPOINT,
 } from "./layout-breakpoints.ts";
@@ -24,7 +25,7 @@ describe("layout breakpoints", () => {
     assertNotEquals(HEADER_NAV_BREAKPOINT, FEATURE_RAIL_BREAKPOINT);
     assertEquals(
       POST_MOBILE_TOOLS_MEDIA_QUERY,
-      `(width < ${POST_RAIL_BREAKPOINT})`,
+      `(max-width: ${POST_MOBILE_TOOLS_MAX_WIDTH})`,
     );
   });
 
@@ -47,11 +48,11 @@ describe("layout breakpoints", () => {
     );
     assertStringIncludes(
       postMobileToolsScript,
-      `const POST_RAIL_BREAKPOINT = "${POST_RAIL_BREAKPOINT}";`,
+      `const POST_MOBILE_TOOLS_MAX_WIDTH = "${POST_MOBILE_TOOLS_MAX_WIDTH}";`,
     );
     assertStringIncludes(
       postMobileToolsScript,
-      "const MOBILE_MEDIA_QUERY = `(width < ${POST_RAIL_BREAKPOINT})`;",
+      "const MOBILE_MEDIA_QUERY = `(max-width: ${POST_MOBILE_TOOLS_MAX_WIDTH})`;",
     );
   });
 });

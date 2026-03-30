@@ -5,6 +5,7 @@ import {
   PostBackToTop,
   PostDetails,
   PostInlineAnchor,
+  PostMobileTools,
   PostRail,
   PostSummaryMeta,
   resolvePostNeighbors,
@@ -16,9 +17,10 @@ export const extraStylesheets = ["/styles/blog-antd.css"];
 // Keep the mobile tools loader aligned with the post rail breakpoint in
 // src/styles/layout.css so the script only boots for the single-column layout.
 
-// ── Layout ───────────────────────────────────────────────────────────────
-
-export default (data: Lume.Data, helpers: Lume.Helpers) => {
+function resolvePostLayoutView(
+  data: Lume.Data,
+  helpers: Lume.Helpers,
+) {
   const dateFormat = resolveDateHelper(helpers);
   const page = resolvePageSetup(data.lang);
   const {
@@ -41,6 +43,58 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
     { language, post: t.post },
     neighbors,
   );
+
+  return {
+    language,
+    languageTag,
+    postsBaseUrl,
+    homeUrl,
+    t,
+    neighbors,
+    state,
+  };
+}
+
+export function renderAfterMainContent(
+  data: Lume.Data,
+  helpers: Lume.Helpers,
+) {
+  const { language, t, neighbors, state } = resolvePostLayoutView(
+    data,
+    helpers,
+  );
+
+  return (
+    <>
+      {state.hasRail && (
+        <PostMobileTools
+          language={language}
+          translations={t.post}
+          closeLabel={t.site.closeLabel}
+          outline={state.outline}
+          backlinks={state.backlinks}
+          tags={state.tags}
+          prev={neighbors.prev}
+          next={neighbors.next}
+        />
+      )}
+      <PostBackToTop label={t.post.backToTopLabel} />
+    </>
+  );
+}
+
+// ── Layout ───────────────────────────────────────────────────────────────
+
+export default (data: Lume.Data, helpers: Lume.Helpers) => {
+  const {
+    language,
+    languageTag,
+    homeUrl,
+    postsBaseUrl,
+    t,
+    neighbors,
+    state,
+  } = resolvePostLayoutView(data, helpers);
 
   // Only ship localized copy overrides. The client script already knows the
   // English defaults, so duplicating them in data attributes adds noise.
@@ -153,7 +207,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
               <PostRail
                 language={language}
                 translations={t.post}
-                closeLabel={t.site.closeLabel}
                 outline={state.outline}
                 backlinks={state.backlinks}
                 tags={state.tags}
@@ -163,7 +216,6 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
             )}
           </div>
         </div>
-        <PostBackToTop label={t.post.backToTopLabel} />
       </div>
       {hasMobileTools && (
         <script

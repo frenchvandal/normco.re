@@ -12,11 +12,6 @@
     backdrop-filter: var(--ph-backdrop-frosted);
   }
 
-  .site-header[data-header-variant="editorial-home"] {
-    --site-header-action-icon-size: var(--ph-header-action-icon-size-compact);
-    --site-header-menu-icon-size: var(--ph-header-menu-icon-size-compact);
-  }
-
   .site-header__wrapper {
     inline-size: min(100%, var(--ph-wide-max));
     block-size: 100%;
@@ -48,56 +43,6 @@
 
   .site-header__brand-prefix {
     opacity: var(--ph-header-brand-prefix-opacity);
-  }
-
-  .editorial-home-header__brand-lockup {
-    display: inline-flex;
-    align-items: baseline;
-    flex-wrap: nowrap;
-    gap: var(--ph-space-3);
-    white-space: nowrap;
-  }
-
-  .editorial-home-header__brand-wordmark {
-    display: inline-flex;
-    align-items: baseline;
-    gap: var(--ph-border-hairline);
-    white-space: nowrap;
-  }
-
-  .editorial-home-header__brand-meta {
-    color: var(--ph-color-fg-muted);
-    font-family: var(--ph-font-mono);
-    font-size: var(--ph-text-xs);
-    letter-spacing: var(--ph-letter-spacing-wide);
-    text-transform: uppercase;
-  }
-
-  .site-header[data-header-variant="editorial-home"] .site-header__left,
-  .site-header[data-header-variant="editorial-home"] .site-header__global {
-    gap: var(--ph-space-2);
-  }
-
-  .editorial-home-header__name {
-    font-size: var(--ph-text-sm);
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    text-transform: none;
-  }
-
-  .site-header[data-header-variant="editorial-home"]
-    .editorial-home-header__brand-meta {
-    display: none;
-  }
-
-  .site-header[data-header-variant="editorial-home"] .site-header__nav {
-    margin-inline-start: auto;
-    justify-content: flex-end;
-  }
-
-  .site-header[data-header-variant="editorial-home"] .site-header__menu-item {
-    padding-inline: 0;
-    font-weight: 500;
   }
 
   .site-header__nav {
@@ -376,13 +321,6 @@
   .site-header-panel-head--language,
   .site-header-panel-head--search {
     display: none;
-  }
-
-  .site-header__panel[data-header-variant="editorial-home"]
-    .site-header-panel-head--language,
-  .site-header__panel[data-header-variant="editorial-home"]
-    .site-header-panel-head--search {
-    display: flex;
   }
 
   .site-header__panel-title {

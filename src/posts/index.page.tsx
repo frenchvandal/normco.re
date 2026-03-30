@@ -41,10 +41,29 @@ export const zhHant = {
 // is not matched by `search.pages("type=post")` or nav plugin queries.
 export const type = "listing";
 
-export default (
+function buildArchiveBackToTopLink(label: string): string {
+  return `<a class="blog-antd-backtop blog-antd-archive-backtop" href="#archive-title" aria-label="${
+    escapeHtml(label)
+  }">
+  <span class="blog-antd-backtop__button blog-antd-archive-backtop__button">
+  ${
+    renderSiteIconMarkup(
+      "arrow-right",
+      "blog-antd-backtop__icon blog-antd-archive-backtop__icon",
+      { width: 16, height: 16 },
+    )
+  }
+  <span class="sr-only blog-antd-archive-backtop__label">${
+    escapeHtml(label)
+  }</span>
+</span>
+</a>`;
+}
+
+function resolveArchivePageState(
   data: Lume.Data,
   helpers: Lume.Helpers,
-): string => {
+) {
   const dateFormat = resolveDateHelper(helpers);
   const { language, languageDataCode, languageTag, homeUrl, translations: t } =
     resolvePageSetup(data.lang);
@@ -55,6 +74,35 @@ export default (
   const stories = posts.map((post) => toStoryData(post, language, dateFormat));
   const postsCountLabel = formatPostCount(posts.length, language);
   const archiveView = buildArchiveViewModel(stories, languageTag);
+
+  return {
+    archiveView,
+    homeUrl,
+    language,
+    postsCountLabel,
+    t,
+  };
+}
+
+export function renderAfterMainContent(
+  data: Lume.Data,
+  helpers: Lume.Helpers,
+): { __html: string } | string {
+  const { archiveView, t } = resolveArchivePageState(data, helpers);
+
+  if (!archiveView.hasPosts) {
+    return "";
+  }
+
+  return { __html: buildArchiveBackToTopLink(t.archive.backToTopLabel) };
+}
+
+export default (
+  data: Lume.Data,
+  helpers: Lume.Helpers,
+): string => {
+  const { archiveView, homeUrl, language, postsCountLabel, t } =
+    resolveArchivePageState(data, helpers);
 
   const pageBody = archiveView.hasPosts
     ? `<div class="${archiveView.layoutClassName}">
@@ -82,24 +130,6 @@ export default (
       headingTag: "h2",
       variant: "inline",
     });
-  const backToTopLink = archiveView.hasPosts
-    ? `<a class="blog-antd-backtop blog-antd-archive-backtop" href="#archive-title" aria-label="${
-      escapeHtml(t.archive.backToTopLabel)
-    }">
-  <span class="blog-antd-backtop__button blog-antd-archive-backtop__button">
-  ${
-      renderSiteIconMarkup(
-        "arrow-right",
-        "blog-antd-backtop__icon blog-antd-archive-backtop__icon",
-        { width: 16, height: 16 },
-      )
-    }
-  <span class="sr-only blog-antd-archive-backtop__label">${
-      escapeHtml(t.archive.backToTopLabel)
-    }</span>
-</span>
-</a>`
-    : "";
 
   return `<div class="blog-antd-root">
   <div class="site-page-shell site-page-shell--wide blog-antd-page blog-antd-page--archive">
@@ -114,7 +144,6 @@ export default (
   </div>
 </section>
     ${pageBody}
-    ${backToTopLink}
   </div>
 </div>
 </div>`;

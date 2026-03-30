@@ -1,4 +1,4 @@
-import { assertStringIncludes } from "@std/assert";
+import { assertMatch, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
 const commonSource = Deno.readTextFileSync(
@@ -18,6 +18,9 @@ const postAppSource = Deno.readTextFileSync(
 );
 const archiveAppSource = Deno.readTextFileSync(
   new URL("./blog/client/ArchiveApp.tsx", import.meta.url),
+);
+const tagAppSource = Deno.readTextFileSync(
+  new URL("./blog/client/TagApp.tsx", import.meta.url),
 );
 
 describe("blog client interaction contracts", () => {
@@ -55,5 +58,20 @@ describe("blog client interaction contracts", () => {
   it("keeps archive BackTop optional for non-interactive renders", () => {
     assertStringIncludes(archiveAppSource, "interactive = true");
     assertStringIncludes(archiveAppSource, "{interactive && (");
+  });
+
+  it("keeps floating BackTop controls outside the page shell in interactive blog apps", () => {
+    assertMatch(
+      archiveAppSource,
+      /return \(\n\s*<>\n\s*<div className="site-page-shell[\s\S]*<\/div>\n\s*{interactive && \(/,
+    );
+    assertMatch(
+      postAppSource,
+      /return \(\n\s*<>\n\s*<div className="site-page-shell[\s\S]*<\/div>\n\s*{interactive && \(/,
+    );
+    assertMatch(
+      tagAppSource,
+      /return \(\n\s*<>\n\s*<div className="site-page-shell[\s\S]*<\/div>\n\s*{interactive && \(/,
+    );
   });
 });

@@ -205,15 +205,13 @@ describe("Header()", () => {
     );
   });
 
-  it("switches to the editorial home variant on home routes", async () => {
+  it("reuses the shared header shell on home routes", async () => {
     const html = await renderComponent(
       Header({ currentUrl: "/", language: "en" }),
     );
 
-    assertMatch(
-      html,
-      /<header[^>]*class="site-header"[^>]*data-header-variant="editorial-home"/,
-    );
+    assertMatch(html, /<header[^>]*class="site-header"/);
+    assertStringIncludes(html, 'class="site-header__brand"');
     assertStringIncludes(html, 'class="site-header__nav"');
     assertStringIncludes(html, 'data-site-header-menu=""');
     assertStringIncludes(html, 'class="site-header__menu-shell"');
@@ -226,8 +224,9 @@ describe("Header()", () => {
     assertStringIncludes(html, 'class="site-side-nav"');
     assertStringIncludes(
       html,
-      'class="site-header__panel site-header__search-panel" data-header-variant="editorial-home"',
+      'class="site-header__panel site-header__search-panel"',
     );
+    assertMatch(html, /<a[^>]*href="\/"[^>]*aria-current="page"/);
     assertNotMatch(html, /\bbtn-octicon\b/);
     assertNotMatch(html, /\bsubnav-item\b/);
     assertNotMatch(html, /\bBox\b/);
@@ -267,7 +266,7 @@ describe("Header CSS contracts", () => {
     );
   });
 
-  it("uses shared spacing and compact-control tokens for header actions", () => {
+  it("uses shared spacing and default control tokens for header actions", () => {
     assertStringIncludes(layoutStyles, "gap: var(--ph-space-1-5);");
     assertStringIncludes(
       layoutStyles,
@@ -277,11 +276,11 @@ describe("Header CSS contracts", () => {
       layoutStyles,
       "block-size: var(--ph-control-size-compact);",
     );
-    assertStringIncludes(layoutStyles, 'data-header-variant="editorial-home"');
     assertStringIncludes(
       layoutStyles,
-      "--site-header-action-icon-size: var(--ph-header-action-icon-size-compact);",
+      "--site-header-action-icon-size: var(--ph-header-action-icon-size-default);",
     );
+    assertNotMatch(layoutStyles, /data-header-variant="editorial-home"/);
   });
 
   it("styles the mobile side nav as a true drawer", () => {

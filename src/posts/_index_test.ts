@@ -1,14 +1,22 @@
 import {
   assertEquals,
+  assertExists,
   assertNotMatch,
   assertStringIncludes,
 } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
+import { renderComponent } from "lume/jsx-runtime";
 import { faker, seedTestFaker } from "../../test/faker.ts";
+import { getJSDOM } from "../../test/jsdom.ts";
 import { asLumeData, asLumeHelpers } from "../../test/lume.ts";
 import blogAntdStyles from "../styles/blog-antd.css" with { type: "text" };
 
-import postsIndexPage, { searchIndexed } from "./index.page.tsx";
+import postsIndexPage, {
+  renderAfterMainContent,
+  searchIndexed,
+} from "./index.page.tsx";
+
+const JSDOM = await getJSDOM();
 
 const MOCK_HELPERS = asLumeHelpers({
   date: (value: unknown, format: string): string => {
@@ -197,17 +205,36 @@ describe("posts/index.page.tsx", () => {
         ]),
         MOCK_HELPERS,
       );
+      const afterMainHtml = await renderComponent(
+        renderAfterMainContent(
+          makeData([
+            makePost(511, {
+              date: new Date("2026-02-01"),
+            }),
+          ]),
+          MOCK_HELPERS,
+        ),
+      );
 
-      assertStringIncludes(html, "blog-antd-archive-backtop");
-      assertStringIncludes(html, 'href="#archive-title"');
+      assertNotMatch(html, /blog-antd-archive-backtop/);
+      assertStringIncludes(afterMainHtml, "blog-antd-archive-backtop");
+      assertStringIncludes(afterMainHtml, 'href="#archive-title"');
       assertStringIncludes(
-        html,
+        afterMainHtml,
         'class="blog-antd-backtop__button blog-antd-archive-backtop__button"',
       );
       assertStringIncludes(
-        html,
+        afterMainHtml,
         'class="sr-only blog-antd-archive-backtop__label">Back to top</span>',
       );
+
+      const dom = new JSDOM(afterMainHtml);
+      const backToTop = dom.window.document.querySelector(
+        ".blog-antd-archive-backtop",
+      );
+      assertExists(backToTop);
+      assertEquals(backToTop.closest(".site-page-shell"), null);
+      assertEquals(backToTop.closest("main.site-main"), null);
     });
 
     it("omits reading-time markup when minutes are absent", async () => {

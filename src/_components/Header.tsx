@@ -17,16 +17,11 @@ import SiteIcon from "./SiteIcon.tsx";
 type El = ReturnType<typeof jsx>;
 type LanguageAlternates = Partial<Record<SiteLanguage, string>>;
 type NavigationItem = ReturnType<typeof buildHeaderNavigation>[number];
-type HeaderVariant = "editorial-home" | "standard";
 type HeaderProps = Readonly<{
   currentUrl: string;
   language: SiteLanguage;
   languageAlternates?: LanguageAlternates;
 }>;
-
-function resolveHeaderVariant(isEditorialHome: boolean): HeaderVariant {
-  return isEditorialHome ? "editorial-home" : "standard";
-}
 
 // ── Shared sub-components ──────────────────────────────────────────────
 
@@ -213,13 +208,11 @@ function renderLanguagePanel(
   language: SiteLanguage,
   alternates: LanguageAlternates,
   t: SiteTranslations,
-  variant: HeaderVariant,
 ): El {
   return (
     <div
       id={HEADER_IDS.languagePanel}
       class="site-header__panel site-header__language-panel"
-      data-header-variant={variant}
       data-language-panel=""
       hidden
     >
@@ -247,13 +240,11 @@ function renderLanguagePanel(
 
 function renderSearchPanel(
   t: SiteTranslations,
-  variant: HeaderVariant,
 ): El {
   return (
     <div
       id={HEADER_IDS.searchPanel}
       class="site-header__panel site-header__search-panel"
-      data-header-variant={variant}
       role="search"
       aria-label={t.site.searchLabel}
       hidden
@@ -443,40 +434,17 @@ function renderSideNav(
   );
 }
 
-// ── Editorial home brand markup ────────────────────────────────────────
-
-function renderEditorialHomeBrand(
-  homeUrl: string,
-  siteName: string,
-  t: SiteTranslations,
-): El {
-  return (
-    <a href={homeUrl} class="site-header__brand editorial-home-header__name">
-      <span class="editorial-home-header__brand-lockup">
-        <span class="editorial-home-header__brand-wordmark">{siteName}</span>
-        <span class="editorial-home-header__brand-meta">
-          {t.home.eyebrow}
-        </span>
-      </span>
-    </a>
-  );
-}
-
-// ── Main export ────────────────────────────────────────────────────────
-
 export default (
   { currentUrl, language, languageAlternates = {} }: HeaderProps,
 ): El => {
   const { homeUrl, translations: t } = getPageContext(language);
   const siteName = getSiteName(language);
   const navItems = buildHeaderNavigation({ currentUrl, language });
-  const isHome = currentUrl === homeUrl;
-  const variant = resolveHeaderVariant(isHome);
   const actions = resolveHeaderActions(t);
 
   return (
     <>
-      <header class="site-header" data-header-variant={variant}>
+      <header class="site-header">
         <div class="site-header__wrapper">
           <div class="site-header__left">
             <button
@@ -496,27 +464,14 @@ export default (
               />
             </button>
 
-            {isHome ? renderEditorialHomeBrand(homeUrl, siteName, t) : (
-              <>
-                <a href={homeUrl} class="site-header__brand">{siteName}</a>
-                <nav
-                  class="site-header__nav"
-                  aria-label={t.site.mainNavigationAriaLabel}
-                >
-                  {renderDesktopNavigationMenu(navItems)}
-                </nav>
-              </>
-            )}
-          </div>
-
-          {isHome && (
+            <a href={homeUrl} class="site-header__brand">{siteName}</a>
             <nav
               class="site-header__nav"
               aria-label={t.site.mainNavigationAriaLabel}
             >
               {renderDesktopNavigationMenu(navItems)}
             </nav>
-          )}
+          </div>
 
           <div class="site-header__global">
             {actions.map((action) => renderHeaderAction(action))}
@@ -524,8 +479,8 @@ export default (
         </div>
       </header>
 
-      {renderLanguagePanel(language, languageAlternates, t, variant)}
-      {renderSearchPanel(t, variant)}
+      {renderLanguagePanel(language, languageAlternates, t)}
+      {renderSearchPanel(t)}
       {renderSideNav(navItems, homeUrl, siteName, t)}
       <div class="site-side-nav__overlay" aria-hidden="true"></div>
     </>

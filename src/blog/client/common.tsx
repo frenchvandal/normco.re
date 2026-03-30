@@ -18,6 +18,13 @@ import {
   BLOG_ANTD_CARD_CLASSNAMES,
   BLOG_ANTD_READING_METER_PROGRESS,
 } from "./antd-semantic.ts";
+import {
+  BLOG_ANTD_ROW_GUTTER_GRID,
+  BLOG_ANTD_ROW_GUTTER_SECTION,
+  BLOG_ANTD_SPACE_3,
+  BLOG_ANTD_SPACE_4,
+  BLOG_ANTD_SPACE_SIZE_COMPACT,
+} from "./spacing.ts";
 
 export function renderBreadcrumbItems(items: readonly BlogBreadcrumbItem[]) {
   return items.map(({ href, label }) => ({
@@ -118,7 +125,7 @@ export function MetaLine(
   },
 ) {
   return (
-    <Flex wrap gap={12} className="blog-antd-story-card__meta">
+    <Flex wrap gap={BLOG_ANTD_SPACE_3} className="blog-antd-story-card__meta">
       <span className="blog-antd-meta-pill">
         <ScheduleOutlined />
         <time dateTime={dateIso}>{dateLabel}</time>
@@ -141,7 +148,11 @@ export function StoryTags({ story }: { story: BlogStoryCard }) {
   }
 
   return (
-    <Space wrap size={[8, 8]} className="blog-antd-story-tags">
+    <Space
+      wrap
+      size={BLOG_ANTD_SPACE_SIZE_COMPACT}
+      className="blog-antd-story-tags"
+    >
       {visibleTags.map((tag) => (
         <Tag key={tag} className="blog-antd-tag blog-antd-tag--story">
           {tag}
@@ -209,7 +220,7 @@ function StoryCard({ index, story, summaryVisible = true }: StoryCardProps) {
       variant="borderless"
     >
       <a href={story.url} className="blog-antd-story-card__link">
-        <Flex vertical gap={14}>
+        <Flex vertical gap={BLOG_ANTD_SPACE_4}>
           <div className="blog-antd-story-card__index">
             {formatIndex(index)}
           </div>
@@ -250,7 +261,10 @@ export function StoryGrid(
 ) {
   return (
     <div className="blog-antd-story-grid" role="list" aria-label={ariaLabel}>
-      <Row gutter={[24, 24]} className="blog-antd-story-grid__row">
+      <Row
+        gutter={BLOG_ANTD_ROW_GUTTER_GRID}
+        className="blog-antd-story-grid__row"
+      >
         {posts.map((story, index) => (
           <Col key={story.url} xs={24} md={12} role="listitem">
             <div className="blog-antd-story-grid__item">
@@ -318,10 +332,14 @@ export function FeaturedStory(
       classNames={BLOG_ANTD_CARD_CLASSNAMES}
       variant="borderless"
     >
-      <Row gutter={[32, 24]} align="stretch">
+      <Row gutter={BLOG_ANTD_ROW_GUTTER_SECTION} align="stretch">
         <Col xs={24} xl={hasSecondaryStories ? 15 : 24}>
           <a href={story.url} className="blog-antd-feature-card__link">
-            <Flex vertical gap={18} className="blog-antd-feature-card__main">
+            <Flex
+              vertical
+              gap={BLOG_ANTD_SPACE_4}
+              className="blog-antd-feature-card__main"
+            >
               <div className="blog-antd-feature-card__lead">
                 <Tag className="blog-antd-count-tag blog-antd-count-tag--soft">
                   {title}

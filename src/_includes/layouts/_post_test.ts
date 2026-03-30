@@ -1,5 +1,6 @@
 import {
   assertEquals,
+  assertExists,
   assertMatch,
   assertNotMatch,
   assertStringIncludes,
@@ -7,6 +8,7 @@ import {
 import { describe, it } from "@std/testing/bdd";
 import { renderComponent } from "lume/jsx-runtime";
 import { faker, seedTestFaker } from "../../../test/faker.ts";
+import { getJSDOM } from "../../../test/jsdom.ts";
 import {
   asLumeData,
   asLumeHelpers,
@@ -23,7 +25,9 @@ import postStyles from "../../styles/components/post.css" with {
 };
 import { POST_MOBILE_TOOLS_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
 
-import postLayout from "./post.tsx";
+import postLayout, { renderAfterMainContent } from "./post.tsx";
+
+const JSDOM = await getJSDOM();
 
 const MOCK_HELPERS = asLumeHelpers({
   date: (_value: unknown, _format: string): string => "2026-03-05",
@@ -368,6 +372,19 @@ describe("post.tsx layout", () => {
           MOCK_HELPERS,
         ),
       );
+      const afterMainHtml = await renderComponent(
+        renderAfterMainContent(
+          makeData({
+            description: "Context paragraph.",
+            tags: ["design"],
+            children: {
+              __html:
+                "<h2>First section</h2><p>Alpha.</p><h3>Second section</h3><p>Beta.</p>",
+            },
+          }),
+          MOCK_HELPERS,
+        ),
+      );
 
       assertStringIncludes(html, 'class="post-pagehead-grid"');
       assertStringIncludes(html, 'class="post-pagehead-context"');
@@ -384,39 +401,66 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'id="first-section"');
       assertStringIncludes(html, 'id="second-section"');
       assertStringIncludes(html, 'class="post-details-section"');
-      assertStringIncludes(html, 'data-post-mobile-tools-open=""');
-      assertStringIncludes(html, 'data-post-mobile-tools=""');
       assertStringIncludes(
-        html,
+        afterMainHtml,
+        'data-post-mobile-tools-open=""',
+      );
+      assertStringIncludes(
+        afterMainHtml,
+        'data-post-mobile-tools=""',
+      );
+      assertStringIncludes(
+        afterMainHtml,
         `class="post-mobile-tools" aria-label="Post tools"`,
       );
-      assertStringIncludes(html, "Reading tools");
-      assertStringIncludes(html, "Tags, backlinks, and what to read next.");
-      assertStringIncludes(html, 'class="post-mobile-tools-head-copy"');
-      assertStringIncludes(html, 'class="post-mobile-tools-description"');
+      assertStringIncludes(afterMainHtml, "Reading tools");
+      assertStringIncludes(
+        afterMainHtml,
+        "Tags, backlinks, and what to read next.",
+      );
+      assertStringIncludes(
+        afterMainHtml,
+        'class="post-mobile-tools-head-copy"',
+      );
+      assertStringIncludes(
+        afterMainHtml,
+        'class="post-mobile-tools-description"',
+      );
       assertStringIncludes(html, 'src="/scripts/post-mobile-tools-loader.js"');
       assertStringIncludes(
         html,
         `data-media-query="${POST_MOBILE_TOOLS_MEDIA_QUERY}"`,
       );
       assertStringIncludes(html, "Publication details");
-      assertStringIncludes(html, 'class="post-backtop"');
+      assertStringIncludes(afterMainHtml, 'class="post-backtop"');
+
+      const dom = new JSDOM(afterMainHtml);
+      const document = dom.window.document;
+      const postMobileTools = document.querySelector(".post-mobile-tools");
+      const postBackToTop = document.querySelector(".post-backtop");
+      assertExists(postMobileTools);
+      assertExists(postBackToTop);
+      assertEquals(postMobileTools.closest(".site-page-shell"), null);
+      assertEquals(postBackToTop.closest(".site-page-shell"), null);
+      assertEquals(postMobileTools.closest("main.site-main"), null);
+      assertEquals(postBackToTop.closest("main.site-main"), null);
       assertNotMatch(html, /data-blog-antd-root/);
       assertNotMatch(html, /blog-antd-post\.js/);
       assertNotMatch(html, /post-summary-callout/);
     });
 
     it("keeps the outline above the article body on mobile without loading the tools sheet when it is the only helper", async () => {
+      const data = makeData({
+        children: {
+          __html:
+            "<h2>Section one</h2><p>Alpha.</p><h3>Section two</h3><p>Beta.</p>",
+        },
+      });
       const html = await renderComponent(
-        postLayout(
-          makeData({
-            children: {
-              __html:
-                "<h2>Section one</h2><p>Alpha.</p><h3>Section two</h3><p>Beta.</p>",
-            },
-          }),
-          MOCK_HELPERS,
-        ),
+        postLayout(data, MOCK_HELPERS),
+      );
+      const afterMainHtml = await renderComponent(
+        renderAfterMainContent(data, MOCK_HELPERS),
       );
 
       assertStringIncludes(html, 'class="post-inline-anchor"');
@@ -428,9 +472,10 @@ describe("post.tsx layout", () => {
         html,
         'class="feature-rail post-rail post-rail--outline-only"',
       );
-      assertStringIncludes(html, 'class="post-backtop"');
+      assertStringIncludes(afterMainHtml, 'class="post-backtop"');
       assertNotMatch(html, /post-mobile-tools-loader\.js/);
       assertNotMatch(html, /data-post-mobile-tools-open=""/);
+      assertNotMatch(afterMainHtml, /data-post-mobile-tools-open=""/);
     });
 
     it("omits the summary copy when a post has no editorial summary", async () => {
@@ -587,6 +632,10 @@ describe("post mobile visual contracts", () => {
     assertStringIncludes(postStyles, "font-size: var(--ph-text-code-inline);");
   });
 
+  it("defines the mobile nav offset token as a length for calc() usage", () => {
+    assertStringIncludes(themeTokens, "--ph-mobile-nav-offset: 0px;");
+  });
+
   it("keeps the mobile tools sheet safe-area aware and rail-aware", () => {
     assertStringIncludes(postStyles, ".post-mobile-tools-dialog");
     assertStringIncludes(postStyles, ".post-inline-anchor");
@@ -597,11 +646,11 @@ describe("post mobile visual contracts", () => {
     assertStringIncludes(postStyles, ".post-backtop__icon");
     assertStringIncludes(
       postStyles,
-      "inset-inline-start: max(var(--ph-shell-gutter), env(safe-area-inset-left));",
+      "left: max(var(--ph-shell-gutter), env(safe-area-inset-left));",
     );
     assertStringIncludes(
       postStyles,
-      "inset-inline-end: max(var(--ph-shell-gutter), env(safe-area-inset-right));",
+      "right: max(var(--ph-shell-gutter), env(safe-area-inset-right));",
     );
     assertStringIncludes(
       postStyles,
@@ -620,7 +669,7 @@ describe("post mobile visual contracts", () => {
     );
     assertStringIncludes(
       postStyles,
-      "inset-inline-start: calc(",
+      "left: calc(",
     );
     assertStringIncludes(
       postStyles,

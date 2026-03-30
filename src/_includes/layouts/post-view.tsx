@@ -385,11 +385,19 @@ export function PostBackToTop(
   );
 }
 
-export function PostRail(
+type PostRailSection = Readonly<{
+  key: string;
+  className: string;
+  countLabel: string;
+  title: string;
+  body: El;
+  mobileBody?: El;
+}>;
+
+function resolvePostRailSections(
   {
     language,
     translations,
-    closeLabel,
     outline,
     backlinks,
     tags,
@@ -398,15 +406,18 @@ export function PostRail(
   }: {
     language: SiteLanguage;
     translations: PostTranslations;
-    closeLabel: string;
     outline: readonly PostOutlineItem[];
     backlinks: readonly PostLinkReference[];
     tags: readonly string[];
     prev: Lume.Data | undefined;
     next: Lume.Data | undefined;
   },
-): El {
-  const outlineSection = outline.length > 0
+): Readonly<{
+  desktopSections: readonly PostRailSection[];
+  mobileSections: readonly PostRailSection[];
+  railClassName: string;
+}> {
+  const outlineSection: PostRailSection | undefined = outline.length > 0
     ? {
       key: "outline",
       className: "post-outline-card",
@@ -420,7 +431,7 @@ export function PostRail(
     }
     : undefined;
 
-  const supportingSections = [
+  const supportingSections: readonly PostRailSection[] = [
     tags.length > 0
       ? {
         key: "tags",
@@ -429,8 +440,8 @@ export function PostRail(
         title: translations.tagsAriaLabel,
         body: (
           <ul class="post-tags post-tags--rail">
-            {tags.map((tag, i) => (
-              <li key={`${tag}-${i}`}>
+            {tags.map((tag) => (
+              <li key={tag}>
                 <a
                   href={getTagUrl(tag, language)}
                   class={`tag-link tag-link--${getTagColor(tag)}`}
@@ -509,108 +520,176 @@ export function PostRail(
     mobileSections.length === 0 ? " post-rail--outline-only" : ""
   }`;
 
+  return { desktopSections, mobileSections, railClassName };
+}
+
+export function PostMobileTools(
+  {
+    language,
+    translations,
+    closeLabel,
+    outline,
+    backlinks,
+    tags,
+    prev,
+    next,
+  }: {
+    language: SiteLanguage;
+    translations: PostTranslations;
+    closeLabel: string;
+    outline: readonly PostOutlineItem[];
+    backlinks: readonly PostLinkReference[];
+    tags: readonly string[];
+    prev: Lume.Data | undefined;
+    next: Lume.Data | undefined;
+  },
+): El | null {
+  const { mobileSections } = resolvePostRailSections({
+    language,
+    translations,
+    outline,
+    backlinks,
+    tags,
+    prev,
+    next,
+  });
+
+  if (mobileSections.length === 0) {
+    return null;
+  }
+
   return (
-    <>
-      {mobileSections.length > 0 && (
-        <section
-          class="post-mobile-tools"
-          aria-label={translations.railAriaLabel}
-        >
-          <button
-            type="button"
-            class="post-mobile-tools-trigger"
-            aria-controls="post-mobile-tools-dialog"
-            aria-expanded="false"
-            aria-label={translations.railTriggerLabel}
-            data-post-mobile-tools-open=""
-          >
-            <span class="post-mobile-tools-trigger__icon" aria-hidden="true">
+    <section
+      class="post-mobile-tools"
+      aria-label={translations.railAriaLabel}
+    >
+      <button
+        type="button"
+        class="post-mobile-tools-trigger"
+        aria-controls="post-mobile-tools-dialog"
+        aria-expanded="false"
+        aria-label={translations.railTriggerLabel}
+        data-post-mobile-tools-open=""
+      >
+        <span class="post-mobile-tools-trigger__icon" aria-hidden="true">
+          <SiteIcon
+            name="list-unordered"
+            className="post-mobile-tools-trigger__icon-svg"
+            width={18}
+            height={18}
+          />
+        </span>
+        <span class="post-mobile-tools-trigger__body">
+          <span class="post-mobile-tools-trigger__eyebrow">
+            {translations.railTriggerLabel}
+          </span>
+          <span class="post-mobile-tools-trigger__hint">
+            {translations.railTriggerHint}
+          </span>
+        </span>
+        <span class="post-mobile-tools-trigger__count" aria-hidden="true">
+          {String(mobileSections.length).padStart(2, "0")}
+        </span>
+      </button>
+      <dialog
+        id="post-mobile-tools-dialog"
+        class="post-mobile-tools-dialog"
+        aria-labelledby="post-mobile-tools-title"
+        aria-describedby="post-mobile-tools-description"
+        data-post-mobile-tools=""
+      >
+        <div class="post-mobile-tools-sheet">
+          <span class="post-mobile-tools-handle" aria-hidden="true"></span>
+          <div class="post-mobile-tools-head">
+            <div class="post-mobile-tools-head-copy">
+              <p
+                id="post-mobile-tools-title"
+                class="post-mobile-tools-title"
+              >
+                {translations.railTriggerLabel}
+              </p>
+              <p
+                id="post-mobile-tools-description"
+                class="post-mobile-tools-description"
+              >
+                {translations.railDescription}
+              </p>
+            </div>
+            <button
+              type="button"
+              class="btn post-mobile-tools-close"
+              aria-label={closeLabel}
+              data-post-mobile-tools-close=""
+            >
               <SiteIcon
-                name="list-unordered"
-                className="post-mobile-tools-trigger__icon-svg"
+                name="x"
+                className="post-mobile-tools-close__icon"
                 width={18}
                 height={18}
               />
-            </span>
-            <span class="post-mobile-tools-trigger__body">
-              <span class="post-mobile-tools-trigger__eyebrow">
-                {translations.railTriggerLabel}
-              </span>
-              <span class="post-mobile-tools-trigger__hint">
-                {translations.railTriggerHint}
-              </span>
-            </span>
-            <span class="post-mobile-tools-trigger__count" aria-hidden="true">
-              {String(mobileSections.length).padStart(2, "0")}
-            </span>
-          </button>
-          <dialog
-            id="post-mobile-tools-dialog"
-            class="post-mobile-tools-dialog"
-            aria-labelledby="post-mobile-tools-title"
-            aria-describedby="post-mobile-tools-description"
-            data-post-mobile-tools=""
-          >
-            <div class="post-mobile-tools-sheet">
-              <span class="post-mobile-tools-handle" aria-hidden="true"></span>
-              <div class="post-mobile-tools-head">
-                <div class="post-mobile-tools-head-copy">
-                  <p
-                    id="post-mobile-tools-title"
-                    class="post-mobile-tools-title"
+            </button>
+          </div>
+          <div class="post-mobile-tools-sections">
+            {mobileSections.map((section, index) => (
+              <details
+                key={section.key}
+                class={`post-mobile-tools-section ${section.className}`}
+                {...(index === 0 ? { open: true } : {})}
+              >
+                <summary class="post-mobile-tools-section__summary">
+                  <span class="post-mobile-tools-section__title">
+                    {section.title}
+                  </span>
+                  <span
+                    class="post-mobile-tools-section__count"
+                    aria-hidden="true"
                   >
-                    {translations.railTriggerLabel}
-                  </p>
-                  <p
-                    id="post-mobile-tools-description"
-                    class="post-mobile-tools-description"
-                  >
-                    {translations.railDescription}
-                  </p>
+                    {section.countLabel}
+                  </span>
+                </summary>
+                <div class="post-mobile-tools-section__body">
+                  {section.mobileBody ?? section.body}
                 </div>
-                <button
-                  type="button"
-                  class="btn post-mobile-tools-close"
-                  aria-label={closeLabel}
-                  data-post-mobile-tools-close=""
-                >
-                  <SiteIcon
-                    name="x"
-                    className="post-mobile-tools-close__icon"
-                    width={18}
-                    height={18}
-                  />
-                </button>
-              </div>
-              <div class="post-mobile-tools-sections">
-                {mobileSections.map((section, index) => (
-                  <details
-                    key={section.key}
-                    class={`post-mobile-tools-section ${section.className}`}
-                    {...(index === 0 ? { open: true } : {})}
-                  >
-                    <summary class="post-mobile-tools-section__summary">
-                      <span class="post-mobile-tools-section__title">
-                        {section.title}
-                      </span>
-                      <span
-                        class="post-mobile-tools-section__count"
-                        aria-hidden="true"
-                      >
-                        {section.countLabel}
-                      </span>
-                    </summary>
-                    <div class="post-mobile-tools-section__body">
-                      {section.mobileBody ?? section.body}
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </div>
-          </dialog>
-        </section>
-      )}
+              </details>
+            ))}
+          </div>
+        </div>
+      </dialog>
+    </section>
+  );
+}
 
+export function PostRail(
+  {
+    language,
+    translations,
+    outline,
+    backlinks,
+    tags,
+    prev,
+    next,
+  }: {
+    language: SiteLanguage;
+    translations: PostTranslations;
+    outline: readonly PostOutlineItem[];
+    backlinks: readonly PostLinkReference[];
+    tags: readonly string[];
+    prev: Lume.Data | undefined;
+    next: Lume.Data | undefined;
+  },
+): El {
+  const { desktopSections, railClassName } = resolvePostRailSections({
+    language,
+    translations,
+    outline,
+    backlinks,
+    tags,
+    prev,
+    next,
+  });
+
+  return (
+    <>
       <aside class={railClassName} aria-label={translations.railAriaLabel}>
         <div class="feature-rail-sticky">
           {desktopSections.map((section) => (
