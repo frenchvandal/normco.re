@@ -150,6 +150,14 @@
     --ph-text-xl: 1.953rem;
     --ph-text-2xl: 2.441rem;
     --ph-text-3xl: 3.052rem;
+    --ph-text-header-brand: 0.816rem;
+    --ph-text-header-menu: 0.768rem;
+    --ph-text-blog-archive-range: 0.6528rem;
+    --ph-text-blog-archive-title-compact: clamp(
+      1.42rem,
+      1.2rem + 1.6vw,
+      2.1rem
+    );
 
     --ph-text-prose-sm: clamp(0.9375rem, 0.91rem + 0.14vw, 1rem);
     --ph-text-prose: clamp(1.0625rem, 1.02rem + 0.24vw, 1.1875rem);
@@ -206,6 +214,7 @@
     --ph-radius-sm: 3px;
     --ph-radius-md: 6px;
     --ph-radius-lg: 12px;
+    --ph-radius-xl: 16px;
     --ph-radius-pill: 999px;
 
     --ph-text-code-inline: 0.875em;
@@ -221,6 +230,13 @@
     --ph-border-hairline: 1px;
     --ph-border-accent: 3px;
     --ph-header-height: 48px;
+    --ph-header-action-icon-size-default: 1.25rem;
+    --ph-header-action-icon-size-compact: 1rem;
+    --ph-header-menu-icon-size-default: 1.25rem;
+    --ph-header-menu-icon-size-compact: 1rem;
+    --ph-header-menu-item-min-block-size: 2.1rem;
+    --ph-header-menu-item-padding-inline: 0.45rem;
+    --ph-header-menu-item-underline-offset: 0.35rem;
     --ph-layer-header: 50;
     --ph-layer-header-popover: 60;
     --ph-layer-header-panel: 70;
@@ -235,10 +251,15 @@
     --ph-side-nav-width: min(20rem, calc(100vw - var(--ph-space-8)));
     --ph-search-field-height: 40px;
     --ph-control-size-compact: 2.25rem;
+    --ph-post-mobile-tools-count-min-inline-size: 2.1rem;
+    --ph-post-mobile-tools-count-padding-block: 0.22rem;
+    --ph-post-mobile-tools-count-padding-inline: 0.45rem;
+    --ph-blog-meta-pill-gap: 0.45rem;
     --ph-marker-size-sm: 0.875rem;
     --ph-skeleton-line-height: 0.875rem;
     --ph-link-underline-thickness: 0.08em;
     --ph-link-underline-offset: 0.18em;
+    --ph-feeds-description-columns: minmax(15rem, 0.78fr) minmax(0, 1.22fr);
     --ph-color-link-visited: color-mix(
       in oklch,
       var(--ph-color-accent-fg) 62%,
@@ -253,6 +274,11 @@
       in oklch,
       var(--ph-color-canvas-default) 88%,
       transparent
+    );
+    --ph-header-background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 90%,
+      var(--ph-color-canvas-subtle)
     );
     --ph-surface-raised: color-mix(
       in oklch,
@@ -280,6 +306,10 @@
       var(--ph-color-canvas-subtle) 92%,
       var(--ph-color-canvas-default)
     );
+    --ph-header-brand-prefix-opacity: 0.78;
+    --ph-header-menu-item-underline-opacity: 0.9;
+    --ph-side-nav-accent-opacity: 0.96;
+    --ph-blog-card-overlay-opacity: 0.35;
     --ph-mobile-nav-offset: 0;
     --ph-shadow-floating:
       0 6px 16px 0 rgb(0 0 0 / 0.08),

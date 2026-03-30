@@ -612,8 +612,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-inline-size: 2.1rem;
-    padding: 0.22rem 0.45rem;
+    min-inline-size: var(--ph-post-mobile-tools-count-min-inline-size);
+    padding: var(--ph-post-mobile-tools-count-padding-block)
+      var(--ph-post-mobile-tools-count-padding-inline);
     border-radius: var(--ph-radius-pill);
     background: color-mix(
       in oklch,

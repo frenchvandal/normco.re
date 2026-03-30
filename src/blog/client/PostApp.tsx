@@ -1,4 +1,6 @@
 /** @jsxImportSource npm/react */
+import { useMemo } from "npm/react";
+
 import type { BlogPostViewData } from "../view-data.ts";
 import {
   BLOG_ANTD_BACKTOP_CLASSNAMES,
@@ -56,6 +58,29 @@ export function PostView(
 ) {
   const hasRail = data.outline.length > 0 || data.tags.length > 0 ||
     data.backlinks.length > 0 || data.previous || data.next;
+  const publicationDetailItems = useMemo(
+    () =>
+      data.publicationDetails.map((item) => ({
+        key: item.key,
+        label: item.label,
+        children: <TrustedHtmlSpan html={item.valueHtml} />,
+      })),
+    [data.publicationDetails],
+  );
+  const outlineItems = useMemo(() =>
+    data.outline.map((item) => ({
+      color: item.level === 2
+        ? OUTLINE_TIMELINE_COLORS.primary
+        : OUTLINE_TIMELINE_COLORS.secondary,
+      content: (
+        <a
+          href={`#${item.id}`}
+          className="blog-antd-outline-link"
+        >
+          {item.text}
+        </a>
+      ),
+    })), [data.outline]);
 
   return (
     <div className="site-page-shell site-page-shell--wide blog-antd-page blog-antd-page--post">
@@ -156,11 +181,7 @@ export function PostView(
             <Descriptions
               column={1}
               classNames={BLOG_ANTD_DESCRIPTIONS_CLASSNAMES}
-              items={data.publicationDetails.map((item) => ({
-                key: item.key,
-                label: item.label,
-                children: <TrustedHtmlSpan html={item.valueHtml} />,
-              }))}
+              items={publicationDetailItems}
             />
           </Card>
         </article>
@@ -189,19 +210,7 @@ export function PostView(
                   <Timeline
                     className="blog-antd-outline-timeline"
                     classNames={BLOG_ANTD_OUTLINE_TIMELINE_CLASSNAMES}
-                    items={data.outline.map((item) => ({
-                      color: item.level === 2
-                        ? OUTLINE_TIMELINE_COLORS.primary
-                        : OUTLINE_TIMELINE_COLORS.secondary,
-                      content: (
-                        <a
-                          href={`#${item.id}`}
-                          className="blog-antd-outline-link"
-                        >
-                          {item.text}
-                        </a>
-                      ),
-                    }))}
+                    items={outlineItems}
                   />
                 </Card>
               )}

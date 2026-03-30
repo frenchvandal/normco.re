@@ -1,7 +1,6 @@
 import { assert } from "@std/assert";
 import { FakeTime } from "@std/testing/time";
 import { describe, it } from "@std/testing/bdd";
-import { stub } from "@std/testing/mock";
 import { faker, seedTestFaker, TEST_FAKER_REF_DATE } from "../../test/faker.ts";
 import { formatCopyrightYears } from "./copyright.ts";
 
@@ -11,22 +10,14 @@ const TEST_CURRENT_YEAR = TEST_FAKER_REF_DATE.getUTCFullYear();
 const STRICTLY_PAST_REF_DATE = new Date("2026-01-01T00:00:00.000Z");
 const STRICTLY_FUTURE_REF_DATE = new Date("2026-12-31T23:59:59.999Z");
 
-function captureConsoleWarning(run: () => void): string {
-  let warningMessage = "";
-  const consoleWarnStub = stub(
-    globalThis.console,
-    "warn",
-    (...args: unknown[]) => {
-      warningMessage = args.map(String).join(" ");
-    },
-  );
-
-  try {
-    run();
-    return warningMessage;
-  } finally {
-    consoleWarnStub.restore();
-  }
+function captureInvalidMessage(
+  run: (onInvalid: (message: string) => void) => void,
+): string {
+  let invalidMessage = "";
+  run((message) => {
+    invalidMessage = message;
+  });
+  return invalidMessage;
 }
 
 describe("formatCopyrightYears", () => {
@@ -43,13 +34,17 @@ describe("formatCopyrightYears", () => {
     assert(result === `${pastYear}-${TEST_CURRENT_YEAR}`);
   });
 
-  it("logs warning and returns current year when start year is in the future", () => {
+  it("reports invalid config and returns current year when start year is in the future", () => {
     seedTestFaker(TEST_SEED + 2);
     const futureYear = TEST_CURRENT_YEAR +
       faker.number.int({ min: 1, max: 10 });
 
-    const warningMessage = captureConsoleWarning(() => {
-      const result = formatCopyrightYears(futureYear, TEST_CURRENT_YEAR);
+    const warningMessage = captureInvalidMessage((onInvalid) => {
+      const result = formatCopyrightYears(
+        futureYear,
+        TEST_CURRENT_YEAR,
+        { onInvalid },
+      );
       assert(result === String(TEST_CURRENT_YEAR));
     });
 
@@ -60,12 +55,16 @@ describe("formatCopyrightYears", () => {
     );
   });
 
-  it("logs warning and returns current year when start year is invalid string", () => {
+  it("reports invalid config and returns current year when start year is invalid string", () => {
     seedTestFaker(TEST_SEED + 3);
     const invalidYear = "not-a-year";
 
-    const warningMessage = captureConsoleWarning(() => {
-      const result = formatCopyrightYears(invalidYear, TEST_CURRENT_YEAR);
+    const warningMessage = captureInvalidMessage((onInvalid) => {
+      const result = formatCopyrightYears(
+        invalidYear,
+        TEST_CURRENT_YEAR,
+        { onInvalid },
+      );
       assert(result === String(TEST_CURRENT_YEAR));
     });
 
@@ -76,11 +75,15 @@ describe("formatCopyrightYears", () => {
     );
   });
 
-  it("logs warning and returns current year when start year is NaN", () => {
+  it("reports invalid config and returns current year when start year is NaN", () => {
     seedTestFaker(TEST_SEED + 4);
 
-    const warningMessage = captureConsoleWarning(() => {
-      const result = formatCopyrightYears(NaN, TEST_CURRENT_YEAR);
+    const warningMessage = captureInvalidMessage((onInvalid) => {
+      const result = formatCopyrightYears(
+        NaN,
+        TEST_CURRENT_YEAR,
+        { onInvalid },
+      );
       assert(result === String(TEST_CURRENT_YEAR));
     });
 
@@ -101,8 +104,12 @@ describe("formatCopyrightYears", () => {
   it("rejects strings that are not a strict YYYY value", () => {
     const invalidYear = "2022oops";
 
-    const warningMessage = captureConsoleWarning(() => {
-      const result = formatCopyrightYears(invalidYear, TEST_CURRENT_YEAR);
+    const warningMessage = captureInvalidMessage((onInvalid) => {
+      const result = formatCopyrightYears(
+        invalidYear,
+        TEST_CURRENT_YEAR,
+        { onInvalid },
+      );
       assert(result === String(TEST_CURRENT_YEAR));
     });
 
@@ -144,8 +151,12 @@ describe("formatCopyrightYears", () => {
     });
     const futureYear = futureDate.getUTCFullYear();
 
-    const warningMessage = captureConsoleWarning(() => {
-      const result = formatCopyrightYears(futureYear, TEST_CURRENT_YEAR);
+    const warningMessage = captureInvalidMessage((onInvalid) => {
+      const result = formatCopyrightYears(
+        futureYear,
+        TEST_CURRENT_YEAR,
+        { onInvalid },
+      );
       assert(result === String(TEST_CURRENT_YEAR));
     });
 

@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertExists } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import SCRIPT_SOURCE from "./sw.js" with { type: "text" };
 import { SITE_NAME } from "../utils/site-identity.ts";
@@ -169,7 +169,11 @@ describe("sw.js", () => {
       },
     });
 
-    const response = await responsePromise!;
+    assertExists(
+      responsePromise,
+      "Expected service worker fetch handler to call respondWith().",
+    );
+    const response = await responsePromise;
     assertEquals(await response.text(), "FR offline page");
   });
 
@@ -235,8 +239,16 @@ describe("sw.js", () => {
       },
     });
 
-    const pageResponse = await pageResponsePromise!;
-    const feedResponse = await feedResponsePromise!;
+    assertExists(
+      pageResponsePromise,
+      "Expected page request to call respondWith().",
+    );
+    assertExists(
+      feedResponsePromise,
+      "Expected feed request to call respondWith().",
+    );
+    const pageResponse = await pageResponsePromise;
+    const feedResponse = await feedResponsePromise;
 
     assertEquals(
       pageResponse.headers.get("content-type"),
@@ -313,7 +325,11 @@ describe("sw.js", () => {
       },
     });
 
-    const response = await responsePromise!;
+    assertExists(
+      responsePromise,
+      "Expected cached pagefind request to call respondWith().",
+    );
+    const response = await responsePromise;
     assertEquals(await response.text(), '{"cached":true}');
   });
 
@@ -354,7 +370,11 @@ describe("sw.js", () => {
       },
     });
 
-    await responsePromise!;
+    assertExists(
+      responsePromise,
+      "Expected timed network request to call respondWith().",
+    );
+    await responsePromise;
     assertEquals(fetchSignals.length, 1);
     assertEquals(fetchSignals[0]?.aborted, false);
   });

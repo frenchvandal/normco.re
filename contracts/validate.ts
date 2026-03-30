@@ -77,13 +77,21 @@ function resolveRef(
   root: SchemaNode,
 ): SchemaNode | undefined {
   const parts = ref.replace(/^#\//, "").split("/");
-  // deno-lint-ignore no-explicit-any
-  let current: any = root;
+  let current: unknown = root;
   for (const part of parts) {
     if (current == null) return undefined;
+    if (Array.isArray(current)) {
+      const index = Number(part);
+      if (!Number.isInteger(index)) return undefined;
+      current = current[index];
+      continue;
+    }
+
+    if (!isRecord(current)) return undefined;
     current = current[part];
   }
-  return current as SchemaNode | undefined;
+
+  return isRecord(current) ? (current as SchemaNode) : undefined;
 }
 
 function createPatternMatcher(

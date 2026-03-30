@@ -1,4 +1,6 @@
 /** @jsxImportSource npm/react */
+import { type ReactElement, useMemo } from "npm/react";
+
 import {
   Anchor,
   BackTop,
@@ -26,6 +28,18 @@ import {
   BLOG_ANTD_PRIMARY_BUTTON_ROOT,
 } from "./antd-semantic.ts";
 import { StoryTags } from "./common.tsx";
+
+type ArchiveMonthNavYearGroup = ArchiveMonthNavModel["years"][number];
+type ArchiveMonthNavAnchorItem = Readonly<{
+  key: string;
+  href: string;
+  title: ReactElement;
+}>;
+type ArchiveMonthNavYearGroupWithAnchorItems =
+  & ArchiveMonthNavYearGroup
+  & Readonly<{
+    anchorItems: ArchiveMonthNavAnchorItem[];
+  }>;
 
 function ArchiveTimelineItem(
   {
@@ -142,6 +156,33 @@ function ArchiveMonthNav(
     eyebrowLabel: string;
   },
 ) {
+  const yearGroups = useMemo<
+    readonly ArchiveMonthNavYearGroupWithAnchorItems[]
+  >(
+    () =>
+      model?.years.map((yearGroup) => ({
+        ...yearGroup,
+        anchorItems: yearGroup.months.map((month) => ({
+          key: month.key,
+          href: `#${month.anchorId}`,
+          title: (
+            <span
+              className="blog-antd-archive-anchor__title"
+              title={month.title}
+            >
+              <span className="blog-antd-archive-anchor__label">
+                {month.shortLabel}
+              </span>
+              <span className="blog-antd-archive-anchor__count">
+                {month.countLabel}
+              </span>
+            </span>
+          ),
+        })),
+      })) ?? [],
+    [model],
+  );
+
   if (!model) {
     return null;
   }
@@ -155,7 +196,7 @@ function ArchiveMonthNav(
         </Paragraph>
       </div>
       <div className="blog-antd-archive-month-groups">
-        {model.years.map((yearGroup) => (
+        {yearGroups.map((yearGroup) => (
           <section
             key={yearGroup.year}
             className="blog-antd-archive-month-group"
@@ -178,23 +219,7 @@ function ArchiveMonthNav(
               direction="horizontal"
               replace
               targetOffset={112}
-              items={yearGroup.months.map((month) => ({
-                key: month.key,
-                href: `#${month.anchorId}`,
-                title: (
-                  <span
-                    className="blog-antd-archive-anchor__title"
-                    title={month.title}
-                  >
-                    <span className="blog-antd-archive-anchor__label">
-                      {month.shortLabel}
-                    </span>
-                    <span className="blog-antd-archive-anchor__count">
-                      {month.countLabel}
-                    </span>
-                  </span>
-                ),
-              }))}
+              items={yearGroup.anchorItems}
             />
           </section>
         ))}
@@ -209,9 +234,13 @@ export function ArchiveView(
     interactive?: boolean | undefined;
   },
 ) {
-  const archiveView = buildArchiveViewModel(
-    data.posts,
-    resolveArchiveLocaleFromDocument(),
+  const archiveLocale = useMemo(
+    resolveArchiveLocaleFromDocument,
+    [],
+  );
+  const archiveView = useMemo(
+    () => buildArchiveViewModel(data.posts, archiveLocale),
+    [archiveLocale, data.posts],
   );
 
   return (

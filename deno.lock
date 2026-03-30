@@ -67,10 +67,10 @@
     "jsr:@std/yaml@^1.0.12": "1.0.12",
     "jsr:@std/yaml@^1.0.5": "1.0.12",
     "npm:@ant-design/icons-svg@4.4.2": "4.4.2",
-    "npm:@ant-design/static-style-extract@2.1.0": "2.1.0_antd@6.3.4__react@19.2.4__react-dom@19.2.4___react@19.2.4__date-fns@4.1.0_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0",
+    "npm:@ant-design/static-style-extract@2.1.0": "2.1.0_antd@6.3.5__react@19.2.4__react-dom@19.2.4___react@19.2.4__date-fns@4.1.0_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0",
     "npm:@faker-js/faker@^10.4.0": "10.4.0",
     "npm:@resvg/resvg-wasm@2.6.2": "2.6.2",
-    "npm:antd@6.3.4": "6.3.4_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0",
+    "npm:antd@6.3.5": "6.3.5_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0",
     "npm:autoprefixer@10.4.27": "10.4.27_postcss@8.5.8",
     "npm:date-fns@4.1.0": "4.1.0",
     "npm:esbuild@0.27.3": "0.27.3",
@@ -360,7 +360,7 @@
         "throttle-debounce"
       ]
     },
-    "@ant-design/static-style-extract@2.1.0_antd@6.3.4__react@19.2.4__react-dom@19.2.4___react@19.2.4__date-fns@4.1.0_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0": {
+    "@ant-design/static-style-extract@2.1.0_antd@6.3.5__react@19.2.4__react-dom@19.2.4___react@19.2.4__date-fns@4.1.0_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0": {
       "integrity": "sha512-P6PiUZ8IVaiEDUkVSL3fRKyZJNr7xRWnq0MG1HmvxrK6quvGYQ7Vc2qRILJCLuk1svziTp0zWdasR3ndhi2HoA==",
       "dependencies": [
         "@ant-design/cssinjs",
@@ -1028,7 +1028,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/picker@1.9.1_date-fns@4.1.0_dayjs@1.11.19_react@19.2.4_react-dom@19.2.4__react@19.2.4": {
+    "@rc-component/picker@1.9.1_date-fns@4.1.0_dayjs@1.11.20_react@19.2.4_react-dom@19.2.4__react@19.2.4": {
       "integrity": "sha512-9FBYYsvH3HMLICaPDA/1Th5FLaDkFa7qAtangIdlhKb3ZALaR745e9PsOhheJb6asS4QXc12ffiAcjdkZ4C5/g==",
       "dependencies": [
         "@rc-component/overflow",
@@ -1037,11 +1037,13 @@
         "@rc-component/util",
         "clsx",
         "date-fns",
+        "dayjs",
         "react",
         "react-dom"
       ],
       "optionalPeers": [
-        "date-fns"
+        "date-fns",
+        "dayjs"
       ]
     },
     "@rc-component/portal@2.2.0_react@19.2.4_react-dom@19.2.4__react@19.2.4": {
@@ -1353,8 +1355,8 @@
         "require-from-string"
       ]
     },
-    "antd@6.3.4_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0": {
-      "integrity": "sha512-Bu6JivPP7bFfYIdVj+61dxhwSOz+A3m0W7PlDasFGC3H3sNMYQ9gJXZoo11/rQh7pTlOQa351q5Ig/zjI98XYw==",
+    "antd@6.3.5_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0": {
+      "integrity": "sha512-8BPz9lpZWQm42PTx7yL4KxWAotVuqINiKcoYRcLtdd5BFmAcAZicVyFTnBJyRDlzGZFZeRW3foGu6jXYFnej6Q==",
       "dependencies": [
         "@ant-design/colors",
         "@ant-design/cssinjs",
@@ -2603,7 +2605,7 @@
       "jsr:@std/xml@0.1",
       "jsr:@std/yaml@^1.0.12",
       "npm:@faker-js/faker@^10.4.0",
-      "npm:antd@6.3.4",
+      "npm:antd@6.3.5",
       "npm:date-fns@4.1.0",
       "npm:react@19.2.4",
       "npm:shiki@4.0.2"

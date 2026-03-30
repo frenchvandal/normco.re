@@ -12,7 +12,7 @@
     "npm/react/jsx-dev-runtime": "npm:react@19.2.4/jsx-dev-runtime",
     "npm/react/jsx-runtime": "npm:react@19.2.4/jsx-runtime",
     "@blog/tag-antd": "./tag-antd.ts",
-    "npm/antd": "npm:antd@6.3.4"
+    "npm/antd": "npm:antd@6.3.5"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

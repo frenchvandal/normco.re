@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertExists } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import SCRIPT_SOURCE from "./link-prefetch-intent.js" with { type: "text" };
 import { getJSDOM } from "../../test/jsdom.ts";
@@ -138,10 +138,12 @@ describe("link-prefetch-intent.js", () => {
     await flush(window);
 
     assertEquals(observedIds, ["internal"]);
+    const internalLink = window.document.getElementById("internal");
+    assertExists(internalLink, "Expected internal link fixture to exist.");
     callback?.([
       {
         isIntersecting: true,
-        target: window.document.getElementById("internal")!,
+        target: internalLink,
       },
     ]);
     await flush(window);

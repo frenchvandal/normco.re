@@ -95,7 +95,7 @@
         transparent
       )
     );
-    opacity: 0.96;
+    opacity: var(--ph-side-nav-accent-opacity);
     pointer-events: none;
   }
 

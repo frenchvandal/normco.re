@@ -2,7 +2,7 @@
   "imports": {
     "jsr/miscellaneous-commitlint": "jsr:@miscellaneous/commitlint@^0.1.2",
     "npm/react": "npm:react@19.2.4",
-    "npm/antd": "npm:antd@6.3.4",
+    "npm/antd": "npm:antd@6.3.5",
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",

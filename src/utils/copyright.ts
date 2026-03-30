@@ -1,5 +1,9 @@
 const YEAR_STRING_PATTERN = /^\d{4}$/;
 
+type FormatCopyrightYearsOptions = Readonly<{
+  onInvalid?: (message: string) => void;
+}>;
+
 function parseStartYear(startYear: unknown): number {
   if (typeof startYear === "number") {
     return Number.isInteger(startYear) ? startYear : NaN;
@@ -19,18 +23,20 @@ function parseStartYear(startYear: unknown): number {
 export function formatCopyrightYears(
   startYear: unknown,
   currentYear: number = new Date().getFullYear(),
+  options: FormatCopyrightYearsOptions = {},
 ): string {
   const parsed = parseStartYear(startYear);
+  const { onInvalid } = options;
 
   if (!Number.isFinite(parsed)) {
-    console.warn(
+    onInvalid?.(
       `Copyright: blogStartYear value "${startYear}" is not in a valid YYYY format. Using current year (${currentYear}).`,
     );
     return String(currentYear);
   }
 
   if (parsed > currentYear) {
-    console.warn(
+    onInvalid?.(
       `Copyright: blogStartYear (${parsed}) is set to a future year. Using current year (${currentYear}).`,
     );
     return String(currentYear);

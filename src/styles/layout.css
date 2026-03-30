@@ -366,7 +366,7 @@
     }
 
     .feeds-description-row {
-      grid-template-columns: minmax(15rem, 0.78fr) minmax(0, 1.22fr);
+      grid-template-columns: var(--ph-feeds-description-columns);
       align-items: start;
       gap: 0;
     }

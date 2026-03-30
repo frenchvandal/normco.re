@@ -15,7 +15,6 @@ import { getSiteName } from "../utils/site-identity.ts";
 import SiteIcon from "./SiteIcon.tsx";
 
 type El = ReturnType<typeof jsx>;
-type Translations = SiteTranslations;
 type LanguageAlternates = Partial<Record<SiteLanguage, string>>;
 type NavigationItem = ReturnType<typeof buildHeaderNavigation>[number];
 type HeaderVariant = "editorial-home" | "standard";
@@ -90,7 +89,7 @@ function renderThemeIcons(className: string): El {
 }
 
 function resolveHeaderActions(
-  t: Translations,
+  t: SiteTranslations,
 ) {
   return [
     {
@@ -213,7 +212,7 @@ function PanelHead({ className, title }: { className: string; title: string }) {
 function renderLanguagePanel(
   language: SiteLanguage,
   alternates: LanguageAlternates,
-  t: Translations,
+  t: SiteTranslations,
   variant: HeaderVariant,
 ): El {
   return (
@@ -247,7 +246,7 @@ function renderLanguagePanel(
 }
 
 function renderSearchPanel(
-  t: Translations,
+  t: SiteTranslations,
   variant: HeaderVariant,
 ): El {
   return (
@@ -385,7 +384,7 @@ function renderSideNav(
   items: readonly NavigationItem[],
   homeUrl: string,
   siteName: string,
-  t: Translations,
+  t: SiteTranslations,
 ): El {
   return (
     <aside
@@ -449,7 +448,7 @@ function renderSideNav(
 function renderEditorialHomeBrand(
   homeUrl: string,
   siteName: string,
-  t: Translations,
+  t: SiteTranslations,
 ): El {
   return (
     <a href={homeUrl} class="site-header__brand editorial-home-header__name">

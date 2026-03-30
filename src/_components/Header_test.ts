@@ -278,7 +278,10 @@ describe("Header CSS contracts", () => {
       "block-size: var(--ph-control-size-compact);",
     );
     assertStringIncludes(layoutStyles, 'data-header-variant="editorial-home"');
-    assertStringIncludes(layoutStyles, "--ph-header-action-icon-size: 1rem;");
+    assertStringIncludes(
+      layoutStyles,
+      "--site-header-action-icon-size: var(--ph-header-action-icon-size-compact);",
+    );
   });
 
   it("styles the mobile side nav as a true drawer", () => {

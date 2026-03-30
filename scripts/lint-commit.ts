@@ -19,14 +19,14 @@ import { parseArgs } from "@std/cli";
 import { stripAnsiCode } from "@std/fmt/colors";
 import {
   formatReport,
-  lintCommit,
+  lintCommit as lintCommitWithPreset,
   type LintIssue,
+  type LintOptions,
   type LintReport,
   type Severity,
 } from "jsr/miscellaneous-commitlint";
 
-export { lintCommit };
-export type { LintIssue, LintReport, Severity };
+export type { LintIssue, LintOptions, LintReport, Severity };
 
 export type FormatLintCommitReportOptions = {
   readonly color?: boolean;
@@ -46,6 +46,16 @@ export function formatLintCommitReport(
   const formatted = formatReport(report, { color });
 
   return color ? formatted : stripAnsiCode(formatted);
+}
+
+export function lintCommit(
+  input: string,
+  options: LintOptions = {},
+): LintReport {
+  return lintCommitWithPreset(input, {
+    ...options,
+    preset: options.preset ?? "commitlint",
+  });
 }
 
 async function writeReport(report: LintReport): Promise<void> {
