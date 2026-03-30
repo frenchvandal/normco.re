@@ -6,7 +6,8 @@
     "jsr:@cliffy/internal@1.0.0": "1.0.0",
     "jsr:@cliffy/table@1.0.0": "1.0.0",
     "jsr:@deno/loader@0.3.14": "0.3.14",
-    "jsr:@miscellaneous/commitlint@~0.1.2": "0.1.2",
+    "jsr:@miscellaneous/commitlint@*": "0.1.3",
+    "jsr:@miscellaneous/commitlint@~0.1.3": "0.1.3",
     "jsr:@std/assert@^1.0.17": "1.0.19",
     "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/async@^1.1.0": "1.2.0",
@@ -125,8 +126,8 @@
     "@deno/loader@0.3.14": {
       "integrity": "97bc63a6cc2d27a60bcdc953f588c5213331d866d44212eebb24cebfb9b011ca"
     },
-    "@miscellaneous/commitlint@0.1.2": {
-      "integrity": "ce772736c64c53622c96f4fc8afaa3e5c93d58a522c3e8892108730e4d0f1d3c"
+    "@miscellaneous/commitlint@0.1.3": {
+      "integrity": "7822c33db09abcd565180943de4587ebb3cff8d4a03ef3e2af368dacec3e6ee3"
     },
     "@std/assert@1.0.19": {
       "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
@@ -2586,7 +2587,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@miscellaneous/commitlint@~0.1.2",
+      "jsr:@miscellaneous/commitlint@~0.1.3",
       "jsr:@std/assert@^1.0.19",
       "jsr:@std/async@^1.2.0",
       "jsr:@std/cli@^1.0.28",
