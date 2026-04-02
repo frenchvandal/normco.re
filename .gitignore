@@ -1,6 +1,8 @@
 _cache
 _quality
 _site
+.claude
+.qwen
 .tmp
 .deno_cache
 .DS_Store
