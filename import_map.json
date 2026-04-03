@@ -19,7 +19,7 @@
     "@std/uuid/": "jsr:/@std/uuid@^1.1.0/",
     "@std/yaml": "jsr:@std/yaml@^1.0.12",
     "@std/xml": "jsr:@std/xml@^0.1.0",
-    "jsr/miscellaneous-commitlint": "jsr:@miscellaneous/commitlint@^0.3.1",
+    "jsr/miscellaneous-commitlint": "jsr:@miscellaneous/commitlint@^0.3.2",
 
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/",
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",

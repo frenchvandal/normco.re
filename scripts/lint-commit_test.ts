@@ -47,7 +47,7 @@ describe("lintCommit()", () => {
     const rule = report.errors.find((error) => error.rule === "type-enum");
 
     assertEquals(rule?.severity, "error");
-    assertStringIncludes(rule?.message ?? "", '"wip"');
+    assertStringIncludes(rule?.message ?? "", "wip");
   });
 
   it("rejects upper-case types", () => {
