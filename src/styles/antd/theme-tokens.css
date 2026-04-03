@@ -17,6 +17,13 @@
       "Noto Color Emoji";
     --ph-font-reading: var(--ph-font-sans);
     --ph-font-heading: var(--ph-font-sans);
+    --ph-font-measure:
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial,
+      "Noto Sans",
+      sans-serif;
     --ph-font-serif:
       Charter,
       "Iowan Old Style",

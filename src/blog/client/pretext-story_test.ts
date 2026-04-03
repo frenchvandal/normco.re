@@ -1,0 +1,341 @@
+import { assertAlmostEquals, assertEquals } from "@std/assert";
+import { describe, it } from "@std/testing/bdd";
+
+import {
+  balanceTextMeasurementsByRow,
+  buildPretextFont,
+  layoutTextBlockWithLines,
+  measureTextBlock,
+  measureTextBlockWidestLine,
+  resolveLineHeightPx,
+  type TextLayoutLineRange,
+} from "./pretext-story-core.ts";
+
+describe("buildPretextFont()", () => {
+  it("uses the explicit measurement family instead of the live UI stack", () => {
+    assertEquals(
+      buildPretextFont(
+        {
+          fontSize: "20px",
+          fontStyle: "normal",
+          fontWeight: "700",
+          lineHeight: "24px",
+        },
+        '"Segoe UI", Roboto, sans-serif',
+      ),
+      '700 20px "Segoe UI", Roboto, sans-serif',
+    );
+  });
+});
+
+describe("resolveLineHeightPx()", () => {
+  it("resolves pixel line heights directly", () => {
+    assertEquals(resolveLineHeightPx("28px", "18px"), 28);
+  });
+
+  it("resolves unitless line heights from the computed font size", () => {
+    assertEquals(resolveLineHeightPx("1.25", "20px"), 25);
+  });
+
+  it("falls back to a readable default when line-height is normal", () => {
+    assertAlmostEquals(resolveLineHeightPx("normal", "18px"), 21.6);
+  });
+});
+
+describe("measureTextBlock()", () => {
+  it("reuses prepared text for repeated layout calls with the same locale", () => {
+    const preparedKeys: string[] = [];
+    const localeCalls: Array<string | undefined> = [];
+    const engine = {
+      layout(
+        _prepared: string,
+        maxWidth: number,
+        lineHeight: number,
+      ) {
+        return {
+          height: lineHeight * 2,
+          lineCount: maxWidth > 200 ? 2 : 3,
+        };
+      },
+      prepare(text: string, font: string) {
+        const key = `${font}::${text}`;
+        preparedKeys.push(key);
+        return key;
+      },
+      setLocale(locale?: string) {
+        localeCalls.push(locale);
+      },
+    };
+
+    const first = measureTextBlock(engine, {
+      font: '600 18px "Segoe UI"',
+      lineHeight: 24,
+      locale: "fr",
+      text: "Bonjour tout le monde",
+      width: 240,
+    });
+    const second = measureTextBlock(engine, {
+      font: '600 18px "Segoe UI"',
+      lineHeight: 24,
+      locale: "fr",
+      text: "Bonjour tout le monde",
+      width: 180,
+    });
+
+    assertEquals(preparedKeys.length, 1);
+    assertEquals(localeCalls, ["fr"]);
+    assertEquals(first, { height: 48, lineCount: 2 });
+    assertEquals(second, { height: 48, lineCount: 3 });
+  });
+
+  it("drops the prepared cache when the locale changes", () => {
+    const preparedKeys: string[] = [];
+    const localeCalls: Array<string | undefined> = [];
+    const engine = {
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return {
+          height: lineHeight,
+          lineCount: 1,
+        };
+      },
+      prepare(text: string, font: string) {
+        const key = `${font}::${text}`;
+        preparedKeys.push(key);
+        return key;
+      },
+      setLocale(locale?: string) {
+        localeCalls.push(locale);
+      },
+    };
+
+    measureTextBlock(engine, {
+      font: '600 18px "Segoe UI"',
+      lineHeight: 24,
+      locale: "fr",
+      text: "Bonjour",
+      width: 200,
+    });
+    measureTextBlock(engine, {
+      font: '600 18px "Segoe UI"',
+      lineHeight: 24,
+      locale: "en",
+      text: "Bonjour",
+      width: 200,
+    });
+
+    assertEquals(preparedKeys.length, 2);
+    assertEquals(localeCalls, ["fr", "en"]);
+  });
+});
+
+describe("layoutTextBlockWithLines()", () => {
+  it("reuses segmented prepared text across line inspection helpers", () => {
+    const segmentedPreparedKeys: string[] = [];
+    const localeCalls: Array<string | undefined> = [];
+    const engine = {
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return {
+          height: lineHeight,
+          lineCount: 1,
+        };
+      },
+      layoutWithLines(prepared: string, maxWidth: number, lineHeight: number) {
+        return {
+          height: lineHeight * 2,
+          lineCount: 2,
+          lines: [
+            {
+              end: { graphemeIndex: 5, segmentIndex: 0 },
+              start: { graphemeIndex: 0, segmentIndex: 0 },
+              text: `${prepared}-1`,
+              width: maxWidth - 24,
+            },
+            {
+              end: { graphemeIndex: 11, segmentIndex: 0 },
+              start: { graphemeIndex: 5, segmentIndex: 0 },
+              text: `${prepared}-2`,
+              width: maxWidth - 36,
+            },
+          ],
+        };
+      },
+      prepare(text: string, font: string) {
+        return `${font}::${text}`;
+      },
+      prepareWithSegments(text: string, font: string) {
+        const key = `${font}::${text}`;
+        segmentedPreparedKeys.push(key);
+        return key;
+      },
+      setLocale(locale?: string) {
+        localeCalls.push(locale);
+      },
+      walkLineRanges(
+        _prepared: string,
+        maxWidth: number,
+        onLine: (line: TextLayoutLineRange) => void,
+      ) {
+        onLine({
+          end: { graphemeIndex: 5, segmentIndex: 0 },
+          start: { graphemeIndex: 0, segmentIndex: 0 },
+          width: maxWidth - 28,
+        });
+        onLine({
+          end: { graphemeIndex: 11, segmentIndex: 0 },
+          start: { graphemeIndex: 5, segmentIndex: 0 },
+          width: maxWidth - 12,
+        });
+        return 2;
+      },
+    };
+
+    const layoutResult = layoutTextBlockWithLines(engine, {
+      font: '780 32px "Segoe UI"',
+      lineHeight: 34,
+      locale: "fr",
+      text: "Bonjour les lignes",
+      width: 220,
+    });
+    const widestLine = measureTextBlockWidestLine(engine, {
+      font: '780 32px "Segoe UI"',
+      locale: "fr",
+      text: "Bonjour les lignes",
+      width: 220,
+    });
+
+    assertEquals(segmentedPreparedKeys.length, 1);
+    assertEquals(localeCalls, ["fr"]);
+    assertEquals(layoutResult.lineCount, 2);
+    assertEquals(layoutResult.height, 68);
+    assertEquals(
+      layoutResult.lines[0]?.text,
+      '780 32px "Segoe UI"::Bonjour les lignes-1',
+    );
+    assertEquals(widestLine, { lineCount: 2, widestLineWidth: 208 });
+  });
+
+  it("drops the segmented prepared cache when the locale changes", () => {
+    const segmentedPreparedKeys: string[] = [];
+    const localeCalls: Array<string | undefined> = [];
+    const engine = {
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return {
+          height: lineHeight,
+          lineCount: 1,
+        };
+      },
+      layoutWithLines(
+        _prepared: string,
+        _maxWidth: number,
+        lineHeight: number,
+      ) {
+        return {
+          height: lineHeight,
+          lineCount: 1,
+          lines: [
+            {
+              end: { graphemeIndex: 7, segmentIndex: 0 },
+              start: { graphemeIndex: 0, segmentIndex: 0 },
+              text: "Bonjour",
+              width: 88,
+            },
+          ],
+        };
+      },
+      prepare(text: string, font: string) {
+        return `${font}::${text}`;
+      },
+      prepareWithSegments(text: string, font: string) {
+        const key = `${font}::${text}`;
+        segmentedPreparedKeys.push(key);
+        return key;
+      },
+      setLocale(locale?: string) {
+        localeCalls.push(locale);
+      },
+      walkLineRanges(
+        _prepared: string,
+        _maxWidth: number,
+        onLine: (line: TextLayoutLineRange) => void,
+      ) {
+        onLine({
+          end: { graphemeIndex: 7, segmentIndex: 0 },
+          start: { graphemeIndex: 0, segmentIndex: 0 },
+          width: 88,
+        });
+        return 1;
+      },
+    };
+
+    layoutTextBlockWithLines(engine, {
+      font: '600 18px "Segoe UI"',
+      lineHeight: 24,
+      locale: "fr",
+      text: "Bonjour",
+      width: 200,
+    });
+    measureTextBlockWidestLine(engine, {
+      font: '600 18px "Segoe UI"',
+      locale: "en",
+      text: "Bonjour",
+      width: 200,
+    });
+
+    assertEquals(segmentedPreparedKeys.length, 2);
+    assertEquals(localeCalls, ["fr", "en"]);
+  });
+});
+
+describe("balanceTextMeasurementsByRow()", () => {
+  it("keeps single-column layouts unchanged", () => {
+    const measurements = [
+      {
+        title: { height: 24, lineCount: 1 },
+        summary: { height: 48, lineCount: 2 },
+      },
+      {
+        title: { height: 48, lineCount: 2 },
+        summary: { height: 24, lineCount: 1 },
+      },
+    ] as const;
+
+    assertEquals(balanceTextMeasurementsByRow(measurements, 1), [
+      ...measurements,
+    ]);
+  });
+
+  it("equalizes row maxima across the current two-column row only", () => {
+    const measurements = [
+      {
+        title: { height: 24, lineCount: 1 },
+        summary: { height: 48, lineCount: 2 },
+      },
+      {
+        title: { height: 72, lineCount: 3 },
+        summary: { height: 24, lineCount: 1 },
+      },
+      {
+        title: { height: 48, lineCount: 2 },
+        summary: { height: 24, lineCount: 1 },
+      },
+    ] as const;
+
+    assertEquals(
+      balanceTextMeasurementsByRow(measurements, 2),
+      [
+        {
+          title: { height: 72, lineCount: 3 },
+          summary: { height: 48, lineCount: 2 },
+        },
+        {
+          title: { height: 72, lineCount: 3 },
+          summary: { height: 48, lineCount: 2 },
+        },
+        {
+          title: { height: 48, lineCount: 2 },
+          summary: { height: 24, lineCount: 1 },
+        },
+      ],
+    );
+  });
+});

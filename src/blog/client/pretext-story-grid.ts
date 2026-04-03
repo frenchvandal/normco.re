@@ -1,0 +1,318 @@
+import type { CSSProperties } from "npm/react";
+import {
+  startTransition,
+  useEffect,
+  useEffectEvent,
+  useMemo,
+  useState,
+} from "npm/react";
+
+import type { BlogStoryCard } from "../view-data.ts";
+import { STORY_GRID_TWO_COLUMN_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
+import {
+  balanceTextMeasurementsByRow,
+  buildPretextFont,
+  EMPTY_MEASURED_TEXT_STATE,
+  type MeasuredTextState,
+  measureTextBlock,
+  PRETEXT_ENGINE,
+  PRETEXT_MEASURE_FONT_TOKEN,
+  resolveLineHeightPx,
+  type TextStyleSnapshot,
+} from "./pretext-story-core.ts";
+
+type MeasuredTextStyle = CSSProperties & {
+  "--pretext-summary-height"?: string;
+  "--pretext-summary-lines"?: number;
+  "--pretext-title-height"?: string;
+  "--pretext-title-lines"?: number;
+};
+
+type MeasurementSample = Readonly<{
+  locale?: string | undefined;
+  measureFontFamily: string;
+  summary?: {
+    style: TextStyleSnapshot;
+    width: number;
+  };
+  title: {
+    style: TextStyleSnapshot;
+    width: number;
+  };
+}>;
+
+function readTextStyleSnapshot(element: HTMLElement): TextStyleSnapshot {
+  const computedStyle = element.ownerDocument.defaultView?.getComputedStyle(
+    element,
+  );
+
+  return {
+    fontSize: computedStyle?.fontSize ?? "16px",
+    fontStyle: computedStyle?.fontStyle ?? "normal",
+    fontWeight: computedStyle?.fontWeight ?? "400",
+    lineHeight: computedStyle?.lineHeight ?? "normal",
+  };
+}
+
+function queryMeasuredElement(
+  container: HTMLElement,
+  selector: string,
+): HTMLElement | null {
+  const candidate = container.querySelector(selector);
+  return candidate instanceof HTMLElement ? candidate : null;
+}
+
+function buildMeasuredTextStyle(
+  measurements: MeasuredTextState,
+): MeasuredTextStyle {
+  const style: MeasuredTextStyle = {};
+
+  if (measurements.title.height > 0) {
+    style["--pretext-title-height"] = `${measurements.title.height}px`;
+    style["--pretext-title-lines"] = measurements.title.lineCount;
+  }
+
+  if (measurements.summary.height > 0) {
+    style["--pretext-summary-height"] = `${measurements.summary.height}px`;
+    style["--pretext-summary-lines"] = measurements.summary.lineCount;
+  }
+
+  return style;
+}
+
+function buildMeasurementSample(
+  container: HTMLElement,
+  summaryVisible: boolean,
+): MeasurementSample | undefined {
+  const titleElement = queryMeasuredElement(
+    container,
+    ".blog-antd-story-card__title",
+  );
+
+  if (!titleElement) {
+    return undefined;
+  }
+
+  const defaultView = container.ownerDocument.defaultView;
+
+  if (!defaultView) {
+    return undefined;
+  }
+
+  const rootStyle = defaultView.getComputedStyle(
+    container.ownerDocument.documentElement,
+  );
+  const summaryElement = summaryVisible
+    ? queryMeasuredElement(container, ".blog-antd-story-card__summary")
+    : null;
+
+  return {
+    locale: container.ownerDocument.documentElement.lang,
+    measureFontFamily: rootStyle.getPropertyValue(PRETEXT_MEASURE_FONT_TOKEN),
+    summary: summaryElement
+      ? {
+        style: readTextStyleSnapshot(summaryElement),
+        width: summaryElement.clientWidth,
+      }
+      : undefined,
+    title: {
+      style: readTextStyleSnapshot(titleElement),
+      width: titleElement.clientWidth,
+    },
+  };
+}
+
+function detectStoryGridColumns(container: HTMLElement): number {
+  const defaultView = container.ownerDocument.defaultView;
+  return defaultView?.matchMedia(STORY_GRID_TWO_COLUMN_MEDIA_QUERY).matches
+    ? 2
+    : 1;
+}
+
+function measureStoryFromSample(
+  story: BlogStoryCard,
+  sample: MeasurementSample,
+): MeasuredTextState {
+  const titleFont = buildPretextFont(
+    sample.title.style,
+    sample.measureFontFamily,
+  );
+  const title = measureTextBlock(PRETEXT_ENGINE, {
+    font: titleFont,
+    lineHeight: resolveLineHeightPx(
+      sample.title.style.lineHeight,
+      sample.title.style.fontSize,
+    ),
+    locale: sample.locale,
+    text: story.title,
+    width: sample.title.width,
+  });
+
+  const summary = sample.summary
+    ? measureTextBlock(PRETEXT_ENGINE, {
+      font: buildPretextFont(sample.summary.style, sample.measureFontFamily),
+      lineHeight: resolveLineHeightPx(
+        sample.summary.style.lineHeight,
+        sample.summary.style.fontSize,
+      ),
+      locale: sample.locale,
+      text: story.summary,
+      width: sample.summary.width,
+    })
+    : EMPTY_MEASURED_TEXT_STATE.summary;
+
+  return { summary, title };
+}
+
+function buildStyleMap(
+  posts: readonly BlogStoryCard[],
+  measurements: readonly MeasuredTextState[],
+): Map<string, MeasuredTextStyle> {
+  const styleMap = new Map<string, MeasuredTextStyle>();
+
+  posts.forEach((story, index) => {
+    styleMap.set(
+      story.url,
+      buildMeasuredTextStyle(
+        measurements[index] ?? EMPTY_MEASURED_TEXT_STATE,
+      ),
+    );
+  });
+
+  return styleMap;
+}
+
+function areStyleMapsEqual(
+  current: ReadonlyMap<string, MeasuredTextStyle>,
+  next: ReadonlyMap<string, MeasuredTextStyle>,
+): boolean {
+  if (current.size !== next.size) {
+    return false;
+  }
+
+  for (const [key, currentStyle] of current.entries()) {
+    const nextStyle = next.get(key);
+
+    if (!nextStyle) {
+      return false;
+    }
+
+    if (
+      currentStyle["--pretext-title-height"] !==
+        nextStyle["--pretext-title-height"] ||
+      currentStyle["--pretext-title-lines"] !==
+        nextStyle["--pretext-title-lines"] ||
+      currentStyle["--pretext-summary-height"] !==
+        nextStyle["--pretext-summary-height"] ||
+      currentStyle["--pretext-summary-lines"] !==
+        nextStyle["--pretext-summary-lines"]
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export function useBalancedStoryGridTextStyles(
+  {
+    posts,
+    summaryVisible,
+  }: {
+    posts: readonly BlogStoryCard[];
+    summaryVisible: boolean;
+  },
+): Readonly<{
+  ref: (element: HTMLElement | null) => void;
+  styleMap: ReadonlyMap<string, MeasuredTextStyle>;
+}> {
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+  const [styleMap, setStyleMap] = useState<
+    ReadonlyMap<string, MeasuredTextStyle>
+  >(
+    () => new Map(),
+  );
+
+  const emptyStyleMap = useMemo<ReadonlyMap<string, MeasuredTextStyle>>(
+    () => new Map(),
+    [],
+  );
+
+  const updateMeasurements = useEffectEvent(
+    (currentContainer: HTMLElement | null) => {
+      if (!currentContainer || posts.length === 0) {
+        if (!areStyleMapsEqual(styleMap, emptyStyleMap)) {
+          startTransition(() => setStyleMap(emptyStyleMap));
+        }
+        return;
+      }
+
+      const sample = buildMeasurementSample(currentContainer, summaryVisible);
+
+      if (!sample) {
+        return;
+      }
+
+      const measuredStories = posts.map((story) =>
+        measureStoryFromSample(story, sample)
+      );
+      const columns = detectStoryGridColumns(currentContainer);
+      const balancedMeasurements = balanceTextMeasurementsByRow(
+        measuredStories,
+        columns,
+      );
+
+      // Skip state churn when computed row maxima have not changed.
+      const nextStyleMap = buildStyleMap(posts, balancedMeasurements);
+
+      if (!areStyleMapsEqual(styleMap, nextStyleMap)) {
+        startTransition(() => setStyleMap(nextStyleMap));
+      }
+    },
+  );
+
+  useEffect(() => {
+    updateMeasurements(container);
+  }, [container, posts, summaryVisible]);
+
+  useEffect(() => {
+    if (!container || typeof ResizeObserver !== "function") {
+      return;
+    }
+
+    const observedElements = [
+      container,
+      queryMeasuredElement(container, ".blog-antd-story-card__title"),
+      queryMeasuredElement(container, ".blog-antd-story-card__summary"),
+    ].filter((element): element is HTMLElement => element !== null);
+
+    const observer = new ResizeObserver(() => {
+      updateMeasurements(container);
+    });
+
+    observedElements.forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
+  }, [container]);
+
+  useEffect(() => {
+    const defaultView = container?.ownerDocument.defaultView;
+    const mediaQuery = defaultView?.matchMedia(
+      STORY_GRID_TWO_COLUMN_MEDIA_QUERY,
+    );
+
+    if (!mediaQuery) {
+      return;
+    }
+
+    const handleChange = () => updateMeasurements(container);
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [container]);
+
+  return {
+    ref: setContainer,
+    styleMap,
+  };
+}

@@ -28,6 +28,7 @@ import {
   BLOG_ANTD_PRIMARY_BUTTON_ROOT,
   BLOG_ANTD_SKELETON_CLASSNAMES,
 } from "./antd-semantic.ts";
+import { usePretextTextStyle } from "./pretext-story.ts";
 import { BLOG_ANTD_SPACE_4 } from "./spacing.ts";
 
 type ArchiveMonthNavYearGroup = ArchiveMonthNavModel["years"][number];
@@ -59,11 +60,20 @@ function ArchiveTimelineItem(
     readingTooltip?: string | undefined;
   },
 ) {
+  const measuredText = usePretextTextStyle({
+    summary: story.summary,
+    summarySelector: ".blog-antd-archive-timeline__summary",
+    title: story.title,
+    titleSelector: ".blog-antd-archive-timeline__title",
+  });
+
   return (
     <article
+      ref={measuredText.ref}
       className={`blog-antd-archive-timeline__item${
         isLead ? " blog-antd-archive-timeline__item--lead" : ""
       }`}
+      style={measuredText.style}
     >
       {month && (
         <div

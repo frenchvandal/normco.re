@@ -50,11 +50,35 @@ import {
   TrustedHtmlSection,
   TrustedHtmlSpan,
 } from "./common.tsx";
+import { usePretextTextStyle } from "./pretext-story.ts";
 
 const OUTLINE_TIMELINE_COLORS = {
   primary: "var(--ph-color-accent-fg)",
   secondary: "var(--ph-color-fg-muted)",
 } as const;
+
+function OutlineTimelineLink(
+  { id, text }: {
+    id: string;
+    text: string;
+  },
+) {
+  const measuredText = usePretextTextStyle({
+    title: text,
+    titleSelector: ".blog-antd-outline-link__text",
+  });
+
+  return (
+    <a
+      ref={measuredText.ref}
+      href={`#${id}`}
+      className="blog-antd-outline-link"
+      style={measuredText.style}
+    >
+      <span className="blog-antd-outline-link__text">{text}</span>
+    </a>
+  );
+}
 
 export function PostView(
   { data, interactive = true }: {
@@ -82,14 +106,7 @@ export function PostView(
       color: item.level === 2
         ? OUTLINE_TIMELINE_COLORS.primary
         : OUTLINE_TIMELINE_COLORS.secondary,
-      content: (
-        <a
-          href={`#${item.id}`}
-          className="blog-antd-outline-link"
-        >
-          {item.text}
-        </a>
-      ),
+      content: <OutlineTimelineLink id={item.id} text={item.text} />,
     })), [data.outline]);
 
   return (

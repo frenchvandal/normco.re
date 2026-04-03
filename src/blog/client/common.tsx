@@ -1,4 +1,6 @@
 /** @jsxImportSource npm/react */
+import type { CSSProperties } from "npm/react";
+
 import {
   ArrowRightOutlined,
   Card,
@@ -20,6 +22,8 @@ import {
   BLOG_ANTD_READING_METER_PROGRESS,
   BLOG_ANTD_TOOLTIP_CLASSNAMES,
 } from "./antd-semantic.ts";
+import { usePretextTextStyle } from "./pretext-story.ts";
+import { useBalancedStoryGridTextStyles } from "./pretext-story-grid.ts";
 import {
   BLOG_ANTD_ROW_GUTTER_GRID,
   BLOG_ANTD_ROW_GUTTER_SECTION,
@@ -256,23 +260,45 @@ export function HeroLatestLink(
 
 type StoryCardProps = Readonly<{
   index: number;
+  measureText?: boolean | undefined;
   story: BlogStoryCard;
   summaryVisible?: boolean | undefined;
+  textStyle?: CSSProperties | undefined;
   dateTooltip?: string | undefined;
   readingTooltip?: string | undefined;
 }>;
 
 function StoryCard(
-  { index, story, summaryVisible = true, dateTooltip, readingTooltip }:
-    StoryCardProps,
+  {
+    index,
+    measureText = true,
+    story,
+    summaryVisible = true,
+    textStyle,
+    dateTooltip,
+    readingTooltip,
+  }: StoryCardProps,
 ) {
+  const measuredText = usePretextTextStyle({
+    disabled: !measureText,
+    summary: summaryVisible ? story.summary : undefined,
+    summarySelector: ".blog-antd-story-card__summary",
+    title: story.title,
+    titleSelector: ".blog-antd-story-card__title",
+  });
+
   return (
     <Card
       rootClassName="blog-antd-card blog-antd-story-card"
       classNames={BLOG_ANTD_CARD_CLASSNAMES}
+      style={measureText ? measuredText.style : textStyle}
       variant="borderless"
     >
-      <a href={story.url} className="blog-antd-story-card__link">
+      <a
+        ref={measureText ? measuredText.ref : undefined}
+        href={story.url}
+        className="blog-antd-story-card__link"
+      >
         <Flex vertical gap={BLOG_ANTD_SPACE_4}>
           <div className="blog-antd-story-card__index">
             {formatIndex(index)}
@@ -318,8 +344,18 @@ export function StoryGrid(
     readingTooltip?: string | undefined;
   },
 ) {
+  const balancedTextStyles = useBalancedStoryGridTextStyles({
+    posts,
+    summaryVisible,
+  });
+
   return (
-    <div className="blog-antd-story-grid" role="list" aria-label={ariaLabel}>
+    <div
+      ref={balancedTextStyles.ref}
+      className="blog-antd-story-grid"
+      role="list"
+      aria-label={ariaLabel}
+    >
       <Row
         gutter={BLOG_ANTD_ROW_GUTTER_GRID}
         className="blog-antd-story-grid__row"
@@ -329,8 +365,10 @@ export function StoryGrid(
             <div className="blog-antd-story-grid__item">
               <StoryCard
                 index={startIndex + index}
+                measureText={false}
                 story={story}
                 summaryVisible={summaryVisible}
+                textStyle={balancedTextStyles.styleMap.get(story.url)}
                 dateTooltip={dateTooltip}
                 readingTooltip={readingTooltip}
               />
@@ -356,27 +394,57 @@ function SignalStories(
   return (
     <div className="blog-antd-signal-list">
       {posts.map((story, index) => (
-        <a
+        <SignalStoryLink
           key={story.url}
-          href={story.url}
-          className="blog-antd-signal-list__item"
-        >
-          <span className="blog-antd-signal-list__index">
-            {formatIndex(index + 1)}
-          </span>
-          <span className="blog-antd-signal-list__body">
-            <span className="blog-antd-signal-list__title">{story.title}</span>
-            <MetaLine
-              dateIso={story.dateIso}
-              dateLabel={story.dateLabel}
-              readingLabel={story.readingLabel}
-              dateTooltip={dateTooltip}
-              readingTooltip={readingTooltip}
-            />
-          </span>
-        </a>
+          index={index}
+          story={story}
+          dateTooltip={dateTooltip}
+          readingTooltip={readingTooltip}
+        />
       ))}
     </div>
+  );
+}
+
+function SignalStoryLink(
+  {
+    index,
+    story,
+    dateTooltip,
+    readingTooltip,
+  }: {
+    index: number;
+    story: BlogStoryCard;
+    dateTooltip?: string | undefined;
+    readingTooltip?: string | undefined;
+  },
+) {
+  const measuredText = usePretextTextStyle({
+    title: story.title,
+    titleSelector: ".blog-antd-signal-list__title",
+  });
+
+  return (
+    <a
+      ref={measuredText.ref}
+      href={story.url}
+      className="blog-antd-signal-list__item"
+      style={measuredText.style}
+    >
+      <span className="blog-antd-signal-list__index">
+        {formatIndex(index + 1)}
+      </span>
+      <span className="blog-antd-signal-list__body">
+        <span className="blog-antd-signal-list__title">{story.title}</span>
+        <MetaLine
+          dateIso={story.dateIso}
+          dateLabel={story.dateLabel}
+          readingLabel={story.readingLabel}
+          dateTooltip={dateTooltip}
+          readingTooltip={readingTooltip}
+        />
+      </span>
+    </a>
   );
 }
 
@@ -396,16 +464,27 @@ export function FeaturedStory(
   },
 ) {
   const hasSecondaryStories = secondaryStories.length > 0;
+  const measuredText = usePretextTextStyle({
+    summary: story.summary,
+    summarySelector: ".blog-antd-feature-card__summary",
+    title: story.title,
+    titleSelector: ".blog-antd-feature-card__title",
+  });
 
   return (
     <Card
       rootClassName="blog-antd-card blog-antd-feature-card"
       classNames={BLOG_ANTD_CARD_CLASSNAMES}
+      style={measuredText.style}
       variant="borderless"
     >
       <Row gutter={BLOG_ANTD_ROW_GUTTER_SECTION} align="stretch">
         <Col xs={24} xl={hasSecondaryStories ? 15 : 24}>
-          <a href={story.url} className="blog-antd-feature-card__link">
+          <a
+            ref={measuredText.ref}
+            href={story.url}
+            className="blog-antd-feature-card__link"
+          >
             <Flex
               vertical
               gap={BLOG_ANTD_SPACE_4}

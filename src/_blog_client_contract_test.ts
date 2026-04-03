@@ -25,6 +25,9 @@ const postAppSource = Deno.readTextFileSync(
 const archiveAppSource = Deno.readTextFileSync(
   new URL("./blog/client/ArchiveApp.tsx", import.meta.url),
 );
+const pretextStoryCoreSource = Deno.readTextFileSync(
+  new URL("./blog/client/pretext-story-core.ts", import.meta.url),
+);
 const tagAppSource = Deno.readTextFileSync(
   new URL("./blog/client/TagApp.tsx", import.meta.url),
 );
@@ -40,6 +43,7 @@ describe("blog client interaction contracts", () => {
       'className="blog-antd-feature-card__link"',
     );
     assertStringIncludes(commonSource, "const hasSecondaryStories");
+    assertStringIncludes(commonSource, "usePretextTextStyle");
   });
 
   it("keeps the direct-link card styling wired in CSS", () => {
@@ -59,6 +63,19 @@ describe("blog client interaction contracts", () => {
     assertStringIncludes(commonSource, "export function TrustedHtmlSpan(");
     assertStringIncludes(postAppSource, "<TrustedHtmlSection");
     assertStringIncludes(postAppSource, "<TrustedHtmlSpan");
+  });
+
+  it("keeps PostApp outline links stabilized through Pretext helpers", () => {
+    assertStringIncludes(postAppSource, "function OutlineTimelineLink(");
+    assertStringIncludes(
+      postAppSource,
+      'titleSelector: ".blog-antd-outline-link__text"',
+    );
+    assertStringIncludes(blogAntdStyles, ".blog-antd-outline-link__text {");
+    assertStringIncludes(
+      blogAntdStyles,
+      "min-block-size: var(--pretext-title-height, auto);",
+    );
   });
 
   it("keeps archive BackTop optional for non-interactive renders", () => {
@@ -125,5 +142,56 @@ describe("blog client interaction contracts", () => {
   it("keeps skeleton styling wired in CSS", () => {
     assertStringIncludes(blogAntdStyles, ".blog-antd-skeleton");
     assertStringIncludes(blogAntdStyles, "--skeleton-color");
+  });
+
+  it("keeps Pretext-backed text stabilization wired through the blog surfaces", () => {
+    assertStringIncludes(commonSource, "style={measuredText.style}");
+    assertStringIncludes(
+      commonSource,
+      'titleSelector: ".blog-antd-story-card__title"',
+    );
+    assertStringIncludes(
+      archiveAppSource,
+      'titleSelector: ".blog-antd-archive-timeline__title"',
+    );
+    assertStringIncludes(blogAntdStyles, "--pretext-title-height");
+    assertStringIncludes(blogAntdStyles, "--pretext-summary-height");
+  });
+
+  it("keeps StoryGrid row balancing wired through shared Pretext helpers", () => {
+    assertStringIncludes(commonSource, "useBalancedStoryGridTextStyles");
+    assertStringIncludes(commonSource, "measureText={false}");
+    assertStringIncludes(
+      commonSource,
+      "textStyle={balancedTextStyles.styleMap.get(story.url)}",
+    );
+  });
+
+  it("keeps advanced Pretext line-inspection helpers available in the core", () => {
+    assertStringIncludes(
+      pretextStoryCoreSource,
+      "export function layoutTextBlockWithLines",
+    );
+    assertStringIncludes(
+      pretextStoryCoreSource,
+      "export function measureTextBlockWidestLine",
+    );
+    assertStringIncludes(
+      pretextStoryCoreSource,
+      "PREPARED_SEGMENT_TEXT_CACHE",
+    );
+  });
+
+  it("keeps SignalStories title stabilization wired through Pretext", () => {
+    assertStringIncludes(commonSource, "function SignalStoryLink(");
+    assertStringIncludes(
+      commonSource,
+      'titleSelector: ".blog-antd-signal-list__title"',
+    );
+    assertStringIncludes(blogAntdStyles, ".blog-antd-signal-list__title {");
+    assertStringIncludes(
+      blogAntdStyles,
+      "min-block-size: var(--pretext-title-height, auto);",
+    );
   });
 });

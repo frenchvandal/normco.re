@@ -1,213 +1,347 @@
 # Cas d'usage de Pretext pour ce blog
 
-Ce mémo recense des usages concrets de `@chenglou/pretext` pour
-`normco.re`, en tenant compte de l'architecture actuelle (Lume + Deno,
-contenu Markdown multi-langue, client React/Ant Design découplé par routes).
+Ce mémo recense les usages vraiment pertinents de `@chenglou/pretext` pour
+`normco.re`, à partir du code réel du repo et de l'API effectivement disponible
+dans la version actuellement installée (`0.0.4`).
+
+## Verdict rapide
+
+Pretext est pertinent ici, mais pas pour tout.
+
+Les meilleurs usages pour ce repo sont :
+
+1. stabiliser les hauteurs de texte dans les composants React éditoriaux ;
+2. équilibrer les cartes de grille par rangée ;
+3. préparer un futur garde-fou multi-langue en CI, à condition d'avoir un vrai
+   contexte de mesure navigateur/canvas.
+
+Les usages à plus faible intérêt aujourd'hui sont :
+
+1. la virtualisation ;
+2. les skeletons calibrés ;
+3. les layouts magazine complexes pilotés en JS ;
+4. les scénarios qui reposent sur `prepareInlineFlow`, car cette API n'est pas
+   exportée par `@chenglou/pretext@0.0.4`.
 
 ## Pourquoi c'est pertinent ici
 
 Pretext sert à mesurer et mettre en page du texte multi-lignes sans déclencher
-les mesures DOM coûteuses (`getBoundingClientRect`, `offsetHeight`) à chaque
-itération. L'API est pensée en deux temps :
+de mesures DOM coûteuses (`getBoundingClientRect`, `offsetHeight`) à chaque
+itération.
 
-1. `prepare(...)` (pré-calcul, plus coûteux)
-2. `layout(...)` (chemin chaud très rapide)
+Le modèle en deux temps colle bien à ce repo :
 
-Cette séparation colle bien à un blog où un même texte peut être recalculé
-souvent lors des redimensionnements, changements de breakpoint, ou itérations
-sur des grilles/cartes éditoriales.
+1. `prepare(...)` pour le pré-calcul ;
+2. `layout(...)` pour le chemin chaud.
 
-## Cas d'usage intéressants pour `normco.re`
+Sur un blog multilingue, cela est particulièrement utile quand le même texte
+doit être recalculé souvent à cause :
 
-### 1) Cartes d'articles plus stables (archives, tags, home)
+- d'un changement de breakpoint ;
+- d'une variation de langue ;
+- d'une grille de cartes ;
+- d'un rail étroit ;
+- d'un recalcul au `resize`.
 
-Le client Ant Design affiche des résumés variables dans des cartes et timelines
-(`Paragraph`, `Title`, méta-lignes, tags). On peut utiliser Pretext pour
-estimer précisément la hauteur des blocs texte critiques (titre + description)
-par breakpoint avant rendu final, afin de :
+## API réellement disponible dans `0.0.4`
 
-- réduire les sauts de layout visuels,
-- harmoniser les hauteurs de cartes sans heuristiques fragiles,
-- rendre plus prévisible le comportement de skeletons pendant le chargement.
+La version installée expose :
 
-Composants concernés : `StoryCard` (`src/blog/client/common.tsx:265`),
-`ArchiveTimelineItem` (`src/blog/client/ArchiveApp.tsx:45`), et
-`FeaturedStory` (`src/blog/client/common.tsx:383`).
+- `prepare`
+- `prepareWithSegments`
+- `layout`
+- `layoutWithLines`
+- `layoutNextLine`
+- `walkLineRanges`
+- `setLocale`
+- `clearCache`
 
-Impact attendu : navigation plus fluide sur les listes riches en contenu.
+Elle **n'expose pas** `prepareInlineFlow`.
+
+Conséquence pratique : les idées autour des éléments atomiques dans
+`SignalStories` sont intéressantes conceptuellement, mais ne doivent pas être
+considérées comme la prochaine étape naturelle dans l'état actuel du repo.
+
+## Réalité du repo à garder en tête
+
+Le premier mémo supposait implicitement que les surfaces `src/blog/client/`
+étaient déjà le centre de gravité du rendu public. En étudiant le dépôt plus
+complètement, il faut nuancer :
+
+- les composants React/Ant Design existent bien ;
+- ils sont testés et cohérents ;
+- mais les entrypoints client mentionnés dans `ARCHITECTURE.md` (`main.tsx`,
+  `tag-main.tsx`, `post-main.tsx`, `bootstrap.tsx`) ne sont pas présents
+  aujourd'hui dans `src/blog/client/` ;
+- les routes publiques sont encore largement servies par les layouts TSX
+  statiques sous `src/_includes/layouts/` et `src/posts/index.page.tsx`.
+
+Donc :
+
+- Pretext reste utile ;
+- mais surtout pour stabiliser les composants React existants et préparer des
+  garde-fous ;
+- pas encore comme moteur d'une grosse interface client active en production.
+
+## Ce qui est déjà implémenté
+
+Au 4 avril 2026, le repo contient déjà un premier socle solide :
+
+- `usePretextTextStyle(...)` dans `src/blog/client/pretext-story.ts`
+- `useBalancedStoryGridTextStyles(...)` dans
+  `src/blog/client/pretext-story-grid.ts`
+- un noyau pur de mesure/caching dans `src/blog/client/pretext-story-core.ts`
+- un token `--ph-font-measure` dans `src/styles/antd/theme-tokens.css`
+
+Surfaces déjà couvertes :
+
+- `StoryCard`
+- `FeaturedStory`
+- `ArchiveTimelineItem`
+- `StoryGrid` avec équilibrage par rangée
+- `SignalStories` avec stabilisation des titres
+- le rail `PostApp` avec stabilisation runtime des titres de section
+
+Socle bas niveau désormais disponible aussi :
+
+- `layoutTextBlockWithLines(...)` pour inspecter les lignes calculées ;
+- `measureTextBlockWidestLine(...)` pour récupérer la largeur réelle de la ligne
+  la plus large après layout ;
+- cache dédié `prepareWithSegments(...)` avec invalidation par locale.
+
+## Évaluation des cas d'usage initiaux
+
+### 1) Cartes d'articles plus stables
+
+Verdict : **oui, très pertinent**.
+
+C'est le meilleur point d'entrée pour ce repo, et il est maintenant implémenté
+sur les principales surfaces React éditoriales.
+
+Bénéfice réel :
+
+- moins de sauts visuels ;
+- moins d'heuristiques CSS fragiles ;
+- meilleure cohérence entre langues.
+
+Statut : **implémenté**.
 
 ### 2) Virtualisation fiable des longues listes éditoriales
 
-Le README de Pretext met en avant la virtualisation/occlusion comme bénéfice
-principal. Pour les vues archive/tag avec beaucoup d'items, on peut calculer des
-hauteurs textuelles plus fiables en amont et alimenter une stratégie de
-virtualisation sans « guesstimates ».
+Verdict : **à déprioriser**.
 
-`ArchiveTimeline` (`src/blog/client/ArchiveApp.tsx:106`) rend actuellement
-tous les items en DOM sans virtualisation. Chaque `ArchiveTimelineItem` est de
-hauteur variable selon la langue (`fr`, `zh-hans`, `zh-hant`) et la longueur du
-résumé. `layout()` sur `story.title` + `story.summary` à la largeur cible
-fournirait des estimations fiables de hauteur pour un éventuel passage à un
-composant virtualisé.
+L'idée est bonne en général, mais ici le coût est trop élevé pour le bénéfice
+immédiat :
 
-Impact attendu : scroll plus performant et moins d'erreurs de positionnement,
-notamment sur mobile.
+- la surface client archive n'est pas aujourd'hui le chemin public principal ;
+- le volume courant de contenu reste modeste ;
+- la complexité de virtualisation dépasserait largement le gain observé.
+
+Statut : **à garder en réserve, pas en tranche active**.
 
 ### 3) Préservation d'ancrage au scroll lors des changements de contenu
 
-Pretext cite explicitement le cas « éviter les décalages de mise en page quand
-un texte arrive ». C'est utile pour :
+Verdict : **intéressant mais faible ROI immédiat**.
 
-- chargement progressif de sections,
-- variations de longueur liées à la langue (`en`, `fr`, `zh-hans`, `zh-hant`),
-- interactions client qui réinjectent du texte (filtres, variantes de vue).
+Le cas est plus pertinent pour une vraie app client avec filtres, chargement
+progressif, ou blocs injectés dynamiquement. Ce n'est pas encore le profil
+dominant de `normco.re`.
 
-Impact attendu : moins de CLS perçu et meilleure continuité de lecture.
+Statut : **secondaire**.
 
 ### 4) QA typographique multi-langue en build/test
 
-Le repo possède déjà des garde-fous éditoriaux et de typographie. Un usage
-pertinent de Pretext est un script de validation optionnel qui vérifie, en CI,
-que des textes UI critiques (titres de cartes, boutons, labels) ne débordent
-pas au-delà du nombre de lignes prévu selon langue + police + largeur.
+Verdict : **très intéressant à moyen terme**.
 
-Impact attendu : qualité visuelle plus constante sans lancer un navigateur pour
-chaque vérification.
+Le besoin est réel. En revanche, il faut être honnête sur la faisabilité :
+
+- le repo ne dispose pas aujourd'hui d'un contexte canvas fiable dans les tasks
+  Deno standard ;
+- un garde-fou robuste demandera probablement un harness navigateur/headless.
+
+La bonne idée reste donc :
+
+- valider titres de cartes, labels UI, titres du rail, etc. ;
+- mais dans une future étape dédiée de tooling.
+
+Statut : **non implémenté, mais l'un des meilleurs prochains chantiers**.
 
 ### 5) Layouts éditoriaux avancés pour essais visuels
 
-Pretext propose un mode « lignes manuelles » (`layoutWithLines`,
-`layoutNextLine`) utile pour des expérimentations :
+Verdict : **à sortir de la priorité active**.
 
-- texte qui s'écoule autour d'un média,
-- compositions magazine (colonnes à largeur variable),
-- rendu futur vers Canvas/SVG si vous voulez des formats narratifs spéciaux.
+Le site suit aujourd'hui une direction éditoriale suisse sobre et statique.
+Ajouter des compositions non rectangulaires pilotées en JS ouvrirait un chemin
+de rendu parallèle difficile à justifier maintenant.
 
-`src/styles/components/editorial.css` expose déjà des primitives de layout
-éditorial ; `layoutNextLine` permettrait de les prolonger côté JS pour des
-compositions non rectangulaires.
-
-Impact attendu : terrain d'expérimentation éditorial sans casser le socle
-classique du blog.
+Statut : **exploration seulement, pas feuille de route immédiate**.
 
 ### 6) Équilibrage déclaratif des hauteurs dans `StoryGrid`
 
-`StoryGrid` (`src/blog/client/common.tsx:304`) place les cartes en deux
-colonnes via `Row`/`Col` (`xs={24} md={12}`), soit environ 50 % de la largeur
-viewport moins les gouttières. Les cartes d'une même rangée ont des hauteurs
-variables selon la longueur du titre et du résumé.
+Verdict : **oui, très pertinent**.
 
-En appelant `layout(preparedTitle, colWidth, lineHeight)` pour chaque
-`StoryCard` lors d'un `useMemo`, on obtient le `lineCount` précis du titre et
-du résumé à la largeur réelle de la colonne. Cette valeur peut être injectée
-comme propriété CSS personnalisée :
+C'était la suite naturelle après la stabilisation individuelle des cartes.
 
-```tsx
-// dans StoryCard, après measure
-<Card style={{ '--story-title-lines': titleLineCount } as React.CSSProperties}>
-```
+Le repo fait désormais :
 
-Le CSS peut alors stabiliser la hauteur du bloc titre avec
-`min-block-size: calc(var(--story-title-lines) * var(--ph-lh-tight) * 1em)`
-plutôt qu'avec des valeurs arbitraires ou `-webkit-line-clamp`.
+- une mesure unifiée des cartes de la grille ;
+- un équilibrage par rangée ;
+- une diffusion des hauteurs maximales via variables CSS.
 
-Bénéfice supplémentaire : en recalculant au `resize`, les propriétés se
-réajustent au breakpoint courant sans déclencher de reflow supplémentaire.
-
-Impact attendu : rangées de grille parfaitement alignées sans CSS hacky.
+Statut : **implémenté**.
 
 ### 7) Calibration précise des skeletons d'archive selon le contenu précédent
 
-`ArchiveLoadingSkeleton` (`src/blog/client/ArchiveApp.tsx:231`) utilise
-aujourd'hui des valeurs fixes (`rows: 6`). Si les données de la dernière visite
-sont disponibles (cache mémoire, SWR stale-while-revalidate, ou localStorage),
-on peut appliquer `layout()` sur les titres et résumés des N premiers articles
-pour dériver un compte de lignes réaliste par bloc skeleton.
+Verdict : **à déprioriser fortement**.
 
-```ts
-const { lineCount: titleLines } = layout(preparedTitle, containerWidth, lineHeight)
-const { lineCount: summaryLines } = layout(preparedSummary, containerWidth, lineHeight)
-// → <Skeleton paragraph={{ rows: titleLines + summaryLines }} />
-```
+Le composant `ArchiveLoadingSkeleton` existe, mais le flow public actuel
+n'exploite pas vraiment une archive client asynchrone avec transition skeleton
+vers contenu.
 
-Résultat : la transition skeleton → contenu réel ne provoque plus de changement
-de hauteur brutal, ce qui élimine l'une des principales sources de CLS
-perceptible à l'œil sur la page d'archive.
+Tant qu'il n'y a pas de chargement client réel, c'est surtout une idée
+préparatoire.
 
-Impact attendu : skeleton fidèle au contenu attendu, saut de layout quasi nul.
+Statut : **pas intéressant tout de suite**.
 
 ### 8) Validation des titres de section longs dans le rail `PostApp`
 
-Le rail `PostApp` (`src/blog/client/PostApp.tsx:210`) affiche une table des
-matières via `Timeline`, dont les items sont les textes d'en-tête issus du
-Markdown (`data.outline`). La largeur du rail est étroite (environ 240 px sur
-les viewports `xl+`).
+Verdict : **à scinder en deux**.
 
-Un script Deno de validation au build (similaire à l'idée du cas 4, mais
-orienté contenu structuré) peut utiliser `layout()` pour détecter les titres de
-section qui dépassent deux lignes à la largeur du rail et les signaler en CI.
-L'auteur peut alors reformuler ou confier la troncature au CSS en connaissance
-de cause.
+Ce qui est déjà utile :
 
-Cette approche est plus utile que la simple troncature CSS car elle :
-- s'applique au moment de l'édition, pas à l'affichage,
-- préserve les titres d'ancrage (#fragment) intacts,
-- fonctionne pour toutes les langues simultanément.
+- stabiliser runtime les titres du rail `PostApp`.
 
-Impact attendu : rail ToC sans débordement surprise, qualité visuelle stable
-quelle que soit la longueur des sections.
+Ce qui reste à faire plus tard :
+
+- le vrai garde-fou CI multi-langue.
+
+Donc l'idée reste bonne, mais il fallait distinguer :
+
+- le bénéfice runtime immédiat ;
+- la validation build/test, qui dépend d'un futur contexte de mesure fiable.
+
+Statut : **runtime implémenté, CI non implémentée**.
 
 ### 9) Mesure des titres dans `SignalStories` avec des éléments atomiques
 
-`SignalStories` (`src/blog/client/common.tsx:345`) affiche une liste compacte
-de titres dans l'aside de `FeaturedStory`, chacun précédé d'un index numérique
-(`"01"`, `"02"`…). Avec l'API expérimentale `prepareInlineFlow`, le numéro
-d'index peut être traité comme un élément atomique de largeur fixe, et le titre
-comme un run de texte, pour mesurer ensemble l'espace total disponible.
+Verdict : **à reformuler**.
 
-Cela ouvre la voie à :
-- une troncature cohérente sur toutes les langues au même budget de lignes,
-- un calcul précis du « débord » (overflow) si un titre dépasse la hauteur
-  allouée à la liste,
-- une composition future avec d'autres éléments atomiques (icônes, badges).
+Le besoin visuel est légitime, mais la piste initiale n'est pas la bonne
+prochaine étape :
 
-Impact attendu : aside `SignalStories` visuellement homogène sans CSS fragile.
+- `prepareInlineFlow` n'est pas exporté dans `0.0.4` ;
+- la stabilisation simple des titres couvre déjà une bonne partie du bénéfice ;
+- la complexité des éléments atomiques ne se justifie pas encore ici.
 
-## Priorisation recommandée (faible risque → fort levier)
+Statut :
 
-1. **POC carte d'article** : mesurer titre + résumé sur une vue archive/tag
-   (`StoryCard`, `ArchiveTimelineItem`).
-2. **Équilibrage de grille** : injecter `--story-title-lines` dans `StoryGrid`
-   pour stabiliser les hauteurs par rangée.
-3. **Mesure CLS/scroll** : comparer avant/après sur une page longue.
-4. **QA de débordement en CI** : assertions sur chaînes localisées critiques et
-   titres de section longs (rail ToC).
-5. **Skeleton calibré** : exploiter les données de visite précédente pour affiner
-   `rows` du skeleton d'archive.
-6. **Exploration layout avancé** : `layoutNextLine` pour les compositions
-   éditoriales non rectangulaires ; `prepareInlineFlow` pour `SignalStories`.
+- homogénéité visuelle : **implémentée partiellement**
+- approche atomique : **à retirer de la priorité**
 
-## Contraintes d'intégration à garder en tête
+## Cas à retirer ou descendre franchement
 
-- Garder Pretext côté client React uniquement là où la valeur est claire.
-- Éviter de multiplier des chemins de rendu parallèles si les styles CSS/tokens
-  existants suffisent.
-- Profiler sur contenu réel (longueurs `fr`/`zh-*`), pas uniquement sur
-  Lorem Ipsum.
-- Commencer avec un périmètre minimal pour confirmer le ROI avant généralisation.
-- **Pile de polices** : `--ph-font-sans` commence par `-apple-system` et
-  `BlinkMacSystemFont`, qui se comportent comme `system-ui`. Or Pretext signale
-  explicitement que `system-ui` est peu fiable sur macOS. Pour tous les appels
-  à `prepare()`, utiliser un nom de police explicite de la pile, par exemple
-  `"Segoe UI"` ou `Roboto`, plutôt que la valeur brute de `--ph-font-sans`.
-  Une alternative propre serait d'exposer un token `--ph-font-measure` dans
-  `src/styles/antd/theme-tokens.css` pointant vers la première police nommée
-  de la pile.
+Les cas suivants ne devraient plus être présentés comme prioritaires dans ce
+repo :
+
+1. virtualisation archive/tag ;
+2. skeleton calibré ;
+3. layouts magazine pilotés en JS ;
+4. `prepareInlineFlow` pour `SignalStories`.
+
+## Nouveaux cas d'usage intéressants découverts en étudiant l'API
+
+### A) Shrink-wrap mesuré pour la navigation archive
+
+`walkLineRanges()` ouvre une piste crédible pour les tuiles de navigation
+mensuelle ou d'autres petits blocs textuels compacts :
+
+- calculer la largeur réelle de la ligne la plus longue ;
+- en déduire une largeur cible plus élégante ;
+- éviter des `min-inline-size` trop arbitraires.
+
+Ce n'est pas prioritaire tant que l'archive client n'est pas remobilisée, mais
+le cas est plus concret que la virtualisation.
+
+Statut : **socle implémenté**, pas encore branché sur une UI dédiée.
+
+Verdict : **intéressant plus tard**.
+
+### B) Outil de diagnostic éditorial en dev
+
+`layoutWithLines()` peut servir à un outil de debug interne :
+
+- afficher les coupures de ligne prévues pour un titre problématique ;
+- comparer rapidement `fr`, `zh-hans`, `zh-hant`, `en` ;
+- diagnostiquer une régression typographique sans partir à l'aveugle.
+
+Ce ne serait pas une feature utilisateur, mais un très bon outil de travail si
+la QA multi-langue devient plus exigeante.
+
+Le repo dispose maintenant du noyau nécessaire pour cela via
+`layoutTextBlockWithLines(...)`, même si aucun panneau de debug n'est encore
+exposé.
+
+Verdict : **outil dev crédible**.
+
+Statut : **socle implémenté**, UI/outillage dev à faire seulement si le besoin
+se confirme.
+
+### C) Frontière de cache explicite par langue
+
+`setLocale()` est plus important qu'il n'y paraît dans ce repo multilingue :
+
+- il définit une frontière claire de cache entre langues ;
+- il évite de mélanger des préparations de texte entre contextes linguistiques ;
+- il rend l'intégration plus saine si les surfaces React redeviennent actives.
+
+Ce n'est pas un cas d'usage produit, mais c'est une vraie bonne pratique
+d'intégration.
+
+Verdict : **intégration utile, déjà exploitée dans le socle actuel**.
+
+## Priorisation recommandée maintenant
+
+1. **Stabilisation des surfaces React éditoriales** : déjà faite sur les
+   composants les plus rentables.
+2. **Équilibrage de `StoryGrid`** : déjà fait.
+3. **Validation visuelle / CLS** : prochaine meilleure vérification pour mesurer
+   le gain réel.
+4. **QA multi-langue en CI** : meilleur prochain chantier structurel, avec un
+   vrai harness de mesure.
+5. **Outils dev autour de `layoutWithLines()`** : bonne piste si les problèmes
+   de typographie multi-langue deviennent fréquents.
+6. **Le reste** : virtualisation, skeleton, layouts avancés et éléments
+   atomiques restent en réserve.
+
+## Contraintes d'intégration
+
+- garder Pretext côté React là où la valeur est claire ;
+- éviter les chemins de rendu parallèles sans bénéfice produit net ;
+- profiler sur contenu réel `fr` et `zh-*`, pas seulement sur Lorem Ipsum ;
+- conserver une pile de police explicite pour la mesure ;
+- ne pas supposer qu'une idée séduisante dans le README Pretext est
+  automatiquement prioritaire pour `normco.re`.
 
 ## Décision pratique
 
-Si vous cherchez un gain rapide pour ce repo, le meilleur point d'entrée est la
-**stabilisation des hauteurs de texte sur les cartes d'archive/tag** : faible
-complexité, bénéfice UX visible, et aligné avec les points forts explicites de
-Pretext. L'équilibrage déclaratif de `StoryGrid` (cas 6) est la deuxième étape
-naturelle car il réutilise le même `layout()` avec une application CSS légère.
+Le meilleur point d'entrée pour ce repo était bien la **stabilisation des
+hauteurs de texte** sur les surfaces React éditoriales. Cette étape est
+maintenant accomplie, puis prolongée par :
+
+- l'équilibrage de `StoryGrid` ;
+- la stabilisation de `SignalStories` ;
+- la stabilisation runtime du rail `PostApp`.
+
+Le socle couvre aussi maintenant les usages plus avancés de l'API Pretext qui
+étaient vraiment crédibles dans ce repo :
+
+- inspection de lignes avec `layoutWithLines()` ;
+- mesure de la ligne la plus large avec `walkLineRanges()` ;
+- invalidation explicite des caches de préparation segmentée lors des
+  changements de locale.
+
+Le prochain meilleur levier n'est plus le skeleton. C'est plutôt :
+
+1. une validation visuelle/CLS sur les surfaces réellement utilisées ;
+2. un futur garde-fou multi-langue en CI ;
+3. seulement ensuite, des usages plus ambitieux ou plus exotiques.
