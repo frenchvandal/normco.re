@@ -1,10 +1,10 @@
-let jsdomPromise: Promise<typeof import("npm:jsdom@29.0.0")> | undefined;
+let jsdomPromise: Promise<typeof import("npm/jsdom")> | undefined;
 
 export async function getJSDOM(): Promise<
-  (typeof import("npm:jsdom@29.0.0"))["JSDOM"]
+  (typeof import("npm/jsdom"))["JSDOM"]
 > {
   if (!jsdomPromise) {
-    jsdomPromise = import("npm:jsdom@29.0.0");
+    jsdomPromise = import("npm/jsdom");
   }
 
   const { JSDOM } = await jsdomPromise;

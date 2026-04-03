@@ -1,16 +1,15 @@
-// deno-lint-ignore-file no-import-prefix
-import VerticalAlignTopOutlined from "npm:@ant-design/icons@6.1.1/VerticalAlignTopOutlined.js";
-import BackTop from "npm:antd@6.3.4/lib/float-button/BackTop.js";
-import Breadcrumb from "npm:antd@6.3.4/lib/breadcrumb/index.js";
-import Button from "npm:antd@6.3.4/lib/button/index.js";
-import Card from "npm:antd@6.3.4/lib/card/index.js";
-import Col from "npm:antd@6.3.4/lib/col/index.js";
-import Empty from "npm:antd@6.3.4/lib/empty/index.js";
-import Flex from "npm:antd@6.3.4/lib/flex/index.js";
-import Paragraph from "npm:antd@6.3.4/lib/typography/Paragraph.js";
-import Row from "npm:antd@6.3.4/lib/row/index.js";
-import Tag from "npm:antd@6.3.4/lib/tag/index.js";
-import Title from "npm:antd@6.3.4/lib/typography/Title.js";
+import VerticalAlignTopOutlined from "npm/ant-design-icons/VerticalAlignTopOutlined.js";
+import BackTop from "npm/antd/lib/float-button/BackTop.js";
+import Breadcrumb from "npm/antd/lib/breadcrumb/index.js";
+import Button from "npm/antd/lib/button/index.js";
+import Card from "npm/antd/lib/card/index.js";
+import Col from "npm/antd/lib/col/index.js";
+import Empty from "npm/antd/lib/empty/index.js";
+import Flex from "npm/antd/lib/flex/index.js";
+import Paragraph from "npm/antd/lib/typography/Paragraph.js";
+import Row from "npm/antd/lib/row/index.js";
+import Tag from "npm/antd/lib/tag/index.js";
+import Title from "npm/antd/lib/typography/Title.js";
 
 export {
   BackTop,

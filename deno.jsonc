@@ -17,7 +17,11 @@
     },
     "update-deps": {
       "description": "Update declared Deno dependencies and regenerate lock files",
-      "command": "deno outdated --update --latest && (cd src/blog/client && deno outdated --update --latest)"
+      "command": "deno outdated --update --latest && (cd src/blog/client && deno outdated --update --latest) && deno task locks:regen"
+    },
+    "locks:regen": {
+      "description": "Regenerate the root and frontend deno.lock files from the current dependency graphs",
+      "command": "deno run --allow-read --allow-write=deno.lock,deno.lock.bak,src/blog/client/deno.lock,src/blog/client/deno.lock.bak --allow-run scripts/regenerate-locks.ts"
     },
     "check": {
       "description": "Type-check the entire project",

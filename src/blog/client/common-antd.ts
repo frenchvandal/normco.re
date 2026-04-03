@@ -7,6 +7,7 @@ import {
   Row,
   Space,
   Tag,
+  Tooltip,
   Typography,
 } from "npm/antd";
 import {
@@ -31,4 +32,5 @@ export {
   Space,
   Tag,
   Title,
+  Tooltip,
 };

@@ -8,12 +8,12 @@ import {
   Card,
   Flex,
   Paragraph,
-  ReadOutlined,
-  ScheduleOutlined,
+  Skeleton,
   Tag,
   Title,
   VerticalAlignTopOutlined,
 } from "@blog/archive-antd";
+import { MetaLine, StoryTags } from "./common.tsx";
 
 import type { BlogArchiveViewData } from "../view-data.ts";
 import {
@@ -26,9 +26,9 @@ import {
   BLOG_ANTD_BACKTOP_CLASSNAMES,
   BLOG_ANTD_CARD_CLASSNAMES,
   BLOG_ANTD_PRIMARY_BUTTON_ROOT,
+  BLOG_ANTD_SKELETON_CLASSNAMES,
 } from "./antd-semantic.ts";
-import { BLOG_ANTD_SPACE_3, BLOG_ANTD_SPACE_4 } from "./spacing.ts";
-import { StoryTags } from "./common.tsx";
+import { BLOG_ANTD_SPACE_4 } from "./spacing.ts";
 
 type ArchiveMonthNavYearGroup = ArchiveMonthNavModel["years"][number];
 type ArchiveMonthNavAnchorItem = Readonly<{
@@ -48,11 +48,15 @@ function ArchiveTimelineItem(
     indexLabel,
     isLead = false,
     month,
+    dateTooltip,
+    readingTooltip,
   }: {
     story: ArchiveTimelineItemModel["story"];
     indexLabel: string;
     isLead?: boolean | undefined;
     month?: ArchiveTimelineItemModel["month"];
+    dateTooltip?: string | undefined;
+    readingTooltip?: string | undefined;
   },
 ) {
   return (
@@ -73,30 +77,15 @@ function ArchiveTimelineItem(
       )}
       <div className="blog-antd-archive-timeline__item-head">
         <span className="blog-antd-story-card__index">{indexLabel}</span>
-        <Flex
-          wrap
-          gap={BLOG_ANTD_SPACE_3}
+        <MetaLine
+          dateIso={story.dateIso}
+          dateLabel={story.dateLabel}
+          readingLabel={story.readingLabel}
+          separator="·"
           className="blog-antd-archive-timeline__meta"
-        >
-          <span className="blog-antd-meta-pill">
-            <ScheduleOutlined />
-            <time dateTime={story.dateIso}>{story.dateLabel}</time>
-          </span>
-          {story.readingLabel && (
-            <span
-              className="blog-antd-archive-timeline__separator"
-              aria-hidden="true"
-            >
-              ·
-            </span>
-          )}
-          {story.readingLabel && (
-            <span className="blog-antd-meta-pill">
-              <ReadOutlined />
-              <span>{story.readingLabel}</span>
-            </span>
-          )}
-        </Flex>
+          dateTooltip={dateTooltip}
+          readingTooltip={readingTooltip}
+        />
       </div>
       <Title
         level={3}
@@ -118,9 +107,13 @@ function ArchiveTimeline(
   {
     items,
     ariaLabel,
+    dateTooltip,
+    readingTooltip,
   }: {
     items: readonly ArchiveTimelineItemModel[];
     ariaLabel: string;
+    dateTooltip?: string | undefined;
+    readingTooltip?: string | undefined;
   },
 ) {
   if (items.length === 0) {
@@ -142,6 +135,8 @@ function ArchiveTimeline(
               indexLabel={entry.indexLabel}
               isLead={entry.isLead}
               month={entry.month}
+              dateTooltip={dateTooltip}
+              readingTooltip={readingTooltip}
             />
           </li>
         ))}
@@ -233,10 +228,30 @@ function ArchiveMonthNav(
   );
 }
 
+function ArchiveLoadingSkeleton() {
+  return (
+    <div className="blog-antd-archive-skeleton">
+      <Skeleton
+        active
+        title={{ width: "40%" }}
+        paragraph={{ rows: 0 }}
+        classNames={BLOG_ANTD_SKELETON_CLASSNAMES}
+      />
+      <Skeleton
+        active
+        title={false}
+        paragraph={{ rows: 6 }}
+        classNames={BLOG_ANTD_SKELETON_CLASSNAMES}
+      />
+    </div>
+  );
+}
+
 export function ArchiveView(
-  { data, interactive = true }: {
+  { data, interactive = true, loading = false }: {
     data: BlogArchiveViewData;
     interactive?: boolean | undefined;
+    loading?: boolean | undefined;
   },
 ) {
   const archiveLocale = useMemo(
@@ -247,6 +262,16 @@ export function ArchiveView(
     () => buildArchiveViewModel(data.posts, archiveLocale),
     [archiveLocale, data.posts],
   );
+
+  if (loading) {
+    return (
+      <div className="site-page-shell site-page-shell--wide blog-antd-page blog-antd-page--archive">
+        <div className="blog-antd-stack">
+          <ArchiveLoadingSkeleton />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -283,6 +308,8 @@ export function ArchiveView(
                 <ArchiveTimeline
                   items={archiveView.timelineItems}
                   ariaLabel={data.postsAriaLabel}
+                  dateTooltip={data.dateTooltip}
+                  readingTooltip={data.readingTooltip}
                 />
               </div>
             )

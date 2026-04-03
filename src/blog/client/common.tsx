@@ -12,11 +12,13 @@ import {
   Space,
   Tag,
   Title,
+  Tooltip,
 } from "@blog/common-antd";
 import type { BlogBreadcrumbItem, BlogStoryCard } from "../view-data.ts";
 import {
   BLOG_ANTD_CARD_CLASSNAMES,
   BLOG_ANTD_READING_METER_PROGRESS,
+  BLOG_ANTD_TOOLTIP_CLASSNAMES,
 } from "./antd-semantic.ts";
 import {
   BLOG_ANTD_ROW_GUTTER_GRID,
@@ -117,25 +119,65 @@ export function MetaLine(
     dateLabel,
     readingLabel,
     showReadingLabel = true,
+    dateTooltip,
+    readingTooltip,
+    separator,
+    className = "blog-antd-story-card__meta",
   }: {
     dateIso: string;
     dateLabel: string;
     readingLabel?: string | undefined;
     showReadingLabel?: boolean | undefined;
+    dateTooltip?: string | undefined;
+    readingTooltip?: string | undefined;
+    separator?: string | undefined;
+    className?: string | undefined;
   },
 ) {
+  const datePill = (
+    <span className="blog-antd-meta-pill">
+      <ScheduleOutlined aria-hidden="true" />
+      <time dateTime={dateIso}>{dateLabel}</time>
+    </span>
+  );
+  const readingPill = showReadingLabel && readingLabel && (
+    <span className="blog-antd-meta-pill">
+      <ReadOutlined aria-hidden="true" />
+      <span>{readingLabel}</span>
+    </span>
+  );
+  const showSeparator = separator && readingPill;
+
   return (
-    <Flex wrap gap={BLOG_ANTD_SPACE_3} className="blog-antd-story-card__meta">
-      <span className="blog-antd-meta-pill">
-        <ScheduleOutlined />
-        <time dateTime={dateIso}>{dateLabel}</time>
-      </span>
-      {showReadingLabel && readingLabel && (
-        <span className="blog-antd-meta-pill">
-          <ReadOutlined />
-          <span>{readingLabel}</span>
+    <Flex wrap gap={BLOG_ANTD_SPACE_3} className={className}>
+      {dateTooltip
+        ? (
+          <Tooltip
+            title={dateTooltip}
+            classNames={BLOG_ANTD_TOOLTIP_CLASSNAMES}
+          >
+            {datePill}
+          </Tooltip>
+        )
+        : datePill}
+      {showSeparator && (
+        <span
+          className="blog-antd-meta-separator"
+          aria-hidden="true"
+        >
+          {separator}
         </span>
       )}
+      {readingTooltip && readingPill
+        ? (
+          <Tooltip
+            title={readingTooltip}
+            classNames={BLOG_ANTD_TOOLTIP_CLASSNAMES}
+          >
+            {readingPill}
+          </Tooltip>
+        )
+        : readingPill}
     </Flex>
   );
 }
@@ -189,7 +231,11 @@ export function ReadingMeter(
 }
 
 export function HeroLatestLink(
-  { story }: { story: BlogStoryCard },
+  { story, dateTooltip, readingTooltip }: {
+    story: BlogStoryCard;
+    dateTooltip?: string | undefined;
+    readingTooltip?: string | undefined;
+  },
 ) {
   return (
     <div className="blog-antd-hero-note__story">
@@ -201,6 +247,8 @@ export function HeroLatestLink(
         dateIso={story.dateIso}
         dateLabel={story.dateLabel}
         readingLabel={story.readingLabel}
+        dateTooltip={dateTooltip}
+        readingTooltip={readingTooltip}
       />
     </div>
   );
@@ -210,9 +258,14 @@ type StoryCardProps = Readonly<{
   index: number;
   story: BlogStoryCard;
   summaryVisible?: boolean | undefined;
+  dateTooltip?: string | undefined;
+  readingTooltip?: string | undefined;
 }>;
 
-function StoryCard({ index, story, summaryVisible = true }: StoryCardProps) {
+function StoryCard(
+  { index, story, summaryVisible = true, dateTooltip, readingTooltip }:
+    StoryCardProps,
+) {
   return (
     <Card
       rootClassName="blog-antd-card blog-antd-story-card"
@@ -229,6 +282,8 @@ function StoryCard({ index, story, summaryVisible = true }: StoryCardProps) {
             dateLabel={story.dateLabel}
             readingLabel={story.readingLabel}
             showReadingLabel={false}
+            dateTooltip={dateTooltip}
+            readingTooltip={readingTooltip}
           />
           <StoryTags story={story} />
           <Title level={3} className="blog-antd-story-card__title">
@@ -252,11 +307,15 @@ export function StoryGrid(
     ariaLabel,
     summaryVisible = true,
     startIndex = 1,
+    dateTooltip,
+    readingTooltip,
   }: {
     posts: readonly BlogStoryCard[];
     ariaLabel: string;
     summaryVisible?: boolean | undefined;
     startIndex?: number | undefined;
+    dateTooltip?: string | undefined;
+    readingTooltip?: string | undefined;
   },
 ) {
   return (
@@ -272,6 +331,8 @@ export function StoryGrid(
                 index={startIndex + index}
                 story={story}
                 summaryVisible={summaryVisible}
+                dateTooltip={dateTooltip}
+                readingTooltip={readingTooltip}
               />
             </div>
           </Col>
@@ -282,7 +343,11 @@ export function StoryGrid(
 }
 
 function SignalStories(
-  { posts }: { posts: readonly BlogStoryCard[] },
+  { posts, dateTooltip, readingTooltip }: {
+    posts: readonly BlogStoryCard[];
+    dateTooltip?: string | undefined;
+    readingTooltip?: string | undefined;
+  },
 ) {
   if (posts.length === 0) {
     return null;
@@ -305,6 +370,8 @@ function SignalStories(
               dateIso={story.dateIso}
               dateLabel={story.dateLabel}
               readingLabel={story.readingLabel}
+              dateTooltip={dateTooltip}
+              readingTooltip={readingTooltip}
             />
           </span>
         </a>
@@ -318,10 +385,14 @@ export function FeaturedStory(
     story,
     secondaryStories,
     title,
+    dateTooltip,
+    readingTooltip,
   }: {
     story: BlogStoryCard;
     secondaryStories: readonly BlogStoryCard[];
     title: string;
+    dateTooltip?: string | undefined;
+    readingTooltip?: string | undefined;
   },
 ) {
   const hasSecondaryStories = secondaryStories.length > 0;
@@ -354,6 +425,8 @@ export function FeaturedStory(
                   dateIso={story.dateIso}
                   dateLabel={story.dateLabel}
                   readingLabel={story.readingLabel}
+                  dateTooltip={dateTooltip}
+                  readingTooltip={readingTooltip}
                 />
                 {story.summary && (
                   <Paragraph className="blog-antd-feature-card__summary">
@@ -372,7 +445,11 @@ export function FeaturedStory(
         {hasSecondaryStories && (
           <Col xs={24} xl={9}>
             <div className="blog-antd-feature-card__aside">
-              <SignalStories posts={secondaryStories} />
+              <SignalStories
+                posts={secondaryStories}
+                dateTooltip={dateTooltip}
+                readingTooltip={readingTooltip}
+              />
             </div>
           </Col>
         )}

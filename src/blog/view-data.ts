@@ -56,6 +56,8 @@ export type BlogArchiveViewData = Readonly<{
   emptyStateMessage: string;
   emptyStateActionHref: string;
   emptyStateActionLabel: string;
+  dateTooltip: string;
+  readingTooltip: string;
 }>;
 
 export type BlogTagViewData = Readonly<{
@@ -70,6 +72,8 @@ export type BlogTagViewData = Readonly<{
   archiveLinkLabel: string;
   posts: readonly BlogStoryCard[];
   emptyStateMessage: string;
+  dateTooltip: string;
+  readingTooltip: string;
 }>;
 
 export type BlogPostViewData = Readonly<{
@@ -102,6 +106,8 @@ export type BlogPostViewData = Readonly<{
   codeCopyLabel?: string;
   codeCopyFeedback?: string;
   codeCopyFailedFeedback?: string;
+  dateTooltip: string;
+  readingTooltip: string;
 }>;
 
 export type BlogAppViewData =

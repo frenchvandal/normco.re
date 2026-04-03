@@ -136,6 +136,8 @@ export function PostView(
                       dateIso={data.publishedDateIso}
                       dateLabel={data.publishedDateLabel}
                       readingLabel={data.readingTimeLabel}
+                      dateTooltip={data.dateTooltip}
+                      readingTooltip={data.readingTooltip}
                     />
                     {data.summaryItems.length > 0 && (
                       <div className="blog-antd-post-metrics">

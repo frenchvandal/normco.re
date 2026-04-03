@@ -13,6 +13,12 @@ const postAntdSource = Deno.readTextFileSync(
 const postAntdBuild = Deno.readTextFileSync(
   new URL("./blog/client/post-antd.build.ts", import.meta.url),
 );
+const archiveAntdSource = Deno.readTextFileSync(
+  new URL("./blog/client/archive-antd.ts", import.meta.url),
+);
+const archiveAntdBuild = Deno.readTextFileSync(
+  new URL("./blog/client/archive-antd.build.ts", import.meta.url),
+);
 const postAppSource = Deno.readTextFileSync(
   new URL("./blog/client/PostApp.tsx", import.meta.url),
 );
@@ -73,5 +79,51 @@ describe("blog client interaction contracts", () => {
       tagAppSource,
       /return \(\n\s*<>\n\s*<div className="site-page-shell[\s\S]*<\/div>\n\s*{interactive && \(/,
     );
+  });
+
+  it("keeps the archive Ant Design build alias aligned with its source exports", () => {
+    assertStringIncludes(archiveAntdSource, "Skeleton,");
+    assertStringIncludes(archiveAntdBuild, "Skeleton,");
+    assertStringIncludes(archiveAntdBuild, "import Skeleton");
+  });
+
+  it("wires Tooltip around meta pills with accessible structure", () => {
+    assertStringIncludes(commonSource, "title={dateTooltip}");
+    assertStringIncludes(commonSource, "title={readingTooltip}");
+    assertStringIncludes(commonSource, 'aria-hidden="true"');
+  });
+
+  it("keeps Skeleton loading state available in archive view", () => {
+    assertStringIncludes(archiveAppSource, "ArchiveLoadingSkeleton");
+    assertStringIncludes(archiveAppSource, "loading = false");
+    assertStringIncludes(archiveAppSource, "if (loading)");
+  });
+
+  it("propagates dateTooltip and readingTooltip through archive view", () => {
+    assertMatch(
+      archiveAppSource,
+      /function ArchiveTimelineItem\([\s\S]*dateTooltip,\n\s*readingTooltip,[\s\S]*<MetaLine[\s\S]*dateTooltip={dateTooltip}[\s\S]*readingTooltip={readingTooltip}/,
+    );
+    assertMatch(
+      archiveAppSource,
+      /function ArchiveTimeline\([\s\S]*dateTooltip,\n\s*readingTooltip,[\s\S]*<ArchiveTimelineItem[\s\S]*dateTooltip={dateTooltip}[\s\S]*readingTooltip={readingTooltip}/,
+    );
+    assertMatch(
+      archiveAppSource,
+      /<ArchiveTimeline[\s\S]*dateTooltip={data.dateTooltip}[\s\S]*readingTooltip={data.readingTooltip}/,
+    );
+  });
+
+  it("keeps tooltip styling wired in CSS", () => {
+    assertStringIncludes(blogAntdStyles, ".blog-antd-tooltip");
+    assertStringIncludes(
+      blogAntdStyles,
+      ".blog-antd-tooltip .ant-tooltip-arrow::before",
+    );
+  });
+
+  it("keeps skeleton styling wired in CSS", () => {
+    assertStringIncludes(blogAntdStyles, ".blog-antd-skeleton");
+    assertStringIncludes(blogAntdStyles, "--skeleton-color");
   });
 });

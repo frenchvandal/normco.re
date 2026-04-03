@@ -95,7 +95,13 @@ export function TagView(
                   >
                     {data.archiveLinkLabel}
                   </Button>
-                  {latestStory && <HeroLatestLink story={latestStory} />}
+                  {latestStory && (
+                    <HeroLatestLink
+                      story={latestStory}
+                      dateTooltip={data.dateTooltip}
+                      readingTooltip={data.readingTooltip}
+                    />
+                  )}
                 </Flex>
               </Col>
             </Row>
@@ -109,6 +115,8 @@ export function TagView(
                     story={featuredStory}
                     secondaryStories={secondaryStories}
                     title={data.postsCountLabel}
+                    dateTooltip={data.dateTooltip}
+                    readingTooltip={data.readingTooltip}
                   />
                 )}
                 {gridStories.length > 0 && (
@@ -116,6 +124,8 @@ export function TagView(
                     posts={gridStories}
                     ariaLabel={data.postsAriaLabel}
                     startIndex={gridStartIndex}
+                    dateTooltip={data.dateTooltip}
+                    readingTooltip={data.readingTooltip}
                   />
                 )}
               </>

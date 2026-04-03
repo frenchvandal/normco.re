@@ -4,15 +4,11 @@ import {
   Card,
   Flex,
   FloatButton,
+  Skeleton,
   Tag,
-  Timeline,
   Typography,
 } from "npm/antd";
-import {
-  ReadOutlined,
-  ScheduleOutlined,
-  VerticalAlignTopOutlined,
-} from "npm/ant-design-icons";
+import { VerticalAlignTopOutlined } from "npm/ant-design-icons";
 
 const { Paragraph, Title } = Typography;
 const BackTop = FloatButton.BackTop;
@@ -24,10 +20,8 @@ export {
   Card,
   Flex,
   Paragraph,
-  ReadOutlined,
-  ScheduleOutlined,
+  Skeleton,
   Tag,
-  Timeline,
   Title,
   VerticalAlignTopOutlined,
 };

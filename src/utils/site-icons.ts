@@ -1,23 +1,24 @@
-import ArrowRightOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/ArrowRightOutlined.js";
-import CheckOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/CheckOutlined.js";
-import CloseOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/CloseOutlined.js";
-import CopyOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/CopyOutlined.js";
-import DesktopOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/DesktopOutlined.js";
-import DownOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/DownOutlined.js";
-import DownloadOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/DownloadOutlined.js";
-import EnvironmentOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/EnvironmentOutlined.js";
-import ExclamationCircleTwoToneModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/ExclamationCircleTwoTone.js";
-import EyeOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/EyeOutlined.js";
-import GithubFilledModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/GithubFilled.js";
-import InfoCircleTwoToneModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/InfoCircleTwoTone.js";
-import MenuOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/MenuOutlined.js";
-import MoonFilledModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/MoonFilled.js";
-import ProfileOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/ProfileOutlined.js";
-import SearchOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/SearchOutlined.js";
-import SunFilledModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/SunFilled.js";
-import TranslationOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/TranslationOutlined.js";
-import UnorderedListOutlinedModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/UnorderedListOutlined.js";
-import WechatFilledModule from "npm:@ant-design/icons-svg@4.4.2/lib/asn/WechatFilled.js";
+import ArrowRightOutlinedModule from "npm/ant-design-icons-svg/ArrowRightOutlined.js";
+import CheckOutlinedModule from "npm/ant-design-icons-svg/CheckOutlined.js";
+import CloseOutlinedModule from "npm/ant-design-icons-svg/CloseOutlined.js";
+import CopyOutlinedModule from "npm/ant-design-icons-svg/CopyOutlined.js";
+import DesktopOutlinedModule from "npm/ant-design-icons-svg/DesktopOutlined.js";
+import DownOutlinedModule from "npm/ant-design-icons-svg/DownOutlined.js";
+import DownloadOutlinedModule from "npm/ant-design-icons-svg/DownloadOutlined.js";
+import EnvironmentOutlinedModule from "npm/ant-design-icons-svg/EnvironmentOutlined.js";
+import ExclamationCircleTwoToneModule from "npm/ant-design-icons-svg/ExclamationCircleTwoTone.js";
+import EyeOutlinedModule from "npm/ant-design-icons-svg/EyeOutlined.js";
+import GithubFilledModule from "npm/ant-design-icons-svg/GithubFilled.js";
+import InfoCircleTwoToneModule from "npm/ant-design-icons-svg/InfoCircleTwoTone.js";
+import MenuOutlinedModule from "npm/ant-design-icons-svg/MenuOutlined.js";
+import MoonFilledModule from "npm/ant-design-icons-svg/MoonFilled.js";
+import ProfileOutlinedModule from "npm/ant-design-icons-svg/ProfileOutlined.js";
+import SearchOutlinedModule from "npm/ant-design-icons-svg/SearchOutlined.js";
+import SunFilledModule from "npm/ant-design-icons-svg/SunFilled.js";
+import TranslationOutlinedModule from "npm/ant-design-icons-svg/TranslationOutlined.js";
+import UnorderedListOutlinedModule from "npm/ant-design-icons-svg/UnorderedListOutlined.js";
+import WechatFilledModule from "npm/ant-design-icons-svg/WechatFilled.js";
+
 import { escapeHtml } from "./html.ts";
 
 export type IconResolver = (

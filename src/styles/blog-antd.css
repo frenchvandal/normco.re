@@ -1091,7 +1091,8 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .blog-antd-archive-timeline__separator {
+  .blog-antd-archive-timeline__separator,
+  .blog-antd-meta-separator {
     opacity: var(--ph-archive-timeline-separator-opacity);
   }
 
@@ -1722,5 +1723,70 @@
     .blog-antd-post-summary {
       min-block-size: 100%;
     }
+  }
+
+  /* Skeleton loading states */
+  .blog-antd-skeleton {
+    --skeleton-color: color-mix(
+      in oklch,
+      var(--ph-color-canvas-inset) 88%,
+      var(--ph-color-border-muted)
+    );
+    --skeleton-to-color: color-mix(
+      in oklch,
+      var(--ph-color-canvas-subtle) 72%,
+      var(--ph-color-canvas-default)
+    );
+  }
+
+  .blog-antd-skeleton .ant-skeleton-title,
+  .blog-antd-skeleton .ant-skeleton-paragraph > li {
+    background: linear-gradient(
+      90deg,
+      var(--skeleton-color) 25%,
+      var(--skeleton-to-color) 37%,
+      var(--skeleton-color) 63%
+    );
+    background-size: 400% 100%;
+  }
+
+  .blog-antd-skeleton .ant-skeleton-title {
+    border-radius: var(--ph-radius-md);
+  }
+
+  .blog-antd-skeleton .ant-skeleton-paragraph > li {
+    border-radius: var(--ph-radius-md);
+  }
+
+  /* Tooltip */
+  .blog-antd-tooltip .ant-tooltip-inner,
+  .blog-antd-tooltip__container .ant-tooltip-inner {
+    background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 96%,
+      var(--ph-color-accent-fg)
+    );
+    border: var(--ph-border-hairline) solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 16%,
+        var(--ph-color-border-default)
+      );
+    border-radius: var(--ph-radius-md);
+    color: var(--ph-color-fg-default);
+    font-family: var(--ph-font-mono);
+    font-size: var(--ph-text-xs);
+    font-weight: 600;
+    letter-spacing: var(--ph-letter-spacing-wide);
+    padding: var(--ph-space-2) var(--ph-space-3);
+    text-transform: uppercase;
+  }
+
+  .blog-antd-tooltip .ant-tooltip-arrow::before {
+    background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 96%,
+      var(--ph-color-accent-fg)
+    );
   }
 }

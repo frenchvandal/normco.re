@@ -1,5 +1,5 @@
-import React from "npm/react";
-import { extractStyle } from "npm:@ant-design/static-style-extract@2.1.0";
+import { dirname, fromFileUrl, join } from "@std/path";
+import { extractStyle } from "npm/ant-design-static-style-extract";
 import {
   Breadcrumb,
   Button,
@@ -19,7 +19,7 @@ import {
   Timeline,
   Typography,
 } from "npm/antd";
-import { dirname, fromFileUrl, join } from "@std/path";
+import React from "npm/react";
 
 import { BLOG_ANTD_THEME } from "../src/blog/client/theme.ts";
 

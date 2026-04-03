@@ -49,3 +49,15 @@ export const BLOG_ANTD_READING_METER_PROGRESS = {
     "100%": "var(--ph-color-accent-fg)",
   },
 } as const;
+
+export const BLOG_ANTD_SKELETON_CLASSNAMES = {
+  root: "blog-antd-skeleton",
+  title: "blog-antd-skeleton__title",
+  paragraph: "blog-antd-skeleton__paragraph",
+} as const;
+
+export const BLOG_ANTD_TOOLTIP_CLASSNAMES = {
+  root: "blog-antd-tooltip",
+  container: "blog-antd-tooltip__container",
+  arrow: "blog-antd-tooltip__arrow",
+} as const;

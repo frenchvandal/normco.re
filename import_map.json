@@ -1,11 +1,5 @@
 {
   "imports": {
-    "jsr/miscellaneous-commitlint": "jsr:@miscellaneous/commitlint@^0.3.1",
-    "npm/react": "npm:react@19.2.4",
-    "npm/antd": "npm:antd@6.3.5",
-    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/",
-    "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
-    "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",
     "@std/assert": "jsr:@std/assert@^1.0.19",
     "@std/async": "jsr:@std/async@^1.2.0",
     "@std/async/": "jsr:/@std/async@^1.2.0/",
@@ -25,9 +19,41 @@
     "@std/uuid/": "jsr:/@std/uuid@^1.1.0/",
     "@std/yaml": "jsr:@std/yaml@^1.0.12",
     "@std/xml": "jsr:@std/xml@^0.1.0",
-    "npm/faker-js": "npm:@faker-js/faker@^10.4.0",
+    "jsr/miscellaneous-commitlint": "jsr:@miscellaneous/commitlint@^0.3.1",
+
+    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.2/",
+    "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",
+    "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
+
+    "npm/ant-design-icons-svg": "npm:@ant-design/icons-svg@4.4.2",
+    "npm/ant-design-icons-svg/ArrowRightOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/ArrowRightOutlined.js",
+    "npm/ant-design-icons-svg/CheckOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/CheckOutlined.js",
+    "npm/ant-design-icons-svg/CloseOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/CloseOutlined.js",
+    "npm/ant-design-icons-svg/CopyOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/CopyOutlined.js",
+    "npm/ant-design-icons-svg/DesktopOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/DesktopOutlined.js",
+    "npm/ant-design-icons-svg/DownloadOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/DownloadOutlined.js",
+    "npm/ant-design-icons-svg/DownOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/DownOutlined.js",
+    "npm/ant-design-icons-svg/EnvironmentOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/EnvironmentOutlined.js",
+    "npm/ant-design-icons-svg/ExclamationCircleTwoTone.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/ExclamationCircleTwoTone.js",
+    "npm/ant-design-icons-svg/EyeOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/EyeOutlined.js",
+    "npm/ant-design-icons-svg/GithubFilled.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/GithubFilled.js",
+    "npm/ant-design-icons-svg/InfoCircleTwoTone.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/InfoCircleTwoTone.js",
+    "npm/ant-design-icons-svg/MenuOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/MenuOutlined.js",
+    "npm/ant-design-icons-svg/MoonFilled.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/MoonFilled.js",
+    "npm/ant-design-icons-svg/ProfileOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/ProfileOutlined.js",
+    "npm/ant-design-icons-svg/SearchOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/SearchOutlined.js",
+    "npm/ant-design-icons-svg/SunFilled.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/SunFilled.js",
+    "npm/ant-design-icons-svg/TranslationOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/TranslationOutlined.js",
+    "npm/ant-design-icons-svg/UnorderedListOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/UnorderedListOutlined.js",
+    "npm/ant-design-icons-svg/WechatFilled.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/WechatFilled.js",
+    "npm/ant-design-static-style-extract": "npm:@ant-design/static-style-extract@2.1.0",
+    "npm/antd": "npm:antd@6.3.5",
     "npm/date-fns/locale": "npm:date-fns@4.1.0/locale",
-    "shiki": "./plugins/shiki/runtime.ts",
-    "npm/shiki": "npm:shiki@4.0.2"
+    "npm/faker-js": "npm:@faker-js/faker@^10.4.0",
+    "npm/jsdom": "npm:jsdom@29.0.1",
+    "npm/react": "npm:react@19.2.4",
+    "npm/shiki": "npm:shiki@4.0.2",
+
+    "shiki": "./plugins/shiki/runtime.ts"
   }
 }
