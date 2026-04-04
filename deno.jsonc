@@ -21,7 +21,7 @@
     },
     "pretext:harness:ci": {
       "description": "Run the Pretext visual harness with the extra network and filesystem permissions required for GitHub job summaries and artifact uploads",
-      "command": "deno task build && mkdir -p .tmp/pretext-harness/tmp && TMPDIR=$PWD/.tmp/pretext-harness/tmp PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run --allow-env --allow-net --allow-read --allow-run --allow-write --allow-sys=osRelease,cpus,homedir scripts/pretext-visual-harness.ts"
+      "command": "deno task build && mkdir -p .tmp/pretext-harness/tmp && TMPDIR=$PWD/.tmp/pretext-harness/tmp PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run --allow-env --allow-net --allow-read --allow-run --allow-write --allow-sys=osRelease,cpus,homedir,uid scripts/pretext-visual-harness.ts"
     },
     "serve": {
       "description": "Run and serve the site for development",
