@@ -12,6 +12,7 @@ import {
   clearPretextMeasurementCaches,
   EMPTY_MEASURED_TEXT_STATE,
   EMPTY_TEXT_MEASUREMENT,
+  isPretextRuntimeEnabled,
   type MeasuredTextState,
   type MeasuredTextStyleVariables,
   measureTextBlock,
@@ -92,6 +93,7 @@ export function usePretextTextStyle(
   ref: (element: HTMLElement | null) => void;
   style: MeasuredTextStyle;
 }> {
+  const pretextEnabled = !disabled && isPretextRuntimeEnabled();
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [measurements, setMeasurements] = useState<MeasuredTextState>(
     EMPTY_MEASURED_TEXT_STATE,
@@ -99,7 +101,7 @@ export function usePretextTextStyle(
 
   const updateMeasurements = useEffectEvent(
     (currentContainer: HTMLElement | null) => {
-      if (disabled || !currentContainer) {
+      if (!pretextEnabled || !currentContainer) {
         if (
           !areTextMeasurementsEqual(measurements, EMPTY_MEASURED_TEXT_STATE)
         ) {
@@ -126,16 +128,23 @@ export function usePretextTextStyle(
   );
 
   useEffect(() => {
-    if (disabled) {
+    if (!pretextEnabled) {
       updateMeasurements(null);
       return;
     }
 
     updateMeasurements(container);
-  }, [container, disabled, summary, summarySelector, title, titleSelector]);
+  }, [
+    container,
+    pretextEnabled,
+    summary,
+    summarySelector,
+    title,
+    titleSelector,
+  ]);
 
   useEffect(() => {
-    if (disabled || !container || typeof ResizeObserver !== "function") {
+    if (!pretextEnabled || !container || typeof ResizeObserver !== "function") {
       return;
     }
 
@@ -155,10 +164,10 @@ export function usePretextTextStyle(
     measuredElements.forEach((element) => observer.observe(element));
 
     return () => observer.disconnect();
-  }, [container, disabled, summarySelector, titleSelector]);
+  }, [container, pretextEnabled, summarySelector, titleSelector]);
 
   useEffect(() => {
-    if (disabled || !container) {
+    if (!pretextEnabled || !container) {
       return;
     }
 
@@ -166,7 +175,7 @@ export function usePretextTextStyle(
       clearPretextMeasurementCaches(PRETEXT_ENGINE);
       updateMeasurements(container);
     });
-  }, [container, disabled]);
+  }, [container, pretextEnabled]);
 
   return {
     ref: setContainer,

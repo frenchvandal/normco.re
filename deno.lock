@@ -66,6 +66,7 @@
     "npm:@actions/core@3.0.0": "3.0.0",
     "npm:@ant-design/icons-svg@4.4.2": "4.4.2",
     "npm:@ant-design/static-style-extract@2.1.0": "2.1.0_antd@6.3.5__react@19.2.4__react-dom@19.2.4___react@19.2.4__date-fns@4.1.0_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0",
+    "npm:@chenglou/pretext@0.0.4": "0.0.4",
     "npm:@faker-js/faker@^10.4.0": "10.4.0",
     "npm:@resvg/resvg-wasm@2.6.2": "2.6.2",
     "npm:antd@6.3.5": "6.3.5_react@19.2.4_react-dom@19.2.4__react@19.2.4_date-fns@4.1.0",
@@ -87,6 +88,7 @@
     "npm:postcss@8.5.8": "8.5.8",
     "npm:purgecss-from-html@8.0.0": "8.0.0",
     "npm:purgecss@8.0.0": "8.0.0",
+    "npm:react-dom@19.2.4": "19.2.4_react@19.2.4",
     "npm:react@19.2.4": "19.2.4",
     "npm:remove-markdown@0.6.3": "0.6.3",
     "npm:schema-dts@1.1.5": "1.1.5",
@@ -411,6 +413,9 @@
         "css-tree"
       ],
       "bin": true
+    },
+    "@chenglou/pretext@0.0.4": {
+      "integrity": "sha512-FnPAFMid1/p1j2V2gRPUVBarGUIb2PhkkC9YNnTOfPtTDgHKh8siO8PP9pCxpFfYlcodWPJpE1UbSHGQqt8pQQ=="
     },
     "@csstools/color-helpers@6.0.2": {
       "integrity": "sha512-LMGQLS9EuADloEFkcTBR3BwV/CGHV7zyDxVRtVDTwdI2Ca4it0CCVTT9wCkxSgokjE5Ho41hEPgb8OEUwoXr6Q=="
@@ -2637,6 +2642,7 @@
       "npm:date-fns@4.1.0",
       "npm:jsdom@29.0.1",
       "npm:playwright@1.59.1",
+      "npm:react-dom@19.2.4",
       "npm:react@19.2.4",
       "npm:shiki@4.0.2"
     ]

@@ -20,8 +20,24 @@
       "command": "deno task build && mkdir -p .tmp/pretext-harness/tmp && TMPDIR=$PWD/.tmp/pretext-harness/tmp PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run --allow-env --allow-net=127.0.0.1,localhost --allow-read --allow-run --allow-write=.tmp/pretext-harness --allow-sys=osRelease,cpus,homedir scripts/pretext-visual-harness.ts"
     },
     "pretext:harness:ci": {
-      "description": "Run the Pretext visual harness with the extra network and filesystem permissions required for GitHub job summaries and artifact uploads",
+      "description": "Run the single-variant Pretext visual harness with the extra permissions required for GitHub job summaries",
       "command": "deno task build && mkdir -p .tmp/pretext-harness/tmp && TMPDIR=$PWD/.tmp/pretext-harness/tmp PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run --allow-env --allow-net --allow-read --allow-run --allow-write --allow-sys=osRelease,cpus,homedir,uid scripts/pretext-visual-harness.ts"
+    },
+    "pretext:harness:compare": {
+      "description": "Build the site and compare the headless render diagnostics with Pretext enabled versus disabled",
+      "command": "deno task build && mkdir -p .tmp/pretext-harness-compare/tmp && TMPDIR=$PWD/.tmp/pretext-harness-compare/tmp PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run --allow-env --allow-net=127.0.0.1,localhost --allow-read --allow-run --allow-write=.tmp/pretext-harness-compare --allow-sys=osRelease,cpus,homedir scripts/pretext-visual-harness-compare.ts"
+    },
+    "pretext:harness:compare:ci": {
+      "description": "Run the Pretext comparison harness with the extra permissions required for GitHub job summaries",
+      "command": "deno task build && mkdir -p .tmp/pretext-harness-compare/tmp && TMPDIR=$PWD/.tmp/pretext-harness-compare/tmp PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run --allow-env --allow-net --allow-read --allow-run --allow-write --allow-sys=osRelease,cpus,homedir,uid scripts/pretext-visual-harness-compare.ts"
+    },
+    "pretext:react-harness": {
+      "description": "Run a deterministic React-focused Pretext A/B harness against the measurement hooks themselves",
+      "command": "deno run --allow-env --allow-read --allow-write=.tmp/pretext-react-harness scripts/pretext-react-harness.tsx"
+    },
+    "pretext:react-harness:ci": {
+      "description": "Run the React-focused Pretext harness with the extra permissions required for GitHub job summary publishing",
+      "command": "deno run --allow-env --allow-read --allow-write=.tmp/pretext-react-harness --allow-sys=uid scripts/pretext-react-harness.tsx"
     },
     "serve": {
       "description": "Run and serve the site for development",
@@ -41,11 +57,11 @@
     },
     "test": {
       "description": "Run unit and integration tests",
-      "command": "deno test --allow-env=VSCODE_TEXTMATE_DEBUG --allow-read --allow-write=.tmp/deno-tests"
+      "command": "deno test --allow-env=VSCODE_TEXTMATE_DEBUG,NODE_ENV,GITHUB_ACTIONS,GITHUB_STEP_SUMMARY,GITHUB_WORKFLOW,GITHUB_RUN_ID,GITHUB_SERVER_URL,RUNNER_ENVIRONMENT --allow-read --allow-write=.tmp/deno-tests"
     },
     "test:coverage": {
       "description": "Run tests with coverage output written to .tmp/deno-coverage",
-      "command": "deno test --coverage=.tmp/deno-coverage --allow-env=VSCODE_TEXTMATE_DEBUG --allow-read --allow-write=.tmp/deno-tests"
+      "command": "deno test --coverage=.tmp/deno-coverage --allow-env=VSCODE_TEXTMATE_DEBUG,NODE_ENV,GITHUB_ACTIONS,GITHUB_STEP_SUMMARY,GITHUB_WORKFLOW,GITHUB_RUN_ID,GITHUB_SERVER_URL,RUNNER_ENVIRONMENT --allow-read --allow-write=.tmp/deno-tests"
     },
     "coverage:summary": {
       "description": "Print a summary from the latest Deno coverage run",

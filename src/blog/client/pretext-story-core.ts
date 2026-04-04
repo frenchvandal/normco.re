@@ -123,6 +123,7 @@ export const PRETEXT_ENGINE = {
 } as const satisfies PretextSegmentEngine;
 
 export const PRETEXT_MEASURE_FONT_TOKEN = "--ph-font-measure";
+export const PRETEXT_DISABLE_GLOBAL_FLAG = "__PH_DISABLE_PRETEXT__" as const;
 
 const FALLBACK_MEASURE_FONT =
   '"Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif';
@@ -136,6 +137,16 @@ const PRETEXT_LOCALE_STATE = new WeakMap<PretextEngine, string | undefined>();
 function normalizeLocale(locale?: string): string | undefined {
   const normalized = locale?.trim();
   return normalized === "" ? undefined : normalized;
+}
+
+export function isPretextRuntimeEnabled(
+  globalObject:
+    | Partial<Record<typeof PRETEXT_DISABLE_GLOBAL_FLAG, boolean>>
+    | undefined = globalThis as Partial<
+      Record<typeof PRETEXT_DISABLE_GLOBAL_FLAG, boolean>
+    >,
+): boolean {
+  return globalObject?.[PRETEXT_DISABLE_GLOBAL_FLAG] !== true;
 }
 
 export function clearPretextMeasurementCaches(

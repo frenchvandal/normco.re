@@ -11,6 +11,10 @@ export type GitHubActionsEnvironmentDiagnostics = Readonly<{
   runnerEnvironment: string | undefined;
 }>;
 
+type GitHubJobSummaryWriteOptions = Readonly<{
+  mode?: "append" | "replace";
+}>;
+
 function hasNonEmptyEnv(
   env: EnvReader,
   name: string,
@@ -102,6 +106,7 @@ export function canWriteGitHubJobSummary(
 export async function writeGitHubJobSummary(
   markdown: string,
   env: EnvReader = Deno.env,
+  options: GitHubJobSummaryWriteOptions = {},
 ): Promise<boolean> {
   await logGitHubActionsEnvironmentDiagnostics("job-summary", env);
 
@@ -117,10 +122,14 @@ export async function writeGitHubJobSummary(
   }
 
   const { info, summary } = await import("npm/actions-core");
+  const mode = options.mode ?? "replace";
 
-  await summary.clear();
+  if (mode === "replace") {
+    await summary.clear();
+  }
+
   summary.addRaw(markdown, true);
   await summary.write();
-  info("[github-actions] job-summary: wrote GitHub job summary");
+  info(`[github-actions] job-summary: wrote GitHub job summary (${mode})`);
   return true;
 }

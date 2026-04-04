@@ -28,14 +28,26 @@ jobs:
       - name: Install Playwright Chromium for Pretext harness
         run: deno task pretext:harness:install
 
-      - name: Run Pretext visual harness
-        run: deno task pretext:harness:ci
+      - name: Run Pretext visual harness comparison
+        run: deno task pretext:harness:compare:ci
 
-      - name: Upload Pretext harness artifact
+      - name: Run Pretext React harness
+        run: deno task pretext:react-harness:ci
+
+      - name: Upload Pretext harness comparison artifact
         if: ${{ always() }}
         uses: actions/upload-artifact@v6
         with:
-          name: pretext-visual-harness
-          path: .tmp/pretext-harness
+          name: pretext-visual-harness-compare
+          path: .tmp/pretext-harness-compare
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload Pretext React harness artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: pretext-react-harness
+          path: .tmp/pretext-react-harness
           if-no-files-found: warn
           retention-days: 7

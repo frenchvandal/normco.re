@@ -13,6 +13,7 @@ import { createUsageError, getErrorMessage } from "./_shared.ts";
 import { REPO_ROOT } from "./deno_graph.ts";
 import { writeGitHubJobSummary } from "./github-actions.ts";
 import { buildPretextVisualHarnessSummaryMarkdown } from "./pretext-visual-harness-summary.ts";
+import { PRETEXT_DISABLE_GLOBAL_FLAG } from "../src/blog/client/pretext-story-core.ts";
 import {
   getLanguageDataCode,
   getLanguageTag,
@@ -42,7 +43,7 @@ type SelectorMetricSample = Readonly<{
   pretextSummaryHeight: string | null;
 }>;
 
-type SelectorMetric = Readonly<{
+export type SelectorMetric = Readonly<{
   selector: string;
   minCount: number;
   count: number;
@@ -57,8 +58,11 @@ type ClsMetric = Readonly<{
   }>;
 }>;
 
+export type PretextHarnessVariant = "with-pretext" | "without-pretext";
+
 export type ScenarioResult = Readonly<{
   stem: string;
+  variant: PretextHarnessVariant;
   routeKind: PretextVisualHarnessRouteKind;
   language: SiteLanguage;
   languageCode: string;
@@ -99,6 +103,7 @@ export type HarnessReport = Readonly<{
   baseUrl: string;
   rootDir?: string;
   outputDir: string;
+  variant: PretextHarnessVariant;
   scenarioCount: number;
   errorCount: number;
   warningCount: number;
@@ -106,13 +111,17 @@ export type HarnessReport = Readonly<{
   results: ReadonlyArray<ScenarioResult>;
 }>;
 
-type ParsedCliOptions = Readonly<{
+export type PretextVisualHarnessRunOptions = Readonly<{
   baseUrl?: string;
+  disablePretext?: boolean;
   rootDir: string;
   outputDir: string;
+  variant?: PretextHarnessVariant;
 }>;
 
-type StaticServer = Readonly<{
+type ParsedCliOptions = PretextVisualHarnessRunOptions;
+
+export type PretextVisualHarnessStaticServer = Readonly<{
   baseUrl: string;
   close: () => Promise<void>;
 }>;
@@ -150,6 +159,7 @@ export const PRETEXT_VISUAL_HARNESS_USAGE = [
   "",
   "Options:",
   "  --base-url=<url>   Reuse an already running site root instead of serving _site locally",
+  "  --disable-pretext  Disable runtime Pretext hooks before page scripts execute",
   "  --root=<path>      Generated site root to serve when --base-url is omitted (default: _site)",
   "  --output=<path>    Directory for screenshots and JSON diagnostics (default: .tmp/pretext-harness)",
   "",
@@ -424,7 +434,7 @@ export async function resolvePlaywrightChromiumExecutablePath(
 function parseCliOptions(args: ReadonlyArray<string>): ParsedCliOptions {
   const parsed = parseArgs(args, {
     string: ["base-url", "root", "output"],
-    boolean: ["help"],
+    boolean: ["disable-pretext", "help"],
   });
 
   if (parsed.help) {
@@ -467,14 +477,26 @@ function parseCliOptions(args: ReadonlyArray<string>): ParsedCliOptions {
 
   return baseUrl === undefined
     ? {
+      disablePretext: parsed["disable-pretext"] === true,
       rootDir: resolveRepoPath(rootValue),
       outputDir: resolveRepoPath(outputValue),
     }
     : {
       baseUrl,
+      disablePretext: parsed["disable-pretext"] === true,
       rootDir: resolveRepoPath(rootValue),
       outputDir: resolveRepoPath(outputValue),
     };
+}
+
+function resolveHarnessVariant(
+  options: Readonly<{
+    disablePretext?: boolean;
+    variant?: PretextHarnessVariant;
+  }>,
+): PretextHarnessVariant {
+  return options.variant ??
+    (options.disablePretext ? "without-pretext" : "with-pretext");
 }
 
 async function serveStaticSiteRequest(
@@ -536,7 +558,9 @@ async function serveStaticSiteRequest(
   }
 }
 
-async function startStaticServer(rootDir: string): Promise<StaticServer> {
+export async function startPretextVisualHarnessStaticServer(
+  rootDir: string,
+): Promise<PretextVisualHarnessStaticServer> {
   const rootInfo = await Deno.stat(rootDir);
 
   if (!rootInfo.isDirectory) {
@@ -609,9 +633,24 @@ async function evaluateScenarioPage(
           const style = globalThis.getComputedStyle(element);
           const rect = element.getBoundingClientRect();
           const rawLineHeight = Number.parseFloat(style.lineHeight);
-          const resolveCustomProperty = (name: string): string | null => {
-            const value = style.getPropertyValue(name).trim();
-            return value.length === 0 ? null : value;
+          const resolveNearestCustomProperty = (
+            name: string,
+          ): string | null => {
+            let currentElement: Element | null = element;
+
+            while (currentElement) {
+              const value = globalThis.getComputedStyle(currentElement)
+                .getPropertyValue(name)
+                .trim();
+
+              if (value.length > 0) {
+                return value;
+              }
+
+              currentElement = currentElement.parentElement;
+            }
+
+            return null;
           };
 
           return {
@@ -626,8 +665,10 @@ async function evaluateScenarioPage(
               style.minBlockSize === "0px" || style.minBlockSize.length === 0
                 ? null
                 : style.minBlockSize,
-            pretextTitleHeight: resolveCustomProperty("--pretext-title-height"),
-            pretextSummaryHeight: resolveCustomProperty(
+            pretextTitleHeight: resolveNearestCustomProperty(
+              "--pretext-title-height",
+            ),
+            pretextSummaryHeight: resolveNearestCustomProperty(
               "--pretext-summary-height",
             ),
           };
@@ -664,8 +705,10 @@ async function evaluateScenarioPage(
 async function runScenario(
   browser: RuntimeBrowser,
   baseUrl: string,
+  disablePretext: boolean,
   outputDir: string,
   scenario: PretextVisualHarnessScenario,
+  variant: PretextHarnessVariant,
 ): Promise<{ result: ScenarioResult; issues: ReadonlyArray<HarnessIssue> }> {
   const scenarioIssues: HarnessIssue[] = [];
   const screenshotPath = join(outputDir, "screenshots", `${scenario.stem}.png`);
@@ -708,6 +751,15 @@ async function runScenario(
       })`,
     );
   });
+
+  if (disablePretext) {
+    await page.addInitScript((flagName) => {
+      const runtimeFlags = window as unknown as Partial<
+        Record<string, boolean>
+      >;
+      runtimeFlags[flagName] = true;
+    }, PRETEXT_DISABLE_GLOBAL_FLAG);
+  }
 
   await page.addInitScript(() => {
     (window as ClsWindowState).__pretextVisualHarness = {
@@ -819,6 +871,7 @@ async function runScenario(
     return {
       result: {
         stem: scenario.stem,
+        variant,
         routeKind: scenario.routeKind,
         language: scenario.language,
         languageCode: scenario.languageCode,
@@ -854,6 +907,7 @@ async function runScenario(
     return {
       result: {
         stem: scenario.stem,
+        variant,
         routeKind: scenario.routeKind,
         language: scenario.language,
         languageCode: scenario.languageCode,
@@ -881,7 +935,9 @@ async function runScenario(
   }
 }
 
-async function writeHarnessOutputs(report: HarnessReport): Promise<string> {
+export async function writePretextVisualHarnessOutputs(
+  report: HarnessReport,
+): Promise<string> {
   const reportPath = join(report.outputDir, "report.json");
   const summaryPath = join(report.outputDir, "summary.md");
   const summaryMarkdown = buildPretextVisualHarnessSummaryMarkdown(report);
@@ -899,13 +955,14 @@ async function publishHarnessOutputsToGitHubActions(
 }
 
 export async function runPretextVisualHarness(
-  options: ParsedCliOptions,
+  options: PretextVisualHarnessRunOptions,
 ): Promise<HarnessReport> {
+  const variant = resolveHarnessVariant(options);
   await Deno.mkdir(join(options.outputDir, "screenshots"), { recursive: true });
   await Deno.mkdir(join(options.outputDir, "tmp"), { recursive: true });
 
   const server = options.baseUrl === undefined
-    ? await startStaticServer(options.rootDir)
+    ? await startPretextVisualHarnessStaticServer(options.rootDir)
     : undefined;
   const baseUrl = options.baseUrl ?? server?.baseUrl;
   const playwright = await importPlaywright();
@@ -951,8 +1008,10 @@ export async function runPretextVisualHarness(
       const scenarioRun = await runScenario(
         browser,
         baseUrl,
+        options.disablePretext === true,
         options.outputDir,
         scenario,
+        variant,
       );
 
       results.push(scenarioRun.result);
@@ -963,6 +1022,7 @@ export async function runPretextVisualHarness(
       generatedAt: new Date().toISOString(),
       baseUrl,
       outputDir: options.outputDir,
+      variant,
       scenarioCount: results.length,
       errorCount: issues.filter((issue) => issue.severity === "error").length,
       warningCount: issues.filter((issue) =>
@@ -989,7 +1049,7 @@ if (import.meta.main) {
   try {
     const options = parseCliOptions(Deno.args);
     const report = await runPretextVisualHarness(options);
-    const summaryPath = await writeHarnessOutputs(report);
+    const summaryPath = await writePretextVisualHarnessOutputs(report);
     const failureMessages: string[] = [];
 
     try {

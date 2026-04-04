@@ -1,37 +1,30 @@
 import { assertEquals, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
-import {
-  buildPretextVisualHarnessSummaryMarkdown,
-  getPretextVisualHarnessSampleCounts,
-} from "./pretext-visual-harness-summary.ts";
+import { buildPretextVisualHarnessComparisonSummaryMarkdown } from "./pretext-visual-harness-compare-summary.ts";
+import { buildPretextVisualHarnessComparisonReport } from "./pretext-visual-harness-compare.ts";
 import type { HarnessReport } from "./pretext-visual-harness.ts";
 
 function createHarnessReport(
+  variant: HarnessReport["variant"],
   overrides: Partial<HarnessReport> = {},
 ): HarnessReport {
+  const withPretext = variant === "with-pretext";
+
   return {
     generatedAt: "2026-04-04T00:00:00.000Z",
     baseUrl: "http://127.0.0.1:4173",
     rootDir: "/repo/_site",
-    outputDir: "/repo/.tmp/pretext-harness",
-    variant: "with-pretext",
+    outputDir: `/repo/.tmp/pretext-harness-compare/${variant}`,
+    variant,
     scenarioCount: 2,
-    errorCount: 1,
+    errorCount: 0,
     warningCount: 0,
-    issues: [
-      {
-        severity: "error",
-        code: "missing-selector",
-        scenarioStem: "archive-fr-desktop",
-        message:
-          "Selector .post-card-title matched 0 node(s); expected at least 1",
-      },
-    ],
+    issues: [],
     results: [
       {
         stem: "archive-fr-desktop",
-        variant: "with-pretext",
+        variant,
         routeKind: "archive",
         language: "fr",
         languageCode: "fr",
@@ -54,8 +47,8 @@ function createHarnessReport(
               inlineSize: 320,
               blockSize: 48,
               lineHeight: 24,
-              minBlockSize: "48px",
-              pretextTitleHeight: "48px",
+              minBlockSize: withPretext ? "48px" : "auto",
+              pretextTitleHeight: withPretext ? "48px" : null,
               pretextSummaryHeight: null,
             }],
           },
@@ -69,15 +62,15 @@ function createHarnessReport(
               inlineSize: 320,
               blockSize: 72,
               lineHeight: 24,
-              minBlockSize: "72px",
+              minBlockSize: withPretext ? "72px" : "auto",
               pretextTitleHeight: null,
-              pretextSummaryHeight: "72px",
+              pretextSummaryHeight: withPretext ? "72px" : null,
             }],
           },
         ],
         cls: {
-          value: 0.001605,
-          entries: [{ value: 0.001605, startTime: 123.45 }],
+          value: withPretext ? 0 : 0.0012,
+          entries: withPretext ? [] : [{ value: 0.0012, startTime: 120 }],
         },
         responseErrors: [],
         consoleErrors: [],
@@ -88,7 +81,7 @@ function createHarnessReport(
       },
       {
         stem: "home-en-mobile",
-        variant: "with-pretext",
+        variant,
         routeKind: "home",
         language: "en",
         languageCode: "en",
@@ -117,61 +110,61 @@ function createHarnessReport(
   };
 }
 
-describe("getPretextVisualHarnessSampleCounts()", () => {
-  it("counts resolved title vars, summary vars, and Pretext-backed pixel min-block-sizes", () => {
+describe("buildPretextVisualHarnessComparisonReport()", () => {
+  it("collects per-variant totals and aligned scenario comparisons", () => {
+    const report = buildPretextVisualHarnessComparisonReport(
+      "/repo/.tmp/pretext-harness-compare",
+      createHarnessReport("with-pretext"),
+      createHarnessReport("without-pretext"),
+    );
+
+    assertEquals(report.scenarioCount, 2);
+    assertEquals(report.withPretext.sampleCounts, {
+      pretextBackedPixelMinBlockSize: 2,
+      title: 1,
+      summary: 1,
+    });
+    assertEquals(report.withoutPretext.sampleCounts, {
+      pretextBackedPixelMinBlockSize: 0,
+      title: 0,
+      summary: 0,
+    });
+    assertEquals(report.withPretext.reportPath, "with-pretext/report.json");
     assertEquals(
-      getPretextVisualHarnessSampleCounts(createHarnessReport()),
-      {
-        pretextBackedPixelMinBlockSize: 2,
-        title: 1,
-        summary: 1,
-      },
+      report.scenarioComparisons.find((comparison) =>
+        comparison.stem === "archive-fr-desktop"
+      )?.withPretext.screenshotPath,
+      "with-pretext/screenshots/archive-fr-desktop.png",
     );
   });
 });
 
-describe("buildPretextVisualHarnessSummaryMarkdown()", () => {
-  it("renders the key metrics, CLS outliers, and issues", () => {
-    const markdown = buildPretextVisualHarnessSummaryMarkdown(
-      createHarnessReport(),
+describe("buildPretextVisualHarnessComparisonSummaryMarkdown()", () => {
+  it("renders comparative totals and scenario deltas", () => {
+    const markdown = buildPretextVisualHarnessComparisonSummaryMarkdown(
+      buildPretextVisualHarnessComparisonReport(
+        "/repo/.tmp/pretext-harness-compare",
+        createHarnessReport("with-pretext"),
+        createHarnessReport("without-pretext"),
+      ),
     );
 
-    assertStringIncludes(markdown, "# Pretext Visual Harness");
-    assertStringIncludes(markdown, "| Variant | with-pretext |");
-    assertStringIncludes(markdown, "| Scenarios | 2 |");
-    assertStringIncludes(markdown, "| Max CLS | 0.001605 |");
+    assertStringIncludes(markdown, "# Pretext Visual Harness Comparison");
     assertStringIncludes(
       markdown,
-      "| Samples with Pretext-backed pixel min-block-size | 2 |",
-    );
-    assertStringIncludes(
-      markdown,
-      "| archive-fr-desktop | 0.001605 | /fr/posts/ | desktop |",
+      "| Samples with title vars | 1 | 0 | +1 |",
     );
     assertStringIncludes(
       markdown,
-      "| error | missing-selector | archive-fr-desktop | Selector .post-card-title matched 0 node(s); expected at least 1 |",
+      "| Samples with Pretext-backed pixel min-block-size | 2 | 0 | +2 |",
     );
-  });
-
-  it("states clearly when there are no issues and no CLS outliers", () => {
-    const baseReport = createHarnessReport();
-    const markdown = buildPretextVisualHarnessSummaryMarkdown(
-      createHarnessReport({
-        errorCount: 0,
-        issues: [],
-        results: baseReport.results.map((result) => ({
-          ...result,
-          cls: {
-            value: 0,
-            entries: [],
-          },
-          selectorMetrics: [],
-        })),
-      }),
+    assertStringIncludes(
+      markdown,
+      "Pretext est bien actif sur le run de référence",
     );
-
-    assertStringIncludes(markdown, "All scenarios reported `0.000000` CLS.");
-    assertStringIncludes(markdown, "No harness issue reported.");
+    assertStringIncludes(
+      markdown,
+      "| archive-fr-desktop | 0.000000 | 0.001200 | 1 / 0 | 1 / 0 | 2 / 0 |",
+    );
   });
 });

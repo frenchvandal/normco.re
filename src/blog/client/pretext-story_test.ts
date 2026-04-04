@@ -6,6 +6,7 @@ import {
   buildMeasuredTextStyleVariables,
   buildPretextFont,
   clearPretextMeasurementCaches,
+  isPretextRuntimeEnabled,
   layoutTextBlockWithLines,
   measureTextBlock,
   measureTextBlockWidestLine,
@@ -26,6 +27,20 @@ describe("buildPretextFont()", () => {
         '"Segoe UI", Roboto, sans-serif',
       ),
       '700 20px "Segoe UI", Roboto, sans-serif',
+    );
+  });
+});
+
+describe("isPretextRuntimeEnabled()", () => {
+  it("stays enabled by default and disables only when the global flag is true", () => {
+    assertEquals(isPretextRuntimeEnabled({}), true);
+    assertEquals(
+      isPretextRuntimeEnabled({ __PH_DISABLE_PRETEXT__: false }),
+      true,
+    );
+    assertEquals(
+      isPretextRuntimeEnabled({ __PH_DISABLE_PRETEXT__: true }),
+      false,
     );
   });
 });

@@ -15,6 +15,7 @@ import {
   buildPretextFont,
   clearPretextMeasurementCaches,
   EMPTY_MEASURED_TEXT_STATE,
+  isPretextRuntimeEnabled,
   type MeasuredTextState,
   type MeasuredTextStyleVariables,
   measureTextBlock,
@@ -100,12 +101,14 @@ function buildMeasurementSample(
   return {
     locale: container.ownerDocument.documentElement.lang,
     measureFontFamily: rootStyle.getPropertyValue(PRETEXT_MEASURE_FONT_TOKEN),
-    summary: summaryElement
+    ...(summaryElement
       ? {
-        style: readTextStyleSnapshot(summaryElement),
-        width: summaryElement.clientWidth,
+        summary: {
+          style: readTextStyleSnapshot(summaryElement),
+          width: summaryElement.clientWidth,
+        },
       }
-      : undefined,
+      : {}),
     title: {
       style: readTextStyleSnapshot(titleElement),
       width: titleElement.clientWidth,
@@ -217,6 +220,7 @@ export function useBalancedStoryGridTextStyles(
   ref: (element: HTMLElement | null) => void;
   styleMap: ReadonlyMap<string, MeasuredTextStyle>;
 }> {
+  const pretextEnabled = isPretextRuntimeEnabled();
   const [container, setContainer] = useState<HTMLElement | null>(null);
   const [styleMap, setStyleMap] = useState<
     ReadonlyMap<string, MeasuredTextStyle>
@@ -231,7 +235,7 @@ export function useBalancedStoryGridTextStyles(
 
   const updateMeasurements = useEffectEvent(
     (currentContainer: HTMLElement | null) => {
-      if (!currentContainer || posts.length === 0) {
+      if (!pretextEnabled || !currentContainer || posts.length === 0) {
         if (!areStyleMapsEqual(styleMap, emptyStyleMap)) {
           startTransition(() => setStyleMap(emptyStyleMap));
         }
@@ -264,10 +268,10 @@ export function useBalancedStoryGridTextStyles(
 
   useEffect(() => {
     updateMeasurements(container);
-  }, [container, posts, summaryVisible]);
+  }, [container, posts, pretextEnabled, summaryVisible]);
 
   useEffect(() => {
-    if (!container || typeof ResizeObserver !== "function") {
+    if (!pretextEnabled || !container || typeof ResizeObserver !== "function") {
       return;
     }
 
@@ -279,10 +283,10 @@ export function useBalancedStoryGridTextStyles(
     observedElements.forEach((element) => observer.observe(element));
 
     return () => observer.disconnect();
-  }, [container, posts, summaryVisible]);
+  }, [container, posts, pretextEnabled, summaryVisible]);
 
   useEffect(() => {
-    if (!container) {
+    if (!pretextEnabled || !container) {
       return;
     }
 
@@ -290,9 +294,13 @@ export function useBalancedStoryGridTextStyles(
       clearPretextMeasurementCaches(PRETEXT_ENGINE);
       updateMeasurements(container);
     });
-  }, [container]);
+  }, [container, pretextEnabled]);
 
   useEffect(() => {
+    if (!pretextEnabled) {
+      return;
+    }
+
     const defaultView = container?.ownerDocument.defaultView;
     const mediaQuery = defaultView?.matchMedia(
       STORY_GRID_TWO_COLUMN_MEDIA_QUERY,
@@ -306,7 +314,7 @@ export function useBalancedStoryGridTextStyles(
     mediaQuery.addEventListener("change", handleChange);
 
     return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [container]);
+  }, [container, pretextEnabled]);
 
   return {
     ref: setContainer,

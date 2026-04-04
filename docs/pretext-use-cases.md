@@ -177,6 +177,8 @@ Le garde-fou navigateur dédié vit dans :
 
 - `scripts/pretext-visual-harness.ts`
 - `scripts/pretext-visual-harness_test.ts`
+- `scripts/pretext-visual-harness-compare.ts`
+- `scripts/pretext-visual-harness-compare_test.ts`
 
 Il visite les surfaces publiques vraiment utilisées :
 
@@ -207,46 +209,89 @@ Ce harness produit :
 - un échec explicite si une route répond mal ou si des sélecteurs attendus ont
   disparu.
 
-Commandes :
+Commandes de base :
 
 ```sh
 deno task pretext:harness:install
 deno task pretext:harness
 ```
 
-En CI GitHub Actions, le workflow exécute :
+Commande de comparaison A/B :
 
 ```sh
 deno task pretext:harness:install
-deno task pretext:harness:ci
+deno task pretext:harness:compare
+deno task pretext:react-harness
 ```
 
-Puis le workflow publie `.tmp/pretext-harness/` en artifact via
-`actions/upload-artifact`, tandis que Deno reste responsable du `summary.md` et
+En CI GitHub Actions, le workflow exécute désormais :
+
+```sh
+deno task pretext:harness:install
+deno task pretext:harness:compare:ci
+deno task pretext:react-harness:ci
+```
+
+Puis le workflow publie `.tmp/pretext-harness-compare/` en artifact via
+`actions/upload-artifact`, tandis que Deno reste responsable des `summary.md` et
 du job summary.
 
-Sortie par défaut :
+Sortie du harness simple :
 
 - `.tmp/pretext-harness/report.json`
 - `.tmp/pretext-harness/summary.md`
 - `.tmp/pretext-harness/screenshots/*.png`
 
-Sur un runner GitHub, la même commande Deno publie aussi :
+Sortie du compare A/B :
 
-- un job summary GitHub à partir du `report.json` ;
-- un artifact `pretext-visual-harness` contenant le rapport, le résumé et les
-  screenshots.
+- `.tmp/pretext-harness-compare/comparison.json`
+- `.tmp/pretext-harness-compare/summary.md`
+- `.tmp/pretext-harness-compare/with-pretext/report.json`
+- `.tmp/pretext-harness-compare/with-pretext/summary.md`
+- `.tmp/pretext-harness-compare/with-pretext/screenshots/*.png`
+- `.tmp/pretext-harness-compare/without-pretext/report.json`
+- `.tmp/pretext-harness-compare/without-pretext/summary.md`
+- `.tmp/pretext-harness-compare/without-pretext/screenshots/*.png`
 
-Le script détecte le contexte runner via `GITHUB_ACTIONS=true`. En local, il
-continue donc à produire uniquement les fichiers sous `.tmp/pretext-harness/` et
-n'essaie ni d'écrire dans `GITHUB_STEP_SUMMARY`, ni d'utiliser les variables
-runtime d'upload (`ACTIONS_RUNTIME_TOKEN`, `ACTIONS_RESULTS_URL`).
+Sortie du harness React A/B :
+
+- `.tmp/pretext-react-harness/report.json`
+- `.tmp/pretext-react-harness/summary.md`
+
+Sur un runner GitHub, Deno publie aussi un job summary GitHub à partir du
+`summary.md` racine. Le compare navigateur écrit d'abord le summary visuel, puis
+le harness React y ajoute sa propre section en append. L'upload des fichiers
+reste géré explicitement par le workflow. La détection du contexte runner reste
+basée sur `GITHUB_ACTIONS=true`, ce qui évite d'activer le job summary en local.
 
 Important : ce harness mesure **l'effet réel** de l'intégration Pretext dans un
 vrai navigateur. Il est donc très bon pour valider la stabilité visuelle, la
 cohérence multi-langue et les régressions de rendu. En revanche, ce n'est pas un
 benchmark scientifique de coût CPU isolé. Si un jour on veut comparer le temps
 brut de `prepare(...)` ou `layout(...)`, il faudra un protocole séparé.
+
+Le compare A/B apporte un garde-fou supplémentaire : il permet de vérifier non
+seulement que le rendu final reste stable, mais aussi que le variant
+`with-pretext` active bien les variables `--pretext-*` et les `min-block-size`
+résolus attendus, tout en confrontant ce signal au variant `without-pretext`.
+
+Le harness React complète ce signal par une mesure beaucoup plus directe de
+l'utilité des hooks Pretext eux-mêmes. Il ne dépend pas des routes publiques ni
+du montage effectif des surfaces SSR/client du site ; il rend les hooks dans un
+DOM contrôlé, sur des fixtures `en` / `fr` / `zh-hans` / `zh-hant`, puis compare
+`with-pretext` / `without-pretext` sur des métriques simples et parlantes :
+
+- couverture des surfaces texte où les variables `--pretext-title-height` et
+  `--pretext-summary-height` apparaissent réellement ;
+- couverture des cartes `StoryGrid` où ces variables sont effectivement
+  renseignées ;
+- nombre de rangées comparables de `StoryGrid` réellement équilibrées.
+
+Autrement dit :
+
+- le harness navigateur dit si l'effet utilisateur final reste stable ;
+- le harness React dit si Pretext fait vraiment quelque chose d'utile au niveau
+  des hooks et des variables CSS.
 
 ## Évaluation des cas d'usage initiaux
 
@@ -303,8 +348,8 @@ La bonne idée reste donc :
 - valider titres de cartes, labels UI, titres du rail, etc. ;
 - mais dans une future étape dédiée de tooling.
 
-Statut : **implémenté côté harness headless**. Le prochain niveau serait son
-intégration en CI.
+Statut : **implémenté côté harness headless et branché en CI**, avec un compare
+`with-pretext` / `without-pretext`.
 
 ### 5) Layouts éditoriaux avancés pour essais visuels
 
@@ -351,16 +396,11 @@ Ce qui est déjà utile :
 
 - stabiliser runtime les titres du rail `PostApp`.
 
-Ce qui reste à faire plus tard :
+Le garde-fou multi-langue existe maintenant aussi côté CI via le compare
+headless, ce qui permet de relier plus proprement l'effet runtime observé à un
+contrôle automatisé.
 
-- le vrai garde-fou CI multi-langue.
-
-Donc l'idée reste bonne, mais il fallait distinguer :
-
-- le bénéfice runtime immédiat ;
-- la validation build/test, qui dépend d'un futur contexte de mesure fiable.
-
-Statut : **runtime implémenté, CI non implémentée**.
+Statut : **runtime et CI implémentés**.
 
 ### 9) Mesure des titres dans `SignalStories` avec des éléments atomiques
 
@@ -446,8 +486,8 @@ Verdict : **intégration utile, déjà exploitée dans le socle actuel**.
 2. **Équilibrage de `StoryGrid`** : déjà fait.
 3. **Validation visuelle / CLS** : désormais outillée par un harness headless
    dédié.
-4. **QA multi-langue en CI** : meilleur prochain chantier structurel, en
-   branchant ce harness dans un garde-fou automatisé.
+4. **QA multi-langue en CI** : désormais en place, y compris en mode compare
+   A/B.
 5. **Outils dev autour de `layoutWithLines()`** : bonne piste si les problèmes
    de typographie multi-langue deviennent fréquents.
 6. **Le reste** : virtualisation, skeleton, layouts avancés et éléments
@@ -480,9 +520,11 @@ Le socle couvre aussi maintenant les usages plus avancés de l'API Pretext qui
 - invalidation explicite des caches de préparation segmentée lors des
   changements de locale.
 
-Le prochain meilleur levier n'est plus le skeleton. C'est plutôt :
+Le prochain meilleur levier n'est plus de brancher la CI, puisque c'est fait.
+Les suites les plus crédibles sont plutôt :
 
-1. brancher le harness headless dans un vrai garde-fou CI multi-langue ;
-2. exploiter ensuite `layoutWithLines()` et `walkLineRanges()` pour les cas
-   d'outillage dev ou de shrink-wrap ciblé ;
+1. exploiter `layoutWithLines()` et `walkLineRanges()` pour les cas d'outillage
+   dev ou de shrink-wrap ciblé ;
+2. enrichir au besoin le compare headless avec Firefox/WebKit si une divergence
+   de rendu navigateur devient plausible ;
 3. seulement après, revisiter des usages plus ambitieux ou plus exotiques.
