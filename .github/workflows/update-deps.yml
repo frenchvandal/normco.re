@@ -24,10 +24,7 @@ jobs:
           token: ${{ github.token }}
 
       - name: Set up Deno
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version-file: .tool-versions
-          cache: true
+        uses: ./.github/actions/setup-deno
 
       - name: Run dependency updates
         id: update_deps

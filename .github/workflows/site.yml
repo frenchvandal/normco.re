@@ -29,7 +29,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  pretext-harness:
+    uses: ./.github/workflows/pretext-harness.yml
+    with:
+      runs-on: macos-26
+
   deploy:
+    needs: pretext-harness
     environment:
       name: development
     runs-on: macos-26
@@ -41,10 +47,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Deno environment
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version-file: .tool-versions
-          cache: true
+        uses: ./.github/actions/setup-deno
 
       - name: Deploy to Aliyun OSS
         uses: frenchvandal/aliyun-oss-cdn-sync-action@master

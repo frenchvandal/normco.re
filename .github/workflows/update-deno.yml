@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Deno
-        uses: denoland/setup-deno@v2
+        uses: ./.github/actions/setup-deno
         with:
           deno-version: latest
 

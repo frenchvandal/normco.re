@@ -1,0 +1,30 @@
+name: Setup Deno
+description: Install Deno from either an explicit version or a version file and enable the built-in cache.
+
+inputs:
+  cache:
+    description: Whether to enable setup-deno cache support.
+    default: "true"
+  deno-version:
+    description: Explicit Deno version to install. Takes precedence over deno-version-file when set.
+    default: ""
+  deno-version-file:
+    description: File containing the Deno version when deno-version is not provided.
+    default: ".tool-versions"
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Deno from explicit version
+      if: ${{ inputs.deno-version != '' }}
+      uses: denoland/setup-deno@v2
+      with:
+        deno-version: ${{ inputs.deno-version }}
+        cache: ${{ inputs.cache }}
+
+    - name: Setup Deno from version file
+      if: ${{ inputs.deno-version == '' }}
+      uses: denoland/setup-deno@v2
+      with:
+        deno-version-file: ${{ inputs.deno-version-file }}
+        cache: ${{ inputs.cache }}

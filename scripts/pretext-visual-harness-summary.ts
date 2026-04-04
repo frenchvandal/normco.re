@@ -1,0 +1,179 @@
+import type { GitHubArtifactUploadResult } from "./github-actions.ts";
+import type {
+  HarnessIssue,
+  HarnessReport,
+  ScenarioResult,
+} from "./pretext-visual-harness.ts";
+
+type PretextVisualHarnessSummaryOptions = Readonly<{
+  artifact?: GitHubArtifactUploadResult;
+  maxClsRows?: number;
+  maxIssueRows?: number;
+}>;
+
+function formatClsValue(value: number): string {
+  return value.toFixed(6);
+}
+
+function formatBytes(value?: number): string {
+  if (value === undefined) {
+    return "n/a";
+  }
+
+  if (value < 1024) {
+    return `${value} B`;
+  }
+
+  if (value < 1024 * 1024) {
+    return `${(value / 1024).toFixed(1)} KiB`;
+  }
+
+  return `${(value / (1024 * 1024)).toFixed(2)} MiB`;
+}
+
+function escapeMarkdownCell(value: string): string {
+  return value
+    .replaceAll("\\", "\\\\")
+    .replaceAll("|", "\\|")
+    .replaceAll("\n", "<br>");
+}
+
+function compareClsDescending(
+  left: ScenarioResult,
+  right: ScenarioResult,
+): number {
+  if (left.cls.value !== right.cls.value) {
+    return right.cls.value - left.cls.value;
+  }
+
+  return left.stem.localeCompare(right.stem);
+}
+
+function compareIssues(
+  left: HarnessIssue,
+  right: HarnessIssue,
+): number {
+  if (left.severity !== right.severity) {
+    return left.severity === "error" ? -1 : 1;
+  }
+
+  if (left.scenarioStem !== right.scenarioStem) {
+    return left.scenarioStem.localeCompare(right.scenarioStem);
+  }
+
+  return left.code.localeCompare(right.code);
+}
+
+export function getPretextVisualHarnessMaxCls(report: HarnessReport): number {
+  return report.results.reduce(
+    (maxValue, result) => Math.max(maxValue, result.cls.value),
+    0,
+  );
+}
+
+export function getPretextVisualHarnessNonZeroClsResults(
+  report: HarnessReport,
+): ReadonlyArray<ScenarioResult> {
+  return [...report.results]
+    .filter((result) => result.cls.value > 0)
+    .sort(compareClsDescending);
+}
+
+export function buildPretextVisualHarnessSummaryMarkdown(
+  report: HarnessReport,
+  options: PretextVisualHarnessSummaryOptions = {},
+): string {
+  const artifact = options.artifact;
+  const maxClsRows = options.maxClsRows ?? 5;
+  const maxIssueRows = options.maxIssueRows ?? 10;
+  const maxCls = getPretextVisualHarnessMaxCls(report);
+  const nonZeroClsResults = getPretextVisualHarnessNonZeroClsResults(report);
+  const topClsResults = nonZeroClsResults.slice(0, maxClsRows);
+  const issueRows = [...report.issues].sort(compareIssues).slice(
+    0,
+    maxIssueRows,
+  );
+  const lines = [
+    "# Pretext Visual Harness",
+    "",
+    "| Metric | Value |",
+    "| --- | --- |",
+    `| Generated at | ${escapeMarkdownCell(report.generatedAt)} |`,
+    `| Scenarios | ${report.scenarioCount} |`,
+    `| Errors | ${report.errorCount} |`,
+    `| Warnings | ${report.warningCount} |`,
+    `| Max CLS | ${formatClsValue(maxCls)} |`,
+    `| Base URL | ${escapeMarkdownCell(report.baseUrl)} |`,
+    `| Output dir | ${escapeMarkdownCell(report.outputDir)} |`,
+    "| Report file | report.json |",
+    "| Screenshots dir | screenshots/ |",
+  ];
+
+  if (report.rootDir !== undefined) {
+    lines.push(`| Static root | ${escapeMarkdownCell(report.rootDir)} |`);
+  }
+
+  if (artifact !== undefined) {
+    lines.push(`| Artifact | ${escapeMarkdownCell(artifact.name)} |`);
+    lines.push(`| Artifact files | ${artifact.fileCount} |`);
+    lines.push(`| Artifact size | ${formatBytes(artifact.size)} |`);
+
+    if (artifact.id !== undefined) {
+      lines.push(`| Artifact ID | ${artifact.id} |`);
+    }
+  }
+
+  lines.push("", "## CLS Outliers", "");
+
+  if (topClsResults.length === 0) {
+    lines.push("All scenarios reported `0.000000` CLS.");
+  } else {
+    lines.push("| Scenario | CLS | Route | Viewport |");
+    lines.push("| --- | --- | --- | --- |");
+
+    for (const result of topClsResults) {
+      lines.push(
+        `| ${escapeMarkdownCell(result.stem)} | ${
+          formatClsValue(result.cls.value)
+        } | ${escapeMarkdownCell(result.pathname)} | ${
+          escapeMarkdownCell(result.viewportId)
+        } |`,
+      );
+    }
+
+    if (nonZeroClsResults.length > topClsResults.length) {
+      lines.push(
+        "",
+        `...and ${
+          nonZeroClsResults.length - topClsResults.length
+        } more non-zero CLS scenario(s).`,
+      );
+    }
+  }
+
+  lines.push("", "## Issues", "");
+
+  if (issueRows.length === 0) {
+    lines.push("No harness issue reported.");
+  } else {
+    lines.push("| Severity | Code | Scenario | Message |");
+    lines.push("| --- | --- | --- | --- |");
+
+    for (const issue of issueRows) {
+      lines.push(
+        `| ${issue.severity} | ${escapeMarkdownCell(issue.code)} | ${
+          escapeMarkdownCell(issue.scenarioStem)
+        } | ${escapeMarkdownCell(issue.message)} |`,
+      );
+    }
+
+    if (report.issues.length > issueRows.length) {
+      lines.push(
+        "",
+        `...and ${report.issues.length - issueRows.length} more issue(s).`,
+      );
+    }
+  }
+
+  return lines.join("\n");
+}

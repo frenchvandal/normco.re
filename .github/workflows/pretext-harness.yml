@@ -1,0 +1,32 @@
+name: Pretext Harness
+
+on:
+  workflow_call:
+    inputs:
+      runs-on:
+        description: GitHub runner label used for the Pretext harness job.
+        required: false
+        type: string
+        default: macos-26
+
+permissions:
+  contents: read
+
+jobs:
+  pretext-harness:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          # Full history is required for build-time per-file git metadata.
+          fetch-depth: 0
+
+      - name: Setup Deno environment
+        uses: ./.github/actions/setup-deno
+
+      - name: Install Playwright Chromium for Pretext harness
+        run: deno task pretext:harness:install
+
+      - name: Run Pretext visual harness
+        run: deno task pretext:harness:ci

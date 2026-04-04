@@ -11,6 +11,18 @@
       "description": "Build the site for production",
       "command": "deno task lume"
     },
+    "pretext:harness:install": {
+      "description": "Install the Chromium binary used by the headless Pretext visual harness under .tmp/playwright-browsers",
+      "command": "PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run -A npm:playwright@1.59.1 install chromium"
+    },
+    "pretext:harness": {
+      "description": "Build the site and capture multilingual headless render diagnostics for home, tag, archive, and post routes",
+      "command": "deno task build && mkdir -p .tmp/pretext-harness/tmp && TMPDIR=$PWD/.tmp/pretext-harness/tmp PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run --allow-env --allow-net=127.0.0.1,localhost --allow-read --allow-run --allow-write=.tmp/pretext-harness --allow-sys=osRelease,cpus,homedir scripts/pretext-visual-harness.ts"
+    },
+    "pretext:harness:ci": {
+      "description": "Run the Pretext visual harness with the extra network and filesystem permissions required for GitHub job summaries and artifact uploads",
+      "command": "deno task build && mkdir -p .tmp/pretext-harness/tmp && TMPDIR=$PWD/.tmp/pretext-harness/tmp PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run --allow-env --allow-net --allow-read --allow-run --allow-write --allow-sys=osRelease,cpus,homedir scripts/pretext-visual-harness.ts"
+    },
     "serve": {
       "description": "Run and serve the site for development",
       "command": "LUME_SERVE=1 deno task lume -s"

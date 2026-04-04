@@ -12,7 +12,7 @@ Les meilleurs usages pour ce repo sont :
 
 1. stabiliser les hauteurs de texte dans les composants React éditoriaux ;
 2. équilibrer les cartes de grille par rangée ;
-3. préparer un futur garde-fou multi-langue en CI, à condition d'avoir un vrai
+3. alimenter un garde-fou multi-langue en CI, à condition d'avoir un vrai
    contexte de mesure navigateur/canvas.
 
 Les usages à plus faible intérêt aujourd'hui sont :
@@ -109,6 +109,138 @@ Socle bas niveau désormais disponible aussi :
   la plus large après layout ;
 - cache dédié `prepareWithSegments(...)` avec invalidation par locale.
 
+## Utilisation concrète dans le repo
+
+Aujourd'hui, Pretext n'est pas un moteur de layout global du site. Il est
+branché là où il apporte un gain clair et localisé.
+
+Chemin principal :
+
+- `src/blog/client/pretext-story-core.ts` : noyau pur de préparation, layout,
+  inspection de lignes et cache par locale ;
+- `src/blog/client/pretext-story.ts` : hook de stabilisation des hauteurs de
+  titres et résumés ;
+- `src/blog/client/pretext-story-grid.ts` : équilibrage par rangée de
+  `StoryGrid`.
+
+Points d'intégration actuels :
+
+- `src/blog/client/common.tsx` pour `StoryCard`, `FeaturedStory` et
+  `SignalStories` ;
+- `src/blog/client/ArchiveApp.tsx` pour les items de timeline ;
+- `src/blog/client/PostApp.tsx` pour le rail de navigation du post.
+
+En pratique, le pattern d'usage est toujours le même :
+
+1. préparer une mesure typographique avec la police de mesure explicite ;
+2. calculer une hauteur ou une largeur cible à partir du texte et de la largeur
+   disponible ;
+3. propager le résultat via variables CSS plutôt que refaire des mesures DOM
+   impératives.
+
+## Comment Pretext est testé
+
+Le repo teste Pretext sur trois niveaux complémentaires.
+
+### 1) Tests unitaires du socle
+
+Les invariants de préparation/layout sont couverts dans :
+
+- `src/blog/client/pretext-story_test.ts`
+- `src/_blog_client_contract_test.ts`
+
+On y vérifie surtout :
+
+- les chemins de cache ;
+- les sorties de layout attendues ;
+- les garde-fous d'intégration côté client.
+
+### 2) Validation build/type/test classique
+
+Toute modification du socle doit continuer à passer :
+
+```sh
+deno task check
+deno task test
+deno task build
+```
+
+Cela valide le contrat de code, mais pas encore le rendu réel dans un vrai
+navigateur.
+
+### 3) Harness headless multi-langue
+
+Le garde-fou navigateur dédié vit dans :
+
+- `scripts/pretext-visual-harness.ts`
+- `scripts/pretext-visual-harness_test.ts`
+
+Il visite les surfaces publiques vraiment utilisées :
+
+- `home`
+- `tag`
+- `archive`
+- `post`
+
+Et il les rend pour :
+
+- `en`
+- `fr`
+- `zh-hans`
+- `zh-hant`
+
+Sur deux viewports :
+
+- `mobile`
+- `desktop`
+
+Ce harness produit :
+
+- des screenshots ;
+- un `report.json` ;
+- des métriques DOM par sélecteur critique ;
+- un signal CLS ;
+- les erreurs console/page/request ;
+- un échec explicite si une route répond mal ou si des sélecteurs attendus ont
+  disparu.
+
+Commandes :
+
+```sh
+deno task pretext:harness:install
+deno task pretext:harness
+```
+
+En CI GitHub Actions, le workflow exécute :
+
+```sh
+deno task pretext:harness:install
+deno task pretext:harness:ci
+```
+
+Sortie par défaut :
+
+- `.tmp/pretext-harness/report.json`
+- `.tmp/pretext-harness/summary.md`
+- `.tmp/pretext-harness/screenshots/*.png`
+
+Sur un runner GitHub, la même commande Deno publie aussi :
+
+- un job summary GitHub à partir du `report.json` ;
+- un artifact `pretext-visual-harness` contenant le rapport, le résumé et les
+  screenshots.
+
+Le script détecte le contexte runner via `GITHUB_ACTIONS=true`. En local, il
+continue donc à produire uniquement les fichiers sous `.tmp/pretext-harness/` et
+n'essaie ni d'écrire dans `GITHUB_STEP_SUMMARY`, ni d'utiliser les variables
+runtime d'upload (`ACTIONS_RUNTIME_TOKEN`, `ACTIONS_RESULTS_URL`).
+
+Important : ce harness mesure **l'effet réel** de l'intégration Pretext dans un
+vrai navigateur. Il est donc très bon pour valider la stabilité visuelle, la
+cohérence multi-langue et les régressions de rendu. En revanche, ce n'est pas un
+benchmark scientifique de coût CPU isolé. Si un jour on veut comparer le temps
+brut de `prepare(...)` ou `layout(...)`, il faudra un protocole séparé.
+
 ## Évaluation des cas d'usage initiaux
 
 ### 1) Cartes d'articles plus stables
@@ -164,7 +296,8 @@ La bonne idée reste donc :
 - valider titres de cartes, labels UI, titres du rail, etc. ;
 - mais dans une future étape dédiée de tooling.
 
-Statut : **non implémenté, mais l'un des meilleurs prochains chantiers**.
+Statut : **implémenté côté harness headless**. Le prochain niveau serait son
+intégration en CI.
 
 ### 5) Layouts éditoriaux avancés pour essais visuels
 
@@ -304,10 +437,10 @@ Verdict : **intégration utile, déjà exploitée dans le socle actuel**.
 1. **Stabilisation des surfaces React éditoriales** : déjà faite sur les
    composants les plus rentables.
 2. **Équilibrage de `StoryGrid`** : déjà fait.
-3. **Validation visuelle / CLS** : prochaine meilleure vérification pour mesurer
-   le gain réel.
-4. **QA multi-langue en CI** : meilleur prochain chantier structurel, avec un
-   vrai harness de mesure.
+3. **Validation visuelle / CLS** : désormais outillée par un harness headless
+   dédié.
+4. **QA multi-langue en CI** : meilleur prochain chantier structurel, en
+   branchant ce harness dans un garde-fou automatisé.
 5. **Outils dev autour de `layoutWithLines()`** : bonne piste si les problèmes
    de typographie multi-langue deviennent fréquents.
 6. **Le reste** : virtualisation, skeleton, layouts avancés et éléments
@@ -342,6 +475,7 @@ Le socle couvre aussi maintenant les usages plus avancés de l'API Pretext qui
 
 Le prochain meilleur levier n'est plus le skeleton. C'est plutôt :
 
-1. une validation visuelle/CLS sur les surfaces réellement utilisées ;
-2. un futur garde-fou multi-langue en CI ;
-3. seulement ensuite, des usages plus ambitieux ou plus exotiques.
+1. brancher le harness headless dans un vrai garde-fou CI multi-langue ;
+2. exploiter ensuite `layoutWithLines()` et `walkLineRanges()` pour les cas
+   d'outillage dev ou de shrink-wrap ciblé ;
+3. seulement après, revisiter des usages plus ambitieux ou plus exotiques.
