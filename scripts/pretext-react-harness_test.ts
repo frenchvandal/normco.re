@@ -66,7 +66,19 @@ describe("buildPretextReactHarnessSummaryMarkdown()", () => {
     );
     assertStringIncludes(
       markdown,
-      "| story-grid-fr-desktop | 4 / 0 | 4 / 0 | 2 / 0 | 2 / 0 |",
+      "| Scenario | Title var cards with | Title var cards without | Summary var cards with | Summary var cards without |",
+    );
+    assertStringIncludes(
+      markdown,
+      "| story-grid-fr-desktop | 4 | 0 | 4 | 0 |",
+    );
+    assertStringIncludes(
+      markdown,
+      "| Scenario | Comparable rows | Balanced title rows with | Balanced title rows without | Balanced summary rows with | Balanced summary rows without |",
+    );
+    assertStringIncludes(
+      markdown,
+      "| story-grid-fr-desktop | 2 | 2 | 0 | 2 | 0 |",
     );
   });
 });

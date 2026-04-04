@@ -9,6 +9,7 @@
     "npm:@chenglou/pretext@0.0.4": "0.0.4",
     "npm:@types/react@19.2.4": "19.2.4",
     "npm:antd@6.3.5": "6.3.5_react@19.2.4_react-dom@19.2.4__react@19.2.4",
+    "npm:react-dom@19.2.4": "19.2.4_react@19.2.4",
     "npm:react@19.2.4": "19.2.4"
   },
   "jsr": {
@@ -657,6 +658,7 @@
       "npm:@types/react@19.2.4",
       "npm:antd@6.3.5",
       "npm:dayjs@1.11.20",
+      "npm:react-dom@19.2.4",
       "npm:react@19.2.4"
     ]
   }

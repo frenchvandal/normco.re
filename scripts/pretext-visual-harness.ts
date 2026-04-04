@@ -13,6 +13,10 @@ import { createUsageError, getErrorMessage } from "./_shared.ts";
 import { REPO_ROOT } from "./deno_graph.ts";
 import { writeGitHubJobSummary } from "./github-actions.ts";
 import { buildPretextVisualHarnessSummaryMarkdown } from "./pretext-visual-harness-summary.ts";
+import {
+  PRETEXT_BROWSER_PROBE_ROUTE,
+  PRETEXT_BROWSER_PROBE_SELECTOR_EXPECTATIONS,
+} from "../src/blog/client/pretext-browser-probe-shared.ts";
 import { PRETEXT_DISABLE_GLOBAL_FLAG } from "../src/blog/client/pretext-story-core.ts";
 import {
   getLanguageDataCode,
@@ -189,7 +193,8 @@ export type PretextVisualHarnessRouteKind =
   | "home"
   | "tag"
   | "archive"
-  | "post";
+  | "post"
+  | "probe";
 
 export type PretextVisualHarnessScenario = Readonly<{
   stem: string;
@@ -224,6 +229,14 @@ const PRETEXT_VISUAL_HARNESS_SELECTORS = {
     { selector: ".post-pagehead-summary", minCount: 1 },
     { selector: ".post-outline-link", minCount: 1 },
   ],
+  probe: [
+    ...PRETEXT_BROWSER_PROBE_SELECTOR_EXPECTATIONS.storyCard,
+    ...PRETEXT_BROWSER_PROBE_SELECTOR_EXPECTATIONS.featuredStory,
+    ...PRETEXT_BROWSER_PROBE_SELECTOR_EXPECTATIONS.archiveItem,
+    ...PRETEXT_BROWSER_PROBE_SELECTOR_EXPECTATIONS.signalStory,
+    ...PRETEXT_BROWSER_PROBE_SELECTOR_EXPECTATIONS.outlineLink,
+    ...PRETEXT_BROWSER_PROBE_SELECTOR_EXPECTATIONS.storyGrid,
+  ],
 } as const satisfies Record<
   PretextVisualHarnessRouteKind,
   ReadonlyArray<SelectorExpectation>
@@ -252,6 +265,8 @@ function createRoutePathname(
         `/posts/${PRETEXT_VISUAL_HARNESS_FIXTURES.postSlug}/`,
         language,
       );
+    case "probe":
+      return getLocalizedUrl(PRETEXT_BROWSER_PROBE_ROUTE, language);
   }
 }
 

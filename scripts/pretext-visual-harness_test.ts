@@ -11,21 +11,25 @@ import {
 import { withTempDir, writeTextTree } from "../test/temp_fs.ts";
 
 describe("buildPretextVisualHarnessScenarios()", () => {
-  it("covers the four target surfaces, four languages, and both viewports", () => {
+  it("covers the public routes, the browser probe route, four languages, and both viewports", () => {
     const scenarios = buildPretextVisualHarnessScenarios();
 
-    assertEquals(scenarios.length, 32);
+    assertEquals(scenarios.length, 40);
     assertEquals(
       scenarios.filter((scenario) => scenario.routeKind === "archive").length,
       8,
     );
     assertEquals(
-      scenarios.filter((scenario) => scenario.language === "zhHans").length,
+      scenarios.filter((scenario) => scenario.routeKind === "probe").length,
       8,
     );
     assertEquals(
+      scenarios.filter((scenario) => scenario.language === "zhHans").length,
+      10,
+    );
+    assertEquals(
       scenarios.filter((scenario) => scenario.viewportId === "desktop").length,
-      16,
+      20,
     );
     assertEquals(
       scenarios.find((scenario) => scenario.stem === "tag-fr-mobile")?.pathname,
@@ -35,6 +39,11 @@ describe("buildPretextVisualHarnessScenarios()", () => {
       scenarios.find((scenario) => scenario.stem === "post-zh-hans-desktop")
         ?.pathname,
       "/zh-hans/posts/alibaba-cloud-oss-cdn-deployment/",
+    );
+    assertEquals(
+      scenarios.find((scenario) => scenario.stem === "probe-en-desktop")
+        ?.pathname,
+      "/pretext/probe/",
     );
   });
 });

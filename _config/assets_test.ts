@@ -29,5 +29,12 @@ describe("_config/assets.ts", () => {
       args: ["/blog/client/node_modules"],
     });
     assertEquals(calls[2], { method: "copy", args: ["/static", "."] });
+    assertEquals(
+      calls.some((call) =>
+        call.method === "add" &&
+        call.args[0] === "/scripts/pretext-browser-probe.js"
+      ),
+      true,
+    );
   });
 });

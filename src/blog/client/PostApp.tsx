@@ -61,7 +61,7 @@ const OUTLINE_TIMELINE_COLORS = {
   secondary: "var(--ph-color-fg-muted)",
 } as const;
 
-function OutlineTimelineLink(
+export function OutlineTimelineLink(
   { id, text }: {
     id: string;
     text: string;

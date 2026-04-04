@@ -12,6 +12,55 @@
     gap: clamp(var(--ph-space-5), 3vw, var(--ph-space-7));
   }
 
+  .blog-antd-probe-root {
+    min-inline-size: 0;
+  }
+
+  .blog-antd-probe {
+    display: grid;
+    gap: clamp(var(--ph-space-6), 3vw, var(--ph-space-8));
+  }
+
+  .blog-antd-probe__intro {
+    display: grid;
+    gap: var(--ph-space-4);
+    max-inline-size: var(--ph-content-max);
+  }
+
+  .blog-antd-probe__surfaces {
+    display: grid;
+    gap: var(--ph-space-5);
+    grid-template-columns:
+      repeat(
+        auto-fit,
+        minmax(min(100%, var(--ph-panel-max)), 1fr)
+      );
+    align-items: start;
+  }
+
+  .blog-antd-probe__section {
+    display: grid;
+    gap: var(--ph-space-4);
+    align-content: start;
+  }
+
+  .blog-antd-probe__section--full {
+    grid-column: 1 / -1;
+  }
+
+  .blog-antd-probe__section-head {
+    display: grid;
+    gap: var(--ph-space-2);
+  }
+
+  .blog-antd-probe__section-title {
+    margin: 0;
+  }
+
+  .blog-antd-probe__surface {
+    min-inline-size: 0;
+  }
+
   .blog-antd-breadcrumb {
     margin-block-end: calc(var(--ph-space-3) * -1);
   }

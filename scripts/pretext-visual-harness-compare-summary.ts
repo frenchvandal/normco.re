@@ -22,6 +22,40 @@ function formatSignedDelta(value: number): string {
   return `${value > 0 ? "+" : ""}${value}`;
 }
 
+function formatSignedClsDelta(value: number): string {
+  return `${value > 0 ? "+" : ""}${value.toFixed(6)}`;
+}
+
+type ComparisonVariantKey = "withPretext" | "withoutPretext";
+
+function filterScenarioComparisonsByRouteKind(
+  report: PretextVisualHarnessComparisonReport,
+  routeKind: PretextVisualHarnessScenarioComparison["routeKind"],
+): ReadonlyArray<PretextVisualHarnessScenarioComparison> {
+  return report.scenarioComparisons.filter((comparison) =>
+    comparison.routeKind === routeKind
+  );
+}
+
+function filterScenarioComparisonsExcludingRouteKind(
+  report: PretextVisualHarnessComparisonReport,
+  routeKind: PretextVisualHarnessScenarioComparison["routeKind"],
+): ReadonlyArray<PretextVisualHarnessScenarioComparison> {
+  return report.scenarioComparisons.filter((comparison) =>
+    comparison.routeKind !== routeKind
+  );
+}
+
+function getScenarioComparisonMaxCls(
+  comparisons: ReadonlyArray<PretextVisualHarnessScenarioComparison>,
+  variantKey: ComparisonVariantKey,
+): number {
+  return comparisons.reduce(
+    (maxValue, comparison) => Math.max(maxValue, comparison[variantKey].cls),
+    0,
+  );
+}
+
 function buildScenarioDeltaScore(
   comparison: PretextVisualHarnessScenarioComparison,
 ): number {
@@ -83,6 +117,14 @@ function buildInterpretationLines(
   report: PretextVisualHarnessComparisonReport,
 ): ReadonlyArray<string> {
   const lines: string[] = [];
+  const probeScenarioComparisons = filterScenarioComparisonsByRouteKind(
+    report,
+    "probe",
+  );
+  const publicScenarioComparisons = filterScenarioComparisonsExcludingRouteKind(
+    report,
+    "probe",
+  );
   const titleDelta = report.withPretext.sampleCounts.title -
     report.withoutPretext.sampleCounts.title;
   const summaryDelta = report.withPretext.sampleCounts.summary -
@@ -90,7 +132,10 @@ function buildInterpretationLines(
   const pretextBackedPixelMinBlockSizeDelta =
     report.withPretext.sampleCounts.pretextBackedPixelMinBlockSize -
     report.withoutPretext.sampleCounts.pretextBackedPixelMinBlockSize;
-  const maxClsDelta = report.withoutPretext.maxCls - report.withPretext.maxCls;
+  const publicMaxClsDelta = publicScenarioComparisons.length === 0
+    ? report.withoutPretext.maxCls - report.withPretext.maxCls
+    : getScenarioComparisonMaxCls(publicScenarioComparisons, "withoutPretext") -
+      getScenarioComparisonMaxCls(publicScenarioComparisons, "withPretext");
 
   if (
     titleDelta === 0 &&
@@ -127,18 +172,29 @@ function buildInterpretationLines(
     );
   }
 
-  if (maxClsDelta > 0) {
+  if (probeScenarioComparisons.length > 0 && titleDelta > 0) {
     lines.push(
-      `Worst-case CLS improves by ${formatClsValue(maxClsDelta)} with Pretext.`,
+      "The direct runtime signal comes from the dedicated browser probe route, which mounts the targeted React surfaces explicitly instead of relying on mostly static public-route HTML.",
     );
-  } else if (maxClsDelta === 0) {
     lines.push(
-      "Max CLS is identical between the two variants on this runner.",
+      "Read probe-route CLS separately from the public-route guard: the probe is intentionally client-mounted, so its CLS is diagnostic rather than a production UX benchmark.",
+    );
+  }
+
+  if (publicMaxClsDelta > 0) {
+    lines.push(
+      `Worst-case public-route CLS improves by ${
+        formatClsValue(publicMaxClsDelta)
+      } with Pretext.`,
+    );
+  } else if (publicMaxClsDelta === 0) {
+    lines.push(
+      "Worst-case public-route CLS is identical between the two variants on this runner.",
     );
   } else {
     lines.push(
-      `Max CLS is higher with Pretext by ${
-        formatClsValue(Math.abs(maxClsDelta))
+      `Worst-case public-route CLS is higher with Pretext by ${
+        formatClsValue(Math.abs(publicMaxClsDelta))
       }, which merits a focused visual inspection.`,
     );
   }
@@ -153,6 +209,30 @@ export function buildPretextVisualHarnessComparisonSummaryMarkdown(
   const maxScenarioRows = options.maxScenarioRows ?? 12;
   const differingScenarioComparisons = getDifferingScenarioComparisons(report);
   const scenarioRows = differingScenarioComparisons.slice(0, maxScenarioRows);
+  const publicScenarioComparisons = filterScenarioComparisonsExcludingRouteKind(
+    report,
+    "probe",
+  );
+  const probeScenarioComparisons = filterScenarioComparisonsByRouteKind(
+    report,
+    "probe",
+  );
+  const withPublicMaxCls = getScenarioComparisonMaxCls(
+    publicScenarioComparisons,
+    "withPretext",
+  );
+  const withoutPublicMaxCls = getScenarioComparisonMaxCls(
+    publicScenarioComparisons,
+    "withoutPretext",
+  );
+  const withProbeMaxCls = getScenarioComparisonMaxCls(
+    probeScenarioComparisons,
+    "withPretext",
+  );
+  const withoutProbeMaxCls = getScenarioComparisonMaxCls(
+    probeScenarioComparisons,
+    "withoutPretext",
+  );
   const lines = [
     "# Pretext Visual Harness Comparison",
     "",
@@ -175,10 +255,22 @@ export function buildPretextVisualHarnessComparisonSummaryMarkdown(
     `| Max CLS | ${formatClsValue(report.withPretext.maxCls)} | ${
       formatClsValue(report.withoutPretext.maxCls)
     } | ${
-      formatSignedDelta(
-        Number(
-          (report.withPretext.maxCls - report.withoutPretext.maxCls).toFixed(6),
-        ),
+      formatSignedClsDelta(
+        report.withPretext.maxCls - report.withoutPretext.maxCls,
+      )
+    } |`,
+    `| Public-route max CLS | ${formatClsValue(withPublicMaxCls)} | ${
+      formatClsValue(withoutPublicMaxCls)
+    } | ${
+      formatSignedClsDelta(
+        withPublicMaxCls - withoutPublicMaxCls,
+      )
+    } |`,
+    `| Probe-route max CLS | ${formatClsValue(withProbeMaxCls)} | ${
+      formatClsValue(withoutProbeMaxCls)
+    } | ${
+      formatSignedClsDelta(
+        withProbeMaxCls - withoutProbeMaxCls,
       )
     } |`,
     `| Non-zero CLS scenarios | ${report.withPretext.nonZeroClsScenarioCount} | ${report.withoutPretext.nonZeroClsScenarioCount} | ${
@@ -242,15 +334,15 @@ export function buildPretextVisualHarnessComparisonSummaryMarkdown(
     lines.push("No scenario-level delta detected between the two variants.");
   } else {
     lines.push(
-      "| Scenario | CLS with | CLS without | Title vars | Summary vars | Pretext-backed pixel min-block-size |",
+      "| Scenario | Route kind | CLS with | CLS without | Title vars | Summary vars | Pretext-backed pixel min-block-size |",
     );
-    lines.push("| --- | --- | --- | --- | --- | --- |");
+    lines.push("| --- | --- | --- | --- | --- | --- | --- |");
 
     for (const comparison of scenarioRows) {
       lines.push(
         `| ${escapeMarkdownCell(comparison.stem)} | ${
-          formatClsValue(comparison.withPretext.cls)
-        } | ${
+          escapeMarkdownCell(comparison.routeKind)
+        } | ${formatClsValue(comparison.withPretext.cls)} | ${
           formatClsValue(comparison.withoutPretext.cls)
         } | ${comparison.withPretext.sampleCounts.title} / ${comparison.withoutPretext.sampleCounts.title} | ${comparison.withPretext.sampleCounts.summary} / ${comparison.withoutPretext.sampleCounts.summary} | ${comparison.withPretext.sampleCounts.pretextBackedPixelMinBlockSize} / ${comparison.withoutPretext.sampleCounts.pretextBackedPixelMinBlockSize} |`,
       );

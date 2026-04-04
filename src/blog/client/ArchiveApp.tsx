@@ -49,7 +49,7 @@ type ArchiveMonthNavYearGroupWithAnchorItems =
     anchorItems: ArchiveMonthNavAnchorItem[];
   }>;
 
-function ArchiveTimelineItem(
+export function ArchiveTimelineItem(
   {
     story,
     indexLabel,

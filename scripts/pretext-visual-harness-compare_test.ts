@@ -160,11 +160,19 @@ describe("buildPretextVisualHarnessComparisonSummaryMarkdown()", () => {
     );
     assertStringIncludes(
       markdown,
+      "| Public-route max CLS | 0.000000 | 0.001200 | -0.001200 |",
+    );
+    assertStringIncludes(
+      markdown,
+      "| Probe-route max CLS | 0.000000 | 0.000000 | 0.000000 |",
+    );
+    assertStringIncludes(
+      markdown,
       "Pretext is visibly active in the reference run",
     );
     assertStringIncludes(
       markdown,
-      "| archive-fr-desktop | 0.000000 | 0.001200 | 1 / 0 | 1 / 0 | 2 / 0 |",
+      "| archive-fr-desktop | archive | 0.000000 | 0.001200 | 1 / 0 | 1 / 0 | 2 / 0 |",
     );
   });
 });

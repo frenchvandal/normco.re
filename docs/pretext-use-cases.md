@@ -193,6 +193,12 @@ Il visite les surfaces publiques vraiment utilisées :
 - `archive`
 - `post`
 
+Et il ajoute désormais une route interne dédiée :
+
+- `probe`, qui monte explicitement `StoryCard`, `FeaturedStory`, `StoryGrid`,
+  `ArchiveTimelineItem`, `SignalStoryLink` et `OutlineTimelineLink` dans un vrai
+  navigateur, afin d'obtenir un signal runtime direct sur Pretext.
+
 Et il les rend pour :
 
 - `en`
@@ -214,6 +220,12 @@ Ce harness produit :
 - les erreurs console/page/request ;
 - un échec explicite si une route répond mal ou si des sélecteurs attendus ont
   disparu.
+
+Le point important est la complémentarité :
+
+- les routes publiques restent le garde-fou UX et CLS ;
+- la route `probe` sert de banc d'essai navigateur pour les composants React
+  réellement instrumentés par Pretext.
 
 Commandes de base :
 

@@ -280,7 +280,7 @@ type StoryCardProps = Readonly<{
   readingTooltip?: string | undefined;
 }>;
 
-function StoryCard(
+export function StoryCard(
   {
     index,
     measureText = true,
@@ -418,7 +418,7 @@ function SignalStories(
   );
 }
 
-function SignalStoryLink(
+export function SignalStoryLink(
   {
     index,
     story,
