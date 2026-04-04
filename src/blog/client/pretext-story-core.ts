@@ -1,4 +1,5 @@
 import {
+  clearCache,
   layout,
   layoutWithLines,
   prepare,
@@ -23,6 +24,13 @@ export type TextStyleSnapshot = Readonly<{
   fontWeight: string;
   lineHeight: string;
 }>;
+
+export type MeasuredTextStyleVariables = {
+  "--pretext-summary-height"?: string;
+  "--pretext-summary-lines"?: number;
+  "--pretext-title-height"?: string;
+  "--pretext-title-lines"?: number;
+};
 
 export type TextLineCursor = Readonly<{
   graphemeIndex: number;
@@ -59,6 +67,7 @@ export type PretextEngine<Prepared = unknown> = Readonly<{
     maxWidth: number,
     lineHeight: number,
   ): TextMeasurement;
+  clearCache?(): void;
   prepare(text: string, font: string): Prepared;
   setLocale?(locale?: string): void;
 }>;
@@ -104,6 +113,7 @@ export const EMPTY_WIDEST_LINE_MEASUREMENT = {
 } as const satisfies WidestLineMeasurement;
 
 export const PRETEXT_ENGINE = {
+  clearCache,
   layout,
   layoutWithLines,
   prepare,
@@ -128,6 +138,14 @@ function normalizeLocale(locale?: string): string | undefined {
   return normalized === "" ? undefined : normalized;
 }
 
+export function clearPretextMeasurementCaches(
+  engine: PretextEngine,
+): void {
+  PREPARED_TEXT_CACHE.delete(engine);
+  PREPARED_SEGMENT_TEXT_CACHE.delete(engine as PretextSegmentEngine);
+  engine.clearCache?.();
+}
+
 function syncPretextLocale(
   engine: PretextEngine,
   locale?: string,
@@ -137,28 +155,103 @@ function syncPretextLocale(
 
   if (engine.setLocale && activeLocale !== normalizedLocale) {
     engine.setLocale(normalizedLocale);
-    PREPARED_TEXT_CACHE.delete(engine);
-    PREPARED_SEGMENT_TEXT_CACHE.delete(engine as PretextSegmentEngine);
+    clearPretextMeasurementCaches(engine);
     PRETEXT_LOCALE_STATE.set(engine, normalizedLocale);
   }
 
   return normalizedLocale;
 }
 
-function parsePxValue(value: string): number | undefined {
+function parsePixelValue(value: string): number | undefined {
   const trimmedValue = value.trim();
 
-  if (trimmedValue === "") {
+  if (trimmedValue === "" || !trimmedValue.endsWith("px")) {
     return undefined;
-  }
-
-  if (trimmedValue.endsWith("px")) {
-    const parsedValue = Number.parseFloat(trimmedValue);
-    return Number.isFinite(parsedValue) ? parsedValue : undefined;
   }
 
   const parsedValue = Number.parseFloat(trimmedValue);
   return Number.isFinite(parsedValue) ? parsedValue : undefined;
+}
+
+function parseUnitlessNumber(value: string): number | undefined {
+  const trimmedValue = value.trim();
+
+  if (!/^[+-]?(?:\d+|\d*\.\d+)$/.test(trimmedValue)) {
+    return undefined;
+  }
+
+  const parsedValue = Number.parseFloat(trimmedValue);
+  return Number.isFinite(parsedValue) ? parsedValue : undefined;
+}
+
+function parseRelativeEmValue(value: string): number | undefined {
+  const trimmedValue = value.trim();
+
+  if (!/^[+-]?(?:\d+|\d*\.\d+)em$/.test(trimmedValue)) {
+    return undefined;
+  }
+
+  const parsedValue = Number.parseFloat(trimmedValue);
+  return Number.isFinite(parsedValue) ? parsedValue : undefined;
+}
+
+export function readTextStyleSnapshot(
+  element: HTMLElement,
+): TextStyleSnapshot {
+  const computedStyle = element.ownerDocument.defaultView?.getComputedStyle(
+    element,
+  );
+
+  return {
+    fontSize: computedStyle?.fontSize ?? "16px",
+    fontStyle: computedStyle?.fontStyle ?? "normal",
+    fontWeight: computedStyle?.fontWeight ?? "400",
+    lineHeight: computedStyle?.lineHeight ?? "normal",
+  };
+}
+
+export function buildMeasuredTextStyleVariables(
+  measurements: MeasuredTextState,
+): MeasuredTextStyleVariables {
+  return {
+    ...(measurements.title.height > 0
+      ? {
+        "--pretext-title-height": `${measurements.title.height}px`,
+        "--pretext-title-lines": measurements.title.lineCount,
+      }
+      : {}),
+    ...(measurements.summary.height > 0
+      ? {
+        "--pretext-summary-height": `${measurements.summary.height}px`,
+        "--pretext-summary-lines": measurements.summary.lineCount,
+      }
+      : {}),
+  };
+}
+
+export function observeDocumentFontLoads(
+  document: Document,
+  onLoadingDone: () => void,
+): (() => void) | undefined {
+  const fontSet = document.fonts;
+
+  if (
+    !fontSet ||
+    typeof fontSet.addEventListener !== "function" ||
+    typeof fontSet.removeEventListener !== "function"
+  ) {
+    return undefined;
+  }
+
+  const handleLoadingDone = () => {
+    onLoadingDone();
+  };
+
+  fontSet.addEventListener("loadingdone", handleLoadingDone);
+
+  return () => {
+    fontSet.removeEventListener("loadingdone", handleLoadingDone);
+  };
 }
 
 export function buildPretextFont(
@@ -179,19 +272,27 @@ export function resolveLineHeightPx(
   lineHeightValue: string,
   fontSizeValue: string,
 ): number {
-  const fontSize = parsePxValue(fontSizeValue) ?? 16;
+  const fontSize = parsePixelValue(fontSizeValue) ?? 16;
   const trimmedLineHeight = lineHeightValue.trim();
 
   if (trimmedLineHeight === "" || trimmedLineHeight === "normal") {
     return fontSize * 1.2;
   }
 
-  if (trimmedLineHeight.endsWith("px")) {
-    return parsePxValue(trimmedLineHeight) ?? fontSize * 1.2;
+  const lineHeightPx = parsePixelValue(trimmedLineHeight);
+
+  if (lineHeightPx !== undefined) {
+    return lineHeightPx;
   }
 
-  const parsedUnitlessValue = Number.parseFloat(trimmedLineHeight);
-  return Number.isFinite(parsedUnitlessValue)
+  const lineHeightEm = parseRelativeEmValue(trimmedLineHeight);
+
+  if (lineHeightEm !== undefined) {
+    return lineHeightEm * fontSize;
+  }
+
+  const parsedUnitlessValue = parseUnitlessNumber(trimmedLineHeight);
+  return parsedUnitlessValue !== undefined
     ? parsedUnitlessValue * fontSize
     : fontSize * 1.2;
 }

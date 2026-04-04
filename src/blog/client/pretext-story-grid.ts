@@ -11,22 +11,22 @@ import type { BlogStoryCard } from "../view-data.ts";
 import { STORY_GRID_TWO_COLUMN_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
 import {
   balanceTextMeasurementsByRow,
+  buildMeasuredTextStyleVariables,
   buildPretextFont,
+  clearPretextMeasurementCaches,
   EMPTY_MEASURED_TEXT_STATE,
   type MeasuredTextState,
+  type MeasuredTextStyleVariables,
   measureTextBlock,
+  observeDocumentFontLoads,
   PRETEXT_ENGINE,
   PRETEXT_MEASURE_FONT_TOKEN,
+  readTextStyleSnapshot,
   resolveLineHeightPx,
   type TextStyleSnapshot,
 } from "./pretext-story-core.ts";
 
-type MeasuredTextStyle = CSSProperties & {
-  "--pretext-summary-height"?: string;
-  "--pretext-summary-lines"?: number;
-  "--pretext-title-height"?: string;
-  "--pretext-title-lines"?: number;
-};
+type MeasuredTextStyle = CSSProperties & MeasuredTextStyleVariables;
 
 type MeasurementSample = Readonly<{
   locale?: string | undefined;
@@ -41,19 +41,6 @@ type MeasurementSample = Readonly<{
   };
 }>;
 
-function readTextStyleSnapshot(element: HTMLElement): TextStyleSnapshot {
-  const computedStyle = element.ownerDocument.defaultView?.getComputedStyle(
-    element,
-  );
-
-  return {
-    fontSize: computedStyle?.fontSize ?? "16px",
-    fontStyle: computedStyle?.fontStyle ?? "normal",
-    fontWeight: computedStyle?.fontWeight ?? "400",
-    lineHeight: computedStyle?.lineHeight ?? "normal",
-  };
-}
-
 function queryMeasuredElement(
   container: HTMLElement,
   selector: string,
@@ -62,22 +49,26 @@ function queryMeasuredElement(
   return candidate instanceof HTMLElement ? candidate : null;
 }
 
-function buildMeasuredTextStyle(
-  measurements: MeasuredTextState,
-): MeasuredTextStyle {
-  const style: MeasuredTextStyle = {};
+function queryMeasuredElements(
+  container: HTMLElement,
+  selector: string,
+): HTMLElement[] {
+  return Array.from(container.querySelectorAll(selector)).filter(
+    (candidate): candidate is HTMLElement => candidate instanceof HTMLElement,
+  );
+}
 
-  if (measurements.title.height > 0) {
-    style["--pretext-title-height"] = `${measurements.title.height}px`;
-    style["--pretext-title-lines"] = measurements.title.lineCount;
-  }
-
-  if (measurements.summary.height > 0) {
-    style["--pretext-summary-height"] = `${measurements.summary.height}px`;
-    style["--pretext-summary-lines"] = measurements.summary.lineCount;
-  }
-
-  return style;
+function collectObservedElements(
+  container: HTMLElement,
+  summaryVisible: boolean,
+): HTMLElement[] {
+  return [
+    container,
+    ...queryMeasuredElements(container, ".blog-antd-story-card__title"),
+    ...(summaryVisible
+      ? queryMeasuredElements(container, ".blog-antd-story-card__summary")
+      : []),
+  ];
 }
 
 function buildMeasurementSample(
@@ -173,7 +164,7 @@ function buildStyleMap(
   posts.forEach((story, index) => {
     styleMap.set(
       story.url,
-      buildMeasuredTextStyle(
+      buildMeasuredTextStyleVariables(
         measurements[index] ?? EMPTY_MEASURED_TEXT_STATE,
       ),
     );
@@ -280,19 +271,25 @@ export function useBalancedStoryGridTextStyles(
       return;
     }
 
-    const observedElements = [
-      container,
-      queryMeasuredElement(container, ".blog-antd-story-card__title"),
-      queryMeasuredElement(container, ".blog-antd-story-card__summary"),
-    ].filter((element): element is HTMLElement => element !== null);
-
     const observer = new ResizeObserver(() => {
       updateMeasurements(container);
     });
 
+    const observedElements = collectObservedElements(container, summaryVisible);
     observedElements.forEach((element) => observer.observe(element));
 
     return () => observer.disconnect();
+  }, [container, posts, summaryVisible]);
+
+  useEffect(() => {
+    if (!container) {
+      return;
+    }
+
+    return observeDocumentFontLoads(container.ownerDocument, () => {
+      clearPretextMeasurementCaches(PRETEXT_ENGINE);
+      updateMeasurements(container);
+    });
   }, [container]);
 
   useEffect(() => {

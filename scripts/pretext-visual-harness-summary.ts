@@ -1,4 +1,3 @@
-import type { GitHubArtifactUploadResult } from "./github-actions.ts";
 import type {
   HarnessIssue,
   HarnessReport,
@@ -6,29 +5,12 @@ import type {
 } from "./pretext-visual-harness.ts";
 
 type PretextVisualHarnessSummaryOptions = Readonly<{
-  artifact?: GitHubArtifactUploadResult;
   maxClsRows?: number;
   maxIssueRows?: number;
 }>;
 
 function formatClsValue(value: number): string {
   return value.toFixed(6);
-}
-
-function formatBytes(value?: number): string {
-  if (value === undefined) {
-    return "n/a";
-  }
-
-  if (value < 1024) {
-    return `${value} B`;
-  }
-
-  if (value < 1024 * 1024) {
-    return `${(value / 1024).toFixed(1)} KiB`;
-  }
-
-  return `${(value / (1024 * 1024)).toFixed(2)} MiB`;
 }
 
 function escapeMarkdownCell(value: string): string {
@@ -83,7 +65,6 @@ export function buildPretextVisualHarnessSummaryMarkdown(
   report: HarnessReport,
   options: PretextVisualHarnessSummaryOptions = {},
 ): string {
-  const artifact = options.artifact;
   const maxClsRows = options.maxClsRows ?? 5;
   const maxIssueRows = options.maxIssueRows ?? 10;
   const maxCls = getPretextVisualHarnessMaxCls(report);
@@ -111,16 +92,6 @@ export function buildPretextVisualHarnessSummaryMarkdown(
 
   if (report.rootDir !== undefined) {
     lines.push(`| Static root | ${escapeMarkdownCell(report.rootDir)} |`);
-  }
-
-  if (artifact !== undefined) {
-    lines.push(`| Artifact | ${escapeMarkdownCell(artifact.name)} |`);
-    lines.push(`| Artifact files | ${artifact.fileCount} |`);
-    lines.push(`| Artifact size | ${formatBytes(artifact.size)} |`);
-
-    if (artifact.id !== undefined) {
-      lines.push(`| Artifact ID | ${artifact.id} |`);
-    }
   }
 
   lines.push("", "## CLS Outliers", "");

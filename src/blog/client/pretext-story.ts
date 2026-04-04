@@ -7,25 +7,24 @@ import {
 } from "npm/react";
 import {
   areTextMeasurementsEqual,
+  buildMeasuredTextStyleVariables,
   buildPretextFont,
+  clearPretextMeasurementCaches,
   EMPTY_MEASURED_TEXT_STATE,
   EMPTY_TEXT_MEASUREMENT,
   type MeasuredTextState,
+  type MeasuredTextStyleVariables,
   measureTextBlock,
+  observeDocumentFontLoads,
   PRETEXT_ENGINE,
   PRETEXT_MEASURE_FONT_TOKEN,
   type PretextEngine,
+  readTextStyleSnapshot,
   resolveLineHeightPx,
   type TextMeasurement,
-  type TextStyleSnapshot,
 } from "./pretext-story-core.ts";
 
-type MeasuredTextStyle = CSSProperties & {
-  "--pretext-summary-height"?: string;
-  "--pretext-summary-lines"?: number;
-  "--pretext-title-height"?: string;
-  "--pretext-title-lines"?: number;
-};
+type MeasuredTextStyle = CSSProperties & MeasuredTextStyleVariables;
 
 type UsePretextTextStyleOptions = Readonly<{
   disabled?: boolean | undefined;
@@ -34,19 +33,6 @@ type UsePretextTextStyleOptions = Readonly<{
   title: string;
   titleSelector: string;
 }>;
-
-function readTextStyleSnapshot(element: HTMLElement): TextStyleSnapshot {
-  const computedStyle = element.ownerDocument.defaultView?.getComputedStyle(
-    element,
-  );
-
-  return {
-    fontSize: computedStyle?.fontSize ?? "16px",
-    fontStyle: computedStyle?.fontStyle ?? "normal",
-    fontWeight: computedStyle?.fontWeight ?? "400",
-    lineHeight: computedStyle?.lineHeight ?? "normal",
-  };
-}
 
 function measureElementText(
   element: HTMLElement | null,
@@ -82,31 +68,6 @@ function measureElementText(
   });
 }
 
-function buildMeasuredTextStyle(
-  measurements: MeasuredTextState,
-): MeasuredTextStyle {
-  const style: MeasuredTextStyle = {};
-
-  if (measurements.title.height > 0) {
-    style["--pretext-title-height"] = `${measurements.title.height}px`;
-    style["--pretext-title-lines"] = measurements.title.lineCount;
-  }
-
-  if (measurements.summary.height > 0) {
-    style["--pretext-summary-height"] = `${measurements.summary.height}px`;
-    style["--pretext-summary-lines"] = measurements.summary.lineCount;
-  }
-
-  return style;
-}
-
-function areMeasurementsEqual(
-  current: MeasuredTextState,
-  next: MeasuredTextState,
-): boolean {
-  return areTextMeasurementsEqual(current, next);
-}
-
 function queryMeasuredElement(
   container: HTMLElement,
   selector?: string | undefined,
@@ -139,7 +100,9 @@ export function usePretextTextStyle(
   const updateMeasurements = useEffectEvent(
     (currentContainer: HTMLElement | null) => {
       if (disabled || !currentContainer) {
-        if (!areMeasurementsEqual(measurements, EMPTY_MEASURED_TEXT_STATE)) {
+        if (
+          !areTextMeasurementsEqual(measurements, EMPTY_MEASURED_TEXT_STATE)
+        ) {
           startTransition(() => setMeasurements(EMPTY_MEASURED_TEXT_STATE));
         }
         return;
@@ -156,7 +119,7 @@ export function usePretextTextStyle(
         ),
       } as const satisfies MeasuredTextState;
 
-      if (!areMeasurementsEqual(measurements, nextMeasurements)) {
+      if (!areTextMeasurementsEqual(measurements, nextMeasurements)) {
         startTransition(() => setMeasurements(nextMeasurements));
       }
     },
@@ -194,8 +157,19 @@ export function usePretextTextStyle(
     return () => observer.disconnect();
   }, [container, disabled, summarySelector, titleSelector]);
 
+  useEffect(() => {
+    if (disabled || !container) {
+      return;
+    }
+
+    return observeDocumentFontLoads(container.ownerDocument, () => {
+      clearPretextMeasurementCaches(PRETEXT_ENGINE);
+      updateMeasurements(container);
+    });
+  }, [container, disabled]);
+
   return {
     ref: setContainer,
-    style: buildMeasuredTextStyle(measurements),
+    style: buildMeasuredTextStyleVariables(measurements),
   };
 }

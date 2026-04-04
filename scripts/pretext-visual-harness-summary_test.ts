@@ -81,25 +81,14 @@ function createHarnessReport(
 }
 
 describe("buildPretextVisualHarnessSummaryMarkdown()", () => {
-  it("renders the key metrics, CLS outliers, issues, and artifact metadata", () => {
+  it("renders the key metrics, CLS outliers, and issues", () => {
     const markdown = buildPretextVisualHarnessSummaryMarkdown(
       createHarnessReport(),
-      {
-        artifact: {
-          name: "pretext-visual-harness",
-          rootDir: "/repo/.tmp/pretext-harness",
-          fileCount: 34,
-          id: 42,
-          size: 12_288,
-        },
-      },
     );
 
     assertStringIncludes(markdown, "# Pretext Visual Harness");
     assertStringIncludes(markdown, "| Scenarios | 2 |");
     assertStringIncludes(markdown, "| Max CLS | 0.001605 |");
-    assertStringIncludes(markdown, "| Artifact | pretext-visual-harness |");
-    assertStringIncludes(markdown, "| Artifact ID | 42 |");
     assertStringIncludes(
       markdown,
       "| archive-fr-desktop | 0.001605 | /fr/posts/ | desktop |",

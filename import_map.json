@@ -47,7 +47,6 @@
     "npm/ant-design-icons-svg/UnorderedListOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/UnorderedListOutlined.js",
     "npm/ant-design-icons-svg/WechatFilled.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/WechatFilled.js",
     "npm/ant-design-static-style-extract": "npm:@ant-design/static-style-extract@2.1.0",
-    "npm/actions-artifact": "npm:@actions/artifact@6.2.1",
     "npm/actions-core": "npm:@actions/core@3.0.0",
     "npm/antd": "npm:antd@6.3.5",
     "npm/date-fns/locale": "npm:date-fns@4.1.0/locale",

@@ -30,3 +30,12 @@ jobs:
 
       - name: Run Pretext visual harness
         run: deno task pretext:harness:ci
+
+      - name: Upload Pretext harness artifact
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: pretext-visual-harness
+          path: .tmp/pretext-harness
+          if-no-files-found: warn
+          retention-days: 7

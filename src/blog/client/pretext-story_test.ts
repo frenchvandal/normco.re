@@ -3,7 +3,9 @@ import { describe, it } from "@std/testing/bdd";
 
 import {
   balanceTextMeasurementsByRow,
+  buildMeasuredTextStyleVariables,
   buildPretextFont,
+  clearPretextMeasurementCaches,
   layoutTextBlockWithLines,
   measureTextBlock,
   measureTextBlockWidestLine,
@@ -33,12 +35,37 @@ describe("resolveLineHeightPx()", () => {
     assertEquals(resolveLineHeightPx("28px", "18px"), 28);
   });
 
+  it("resolves relative em line heights from the computed font size", () => {
+    assertEquals(resolveLineHeightPx("1.5em", "20px"), 30);
+  });
+
   it("resolves unitless line heights from the computed font size", () => {
     assertEquals(resolveLineHeightPx("1.25", "20px"), 25);
   });
 
   it("falls back to a readable default when line-height is normal", () => {
     assertAlmostEquals(resolveLineHeightPx("normal", "18px"), 21.6);
+  });
+
+  it("falls back to a readable default for unsupported units", () => {
+    assertAlmostEquals(resolveLineHeightPx("1.5rem", "18px"), 21.6);
+  });
+});
+
+describe("buildMeasuredTextStyleVariables()", () => {
+  it("serializes measured heights and line counts into CSS variables", () => {
+    assertEquals(
+      buildMeasuredTextStyleVariables({
+        title: { height: 48, lineCount: 2 },
+        summary: { height: 72, lineCount: 3 },
+      }),
+      {
+        "--pretext-title-height": "48px",
+        "--pretext-title-lines": 2,
+        "--pretext-summary-height": "72px",
+        "--pretext-summary-lines": 3,
+      },
+    );
   });
 });
 
@@ -125,6 +152,48 @@ describe("measureTextBlock()", () => {
 
     assertEquals(preparedKeys.length, 2);
     assertEquals(localeCalls, ["fr", "en"]);
+  });
+});
+
+describe("clearPretextMeasurementCaches()", () => {
+  it("drops prepared text caches and forwards clearCache to the engine", () => {
+    const preparedKeys: string[] = [];
+    const clearCacheCalls: number[] = [];
+    const engine = {
+      clearCache() {
+        clearCacheCalls.push(1);
+      },
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return {
+          height: lineHeight,
+          lineCount: 1,
+        };
+      },
+      prepare(text: string, font: string) {
+        const key = `${font}::${text}`;
+        preparedKeys.push(key);
+        return key;
+      },
+    };
+
+    measureTextBlock(engine, {
+      font: '600 18px "Segoe UI"',
+      lineHeight: 24,
+      locale: "fr",
+      text: "Bonjour",
+      width: 200,
+    });
+    clearPretextMeasurementCaches(engine);
+    measureTextBlock(engine, {
+      font: '600 18px "Segoe UI"',
+      lineHeight: 24,
+      locale: "fr",
+      text: "Bonjour",
+      width: 200,
+    });
+
+    assertEquals(preparedKeys.length, 2);
+    assertEquals(clearCacheCalls.length, 1);
   });
 });
 

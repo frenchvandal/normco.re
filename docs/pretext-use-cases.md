@@ -107,7 +107,10 @@ Socle bas niveau désormais disponible aussi :
 - `layoutTextBlockWithLines(...)` pour inspecter les lignes calculées ;
 - `measureTextBlockWidestLine(...)` pour récupérer la largeur réelle de la ligne
   la plus large après layout ;
-- cache dédié `prepareWithSegments(...)` avec invalidation par locale.
+- cache dédié `prepareWithSegments(...)` avec invalidation par locale ;
+- invalidation explicite des caches de mesure quand `document.fonts` signale la
+  fin d'un chargement, pour éviter de conserver des mesures faites avant
+  l'arrivée d'une webfont.
 
 ## Utilisation concrète dans le repo
 
@@ -217,6 +220,10 @@ En CI GitHub Actions, le workflow exécute :
 deno task pretext:harness:install
 deno task pretext:harness:ci
 ```
+
+Puis le workflow publie `.tmp/pretext-harness/` en artifact via
+`actions/upload-artifact`, tandis que Deno reste responsable du `summary.md` et
+du job summary.
 
 Sortie par défaut :
 

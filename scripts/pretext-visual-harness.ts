@@ -11,10 +11,7 @@ import {
 
 import { createUsageError, getErrorMessage } from "./_shared.ts";
 import { REPO_ROOT } from "./deno_graph.ts";
-import {
-  uploadGitHubArtifactDirectory,
-  writeGitHubJobSummary,
-} from "./github-actions.ts";
+import { writeGitHubJobSummary } from "./github-actions.ts";
 import { buildPretextVisualHarnessSummaryMarkdown } from "./pretext-visual-harness-summary.ts";
 import {
   getLanguageDataCode,
@@ -140,7 +137,6 @@ type ScenarioEvaluationPayload = Readonly<{
 }>;
 
 const FALLBACK_CONTENT_TYPE = "application/octet-stream" as const;
-const PRETEXT_VISUAL_HARNESS_ARTIFACT_NAME = "pretext-visual-harness";
 const PLAYWRIGHT_EXECUTABLE_BASENAMES = new Set([
   "chrome-headless-shell",
   "chrome-headless-shell.exe",
@@ -899,31 +895,7 @@ async function writeHarnessOutputs(report: HarnessReport): Promise<string> {
 async function publishHarnessOutputsToGitHubActions(
   report: HarnessReport,
 ): Promise<void> {
-  let artifactError: Error | undefined;
-  let artifact: Awaited<ReturnType<typeof uploadGitHubArtifactDirectory>>;
-
-  try {
-    artifact = await uploadGitHubArtifactDirectory(
-      PRETEXT_VISUAL_HARNESS_ARTIFACT_NAME,
-      report.outputDir,
-      { retentionDays: 7 },
-    );
-  } catch (error) {
-    artifactError = error instanceof Error
-      ? error
-      : new Error(getErrorMessage(error));
-  }
-
-  const summaryMarkdown = buildPretextVisualHarnessSummaryMarkdown(
-    report,
-    artifact === undefined ? {} : { artifact },
-  );
-
-  await writeGitHubJobSummary(summaryMarkdown);
-
-  if (artifactError !== undefined) {
-    throw artifactError;
-  }
+  await writeGitHubJobSummary(buildPretextVisualHarnessSummaryMarkdown(report));
 }
 
 export async function runPretextVisualHarness(
