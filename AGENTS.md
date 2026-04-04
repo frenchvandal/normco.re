@@ -1,5 +1,8 @@
 # AGENTS.md
 
+This is the canonical instruction file for AI assistants in this repository.
+`CLAUDE.md` and `GEMINI.md` are compatibility symlinks to this document.
+
 All changes must be tested: if you have not tested your changes, you are not
 done.\
 Be humble and honest: **NEVER** overstate what you have accomplished or what

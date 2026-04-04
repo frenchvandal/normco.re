@@ -20,7 +20,7 @@ import {
 } from "./i18n.ts";
 
 // Seed range: 1101–1199 if Faker is introduced here
-// (see CLAUDE.md "TypeScript Tests And Faker")
+// (see AGENTS.md "TypeScript Tests And Faker")
 
 describe("SUPPORTED_LANGUAGES", () => {
   it("contains exactly four languages in the expected order", () => {

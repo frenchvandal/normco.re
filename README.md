@@ -285,9 +285,9 @@ documents the infrastructure in more detail.
 ## Additional Documentation
 
 - [ARCHITECTURE.md](./ARCHITECTURE.md)
-- [AGENTS.md](./AGENTS.md)
-- [CLAUDE.md](./CLAUDE.md)
-- [GEMINI.md](./GEMINI.md)
+- [AGENTS.md](./AGENTS.md) is the canonical AI assistant instructions file.
+  [CLAUDE.md](./CLAUDE.md) and [GEMINI.md](./GEMINI.md) are compatibility
+  symlinks to the same document.
 - [docs/mobile-clients.md](./docs/mobile-clients.md)
 - [docs/mobile-content-api.md](./docs/mobile-content-api.md)
 - [docs/mobile-phase-0.md](./docs/mobile-phase-0.md)
