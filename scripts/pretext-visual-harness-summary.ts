@@ -201,7 +201,7 @@ export function buildPretextVisualHarnessSummaryMarkdown(
   lines.push("", "## Issues", "");
 
   if (issueRows.length === 0) {
-    lines.push("No harness issue reported.");
+    lines.push("No issues were reported.");
   } else {
     lines.push("| Severity | Code | Scenario | Message |");
     lines.push("| --- | --- | --- | --- |");

@@ -29,6 +29,21 @@ describe("buildPretextFont()", () => {
       '700 20px "Segoe UI", Roboto, sans-serif',
     );
   });
+
+  it("omits the default 400 weight from the measurement font string", () => {
+    assertEquals(
+      buildPretextFont(
+        {
+          fontSize: "16px",
+          fontStyle: "normal",
+          fontWeight: "400",
+          lineHeight: "24px",
+        },
+        '"Segoe UI", Roboto, sans-serif',
+      ),
+      '16px "Segoe UI", Roboto, sans-serif',
+    );
+  });
 });
 
 describe("isPretextRuntimeEnabled()", () => {

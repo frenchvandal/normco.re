@@ -98,45 +98,48 @@ function buildInterpretationLines(
     pretextBackedPixelMinBlockSizeDelta === 0
   ) {
     lines.push(
-      "Le compare n'a détecté aucun signal runtime propre à Pretext sur la matrice testée ; dans l'état actuel du repo, cela suggère surtout que les routes publiques couvertes restent largement statiques ou n'exposent pas encore les surfaces React concernées pendant le run.",
+      "The comparison did not detect a route-level runtime signal unique to Pretext on this matrix. In the current repository shape, that usually means the public pages under test remain mostly static or do not mount the targeted React surfaces during the run.",
+    );
+    lines.push(
+      "Read the React harness as the primary efficacy signal for Pretext itself; read this browser comparison as a visual-regression and CLS guard for the public routes.",
     );
   } else if (titleDelta > 0 || summaryDelta > 0) {
     lines.push(
-      `Pretext est bien actif sur le run de référence : +${titleDelta} sample(s) avec variable titre et +${summaryDelta} sample(s) avec variable résumé.`,
+      `Pretext is visibly active in the reference run: +${titleDelta} sample(s) with title variables, and +${summaryDelta} sample(s) with summary variables.`,
     );
   } else {
     lines.push(
-      "Le variant sans Pretext expose plus de variables que prévu ; cela mérite une vérification du flag runtime.",
+      "The no-Pretext variant exposes more tracked variables than expected; the runtime flag deserves a closer look.",
     );
   }
 
   if (pretextBackedPixelMinBlockSizeDelta > 0) {
     lines.push(
-      `Le variant avec Pretext résout +${pretextBackedPixelMinBlockSizeDelta} sample(s) avec un \`min-block-size\` en pixels effectivement adossé à Pretext.`,
+      `The Pretext-enabled variant resolves +${pretextBackedPixelMinBlockSizeDelta} sample(s) with a pixel \`min-block-size\` that is genuinely backed by Pretext.`,
     );
   } else if (pretextBackedPixelMinBlockSizeDelta === 0) {
     lines.push(
-      "Les deux variants résolvent le même nombre de `min-block-size` en pixels explicitement adossés à Pretext sur les nœuds suivis.",
+      "Both variants resolve the same number of pixel `min-block-size` values that are explicitly backed by Pretext on the tracked nodes.",
     );
   } else {
     lines.push(
-      "Le variant sans Pretext résout davantage de `min-block-size` en pixels adossés à Pretext ; ce n'est pas le comportement attendu.",
+      "The no-Pretext variant resolves more Pretext-backed pixel `min-block-size` values, which is not the expected behavior.",
     );
   }
 
   if (maxClsDelta > 0) {
     lines.push(
-      `Le pire CLS baisse de ${formatClsValue(maxClsDelta)} avec Pretext.`,
+      `Worst-case CLS improves by ${formatClsValue(maxClsDelta)} with Pretext.`,
     );
   } else if (maxClsDelta === 0) {
     lines.push(
-      "Le CLS maximal reste identique entre les deux variants sur ce runner.",
+      "Max CLS is identical between the two variants on this runner.",
     );
   } else {
     lines.push(
-      `Le CLS maximal est plus élevé avec Pretext de ${
+      `Max CLS is higher with Pretext by ${
         formatClsValue(Math.abs(maxClsDelta))
-      }, ce qui mérite une inspection visuelle ciblée.`,
+      }, which merits a focused visual inspection.`,
     );
   }
 

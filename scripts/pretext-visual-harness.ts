@@ -633,24 +633,9 @@ async function evaluateScenarioPage(
           const style = globalThis.getComputedStyle(element);
           const rect = element.getBoundingClientRect();
           const rawLineHeight = Number.parseFloat(style.lineHeight);
-          const resolveNearestCustomProperty = (
-            name: string,
-          ): string | null => {
-            let currentElement: Element | null = element;
-
-            while (currentElement) {
-              const value = globalThis.getComputedStyle(currentElement)
-                .getPropertyValue(name)
-                .trim();
-
-              if (value.length > 0) {
-                return value;
-              }
-
-              currentElement = currentElement.parentElement;
-            }
-
-            return null;
+          const resolveCustomProperty = (name: string): string | null => {
+            const value = style.getPropertyValue(name).trim();
+            return value.length > 0 ? value : null;
           };
 
           return {
@@ -665,10 +650,10 @@ async function evaluateScenarioPage(
               style.minBlockSize === "0px" || style.minBlockSize.length === 0
                 ? null
                 : style.minBlockSize,
-            pretextTitleHeight: resolveNearestCustomProperty(
+            pretextTitleHeight: resolveCustomProperty(
               "--pretext-title-height",
             ),
-            pretextSummaryHeight: resolveNearestCustomProperty(
+            pretextSummaryHeight: resolveCustomProperty(
               "--pretext-summary-height",
             ),
           };

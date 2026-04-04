@@ -127,6 +127,8 @@ export const PRETEXT_DISABLE_GLOBAL_FLAG = "__PH_DISABLE_PRETEXT__" as const;
 
 const FALLBACK_MEASURE_FONT =
   '"Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif';
+// Keep caches scoped by engine so tests and future multi-engine variants can
+// isolate prepared text without changing the cache contract again later.
 const PREPARED_TEXT_CACHE = new WeakMap<PretextEngine, Map<string, unknown>>();
 const PREPARED_SEGMENT_TEXT_CACHE = new WeakMap<
   PretextSegmentEngine,
@@ -134,7 +136,9 @@ const PREPARED_SEGMENT_TEXT_CACHE = new WeakMap<
 >();
 const PRETEXT_LOCALE_STATE = new WeakMap<PretextEngine, string | undefined>();
 
-function normalizeLocale(locale?: string): string | undefined {
+export function normalizePretextLocale(
+  locale?: string,
+): string | undefined {
   const normalized = locale?.trim();
   return normalized === "" ? undefined : normalized;
 }
@@ -161,7 +165,7 @@ function syncPretextLocale(
   engine: PretextEngine,
   locale?: string,
 ): string | undefined {
-  const normalizedLocale = normalizeLocale(locale);
+  const normalizedLocale = normalizePretextLocale(locale);
   const activeLocale = PRETEXT_LOCALE_STATE.get(engine);
 
   if (engine.setLocale && activeLocale !== normalizedLocale) {
@@ -271,7 +275,9 @@ export function buildPretextFont(
 ): string {
   return [
     style.fontStyle === "normal" ? "" : style.fontStyle,
-    style.fontWeight === "normal" ? "" : style.fontWeight,
+    (style.fontWeight === "normal" || style.fontWeight === "400")
+      ? ""
+      : style.fontWeight,
     style.fontSize,
     measureFontFamily.trim() || FALLBACK_MEASURE_FONT,
   ]
@@ -287,6 +293,8 @@ export function resolveLineHeightPx(
   const trimmedLineHeight = lineHeightValue.trim();
 
   if (trimmedLineHeight === "" || trimmedLineHeight === "normal") {
+    // `normal` remains font-dependent in CSS, so keep the fallback explicit and
+    // prefer author-specified line-heights on measured surfaces when precision matters.
     return fontSize * 1.2;
   }
 

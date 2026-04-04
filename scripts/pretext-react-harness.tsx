@@ -15,6 +15,18 @@ import {
   PRETEXT_ENGINE,
   PRETEXT_MEASURE_FONT_TOKEN,
 } from "../src/blog/client/pretext-story-core.ts";
+import {
+  PRETEXT_ARCHIVE_TIMELINE_SUMMARY_SELECTOR,
+  PRETEXT_ARCHIVE_TIMELINE_TITLE_SELECTOR,
+  PRETEXT_FEATURE_CARD_SUMMARY_SELECTOR,
+  PRETEXT_FEATURE_CARD_TITLE_SELECTOR,
+  PRETEXT_OUTLINE_LINK_TEXT_SELECTOR,
+  PRETEXT_SIGNAL_LIST_TITLE_SELECTOR,
+  PRETEXT_STORY_CARD_SUMMARY_CLASS,
+  PRETEXT_STORY_CARD_SUMMARY_SELECTOR,
+  PRETEXT_STORY_CARD_TITLE_CLASS,
+  PRETEXT_STORY_CARD_TITLE_SELECTOR,
+} from "../src/blog/client/pretext-selectors.ts";
 import { useBalancedStoryGridTextStyles } from "../src/blog/client/pretext-story-grid.ts";
 import { usePretextTextStyle } from "../src/blog/client/pretext-story.ts";
 import { STORY_GRID_TWO_COLUMN_MEDIA_QUERY } from "../src/utils/layout-breakpoints.ts";
@@ -229,22 +241,22 @@ const OUTLINE_TITLE_STYLE = {
 
 const TEXT_SURFACE_FIXTURES = {
   "story-card": {
-    summarySelector: ".blog-antd-story-card__summary",
-    titleSelector: ".blog-antd-story-card__title",
+    summarySelector: PRETEXT_STORY_CARD_SUMMARY_SELECTOR,
+    titleSelector: PRETEXT_STORY_CARD_TITLE_SELECTOR,
   },
   "featured-story": {
-    summarySelector: ".blog-antd-feature-card__summary",
-    titleSelector: ".blog-antd-feature-card__title",
+    summarySelector: PRETEXT_FEATURE_CARD_SUMMARY_SELECTOR,
+    titleSelector: PRETEXT_FEATURE_CARD_TITLE_SELECTOR,
   },
   "archive-item": {
-    summarySelector: ".blog-antd-archive-timeline__summary",
-    titleSelector: ".blog-antd-archive-timeline__title",
+    summarySelector: PRETEXT_ARCHIVE_TIMELINE_SUMMARY_SELECTOR,
+    titleSelector: PRETEXT_ARCHIVE_TIMELINE_TITLE_SELECTOR,
   },
   "signal-story": {
-    titleSelector: ".blog-antd-signal-list__title",
+    titleSelector: PRETEXT_SIGNAL_LIST_TITLE_SELECTOR,
   },
   "outline-link": {
-    titleSelector: ".blog-antd-outline-link__text",
+    titleSelector: PRETEXT_OUTLINE_LINK_TEXT_SELECTOR,
   },
 } as const satisfies Record<
   TextSurfaceId,
@@ -967,23 +979,23 @@ export function buildPretextReactHarnessSummaryMarkdown(
 
   lines.push("", "## Interpretation", "");
   lines.push(
-    `- Le harness React observe directement les sorties utiles des hooks : variables CSS de titre/résumé pour les surfaces mono-carte, et équilibrage par rangée pour \`StoryGrid\`.`,
+    "- The React harness measures the hooks directly: title and summary CSS variables for single-surface probes, and row balancing for `StoryGrid`.",
   );
   lines.push(
-    `- Ici, l'utilité de Pretext se lit surtout dans deux familles de métriques fiables : nombre de surfaces où les variables \`--pretext-*\` existent réellement, et nombre de rangées de grille effectivement équilibrées.`,
+    "- In the current repository shape, this is the primary efficacy signal for Pretext because it renders the measurement hooks in a controlled DOM instead of inferring their effect from mostly static route HTML.",
   );
   lines.push(
-    `- Sur ce run, le variant avec Pretext couvre ${
+    `- On this run, the Pretext-enabled variant covers ${
       formatCoverage(
         report.withPretext.titleVarScenarios,
         report.withPretext.textScenarioCount,
       )
-    } des surfaces texte et ${
+    } of text surfaces and ${
       formatCoverage(
         report.withPretext.balancedTitleRows,
         report.withPretext.comparableGridRows,
       )
-    } des rangées comparables de \`StoryGrid\` pour les titres.`,
+    } of comparable \`StoryGrid\` rows for titles.`,
   );
 
   lines.push("", "## Text Surfaces", "");
@@ -1107,7 +1119,7 @@ function readGridMetrics(
     rowMetrics,
     summaryCardCount:
       cards.filter((card) =>
-        card.querySelector(".blog-antd-story-card__summary") !== null
+        card.querySelector(PRETEXT_STORY_CARD_SUMMARY_SELECTOR) !== null
       ).length,
     summaryVarCardCount:
       cards.filter((card) =>
@@ -1258,7 +1270,7 @@ function StoryGridProbe(
         createElement(
           "h3",
           {
-            className: "blog-antd-story-card__title",
+            className: PRETEXT_STORY_CARD_TITLE_CLASS,
             "data-inline-size": viewport.gridTitleWidth,
             style: STORY_TITLE_STYLE,
           },
@@ -1268,7 +1280,7 @@ function StoryGridProbe(
           ? createElement(
             "p",
             {
-              className: "blog-antd-story-card__summary",
+              className: PRETEXT_STORY_CARD_SUMMARY_CLASS,
               "data-inline-size": viewport.gridSummaryWidth,
               style: STORY_SUMMARY_STYLE,
             },

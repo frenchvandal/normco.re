@@ -22,6 +22,18 @@ import {
   BLOG_ANTD_READING_METER_PROGRESS,
   BLOG_ANTD_TOOLTIP_CLASSNAMES,
 } from "./antd-semantic.ts";
+import {
+  PRETEXT_FEATURE_CARD_SUMMARY_CLASS,
+  PRETEXT_FEATURE_CARD_SUMMARY_SELECTOR,
+  PRETEXT_FEATURE_CARD_TITLE_CLASS,
+  PRETEXT_FEATURE_CARD_TITLE_SELECTOR,
+  PRETEXT_SIGNAL_LIST_TITLE_CLASS,
+  PRETEXT_SIGNAL_LIST_TITLE_SELECTOR,
+  PRETEXT_STORY_CARD_SUMMARY_CLASS,
+  PRETEXT_STORY_CARD_SUMMARY_SELECTOR,
+  PRETEXT_STORY_CARD_TITLE_CLASS,
+  PRETEXT_STORY_CARD_TITLE_SELECTOR,
+} from "./pretext-selectors.ts";
 import { usePretextTextStyle } from "./pretext-story.ts";
 import { useBalancedStoryGridTextStyles } from "./pretext-story-grid.ts";
 import {
@@ -282,9 +294,9 @@ function StoryCard(
   const measuredText = usePretextTextStyle({
     disabled: !measureText,
     summary: summaryVisible ? story.summary : undefined,
-    summarySelector: ".blog-antd-story-card__summary",
+    summarySelector: PRETEXT_STORY_CARD_SUMMARY_SELECTOR,
     title: story.title,
-    titleSelector: ".blog-antd-story-card__title",
+    titleSelector: PRETEXT_STORY_CARD_TITLE_SELECTOR,
   });
 
   return (
@@ -312,11 +324,11 @@ function StoryCard(
             readingTooltip={readingTooltip}
           />
           <StoryTags story={story} />
-          <Title level={3} className="blog-antd-story-card__title">
+          <Title level={3} className={PRETEXT_STORY_CARD_TITLE_CLASS}>
             <span>{story.title}</span>
           </Title>
           {summaryVisible && story.summary && (
-            <Paragraph className="blog-antd-story-card__summary">
+            <Paragraph className={PRETEXT_STORY_CARD_SUMMARY_CLASS}>
               {story.summary}
             </Paragraph>
           )}
@@ -421,7 +433,7 @@ function SignalStoryLink(
 ) {
   const measuredText = usePretextTextStyle({
     title: story.title,
-    titleSelector: ".blog-antd-signal-list__title",
+    titleSelector: PRETEXT_SIGNAL_LIST_TITLE_SELECTOR,
   });
 
   return (
@@ -435,7 +447,7 @@ function SignalStoryLink(
         {formatIndex(index + 1)}
       </span>
       <span className="blog-antd-signal-list__body">
-        <span className="blog-antd-signal-list__title">{story.title}</span>
+        <span className={PRETEXT_SIGNAL_LIST_TITLE_CLASS}>{story.title}</span>
         <MetaLine
           dateIso={story.dateIso}
           dateLabel={story.dateLabel}
@@ -466,9 +478,9 @@ export function FeaturedStory(
   const hasSecondaryStories = secondaryStories.length > 0;
   const measuredText = usePretextTextStyle({
     summary: story.summary,
-    summarySelector: ".blog-antd-feature-card__summary",
+    summarySelector: PRETEXT_FEATURE_CARD_SUMMARY_SELECTOR,
     title: story.title,
-    titleSelector: ".blog-antd-feature-card__title",
+    titleSelector: PRETEXT_FEATURE_CARD_TITLE_SELECTOR,
   });
 
   return (
@@ -496,7 +508,7 @@ export function FeaturedStory(
                 </Tag>
                 <Title
                   level={2}
-                  className="blog-antd-feature-card__title"
+                  className={PRETEXT_FEATURE_CARD_TITLE_CLASS}
                 >
                   <span>{story.title}</span>
                 </Title>
@@ -508,7 +520,7 @@ export function FeaturedStory(
                   readingTooltip={readingTooltip}
                 />
                 {story.summary && (
-                  <Paragraph className="blog-antd-feature-card__summary">
+                  <Paragraph className={PRETEXT_FEATURE_CARD_SUMMARY_CLASS}>
                     {story.summary}
                   </Paragraph>
                 )}

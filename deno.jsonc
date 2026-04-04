@@ -37,7 +37,7 @@
     },
     "pretext:react-harness:ci": {
       "description": "Run the React-focused Pretext harness with the extra permissions required for GitHub job summary publishing",
-      "command": "deno run --allow-env --allow-read --allow-write=.tmp/pretext-react-harness --allow-sys=uid scripts/pretext-react-harness.tsx"
+      "command": "deno run --allow-env --allow-read --allow-write --allow-sys=uid scripts/pretext-react-harness.tsx"
     },
     "serve": {
       "description": "Run and serve the site for development",

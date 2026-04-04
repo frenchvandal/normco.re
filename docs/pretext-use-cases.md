@@ -58,6 +58,10 @@ La version installée expose :
 
 Elle **n'expose pas** `prepareInlineFlow`.
 
+À date, le registre npm ne publie pas de version plus récente :
+`@chenglou/pretext` s'arrête toujours à `0.0.4`. Il n'y a donc pas encore de
+chemin réaliste de mise à niveau immédiat pour débloquer une API plus riche.
+
 Conséquence pratique : les idées autour des éléments atomiques dans
 `SignalStories` sont intéressantes conceptuellement, mais ne doivent pas être
 considérées comme la prochaine étape naturelle dans l'état actuel du repo.
@@ -111,6 +115,8 @@ Socle bas niveau désormais disponible aussi :
 - invalidation explicite des caches de mesure quand `document.fonts` signale la
   fin d'un chargement, pour éviter de conserver des mesures faites avant
   l'arrivée d'une webfont.
+- flag global `__PH_DISABLE_PRETEXT__` pour forcer un run sans Pretext dans les
+  harness A/B et les diagnostics ciblés.
 
 ## Utilisation concrète dans le repo
 
@@ -263,6 +269,8 @@ Sur un runner GitHub, Deno publie aussi un job summary GitHub à partir du
 le harness React y ajoute sa propre section en append. L'upload des fichiers
 reste géré explicitement par le workflow. La détection du contexte runner reste
 basée sur `GITHUB_ACTIONS=true`, ce qui évite d'activer le job summary en local.
+Les summaries publiés en CI sont rédigés en anglais pour rester directement
+exploitables dans GitHub Actions.
 
 Important : ce harness mesure **l'effet réel** de l'intégration Pretext dans un
 vrai navigateur. Il est donc très bon pour valider la stabilité visuelle, la
@@ -274,6 +282,16 @@ Le compare A/B apporte un garde-fou supplémentaire : il permet de vérifier non
 seulement que le rendu final reste stable, mais aussi que le variant
 `with-pretext` active bien les variables `--pretext-*` et les `min-block-size`
 résolus attendus, tout en confrontant ce signal au variant `without-pretext`.
+
+Point important découvert en pratique : sur l'état actuel du repo, le compare
+navigateur peut aussi conclure honnêtement qu'il n'observe **aucun** signal
+runtime propre à Pretext sur la matrice de routes publiques. Quand cela arrive,
+il faut l'interpréter comme :
+
+- un compare utile pour le garde-fou visuel/CLS ;
+- mais pas comme la meilleure mesure de l'utilité intrinsèque de Pretext ;
+- parce que les routes publiques couvertes restent en grande partie statiques ou
+  n'exposent pas encore les surfaces React visées pendant le run.
 
 Le harness React complète ce signal par une mesure beaucoup plus directe de
 l'utilité des hooks Pretext eux-mêmes. Il ne dépend pas des routes publiques ni
@@ -499,6 +517,8 @@ Verdict : **intégration utile, déjà exploitée dans le socle actuel**.
 - éviter les chemins de rendu parallèles sans bénéfice produit net ;
 - profiler sur contenu réel `fr` et `zh-*`, pas seulement sur Lorem Ipsum ;
 - conserver une pile de police explicite pour la mesure ;
+- préférer un `line-height` explicite sur les surfaces mesurées, car CSS
+  `normal` reste nécessairement approximé côté mesure ;
 - ne pas supposer qu'une idée séduisante dans le README Pretext est
   automatiquement prioritaire pour `normco.re`.
 

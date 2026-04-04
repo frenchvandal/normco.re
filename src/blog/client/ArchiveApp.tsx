@@ -28,6 +28,12 @@ import {
   BLOG_ANTD_PRIMARY_BUTTON_ROOT,
   BLOG_ANTD_SKELETON_CLASSNAMES,
 } from "./antd-semantic.ts";
+import {
+  PRETEXT_ARCHIVE_TIMELINE_SUMMARY_CLASS,
+  PRETEXT_ARCHIVE_TIMELINE_SUMMARY_SELECTOR,
+  PRETEXT_ARCHIVE_TIMELINE_TITLE_CLASS,
+  PRETEXT_ARCHIVE_TIMELINE_TITLE_SELECTOR,
+} from "./pretext-selectors.ts";
 import { usePretextTextStyle } from "./pretext-story.ts";
 import { BLOG_ANTD_SPACE_4 } from "./spacing.ts";
 
@@ -62,9 +68,9 @@ function ArchiveTimelineItem(
 ) {
   const measuredText = usePretextTextStyle({
     summary: story.summary,
-    summarySelector: ".blog-antd-archive-timeline__summary",
+    summarySelector: PRETEXT_ARCHIVE_TIMELINE_SUMMARY_SELECTOR,
     title: story.title,
-    titleSelector: ".blog-antd-archive-timeline__title",
+    titleSelector: PRETEXT_ARCHIVE_TIMELINE_TITLE_SELECTOR,
   });
 
   return (
@@ -99,12 +105,12 @@ function ArchiveTimelineItem(
       </div>
       <Title
         level={3}
-        className="blog-antd-archive-timeline__title"
+        className={PRETEXT_ARCHIVE_TIMELINE_TITLE_CLASS}
       >
         <a href={story.url}>{story.title}</a>
       </Title>
       {story.summary && (
-        <Paragraph className="blog-antd-archive-timeline__summary">
+        <Paragraph className={PRETEXT_ARCHIVE_TIMELINE_SUMMARY_CLASS}>
           {story.summary}
         </Paragraph>
       )}

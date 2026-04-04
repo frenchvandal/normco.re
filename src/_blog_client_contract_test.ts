@@ -28,6 +28,9 @@ const archiveAppSource = Deno.readTextFileSync(
 const pretextStoryCoreSource = Deno.readTextFileSync(
   new URL("./blog/client/pretext-story-core.ts", import.meta.url),
 );
+const pretextSelectorsSource = Deno.readTextFileSync(
+  new URL("./blog/client/pretext-selectors.ts", import.meta.url),
+);
 const tagAppSource = Deno.readTextFileSync(
   new URL("./blog/client/TagApp.tsx", import.meta.url),
 );
@@ -69,7 +72,11 @@ describe("blog client interaction contracts", () => {
     assertStringIncludes(postAppSource, "function OutlineTimelineLink(");
     assertStringIncludes(
       postAppSource,
-      'titleSelector: ".blog-antd-outline-link__text"',
+      "titleSelector: PRETEXT_OUTLINE_LINK_TEXT_SELECTOR",
+    );
+    assertStringIncludes(
+      pretextSelectorsSource,
+      'PRETEXT_OUTLINE_LINK_TEXT_CLASS = "blog-antd-outline-link__text"',
     );
     assertStringIncludes(blogAntdStyles, ".blog-antd-outline-link__text {");
     assertStringIncludes(
@@ -148,11 +155,19 @@ describe("blog client interaction contracts", () => {
     assertStringIncludes(commonSource, "style={measuredText.style}");
     assertStringIncludes(
       commonSource,
-      'titleSelector: ".blog-antd-story-card__title"',
+      "titleSelector: PRETEXT_STORY_CARD_TITLE_SELECTOR",
     );
     assertStringIncludes(
       archiveAppSource,
-      'titleSelector: ".blog-antd-archive-timeline__title"',
+      "titleSelector: PRETEXT_ARCHIVE_TIMELINE_TITLE_SELECTOR",
+    );
+    assertStringIncludes(
+      pretextSelectorsSource,
+      'PRETEXT_STORY_CARD_TITLE_CLASS = "blog-antd-story-card__title"',
+    );
+    assertStringIncludes(
+      pretextSelectorsSource,
+      'PRETEXT_ARCHIVE_TIMELINE_TITLE_CLASS =\n  "blog-antd-archive-timeline__title"',
     );
     assertStringIncludes(blogAntdStyles, "--pretext-title-height");
     assertStringIncludes(blogAntdStyles, "--pretext-summary-height");
@@ -186,7 +201,11 @@ describe("blog client interaction contracts", () => {
     assertStringIncludes(commonSource, "function SignalStoryLink(");
     assertStringIncludes(
       commonSource,
-      'titleSelector: ".blog-antd-signal-list__title"',
+      "titleSelector: PRETEXT_SIGNAL_LIST_TITLE_SELECTOR",
+    );
+    assertStringIncludes(
+      pretextSelectorsSource,
+      'PRETEXT_SIGNAL_LIST_TITLE_CLASS = "blog-antd-signal-list__title"',
     );
     assertStringIncludes(blogAntdStyles, ".blog-antd-signal-list__title {");
     assertStringIncludes(

@@ -19,6 +19,7 @@ import {
   type MeasuredTextState,
   type MeasuredTextStyleVariables,
   measureTextBlock,
+  normalizePretextLocale,
   observeDocumentFontLoads,
   PRETEXT_ENGINE,
   PRETEXT_MEASURE_FONT_TOKEN,
@@ -26,6 +27,10 @@ import {
   resolveLineHeightPx,
   type TextStyleSnapshot,
 } from "./pretext-story-core.ts";
+import {
+  PRETEXT_STORY_CARD_SUMMARY_SELECTOR,
+  PRETEXT_STORY_CARD_TITLE_SELECTOR,
+} from "./pretext-selectors.ts";
 
 type MeasuredTextStyle = CSSProperties & MeasuredTextStyleVariables;
 
@@ -65,9 +70,9 @@ function collectObservedElements(
 ): HTMLElement[] {
   return [
     container,
-    ...queryMeasuredElements(container, ".blog-antd-story-card__title"),
+    ...queryMeasuredElements(container, PRETEXT_STORY_CARD_TITLE_SELECTOR),
     ...(summaryVisible
-      ? queryMeasuredElements(container, ".blog-antd-story-card__summary")
+      ? queryMeasuredElements(container, PRETEXT_STORY_CARD_SUMMARY_SELECTOR)
       : []),
   ];
 }
@@ -78,7 +83,7 @@ function buildMeasurementSample(
 ): MeasurementSample | undefined {
   const titleElement = queryMeasuredElement(
     container,
-    ".blog-antd-story-card__title",
+    PRETEXT_STORY_CARD_TITLE_SELECTOR,
   );
 
   if (!titleElement) {
@@ -95,11 +100,13 @@ function buildMeasurementSample(
     container.ownerDocument.documentElement,
   );
   const summaryElement = summaryVisible
-    ? queryMeasuredElement(container, ".blog-antd-story-card__summary")
+    ? queryMeasuredElement(container, PRETEXT_STORY_CARD_SUMMARY_SELECTOR)
     : null;
 
   return {
-    locale: container.ownerDocument.documentElement.lang,
+    locale: normalizePretextLocale(
+      container.ownerDocument.documentElement.lang,
+    ),
     measureFontFamily: rootStyle.getPropertyValue(PRETEXT_MEASURE_FONT_TOKEN),
     ...(summaryElement
       ? {
@@ -176,6 +183,24 @@ function buildStyleMap(
   return styleMap;
 }
 
+function areMeasuredTextStylesEqual(
+  current: MeasuredTextStyle,
+  next: MeasuredTextStyle,
+): boolean {
+  const keys = new Set([...Object.keys(current), ...Object.keys(next)]);
+
+  for (const key of keys) {
+    if (
+      current[key as keyof MeasuredTextStyle] !==
+        next[key as keyof MeasuredTextStyle]
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function areStyleMapsEqual(
   current: ReadonlyMap<string, MeasuredTextStyle>,
   next: ReadonlyMap<string, MeasuredTextStyle>,
@@ -191,16 +216,7 @@ function areStyleMapsEqual(
       return false;
     }
 
-    if (
-      currentStyle["--pretext-title-height"] !==
-        nextStyle["--pretext-title-height"] ||
-      currentStyle["--pretext-title-lines"] !==
-        nextStyle["--pretext-title-lines"] ||
-      currentStyle["--pretext-summary-height"] !==
-        nextStyle["--pretext-summary-height"] ||
-      currentStyle["--pretext-summary-lines"] !==
-        nextStyle["--pretext-summary-lines"]
-    ) {
+    if (!areMeasuredTextStylesEqual(currentStyle, nextStyle)) {
       return false;
     }
   }

@@ -172,6 +172,6 @@ describe("buildPretextVisualHarnessSummaryMarkdown()", () => {
     );
 
     assertStringIncludes(markdown, "All scenarios reported `0.000000` CLS.");
-    assertStringIncludes(markdown, "No harness issue reported.");
+    assertStringIncludes(markdown, "No issues were reported.");
   });
 });

@@ -50,6 +50,10 @@ import {
   TrustedHtmlSection,
   TrustedHtmlSpan,
 } from "./common.tsx";
+import {
+  PRETEXT_OUTLINE_LINK_TEXT_CLASS,
+  PRETEXT_OUTLINE_LINK_TEXT_SELECTOR,
+} from "./pretext-selectors.ts";
 import { usePretextTextStyle } from "./pretext-story.ts";
 
 const OUTLINE_TIMELINE_COLORS = {
@@ -65,7 +69,7 @@ function OutlineTimelineLink(
 ) {
   const measuredText = usePretextTextStyle({
     title: text,
-    titleSelector: ".blog-antd-outline-link__text",
+    titleSelector: PRETEXT_OUTLINE_LINK_TEXT_SELECTOR,
   });
 
   return (
@@ -75,7 +79,7 @@ function OutlineTimelineLink(
       className="blog-antd-outline-link"
       style={measuredText.style}
     >
-      <span className="blog-antd-outline-link__text">{text}</span>
+      <span className={PRETEXT_OUTLINE_LINK_TEXT_CLASS}>{text}</span>
     </a>
   );
 }

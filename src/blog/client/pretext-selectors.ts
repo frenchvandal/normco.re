@@ -1,0 +1,34 @@
+export const PRETEXT_STORY_CARD_TITLE_CLASS = "blog-antd-story-card__title";
+export const PRETEXT_STORY_CARD_TITLE_SELECTOR =
+  `.${PRETEXT_STORY_CARD_TITLE_CLASS}`;
+
+export const PRETEXT_STORY_CARD_SUMMARY_CLASS = "blog-antd-story-card__summary";
+export const PRETEXT_STORY_CARD_SUMMARY_SELECTOR =
+  `.${PRETEXT_STORY_CARD_SUMMARY_CLASS}`;
+
+export const PRETEXT_FEATURE_CARD_TITLE_CLASS = "blog-antd-feature-card__title";
+export const PRETEXT_FEATURE_CARD_TITLE_SELECTOR =
+  `.${PRETEXT_FEATURE_CARD_TITLE_CLASS}`;
+
+export const PRETEXT_FEATURE_CARD_SUMMARY_CLASS =
+  "blog-antd-feature-card__summary";
+export const PRETEXT_FEATURE_CARD_SUMMARY_SELECTOR =
+  `.${PRETEXT_FEATURE_CARD_SUMMARY_CLASS}`;
+
+export const PRETEXT_ARCHIVE_TIMELINE_TITLE_CLASS =
+  "blog-antd-archive-timeline__title";
+export const PRETEXT_ARCHIVE_TIMELINE_TITLE_SELECTOR =
+  `.${PRETEXT_ARCHIVE_TIMELINE_TITLE_CLASS}`;
+
+export const PRETEXT_ARCHIVE_TIMELINE_SUMMARY_CLASS =
+  "blog-antd-archive-timeline__summary";
+export const PRETEXT_ARCHIVE_TIMELINE_SUMMARY_SELECTOR =
+  `.${PRETEXT_ARCHIVE_TIMELINE_SUMMARY_CLASS}`;
+
+export const PRETEXT_SIGNAL_LIST_TITLE_CLASS = "blog-antd-signal-list__title";
+export const PRETEXT_SIGNAL_LIST_TITLE_SELECTOR =
+  `.${PRETEXT_SIGNAL_LIST_TITLE_CLASS}`;
+
+export const PRETEXT_OUTLINE_LINK_TEXT_CLASS = "blog-antd-outline-link__text";
+export const PRETEXT_OUTLINE_LINK_TEXT_SELECTOR =
+  `.${PRETEXT_OUTLINE_LINK_TEXT_CLASS}`;

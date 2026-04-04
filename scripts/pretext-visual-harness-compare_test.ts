@@ -160,7 +160,7 @@ describe("buildPretextVisualHarnessComparisonSummaryMarkdown()", () => {
     );
     assertStringIncludes(
       markdown,
-      "Pretext est bien actif sur le run de référence",
+      "Pretext is visibly active in the reference run",
     );
     assertStringIncludes(
       markdown,
