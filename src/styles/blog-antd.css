@@ -382,15 +382,6 @@
     padding: clamp(var(--ph-space-5), 2.6vw, var(--ph-space-6));
   }
 
-  .blog-antd-card {
-    box-shadow: 0 14px 36px
-      color-mix(
-        in oklch,
-        var(--ph-color-fg-default) 7%,
-        transparent
-      );
-  }
-
   .blog-antd-statistic {
     color: var(--ph-color-fg-default);
   }
