@@ -270,12 +270,15 @@
         return;
       }
 
-      const nonEmptyFocusableElements =
-        /** @type {[HTMLElement, ...HTMLElement[]]} */ (focusableElements);
-      const firstFocusable = nonEmptyFocusableElements[0];
-      const lastFocusable = nonEmptyFocusableElements[
-        nonEmptyFocusableElements.length - 1
-      ];
+      const firstFocusable = focusableElements[0];
+      const lastFocusable = focusableElements[focusableElements.length - 1];
+
+      if (!firstFocusable || !lastFocusable) {
+        event.preventDefault();
+        panel.focus();
+        return;
+      }
+
       const activeElement = globalThis.document.activeElement;
 
       if (activeElement === panel) {

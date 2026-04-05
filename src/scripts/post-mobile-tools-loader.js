@@ -22,7 +22,7 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
     }
 
     loaded = true;
-    void import("/scripts/post-mobile-tools.js");
+    void import("./post-mobile-tools.js");
   };
 
   if (mediaQuery.matches) {
