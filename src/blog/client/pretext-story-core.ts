@@ -19,6 +19,7 @@ export type MeasuredTextState = Readonly<{
 }>;
 
 export type TextStyleSnapshot = Readonly<{
+  fontFamily?: string;
   fontSize: string;
   fontStyle: string;
   fontWeight: string;
@@ -218,6 +219,9 @@ export function readTextStyleSnapshot(
   );
 
   return {
+    ...(computedStyle?.fontFamily
+      ? { fontFamily: computedStyle.fontFamily }
+      : {}),
     fontSize: computedStyle?.fontSize ?? "16px",
     fontStyle: computedStyle?.fontStyle ?? "normal",
     fontWeight: computedStyle?.fontWeight ?? "400",
@@ -273,13 +277,17 @@ export function buildPretextFont(
   style: TextStyleSnapshot,
   measureFontFamily: string,
 ): string {
+  const resolvedFontFamily = style.fontFamily?.trim() ||
+    measureFontFamily.trim() ||
+    FALLBACK_MEASURE_FONT;
+
   return [
     style.fontStyle === "normal" ? "" : style.fontStyle,
     (style.fontWeight === "normal" || style.fontWeight === "400")
       ? ""
       : style.fontWeight,
     style.fontSize,
-    measureFontFamily.trim() || FALLBACK_MEASURE_FONT,
+    resolvedFontFamily,
   ]
     .filter(Boolean)
     .join(" ");

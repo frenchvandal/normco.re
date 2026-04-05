@@ -8,6 +8,8 @@ type PretextVisualHarnessComparisonSummaryOptions = Readonly<{
   maxScenarioRows?: number;
 }>;
 
+const PUBLIC_CLS_SIGNIFICANCE_THRESHOLD = 0.01;
+
 function formatClsValue(value: number): string {
   return value.toFixed(6);
 }
@@ -293,21 +295,39 @@ function buildInterpretationLines(
   }
 
   if (publicMaxClsDelta > 0) {
-    lines.push(
-      `Worst-case public-route CLS improves by ${
-        formatClsValue(publicMaxClsDelta)
-      } with Pretext.`,
-    );
+    if (publicMaxClsDelta < PUBLIC_CLS_SIGNIFICANCE_THRESHOLD) {
+      lines.push(
+        `Worst-case public-route CLS is lower with Pretext by ${
+          formatClsValue(publicMaxClsDelta)
+        }, but the delta remains small on this runner.`,
+      );
+    } else {
+      lines.push(
+        `Worst-case public-route CLS improves by ${
+          formatClsValue(publicMaxClsDelta)
+        } with Pretext.`,
+      );
+    }
   } else if (publicMaxClsDelta === 0) {
     lines.push(
       "Worst-case public-route CLS is identical between the two variants on this runner.",
     );
   } else {
-    lines.push(
-      `Worst-case public-route CLS is higher with Pretext by ${
-        formatClsValue(Math.abs(publicMaxClsDelta))
-      }, which merits a focused visual inspection.`,
-    );
+    const absolutePublicMaxClsDelta = Math.abs(publicMaxClsDelta);
+
+    if (absolutePublicMaxClsDelta < PUBLIC_CLS_SIGNIFICANCE_THRESHOLD) {
+      lines.push(
+        `Worst-case public-route CLS is higher with Pretext by ${
+          formatClsValue(absolutePublicMaxClsDelta)
+        }, but the delta remains small on this runner.`,
+      );
+    } else {
+      lines.push(
+        `Worst-case public-route CLS is higher with Pretext by ${
+          formatClsValue(absolutePublicMaxClsDelta)
+        }, which merits a focused visual inspection.`,
+      );
+    }
   }
 
   return lines;

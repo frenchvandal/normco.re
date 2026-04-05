@@ -529,7 +529,9 @@ Verdict : **intégration utile, déjà exploitée dans le socle actuel**.
 - garder Pretext côté React là où la valeur est claire ;
 - éviter les chemins de rendu parallèles sans bénéfice produit net ;
 - profiler sur contenu réel `fr` et `zh-*`, pas seulement sur Lorem Ipsum ;
-- conserver une pile de police explicite pour la mesure ;
+- préférer la `font-family` réellement calculée par le navigateur pour la
+  mesure, avec `--ph-font-measure` comme fallback explicite quand le contexte de
+  test n'expose pas de vraie pile CSS ;
 - préférer un `line-height` explicite sur les surfaces mesurées, car CSS
   `normal` reste nécessairement approximé côté mesure ;
 - ne pas supposer qu'une idée séduisante dans le README Pretext est

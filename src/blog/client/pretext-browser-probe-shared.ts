@@ -83,6 +83,31 @@ export type PretextBrowserProbeDiagnosticSummary = Readonly<{
   sampleCount: number;
 }>;
 
+export function resolvePretextBrowserProbeExpectedHeight(
+  contentHeight: number,
+  appliedHeight: number | null,
+): number {
+  return appliedHeight !== null && Number.isFinite(appliedHeight) &&
+      appliedHeight > 0
+    ? Math.max(contentHeight, appliedHeight)
+    : contentHeight;
+}
+
+export function resolvePretextBrowserProbeExpectedLineCount(
+  contentLineCount: number,
+  expectedHeight: number,
+  lineHeight: number,
+): number {
+  if (expectedHeight <= 0 || lineHeight <= 0) {
+    return contentLineCount;
+  }
+
+  return Math.max(
+    contentLineCount,
+    Math.max(1, Math.round(expectedHeight / lineHeight)),
+  );
+}
+
 export function buildPretextBrowserProbeSectionId(
   surfaceId: PretextBrowserProbeSurfaceId,
 ): string {

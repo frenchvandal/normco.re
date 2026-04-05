@@ -7,6 +7,8 @@ import {
   PRETEXT_BROWSER_PROBE_SELECTOR_EXPECTATIONS,
   PRETEXT_BROWSER_PROBE_SURFACES,
   PRETEXT_BROWSER_PROBE_TEXT_TARGETS,
+  resolvePretextBrowserProbeExpectedHeight,
+  resolvePretextBrowserProbeExpectedLineCount,
 } from "./pretext-browser-probe-shared.ts";
 
 describe("pretext-browser-probe-shared", () => {
@@ -51,6 +53,28 @@ describe("pretext-browser-probe-shared", () => {
         maxAbsHeightDelta: 1.4,
         sampleCount: 1,
       },
+    );
+  });
+
+  it("prefers the applied Pretext height when a balanced box is taller than its raw content", () => {
+    assertEquals(
+      resolvePretextBrowserProbeExpectedHeight(64, 96),
+      96,
+    );
+    assertEquals(
+      resolvePretextBrowserProbeExpectedHeight(64, null),
+      64,
+    );
+  });
+
+  it("derives expected line counts from the effective box height without dropping content lines", () => {
+    assertEquals(
+      resolvePretextBrowserProbeExpectedLineCount(2, 96, 32),
+      3,
+    );
+    assertEquals(
+      resolvePretextBrowserProbeExpectedLineCount(3, 64, 32),
+      3,
     );
   });
 });

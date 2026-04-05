@@ -30,6 +30,22 @@ describe("buildPretextFont()", () => {
     );
   });
 
+  it("prefers the live computed family when the browser resolves one", () => {
+    assertEquals(
+      buildPretextFont(
+        {
+          fontFamily: '-apple-system, "Segoe UI", sans-serif',
+          fontSize: "20px",
+          fontStyle: "normal",
+          fontWeight: "700",
+          lineHeight: "24px",
+        },
+        '"Segoe UI", Roboto, sans-serif',
+      ),
+      '700 20px -apple-system, "Segoe UI", sans-serif',
+    );
+  });
+
   it("omits the default 400 weight from the measurement font string", () => {
     assertEquals(
       buildPretextFont(

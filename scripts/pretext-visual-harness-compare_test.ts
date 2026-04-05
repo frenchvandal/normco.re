@@ -240,4 +240,46 @@ describe("buildPretextVisualHarnessComparisonSummaryMarkdown()", () => {
       "| probe-en-desktop | probe | 0.000000 | 0.000000 | 0 / 0 | 0 / 0 | 0 / 0 | 1 / 4 | 0.85px / 2.25px |",
     );
   });
+
+  it("treats tiny public-route CLS regressions as low-signal runner noise", () => {
+    const withPretext = createHarnessReport("with-pretext", {
+      results: createHarnessReport("with-pretext").results.map((result) =>
+        result.stem === "archive-fr-desktop"
+          ? {
+            ...result,
+            cls: {
+              value: 0.001605,
+              entries: [{ value: 0.001605, startTime: 120 }],
+            },
+          }
+          : result
+      ),
+    });
+    const withoutPretext = createHarnessReport("without-pretext", {
+      results: createHarnessReport("without-pretext").results.map((result) =>
+        result.stem === "archive-fr-desktop"
+          ? {
+            ...result,
+            cls: {
+              value: 0,
+              entries: [],
+            },
+          }
+          : result
+      ),
+    });
+
+    const markdown = buildPretextVisualHarnessComparisonSummaryMarkdown(
+      buildPretextVisualHarnessComparisonReport(
+        "/repo/.tmp/pretext-harness-compare",
+        withPretext,
+        withoutPretext,
+      ),
+    );
+
+    assertStringIncludes(
+      markdown,
+      "Worst-case public-route CLS is higher with Pretext by 0.001605, but the delta remains small on this runner.",
+    );
+  });
 });

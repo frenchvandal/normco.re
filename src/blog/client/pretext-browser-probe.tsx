@@ -29,6 +29,8 @@ import {
   PRETEXT_BROWSER_PROBE_SURFACE_IDS,
   PRETEXT_BROWSER_PROBE_SURFACES,
   PRETEXT_BROWSER_PROBE_TEXT_TARGETS,
+  resolvePretextBrowserProbeExpectedHeight,
+  resolvePretextBrowserProbeExpectedLineCount,
 } from "./pretext-browser-probe-shared.ts";
 import type {
   PretextBrowserProbeSurfaceId,
@@ -58,13 +60,14 @@ type PretextProbeDiagnosticLine = Readonly<{
 type PretextProbeDiagnostic = Readonly<{
   actualHeight: number;
   actualLineCount: number | null;
+  contentHeight: number;
+  expectedHeight: number;
+  expectedLineCount: number;
   heightDelta: number;
   kind: PretextBrowserProbeTextTargetKind;
   lineHeight: number;
   lines: readonly PretextProbeDiagnosticLine[];
   minBlockSize: string | null;
-  predictedHeight: number;
-  predictedLineCount: number;
   pretextHeight: string | null;
   sampleIndex: number;
   surfaceKey: PretextBrowserProbeSurfaceKey;
@@ -124,6 +127,17 @@ function resolveProbeHeightCustomProperty(
     .trim();
 
   return value.length > 0 ? value : null;
+}
+
+function parseProbePixelValue(value: string | null): number | null {
+  const trimmedValue = value?.trim();
+
+  if (!trimmedValue || !trimmedValue.endsWith("px")) {
+    return null;
+  }
+
+  const parsedValue = Number.parseFloat(trimmedValue);
+  return Number.isFinite(parsedValue) ? parsedValue : null;
 }
 
 function resolveActualLineCount(
@@ -205,12 +219,30 @@ function collectPretextProbeDiagnostics(
           const actualHeight = roundProbeMetric(
             element.getBoundingClientRect().height,
           );
-          const predictedHeight = roundProbeMetric(measurement.height);
+          const contentHeight = roundProbeMetric(measurement.height);
+          const pretextHeight = resolveProbeHeightCustomProperty(
+            computedStyle,
+            target.kind,
+          );
+          const expectedHeight = roundProbeMetric(
+            resolvePretextBrowserProbeExpectedHeight(
+              contentHeight,
+              parseProbePixelValue(pretextHeight),
+            ),
+          );
+          const expectedLineCount = resolvePretextBrowserProbeExpectedLineCount(
+            lineLayout.lineCount,
+            expectedHeight,
+            lineHeight,
+          );
 
           diagnostics.push({
             actualHeight,
             actualLineCount: resolveActualLineCount(actualHeight, lineHeight),
-            heightDelta: roundProbeMetric(actualHeight - predictedHeight),
+            contentHeight,
+            expectedHeight,
+            expectedLineCount,
+            heightDelta: roundProbeMetric(actualHeight - expectedHeight),
             kind: target.kind,
             lineHeight: roundProbeMetric(lineHeight),
             lines: lineLayout.lines.map((line) => ({
@@ -218,12 +250,7 @@ function collectPretextProbeDiagnostics(
               width: roundProbeMetric(line.width),
             })),
             minBlockSize: resolveProbeMinBlockSize(computedStyle),
-            predictedHeight,
-            predictedLineCount: lineLayout.lineCount,
-            pretextHeight: resolveProbeHeightCustomProperty(
-              computedStyle,
-              target.kind,
-            ),
+            pretextHeight,
             sampleIndex: index,
             surfaceKey: surface.key,
             widestLineWidth: roundProbeMetric(widestLine.widestLineWidth),
@@ -572,8 +599,8 @@ function PretextBrowserProbeApp(
                                   : ""}
                               </span>
                               <span className="blog-antd-probe-diagnostics__metric-snapshot">
-                                {fixture.diagnostics.predictedHeightLabel}:{" "}
-                                {formatProbeMetric(measurement.predictedHeight)}
+                                {fixture.diagnostics.expectedHeightLabel}:{" "}
+                                {formatProbeMetric(measurement.expectedHeight)}
                                 {" · "}
                                 {fixture.diagnostics.actualHeightLabel}:{" "}
                                 {formatProbeMetric(measurement.actualHeight)}
@@ -595,7 +622,15 @@ function PretextBrowserProbeApp(
                                 <dd>
                                   {measurement.actualLineCount ?? "?"}
                                   {" / "}
-                                  {measurement.predictedLineCount}
+                                  {measurement.expectedLineCount}
+                                </dd>
+                              </div>
+                              <div>
+                                <dt>
+                                  {fixture.diagnostics.contentHeightLabel}
+                                </dt>
+                                <dd>
+                                  {formatProbeMetric(measurement.contentHeight)}
                                 </dd>
                               </div>
                               <div>

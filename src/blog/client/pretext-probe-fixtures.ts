@@ -4,10 +4,12 @@ import type { PretextBrowserProbeSurfaceKey } from "./pretext-browser-probe-shar
 
 type PretextProbeDiagnosticsCopy = Readonly<{
   actualHeightLabel: string;
+  contentHeightLabel: string;
   deltaLabel: string;
   diagnosticKicker: string;
   diagnosticLead: string;
   diagnosticTitle: string;
+  expectedHeightLabel: string;
   flaggedLabel: string;
   lineCountLabel: string;
   lineHeightLabel: string;
@@ -15,7 +17,6 @@ type PretextProbeDiagnosticsCopy = Readonly<{
   minBlockSizeLabel: string;
   noMeasurementsLabel: string;
   pretextVariableLabel: string;
-  predictedHeightLabel: string;
   runtimeDisabledLabel: string;
   runtimeEnabledLabel: string;
   sampleCountLabel: string;
@@ -60,11 +61,13 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
     dateTooltip: "Published date",
     diagnostics: {
       actualHeightLabel: "Actual height",
+      contentHeightLabel: "Content height",
       deltaLabel: "Delta",
       diagnosticKicker: "Diagnostics",
       diagnosticLead:
         "This panel compares the measured Pretext prediction with the live DOM box so we can spot drift before it turns into visual noise.",
       diagnosticTitle: "Predicted vs actual text metrics",
+      expectedHeightLabel: "Expected height",
       flaggedLabel: "Over 1px",
       lineCountLabel: "Lines",
       lineHeightLabel: "Line height",
@@ -72,7 +75,6 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
       minBlockSizeLabel: "Min block size",
       noMeasurementsLabel: "No matching text measurements were found yet.",
       pretextVariableLabel: "Applied variable",
-      predictedHeightLabel: "Predicted height",
       runtimeDisabledLabel: "Runtime hooks disabled",
       runtimeEnabledLabel: "Runtime hooks enabled",
       sampleCountLabel: "Samples",
@@ -158,11 +160,13 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
     dateTooltip: "Date de publication",
     diagnostics: {
       actualHeightLabel: "Hauteur réelle",
+      contentHeightLabel: "Hauteur du contenu",
       deltaLabel: "Écart",
       diagnosticKicker: "Diagnostic",
       diagnosticLead:
         "Ce panneau compare la prédiction Pretext à la boîte DOM réelle afin de repérer les dérives avant qu'elles ne deviennent du bruit visuel.",
       diagnosticTitle: "Métriques prévues vs réelles",
+      expectedHeightLabel: "Hauteur attendue",
       flaggedLabel: "Au-delà de 1 px",
       lineCountLabel: "Lignes",
       lineHeightLabel: "Hauteur de ligne",
@@ -171,7 +175,6 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
       noMeasurementsLabel:
         "Aucune mesure de texte correspondante n'a encore été trouvée.",
       pretextVariableLabel: "Variable appliquée",
-      predictedHeightLabel: "Hauteur prévue",
       runtimeDisabledLabel: "Hooks runtime désactivés",
       runtimeEnabledLabel: "Hooks runtime activés",
       sampleCountLabel: "Échantillons",
@@ -258,11 +261,13 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
     dateTooltip: "发布日期",
     diagnostics: {
       actualHeightLabel: "实际高度",
+      contentHeightLabel: "内容高度",
       deltaLabel: "偏差",
       diagnosticKicker: "诊断",
       diagnosticLead:
         "这个面板会把 Pretext 的预测结果和真实 DOM 盒模型进行对比，帮助我们在视觉噪声出现之前发现偏移。",
       diagnosticTitle: "预测值与实际值对照",
+      expectedHeightLabel: "预期高度",
       flaggedLabel: "超过 1px",
       lineCountLabel: "行数",
       lineHeightLabel: "行高",
@@ -270,7 +275,6 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
       minBlockSizeLabel: "最小块尺寸",
       noMeasurementsLabel: "暂时还没有找到匹配的文本测量结果。",
       pretextVariableLabel: "已应用变量",
-      predictedHeightLabel: "预测高度",
       runtimeDisabledLabel: "运行时 Hook 已禁用",
       runtimeEnabledLabel: "运行时 Hook 已启用",
       sampleCountLabel: "样本数",
@@ -348,11 +352,13 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
     dateTooltip: "發佈日期",
     diagnostics: {
       actualHeightLabel: "實際高度",
+      contentHeightLabel: "內容高度",
       deltaLabel: "偏差",
       diagnosticKicker: "診斷",
       diagnosticLead:
         "這個面板會把 Pretext 的預測結果和真實 DOM 盒模型進行對比，幫助我們在視覺噪音出現之前發現偏移。",
       diagnosticTitle: "預測值與實際值對照",
+      expectedHeightLabel: "預期高度",
       flaggedLabel: "超過 1px",
       lineCountLabel: "行數",
       lineHeightLabel: "行高",
@@ -360,7 +366,6 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
       minBlockSizeLabel: "最小區塊尺寸",
       noMeasurementsLabel: "暫時還沒有找到相符的文字測量結果。",
       pretextVariableLabel: "已套用變數",
-      predictedHeightLabel: "預測高度",
       runtimeDisabledLabel: "執行期 Hook 已停用",
       runtimeEnabledLabel: "執行期 Hook 已啟用",
       sampleCountLabel: "樣本數",
