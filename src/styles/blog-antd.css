@@ -423,6 +423,7 @@
   .blog-antd-button--primary {
     border-color: var(--ph-color-accent-emphasis);
     background: var(--ph-color-accent-emphasis);
+    color: var(--ph-color-canvas-default);
   }
 
   .blog-antd-button:hover,
@@ -433,7 +434,7 @@
 
   .blog-antd-button--primary:hover,
   .blog-antd-button--primary:focus-visible {
-    color: white;
+    color: var(--ph-color-canvas-default);
   }
 
   .blog-antd-outline-timeline__rail {
