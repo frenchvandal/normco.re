@@ -17,7 +17,7 @@ function createHarnessReport(
     rootDir: "/repo/_site",
     outputDir: `/repo/.tmp/pretext-harness-compare/${variant}`,
     variant,
-    scenarioCount: 2,
+    scenarioCount: 3,
     errorCount: 0,
     warningCount: 0,
     issues: [],
@@ -76,6 +76,7 @@ function createHarnessReport(
         consoleErrors: [],
         pageErrors: [],
         requestFailures: [],
+        probeDiagnostics: null,
         screenshotPath: "screenshots/archive-fr-desktop.png",
         durationMs: 321.09,
       },
@@ -102,8 +103,48 @@ function createHarnessReport(
         consoleErrors: [],
         pageErrors: [],
         requestFailures: [],
+        probeDiagnostics: null,
         screenshotPath: "screenshots/home-en-mobile.png",
         durationMs: 210.11,
+      },
+      {
+        stem: "probe-en-desktop",
+        variant,
+        routeKind: "probe",
+        language: "en",
+        languageCode: "en",
+        languageTag: "en",
+        pathname: "/pretext/probe/",
+        viewportId: "desktop",
+        viewport: { width: 1440, height: 1200 },
+        url: "http://127.0.0.1:4173/pretext/probe/",
+        status: 200,
+        documentLanguage: "en",
+        pageTitle: "Pretext Browser Probe",
+        selectorMetrics: [],
+        cls: {
+          value: 0,
+          entries: [],
+        },
+        responseErrors: [],
+        consoleErrors: [],
+        pageErrors: [],
+        requestFailures: [],
+        probeDiagnostics: withPretext
+          ? {
+            flaggedCount: 1,
+            maxAbsDelta: 0.85,
+            runtime: "enabled",
+            sampleCount: 12,
+          }
+          : {
+            flaggedCount: 4,
+            maxAbsDelta: 2.25,
+            runtime: "disabled",
+            sampleCount: 12,
+          },
+        screenshotPath: "screenshots/probe-en-desktop.png",
+        durationMs: 287.42,
       },
     ],
     ...overrides,
@@ -118,11 +159,19 @@ describe("buildPretextVisualHarnessComparisonReport()", () => {
       createHarnessReport("without-pretext"),
     );
 
-    assertEquals(report.scenarioCount, 2);
+    assertEquals(report.scenarioCount, 3);
     assertEquals(report.withPretext.sampleCounts, {
       pretextBackedPixelMinBlockSize: 2,
       title: 1,
       summary: 1,
+    });
+    assertEquals(report.withPretext.probeDiagnostics, {
+      flaggedCount: 1,
+      maxAbsHeightDelta: 0.85,
+      runtimeDisabledScenarioCount: 0,
+      runtimeEnabledScenarioCount: 1,
+      sampleCount: 12,
+      scenarioCount: 1,
     });
     assertEquals(report.withoutPretext.sampleCounts, {
       pretextBackedPixelMinBlockSize: 0,
@@ -160,6 +209,14 @@ describe("buildPretextVisualHarnessComparisonSummaryMarkdown()", () => {
     );
     assertStringIncludes(
       markdown,
+      "| Probe diagnostics flagged (> 1px) | 1 | 4 | -3 |",
+    );
+    assertStringIncludes(
+      markdown,
+      "| Probe diagnostics max abs delta | 0.85px | 2.25px | -1.40px |",
+    );
+    assertStringIncludes(
+      markdown,
       "| Public-route max CLS | 0.000000 | 0.001200 | -0.001200 |",
     );
     assertStringIncludes(
@@ -172,7 +229,15 @@ describe("buildPretextVisualHarnessComparisonSummaryMarkdown()", () => {
     );
     assertStringIncludes(
       markdown,
+      "The Pretext-enabled variant reduces probe samples above the flag threshold by 3.",
+    );
+    assertStringIncludes(
+      markdown,
       "| archive-fr-desktop | archive | 0.000000 | 0.001200 | 1 / 0 | 1 / 0 | 2 / 0 |",
+    );
+    assertStringIncludes(
+      markdown,
+      "| probe-en-desktop | probe | 0.000000 | 0.000000 | 0 / 0 | 0 / 0 | 0 / 0 | 1 / 4 | 0.85px / 2.25px |",
     );
   });
 });

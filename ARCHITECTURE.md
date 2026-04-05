@@ -173,6 +173,18 @@ cache. The main reports are:
 - `broken-links-pre-fingerprint.json` for production builds
 - `broken-links.json`, the authoritative post-fingerprint link report
 
+The repository also maintains browser-level Pretext diagnostics outside the main
+build cache:
+
+- `src/pretext/probe.page.tsx` exposes an internal `/pretext/probe/` route that
+  mounts the real React editorial surfaces instrumented by Pretext
+- `scripts/pretext-visual-harness.ts` visits both public pages and that probe
+  route, capturing selector-level metrics, screenshots, CLS, and probe-exported
+  predicted-vs-actual text-drift summaries
+- `scripts/pretext-visual-harness-compare.ts` runs paired `with-pretext` and
+  `without-pretext` passes and publishes markdown summaries that GitHub Actions
+  can surface directly in the job summary
+
 ## Styling Architecture
 
 The site uses a local `--ph-*` token system for the global shell and Ant Design

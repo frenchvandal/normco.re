@@ -8,6 +8,7 @@ import type {
 type PretextVisualHarnessSummaryOptions = Readonly<{
   maxClsRows?: number;
   maxIssueRows?: number;
+  maxProbeRows?: number;
 }>;
 
 export type PretextVisualHarnessSampleCounts = Readonly<{
@@ -16,8 +17,21 @@ export type PretextVisualHarnessSampleCounts = Readonly<{
   title: number;
 }>;
 
+export type PretextVisualHarnessProbeDiagnosticsCounts = Readonly<{
+  flaggedCount: number;
+  maxAbsHeightDelta: number;
+  runtimeDisabledScenarioCount: number;
+  runtimeEnabledScenarioCount: number;
+  sampleCount: number;
+  scenarioCount: number;
+}>;
+
 function formatClsValue(value: number): string {
   return value.toFixed(6);
+}
+
+function formatPixelValue(value: number): string {
+  return `${value.toFixed(2)}px`;
 }
 
 function escapeMarkdownCell(value: string): string {
@@ -51,6 +65,36 @@ function compareIssues(
   }
 
   return left.code.localeCompare(right.code);
+}
+
+function compareProbeDiagnosticsDescending(
+  left: ScenarioResult,
+  right: ScenarioResult,
+): number {
+  const leftDiagnostics = left.probeDiagnostics;
+  const rightDiagnostics = right.probeDiagnostics;
+
+  if (leftDiagnostics === null && rightDiagnostics === null) {
+    return left.stem.localeCompare(right.stem);
+  }
+
+  if (leftDiagnostics === null) {
+    return 1;
+  }
+
+  if (rightDiagnostics === null) {
+    return -1;
+  }
+
+  if (leftDiagnostics.flaggedCount !== rightDiagnostics.flaggedCount) {
+    return rightDiagnostics.flaggedCount - leftDiagnostics.flaggedCount;
+  }
+
+  if (leftDiagnostics.maxAbsDelta !== rightDiagnostics.maxAbsDelta) {
+    return rightDiagnostics.maxAbsDelta - leftDiagnostics.maxAbsDelta;
+  }
+
+  return left.stem.localeCompare(right.stem);
 }
 
 function countSelectorMetricSamples(
@@ -132,16 +176,69 @@ export function getPretextVisualHarnessSampleCounts(
   );
 }
 
+export function getPretextVisualHarnessProbeDiagnosticsResults(
+  report: HarnessReport,
+): ReadonlyArray<ScenarioResult> {
+  return [...report.results]
+    .filter((result) => result.probeDiagnostics !== null)
+    .sort(compareProbeDiagnosticsDescending);
+}
+
+export function getPretextVisualHarnessProbeDiagnosticsCounts(
+  report: HarnessReport,
+): PretextVisualHarnessProbeDiagnosticsCounts {
+  return report.results.reduce(
+    (counts, result) => {
+      const diagnostics = result.probeDiagnostics;
+
+      if (diagnostics === null) {
+        return counts;
+      }
+
+      return {
+        flaggedCount: counts.flaggedCount + diagnostics.flaggedCount,
+        maxAbsHeightDelta: Math.max(
+          counts.maxAbsHeightDelta,
+          diagnostics.maxAbsDelta,
+        ),
+        runtimeDisabledScenarioCount: counts.runtimeDisabledScenarioCount +
+          (diagnostics.runtime === "disabled" ? 1 : 0),
+        runtimeEnabledScenarioCount: counts.runtimeEnabledScenarioCount +
+          (diagnostics.runtime === "enabled" ? 1 : 0),
+        sampleCount: counts.sampleCount + diagnostics.sampleCount,
+        scenarioCount: counts.scenarioCount + 1,
+      };
+    },
+    {
+      flaggedCount: 0,
+      maxAbsHeightDelta: 0,
+      runtimeDisabledScenarioCount: 0,
+      runtimeEnabledScenarioCount: 0,
+      sampleCount: 0,
+      scenarioCount: 0,
+    },
+  );
+}
+
 export function buildPretextVisualHarnessSummaryMarkdown(
   report: HarnessReport,
   options: PretextVisualHarnessSummaryOptions = {},
 ): string {
   const maxClsRows = options.maxClsRows ?? 5;
   const maxIssueRows = options.maxIssueRows ?? 10;
+  const maxProbeRows = options.maxProbeRows ?? 8;
   const maxCls = getPretextVisualHarnessMaxCls(report);
   const nonZeroClsResults = getPretextVisualHarnessNonZeroClsResults(report);
   const sampleCounts = getPretextVisualHarnessSampleCounts(report);
+  const probeDiagnosticsCounts = getPretextVisualHarnessProbeDiagnosticsCounts(
+    report,
+  );
+  const probeDiagnosticsResults =
+    getPretextVisualHarnessProbeDiagnosticsResults(
+      report,
+    );
   const topClsResults = nonZeroClsResults.slice(0, maxClsRows);
+  const probeRows = probeDiagnosticsResults.slice(0, maxProbeRows);
   const issueRows = [...report.issues].sort(compareIssues).slice(
     0,
     maxIssueRows,
@@ -160,6 +257,14 @@ export function buildPretextVisualHarnessSummaryMarkdown(
     `| Samples with title vars | ${sampleCounts.title} |`,
     `| Samples with summary vars | ${sampleCounts.summary} |`,
     `| Samples with Pretext-backed pixel min-block-size | ${sampleCounts.pretextBackedPixelMinBlockSize} |`,
+    `| Probe diagnostics scenarios | ${probeDiagnosticsCounts.scenarioCount} |`,
+    `| Probe diagnostics samples | ${probeDiagnosticsCounts.sampleCount} |`,
+    `| Probe diagnostics flagged (> 1px) | ${probeDiagnosticsCounts.flaggedCount} |`,
+    `| Probe diagnostics max abs delta | ${
+      formatPixelValue(probeDiagnosticsCounts.maxAbsHeightDelta)
+    } |`,
+    `| Probe runtime enabled scenarios | ${probeDiagnosticsCounts.runtimeEnabledScenarioCount} |`,
+    `| Probe runtime disabled scenarios | ${probeDiagnosticsCounts.runtimeDisabledScenarioCount} |`,
     `| Base URL | ${escapeMarkdownCell(report.baseUrl)} |`,
     `| Output dir | ${escapeMarkdownCell(report.outputDir)} |`,
     "| Report file | report.json |",
@@ -194,6 +299,40 @@ export function buildPretextVisualHarnessSummaryMarkdown(
         `...and ${
           nonZeroClsResults.length - topClsResults.length
         } more non-zero CLS scenario(s).`,
+      );
+    }
+  }
+
+  lines.push("", "## Probe Diagnostics", "");
+
+  if (probeRows.length === 0) {
+    lines.push("No probe diagnostics were captured.");
+  } else {
+    lines.push("| Scenario | Runtime | Samples | Flagged | Max abs delta |");
+    lines.push("| --- | --- | --- | --- | --- |");
+
+    for (const result of probeRows) {
+      const diagnostics = result.probeDiagnostics;
+
+      if (diagnostics === null) {
+        continue;
+      }
+
+      lines.push(
+        `| ${escapeMarkdownCell(result.stem)} | ${
+          escapeMarkdownCell(diagnostics.runtime ?? "unknown")
+        } | ${diagnostics.sampleCount} | ${diagnostics.flaggedCount} | ${
+          formatPixelValue(diagnostics.maxAbsDelta)
+        } |`,
+      );
+    }
+
+    if (probeDiagnosticsResults.length > probeRows.length) {
+      lines.push(
+        "",
+        `...and ${
+          probeDiagnosticsResults.length - probeRows.length
+        } more probe diagnostic scenario(s).`,
       );
     }
   }

@@ -1,19 +1,39 @@
 import type { BlogStoryCard } from "../view-data.ts";
 import type { SiteLanguage } from "../../utils/i18n.ts";
+import type { PretextBrowserProbeSurfaceKey } from "./pretext-browser-probe-shared.ts";
 
-type PretextProbeSectionLabels = Readonly<{
-  archiveItem: string;
-  featuredStory: string;
-  outlineLink: string;
-  signalStory: string;
-  storyCard: string;
-  storyGrid: string;
+type PretextProbeDiagnosticsCopy = Readonly<{
+  actualHeightLabel: string;
+  deltaLabel: string;
+  diagnosticKicker: string;
+  diagnosticLead: string;
+  diagnosticTitle: string;
+  flaggedLabel: string;
+  lineCountLabel: string;
+  lineHeightLabel: string;
+  maxDeltaLabel: string;
+  minBlockSizeLabel: string;
+  noMeasurementsLabel: string;
+  pretextVariableLabel: string;
+  predictedHeightLabel: string;
+  runtimeDisabledLabel: string;
+  runtimeEnabledLabel: string;
+  sampleCountLabel: string;
+  summaryLabel: string;
+  titleLabel: string;
+  widestLineLabel: string;
+  widthLabel: string;
 }>;
+
+type PretextProbeSectionLabels = Readonly<
+  Record<PretextBrowserProbeSurfaceKey, string>
+>;
 
 export type PretextProbeLanguageFixture = Readonly<{
   archiveSummary: string;
   archiveTitle: string;
   dateTooltip: string;
+  diagnostics: PretextProbeDiagnosticsCopy;
   featuredEyebrow: string;
   featuredSummary: string;
   featuredTitle: string;
@@ -38,6 +58,29 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
     archiveTitle:
       "Designing reliable text measurement for archive entries without brittle DOM reads",
     dateTooltip: "Published date",
+    diagnostics: {
+      actualHeightLabel: "Actual height",
+      deltaLabel: "Delta",
+      diagnosticKicker: "Diagnostics",
+      diagnosticLead:
+        "This panel compares the measured Pretext prediction with the live DOM box so we can spot drift before it turns into visual noise.",
+      diagnosticTitle: "Predicted vs actual text metrics",
+      flaggedLabel: "Over 1px",
+      lineCountLabel: "Lines",
+      lineHeightLabel: "Line height",
+      maxDeltaLabel: "Max delta",
+      minBlockSizeLabel: "Min block size",
+      noMeasurementsLabel: "No matching text measurements were found yet.",
+      pretextVariableLabel: "Applied variable",
+      predictedHeightLabel: "Predicted height",
+      runtimeDisabledLabel: "Runtime hooks disabled",
+      runtimeEnabledLabel: "Runtime hooks enabled",
+      sampleCountLabel: "Samples",
+      summaryLabel: "Summary",
+      titleLabel: "Title",
+      widestLineLabel: "Widest line",
+      widthLabel: "Width",
+    },
     featuredEyebrow: "Lead story",
     featuredSummary:
       "Pretext helps us keep editorial cards calm when titles and summaries expand differently across locales and breakpoints.",
@@ -113,6 +156,30 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
     archiveTitle:
       "Concevoir une mesure de texte fiable pour les entrées d'archive sans lectures DOM fragiles",
     dateTooltip: "Date de publication",
+    diagnostics: {
+      actualHeightLabel: "Hauteur réelle",
+      deltaLabel: "Écart",
+      diagnosticKicker: "Diagnostic",
+      diagnosticLead:
+        "Ce panneau compare la prédiction Pretext à la boîte DOM réelle afin de repérer les dérives avant qu'elles ne deviennent du bruit visuel.",
+      diagnosticTitle: "Métriques prévues vs réelles",
+      flaggedLabel: "Au-delà de 1 px",
+      lineCountLabel: "Lignes",
+      lineHeightLabel: "Hauteur de ligne",
+      maxDeltaLabel: "Écart max",
+      minBlockSizeLabel: "Min-block-size",
+      noMeasurementsLabel:
+        "Aucune mesure de texte correspondante n'a encore été trouvée.",
+      pretextVariableLabel: "Variable appliquée",
+      predictedHeightLabel: "Hauteur prévue",
+      runtimeDisabledLabel: "Hooks runtime désactivés",
+      runtimeEnabledLabel: "Hooks runtime activés",
+      sampleCountLabel: "Échantillons",
+      summaryLabel: "Résumé",
+      titleLabel: "Titre",
+      widestLineLabel: "Ligne la plus large",
+      widthLabel: "Largeur",
+    },
     featuredEyebrow: "Article principal",
     featuredSummary:
       "Pretext nous aide à garder des cartes éditoriales calmes quand titres et résumés se développent différemment selon la langue et le breakpoint.",
@@ -189,6 +256,29 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
       "这是一段用于归档条目的摘要文本，它在较窄宽度下仍然需要稳定的多行节奏。",
     archiveTitle: "在不依赖脆弱 DOM 读数的前提下，为归档条目建立可靠的文本测量",
     dateTooltip: "发布日期",
+    diagnostics: {
+      actualHeightLabel: "实际高度",
+      deltaLabel: "偏差",
+      diagnosticKicker: "诊断",
+      diagnosticLead:
+        "这个面板会把 Pretext 的预测结果和真实 DOM 盒模型进行对比，帮助我们在视觉噪声出现之前发现偏移。",
+      diagnosticTitle: "预测值与实际值对照",
+      flaggedLabel: "超过 1px",
+      lineCountLabel: "行数",
+      lineHeightLabel: "行高",
+      maxDeltaLabel: "最大偏差",
+      minBlockSizeLabel: "最小块尺寸",
+      noMeasurementsLabel: "暂时还没有找到匹配的文本测量结果。",
+      pretextVariableLabel: "已应用变量",
+      predictedHeightLabel: "预测高度",
+      runtimeDisabledLabel: "运行时 Hook 已禁用",
+      runtimeEnabledLabel: "运行时 Hook 已启用",
+      sampleCountLabel: "样本数",
+      summaryLabel: "摘要",
+      titleLabel: "标题",
+      widestLineLabel: "最宽行",
+      widthLabel: "宽度",
+    },
     featuredEyebrow: "主打文章",
     featuredSummary:
       "当标题和摘要在不同语言与断点下以不同方式换行时，Pretext 可以帮助编辑卡片保持稳定。",
@@ -256,6 +346,29 @@ export const PRETEXT_PROBE_LANGUAGE_FIXTURES = {
       "這是一段用於歸檔條目的摘要文字，在較窄寬度下仍然需要穩定的多行節奏。",
     archiveTitle: "在不依賴脆弱 DOM 讀數的前提下，為歸檔條目建立可靠的文字測量",
     dateTooltip: "發佈日期",
+    diagnostics: {
+      actualHeightLabel: "實際高度",
+      deltaLabel: "偏差",
+      diagnosticKicker: "診斷",
+      diagnosticLead:
+        "這個面板會把 Pretext 的預測結果和真實 DOM 盒模型進行對比，幫助我們在視覺噪音出現之前發現偏移。",
+      diagnosticTitle: "預測值與實際值對照",
+      flaggedLabel: "超過 1px",
+      lineCountLabel: "行數",
+      lineHeightLabel: "行高",
+      maxDeltaLabel: "最大偏差",
+      minBlockSizeLabel: "最小區塊尺寸",
+      noMeasurementsLabel: "暫時還沒有找到相符的文字測量結果。",
+      pretextVariableLabel: "已套用變數",
+      predictedHeightLabel: "預測高度",
+      runtimeDisabledLabel: "執行期 Hook 已停用",
+      runtimeEnabledLabel: "執行期 Hook 已啟用",
+      sampleCountLabel: "樣本數",
+      summaryLabel: "摘要",
+      titleLabel: "標題",
+      widestLineLabel: "最寬行",
+      widthLabel: "寬度",
+    },
     featuredEyebrow: "主打文章",
     featuredSummary:
       "當標題與摘要在不同語言與斷點下以不同方式換行時，Pretext 可以幫助編輯卡片維持穩定。",

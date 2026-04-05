@@ -61,6 +61,234 @@
     min-inline-size: 0;
   }
 
+  .blog-antd-probe-diagnostics {
+    display: grid;
+    gap: var(--ph-space-4);
+    padding: clamp(var(--ph-space-4), 3vw, var(--ph-space-6));
+    border: var(--ph-border-hairline) solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 14%,
+        var(--ph-color-border-default)
+      );
+    border-radius: var(--ph-radius-surface-xl);
+    background: linear-gradient(
+      180deg,
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-default) 96%,
+        var(--ph-surface-accent)
+      ),
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-default) 91%,
+        var(--ph-surface-accent)
+      )
+    );
+  }
+
+  .blog-antd-probe-diagnostics__head {
+    display: grid;
+    gap: var(--ph-space-3);
+  }
+
+  .blog-antd-probe-diagnostics__head-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ph-space-3);
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .blog-antd-probe-diagnostics__title,
+  .blog-antd-probe-diagnostics__surface-title {
+    margin: 0;
+  }
+
+  .blog-antd-probe-diagnostics__status {
+    margin: 0;
+    padding: var(--ph-space-2) var(--ph-space-3);
+    border: var(--ph-border-hairline) solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 18%,
+        var(--ph-color-border-default)
+      );
+    border-radius: var(--ph-radius-pill);
+    background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 90%,
+      var(--ph-surface-accent-strong)
+    );
+    color: var(--ph-color-fg-muted);
+    font-family: var(--ph-font-mono);
+    font-size: var(--ph-text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .blog-antd-probe-diagnostics__lead {
+    margin: 0;
+    max-inline-size: var(--ph-content-max);
+  }
+
+  .blog-antd-probe-diagnostics__summary,
+  .blog-antd-probe-diagnostics__surfaces,
+  .blog-antd-probe-diagnostics__metrics {
+    display: grid;
+    gap: var(--ph-space-3);
+    grid-template-columns:
+      repeat(
+        auto-fit,
+        minmax(min(100%, var(--ph-panel-max)), 1fr)
+      );
+  }
+
+  .blog-antd-probe-diagnostics__stat,
+  .blog-antd-probe-diagnostics__metrics > div {
+    margin: 0;
+    display: grid;
+    gap: var(--ph-space-2);
+    padding: var(--ph-space-3);
+    border: var(--ph-border-hairline) solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 10%,
+        var(--ph-color-border-default)
+      );
+    border-radius: var(--ph-radius-surface-md);
+    background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 94%,
+      var(--ph-surface-accent)
+    );
+  }
+
+  .blog-antd-probe-diagnostics__stat dt,
+  .blog-antd-probe-diagnostics__metrics dt {
+    color: var(--ph-color-fg-muted);
+    font-family: var(--ph-font-mono);
+    font-size: var(--ph-text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .blog-antd-probe-diagnostics__stat dd,
+  .blog-antd-probe-diagnostics__metrics dd {
+    margin: 0;
+    color: var(--ph-color-fg-default);
+    font-family: var(--ph-font-mono);
+  }
+
+  .blog-antd-probe-diagnostics__stat dd {
+    font-size: var(--ph-text-lg);
+  }
+
+  .blog-antd-probe-diagnostics__surface {
+    display: grid;
+    gap: var(--ph-space-3);
+  }
+
+  .blog-antd-probe-diagnostics__empty {
+    margin: 0;
+    color: var(--ph-color-fg-muted);
+  }
+
+  .blog-antd-probe-diagnostics__list,
+  .blog-antd-probe-diagnostics__lines {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .blog-antd-probe-diagnostics__list {
+    display: grid;
+    gap: var(--ph-space-3);
+  }
+
+  .blog-antd-probe-diagnostics__item {
+    border: var(--ph-border-hairline) solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 10%,
+        var(--ph-color-border-default)
+      );
+    border-radius: var(--ph-radius-surface-md);
+    background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 96%,
+      var(--ph-surface-accent)
+    );
+  }
+
+  .blog-antd-probe-diagnostics__item--flagged {
+    border-color: color-mix(
+      in oklch,
+      var(--ph-color-accent-emphasis) 40%,
+      var(--ph-color-border-default)
+    );
+  }
+
+  .blog-antd-probe-diagnostics__details {
+    padding: var(--ph-space-3) var(--ph-space-4);
+  }
+
+  .blog-antd-probe-diagnostics__summary-row {
+    display: grid;
+    gap: var(--ph-space-2);
+    cursor: pointer;
+  }
+
+  .blog-antd-probe-diagnostics__metric-title {
+    color: var(--ph-color-fg-default);
+    font-family: var(--ph-font-mono);
+    font-size: var(--ph-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .blog-antd-probe-diagnostics__metric-snapshot {
+    color: var(--ph-color-fg-muted);
+  }
+
+  .blog-antd-probe-diagnostics__metrics {
+    margin-block-start: var(--ph-space-3);
+  }
+
+  .blog-antd-probe-diagnostics__lines {
+    display: grid;
+    gap: var(--ph-space-2);
+    margin-block-start: var(--ph-space-3);
+  }
+
+  .blog-antd-probe-diagnostics__lines li {
+    display: grid;
+    gap: var(--ph-space-2);
+    padding: var(--ph-space-3);
+    border-radius: var(--ph-radius-md);
+    background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-default) 88%,
+      var(--ph-surface-accent)
+    );
+  }
+
+  .blog-antd-probe-diagnostics__line-text,
+  .blog-antd-probe-diagnostics__line-width {
+    font-family: var(--ph-font-mono);
+  }
+
+  .blog-antd-probe-diagnostics__line-text {
+    color: var(--ph-color-fg-default);
+    overflow-wrap: anywhere;
+  }
+
+  .blog-antd-probe-diagnostics__line-width {
+    color: var(--ph-color-fg-muted);
+    font-size: var(--ph-text-xs);
+  }
+
   .blog-antd-breadcrumb {
     margin-block-end: calc(var(--ph-space-3) * -1);
   }

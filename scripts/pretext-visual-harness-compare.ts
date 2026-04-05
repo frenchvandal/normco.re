@@ -13,6 +13,7 @@ import {
 import {
   getPretextVisualHarnessMaxCls,
   getPretextVisualHarnessNonZeroClsResults,
+  getPretextVisualHarnessProbeDiagnosticsCounts,
   getPretextVisualHarnessResultSampleCounts,
   getPretextVisualHarnessSampleCounts,
 } from "./pretext-visual-harness-summary.ts";
@@ -21,9 +22,13 @@ import type {
   HarnessReport,
   PretextHarnessVariant,
   PretextVisualHarnessRunOptions,
+  ProbeDiagnosticsSummary,
   ScenarioResult,
 } from "./pretext-visual-harness.ts";
-import type { PretextVisualHarnessSampleCounts } from "./pretext-visual-harness-summary.ts";
+import type {
+  PretextVisualHarnessProbeDiagnosticsCounts,
+  PretextVisualHarnessSampleCounts,
+} from "./pretext-visual-harness-summary.ts";
 
 type PretextVisualHarnessComparisonRunOptions = Readonly<{
   baseUrl?: string;
@@ -44,6 +49,7 @@ export type PretextVisualHarnessComparisonVariantSummary = Readonly<{
   issueCount: number;
   maxCls: number;
   nonZeroClsScenarioCount: number;
+  probeDiagnostics: PretextVisualHarnessProbeDiagnosticsCounts;
   reportPath: string;
   sampleCounts: PretextVisualHarnessSampleCounts;
   scenarioCount: number;
@@ -56,6 +62,7 @@ export type PretextVisualHarnessComparisonVariantSummary = Readonly<{
 type PretextVisualHarnessScenarioComparisonMetrics = Readonly<{
   cls: number;
   errorCount: number;
+  probeDiagnostics: ProbeDiagnosticsSummary | null;
   sampleCounts: PretextVisualHarnessSampleCounts;
   screenshotPath: string | null;
   warningCount: number;
@@ -193,6 +200,7 @@ function buildScenarioComparisonMetrics(
   return {
     cls: result.cls.value,
     errorCount: scenarioIssueCounts.errorCount,
+    probeDiagnostics: result.probeDiagnostics,
     sampleCounts: getPretextVisualHarnessResultSampleCounts(result),
     screenshotPath: result.screenshotPath === null ? null : toPosixRelativePath(
       comparisonOutputDir,
@@ -213,6 +221,7 @@ function buildVariantSummary(
     maxCls: getPretextVisualHarnessMaxCls(report),
     nonZeroClsScenarioCount: getPretextVisualHarnessNonZeroClsResults(report)
       .length,
+    probeDiagnostics: getPretextVisualHarnessProbeDiagnosticsCounts(report),
     reportPath: toPosixRelativePath(
       comparisonOutputDir,
       join(report.outputDir, "report.json"),

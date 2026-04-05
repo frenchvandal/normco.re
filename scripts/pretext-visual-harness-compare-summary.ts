@@ -1,3 +1,4 @@
+import { PRETEXT_BROWSER_PROBE_DIAGNOSTIC_TOLERANCE_PX } from "../src/blog/client/pretext-browser-probe-shared.ts";
 import type {
   PretextVisualHarnessComparisonReport,
   PretextVisualHarnessScenarioComparison,
@@ -9,6 +10,10 @@ type PretextVisualHarnessComparisonSummaryOptions = Readonly<{
 
 function formatClsValue(value: number): string {
   return value.toFixed(6);
+}
+
+function formatPixelValue(value: number): string {
+  return `${value.toFixed(2)}px`;
 }
 
 function escapeMarkdownCell(value: string): string {
@@ -24,6 +29,10 @@ function formatSignedDelta(value: number): string {
 
 function formatSignedClsDelta(value: number): string {
   return `${value > 0 ? "+" : ""}${value.toFixed(6)}`;
+}
+
+function formatSignedPixelDelta(value: number): string {
+  return `${value > 0 ? "+" : ""}${value.toFixed(2)}px`;
 }
 
 type ComparisonVariantKey = "withPretext" | "withoutPretext";
@@ -61,6 +70,8 @@ function buildScenarioDeltaScore(
 ): number {
   const withCounts = comparison.withPretext.sampleCounts;
   const withoutCounts = comparison.withoutPretext.sampleCounts;
+  const withProbeDiagnostics = comparison.withPretext.probeDiagnostics;
+  const withoutProbeDiagnostics = comparison.withoutPretext.probeDiagnostics;
 
   return Math.abs(
         comparison.withPretext.errorCount -
@@ -76,6 +87,18 @@ function buildScenarioDeltaScore(
         withCounts.pretextBackedPixelMinBlockSize -
           withoutCounts.pretextBackedPixelMinBlockSize,
       ) * 100 +
+    Math.abs(
+        (withProbeDiagnostics?.flaggedCount ?? 0) -
+          (withoutProbeDiagnostics?.flaggedCount ?? 0),
+      ) * 25 +
+    Math.abs(
+        (withProbeDiagnostics?.sampleCount ?? 0) -
+          (withoutProbeDiagnostics?.sampleCount ?? 0),
+      ) * 5 +
+    Math.abs(
+      (withProbeDiagnostics?.maxAbsDelta ?? 0) -
+        (withoutProbeDiagnostics?.maxAbsDelta ?? 0),
+    ) +
     Math.abs(withCounts.title - withoutCounts.title) * 10 +
     Math.abs(withCounts.summary - withoutCounts.summary);
 }
@@ -100,6 +123,8 @@ function getDifferingScenarioComparisons(
   return report.scenarioComparisons.filter((comparison) => {
     const withCounts = comparison.withPretext.sampleCounts;
     const withoutCounts = comparison.withoutPretext.sampleCounts;
+    const withProbeDiagnostics = comparison.withPretext.probeDiagnostics;
+    const withoutProbeDiagnostics = comparison.withoutPretext.probeDiagnostics;
 
     return comparison.withPretext.cls !== comparison.withoutPretext.cls ||
       comparison.withPretext.errorCount !==
@@ -108,9 +133,46 @@ function getDifferingScenarioComparisons(
         comparison.withoutPretext.warningCount ||
       withCounts.pretextBackedPixelMinBlockSize !==
         withoutCounts.pretextBackedPixelMinBlockSize ||
+      (withProbeDiagnostics?.flaggedCount ?? 0) !==
+        (withoutProbeDiagnostics?.flaggedCount ?? 0) ||
+      (withProbeDiagnostics?.sampleCount ?? 0) !==
+        (withoutProbeDiagnostics?.sampleCount ?? 0) ||
+      (withProbeDiagnostics?.maxAbsDelta ?? 0) !==
+        (withoutProbeDiagnostics?.maxAbsDelta ?? 0) ||
       withCounts.title !== withoutCounts.title ||
       withCounts.summary !== withoutCounts.summary;
   }).sort(compareScenarioDeltas);
+}
+
+function formatProbeFlaggedPair(
+  comparison: PretextVisualHarnessScenarioComparison,
+): string {
+  const withFlaggedCount = comparison.withPretext.probeDiagnostics
+    ?.flaggedCount;
+  const withoutFlaggedCount = comparison.withoutPretext.probeDiagnostics
+    ?.flaggedCount;
+
+  if (withFlaggedCount === undefined && withoutFlaggedCount === undefined) {
+    return "-";
+  }
+
+  return `${withFlaggedCount ?? 0} / ${withoutFlaggedCount ?? 0}`;
+}
+
+function formatProbeMaxDeltaPair(
+  comparison: PretextVisualHarnessScenarioComparison,
+): string {
+  const withMaxAbsDelta = comparison.withPretext.probeDiagnostics?.maxAbsDelta;
+  const withoutMaxAbsDelta = comparison.withoutPretext.probeDiagnostics
+    ?.maxAbsDelta;
+
+  if (withMaxAbsDelta === undefined && withoutMaxAbsDelta === undefined) {
+    return "-";
+  }
+
+  return `${formatPixelValue(withMaxAbsDelta ?? 0)} / ${
+    formatPixelValue(withoutMaxAbsDelta ?? 0)
+  }`;
 }
 
 function buildInterpretationLines(
@@ -132,6 +194,12 @@ function buildInterpretationLines(
   const pretextBackedPixelMinBlockSizeDelta =
     report.withPretext.sampleCounts.pretextBackedPixelMinBlockSize -
     report.withoutPretext.sampleCounts.pretextBackedPixelMinBlockSize;
+  const probeDiagnosticsFlaggedDelta =
+    report.withPretext.probeDiagnostics.flaggedCount -
+    report.withoutPretext.probeDiagnostics.flaggedCount;
+  const probeDiagnosticsMaxAbsDelta =
+    report.withPretext.probeDiagnostics.maxAbsHeightDelta -
+    report.withoutPretext.probeDiagnostics.maxAbsHeightDelta;
   const publicMaxClsDelta = publicScenarioComparisons.length === 0
     ? report.withoutPretext.maxCls - report.withPretext.maxCls
     : getScenarioComparisonMaxCls(publicScenarioComparisons, "withoutPretext") -
@@ -179,6 +247,49 @@ function buildInterpretationLines(
     lines.push(
       "Read probe-route CLS separately from the public-route guard: the probe is intentionally client-mounted, so its CLS is diagnostic rather than a production UX benchmark.",
     );
+  }
+
+  if (
+    report.withPretext.probeDiagnostics.scenarioCount > 0 ||
+    report.withoutPretext.probeDiagnostics.scenarioCount > 0
+  ) {
+    lines.push(
+      `The probe now exports explicit predicted-vs-actual diagnostics: ${report.withPretext.probeDiagnostics.sampleCount} sample(s) with Pretext and ${report.withoutPretext.probeDiagnostics.sampleCount} without, with a ${PRETEXT_BROWSER_PROBE_DIAGNOSTIC_TOLERANCE_PX}px flag threshold.`,
+    );
+
+    if (probeDiagnosticsFlaggedDelta < 0) {
+      lines.push(
+        `The Pretext-enabled variant reduces probe samples above the flag threshold by ${
+          Math.abs(probeDiagnosticsFlaggedDelta)
+        }.`,
+      );
+    } else if (probeDiagnosticsFlaggedDelta > 0) {
+      lines.push(
+        `The Pretext-enabled variant increases probe samples above the flag threshold by ${probeDiagnosticsFlaggedDelta}, so the drift needs inspection.`,
+      );
+    } else {
+      lines.push(
+        "Both variants flag the same number of probe samples above the configured drift threshold.",
+      );
+    }
+
+    if (probeDiagnosticsMaxAbsDelta < 0) {
+      lines.push(
+        `Worst-case probe drift improves by ${
+          formatPixelValue(Math.abs(probeDiagnosticsMaxAbsDelta))
+        } with Pretext.`,
+      );
+    } else if (probeDiagnosticsMaxAbsDelta > 0) {
+      lines.push(
+        `Worst-case probe drift is higher with Pretext by ${
+          formatPixelValue(probeDiagnosticsMaxAbsDelta)
+        }.`,
+      );
+    } else {
+      lines.push(
+        "Worst-case probe drift is identical between the two variants.",
+      );
+    }
   }
 
   if (publicMaxClsDelta > 0) {
@@ -297,6 +408,46 @@ export function buildPretextVisualHarnessComparisonSummaryMarkdown(
           report.withoutPretext.sampleCounts.pretextBackedPixelMinBlockSize,
       )
     } |`,
+    `| Probe diagnostics scenarios | ${report.withPretext.probeDiagnostics.scenarioCount} | ${report.withoutPretext.probeDiagnostics.scenarioCount} | ${
+      formatSignedDelta(
+        report.withPretext.probeDiagnostics.scenarioCount -
+          report.withoutPretext.probeDiagnostics.scenarioCount,
+      )
+    } |`,
+    `| Probe diagnostics samples | ${report.withPretext.probeDiagnostics.sampleCount} | ${report.withoutPretext.probeDiagnostics.sampleCount} | ${
+      formatSignedDelta(
+        report.withPretext.probeDiagnostics.sampleCount -
+          report.withoutPretext.probeDiagnostics.sampleCount,
+      )
+    } |`,
+    `| Probe diagnostics flagged (> ${PRETEXT_BROWSER_PROBE_DIAGNOSTIC_TOLERANCE_PX}px) | ${report.withPretext.probeDiagnostics.flaggedCount} | ${report.withoutPretext.probeDiagnostics.flaggedCount} | ${
+      formatSignedDelta(
+        report.withPretext.probeDiagnostics.flaggedCount -
+          report.withoutPretext.probeDiagnostics.flaggedCount,
+      )
+    } |`,
+    `| Probe diagnostics max abs delta | ${
+      formatPixelValue(report.withPretext.probeDiagnostics.maxAbsHeightDelta)
+    } | ${
+      formatPixelValue(report.withoutPretext.probeDiagnostics.maxAbsHeightDelta)
+    } | ${
+      formatSignedPixelDelta(
+        report.withPretext.probeDiagnostics.maxAbsHeightDelta -
+          report.withoutPretext.probeDiagnostics.maxAbsHeightDelta,
+      )
+    } |`,
+    `| Probe runtime enabled scenarios | ${report.withPretext.probeDiagnostics.runtimeEnabledScenarioCount} | ${report.withoutPretext.probeDiagnostics.runtimeEnabledScenarioCount} | ${
+      formatSignedDelta(
+        report.withPretext.probeDiagnostics.runtimeEnabledScenarioCount -
+          report.withoutPretext.probeDiagnostics.runtimeEnabledScenarioCount,
+      )
+    } |`,
+    `| Probe runtime disabled scenarios | ${report.withPretext.probeDiagnostics.runtimeDisabledScenarioCount} | ${report.withoutPretext.probeDiagnostics.runtimeDisabledScenarioCount} | ${
+      formatSignedDelta(
+        report.withPretext.probeDiagnostics.runtimeDisabledScenarioCount -
+          report.withoutPretext.probeDiagnostics.runtimeDisabledScenarioCount,
+      )
+    } |`,
     `| Base URL | ${escapeMarkdownCell(report.withPretext.baseUrl)} | ${
       escapeMarkdownCell(report.withoutPretext.baseUrl)
     } | - |`,
@@ -334,9 +485,9 @@ export function buildPretextVisualHarnessComparisonSummaryMarkdown(
     lines.push("No scenario-level delta detected between the two variants.");
   } else {
     lines.push(
-      "| Scenario | Route kind | CLS with | CLS without | Title vars | Summary vars | Pretext-backed pixel min-block-size |",
+      "| Scenario | Route kind | CLS with | CLS without | Title vars | Summary vars | Pretext-backed pixel min-block-size | Probe flagged | Probe max abs delta |",
     );
-    lines.push("| --- | --- | --- | --- | --- | --- | --- |");
+    lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- |");
 
     for (const comparison of scenarioRows) {
       lines.push(
@@ -344,7 +495,9 @@ export function buildPretextVisualHarnessComparisonSummaryMarkdown(
           escapeMarkdownCell(comparison.routeKind)
         } | ${formatClsValue(comparison.withPretext.cls)} | ${
           formatClsValue(comparison.withoutPretext.cls)
-        } | ${comparison.withPretext.sampleCounts.title} / ${comparison.withoutPretext.sampleCounts.title} | ${comparison.withPretext.sampleCounts.summary} / ${comparison.withoutPretext.sampleCounts.summary} | ${comparison.withPretext.sampleCounts.pretextBackedPixelMinBlockSize} / ${comparison.withoutPretext.sampleCounts.pretextBackedPixelMinBlockSize} |`,
+        } | ${comparison.withPretext.sampleCounts.title} / ${comparison.withoutPretext.sampleCounts.title} | ${comparison.withPretext.sampleCounts.summary} / ${comparison.withoutPretext.sampleCounts.summary} | ${comparison.withPretext.sampleCounts.pretextBackedPixelMinBlockSize} / ${comparison.withoutPretext.sampleCounts.pretextBackedPixelMinBlockSize} | ${
+          formatProbeFlaggedPair(comparison)
+        } | ${formatProbeMaxDeltaPair(comparison)} |`,
       );
     }
 

@@ -14,6 +14,7 @@ import { REPO_ROOT } from "./deno_graph.ts";
 import { writeGitHubJobSummary } from "./github-actions.ts";
 import { buildPretextVisualHarnessSummaryMarkdown } from "./pretext-visual-harness-summary.ts";
 import {
+  PRETEXT_BROWSER_PROBE_DIAGNOSTIC_REPORT_ID,
   PRETEXT_BROWSER_PROBE_ROUTE,
   PRETEXT_BROWSER_PROBE_SELECTOR_EXPECTATIONS,
 } from "../src/blog/client/pretext-browser-probe-shared.ts";
@@ -22,9 +23,9 @@ import {
   getLanguageDataCode,
   getLanguageTag,
   getLocalizedUrl,
-  type SiteLanguage,
   SUPPORTED_LANGUAGES,
 } from "../src/utils/i18n.ts";
+import type { SiteLanguage } from "../src/utils/i18n.ts";
 
 type HarnessViewport = Readonly<{
   width: number;
@@ -62,6 +63,13 @@ type ClsMetric = Readonly<{
   }>;
 }>;
 
+export type ProbeDiagnosticsSummary = Readonly<{
+  flaggedCount: number;
+  maxAbsDelta: number;
+  runtime: "disabled" | "enabled" | null;
+  sampleCount: number;
+}>;
+
 export type PretextHarnessVariant = "with-pretext" | "without-pretext";
 
 export type ScenarioResult = Readonly<{
@@ -84,6 +92,7 @@ export type ScenarioResult = Readonly<{
   consoleErrors: ReadonlyArray<string>;
   pageErrors: ReadonlyArray<string>;
   requestFailures: ReadonlyArray<string>;
+  probeDiagnostics: ProbeDiagnosticsSummary | null;
   screenshotPath: string | null;
   durationMs: number;
 }>;
@@ -147,6 +156,7 @@ type ScenarioEvaluationPayload = Readonly<{
   pageTitle: string | null;
   selectorMetrics: ReadonlyArray<SelectorMetric>;
   cls: ClsMetric;
+  probeDiagnostics: ProbeDiagnosticsSummary | null;
 }>;
 
 const FALLBACK_CONTENT_TYPE = "application/octet-stream" as const;
@@ -641,6 +651,44 @@ async function evaluateScenarioPage(
   selectors: ReadonlyArray<SelectorExpectation>,
 ): Promise<ScenarioEvaluationPayload> {
   return await page.evaluate((selectorExpectations) => {
+    const parseFiniteInteger = (value: string | undefined): number => {
+      const parsedValue = Number.parseInt(value ?? "", 10);
+      return Number.isFinite(parsedValue) ? parsedValue : 0;
+    };
+    const parseFiniteNumber = (value: string | undefined): number => {
+      const parsedValue = Number.parseFloat(value ?? "");
+      return Number.isFinite(parsedValue) ? parsedValue : 0;
+    };
+    const resolveProbeDiagnostics = (): ProbeDiagnosticsSummary | null => {
+      const diagnosticsRoot = document.getElementById(
+        PRETEXT_BROWSER_PROBE_DIAGNOSTIC_REPORT_ID,
+      );
+
+      if (!(diagnosticsRoot instanceof HTMLElement)) {
+        return null;
+      }
+
+      const runtime =
+        diagnosticsRoot.dataset.pretextProbeRuntime === "enabled" ||
+          diagnosticsRoot.dataset.pretextProbeRuntime === "disabled"
+          ? diagnosticsRoot.dataset.pretextProbeRuntime
+          : null;
+
+      return {
+        flaggedCount: parseFiniteInteger(
+          diagnosticsRoot.dataset.pretextProbeFlaggedCount,
+        ),
+        maxAbsDelta: Number(
+          parseFiniteNumber(
+            diagnosticsRoot.dataset.pretextProbeMaxAbsDelta,
+          ).toFixed(2),
+        ),
+        runtime,
+        sampleCount: parseFiniteInteger(
+          diagnosticsRoot.dataset.pretextProbeSampleCount,
+        ),
+      };
+    };
     const getSamples = (selector: string): Array<SelectorMetricSample> => {
       return Array.from(document.querySelectorAll(selector))
         .slice(0, 3)
@@ -698,6 +746,7 @@ async function evaluateScenarioPage(
           startTime: Number(entry.startTime.toFixed(2)),
         })),
       },
+      probeDiagnostics: resolveProbeDiagnostics(),
     };
   }, selectors);
 }
@@ -889,6 +938,7 @@ async function runScenario(
         consoleErrors,
         pageErrors,
         requestFailures,
+        probeDiagnostics: evaluation.probeDiagnostics,
         screenshotPath: screenshotPathRelative,
         durationMs: Number((performance.now() - startedAt).toFixed(2)),
       },
@@ -925,6 +975,7 @@ async function runScenario(
         consoleErrors,
         pageErrors,
         requestFailures,
+        probeDiagnostics: null,
         screenshotPath: null,
         durationMs: Number((performance.now() - startedAt).toFixed(2)),
       },

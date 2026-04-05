@@ -16,7 +16,7 @@ function createHarnessReport(
     rootDir: "/repo/_site",
     outputDir: "/repo/.tmp/pretext-harness",
     variant: "with-pretext",
-    scenarioCount: 2,
+    scenarioCount: 3,
     errorCount: 1,
     warningCount: 0,
     issues: [
@@ -83,6 +83,7 @@ function createHarnessReport(
         consoleErrors: [],
         pageErrors: [],
         requestFailures: [],
+        probeDiagnostics: null,
         screenshotPath: "screenshots/archive-fr-desktop.png",
         durationMs: 321.09,
       },
@@ -109,8 +110,41 @@ function createHarnessReport(
         consoleErrors: [],
         pageErrors: [],
         requestFailures: [],
+        probeDiagnostics: null,
         screenshotPath: "screenshots/home-en-mobile.png",
         durationMs: 210.11,
+      },
+      {
+        stem: "probe-en-desktop",
+        variant: "with-pretext",
+        routeKind: "probe",
+        language: "en",
+        languageCode: "en",
+        languageTag: "en",
+        pathname: "/pretext/probe/",
+        viewportId: "desktop",
+        viewport: { width: 1440, height: 1200 },
+        url: "http://127.0.0.1:4173/pretext/probe/",
+        status: 200,
+        documentLanguage: "en",
+        pageTitle: "Pretext Browser Probe",
+        selectorMetrics: [],
+        cls: {
+          value: 0.00021,
+          entries: [{ value: 0.00021, startTime: 156.78 }],
+        },
+        responseErrors: [],
+        consoleErrors: [],
+        pageErrors: [],
+        requestFailures: [],
+        probeDiagnostics: {
+          flaggedCount: 2,
+          maxAbsDelta: 1.75,
+          runtime: "enabled",
+          sampleCount: 12,
+        },
+        screenshotPath: "screenshots/probe-en-desktop.png",
+        durationMs: 287.42,
       },
     ],
     ...overrides,
@@ -138,11 +172,19 @@ describe("buildPretextVisualHarnessSummaryMarkdown()", () => {
 
     assertStringIncludes(markdown, "# Pretext Visual Harness");
     assertStringIncludes(markdown, "| Variant | with-pretext |");
-    assertStringIncludes(markdown, "| Scenarios | 2 |");
+    assertStringIncludes(markdown, "| Scenarios | 3 |");
     assertStringIncludes(markdown, "| Max CLS | 0.001605 |");
     assertStringIncludes(
       markdown,
       "| Samples with Pretext-backed pixel min-block-size | 2 |",
+    );
+    assertStringIncludes(
+      markdown,
+      "| Probe diagnostics flagged (> 1px) | 2 |",
+    );
+    assertStringIncludes(
+      markdown,
+      "| probe-en-desktop | enabled | 12 | 2 | 1.75px |",
     );
     assertStringIncludes(
       markdown,
