@@ -37,7 +37,13 @@ export function searchPages(
   return Array.isArray(results) ? results.filter(isLumeRecord) : [];
 }
 
-/** Resolve raw `children` (string or `{ __html }`) into an HTML string. */
+/**
+ * Resolve raw `children` (string or `{ __html }`) into an HTML string.
+ *
+ * This unwraps HTML that already came from the local Lume/Markdown render
+ * pipeline or other project-authored layout helpers. Callers should keep the
+ * result inside explicit trusted sinks after any local post-processing.
+ */
 export function resolveHtmlChildren(children: unknown): string | undefined {
   if (typeof children === "string") return children;
   const html = getRecordValue(children, "__html");

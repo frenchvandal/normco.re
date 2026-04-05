@@ -3,7 +3,7 @@ import { describe, it } from "@std/testing/bdd";
 import SCRIPT_SOURCE from "./about-contact-toggletips.js" with {
   type: "text",
 };
-import { getJSDOM } from "../../test/jsdom.ts";
+import { evaluateClassicScript, getJSDOM } from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
 
@@ -89,7 +89,7 @@ function createDom(): InstanceType<typeof JSDOM> {
 }
 
 function evaluateScript(window: TestWindow) {
-  window.eval(SCRIPT_SOURCE);
+  evaluateClassicScript(window, SCRIPT_SOURCE);
 }
 
 function createMediaQueryList(matches = false): TestMediaQueryList {

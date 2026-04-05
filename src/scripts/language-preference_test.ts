@@ -1,7 +1,7 @@
 import { assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import SCRIPT_SOURCE from "./language-preference.js" with { type: "text" };
-import { getJSDOM } from "../../test/jsdom.ts";
+import { getJSDOM, installClassicScript } from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
 
@@ -23,16 +23,15 @@ function createDom(pathname: string): InstanceType<typeof JSDOM> {
 }
 
 function installScript(window: TestWindow) {
-  const script = window.document.createElement("script");
-  script.dataset.supportedLanguages = "en,fr,zhHans,zhHant";
-  script.dataset.defaultLanguage = "en";
-  script.dataset.currentLanguage = "en";
-  script.dataset.languageAlternates = JSON.stringify({
-    en: "/",
-    fr: "/fr/",
+  installClassicScript(window, SCRIPT_SOURCE, {
+    supportedLanguages: "en,fr,zhHans,zhHant",
+    defaultLanguage: "en",
+    currentLanguage: "en",
+    languageAlternates: JSON.stringify({
+      en: "/",
+      fr: "/fr/",
+    }),
   });
-  script.textContent = SCRIPT_SOURCE;
-  window.document.body.append(script);
 }
 
 function captureNavigation(window: TestWindow): NavigationDetail[] {

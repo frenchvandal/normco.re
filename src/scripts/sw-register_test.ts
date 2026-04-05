@@ -1,7 +1,7 @@
 import { assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import SCRIPT_SOURCE from "./sw-register.js" with { type: "text" };
-import { getJSDOM } from "../../test/jsdom.ts";
+import { getJSDOM, installClassicScript } from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
 
@@ -33,12 +33,7 @@ function createDom(): InstanceType<typeof JSDOM> {
 }
 
 function installScript(window: TestWindow, dataset: Record<string, string>) {
-  const script = window.document.createElement("script");
-  for (const [key, value] of Object.entries(dataset)) {
-    script.dataset[key] = value;
-  }
-  script.textContent = SCRIPT_SOURCE;
-  window.document.body.append(script);
+  installClassicScript(window, SCRIPT_SOURCE, dataset);
 }
 
 async function flush(window: TestWindow, cycles = 2) {

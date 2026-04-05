@@ -54,6 +54,8 @@ export function renderBreadcrumbItems(items: readonly BlogBreadcrumbItem[]) {
 /**
  * Blog client payloads already carry trusted server-rendered HTML. Keep the
  * React sink behind named helpers so raw markup remains explicit and rare.
+ * This markup comes from the repo's local Markdown/layout pipeline, then gets
+ * any final post-processing before it reaches these components.
  */
 export function TrustedHtmlSection(
   {

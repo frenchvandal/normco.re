@@ -193,6 +193,9 @@ export function resolvePostState(
   const minutes = resolveReadingMinutes(data.readingInfo);
   const tags = resolveStringTags(data.tags);
   const backlinks = resolvePostLinkReferences(data.backlinks);
+  // Post bodies arrive from the local Markdown/Lume pipeline. Unwrap the
+  // trusted HTML only long enough to add stable heading ids and outline data
+  // before handing it back to the layout as `{ __html }`.
   const rawHtml = resolveHtmlChildren(data.children);
   const includeCodeCopy = /<pre>\s*<code\b/i.test(rawHtml ?? "");
   const { html, outline } = rawHtml
