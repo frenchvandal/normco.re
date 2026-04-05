@@ -82,11 +82,13 @@
   ],
   "deno.suggest.imports.hosts": {
     "https://cdn.jsdelivr.net": true,
-    "https://deno.land": true
+    "https://deno.land": true,
+    "https://jsr.io": true
   },
   "editor.linkedEditing": true,
   "gradle.nestedProjects": true,
   "js/ts.validate.enabled": false,
+  "js/ts.experimental.useTsgo": false,
   "js/ts.tsserver.experimental.enableProjectDiagnostics": false,
   "workbench.startupEditor": "readme"
 }
