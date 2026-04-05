@@ -378,12 +378,10 @@ function renderSideNav(
   t: SiteTranslations,
 ): El {
   return (
-    <aside
+    <nav
       id={HEADER_IDS.sideNav}
       class="site-side-nav"
-      role="dialog"
-      aria-modal="true"
-      aria-label={t.site.mainNavigationAriaLabel}
+      aria-label={t.site.navigationMenuAriaLabel}
       hidden
     >
       <div class="site-side-nav__navigation">
@@ -430,7 +428,7 @@ function renderSideNav(
           </ul>
         </div>
       </div>
-    </aside>
+    </nav>
   );
 }
 

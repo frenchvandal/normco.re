@@ -162,13 +162,13 @@
             </div>
           </div>
 
-          <aside
+          <nav
             id="site-side-nav"
             class="site-side-nav"
-            aria-label="Main navigation"
+            aria-label="Navigation menu"
             hidden=""
           >
-            <nav class="site-side-nav__navigation">
+            <div class="site-side-nav__navigation">
               <ul class="site-side-nav__items">
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">
@@ -189,8 +189,8 @@
                   </a>
                 </li>
               </ul>
-            </nav>
-          </aside>
+            </div>
+          </nav>
           <div class="site-side-nav__overlay" aria-hidden="true"></div>
 
           <main class="site-main" id="main-content" data-pagefind-body="">

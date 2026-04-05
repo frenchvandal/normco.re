@@ -262,8 +262,8 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
           </div>
         </div>
 
-        <aside id="site-side-nav" class="site-side-nav" hidden>
-          <nav class="site-side-nav__navigation">
+        <nav id="site-side-nav" class="site-side-nav" aria-label="Navigation menu" hidden>
+          <div class="site-side-nav__navigation">
             <div class="site-side-nav__header">
               <a href="/" class="site-side-nav__brand">normco.re</a>
               <button
@@ -284,8 +284,8 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
                 </li>
               </ul>
             </div>
-          </nav>
-        </aside>
+          </div>
+        </nav>
 
         <div class="site-side-nav__overlay" aria-hidden="true"></div>
       </body>

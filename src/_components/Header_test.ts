@@ -103,7 +103,12 @@ describe("Header()", () => {
       html,
       'class="site-side-nav__items"',
     );
-    assertStringIncludes(html, 'role="dialog"');
+    assertMatch(
+      html,
+      /<nav[^>]*id="site-side-nav"[^>]*class="site-side-nav"[^>]*aria-label="Navigation menu"[^>]*hidden/,
+    );
+    assertNotMatch(html, /role="dialog"/);
+    assertNotMatch(html, /aria-modal="true"/);
   });
 
   it("keeps legacy navigation, menu, and icon controls off the home route", async () => {

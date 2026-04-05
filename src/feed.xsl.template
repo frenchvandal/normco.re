@@ -148,6 +148,14 @@
         <xsl:otherwise>Main navigation</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
+    <xsl:variable name="navigation-menu-label">
+      <xsl:choose>
+        <xsl:when test="$is-fr">Menu de navigation</xsl:when>
+        <xsl:when test="$is-zh-hans">导航菜单</xsl:when>
+        <xsl:when test="$is-zh-hant">導覽選單</xsl:when>
+        <xsl:otherwise>Navigation menu</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:variable name="menu-toggle-label">
       <xsl:choose>
         <xsl:when test="$is-fr">Ouvrir le menu de navigation</xsl:when>
@@ -506,13 +514,13 @@
             </div>
           </div>
 
-          <aside
+          <nav
             id="site-side-nav"
             class="site-side-nav"
-            aria-label="{$main-navigation-label}"
+            aria-label="{$navigation-menu-label}"
             hidden=""
           >
-            <nav class="site-side-nav__navigation">
+            <div class="site-side-nav__navigation">
               <ul class="site-side-nav__items">
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">
@@ -533,8 +541,8 @@
                   </a>
                 </li>
               </ul>
-            </nav>
-          </aside>
+            </div>
+          </nav>
           <div class="site-side-nav__overlay" aria-hidden="true"></div>
 
           <main class="site-main" id="main-content" data-pagefind-body="">
