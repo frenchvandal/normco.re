@@ -157,38 +157,38 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
-        'src="/scripts/language-preference.js"',
+        'data-supported-languages="en,fr,zhHans,zhHant"',
       );
       assertStringIncludes(
         html,
         '<script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");',
+      );
+      assertStringIncludes(
+        html,
+        "const currentScript = globalThis.document.currentScript;",
       );
       assertStringIncludes(html, 'href="/rss.xml"');
       assertStringIncludes(html, 'href="/atom.xml"');
       assertStringIncludes(html, 'href="/feed.json"');
       assertStringIncludes(
         html,
-        'src="/scripts/sw-register.js"',
+        'loadModule("/scripts/header-client.js")',
       );
       assertStringIncludes(
         html,
-        'src="/scripts/header-client.js"',
+        'loadScript("/scripts/sw-register.js"',
       );
       assertStringIncludes(
         html,
-        'src="/scripts/header-client.js" type="module"',
+        'swUrl: "/sw.js"',
       );
       assertStringIncludes(
         html,
-        'data-sw-url="/sw.js"',
+        'swDebugLevel: "off"',
       );
       assertStringIncludes(
         html,
-        'data-sw-debug-level="off"',
-      );
-      assertStringIncludes(
-        html,
-        'src="/scripts/link-prefetch-intent.js"',
+        '"/scripts/link-prefetch-intent.js"',
       );
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");
@@ -213,15 +213,15 @@ describe("base.tsx layout", () => {
       }));
       assertStringIncludes(
         html,
-        'src="/scripts/sw-register.js"',
+        'loadScript("/scripts/sw-register.js"',
       );
       assertStringIncludes(
         html,
-        'data-sw-url="/sw.js"',
+        'swUrl: "/sw.js"',
       );
       assertStringIncludes(
         html,
-        'data-sw-debug-level="verbose"',
+        'swDebugLevel: "verbose"',
       );
     });
 
@@ -229,14 +229,14 @@ describe("base.tsx layout", () => {
       const html = await renderBase(makeData({
         url: "/posts/sample-post/",
       }));
-      assertNotMatch(html, /src="\/scripts\/link-prefetch-intent\.js"/);
+      assertNotMatch(html, /"\/scripts\/link-prefetch-intent\.js"/);
     });
 
     it("skips link-prefetch script on localized posts archive routes", async () => {
       const html = await renderBase(makeData({
         url: "/fr/posts/",
       }));
-      assertNotMatch(html, /src="\/scripts\/link-prefetch-intent\.js"/);
+      assertNotMatch(html, /"\/scripts\/link-prefetch-intent\.js"/);
     });
 
     it("injects the page content into <main>", async () => {

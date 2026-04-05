@@ -5,25 +5,12 @@ import { getJSDOM } from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
 
-type IntersectionEntryLike = {
-  isIntersecting: boolean;
-  target: Element;
-};
-
 type TestWindow = InstanceType<typeof JSDOM>["window"] & {
   requestIdleCallback?: (
     callback: IdleRequestCallback,
     options?: IdleRequestOptions,
   ) => number;
   fetch(input: string | URL, init?: RequestInit): Promise<Response>;
-  IntersectionObserver: new (
-    callback: (entries: IntersectionEntryLike[]) => void,
-    options?: IntersectionObserverInit,
-  ) => {
-    observe(target: Element): void;
-    unobserve(target: Element): void;
-    disconnect(): void;
-  };
 };
 
 function createDom(): InstanceType<typeof JSDOM> {
@@ -59,42 +46,30 @@ describe("link-prefetch-intent.js", () => {
   it("skips initialization when save-data is enabled", () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
-    let observerCount = 0;
+    const fetchedUrls: string[] = [];
 
     Object.defineProperty(window.navigator, "connection", {
       configurable: true,
       value: { saveData: true },
     });
-    window.IntersectionObserverEntry = function () {} as never;
-    Object.defineProperty(
-      window.IntersectionObserverEntry.prototype,
-      "isIntersecting",
-      {
-        configurable: true,
-        value: true,
-      },
-    );
-    window.IntersectionObserver = class {
-      constructor() {
-        observerCount += 1;
-      }
-      observe() {}
-      unobserve() {}
-      disconnect() {}
+    window.fetch = (input: string | URL) => {
+      fetchedUrls.push(String(input));
+      return Promise.resolve(new Response("", { status: 200 }));
     };
 
     evaluateScript(window);
+    const internalLink = window.document.getElementById("internal");
+    assertExists(internalLink, "Expected internal link fixture to exist.");
+    internalLink.dispatchEvent(new window.MouseEvent("mouseenter"));
 
-    assertEquals(observerCount, 0);
+    assertEquals(fetchedUrls, []);
   });
 
-  it("observes only same-origin document links and prefetches intersecting candidates", async () => {
+  it("prefetches only same-origin document links after hover or focus intent", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
-    const observedIds: string[] = [];
     const fetchedUrls: string[] = [];
     const fetchSignals: AbortSignal[] = [];
-    let callback: ((entries: IntersectionEntryLike[]) => void) | undefined;
 
     Object.defineProperty(window.navigator, "connection", {
       configurable: true,
@@ -107,25 +82,6 @@ describe("link-prefetch-intent.js", () => {
       });
       return 1;
     };
-    window.IntersectionObserverEntry = function () {} as never;
-    Object.defineProperty(
-      window.IntersectionObserverEntry.prototype,
-      "isIntersecting",
-      {
-        configurable: true,
-        value: true,
-      },
-    );
-    window.IntersectionObserver = class {
-      constructor(nextCallback: (entries: IntersectionEntryLike[]) => void) {
-        callback = nextCallback;
-      }
-      observe(target: Element) {
-        observedIds.push((target as HTMLElement).id);
-      }
-      unobserve() {}
-      disconnect() {}
-    };
     window.fetch = (input: string | URL, init?: RequestInit) => {
       fetchedUrls.push(String(input));
       if (init?.signal != null) {
@@ -137,15 +93,22 @@ describe("link-prefetch-intent.js", () => {
     evaluateScript(window);
     await flush(window);
 
-    assertEquals(observedIds, ["internal"]);
     const internalLink = window.document.getElementById("internal");
+    const assetLink = window.document.getElementById("asset");
+    const externalLink = window.document.getElementById("external");
+    const hashLink = window.document.getElementById("hash");
     assertExists(internalLink, "Expected internal link fixture to exist.");
-    callback?.([
-      {
-        isIntersecting: true,
-        target: internalLink,
-      },
-    ]);
+    assertExists(assetLink, "Expected asset link fixture to exist.");
+    assertExists(externalLink, "Expected external link fixture to exist.");
+    assertExists(hashLink, "Expected hash link fixture to exist.");
+
+    internalLink.dispatchEvent(new window.MouseEvent("mouseenter"));
+    await flush(window, 8);
+
+    assetLink.dispatchEvent(new window.MouseEvent("mouseenter"));
+    externalLink.dispatchEvent(new window.MouseEvent("mouseenter"));
+    hashLink.dispatchEvent(new window.MouseEvent("mouseenter"));
+    internalLink.dispatchEvent(new window.FocusEvent("focus"));
     await flush(window);
 
     assertEquals(fetchedUrls, ["https://normco.re/about/"]);

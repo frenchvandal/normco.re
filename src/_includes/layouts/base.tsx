@@ -1,4 +1,8 @@
+/** @jsxImportSource lume */
 import type { jsx } from "lume/jsx-runtime";
+import LANGUAGE_PREFERENCE_SCRIPT from "../../scripts/language-preference.js" with {
+  type: "text",
+};
 
 import {
   APP_MANIFEST_MIME_TYPE,
@@ -41,26 +45,37 @@ const DOCTYPE = { __html: "<!doctype html>\n" } as const;
 const THEME_BOOTSTRAP = {
   __html: THEME_BOOTSTRAP_SCRIPT,
 } as const;
+const LANGUAGE_PREFERENCE_BOOTSTRAP = {
+  __html: LANGUAGE_PREFERENCE_SCRIPT,
+} as const;
 
 type BuildData = {
   swDebugLevel?: "off" | "summary" | "verbose";
 };
+
+type LumeData = Record<string, unknown>;
+type LumeHelpers = Record<string, unknown>;
 
 type AlternateData = {
   readonly lang?: unknown;
   readonly url?: unknown;
 };
 
-type LayoutData = Lume.Data & {
+type LayoutData = LumeData & {
   build?: BuildData;
+  title?: string;
+  description?: string;
   lang?: string;
+  url?: string;
+  children?: LayoutRenderable;
+  comp?: unknown;
   searchIndexed?: boolean;
   unlisted?: boolean;
   extraStylesheets?: ReadonlyArray<string>;
   afterMainContent?: LayoutRenderable;
   renderAfterMainContent?: (
     data: LayoutData,
-    helpers: Lume.Helpers,
+    helpers: LumeHelpers,
   ) => AwaitableLayoutRenderable;
   alternates?: ReadonlyArray<AlternateData>;
   siteChrome?: SiteChromeData;
@@ -74,13 +89,7 @@ type LayoutData = Lume.Data & {
 };
 
 type SsxElement = ReturnType<typeof jsx>;
-type LayoutRenderable =
-  | SsxElement
-  | string
-  | number
-  | boolean
-  | null
-  | undefined;
+type LayoutRenderable = SsxElement | unknown;
 type AwaitableLayoutRenderable = LayoutRenderable | Promise<LayoutRenderable>;
 type LayoutComponent<TProps> = (props: TProps) => AwaitableLayoutRenderable;
 type HeaderProps = Readonly<{
@@ -163,9 +172,32 @@ function resolveSiteChromeData(siteChrome?: SiteChromeData): SiteChromeData {
   };
 }
 
+function createDeferredEnhancementBootstrap(
+  includeLinkPrefetch: boolean,
+  swDebugLevel: NonNullable<BuildData["swDebugLevel"]>,
+): { __html: string } {
+  const backgroundStatements = [
+    includeLinkPrefetch
+      ? 'loadScript("/scripts/link-prefetch-intent.js", { fetchPriority: "low" });'
+      : "",
+    `loadScript("/scripts/sw-register.js", {
+      dataset: {
+        swUrl: "/sw.js",
+        swDebugLevel: ${JSON.stringify(swDebugLevel)},
+      },
+      fetchPriority: "low",
+    });`,
+  ].filter(Boolean).join("\n");
+
+  return {
+    __html:
+      `(()=>{const doc=document;function loadScript(src,{dataset,fetchPriority}={}){const script=doc.createElement("script");script.src=src;if(fetchPriority){script.setAttribute("fetchpriority",fetchPriority);}if(dataset){for(const[key,value]of Object.entries(dataset)){script.dataset[key]=value;}}doc.body.append(script);}function loadModule(src){const script=doc.createElement("script");script.type="module";script.src=src;doc.body.append(script);}const loadInteractive=()=>loadModule("/scripts/header-client.js");const loadBackground=()=>{${backgroundStatements}};if("requestAnimationFrame"in window){window.requestAnimationFrame(loadInteractive);}else{window.setTimeout(loadInteractive,0);}if("requestIdleCallback"in window){window.requestIdleCallback(loadBackground,{timeout:2000});}else{window.setTimeout(loadBackground,1);}})();`,
+  };
+}
+
 export default async (
   data: LayoutData,
-  _helpers: Lume.Helpers,
+  _helpers: LumeHelpers,
 ) => {
   const {
     title,
@@ -218,6 +250,10 @@ export default async (
   const atomXmlUrl = getLocalizedAtomFeedUrl(language);
   const feedXmlUrl = getLocalizedRssFeedUrl(language);
   const feedJsonUrl = getLocalizedJsonFeedUrl(language);
+  const deferredEnhancementBootstrap = createDeferredEnhancementBootstrap(
+    includeLinkPrefetch,
+    swDebugLevel,
+  );
   const resolvedAfterMainContent = typeof renderAfterMainContent === "function"
     ? await renderAfterMainContent(data, _helpers)
     : afterMainContent;
@@ -278,7 +314,7 @@ export default async (
             href="/style.css"
             fetchpriority="high"
           />
-          {extraStylesheets?.map((href) => (
+          {extraStylesheets?.map((href: string) => (
             <link
               key={href}
               rel="stylesheet"
@@ -287,13 +323,12 @@ export default async (
           ))}
           <script>{THEME_BOOTSTRAP}</script>
           <script
-            src="/scripts/language-preference.js"
             data-supported-languages={SUPPORTED_LANGUAGES.join(",")}
             data-default-language={DEFAULT_LANGUAGE}
             data-current-language={language}
             data-language-alternates={JSON.stringify(alternateUrls)}
-            defer
           >
+            {LANGUAGE_PREFERENCE_BOOTSTRAP}
           </script>
           <link
             rel="alternate"
@@ -340,29 +375,7 @@ export default async (
               blogStartYear={blogStartYear ?? new Date().getFullYear()}
             />
           </div>
-          <script
-            src="/scripts/header-client.js"
-            type="module"
-            fetchpriority="low"
-            defer
-          >
-          </script>
-          {includeLinkPrefetch && (
-            <script
-              src="/scripts/link-prefetch-intent.js"
-              fetchpriority="low"
-              defer
-            >
-            </script>
-          )}
-          <script
-            src="/scripts/sw-register.js"
-            data-sw-url="/sw.js"
-            data-sw-debug-level={swDebugLevel}
-            fetchpriority="low"
-            defer
-          >
-          </script>
+          <script>{deferredEnhancementBootstrap}</script>
         </body>
       </html>
     </>

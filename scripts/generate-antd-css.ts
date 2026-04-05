@@ -20,6 +20,7 @@ import {
   Typography,
 } from "npm/antd";
 import React from "npm/react";
+import type { ReactNode } from "npm/react";
 
 import { BLOG_ANTD_THEME } from "../src/blog/client/theme.ts";
 
@@ -75,16 +76,40 @@ const GENERATED_TOKEN_REPLACEMENTS = [
     "--ant-input-number-handle-hover-color: var(--ph-color-accent-fg);",
   ],
   [
+    "--ant-layout-color-bg-header: #001529;",
+    "--ant-layout-color-bg-header: var(--ph-color-canvas-inset);",
+  ],
+  [
     "--ant-layout-color-bg-body: #f5f5f5;",
     "--ant-layout-color-bg-body: var(--ph-color-canvas-subtle);",
+  ],
+  [
+    "--ant-layout-color-bg-trigger: #002140;",
+    "--ant-layout-color-bg-trigger: var(--ph-color-canvas-inset);",
   ],
   [
     "--ant-layout-body-bg: #f5f5f5;",
     "--ant-layout-body-bg: var(--ph-color-canvas-subtle);",
   ],
   [
+    "--ant-layout-header-bg: #001529;",
+    "--ant-layout-header-bg: var(--ph-color-canvas-inset);",
+  ],
+  [
     "--ant-layout-footer-bg: #f5f5f5;",
     "--ant-layout-footer-bg: var(--ph-color-canvas-subtle);",
+  ],
+  [
+    "--ant-layout-sider-bg: #001529;",
+    "--ant-layout-sider-bg: var(--ph-color-canvas-inset);",
+  ],
+  [
+    "--ant-layout-trigger-bg: #002140;",
+    "--ant-layout-trigger-bg: var(--ph-color-canvas-inset);",
+  ],
+  [
+    "--ant-layout-trigger-color: #fff;",
+    "--ant-layout-trigger-color: var(--ph-color-fg-default);",
   ],
   [
     "--ant-button-primary-color: #fff;",
@@ -178,9 +203,31 @@ function withSuppressedExtractWarnings<T>(run: () => T): T {
 
 function alignGeneratedTokens(css: string): string {
   return GENERATED_TOKEN_REPLACEMENTS.reduce(
-    (result, [from, to]) => result.replaceAll(from, to),
+    (result, [from, to]) =>
+      result.replace(buildDeclarationPattern(from), to.trim()),
     css,
   );
+}
+
+function buildDeclarationPattern(declaration: string): RegExp {
+  const trimmedDeclaration = declaration.trim();
+  const colonIndex = trimmedDeclaration.indexOf(":");
+
+  if (colonIndex === -1 || !trimmedDeclaration.endsWith(";")) {
+    throw new Error(`Invalid CSS declaration: ${declaration}`);
+  }
+
+  const property = trimmedDeclaration.slice(0, colonIndex).trim();
+  const value = trimmedDeclaration.slice(colonIndex + 1, -1).trim();
+
+  return new RegExp(
+    `${escapeRegExp(property)}\\s*:\\s*${escapeRegExp(value)};`,
+    "g",
+  );
+}
+
+function escapeRegExp(value: string): string {
+  return value.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function createBlogSeed() {
@@ -278,7 +325,7 @@ if (import.meta.main) {
   await Deno.mkdir(dirname(OUTPUT_PATH), { recursive: true });
 
   const css = withSuppressedExtractWarnings(() =>
-    extractStyle((node) =>
+    extractStyle((node: ReactNode) =>
       React.createElement(
         ConfigProvider,
         { theme: BLOG_ANTD_THEME },

@@ -1,13 +1,5 @@
 // @ts-check
 (() => {
-  const supportsIntersectionObserver = "IntersectionObserver" in globalThis &&
-    "IntersectionObserverEntry" in globalThis &&
-    "isIntersecting" in globalThis.IntersectionObserverEntry.prototype;
-
-  if (!supportsIntersectionObserver) {
-    return;
-  }
-
   /**
    * @typedef {{
    *   readonly saveData?: boolean;
@@ -49,7 +41,7 @@
     return;
   }
 
-  const PREFETCH_LIMIT = 6;
+  const PREFETCH_LIMIT = 3;
   const PREFETCH_TIMEOUT_MS = 2000;
   const HOVER_INTENT_DELAY_MS = 180;
   const ALLOWED_DOCUMENT_EXTENSIONS = new Set([".html"]);
@@ -59,9 +51,14 @@
   /** @type {Map<string, Promise<boolean>>} */
   const pendingPrefetches = new Map();
   /** @type {WeakSet<HTMLAnchorElement>} */
-  const hoverBoundLinks = new WeakSet();
-  /** @type {Map<HTMLAnchorElement, number>} */
+  const intentBoundLinks = new WeakSet();
+  /** @type {Map<HTMLAnchorElement, ReturnType<typeof globalThis.setTimeout>>} */
   const hoverTimers = new Map();
+  const currentDocumentUrl = (() => {
+    const url = new URL(globalThis.location.href);
+    url.hash = "";
+    return url.toString();
+  })();
 
   const canUseDomPrefetch = (() => {
     const link = globalThis.document.createElement("link");
@@ -174,13 +171,15 @@
       return false;
     }
 
-    if (link.origin !== globalThis.location.origin) {
+    const url = new URL(link.href);
+
+    if (url.origin !== globalThis.location.origin) {
       return false;
     }
 
-    if (
-      link.hash.length > 0 && link.pathname === globalThis.location.pathname
-    ) {
+    url.hash = "";
+
+    if (url.toString() === currentDocumentUrl) {
       return false;
     }
 
@@ -188,7 +187,7 @@
       return false;
     }
 
-    if (!isDocumentPath(new URL(link.href))) {
+    if (!isDocumentPath(url)) {
       return false;
     }
 
@@ -214,16 +213,20 @@
       return Promise.resolve(false);
     }
 
+    /** @type {Promise<boolean>} */
     const prefetchPromise = (canUseDomPrefetch
-      ? new Promise((resolve) => {
-        const prefetchLink = globalThis.document.createElement("link");
-        prefetchLink.rel = "prefetch";
-        prefetchLink.href = url;
-        prefetchLink.as = "document";
-        prefetchLink.onload = () => resolve(true);
-        prefetchLink.onerror = () => resolve(false);
-        globalThis.document.head.append(prefetchLink);
-      })
+      ? new Promise(
+        /** @param {(value: boolean) => void} resolve */
+        (resolve) => {
+          const prefetchLink = globalThis.document.createElement("link");
+          prefetchLink.rel = "prefetch";
+          prefetchLink.href = url;
+          prefetchLink.as = "document";
+          prefetchLink.onload = () => resolve(true);
+          prefetchLink.onerror = () => resolve(false);
+          globalThis.document.head.append(prefetchLink);
+        },
+      )
       : fetchWithTimeout(url, {
         mode: "same-origin",
         credentials: "same-origin",
@@ -244,13 +247,39 @@
     return prefetchPromise;
   }
 
-  /** @param {HTMLAnchorElement} link */
-  function registerHoverIntent(link) {
-    if (hoverBoundLinks.has(link)) {
+  /**
+   * @param {HTMLAnchorElement} link
+   * @returns {void}
+   */
+  function clearHoverIntent(link) {
+    const timer = hoverTimers.get(link);
+
+    if (timer !== undefined) {
+      globalThis.clearTimeout(timer);
+      hoverTimers.delete(link);
+    }
+  }
+
+  /**
+   * @param {HTMLAnchorElement} link
+   * @returns {void}
+   */
+  function prefetchFromIntent(link) {
+    if (!isPrefetchCandidate(link) || !hasPrefetchBudget()) {
       return;
     }
 
-    hoverBoundLinks.add(link);
+    clearHoverIntent(link);
+    void prefetchUrl(toPrefetchUrl(link));
+  }
+
+  /** @param {HTMLAnchorElement} link */
+  function registerIntent(link) {
+    if (intentBoundLinks.has(link)) {
+      return;
+    }
+
+    intentBoundLinks.add(link);
 
     const onMouseEnter = () => {
       if (!isPrefetchCandidate(link) || !hasPrefetchBudget()) {
@@ -271,43 +300,17 @@
       hoverTimers.set(link, timer);
     };
 
-    const onMouseLeave = () => {
-      const timer = hoverTimers.get(link);
-
-      if (timer !== undefined) {
-        globalThis.clearTimeout(timer);
-        hoverTimers.delete(link);
-      }
-    };
+    const onMouseLeave = () => clearHoverIntent(link);
+    const onFocus = () => prefetchFromIntent(link);
+    const onTouchStart = () => prefetchFromIntent(link);
 
     link.addEventListener("mouseenter", onMouseEnter);
     link.addEventListener("mouseleave", onMouseLeave);
+    link.addEventListener("focus", onFocus);
+    link.addEventListener("touchstart", onTouchStart, { passive: true });
   }
 
-  const observer = new globalThis.IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) {
-        continue;
-      }
-
-      const link = entry.target;
-
-      if (!(link instanceof HTMLAnchorElement)) {
-        continue;
-      }
-
-      observer.unobserve(link);
-
-      if (!isPrefetchCandidate(link) || !hasPrefetchBudget()) {
-        continue;
-      }
-
-      void prefetchUrl(toPrefetchUrl(link));
-      registerHoverIntent(link);
-    }
-  }, { threshold: 0.25 });
-
-  function observeLinksInViewport() {
+  function registerCandidateLinks() {
     const links = globalThis.document.querySelectorAll("a[href]");
 
     for (const node of links) {
@@ -315,8 +318,7 @@
         continue;
       }
 
-      observer.observe(node);
-      registerHoverIntent(node);
+      registerIntent(node);
     }
   }
 
@@ -324,10 +326,10 @@
 
   if (typeof idleCallback === "function") {
     idleCallback(() => {
-      observeLinksInViewport();
+      registerCandidateLinks();
     }, { timeout: PREFETCH_TIMEOUT_MS });
     return;
   }
 
-  globalThis.setTimeout(observeLinksInViewport, 1);
+  globalThis.setTimeout(registerCandidateLinks, 1);
 })();

@@ -4,7 +4,7 @@ import { describe, it } from "@std/testing/bdd";
 import { registerAssets } from "./assets.ts";
 
 describe("_config/assets.ts", () => {
-  it("copies the static directory verbatim before registering transformable assets", () => {
+  it("routes critical root icons through Lume while copying the remaining static files", () => {
     const calls: Array<{ method: string; args: unknown[] }> = [];
     const siteStub = {
       ignore(...args: unknown[]) {
@@ -28,7 +28,30 @@ describe("_config/assets.ts", () => {
       method: "ignore",
       args: ["/blog/client/node_modules"],
     });
-    assertEquals(calls[2], { method: "copy", args: ["/static", "."] });
+    assertEquals(calls[2], {
+      method: "copy",
+      args: ["/static/contact", "/contact"],
+    });
+    assertEquals(calls[3], {
+      method: "copy",
+      args: ["/static/favicon.ico", "/favicon.ico"],
+    });
+    assertEquals(
+      calls.some((call) =>
+        call.method === "add" &&
+        call.args[0] === "/static/favicon.svg" &&
+        call.args[1] === "/favicon.svg"
+      ),
+      true,
+    );
+    assertEquals(
+      calls.some((call) =>
+        call.method === "add" &&
+        call.args[0] === "/static/android-chrome-192x192.png" &&
+        call.args[1] === "/android-chrome-192x192.png"
+      ),
+      true,
+    );
     assertEquals(
       calls.some((call) =>
         call.method === "add" &&

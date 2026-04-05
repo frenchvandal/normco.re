@@ -47,15 +47,15 @@
 .css-var-_R_0_.ant-picker-calendar {
   --ant-calendar-full-bg: var(--ph-color-canvas-default);
   --ant-calendar-full-panel-bg: var(--ph-color-canvas-default);
-  --ant-calendar-item-active-bg: #404040;
+  --ant-calendar-item-active-bg: var(--ph-surface-accent-strong);
   --ant-calendar-year-control-width: 80px;
   --ant-calendar-month-control-width: 70px;
   --ant-calendar-mini-content-height: 256px;
   --ant-calendar-internal_fixed_item_margin: 2px;
   --ant-calendar-cell-hover-bg: rgba(0, 0, 0, 0.04);
-  --ant-calendar-cell-active-with-range-bg: #404040;
-  --ant-calendar-cell-hover-with-range-bg: #595959;
-  --ant-calendar-cell-range-border-color: #333333;
+  --ant-calendar-cell-active-with-range-bg: var(--ph-surface-accent-strong);
+  --ant-calendar-cell-hover-with-range-bg: var(--ph-surface-accent);
+  --ant-calendar-cell-range-border-color: var(--ph-color-accent-emphasis);
   --ant-calendar-cell-bg-disabled: rgba(0, 0, 0, 0.04);
   --ant-calendar-time-column-width: 56px;
   --ant-calendar-time-column-height: 224px;
@@ -87,7 +87,7 @@
   --ant-cascader-control-width: 184px;
   --ant-cascader-control-item-width: 111px;
   --ant-cascader-dropdown-height: 180px;
-  --ant-cascader-option-selected-bg: #404040;
+  --ant-cascader-option-selected-bg: var(--ph-surface-accent-strong);
   --ant-cascader-option-selected-font-weight: 600;
   --ant-cascader-option-padding: 5px 12px;
   --ant-cascader-menu-padding: 4px;
@@ -108,7 +108,7 @@
   --ant-drawer-dragger-size: 4px;
 }
 .css-var-_R_0_.ant-form-css-var {
-  --ant-form-label-required-mark-color: #ff4d4f;
+  --ant-form-label-required-mark-color: var(--ph-color-feedback-error);
   --ant-form-label-color: var(--ph-color-fg-default);
   --ant-form-label-font-size: 14px;
   --ant-form-label-height: 32px;
@@ -134,7 +134,7 @@
   --ant-input-padding-inline-sm: 7px;
   --ant-input-padding-inline-lg: 11px;
   --ant-input-addon-bg: var(--ph-color-canvas-subtle);
-  --ant-input-active-border-color: #000000;
+  --ant-input-active-border-color: var(--ph-color-accent-fg);
   --ant-input-hover-border-color: var(--ph-color-accent-emphasis);
   --ant-input-active-shadow: 0 0 0 2px color-mix(
     in oklch,
@@ -157,7 +157,7 @@
   --ant-input-padding-inline-sm: 7px;
   --ant-input-padding-inline-lg: 11px;
   --ant-input-addon-bg: var(--ph-color-canvas-subtle);
-  --ant-input-active-border-color: #000000;
+  --ant-input-active-border-color: var(--ph-color-accent-fg);
   --ant-input-hover-border-color: var(--ph-color-accent-emphasis);
   --ant-input-active-shadow: 0 0 0 2px color-mix(
     in oklch,
@@ -180,7 +180,7 @@
   --ant-input-padding-inline-sm: 7px;
   --ant-input-padding-inline-lg: 11px;
   --ant-input-addon-bg: var(--ph-color-canvas-subtle);
-  --ant-input-active-border-color: #000000;
+  --ant-input-active-border-color: var(--ph-color-accent-fg);
   --ant-input-hover-border-color: var(--ph-color-accent-emphasis);
   --ant-input-active-shadow: 0 0 0 2px color-mix(
     in oklch,
@@ -203,7 +203,7 @@
   --ant-input-number-padding-inline-sm: 7px;
   --ant-input-number-padding-inline-lg: 11px;
   --ant-input-number-addon-bg: var(--ph-color-canvas-subtle);
-  --ant-input-number-active-border-color: #000000;
+  --ant-input-number-active-border-color: var(--ph-color-accent-fg);
   --ant-input-number-hover-border-color: var(--ph-color-accent-emphasis);
   --ant-input-number-active-shadow: 0 0 0 2px color-mix(
     in oklch,
@@ -223,27 +223,27 @@
   --ant-input-number-handle-visible: auto;
   --ant-input-number-handle-active-bg: var(--ph-color-canvas-subtle);
   --ant-input-number-handle-bg: var(--ph-color-canvas-default);
-  --ant-input-number-filled-handle-bg: #000000;
-  --ant-input-number-handle-hover-color: #000000;
+  --ant-input-number-filled-handle-bg: var(--ph-color-accent-fg);
+  --ant-input-number-handle-hover-color: var(--ph-color-accent-fg);
   --ant-input-number-handle-border-color: var(--ph-color-border-default);
   --ant-input-number-handle-opacity: 0;
   --ant-input-number-handle-visible-width: 0px;
 }
 .css-var-_R_0_.ant-layout-sider {
-  --ant-layout-color-bg-header: #001529;
-  --ant-layout-color-bg-body: #f5f5f5;
-  --ant-layout-color-bg-trigger: #002140;
-  --ant-layout-body-bg: #f5f5f5;
-  --ant-layout-header-bg: #001529;
+  --ant-layout-color-bg-header: var(--ph-color-canvas-inset);
+  --ant-layout-color-bg-body: var(--ph-color-canvas-subtle);
+  --ant-layout-color-bg-trigger: var(--ph-color-canvas-inset);
+  --ant-layout-body-bg: var(--ph-color-canvas-subtle);
+  --ant-layout-header-bg: var(--ph-color-canvas-inset);
   --ant-layout-header-height: 64px;
   --ant-layout-header-padding: 0 50px;
   --ant-layout-header-color: var(--ph-color-fg-default);
   --ant-layout-footer-padding: 24px 50px;
-  --ant-layout-footer-bg: #f5f5f5;
-  --ant-layout-sider-bg: #001529;
+  --ant-layout-footer-bg: var(--ph-color-canvas-subtle);
+  --ant-layout-sider-bg: var(--ph-color-canvas-inset);
   --ant-layout-trigger-height: 48px;
-  --ant-layout-trigger-bg: #002140;
-  --ant-layout-trigger-color: #fff;
+  --ant-layout-trigger-bg: var(--ph-color-canvas-inset);
+  --ant-layout-trigger-color: var(--ph-color-fg-default);
   --ant-layout-zero-trigger-width: 40px;
   --ant-layout-zero-trigger-height: 40px;
   --ant-layout-light-sider-bg: var(--ph-color-canvas-default);
@@ -251,20 +251,20 @@
   --ant-layout-light-trigger-color: var(--ph-color-fg-default);
 }
 .css-var-_R_0_.ant-layout {
-  --ant-layout-color-bg-header: #001529;
-  --ant-layout-color-bg-body: #f5f5f5;
-  --ant-layout-color-bg-trigger: #002140;
-  --ant-layout-body-bg: #f5f5f5;
-  --ant-layout-header-bg: #001529;
+  --ant-layout-color-bg-header: var(--ph-color-canvas-inset);
+  --ant-layout-color-bg-body: var(--ph-color-canvas-subtle);
+  --ant-layout-color-bg-trigger: var(--ph-color-canvas-inset);
+  --ant-layout-body-bg: var(--ph-color-canvas-subtle);
+  --ant-layout-header-bg: var(--ph-color-canvas-inset);
   --ant-layout-header-height: 64px;
   --ant-layout-header-padding: 0 50px;
   --ant-layout-header-color: var(--ph-color-fg-default);
   --ant-layout-footer-padding: 24px 50px;
-  --ant-layout-footer-bg: #f5f5f5;
-  --ant-layout-sider-bg: #001529;
+  --ant-layout-footer-bg: var(--ph-color-canvas-subtle);
+  --ant-layout-sider-bg: var(--ph-color-canvas-inset);
   --ant-layout-trigger-height: 48px;
-  --ant-layout-trigger-bg: #002140;
-  --ant-layout-trigger-color: #fff;
+  --ant-layout-trigger-bg: var(--ph-color-canvas-inset);
+  --ant-layout-trigger-color: var(--ph-color-fg-default);
   --ant-layout-zero-trigger-width: 40px;
   --ant-layout-zero-trigger-height: 40px;
   --ant-layout-light-sider-bg: var(--ph-color-canvas-default);
@@ -455,8 +455,8 @@
     transparent
   );
   --ant-button-danger-shadow: 0 2px 0 rgb(255, 242, 240);
-  --ant-button-primary-color: #fff;
-  --ant-button-danger-color: #fff;
+  --ant-button-primary-color: var(--ph-color-canvas-default);
+  --ant-button-danger-color: var(--ph-color-canvas-default);
   --ant-button-border-color-disabled: #d9d9d9;
   --ant-button-default-ghost-color: var(--ph-color-canvas-default);
   --ant-button-ghost-bg: transparent;
@@ -510,14 +510,14 @@
   --ant-geekblue: #2f54eb;
   --ant-gold: #faad14;
   --ant-lime: #a0d911;
-  --ant-color-primary: #000000;
-  --ant-color-success: #52c41a;
-  --ant-color-warning: #faad14;
-  --ant-color-error: #ff4d4f;
-  --ant-color-info: #1677ff;
-  --ant-color-link: #000000;
-  --ant-color-text-base: #000;
-  --ant-color-bg-base: #fff;
+  --ant-color-primary: var(--ph-color-accent-fg);
+  --ant-color-success: var(--ph-color-feedback-success);
+  --ant-color-warning: var(--ph-color-feedback-warning);
+  --ant-color-error: var(--ph-color-feedback-error);
+  --ant-color-info: var(--ph-color-feedback-info);
+  --ant-color-link: var(--ph-color-accent-fg);
+  --ant-color-text-base: var(--ph-color-fg-default);
+  --ant-color-bg-base: var(--ph-color-canvas-default);
   --ant-font-family: var(--ph-font-sans);
   --ant-font-family-code: var(--ph-font-mono);
   --ant-font-size: 14px;
@@ -955,8 +955,8 @@
     transparent
   );
   --ant-button-danger-shadow: 0 2px 0 rgb(255, 242, 240);
-  --ant-button-primary-color: #fff;
-  --ant-button-danger-color: #fff;
+  --ant-button-primary-color: var(--ph-color-canvas-default);
+  --ant-button-danger-color: var(--ph-color-canvas-default);
   --ant-button-border-color-disabled: #d9d9d9;
   --ant-button-default-ghost-color: var(--ph-color-canvas-default);
   --ant-button-ghost-bg: transparent;
@@ -1010,14 +1010,14 @@
   --ant-geekblue: #2f54eb;
   --ant-gold: #faad14;
   --ant-lime: #a0d911;
-  --ant-color-primary: #000000;
-  --ant-color-success: #52c41a;
-  --ant-color-warning: #faad14;
-  --ant-color-error: #ff4d4f;
-  --ant-color-info: #1677ff;
-  --ant-color-link: #000000;
-  --ant-color-text-base: #000;
-  --ant-color-bg-base: #fff;
+  --ant-color-primary: var(--ph-color-accent-fg);
+  --ant-color-success: var(--ph-color-feedback-success);
+  --ant-color-warning: var(--ph-color-feedback-warning);
+  --ant-color-error: var(--ph-color-feedback-error);
+  --ant-color-info: var(--ph-color-feedback-info);
+  --ant-color-link: var(--ph-color-accent-fg);
+  --ant-color-text-base: var(--ph-color-fg-default);
+  --ant-color-bg-base: var(--ph-color-canvas-default);
   --ant-font-family: var(--ph-font-sans);
   --ant-font-family-code: var(--ph-font-mono);
   --ant-font-size: 14px;
@@ -1901,8 +1901,8 @@
     transparent
   );
   --ant-button-danger-shadow: 0 2px 0 rgb(255, 242, 240);
-  --ant-button-primary-color: #fff;
-  --ant-button-danger-color: #fff;
+  --ant-button-primary-color: var(--ph-color-canvas-default);
+  --ant-button-danger-color: var(--ph-color-canvas-default);
   --ant-button-border-color-disabled: #d9d9d9;
   --ant-button-default-ghost-color: var(--ph-color-canvas-default);
   --ant-button-ghost-bg: transparent;
@@ -2003,14 +2003,14 @@
   --ant-geekblue: #2f54eb;
   --ant-gold: #faad14;
   --ant-lime: #a0d911;
-  --ant-color-primary: #000000;
-  --ant-color-success: #52c41a;
-  --ant-color-warning: #faad14;
-  --ant-color-error: #ff4d4f;
-  --ant-color-info: #1677ff;
-  --ant-color-link: #000000;
-  --ant-color-text-base: #000;
-  --ant-color-bg-base: #fff;
+  --ant-color-primary: var(--ph-color-accent-fg);
+  --ant-color-success: var(--ph-color-feedback-success);
+  --ant-color-warning: var(--ph-color-feedback-warning);
+  --ant-color-error: var(--ph-color-feedback-error);
+  --ant-color-info: var(--ph-color-feedback-info);
+  --ant-color-link: var(--ph-color-accent-fg);
+  --ant-color-text-base: var(--ph-color-fg-default);
+  --ant-color-bg-base: var(--ph-color-canvas-default);
   --ant-font-family: var(--ph-font-sans);
   --ant-font-family-code: var(--ph-font-mono);
   --ant-font-size: 14px;

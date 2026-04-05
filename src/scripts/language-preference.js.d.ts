@@ -1,0 +1,3 @@
+declare const LANGUAGE_PREFERENCE_SCRIPT: string;
+
+export default LANGUAGE_PREFERENCE_SCRIPT;

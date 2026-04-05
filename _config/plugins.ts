@@ -3,6 +3,7 @@ import postcss from "lume/plugins/postcss.ts";
 import lightningcss from "lume/plugins/lightningcss.ts";
 import purgecss from "lume/plugins/purgecss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
+import svgo from "lume/plugins/svgo.ts";
 import attributes from "lume/plugins/attributes.ts";
 import jsx from "lume/plugins/jsx.ts";
 import inline from "lume/plugins/inline.ts";
@@ -106,6 +107,7 @@ export function registerPlugins(
   site.use(attributes());
   site.use(jsx());
   site.use(imageSize());
+  site.use(svgo());
   site.use(
     picture({
       order: ["avif", "webp", "jpg"],
