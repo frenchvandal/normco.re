@@ -4,10 +4,12 @@ import { describe, it } from "@std/testing/bdd";
 import {
   buildPretextVisualHarnessScenarios,
   buildPretextVisualHarnessStem,
+  buildScenarioEvaluationArgs,
   resolvePlaywrightChromiumExecutablePath,
   resolveStaticSiteContentType,
   resolveStaticSiteRelativePath,
 } from "./pretext-visual-harness.ts";
+import { PRETEXT_BROWSER_PROBE_DIAGNOSTIC_REPORT_ID } from "../src/blog/client/pretext-browser-probe-shared.ts";
 import { withTempDir, writeTextTree } from "../test/temp_fs.ts";
 
 describe("buildPretextVisualHarnessScenarios()", () => {
@@ -53,6 +55,23 @@ describe("buildPretextVisualHarnessStem()", () => {
     assertEquals(
       buildPretextVisualHarnessStem("archive", "zhHant", "desktop"),
       "archive-zh-hant-desktop",
+    );
+  });
+});
+
+describe("buildScenarioEvaluationArgs()", () => {
+  it("passes browser-safe probe diagnostics metadata into page evaluation", () => {
+    const selectors = [
+      { selector: ".post-card-title", minCount: 1 },
+      { selector: ".post-card-summary", minCount: 2 },
+    ] as const;
+
+    assertEquals(
+      buildScenarioEvaluationArgs(selectors),
+      {
+        probeDiagnosticsReportId: PRETEXT_BROWSER_PROBE_DIAGNOSTIC_REPORT_ID,
+        selectorExpectations: selectors,
+      },
     );
   });
 });

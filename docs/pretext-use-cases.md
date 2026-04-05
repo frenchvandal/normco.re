@@ -472,7 +472,8 @@ mensuelle ou d'autres petits blocs textuels compacts :
 Ce n'est pas prioritaire tant que l'archive client n'est pas remobilisée, mais
 le cas est plus concret que la virtualisation.
 
-Statut : **socle implémenté**, pas encore branché sur une UI dédiée.
+Statut : **socle implémenté**, désormais branché sur l'outillage interne de la
+route probe, mais pas encore sur une UI produit.
 
 Verdict : **intéressant plus tard**.
 
@@ -488,13 +489,13 @@ Ce ne serait pas une feature utilisateur, mais un très bon outil de travail si
 la QA multi-langue devient plus exigeante.
 
 Le repo dispose maintenant du noyau nécessaire pour cela via
-`layoutTextBlockWithLines(...)`, même si aucun panneau de debug n'est encore
-exposé.
+`layoutTextBlockWithLines(...)`, et expose désormais un panneau de diagnostic
+interne sur `/pretext/probe/`.
 
 Verdict : **outil dev crédible**.
 
-Statut : **socle implémenté**, UI/outillage dev à faire seulement si le besoin
-se confirme.
+Statut : **socle implémenté**, avec un premier outillage dev déjà branché pour
+la QA et les rapports CI.
 
 ### C) Frontière de cache explicite par langue
 

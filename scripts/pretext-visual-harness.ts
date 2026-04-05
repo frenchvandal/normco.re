@@ -37,6 +37,11 @@ type SelectorExpectation = Readonly<{
   minCount: number;
 }>;
 
+type ScenarioEvaluationArgs = Readonly<{
+  probeDiagnosticsReportId: string;
+  selectorExpectations: ReadonlyArray<SelectorExpectation>;
+}>;
+
 type SelectorMetricSample = Readonly<{
   tagName: string;
   textLength: number;
@@ -646,11 +651,23 @@ function isGenericNetworkConsoleError(message: string): boolean {
   );
 }
 
+export function buildScenarioEvaluationArgs(
+  selectors: ReadonlyArray<SelectorExpectation>,
+): ScenarioEvaluationArgs {
+  return {
+    probeDiagnosticsReportId: PRETEXT_BROWSER_PROBE_DIAGNOSTIC_REPORT_ID,
+    selectorExpectations: selectors,
+  };
+}
+
 async function evaluateScenarioPage(
   page: Awaited<ReturnType<RuntimeBrowser["newPage"]>>,
   selectors: ReadonlyArray<SelectorExpectation>,
 ): Promise<ScenarioEvaluationPayload> {
-  return await page.evaluate((selectorExpectations) => {
+  return await page.evaluate(({
+    probeDiagnosticsReportId,
+    selectorExpectations,
+  }) => {
     const parseFiniteInteger = (value: string | undefined): number => {
       const parsedValue = Number.parseInt(value ?? "", 10);
       return Number.isFinite(parsedValue) ? parsedValue : 0;
@@ -661,7 +678,7 @@ async function evaluateScenarioPage(
     };
     const resolveProbeDiagnostics = (): ProbeDiagnosticsSummary | null => {
       const diagnosticsRoot = document.getElementById(
-        PRETEXT_BROWSER_PROBE_DIAGNOSTIC_REPORT_ID,
+        probeDiagnosticsReportId,
       );
 
       if (!(diagnosticsRoot instanceof HTMLElement)) {
@@ -748,7 +765,7 @@ async function evaluateScenarioPage(
       },
       probeDiagnostics: resolveProbeDiagnostics(),
     };
-  }, selectors);
+  }, buildScenarioEvaluationArgs(selectors));
 }
 
 async function runScenario(
