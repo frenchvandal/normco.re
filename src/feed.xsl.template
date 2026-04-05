@@ -522,7 +522,7 @@
             aria-label="{$navigation-menu-label}"
             hidden=""
           >
-            <nav class="site-side-nav__navigation" aria-label="{$main-navigation-label}">
+            <nav class="site-side-nav__navigation" aria-label="{$navigation-menu-label}">
               <ul class="site-side-nav__items">
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">

@@ -170,7 +170,7 @@
             aria-label="Navigation menu"
             hidden=""
           >
-            <nav class="site-side-nav__navigation" aria-label="Main navigation">
+            <nav class="site-side-nav__navigation" aria-label="Navigation menu">
               <ul class="site-side-nav__items">
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">

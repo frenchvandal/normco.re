@@ -270,7 +270,7 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
           aria-label="Navigation menu"
           hidden
         >
-          <nav class="site-side-nav__navigation" aria-label="Site links">
+          <nav class="site-side-nav__navigation" aria-label="Navigation menu">
             <div class="site-side-nav__header">
               <a href="/" class="site-side-nav__brand">normco.re</a>
               <button

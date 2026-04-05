@@ -109,7 +109,7 @@ describe("Header()", () => {
     );
     assertMatch(
       html,
-      /<nav[^>]*class="site-side-nav__navigation"[^>]*aria-label="Site links"/,
+      /<nav[^>]*class="site-side-nav__navigation"[^>]*aria-label="Navigation menu"/,
     );
   });
 

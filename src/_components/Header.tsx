@@ -388,7 +388,7 @@ function renderSideNav(
     >
       <nav
         class="site-side-nav__navigation"
-        aria-label={t.site.siteLinksAriaLabel}
+        aria-label={t.site.navigationMenuAriaLabel}
       >
         <div class="site-side-nav__header">
           <a href={homeUrl} class="site-side-nav__brand">{siteName}</a>
