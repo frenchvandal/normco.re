@@ -121,7 +121,7 @@
       continue;
     }
 
-    const codeText = codeBlock.textContent?.trim() ?? "";
+    const codeText = codeBlock.textContent ?? "";
 
     if (codeText.length === 0) {
       continue;

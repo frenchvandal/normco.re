@@ -26,7 +26,7 @@
         <meta name="color-scheme" content="light dark"/>
         <title>Sitemap</title>
         <link rel="stylesheet" href="/style.css"/>
-        <script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");let v=null;try{const s=localStorage.getItem("color-mode");if(s==="light"||s==="dark"||s==="system")v=s;else{const l=localStorage.getItem("color-scheme");v=l==="light"||l==="dark"?l:null}}catch{v=null}const p=v??"system",t=p==="light"||p==="dark"?p:m.matches?"dark":"light";r.setAttribute("data-color-mode",t);r.setAttribute("data-theme-preference",p);r.setAttribute("data-color-scheme",t);document.addEventListener("DOMContentLoaded",()=>{const e=document.getElementById("theme-toggle");if(e){const l=e.getAttribute("data-label-switch-light")??"Switch to light theme",d=e.getAttribute("data-label-switch-dark")??"Switch to dark theme",s=e.getAttribute("data-label-follow-system")??"Follow system theme",n=p==="light"?d:p==="dark"?s:l;e.setAttribute("aria-label",n);e.setAttribute("title",n)}})})()</script>
+        <script>__THEME_BOOTSTRAP_SCRIPT__</script>
         <script src="/scripts/language-preference.js" data-supported-languages="__SUPPORTED_LANGUAGES__" data-default-language="en" data-current-language="en" defer="defer">
           <xsl:attribute name="data-language-alternates">{"en":"/sitemap.xml"}</xsl:attribute>
         </script>
@@ -162,13 +162,15 @@
             </div>
           </div>
 
-          <nav
+          <div
             id="site-side-nav"
             class="site-side-nav"
+            role="dialog"
+            aria-modal="true"
             aria-label="Navigation menu"
             hidden=""
           >
-            <div class="site-side-nav__navigation">
+            <nav class="site-side-nav__navigation" aria-label="Main navigation">
               <ul class="site-side-nav__items">
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">
@@ -189,8 +191,8 @@
                   </a>
                 </li>
               </ul>
-            </div>
-          </nav>
+            </nav>
+          </div>
           <div class="site-side-nav__overlay" aria-hidden="true"></div>
 
           <main class="site-main" id="main-content" data-pagefind-body="">

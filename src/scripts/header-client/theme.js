@@ -16,7 +16,9 @@
 export function createThemeController(runtime, root, options = {}) {
   const doc = runtime.document;
   const themeToggleSelector = options.themeToggleSelector ?? "#theme-toggle";
-  const themeMediaQuery = runtime.matchMedia("(prefers-color-scheme: dark)");
+  const themeMediaQuery = typeof runtime.matchMedia === "function"
+    ? runtime.matchMedia("(prefers-color-scheme: dark)")
+    : null;
   const themeStorageKey = "color-mode";
   const legacyThemeStorageKey = "color-scheme";
 
@@ -72,7 +74,7 @@ export function createThemeController(runtime, root, options = {}) {
    */
   function resolveThemeMode(preference) {
     return preference === "system"
-      ? (themeMediaQuery.matches ? "dark" : "light")
+      ? (themeMediaQuery?.matches ? "dark" : "light")
       : preference;
   }
 
@@ -150,14 +152,20 @@ export function createThemeController(runtime, root, options = {}) {
     applyThemePreference(preference);
     updateThemeToggleAccessibility(button, preference);
 
-    themeMediaQuery.addEventListener("change", () => {
+    const handleSystemThemeChange = () => {
       if (getCurrentThemePreference() !== "system") {
         return;
       }
 
       applyThemePreference("system");
       updateThemeToggleAccessibility(button, "system");
-    });
+    };
+
+    if (typeof themeMediaQuery?.addEventListener === "function") {
+      themeMediaQuery.addEventListener("change", handleSystemThemeChange);
+    } else if (typeof themeMediaQuery?.addListener === "function") {
+      themeMediaQuery.addListener(handleSystemThemeChange);
+    }
   }
 
   /**

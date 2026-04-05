@@ -133,6 +133,32 @@ describe("post-code-copy.js", () => {
     timers.runAll();
   });
 
+  it("preserves code block whitespace when copying", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    const timers = installFakeTimers(window);
+    const copiedTexts: string[] = [];
+    const codeBlock = window.document.querySelector("pre > code");
+    assert(codeBlock instanceof window.HTMLElement);
+    codeBlock.textContent = "\nfunction test() {\n  return 1;\n}\n";
+    window.navigator.clipboard = {
+      writeText(text: string) {
+        copiedTexts.push(text);
+        return Promise.resolve();
+      },
+    };
+
+    evaluateScript(window);
+
+    const [button] = getCopyButtons(window);
+    assert(button);
+    button.click();
+    await flushMicrotasks();
+
+    assertEquals(copiedTexts, ["\nfunction test() {\n  return 1;\n}\n"]);
+    timers.runAll();
+  });
+
   it("falls back to execCommand when the async clipboard API is unavailable", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;

@@ -378,13 +378,18 @@ function renderSideNav(
   t: SiteTranslations,
 ): El {
   return (
-    <nav
+    <div
       id={HEADER_IDS.sideNav}
       class="site-side-nav"
+      role="dialog"
+      aria-modal="true"
       aria-label={t.site.navigationMenuAriaLabel}
       hidden
     >
-      <div class="site-side-nav__navigation">
+      <nav
+        class="site-side-nav__navigation"
+        aria-label={t.site.siteLinksAriaLabel}
+      >
         <div class="site-side-nav__header">
           <a href={homeUrl} class="site-side-nav__brand">{siteName}</a>
           <button
@@ -427,8 +432,8 @@ function renderSideNav(
             ))}
           </ul>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 }
 

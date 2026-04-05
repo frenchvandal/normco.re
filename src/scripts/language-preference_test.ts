@@ -85,4 +85,21 @@ describe("language-preference.js", () => {
       window.close();
     }
   });
+
+  it("preserves the root query string and hash during language redirect", () => {
+    const dom = createDom("/?utm_source=test#intro");
+    const window = dom.window;
+    try {
+      const navigationCalls = captureNavigation(window);
+      window.localStorage.setItem("preferred-language", "fr");
+
+      installScript(window);
+
+      assertEquals(navigationCalls.length, 1);
+      assertEquals(navigationCalls[0]?.kind, "replace");
+      assertEquals(navigationCalls[0]?.targetUrl, "/fr/?utm_source=test#intro");
+    } finally {
+      window.close();
+    }
+  });
 });

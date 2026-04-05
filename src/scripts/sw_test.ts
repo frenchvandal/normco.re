@@ -260,6 +260,86 @@ describe("sw.js", () => {
     );
   });
 
+  it("serves stale cached feeds immediately while refreshing in the background", async () => {
+    let resolveFeedFetch: ((response: Response) => void) | undefined;
+    let cachePutCount = 0;
+    const runtime = createRuntime({
+      fetchImpl() {
+        return new Promise<Response>((resolve) => {
+          resolveFeedFetch = resolve;
+        });
+      },
+      cacheStores: {
+        "feeds-test": {
+          match(request) {
+            const key = typeof request === "string"
+              ? request
+              : request.url ?? "";
+            return Promise.resolve(
+              key === "https://normco.re/rss.xml"
+                ? new Response("<rss>cached</rss>", {
+                  status: 200,
+                  headers: {
+                    "content-type": "application/rss+xml; charset=UTF-8",
+                    "x-sw-cached-at": "0",
+                  },
+                })
+                : undefined,
+            );
+          },
+          put() {
+            cachePutCount += 1;
+            return Promise.resolve();
+          },
+        },
+      },
+    });
+    const listener = runtime.getFetchListener();
+    let responsePromise: Promise<Response> | undefined;
+
+    listener({
+      request: {
+        url: "https://normco.re/rss.xml",
+        method: "GET",
+        mode: "cors",
+        destination: "document",
+        headers: new Headers({ "user-agent": "Mozilla/5.0" }),
+      },
+      respondWith(promise) {
+        responsePromise = promise;
+      },
+    });
+
+    assertExists(
+      responsePromise,
+      "Expected stale feed request to call respondWith().",
+    );
+
+    let timeoutId = 0;
+    const resolutionState = await Promise.race([
+      responsePromise.then(() => "resolved"),
+      new Promise<"pending">((resolve) => {
+        timeoutId = setTimeout(() => resolve("pending"), 20);
+      }),
+    ]);
+    clearTimeout(timeoutId);
+    assertEquals(resolutionState, "resolved");
+
+    const response = await responsePromise;
+    assertEquals(await response.text(), "<rss>cached</rss>");
+    assertEquals(cachePutCount, 0);
+
+    resolveFeedFetch?.(
+      new Response("<rss>fresh</rss>", {
+        status: 200,
+        headers: { "content-type": "application/rss+xml; charset=UTF-8" },
+      }),
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assertEquals(cachePutCount, 1);
+  });
+
   it("bypasses crawler requests without intercepting them", () => {
     const runtime = createRuntime({
       fetchImpl() {

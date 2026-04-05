@@ -4,12 +4,14 @@ import sitemapStylesheetTemplate from "../sitemap.xsl.template" with {
 };
 
 import { escapeXml } from "./html.ts";
+import { THEME_BOOTSTRAP_SCRIPT } from "./theme-bootstrap.ts";
 import { renderSiteIconMarkup } from "./site-icons.ts";
 import { HEADER_IDS, HEADER_LANGUAGE_OPTIONS } from "./header-language-menu.ts";
 import { type SiteLanguage, SUPPORTED_LANGUAGES } from "./i18n.ts";
 
 const HEADER_LANGUAGE_MENU_PANEL_TOKEN =
   "<!--__HEADER_LANGUAGE_MENU_PANEL__-->";
+const THEME_BOOTSTRAP_SCRIPT_TOKEN = "__THEME_BOOTSTRAP_SCRIPT__";
 const HEADER_MENU_ICON_TOKEN = "<!--__HEADER_MENU_ICON__-->";
 const HEADER_SEARCH_ICON_TOKEN = "<!--__HEADER_SEARCH_ICON__-->";
 const HEADER_LANGUAGE_ICON_TOKEN = "<!--__HEADER_LANGUAGE_ICON__-->";
@@ -247,6 +249,11 @@ function renderStylesheet(
     template,
     HEADER_LANGUAGE_MENU_PANEL_TOKEN,
     languageMenuPanel,
+  );
+  renderedTemplate = replaceRequiredToken(
+    renderedTemplate,
+    THEME_BOOTSTRAP_SCRIPT_TOKEN,
+    THEME_BOOTSTRAP_SCRIPT,
   );
   renderedTemplate = replaceRequiredToken(
     renderedTemplate,

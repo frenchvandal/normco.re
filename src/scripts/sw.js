@@ -66,20 +66,16 @@ const STATIC_ASSETS = [
   "/atom.xml",
   "/rss.xml",
   "/feed.json",
-  "/discovery/",
   "/sitemap.xml",
   "/fr/atom.xml",
   "/fr/rss.xml",
   "/fr/feed.json",
-  "/fr/discovery/",
   "/zh-hans/atom.xml",
   "/zh-hans/rss.xml",
   "/zh-hans/feed.json",
-  "/zh-hans/discovery/",
   "/zh-hant/atom.xml",
   "/zh-hant/rss.xml",
   "/zh-hant/feed.json",
-  "/zh-hant/discovery/",
   OFFLINE_URL_BY_LANGUAGE.en,
   OFFLINE_URL_BY_LANGUAGE.fr,
   OFFLINE_URL_BY_LANGUAGE.zhHans,
@@ -491,8 +487,6 @@ async function staleWhileRevalidateFeed(request) {
     const isFresh = Date.now() - cachedAt < FEED_TTL_MS;
 
     if (!isFresh) {
-      await refreshPromise;
-    } else {
       void refreshPromise;
     }
 

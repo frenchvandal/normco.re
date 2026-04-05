@@ -5,6 +5,7 @@ import { faker, seedTestFaker } from "../../../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../../../test/lume.ts";
 
 import baseLayout from "./base.tsx";
+import { THEME_BOOTSTRAP_SCRIPT } from "../../utils/theme-bootstrap.ts";
 
 const MOCK_HELPERS = asLumeHelpers({});
 
@@ -161,7 +162,7 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
-        '<script>(()=>{const r=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");',
+        `<script>${THEME_BOOTSTRAP_SCRIPT}</script>`,
       );
       assertStringIncludes(
         html,

@@ -155,6 +155,22 @@
   }
 
   /**
+   * @param {string} language
+   * @returns {string}
+   */
+  function resolveRootRedirectTargetUrl(language) {
+    const targetUrl = new URL(
+      resolveTargetUrl(language),
+      globalThis.location.origin,
+    );
+
+    targetUrl.search = globalThis.location.search;
+    targetUrl.hash = globalThis.location.hash;
+
+    return `${targetUrl.pathname}${targetUrl.search}${targetUrl.hash}`;
+  }
+
+  /**
    * @returns {string | null}
    */
   function readStoredLanguage() {
@@ -248,7 +264,7 @@
   const isRootPath = globalThis.location.pathname === "/";
 
   if (preferredLanguage !== currentLanguage && isRootPath) {
-    const targetUrl = resolveTargetUrl(preferredLanguage);
+    const targetUrl = resolveRootRedirectTargetUrl(preferredLanguage);
 
     if (getCurrentPath() !== getTargetPath(targetUrl)) {
       replaceLocation(targetUrl);

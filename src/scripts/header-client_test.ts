@@ -23,7 +23,7 @@ type TestWindow = InstanceType<typeof JSDOM>["window"] & {
     showEmptyFilters?: boolean;
     translations?: Record<string, string>;
   }) => unknown;
-  matchMedia(query: string): TestMediaQueryList;
+  matchMedia?: (query: string) => TestMediaQueryList;
 };
 
 type NavigationDetail = {
@@ -262,8 +262,15 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
           </div>
         </div>
 
-        <nav id="site-side-nav" class="site-side-nav" aria-label="Navigation menu" hidden>
-          <div class="site-side-nav__navigation">
+        <div
+          id="site-side-nav"
+          class="site-side-nav"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
+          hidden
+        >
+          <nav class="site-side-nav__navigation" aria-label="Site links">
             <div class="site-side-nav__header">
               <a href="/" class="site-side-nav__brand">normco.re</a>
               <button
@@ -284,8 +291,8 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
                 </li>
               </ul>
             </div>
-          </div>
-        </nav>
+          </nav>
+        </div>
 
         <div class="site-side-nav__overlay" aria-hidden="true"></div>
       </body>
@@ -464,6 +471,12 @@ function getMenuToggle(window: TestWindow): HTMLButtonElement {
   const toggle = window.document.querySelector(".site-header__menu-toggle");
   assert(toggle instanceof window.HTMLButtonElement);
   return toggle;
+}
+
+function getSideNav(window: TestWindow): HTMLElement {
+  const sideNav = window.document.getElementById("site-side-nav");
+  assert(sideNav instanceof window.HTMLElement);
+  return sideNav;
 }
 
 function getSearchPanel(window: TestWindow): HTMLElement {
@@ -1157,6 +1170,29 @@ describe("header-client.js", () => {
       "dark",
     );
     assertEquals(button.getAttribute("title"), "Follow system theme");
+  });
+
+  it("keeps the header interactive when matchMedia is unavailable", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = undefined;
+
+    evaluateScript(window);
+
+    const menuToggle = getMenuToggle(window);
+    const themeButton = window.document.getElementById("theme-toggle");
+    const sideNav = getSideNav(window);
+    assert(themeButton instanceof window.HTMLButtonElement);
+
+    menuToggle.click();
+    assertEquals(menuToggle.getAttribute("aria-expanded"), "true");
+    assertEquals(sideNav.hidden, false);
+
+    themeButton.click();
+    assertEquals(
+      window.document.documentElement.getAttribute("data-theme-preference"),
+      "light",
+    );
   });
 
   it("persists the selected language and closes the menu without navigating when the target matches the current page", async () => {

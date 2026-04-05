@@ -105,10 +105,12 @@ describe("Header()", () => {
     );
     assertMatch(
       html,
-      /<nav[^>]*id="site-side-nav"[^>]*class="site-side-nav"[^>]*aria-label="Navigation menu"[^>]*hidden/,
+      /<div[^>]*id="site-side-nav"[^>]*class="site-side-nav"[^>]*role="dialog"[^>]*aria-modal="true"[^>]*aria-label="Navigation menu"[^>]*hidden/,
     );
-    assertNotMatch(html, /role="dialog"/);
-    assertNotMatch(html, /aria-modal="true"/);
+    assertMatch(
+      html,
+      /<nav[^>]*class="site-side-nav__navigation"[^>]*aria-label="Site links"/,
+    );
   });
 
   it("keeps legacy navigation, menu, and icon controls off the home route", async () => {
