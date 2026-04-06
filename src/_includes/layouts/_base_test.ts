@@ -5,7 +5,6 @@ import { faker, seedTestFaker } from "../../../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../../../test/lume.ts";
 
 import baseLayout from "./base.tsx";
-import { CRITICAL_CSS } from "../../utils/critical-css.ts";
 import { THEME_BOOTSTRAP_SCRIPT } from "../../utils/theme-bootstrap.ts";
 
 const MOCK_HELPERS = asLumeHelpers({});
@@ -204,38 +203,23 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, "#main-content");
     });
 
-    it("inlines the critical CSS before the deferred stylesheet swap", async () => {
+    it("uses a route-scoped critical stylesheet before deferring /style.css", async () => {
       const html = await renderBase(makeData({}));
 
-      // The inlined critical bundle has to land in the document head and
-      // must include `--ph-font-measure` so Pretext sees the right
-      // measurement font on the first computed-style read.
-      assertStringIncludes(html, "--ph-font-measure");
-      // A small marker from CRITICAL_CSS that proves the constant itself
-      // (not just an unrelated `--ph-font-measure` mention) is what got
-      // inlined. The layer declaration is the very first token of the
-      // critical bundle so it always survives any whitespace transform.
-      assertStringIncludes(
-        html,
-        "@layer tokens,reset,base,layout,utilities;",
-      );
-      // Also assert the constant is non-trivially carried into the
-      // rendered HTML, by checking a stable substring after minification.
-      assertStringIncludes(
-        html,
-        CRITICAL_CSS.slice(0, 60),
-      );
-      // Critical `<style>` must come before the `<link rel=preload>` so
-      // the inlined rules apply before the deferred stylesheet starts
-      // downloading.
       assertMatch(
         html,
-        /<style>[\s\S]*<\/style>[\s\S]*<link[^>]*rel="preload"[^>]*href="\/style\.css"/,
+        /<link[^>]*rel="stylesheet"[^>]*href="\/critical\/home\.css"[^>]*fetchpriority="high"/,
       );
+      assertMatch(
+        html,
+        /href="\/critical\/home\.css"[\s\S]*<link[^>]*rel="preload"[^>]*href="\/style\.css"[^>]*as="style"/,
+      );
+      assertNotMatch(html, /<style>[\s\S]*--ph-font-measure[\s\S]*<\/style>/);
     });
 
-    it("renders extra page-level stylesheets after the shared bundle", async () => {
+    it("keeps route-level above-the-fold styles render-blocking on deferred routes", async () => {
       const html = await renderBase(makeData({
+        url: "/posts/lorem-ipsum/",
         extraStylesheets: ["/styles/blog-antd.css"],
       }));
 
@@ -243,29 +227,81 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, 'href="/styles/blog-antd.css"');
       assertMatch(
         html,
-        /href="\/style\.css".*href="\/styles\/blog-antd\.css"/,
+        /href="\/critical\/post\.css".*href="\/styles\/blog-antd\.css".*href="\/style\.css"/,
       );
-      // The shared bundle ships as a non-blocking preload that promotes
-      // itself to a stylesheet on load. The render-blocking critical CSS
-      // is the inline `<style>` block instead.
       assertMatch(
         html,
         /<link[^>]*rel="preload"[^>]*href="\/style\.css"[^>]*as="style"/,
       );
-      // The `<noscript>` fallback restores the synchronous stylesheet for
-      // clients that disable JavaScript and therefore cannot run the
-      // `onload` swap.
       assertMatch(
         html,
         /<noscript>\s*<link rel="stylesheet" href="\/style\.css"/,
       );
-      // Extra stylesheets are above-the-fold on the routes that opt in
-      // (post, tag, posts index), so they get the same high fetch priority
-      // as the shared bundle to help the preload scanner.
       assertMatch(
         html,
         /href="\/styles\/blog-antd\.css"[^>]*fetchpriority="high"/,
       );
+    });
+
+    it("extends route-scoped critical CSS to the about page", async () => {
+      const html = await renderBase(makeData({
+        url: "/about/",
+      }));
+
+      assertMatch(
+        html,
+        /<link[^>]*rel="stylesheet"[^>]*href="\/critical\/about\.css"[^>]*fetchpriority="high"/,
+      );
+      assertMatch(
+        html,
+        /href="\/critical\/about\.css"[\s\S]*<link[^>]*rel="preload"[^>]*href="\/style\.css"[^>]*as="style"/,
+      );
+    });
+
+    it("extends route-scoped critical CSS to the syndication page", async () => {
+      const html = await renderBase(makeData({
+        url: "/syndication/",
+      }));
+
+      assertMatch(
+        html,
+        /<link[^>]*rel="stylesheet"[^>]*href="\/critical\/syndication\.css"[^>]*fetchpriority="high"/,
+      );
+      assertMatch(
+        html,
+        /href="\/critical\/syndication\.css"[\s\S]*<link[^>]*rel="preload"[^>]*href="\/style\.css"[^>]*as="style"/,
+      );
+    });
+
+    it("keeps /style.css render-blocking on routes without critical coverage", async () => {
+      const html = await renderBase(makeData({
+        url: "/offline/",
+      }));
+
+      assertMatch(
+        html,
+        /<link[^>]*rel="stylesheet"[^>]*href="\/style\.css"[^>]*fetchpriority="high"/,
+      );
+      assertNotMatch(html, /href="\/critical\//);
+      assertNotMatch(html, /rel="preload"[^>]*href="\/style\.css"/);
+    });
+
+    it("keeps the Pretext probe on the conservative blocking stylesheet path", async () => {
+      const html = await renderBase(makeData({
+        url: "/pretext/probe/",
+        extraStylesheets: ["/styles/blog-antd.css"],
+      }));
+
+      assertMatch(
+        html,
+        /<link[^>]*rel="stylesheet"[^>]*href="\/style\.css"[^>]*fetchpriority="high"/,
+      );
+      assertMatch(
+        html,
+        /href="\/styles\/blog-antd\.css"[^>]*fetchpriority="high"/,
+      );
+      assertNotMatch(html, /href="\/critical\//);
+      assertNotMatch(html, /rel="preload"[^>]*href="\/style\.css"/);
     });
 
     it("passes service-worker debug level to the register script", async () => {

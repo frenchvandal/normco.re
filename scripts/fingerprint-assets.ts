@@ -28,6 +28,12 @@ const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
  * Service worker files are excluded — they use internal versioning instead.
  */
 const CANONICAL_ASSET_URLS = [
+  "/critical/about.css",
+  "/critical/archive.css",
+  "/critical/home.css",
+  "/critical/post.css",
+  "/critical/syndication.css",
+  "/critical/tag.css",
   "/style.css",
   ...FINGERPRINTED_SCRIPT_ASSET_URLS,
 ] as const;

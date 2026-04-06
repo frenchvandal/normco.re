@@ -55,6 +55,34 @@ describe("_config/assets.ts", () => {
     assertEquals(
       calls.some((call) =>
         call.method === "add" &&
+        call.args[0] === "/critical/about.css"
+      ),
+      true,
+    );
+    assertEquals(
+      calls.some((call) =>
+        call.method === "add" &&
+        call.args[0] === "/critical/home.css"
+      ),
+      true,
+    );
+    assertEquals(
+      calls.some((call) =>
+        call.method === "add" &&
+        call.args[0] === "/critical/post.css"
+      ),
+      true,
+    );
+    assertEquals(
+      calls.some((call) =>
+        call.method === "add" &&
+        call.args[0] === "/critical/syndication.css"
+      ),
+      true,
+    );
+    assertEquals(
+      calls.some((call) =>
+        call.method === "add" &&
         call.args[0] === "/scripts/pretext-browser-probe.js"
       ),
       true,

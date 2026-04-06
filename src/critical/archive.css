@@ -1,0 +1,3 @@
+@layer tokens, reset, base, layout, utilities;
+
+@import "../styles/critical/common.css";

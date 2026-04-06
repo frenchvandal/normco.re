@@ -11,6 +11,14 @@ const OPTIMIZED_ROOT_IMAGE_ASSETS = [
   "apple-touch-icon.png",
   "favicon.svg",
 ] as const;
+const CRITICAL_STYLESHEET_ASSET_URLS = [
+  "/critical/about.css",
+  "/critical/archive.css",
+  "/critical/home.css",
+  "/critical/post.css",
+  "/critical/syndication.css",
+  "/critical/tag.css",
+] as const;
 
 export function registerAssets(site: Site): void {
   // Pure static files live under /src/static. Route the icons that influence
@@ -39,6 +47,9 @@ export function registerAssets(site: Site): void {
 
   site.add("/style.css");
   site.add("/styles/blog-antd.css");
+  for (const criticalStylesheetUrl of CRITICAL_STYLESHEET_ASSET_URLS) {
+    site.add(criticalStylesheetUrl);
+  }
 
   for (const scriptAssetUrl of SCRIPT_ASSET_URLS) {
     site.add(scriptAssetUrl);

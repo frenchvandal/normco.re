@@ -36,7 +36,6 @@ import {
   SITE_SHORT_NAME,
 } from "../../utils/site-identity.ts";
 import { THEME_BOOTSTRAP_SCRIPT } from "../../utils/theme-bootstrap.ts";
-import { CRITICAL_CSS } from "../../utils/critical-css.ts";
 
 // Lume JSX renders a fragment here; the document doctype still has to be
 // injected explicitly ahead of `<html>`.
@@ -46,16 +45,12 @@ const DOCTYPE = { __html: "<!doctype html>\n" } as const;
 const THEME_BOOTSTRAP = {
   __html: THEME_BOOTSTRAP_SCRIPT,
 } as const;
-// Critical CSS bundle (tokens layer, reset layer, hand-curated base and
-// layout-shell slice). Inlined before any external stylesheet so the
-// editorial routes paint without FOUC and Pretext sees `--ph-font-measure`
-// on the first computed-style read. See `src/utils/critical-css.ts`.
-const CRITICAL_STYLE = { __html: CRITICAL_CSS } as const;
-// Inline `<link>` swap that turns `/style.css` from render-blocking into a
-// preload that promotes itself to a stylesheet on load. Pages that mount
-// React/Ant Design surfaces still load `blog-antd.css` synchronously via
-// `extraStylesheets`, which keeps Pretext-instrumented components free of
-// CLS during hydration.
+// Inline `<link>` swap that turns `/style.css` into a non-blocking preload
+// on routes with a dedicated critical stylesheet. The route-scoped critical
+// bundles are built by the same CSS pipeline as `/style.css`, which keeps
+// first paint and the eventual full-bundle render aligned while still
+// preserving Pretext's requirement that `--ph-font-measure` be available
+// before any React surface mounts.
 const STYLESHEET_PRELOAD_SWAP = {
   __html: "this.onload=null;this.rel='stylesheet';",
 } as const;
@@ -75,6 +70,15 @@ const ADAPTIVE_PREFETCH_BASELINE = {
     ],
   }),
 } as const;
+const HOME_ROUTE_PATTERN = /^\/(?:fr\/|zh-hans\/|zh-hant\/)?$/;
+const ABOUT_ROUTE_PATTERN = /^\/(?:fr\/|zh-hans\/|zh-hant\/)?about\/$/;
+const POSTS_ARCHIVE_ROUTE_PATTERN = /^\/(?:fr\/|zh-hans\/|zh-hant\/)?posts\/$/;
+const POST_DETAIL_ROUTE_PATTERN =
+  /^\/(?:fr\/|zh-hans\/|zh-hant\/)?posts\/[^/]+\/$/;
+const SYNDICATION_ROUTE_PATTERN =
+  /^\/(?:fr\/|zh-hans\/|zh-hant\/)?syndication\/$/;
+const TAG_DETAIL_ROUTE_PATTERN =
+  /^\/(?:fr\/|zh-hans\/|zh-hant\/)?tags\/[^/]+\/$/;
 
 type BuildData = {
   swDebugLevel?: "off" | "summary" | "verbose";
@@ -169,6 +173,34 @@ function isPostDetailUrl(currentUrl: string): boolean {
 
 function isPostsArchiveUrl(currentUrl: string): boolean {
   return /\/posts\/$/.test(currentUrl);
+}
+
+function resolveCriticalStylesheetHref(currentUrl: string): string | null {
+  if (HOME_ROUTE_PATTERN.test(currentUrl)) {
+    return "/critical/home.css";
+  }
+
+  if (ABOUT_ROUTE_PATTERN.test(currentUrl)) {
+    return "/critical/about.css";
+  }
+
+  if (POST_DETAIL_ROUTE_PATTERN.test(currentUrl)) {
+    return "/critical/post.css";
+  }
+
+  if (POSTS_ARCHIVE_ROUTE_PATTERN.test(currentUrl)) {
+    return "/critical/archive.css";
+  }
+
+  if (SYNDICATION_ROUTE_PATTERN.test(currentUrl)) {
+    return "/critical/syndication.css";
+  }
+
+  if (TAG_DETAIL_ROUTE_PATTERN.test(currentUrl)) {
+    return "/critical/tag.css";
+  }
+
+  return null;
 }
 
 function resolveComponent<TProps>(
@@ -269,6 +301,7 @@ export default async (
     getDefaultSiteDescription(resolvedAuthor);
   const documentLanguage = getLanguageTag(language);
   const currentUrl = typeof url === "string" && url ? url : "/";
+  const criticalStylesheetHref = resolveCriticalStylesheetHref(currentUrl);
   const isIndexable = unlisted !== true;
   const canonicalUrl = isIndexable
     ? new URL(currentUrl, resolvedSiteOrigin).href
@@ -345,25 +378,50 @@ export default async (
               Explicit font preloads were removed to avoid noisy unused-preload
               warnings in Chromium. */
           }
-          <style>{CRITICAL_STYLE}</style>
-          <link
-            rel="preload"
-            href="/style.css"
-            as="style"
-            fetchpriority="high"
-            onload={STYLESHEET_PRELOAD_SWAP.__html}
-          />
-          <noscript>
-            <link rel="stylesheet" href="/style.css" />
-          </noscript>
-          {extraStylesheets?.map((href: string) => (
-            <link
-              key={href}
-              rel="stylesheet"
-              href={href}
-              fetchpriority="high"
-            />
-          ))}
+          {criticalStylesheetHref
+            ? (
+              <>
+                <link
+                  rel="stylesheet"
+                  href={criticalStylesheetHref}
+                  fetchpriority="high"
+                />
+                {extraStylesheets?.map((href: string) => (
+                  <link
+                    key={href}
+                    rel="stylesheet"
+                    href={href}
+                    fetchpriority="high"
+                  />
+                ))}
+                <link
+                  rel="preload"
+                  href="/style.css"
+                  as="style"
+                  onload={STYLESHEET_PRELOAD_SWAP.__html}
+                />
+                <noscript>
+                  <link rel="stylesheet" href="/style.css" />
+                </noscript>
+              </>
+            )
+            : (
+              <>
+                <link
+                  rel="stylesheet"
+                  href="/style.css"
+                  fetchpriority="high"
+                />
+                {extraStylesheets?.map((href: string) => (
+                  <link
+                    key={href}
+                    rel="stylesheet"
+                    href={href}
+                    fetchpriority="high"
+                  />
+                ))}
+              </>
+            )}
           <script>{THEME_BOOTSTRAP}</script>
           <script
             data-supported-languages={SUPPORTED_LANGUAGES.join(",")}
