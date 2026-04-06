@@ -79,6 +79,46 @@ For browser bundles under `src/blog/client/`:
 - Prefer Deno's npm cache and import-map aliases over introducing a repo-local
   `node_modules` workflow.
 
+### Pretext
+
+When touching `@chenglou/pretext` integrations under `src/blog/client/`:
+
+- Treat Pretext as a browser-side plain-text measurement tool, not as a general
+  layout engine. It is a good fit for title/summary stabilization, row
+  balancing, widest-line inspection, and internal diagnostics. It is not the
+  right tool for HTML-rich content, CSS-native layout that already works, or
+  server-side/build-time measurement without a real canvas context.
+- Assume the currently supported package surface is `@chenglou/pretext@0.0.4`.
+  The usable APIs are `prepare`, `prepareWithSegments`, `layout`,
+  `layoutWithLines`, `layoutNextLine`, `walkLineRanges`, `setLocale`, and
+  `clearCache`. Do not plan around `prepareInlineFlow`; it is not exported in
+  the version used by this repo.
+- `layout()` and `layoutWithLines()` expect `lineHeight` in absolute CSS pixels,
+  not a unitless multiplier. Always resolve computed `line-height` to pixels
+  before passing it into Pretext.
+- `prepare()` and `prepareWithSegments()` take `text` first and `font` second.
+  Keep that call order explicit in wrappers and helpers.
+- Prefer the browser-resolved `font-family` for measurements, with
+  `--ph-font-measure` as the explicit fallback stack. Avoid relying on
+  `system-ui` for exactness because canvas and DOM can resolve it differently.
+- Measure only after web fonts are available, and clear Pretext caches when the
+  font-loading state or active locale changes. Locale-sensitive measurement must
+  stay partitioned through `setLocale(...)`.
+- Use `prepare` when only height and line count matter. Switch to
+  `prepareWithSegments` only when line inspection, widest-line measurement, or
+  obstacle-aware routing is actually needed. Do not prepare both forms for the
+  same text/font pair without a real reason.
+- Do not re-`prepare` text on every resize. Reuse prepared text and rerun
+  `layout`-family functions with the new width.
+- Keep Pretext access centralized in the existing helpers:
+  `src/blog/client/pretext-story-core.ts`, `src/blog/client/pretext-story.ts`,
+  and `src/blog/client/pretext-story-grid.ts`. Do not scatter ad-hoc Pretext
+  calls across UI components when the shared helpers can be extended instead.
+- If you change runtime behavior, keep `/pretext/probe/` and the Pretext
+  harnesses in mind. The important validation tasks are
+  `deno task pretext:harness:compare` and `deno task pretext:react-harness`,
+  alongside the normal repo validation commands.
+
 ### Imports
 
 When adding or rewriting imports:
