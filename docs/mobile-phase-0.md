@@ -52,7 +52,7 @@ Use this document to:
   `contracts/post-detail.schema.json` are the shared app-contract family.
 - `contracts/post.schema.json` is legacy and must not drive current client
   architecture.
-- `plugins/content-contract.ts` still provides the shared DOM-to-block parser
+- `src/utils/post-content-blocks.ts` now provides the shared DOM-to-block parser
   used when generating the active `post-detail` payloads.
 - `updatedAt` remains optional.
 - when `updatedAt` is absent, generators omit it rather than copying

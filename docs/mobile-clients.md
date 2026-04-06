@@ -177,8 +177,9 @@ No native client should depend directly on:
 
 The repository still contains the earlier `contracts/post.schema.json` post-only
 path, but that schema should not define the active mobile architecture.
-`plugins/content-contract.ts` still matters because its shared block parser is
-reused when generating the active `post-detail` payloads.
+`plugins/content-contract.ts` still exists for the legacy contract experiment,
+but the shared block parser now lives in `src/utils/post-content-blocks.ts` and
+is reused when generating the active `post-detail` payloads.
 
 ## Platform Directions
 

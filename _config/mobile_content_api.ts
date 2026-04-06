@@ -27,7 +27,7 @@ import {
 import {
   type ContentBlock,
   parsePostContent,
-} from "../plugins/content-contract.ts";
+} from "../src/utils/post-content-blocks.ts";
 import { FEED_VARIANTS, type FeedVariant } from "./feeds.ts";
 
 export {
