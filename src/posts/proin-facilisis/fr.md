@@ -12,6 +12,8 @@ conception logicielle, la formule se transpose étonnamment bien.
 Un bon logiciel réduit les frictions. Il anticipe l’étape suivante de
 l’utilisateur. Il propose la bonne affordance au bon moment. Il s’efface.
 
+![](/posts/proin-facilisis/images/brett-jordan-92-mTYj5oGs-unsplash.jpg)
+
 ## L’inventaire des frictions
 
 Proin in tellus sit amet nibh dignissim sagittis. La première étape pour réduire

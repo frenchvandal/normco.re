@@ -53,7 +53,7 @@ export function formatEditorialImageDimensionError(
   const issueSummary = [
     `[editorial-image-dimensions] Found ${issues.length} editorial image(s) missing explicit dimensions`,
     ...issues.map((issue) => `- ${issue}`),
-    "Add explicit width and height attributes or use a local image source so `image_size` can resolve intrinsic dimensions.",
+    "Add explicit width and height attributes or ensure the image source is a build-local asset so intrinsic dimensions can be resolved.",
   ];
 
   return issueSummary.join("\n");

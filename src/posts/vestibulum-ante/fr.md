@@ -14,6 +14,8 @@ deux : le souffle retenu avant le premier mot, la pause après le tour de clé.
 C’est l’endroit où quelque chose s’achève et où autre chose n’a pas encore
 commencé.
 
+![](/posts/vestibulum-ante/images/bruno-martins-4cwf-iW6I1Q-unsplash.jpg)
+
 ## La valeur de l’entre-deux
 
 Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac

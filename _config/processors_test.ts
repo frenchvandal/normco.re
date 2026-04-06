@@ -7,6 +7,7 @@ import {
   assignMissingPostId,
   decodePageContent,
   getPostIdScopeKey,
+  resolveLocalAssetUrl,
 } from "./processors.ts";
 
 describe("decodePageContent", () => {
@@ -85,6 +86,45 @@ describe("getPostIdScopeKey", () => {
   it("returns undefined for paths without a post slug segment", () => {
     assertEquals(getPostIdScopeKey("/src/posts/en.md"), undefined);
     assertEquals(getPostIdScopeKey("(generated)"), undefined);
+  });
+});
+
+describe("resolveLocalAssetUrl", () => {
+  it("keeps root-relative local assets stable across localized pages", () => {
+    assertEquals(
+      resolveLocalAssetUrl(
+        "/fr/posts/lorem-ipsum/index.html",
+        "/posts/lorem-ipsum/images/hero.jpg",
+      ),
+      "/posts/lorem-ipsum/images/hero.jpg",
+    );
+  });
+
+  it("resolves relative local assets against the current page output path", () => {
+    assertEquals(
+      resolveLocalAssetUrl(
+        "/posts/example-post/index.html",
+        "./images/hero.jpg",
+      ),
+      "/posts/example-post/images/hero.jpg",
+    );
+  });
+
+  it("ignores remote and fragment-only sources", () => {
+    assertEquals(
+      resolveLocalAssetUrl(
+        "/posts/example-post/index.html",
+        "https://example.com/hero.jpg",
+      ),
+      undefined,
+    );
+    assertEquals(
+      resolveLocalAssetUrl(
+        "/posts/example-post/index.html",
+        "#intro",
+      ),
+      undefined,
+    );
   });
 });
 

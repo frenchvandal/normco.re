@@ -10,6 +10,8 @@ _Proin facilisis_ 在拉丁语里可以理解为"促进顺畅"。它曾出现在
 好的软件会降低摩擦。它会提前预判用户的下一步，在恰当时机给出恰当的可供性，
 然后退到背景里。
 
+![](/posts/proin-facilisis/images/brett-jordan-92-mTYj5oGs-unsplash.jpg)
+
 ## 先做"摩擦清单"
 
 Proin in tellus sit amet nibh dignissim sagittis. 减少摩擦的第一步是把它画出来：

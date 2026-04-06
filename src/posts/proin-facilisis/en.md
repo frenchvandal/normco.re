@@ -12,6 +12,8 @@ well.
 Good software reduces friction. It anticipates the user’s next step. It provides
 the right affordance at the right moment. It gets out of the way.
 
+![](/posts/proin-facilisis/images/brett-jordan-92-mTYj5oGs-unsplash.jpg)
+
 ## The friction inventory
 
 Proin in tellus sit amet nibh dignissim sagittis. The first step in reducing

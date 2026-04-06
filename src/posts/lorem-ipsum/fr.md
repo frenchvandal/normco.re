@@ -14,6 +14,8 @@ Cicéron, un traité philosophique rédigé en 45 av. J.-C. Ce texte est utilis�
 comme faux contenu depuis le XVIe siècle, lorsqu’un imprimeur inconnu a mélangé
 une casse de caractères pour créer un spécimen typographique.
 
+![](/posts/lorem-ipsum/images/amol-srivastava-uOYc6OlgpUI-unsplash.jpg)
+
 ## Pourquoi le texte de remplissage compte
 
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
@@ -52,6 +54,8 @@ function lorem(words: number): string {
 
 Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed
 quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+
+![](/posts/lorem-ipsum/images/scott-rodgerson-z0MDyylvY1k-unsplash.jpg)
 
 ## Conclusion
 

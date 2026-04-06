@@ -13,6 +13,8 @@ A threshold is not an end, nor a beginning. It is the liminal space between the
 two: the breath held before the first word, the pause after a key turns in a
 lock. It is where one thing stops and another has not yet started.
 
+![](/posts/vestibulum-ante/images/bruno-martins-4cwf-iW6I1Q-unsplash.jpg)
+
 ## The value of the in-between
 
 Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac

@@ -6,6 +6,10 @@ import {
   normalize as normalizePosix,
 } from "@std/path/posix";
 import {
+  imageDimensionsFromData,
+  imageDimensionsFromStream,
+} from "lume/deps/image_dimmensions.ts";
+import {
   assertEditorialImageDimensions,
   type EditorialImagePageSnapshot,
 } from "../src/utils/editorial-image-dimensions.ts";
@@ -39,9 +43,98 @@ const MULTILANGUAGE_DATA_ALIASES = {
   "zh-hant": "zhHant",
 } as const;
 const POSTS_SOURCE_SEGMENT = "/posts/";
+type ImageDimensions = Readonly<{
+  width: number;
+  height: number;
+  type: string;
+}>;
 
 function normalizeSourcePath(sourcePath: string): string {
   return normalizePosix(sourcePath.replaceAll("\\", "/"));
+}
+
+export function resolveLocalAssetUrl(
+  pageOutputPath: string,
+  src: string,
+): string | undefined {
+  if (!src || REMOTE_IMAGE_SOURCE_PATTERN.test(src)) {
+    return undefined;
+  }
+
+  try {
+    return new URL(src, `https://normco.re${pageOutputPath}`).pathname;
+  } catch {
+    return undefined;
+  }
+}
+
+async function getLocalImageDimensions(
+  site: Site,
+  assetUrl: string,
+  cache: Map<string, ImageDimensions | undefined>,
+): Promise<ImageDimensions | undefined> {
+  if (cache.has(assetUrl)) {
+    return cache.get(assetUrl);
+  }
+
+  const page = site.pages.find((candidate) => candidate.data.url === assetUrl);
+  if (page) {
+    const dimensions = imageDimensionsFromData(page.bytes);
+    cache.set(assetUrl, dimensions);
+    return dimensions;
+  }
+
+  const file = site.files.find((candidate) => candidate.data.url === assetUrl);
+  if (!file || file.src.entry.flags.has("remote")) {
+    cache.set(assetUrl, undefined);
+    return undefined;
+  }
+
+  using stream = await Deno.open(file.src.entry.src, {
+    read: true,
+    write: false,
+  });
+  const dimensions = await imageDimensionsFromStream(stream.readable);
+  cache.set(assetUrl, dimensions);
+  return dimensions;
+}
+
+async function applyEditorialImageDimensions(
+  site: Site,
+  pages: Page[],
+): Promise<void> {
+  const cache = new Map<string, ImageDimensions | undefined>();
+
+  for (const page of pages) {
+    for (
+      const image of page.document.querySelectorAll(
+        "main[data-pagefind-body] img",
+      )
+    ) {
+      const width = image.getAttribute("width");
+      const height = image.getAttribute("height");
+
+      if (width?.trim() && height?.trim()) {
+        continue;
+      }
+
+      const src = image.getAttribute("src");
+      const assetUrl = resolveLocalAssetUrl(page.outputPath, src ?? "");
+
+      if (!assetUrl) {
+        continue;
+      }
+
+      const dimensions = await getLocalImageDimensions(site, assetUrl, cache);
+
+      if (!dimensions) {
+        continue;
+      }
+
+      image.setAttribute("width", String(dimensions.width));
+      image.setAttribute("height", String(dimensions.height));
+    }
+  }
 }
 
 export function getPostIdScopeKey(sourcePath: string): string | undefined {
@@ -244,24 +337,10 @@ export function registerPostDataPreparation(site: Site): void {
 }
 
 export function registerProcessors(site: Site): void {
-  // Add `image-size` only on searchable editorial content; other image surfaces
-  // are handled separately and should not be pulled into this processor.
-  site.process([".html"], (pages: Page[]) => {
-    for (const page of pages) {
-      for (
-        const image of page.document.querySelectorAll(
-          "main[data-pagefind-body] img:not([width]):not([height]):not([image-size])",
-        )
-      ) {
-        const src = image.getAttribute("src");
-
-        if (!src || REMOTE_IMAGE_SOURCE_PATTERN.test(src)) {
-          continue;
-        }
-
-        image.setAttribute("image-size", "");
-      }
-    }
+  // Editorial images can be rewritten later in the pipeline by Lume's picture
+  // plugin, so resolve dimensions against the final local asset URL here.
+  site.process([".html"], async (pages: Page[]) => {
+    await applyEditorialImageDimensions(site, pages);
   });
 
   // Fail the build when editorial images still ship without dimensions.

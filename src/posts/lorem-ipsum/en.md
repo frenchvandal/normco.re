@@ -13,6 +13,8 @@ from Cicero’s _de Finibus Bonorum et Malorum_, a philosophical treatise writte
 in 45 BC. The text has been used as filler copy since the 1500s, when an unknown
 printer took a galley of type and scrambled it to make a type specimen book.
 
+![](/posts/lorem-ipsum/images/amol-srivastava-uOYc6OlgpUI-unsplash.jpg)
+
 ## Why placeholder text matters
 
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
@@ -51,6 +53,8 @@ function lorem(words: number): string {
 
 Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed
 quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+
+![](/posts/lorem-ipsum/images/scott-rodgerson-z0MDyylvY1k-unsplash.jpg)
 
 ## Conclusion
 

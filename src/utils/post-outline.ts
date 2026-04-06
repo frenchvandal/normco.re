@@ -2,6 +2,13 @@ import { DOMParser } from "lume/deps/dom.ts";
 
 import { slugify } from "./slugify.ts";
 
+const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
+
+export const POST_RESPONSIVE_IMAGE_SIZES =
+  "(min-width: 48rem) 42rem, calc(100vw - 2rem)";
+export const POST_RESPONSIVE_IMAGE_TRANSFORMS =
+  "avif webp jpg 420 672 1008 1344";
+
 export type PostOutlineItem = Readonly<{
   id: string;
   level: 2 | 3;
@@ -11,6 +18,11 @@ export type PostOutlineItem = Readonly<{
 export type EnhancedPostContent = Readonly<{
   html: string;
   outline: readonly PostOutlineItem[];
+}>;
+type ResponsiveImageElement = Readonly<{
+  getAttribute(name: string): string | null;
+  hasAttribute(name: string): boolean;
+  setAttribute(name: string, value: string): void;
 }>;
 
 function isHeadingLevel(value: number): value is 2 | 3 {
@@ -54,6 +66,29 @@ function createHeadingBaseId(text: string, explicitId: string): string {
   return `section-${hashHeadingText(text)}`;
 }
 
+function enhancePostImages(root: {
+  querySelectorAll(selector: string): Iterable<ResponsiveImageElement>;
+}): void {
+  for (const image of root.querySelectorAll("img")) {
+    const src = image.getAttribute("src");
+
+    if (!src || REMOTE_IMAGE_SOURCE_PATTERN.test(src)) {
+      continue;
+    }
+
+    if (!image.hasAttribute("transform-images")) {
+      image.setAttribute(
+        "transform-images",
+        POST_RESPONSIVE_IMAGE_TRANSFORMS,
+      );
+    }
+
+    if (!image.hasAttribute("sizes")) {
+      image.setAttribute("sizes", POST_RESPONSIVE_IMAGE_SIZES);
+    }
+  }
+}
+
 /**
  * Ensures post headings have stable anchor ids and returns a compact outline
  * for the article rail.
@@ -74,6 +109,8 @@ export function enhancePostContent(html: string): EnhancedPostContent {
   if (root === null) {
     return { html, outline: [] };
   }
+
+  enhancePostImages(root);
 
   const outline: PostOutlineItem[] = [];
   const usedIds = new Set<string>();

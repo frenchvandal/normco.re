@@ -274,7 +274,7 @@ export const SITE_TRANSLATIONS = {
     },
     home: {
       eyebrow: "Blog personnel",
-      title: "trouver une libération dans l’indistinction",
+      title: "Trouver une libération dans l’indistinction",
       lead:
         "Un blog personnel de Phiphi — logiciel, culture et vie quotidienne depuis Chengdu.",
       recentHeading: "Articles récents",

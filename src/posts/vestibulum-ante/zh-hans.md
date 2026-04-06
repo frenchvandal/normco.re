@@ -11,6 +11,8 @@ curae. 拉丁词 _vestibulum_ 指前庭、入口、门前空间，
 门槛既不是结束，也不是开始。它是两者之间的临界地带：开口前屏住的一口气，
 钥匙拧动后那一瞬停顿。它是"旧的已结束，而新的尚未开始"的位置。
 
+![](/posts/vestibulum-ante/images/bruno-martins-4cwf-iW6I1Q-unsplash.jpg)
+
 ## 中间地带的价值
 
 Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac
