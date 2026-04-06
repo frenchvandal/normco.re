@@ -57,6 +57,59 @@ function serializeJsonForScript(value: unknown): string {
     .replaceAll("-->", "--\\>");
 }
 
+function renderGalleryHeroVisual(
+  items: Awaited<ReturnType<typeof collectGalleryItems>>,
+): string {
+  const heroItems = items.slice(0, 4);
+
+  if (heroItems.length === 0) {
+    return "";
+  }
+
+  const responsiveImageSizes = escapeHtml(
+    "(min-width: 72rem) 33vw, (min-width: 48rem) 44vw, 92vw",
+  );
+  const responsiveImageTransforms = escapeHtml(
+    GALLERY_RESPONSIVE_IMAGE_TRANSFORMS,
+  );
+
+  const renderHeroPanel = (
+    item: (typeof heroItems)[number],
+    variant: "lead" | "stack-a" | "stack-b" | "stack-wide",
+  ): string => (
+    `<figure class="blog-antd-gallery-hero__panel blog-antd-gallery-hero__panel--${variant}">
+      <img
+        class="blog-antd-gallery-hero__image"
+        src="${escapeHtml(item.src)}"
+        alt=""
+        width="${item.width}"
+        height="${item.height}"
+        loading="${variant === "lead" ? "eager" : "lazy"}"
+        decoding="async"
+        sizes="${responsiveImageSizes}"
+        transform-images="${responsiveImageTransforms}"
+      />
+      <figcaption class="blog-antd-gallery-hero__caption">
+        <span class="blog-antd-gallery-hero__caption-title">${
+      escapeHtml(item.postTitle)
+    }</span>
+        <span class="blog-antd-gallery-hero__caption-meta">${
+      escapeHtml(item.postDateLabel)
+    }</span>
+      </figcaption>
+    </figure>`
+  );
+
+  return `<div class="blog-antd-gallery-hero__visual" aria-hidden="true">
+    ${heroItems[0] ? renderHeroPanel(heroItems[0], "lead") : ""}
+    <div class="blog-antd-gallery-hero__stack">
+      ${heroItems[1] ? renderHeroPanel(heroItems[1], "stack-a") : ""}
+      ${heroItems[2] ? renderHeroPanel(heroItems[2], "stack-b") : ""}
+      ${heroItems[3] ? renderHeroPanel(heroItems[3], "stack-wide") : ""}
+    </div>
+  </div>`;
+}
+
 function renderGalleryFallback(
   items: Awaited<ReturnType<typeof collectGalleryItems>>,
   openPostLabel: string,
@@ -67,7 +120,7 @@ function renderGalleryFallback(
   );
 
   return `<ul class="blog-antd-gallery-fallback">${
-    items.map((item) =>
+    items.map((item) => (
       `<li
     class="blog-antd-gallery-fallback__item"
     data-gallery-item-key="${escapeHtml(item.key)}"
@@ -91,17 +144,6 @@ function renderGalleryFallback(
         />
       </a>
       <div class="blog-antd-gallery-card__copy">
-        <p class="blog-antd-gallery-card__meta">
-          <time datetime="${escapeHtml(item.postDateIso)}">${
-        escapeHtml(item.postDateLabel)
-      }</time>${
-        item.postReadingLabel
-          ? `<span aria-hidden="true">·</span><span>${
-            escapeHtml(item.postReadingLabel)
-          }</span>`
-          : ""
-      }
-        </p>
         <h2 class="blog-antd-gallery-card__title">
           <a href="${escapeHtml(item.postUrl)}">${
         escapeHtml(item.postTitle)
@@ -113,13 +155,21 @@ function renderGalleryFallback(
           }</p>`
           : ""
       }
-        <p class="blog-antd-gallery-card__cta">
-          <a href="${escapeHtml(item.postUrl)}">${escapeHtml(openPostLabel)}</a>
+        <p class="blog-antd-gallery-card__meta">
+          <time datetime="${escapeHtml(item.postDateIso)}">${
+        escapeHtml(item.postDateLabel)
+      }</time>${
+        item.postReadingLabel
+          ? `<span aria-hidden="true">·</span><span>${
+            escapeHtml(item.postReadingLabel)
+          }</span>`
+          : ""
+      }
         </p>
       </div>
     </article>
   </li>`
-    ).join("")
+    )).join("")
   }</ul>`;
 }
 
@@ -168,6 +218,7 @@ export default async (
   }">${escapeHtml(t.gallery.archiveLinkLabel)}</a>
           </div>
         </div>
+        ${renderGalleryHeroVisual(items)}
       </section>
       ${
     items.length === 0

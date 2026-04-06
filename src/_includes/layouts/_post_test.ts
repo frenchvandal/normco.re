@@ -24,6 +24,7 @@ import postStyles from "../../styles/components/post.css" with {
   type: "text",
 };
 import { POST_MOBILE_TOOLS_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
+import { resolvePostTitleViewTransitionName } from "../../utils/view-transitions.ts";
 
 import postLayout, { renderAfterMainContent } from "./post.tsx";
 
@@ -137,6 +138,10 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, `href="${prevUrl}"`);
       assertStringIncludes(html, prevTitle);
       assertStringIncludes(html, "Previous");
+      assertStringIncludes(
+        html,
+        `view-transition-name: ${resolvePostTitleViewTransitionName(prevUrl)};`,
+      );
     });
 
     it("renders a next page link with next-item styling when next exists", async () => {
@@ -150,6 +155,10 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, nextTitle);
       assertStringIncludes(html, "Next");
       assertStringIncludes(html, "post-nav-item--next");
+      assertStringIncludes(
+        html,
+        `view-transition-name: ${resolvePostTitleViewTransitionName(nextUrl)};`,
+      );
     });
 
     it("omits the rail navigation when both prev and next are absent", async () => {
@@ -211,6 +220,12 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, 'datetime="');
       assertStringIncludes(html, 'href="/posts/entry-title/"');
       assertStringIncludes(html, "Entry summary");
+      assertStringIncludes(
+        html,
+        `view-transition-name: ${
+          resolvePostTitleViewTransitionName("/posts/entry-title/")
+        };`,
+      );
       assertStringIncludes(
         html,
         'class="post-content" lang="en" aria-labelledby="post-title"',

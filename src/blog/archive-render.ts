@@ -5,6 +5,7 @@ import {
 import type { SiteLanguage } from "../utils/i18n.ts";
 import { escapeHtml } from "../utils/html.ts";
 import { getTagColor, getTagUrl } from "../utils/tags.ts";
+import { resolvePostTitleViewTransitionName } from "../utils/view-transitions.ts";
 import type { BlogStoryCard } from "./view-data.ts";
 export { formatArchiveIndex } from "./archive-common.ts";
 
@@ -135,6 +136,10 @@ export function renderArchiveTimeline(
 
   const timelineItems = items.map((entry) => {
     const { indexLabel, isLead, month, story } = entry;
+    const titleTransitionName = resolvePostTitleViewTransitionName(story.url);
+    const titleTransitionStyle = titleTransitionName
+      ? ` style="view-transition-name: ${escapeHtml(titleTransitionName)};"`
+      : "";
 
     return `<li class="blog-antd-archive-timeline__entry${
       isLead ? " blog-antd-archive-timeline__entry--lead" : ""
@@ -159,7 +164,7 @@ export function renderArchiveTimeline(
       ${renderMeta(story)}
     </div>
     <a class="blog-antd-archive-timeline__link" href="${escapeHtml(story.url)}">
-      <h2 class="blog-antd-archive-timeline__title">${
+      <h2 class="blog-antd-archive-timeline__title"${titleTransitionStyle}>${
       escapeHtml(story.title)
     }</h2>
       ${

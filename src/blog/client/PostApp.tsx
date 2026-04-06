@@ -27,6 +27,7 @@ import {
 } from "@blog/post-antd";
 
 import type { BlogPostViewData } from "../view-data.ts";
+import { resolvePostTitleViewTransitionName } from "../../utils/view-transitions.ts";
 import {
   BLOG_ANTD_BACKTOP_CLASSNAMES,
   BLOG_ANTD_BREADCRUMB_CLASSNAMES,
@@ -90,6 +91,15 @@ export function PostView(
     interactive?: boolean | undefined;
   },
 ) {
+  const titleTransitionName = resolvePostTitleViewTransitionName(
+    data.breadcrumb.at(-1)?.href ?? "",
+  );
+  const previousTitleTransitionName = data.previous
+    ? resolvePostTitleViewTransitionName(data.previous.url)
+    : undefined;
+  const nextTitleTransitionName = data.next
+    ? resolvePostTitleViewTransitionName(data.next.url)
+    : undefined;
   const hasRail = data.outline.length > 0 || data.tags.length > 0 ||
     data.backlinks.length > 0 || data.previous || data.next;
   const breadcrumbItems = useMemo(
@@ -150,6 +160,11 @@ export function PostView(
                       id="post-title"
                       level={1}
                       className="blog-antd-page-title"
+                      {...(titleTransitionName
+                        ? {
+                          style: { viewTransitionName: titleTransitionName },
+                        }
+                        : {})}
                     >
                       {data.title}
                     </Title>
@@ -348,7 +363,19 @@ export function PostView(
                           rootClassName={`${BLOG_ANTD_DEFAULT_BUTTON_ROOT} blog-antd-nav-button`}
                           type="default"
                         >
-                          {data.previousLabel}: {data.previous.title}
+                          <span>{data.previousLabel}:</span>
+                          <span
+                            {...(previousTitleTransitionName
+                              ? {
+                                style: {
+                                  viewTransitionName:
+                                    previousTitleTransitionName,
+                                },
+                              }
+                              : {})}
+                          >
+                            {data.previous.title}
+                          </span>
                         </Button>
                       )}
                       {data.next && (
@@ -358,7 +385,18 @@ export function PostView(
                           rootClassName={`${BLOG_ANTD_PRIMARY_BUTTON_ROOT} blog-antd-nav-button`}
                           type="primary"
                         >
-                          {data.nextLabel}: {data.next.title}
+                          <span>{data.nextLabel}:</span>
+                          <span
+                            {...(nextTitleTransitionName
+                              ? {
+                                style: {
+                                  viewTransitionName: nextTitleTransitionName,
+                                },
+                              }
+                              : {})}
+                          >
+                            {data.next.title}
+                          </span>
                         </Button>
                       )}
                     </div>

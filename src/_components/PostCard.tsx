@@ -1,5 +1,7 @@
 import type { jsx } from "lume/jsx-runtime";
 
+import { resolvePostTitleViewTransitionName } from "../utils/view-transitions.ts";
+
 /**
  * Post card used on the home page and post listings.
  *
@@ -29,27 +31,41 @@ export default (
     readonly summary?: string;
     readonly showSummary?: boolean;
   },
-): El => (
-  <article
-    class={[
-      "site-panel",
-      "post-card",
-      className,
-    ].filter(Boolean).join(" ")}
-  >
-    <h3 class="post-card-title">
-      <a class="post-card-link" href={url}>{title}</a>
-    </h3>
-    {showSummary === true && summary !== undefined && (
-      <p class="post-card-summary">{summary}</p>
-    )}
-    <div class="post-card-meta">
-      <time class="post-card-date" datetime={dateIso}>
-        {dateStr}
-      </time>
-      {readingLabel !== undefined && (
-        <span class="post-card-reading-time">{readingLabel}</span>
+): El => {
+  const titleTransitionName = resolvePostTitleViewTransitionName(url);
+
+  return (
+    <article
+      class={[
+        "site-panel",
+        "post-card",
+        className,
+      ].filter(Boolean).join(" ")}
+    >
+      <h3 class="post-card-title">
+        <a
+          class="post-card-link"
+          href={url}
+          {...(titleTransitionName
+            ? {
+              style: `view-transition-name: ${titleTransitionName};`,
+            }
+            : {})}
+        >
+          {title}
+        </a>
+      </h3>
+      {showSummary === true && summary !== undefined && (
+        <p class="post-card-summary">{summary}</p>
       )}
-    </div>
-  </article>
-);
+      <div class="post-card-meta">
+        <time class="post-card-date" datetime={dateIso}>
+          {dateStr}
+        </time>
+        {readingLabel !== undefined && (
+          <span class="post-card-reading-time">{readingLabel}</span>
+        )}
+      </div>
+    </article>
+  );
+};

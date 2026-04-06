@@ -7,6 +7,7 @@ import {
   resolveDateHelper,
   resolvePostCardRenderer,
 } from "./lume-helpers.ts";
+import { resolvePostTitleViewTransitionName } from "./view-transitions.ts";
 
 describe("resolvePostCardRenderer()", () => {
   it("preserves the renderer context when a dynamic PostCard is available", async () => {
@@ -67,5 +68,25 @@ describe("resolveDateHelper()", () => {
     const dateHelper = resolveDateHelper(asLumeHelpers({}));
 
     assertEquals(dateHelper("2026-03-29"), undefined);
+  });
+});
+
+describe("renderFallbackPostCard()", () => {
+  it("adds a shared title transition for canonical post URLs", async () => {
+    const html = await renderFallbackPostCard({
+      title: "Hello",
+      url: "/posts/hello/",
+      dateStr: "Mar 29, 2026",
+      dateIso: "2026-03-29",
+    });
+
+    assertEquals(
+      html.includes(
+        `view-transition-name: ${
+          resolvePostTitleViewTransitionName("/posts/hello/")
+        };`,
+      ),
+      true,
+    );
   });
 });

@@ -88,6 +88,7 @@ const PRECACHE_FETCH_TIMEOUT_MS = 8_000;
 const STATIC_FETCH_TIMEOUT_MS = 5_000;
 const PAGE_NETWORK_TIMEOUT_MS = 5_000;
 const FEED_NETWORK_TIMEOUT_MS = 5_000;
+const FEED_CACHE_TTL_MS = 30 * 60 * 1_000;
 
 const KNOWN_BOT_PATTERN =
   /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
@@ -387,6 +388,24 @@ async function staleWhileRevalidateFeed(request) {
     .catch(() => undefined);
 
   if (cached !== undefined) {
+    const cachedAt = Number.parseInt(
+      cached.headers.get("x-sw-cached-at") ?? "",
+      10,
+    );
+    const cacheAge = Number.isFinite(cachedAt)
+      ? Date.now() - cachedAt
+      : Number.POSITIVE_INFINITY;
+
+    if (cacheAge <= FEED_CACHE_TTL_MS) {
+      return cached;
+    }
+
+    const networkResponse = await refreshPromise;
+
+    if (networkResponse !== undefined) {
+      return networkResponse;
+    }
+
     return cached;
   }
 

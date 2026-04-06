@@ -12,6 +12,7 @@ import {
 import { getTagUrl } from "./utils/tags.ts";
 import type { SiteLanguage, SiteTranslations } from "./utils/i18n.ts";
 import { getSiteName } from "./utils/site-identity.ts";
+import { resolvePostTitleViewTransitionName } from "./utils/view-transitions.ts";
 
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/";
@@ -62,6 +63,8 @@ function TopicList(
 function FeaturedStory(
   { story, language }: { story: StoryData; language: SiteLanguage },
 ): El {
+  const titleTransitionName = resolvePostTitleViewTransitionName(story.url);
+
   return (
     <article class="editorial-home-featured-story">
       <div class="editorial-home-featured-story__frame">
@@ -86,7 +89,15 @@ function FeaturedStory(
         </div>
         <div class="editorial-home-featured-story__body">
           <h2 class="editorial-home-featured-story__title">
-            <a class="editorial-home-featured-story__link" href={story.url}>
+            <a
+              class="editorial-home-featured-story__link"
+              href={story.url}
+              {...(titleTransitionName
+                ? {
+                  style: `view-transition-name: ${titleTransitionName};`,
+                }
+                : {})}
+            >
               {story.title}
             </a>
           </h2>

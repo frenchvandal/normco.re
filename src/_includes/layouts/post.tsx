@@ -1,6 +1,7 @@
 import { POST_MOBILE_TOOLS_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
 import { resolvePageSetup } from "../../utils/page-setup.ts";
 import { resolveDateHelper } from "../../utils/lume-helpers.ts";
+import { resolvePostTitleViewTransitionName } from "../../utils/view-transitions.ts";
 import {
   PostBackToTop,
   PostDetails,
@@ -111,6 +112,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   );
   const hasMobileTools = state.tags.length > 0 || state.backlinks.length > 0 ||
     neighbors.prev !== undefined || neighbors.next !== undefined;
+  const titleTransitionName = typeof data.url === "string"
+    ? resolvePostTitleViewTransitionName(data.url)
+    : undefined;
+
   return (
     <>
       <div class="blog-antd-root">
@@ -146,7 +151,16 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                 </nav>
                 <div class="post-pagehead-grid">
                   <div class="post-pagehead-copy">
-                    <h1 id="post-title" class="post-title">
+                    <h1
+                      id="post-title"
+                      class="post-title"
+                      {...(titleTransitionName
+                        ? {
+                          style:
+                            `view-transition-name: ${titleTransitionName};`,
+                        }
+                        : {})}
+                    >
                       {data.title ?? ""}
                     </h1>
                     <p class="post-meta">

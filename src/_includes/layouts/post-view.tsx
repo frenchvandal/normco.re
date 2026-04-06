@@ -27,6 +27,7 @@ import {
   isLumeRecord,
   resolveOptionalTrimmedString,
 } from "../../utils/type-guards.ts";
+import { resolvePostTitleViewTransitionName } from "../../utils/view-transitions.ts";
 import type { PostLinkReference } from "../../../plugins/post_link_graph.ts";
 
 type El = ReturnType<typeof jsx>;
@@ -94,10 +95,25 @@ function PostNavLink(
   },
 ): El {
   if (!post) return <div class="post-nav-placeholder" aria-hidden="true"></div>;
+
+  const titleTransitionName = typeof post.url === "string"
+    ? resolvePostTitleViewTransitionName(post.url)
+    : undefined;
+
   return (
     <div class={`post-nav-item${isNext ? " post-nav-item--next" : ""}`}>
       <span class="post-nav-label">{label}</span>
-      <a href={post.url ?? ""} class="post-nav-title">{post.title ?? ""}</a>
+      <a
+        href={post.url ?? ""}
+        class="post-nav-title"
+        {...(titleTransitionName
+          ? {
+            style: `view-transition-name: ${titleTransitionName};`,
+          }
+          : {})}
+      >
+        {post.title ?? ""}
+      </a>
     </div>
   );
 }

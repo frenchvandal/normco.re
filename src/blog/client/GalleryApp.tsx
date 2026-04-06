@@ -102,7 +102,6 @@ function GalleryCard(
     >
       <GalleryCardMedia item={item} openPostLabel={openPostLabel} />
       <div className="blog-antd-gallery-card__copy">
-        <GalleryCardMeta item={item} />
         <h2 className={PRETEXT_GALLERY_CARD_TITLE_CLASS}>
           <a href={item.postUrl}>{item.postTitle}</a>
         </h2>
@@ -111,9 +110,7 @@ function GalleryCard(
             {item.postSummary}
           </p>
         )}
-        <p className="blog-antd-gallery-card__cta">
-          <a href={item.postUrl}>{openPostLabel}</a>
-        </p>
+        <GalleryCardMeta item={item} />
       </div>
     </article>
   );
