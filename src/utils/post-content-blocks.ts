@@ -1,4 +1,4 @@
-/** Block types matching `contracts/post.schema.json#/$defs/block`. */
+/** Block types matching `contracts/post-detail.schema.json#/$defs/block`. */
 export type ParagraphBlock = {
   readonly type: "paragraph";
   readonly text: string;

@@ -175,11 +175,10 @@ No native client should depend directly on:
 - Lume page-data internals
 - TSX rendering logic
 
-The repository still contains the earlier `contracts/post.schema.json` post-only
-path, but that schema should not define the active mobile architecture.
-`plugins/content-contract.ts` still exists for the legacy contract experiment,
-but the shared block parser now lives in `src/utils/post-content-blocks.ts` and
-is reused when generating the active `post-detail` payloads.
+The active mobile architecture is defined by the manifest / index / detail
+schema family. The shared block parser lives in
+`src/utils/post-content-blocks.ts` and is reused when generating the active
+`post-detail` payloads.
 
 ## Platform Directions
 

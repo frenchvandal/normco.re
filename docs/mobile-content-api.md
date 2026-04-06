@@ -25,14 +25,10 @@ The intended contract family already exists in `contracts/`:
 - `contracts/posts-index.schema.json`
 - `contracts/post-detail.schema.json`
 
-The repository also still carries the earlier post-only schema experiment in
-`contracts/post.schema.json`. That file should not be treated as the active
-mobile boundary now that the manifest / index / detail family is live.
-
-`plugins/content-contract.ts` is more nuanced: its `registerContentContract()`
-output path is legacy, while the shared DOM-to-block parsing now lives in
-`src/utils/post-content-blocks.ts` and is reused by both the legacy generator
-and `_config/mobile_content_api.ts`.
+The active mobile boundary in this repository is the manifest / index / detail
+family above. Shared DOM-to-block parsing lives in
+`src/utils/post-content-blocks.ts` and is reused by
+`_config/mobile_content_api.ts` when building `post-detail` payloads.
 
 `contracts/validate.ts` is part of the current path. It validates generated app
 contracts and feed outputs against the active schemas.

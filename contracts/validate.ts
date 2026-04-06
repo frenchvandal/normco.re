@@ -9,9 +9,9 @@
  * - `/api/app-manifest.json` against `contracts/app-manifest.schema.json`
  * - localized `/api/posts/index.json` files against
  *   `contracts/posts-index.schema.json`
+ * - localized `/api/posts/<slug>.json` files against
+ *   `contracts/post-detail.schema.json`
  * - example app-contract fixtures under `contracts/examples/`
- * - optional legacy `/api/posts/*.json` files against `contracts/post.schema.json`
- *   when the older content-contract plugin is enabled
  *
  * Exits with code 1 if any validation error is found.
  */

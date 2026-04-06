@@ -430,9 +430,6 @@ Exit criteria:
 
 - Local Android builds depend on Java 17 and a full Android SDK install on each
   MacBook that works on the repo.
-- The repository still carries an older post-only schema alongside the active
-  manifest / index / detail family, so contributors need to be explicit about
-  which contract path they mean.
 - The exact editorial source for `updatedAt`, future block types, and some app
   metadata still need to be finalized before the contract family is frozen.
 
