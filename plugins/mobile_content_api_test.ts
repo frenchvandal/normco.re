@@ -103,7 +103,7 @@ function createStubSite() {
   return { run, site };
 }
 
-describe("_config/mobile_content_api.ts", () => {
+describe("plugins/mobile_content_api.ts", () => {
   it("builds the app manifest with one posts-index pointer per language", () => {
     const manifest = createAppManifestDocument(
       new Date("2026-03-20T12:00:00Z"),

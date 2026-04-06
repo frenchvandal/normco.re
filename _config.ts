@@ -9,8 +9,6 @@ import {
 } from "./_config/build_tasks.ts";
 import { registerAssets } from "./_config/assets.ts";
 import { registerPlugins } from "./_config/plugins.ts";
-import { registerFeeds } from "./_config/feeds.ts";
-import { registerMobileContentApi } from "./_config/mobile_content_api.ts";
 import { getGitRepositoryInfo } from "./_config/git.ts";
 import {
   SCOPED_UPDATE_MATCHERS,
@@ -19,6 +17,8 @@ import {
 import { registerSiteManifest } from "./_config/site_manifest.ts";
 import { registerProcessors } from "./_config/processors.ts";
 import { registerXslStylesheets } from "./_config/xsl_stylesheets.ts";
+import { registerFeeds } from "./plugins/feeds.ts";
+import { registerMobileContentApi } from "./plugins/mobile_content_api.ts";
 
 const consoleDebugPolicy = readConsoleDebugPolicy((name) => Deno.env.get(name));
 const parsedDenoArgs = parseArgs(Deno.args, {

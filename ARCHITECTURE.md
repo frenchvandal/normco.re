@@ -161,7 +161,7 @@ from the same generated source of truth before remote refresh.
 ### Assets, Feeds, and Processors
 
 - `_config/assets.ts` defines the asset surface
-- `_config/feeds.ts` emits localized RSS, Atom, and JSON feeds
+- `plugins/feeds.ts` emits localized RSS, Atom, and JSON feeds
 - `_config/git.ts` resolves repository-aware metadata such as default branch,
   per-file creation dates, update timestamps, and GitHub commit/history URLs
 - `_config/processors.ts` runs post-render processors, including editorial image
@@ -372,7 +372,7 @@ without adding custom client-side filter state. The service worker caches
 runtime and current-language index have been loaded once.
 
 Feeds are emitted per language. RSS, Atom, and JSON outputs are generated in
-`_config/feeds.ts`.
+`plugins/feeds.ts`.
 
 Feed item HTML is sourced from rendered post content, not raw Markdown.
 

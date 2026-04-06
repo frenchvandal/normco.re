@@ -17,7 +17,7 @@ import {
   JSON_FEED_PATH_PATTERN,
   normalizeJsonFeed,
 } from "../src/utils/json-feed.ts";
-import { FEED_VARIANTS } from "./feeds.ts";
+import { FEED_VARIANTS } from "../plugins/feeds.ts";
 import { getLanguageTag, type SiteLanguage } from "../src/utils/i18n.ts";
 import {
   isMutableRecord,

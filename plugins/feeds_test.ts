@@ -16,7 +16,7 @@ import {
   registerFeeds,
 } from "./feeds.ts";
 
-describe("_config/feeds.ts", () => {
+describe("plugins/feeds.ts", () => {
   it("maps feed content to rendered HTML children", () => {
     assertEquals(FEED_ITEMS.content, "=children");
   });

@@ -28,7 +28,7 @@ The intended contract family already exists in `contracts/`:
 The active mobile boundary in this repository is the manifest / index / detail
 family above. Shared DOM-to-block parsing lives in
 `src/utils/post-content-blocks.ts` and is reused by
-`_config/mobile_content_api.ts` when building `post-detail` payloads.
+`plugins/mobile_content_api.ts` when building `post-detail` payloads.
 
 `contracts/validate.ts` is part of the current path. It validates generated app
 contracts and feed outputs against the active schemas.
