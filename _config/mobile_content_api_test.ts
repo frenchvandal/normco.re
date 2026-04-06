@@ -6,6 +6,7 @@ import type { Data, Page } from "lume/core/file.ts";
 import {
   APP_CONTRACT_VERSION,
   createAppManifestDocument,
+  createMobileContentApiPages,
   createPostDetailPage,
   createPostsIndexDocument,
   createPostsIndexPage,
@@ -15,7 +16,7 @@ import { getJSDOM } from "../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
 
-type Processor = (pages: Page[], allPages: Page[]) => void;
+type Processor = () => void;
 
 function createDocument(markup: string): Document {
   return new JSDOM(
@@ -62,16 +63,22 @@ function createPostPage(
           <pre><code class="language-kotlin">println("hi")</code></pre>
         </article>
       `),
+    outputPath: lang === "en"
+      ? `/posts/${slug}/index.html`
+      : `/${lang}/posts/${slug}/index.html`,
     sourcePath: `/src/posts/${slug}/${lang}.md`,
   } as unknown as Page;
 }
 
 function createStubSite() {
   let processor: Processor | undefined;
+  const siteState = { pages: [] as Page[] };
 
   const site = {
-    process(formats: string[], callback: Processor): void {
-      assertEquals(formats, [".html"]);
+    get pages(): Page[] {
+      return siteState.pages;
+    },
+    process(callback: Processor): void {
       processor = callback;
     },
     url(path: string, absolute: boolean): string {
@@ -88,8 +95,9 @@ function createStubSite() {
       throw new Error("Expected mobile content API processor to be registered");
     }
 
-    processor(pages, allPages);
-    return allPages;
+    siteState.pages = allPages;
+    processor();
+    return siteState.pages;
   }
 
   return { run, site };
@@ -344,6 +352,67 @@ describe("_config/mobile_content_api.ts", () => {
     )
       .map((page) => page.data.url)
       .sort();
+
+    assertEquals(generatedUrls, [
+      "/api/app-manifest.json",
+      "/api/posts/example-post.json",
+      "/api/posts/index.json",
+      "/fr/api/posts/example-post.json",
+      "/fr/api/posts/index.json",
+      "/zh-hans/api/posts/index.json",
+      "/zh-hant/api/posts/index.json",
+    ]);
+  });
+
+  it("creates mobile API pages from post pages without mutating the serializer contract", () => {
+    const pages = createMobileContentApiPages(
+      {
+        url(path: string, _absolute: boolean): string {
+          return `https://normco.re${path}`;
+        },
+      },
+      [
+        createPostPage({ slug: "example-post", lang: "en" }),
+        createPostPage({
+          slug: "example-post",
+          lang: "fr",
+          url: "/fr/posts/example-post/",
+        }),
+      ],
+      new Date("2026-03-20T12:00:00Z"),
+    );
+
+    const generatedUrls = pages.map((page) => page.data.url).sort();
+
+    assertEquals(generatedUrls, [
+      "/api/app-manifest.json",
+      "/api/posts/example-post.json",
+      "/api/posts/index.json",
+      "/fr/api/posts/example-post.json",
+      "/fr/api/posts/index.json",
+      "/zh-hans/api/posts/index.json",
+      "/zh-hant/api/posts/index.json",
+    ]);
+  });
+
+  it("replaces stale generated mobile API pages on subsequent runs", () => {
+    const env = createStubSite();
+    registerMobileContentApi(env.site);
+
+    const sourcePages = [
+      createPostPage({ slug: "example-post", lang: "en" }),
+      createPostPage({
+        slug: "example-post",
+        lang: "fr",
+        url: "/fr/posts/example-post/",
+      }),
+    ];
+    const firstRun = env.run(sourcePages);
+    const secondRun = env.run(sourcePages, [...firstRun]);
+
+    const generatedUrls = secondRun.filter((page) =>
+      page.sourcePath === "(generated)"
+    ).map((page) => page.data.url).sort();
 
     assertEquals(generatedUrls, [
       "/api/app-manifest.json",

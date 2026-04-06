@@ -208,7 +208,10 @@ function createPostsIndexItem(
 }
 
 function isPostPage(page: LumePage): page is PostPage {
-  return page.data.type === "post";
+  return page.data.type === "post" &&
+    typeof page.outputPath === "string" &&
+    page.outputPath.endsWith(".html") &&
+    isDocumentLike(page.document);
 }
 
 function isGeneratedMobileApiPage(page: LumePage): boolean {
@@ -422,48 +425,67 @@ export function createPostsIndexPage(
   });
 }
 
+export function createMobileContentApiPages(
+  site: SiteUrlResolver,
+  postPages: ReadonlyArray<PostPage>,
+  generatedAt: Date = new Date(),
+): ReadonlyArray<LumePage> {
+  const postPagesBySlug = createPostPagesBySlugMap(postPages);
+  const generatedPages: LumePage[] = [createAppManifestPage(generatedAt)];
+
+  for (const variant of FEED_VARIANTS) {
+    const localizedPostPages = sortPostPagesByDateDesc(
+      postPages.filter((page) =>
+        getLanguageDataCode(resolvePageLanguage(page.data)) ===
+          LANGUAGE_DATA_CODE[variant.language]
+      ),
+    );
+
+    generatedPages.push(
+      createPostsIndexPage(
+        site,
+        variant,
+        localizedPostPages.map((page) => page.data),
+      ),
+    );
+
+    for (const page of localizedPostPages) {
+      const slug = requireString(page.data, "basename", page.data.basename);
+
+      generatedPages.push(
+        createPostDetailPage(site, page, postPagesBySlug.get(slug) ?? [page]),
+      );
+    }
+  }
+
+  return generatedPages;
+}
+
+function replaceGeneratedMobileApiPages(
+  allPages: LumePage[],
+  generatedPages: ReadonlyArray<LumePage>,
+): void {
+  for (let index = allPages.length - 1; index >= 0; index--) {
+    const page = allPages[index];
+
+    if (page !== undefined && isGeneratedMobileApiPage(page)) {
+      allPages.splice(index, 1);
+    }
+  }
+
+  allPages.push(...generatedPages);
+}
+
 export function registerMobileContentApi(site: Site): void {
-  site.process([".html"], function processMobileContentApi(
-    pages: LumePage[],
-    allPages: LumePage[],
-  ) {
-    for (let index = allPages.length - 1; index >= 0; index--) {
-      const page = allPages[index];
+  site.process(function processMobileContentApi() {
+    const allPages = site.pages;
+    const postPages = allPages.filter(isPostPage);
+    const generatedPages = createMobileContentApiPages(
+      site,
+      postPages,
+      new Date(),
+    );
 
-      if (page !== undefined && isGeneratedMobileApiPage(page)) {
-        allPages.splice(index, 1);
-      }
-    }
-
-    const generatedAt = new Date();
-    const postPages = pages.filter(isPostPage);
-    const postPagesBySlug = createPostPagesBySlugMap(postPages);
-
-    allPages.push(createAppManifestPage(generatedAt));
-
-    for (const variant of FEED_VARIANTS) {
-      const localizedPostPages = sortPostPagesByDateDesc(
-        postPages.filter((page) =>
-          getLanguageDataCode(resolvePageLanguage(page.data)) ===
-            LANGUAGE_DATA_CODE[variant.language]
-        ),
-      );
-
-      allPages.push(
-        createPostsIndexPage(
-          site,
-          variant,
-          localizedPostPages.map((page) => page.data),
-        ),
-      );
-
-      for (const page of localizedPostPages) {
-        const slug = requireString(page.data, "basename", page.data.basename);
-
-        allPages.push(
-          createPostDetailPage(site, page, postPagesBySlug.get(slug) ?? [page]),
-        );
-      }
-    }
+    replaceGeneratedMobileApiPages(allPages, generatedPages);
   });
 }
