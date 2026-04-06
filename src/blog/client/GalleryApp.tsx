@@ -2,6 +2,7 @@
 import { createRoot } from "npm/react-dom/client";
 
 import { Masonry } from "@blog/gallery-antd";
+import { formatArchiveIndex } from "../../blog/archive-common.ts";
 import {
   GALLERY_DATA_SCRIPT_ID,
   GALLERY_ROOT_ID,
@@ -21,6 +22,7 @@ import { usePretextTextStyle } from "./pretext-story.ts";
 type GalleryRuntimeItem = Readonly<
   BlogGalleryItem & {
     mediaHtml?: string | undefined;
+    sequenceLabel?: string | undefined;
   }
 >;
 
@@ -29,20 +31,6 @@ type GalleryRuntimeData = Readonly<
     items: readonly GalleryRuntimeItem[];
   }
 >;
-
-function GalleryCardMeta({ item }: { item: GalleryRuntimeItem }) {
-  return (
-    <p className="blog-antd-gallery-card__meta">
-      <time dateTime={item.postDateIso}>{item.postDateLabel}</time>
-      {item.postReadingLabel && (
-        <>
-          <span aria-hidden="true">·</span>
-          <span>{item.postReadingLabel}</span>
-        </>
-      )}
-    </p>
-  );
-}
 
 function GalleryCardMedia({ item, openPostLabel }: {
   item: GalleryRuntimeItem;
@@ -102,6 +90,25 @@ function GalleryCard(
     >
       <GalleryCardMedia item={item} openPostLabel={openPostLabel} />
       <div className="blog-antd-gallery-card__copy">
+        <div className="blog-antd-gallery-card__eyebrow">
+          {item.sequenceLabel && (
+            <span
+              className="blog-antd-gallery-card__index"
+              aria-hidden="true"
+            >
+              {item.sequenceLabel}
+            </span>
+          )}
+          <p className="blog-antd-gallery-card__meta">
+            <time dateTime={item.postDateIso}>{item.postDateLabel}</time>
+            {item.postReadingLabel && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{item.postReadingLabel}</span>
+              </>
+            )}
+          </p>
+        </div>
         <h2 className={PRETEXT_GALLERY_CARD_TITLE_CLASS}>
           <a href={item.postUrl}>{item.postTitle}</a>
         </h2>
@@ -110,7 +117,6 @@ function GalleryCard(
             {item.postSummary}
           </p>
         )}
-        <GalleryCardMeta item={item} />
       </div>
     </article>
   );
@@ -123,16 +129,19 @@ export function GalleryApp({ data }: { data: GalleryRuntimeData }) {
       aria-label={data.imagesAriaLabel}
     >
       <Masonry
-        columns={{ xs: 1, sm: 2, md: 3 }}
-        gutter={{ xs: 16, sm: 20, md: 24 }}
+        columns={{ xs: 1, sm: 2, md: 3, lg: 4, xxl: 4 }}
+        gutter={{ xs: 16, sm: 18, md: 20, lg: 24 }}
         fresh
         classNames={{
           root: "blog-antd-gallery-masonry",
           item: "blog-antd-gallery-masonry__item",
         }}
-        items={data.items.map((item) => ({
+        items={data.items.map((item, index) => ({
           key: item.key,
-          data: item,
+          data: {
+            ...item,
+            sequenceLabel: item.sequenceLabel ?? formatArchiveIndex(index + 1),
+          },
         }))}
         itemRender={(itemInfo) => (
           <GalleryCard

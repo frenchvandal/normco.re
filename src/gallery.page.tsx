@@ -5,6 +5,7 @@ import {
   GALLERY_RESPONSIVE_IMAGE_TRANSFORMS,
   GALLERY_ROOT_ID,
 } from "./gallery/constants.ts";
+import { formatArchiveIndex } from "./blog/archive-common.ts";
 import { collectGalleryItems } from "./gallery/data.ts";
 import { resolvePageSetup } from "./utils/page-setup.ts";
 import { resolveDateHelper } from "./utils/lume-helpers.ts";
@@ -17,23 +18,23 @@ export const layout = "layouts/base.tsx";
 export const extraStylesheets = ["/styles/blog-antd.css"];
 export const searchIndexed = false;
 export const type = "listing";
-export const title = "Gallery";
+export const title = "Image Index";
 export const description =
-  "A visual archive of every image published across the posts.";
+  "A visual index of every image published across the posts.";
 
 export const fr = {
-  title: "Galerie",
+  title: "Index visuel",
   description:
-    "Une archive visuelle rassemblant toutes les images publiées dans les articles.",
+    "Un index visuel rassemblant toutes les images publiées dans les articles.",
 } as const;
 
 export const zhHans = {
-  title: "图集",
+  title: "图像索引",
   description: "汇集所有文章图片的可视化归档页面。",
 } as const;
 
 export const zhHant = {
-  title: "圖集",
+  title: "圖像索引",
   description: "彙整所有文章圖片的視覺檔案頁。",
 } as const;
 
@@ -75,21 +76,27 @@ function renderGalleryHeroVisual(
 
   const renderHeroPanel = (
     item: (typeof heroItems)[number],
+    index: number,
     variant: "lead" | "stack-a" | "stack-b" | "stack-wide",
   ): string => (
     `<figure class="blog-antd-gallery-hero__panel blog-antd-gallery-hero__panel--${variant}">
-      <img
-        class="blog-antd-gallery-hero__image"
-        src="${escapeHtml(item.src)}"
-        alt=""
-        width="${item.width}"
-        height="${item.height}"
-        loading="${variant === "lead" ? "eager" : "lazy"}"
-        decoding="async"
-        sizes="${responsiveImageSizes}"
-        transform-images="${responsiveImageTransforms}"
-      />
+      <div class="blog-antd-gallery-hero__media">
+        <img
+          class="blog-antd-gallery-hero__image"
+          src="${escapeHtml(item.src)}"
+          alt=""
+          width="${item.width}"
+          height="${item.height}"
+          loading="${variant === "lead" ? "eager" : "lazy"}"
+          decoding="async"
+          sizes="${responsiveImageSizes}"
+          transform-images="${responsiveImageTransforms}"
+        />
+      </div>
       <figcaption class="blog-antd-gallery-hero__caption">
+        <span class="blog-antd-gallery-hero__index">${
+      formatArchiveIndex(index + 1)
+    }</span>
         <span class="blog-antd-gallery-hero__caption-title">${
       escapeHtml(item.postTitle)
     }</span>
@@ -101,11 +108,11 @@ function renderGalleryHeroVisual(
   );
 
   return `<div class="blog-antd-gallery-hero__visual" aria-hidden="true">
-    ${heroItems[0] ? renderHeroPanel(heroItems[0], "lead") : ""}
+    ${heroItems[0] ? renderHeroPanel(heroItems[0], 0, "lead") : ""}
     <div class="blog-antd-gallery-hero__stack">
-      ${heroItems[1] ? renderHeroPanel(heroItems[1], "stack-a") : ""}
-      ${heroItems[2] ? renderHeroPanel(heroItems[2], "stack-b") : ""}
-      ${heroItems[3] ? renderHeroPanel(heroItems[3], "stack-wide") : ""}
+      ${heroItems[1] ? renderHeroPanel(heroItems[1], 1, "stack-a") : ""}
+      ${heroItems[2] ? renderHeroPanel(heroItems[2], 2, "stack-b") : ""}
+      ${heroItems[3] ? renderHeroPanel(heroItems[3], 3, "stack-wide") : ""}
     </div>
   </div>`;
 }
@@ -120,7 +127,7 @@ function renderGalleryFallback(
   );
 
   return `<ul class="blog-antd-gallery-fallback">${
-    items.map((item) => (
+    items.map((item, index) => (
       `<li
     class="blog-antd-gallery-fallback__item"
     data-gallery-item-key="${escapeHtml(item.key)}"
@@ -144,6 +151,22 @@ function renderGalleryFallback(
         />
       </a>
       <div class="blog-antd-gallery-card__copy">
+        <div class="blog-antd-gallery-card__eyebrow">
+          <span class="blog-antd-gallery-card__index" aria-hidden="true">${
+        formatArchiveIndex(index + 1)
+      }</span>
+          <p class="blog-antd-gallery-card__meta">
+            <time datetime="${escapeHtml(item.postDateIso)}">${
+        escapeHtml(item.postDateLabel)
+      }</time>${
+        item.postReadingLabel
+          ? `<span aria-hidden="true">·</span><span>${
+            escapeHtml(item.postReadingLabel)
+          }</span>`
+          : ""
+      }
+          </p>
+        </div>
         <h2 class="blog-antd-gallery-card__title">
           <a href="${escapeHtml(item.postUrl)}">${
         escapeHtml(item.postTitle)
@@ -155,17 +178,6 @@ function renderGalleryFallback(
           }</p>`
           : ""
       }
-        <p class="blog-antd-gallery-card__meta">
-          <time datetime="${escapeHtml(item.postDateIso)}">${
-        escapeHtml(item.postDateLabel)
-      }</time>${
-        item.postReadingLabel
-          ? `<span aria-hidden="true">·</span><span>${
-            escapeHtml(item.postReadingLabel)
-          }</span>`
-          : ""
-      }
-        </p>
       </div>
     </article>
   </li>`

@@ -35,7 +35,7 @@ export const SITE_TRANSLATIONS = {
     navigation: {
       home: "Home",
       writing: "Articles",
-      gallery: "Gallery",
+      gallery: "Images",
       about: "About",
     },
     languageNames: {
@@ -191,9 +191,9 @@ export const SITE_TRANSLATIONS = {
       archiveLinkLabel: "Back to archive",
     },
     gallery: {
-      title: "Gallery",
+      title: "Image Index",
       lead:
-        "Every image published across the posts, gathered into one visual index.",
+        "Every image published across the posts, arranged into one visual index.",
       archiveLinkLabel: "Back to articles",
       imagesAriaLabel: "Post image gallery",
       openPostLabel: "Open article",
@@ -277,7 +277,7 @@ export const SITE_TRANSLATIONS = {
     navigation: {
       home: "Accueil",
       writing: "Articles",
-      gallery: "Galerie",
+      gallery: "Images",
       about: "À propos",
     },
     languageNames: {
@@ -434,9 +434,9 @@ export const SITE_TRANSLATIONS = {
       archiveLinkLabel: "Retour aux articles",
     },
     gallery: {
-      title: "Galerie",
+      title: "Index visuel",
       lead:
-        "Toutes les images publiées dans les articles, réunies dans une seule archive visuelle.",
+        "Toutes les images publiées dans les articles, réunies dans un même index visuel.",
       archiveLinkLabel: "Retour aux articles",
       imagesAriaLabel: "Galerie d’images des articles",
       openPostLabel: "Ouvrir l’article",
@@ -520,7 +520,7 @@ export const SITE_TRANSLATIONS = {
     navigation: {
       home: "首页",
       writing: "文章",
-      gallery: "图集",
+      gallery: "图像",
       about: "关于",
     },
     languageNames: {
@@ -668,8 +668,8 @@ export const SITE_TRANSLATIONS = {
       archiveLinkLabel: "返回文章",
     },
     gallery: {
-      title: "图集",
-      lead: "把所有文章中的图片汇集到同一个可视化索引里。",
+      title: "图像索引",
+      lead: "把所有文章中的图片整理成同一个视觉索引。",
       archiveLinkLabel: "返回文章",
       imagesAriaLabel: "文章图片图集",
       openPostLabel: "打开原文",
@@ -752,7 +752,7 @@ export const SITE_TRANSLATIONS = {
     navigation: {
       home: "首頁",
       writing: "文章",
-      gallery: "圖集",
+      gallery: "圖像",
       about: "關於",
     },
     languageNames: {
@@ -900,8 +900,8 @@ export const SITE_TRANSLATIONS = {
       archiveLinkLabel: "返回文章",
     },
     gallery: {
-      title: "圖集",
-      lead: "把所有文章中的圖片集中到同一個視覺索引裡。",
+      title: "圖像索引",
+      lead: "把所有文章中的圖片整理成同一個視覺索引。",
       archiveLinkLabel: "返回文章",
       imagesAriaLabel: "文章圖片圖集",
       openPostLabel: "開啟原文",
