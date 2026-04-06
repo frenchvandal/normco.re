@@ -304,7 +304,7 @@ describe("posts/index.page.tsx", () => {
       );
       assertStringIncludes(
         blogAntdStyles,
-        "top: calc(var(--ph-header-height) + var(--ph-space-2));",
+        "inset-block-start: calc(var(--ph-header-height) + var(--ph-space-2));",
       );
       assertStringIncludes(
         blogAntdStyles,

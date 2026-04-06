@@ -88,7 +88,7 @@ describe("header-navigation.ts", () => {
 
       assertEquals(
         navigationItems.map((item) => item.label),
-        ["Home", "Articles", "Gallery", "About"],
+        ["Home", "Articles", "Images", "About"],
       );
       assertEquals(navigationItems[2]?.isCurrent, true);
     });
@@ -327,5 +327,8 @@ describe("Header CSS contracts", () => {
       "z-index: calc(var(--ph-layer-header-panel) + 1);",
     );
     assertStringIncludes(layoutStyles, "inset: 0;");
+    assertStringIncludes(layoutStyles, ".site-header__panel[hidden] {");
+    assertStringIncludes(layoutStyles, ".site-side-nav[hidden] {");
+    assertStringIncludes(layoutStyles, "transition-behavior: allow-discrete;");
   });
 });

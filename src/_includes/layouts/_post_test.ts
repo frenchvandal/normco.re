@@ -447,16 +447,23 @@ describe("post.tsx layout", () => {
         `data-media-query="${POST_MOBILE_TOOLS_MEDIA_QUERY}"`,
       );
       assertStringIncludes(html, "Publication details");
+      assertStringIncludes(afterMainHtml, 'class="post-reading-progress"');
       assertStringIncludes(afterMainHtml, 'class="post-backtop"');
 
       const dom = new JSDOM(afterMainHtml);
       const document = dom.window.document;
+      const postReadingProgress = document.querySelector(
+        ".post-reading-progress",
+      );
       const postMobileTools = document.querySelector(".post-mobile-tools");
       const postBackToTop = document.querySelector(".post-backtop");
+      assertExists(postReadingProgress);
       assertExists(postMobileTools);
       assertExists(postBackToTop);
+      assertEquals(postReadingProgress.closest(".site-page-shell"), null);
       assertEquals(postMobileTools.closest(".site-page-shell"), null);
       assertEquals(postBackToTop.closest(".site-page-shell"), null);
+      assertEquals(postReadingProgress.closest("main.site-main"), null);
       assertEquals(postMobileTools.closest("main.site-main"), null);
       assertEquals(postBackToTop.closest("main.site-main"), null);
       assertNotMatch(html, /data-blog-antd-root/);
@@ -653,6 +660,8 @@ describe("post mobile visual contracts", () => {
 
   it("keeps the mobile tools sheet safe-area aware and rail-aware", () => {
     assertStringIncludes(postStyles, ".post-mobile-tools-dialog");
+    assertStringIncludes(postStyles, ".post-reading-progress {");
+    assertStringIncludes(postStyles, "animation-timeline: scroll();");
     assertStringIncludes(postStyles, ".post-inline-anchor");
     assertStringIncludes(postStyles, ".post-outline-nav--inline");
     assertStringIncludes(postStyles, ".post-outline-nav--rail");
@@ -661,11 +670,11 @@ describe("post mobile visual contracts", () => {
     assertStringIncludes(postStyles, ".post-backtop__icon");
     assertStringIncludes(
       postStyles,
-      "left: max(var(--ph-shell-gutter), env(safe-area-inset-left));",
+      "inset-inline-start: max(var(--ph-shell-gutter), env(safe-area-inset-left));",
     );
     assertStringIncludes(
       postStyles,
-      "right: max(var(--ph-shell-gutter), env(safe-area-inset-right));",
+      "inset-inline-end: max(var(--ph-shell-gutter), env(safe-area-inset-right));",
     );
     assertStringIncludes(
       postStyles,
@@ -684,8 +693,9 @@ describe("post mobile visual contracts", () => {
     );
     assertStringIncludes(
       postStyles,
-      "left: calc(",
+      "inset-inline-start: calc(",
     );
+    assertStringIncludes(postStyles, "transition-behavior: allow-discrete;");
     assertStringIncludes(
       postStyles,
       'html[data-post-mobile-tools-ready="true"] .post-rail',

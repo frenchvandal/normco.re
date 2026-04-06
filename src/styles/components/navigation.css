@@ -62,7 +62,14 @@
         var(--ph-color-fg-default) 9%,
         transparent
       );
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(calc(var(--ph-space-8) * -1), 0, 0);
     transform-origin: left center;
+    transition:
+      opacity var(--ph-duration-default) var(--ph-easing-default),
+      transform var(--ph-duration-default) var(--ph-easing-default);
+    transition-behavior: allow-discrete;
     will-change: transform, opacity;
   }
 
@@ -100,11 +107,12 @@
   }
 
   .site-side-nav[hidden] {
-    display: none;
+    display: block;
   }
 
   .site-side-nav:not([hidden]) {
     opacity: 1;
+    pointer-events: auto;
     transform: translate3d(0, 0, 0);
 
     @starting-style {

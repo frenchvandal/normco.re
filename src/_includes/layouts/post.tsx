@@ -67,6 +67,9 @@ export function renderAfterMainContent(
 
   return (
     <>
+      <div class="post-reading-progress" aria-hidden="true">
+        <span class="post-reading-progress__bar"></span>
+      </div>
       {state.hasRail && (
         <PostMobileTools
           language={language}

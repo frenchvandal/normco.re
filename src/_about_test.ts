@@ -149,6 +149,8 @@ describe("about page CSS contracts", () => {
     assertStringIncludes(aboutStyles, ".about-contact-trigger:hover,");
     assertStringIncludes(aboutStyles, ".about-contact-trigger-arrow {");
     assertStringIncludes(aboutStyles, ".about-contact-popover-handle {");
+    assertStringIncludes(aboutStyles, "inset-block-start: 0;");
+    assertStringIncludes(aboutStyles, "transition-behavior: allow-discrete;");
   });
 
   it("keeps the QR frame neutral and gives the field note a restrained mobile and dark treatment", () => {

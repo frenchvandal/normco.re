@@ -518,7 +518,28 @@
       border-radius: var(--ph-radius-lg) var(--ph-radius-lg) 0 0;
       background: var(--ph-surface-raised);
       box-shadow: var(--ph-shadow-floating);
+      opacity: 0;
       overflow: auto;
+      transform: translateY(var(--ph-space-5));
+      transition:
+        opacity var(--ph-duration-default) var(--ph-easing-default),
+        transform var(--ph-duration-default) var(--ph-easing-default);
+      transition-behavior: allow-discrete;
+    }
+
+    .about-contact-toggletip.site-popover--open
+      > .site-popover
+      .about-contact-popover,
+    .about-contact-toggletip
+      > .site-popover:not([hidden])
+      .about-contact-popover {
+      opacity: 1;
+      transform: translateY(0);
+
+      @starting-style {
+        opacity: 0;
+        transform: translateY(var(--ph-space-5));
+      }
     }
 
     .about-contact-popover-handle {
@@ -537,7 +558,7 @@
     .about-contact-popover-header {
       align-items: flex-start;
       position: sticky;
-      top: 0;
+      inset-block-start: 0;
       z-index: 1;
       margin-block-end: 0;
       padding-block-end: var(--ph-space-3);

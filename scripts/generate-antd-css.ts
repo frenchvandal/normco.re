@@ -210,6 +210,10 @@ function alignGeneratedTokens(css: string): string {
   );
 }
 
+function wrapInLayer(css: string, layerName: string): string {
+  return `@layer ${layerName} {\n${css.trim()}\n}\n`;
+}
+
 function buildDeclarationPattern(declaration: string): RegExp {
   const trimmedDeclaration = declaration.trim();
   const colonIndex = trimmedDeclaration.indexOf(":");
@@ -387,6 +391,9 @@ if (import.meta.main) {
     )
   );
 
-  await Deno.writeTextFile(OUTPUT_PATH, `${alignGeneratedTokens(css)}\n`);
+  await Deno.writeTextFile(
+    OUTPUT_PATH,
+    wrapInLayer(alignGeneratedTokens(css), "layout"),
+  );
   await formatOutputFile(OUTPUT_PATH);
 }

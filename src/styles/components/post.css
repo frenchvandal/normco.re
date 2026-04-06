@@ -417,14 +417,64 @@
     text-transform: uppercase;
   }
 
+  .post-reading-progress {
+    display: none;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .post-reading-progress {
+      position: fixed;
+      inset-block-start: var(--ph-header-height);
+      inset-inline: 0;
+      z-index: calc(var(--ph-layer-header) - 1);
+      display: block;
+      block-size: var(--ph-border-hairline);
+      pointer-events: none;
+      background: color-mix(
+        in oklch,
+        var(--ph-color-border-muted) 56%,
+        transparent
+      );
+    }
+
+    .post-reading-progress__bar {
+      display: block;
+      inline-size: 100%;
+      block-size: 100%;
+      transform: scaleX(0);
+      transform-origin: left center;
+      background: linear-gradient(
+        90deg,
+        color-mix(
+          in oklch,
+          var(--ph-color-accent-emphasis) 82%,
+          var(--ph-color-canvas-default)
+        ),
+        var(--ph-color-accent-fg)
+      );
+      animation: ph-post-reading-progress linear both;
+      animation-timeline: scroll();
+    }
+
+    @keyframes ph-post-reading-progress {
+      from {
+        transform: scaleX(0);
+      }
+
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+
   .post-backtop {
     display: none;
     position: fixed;
-    left: calc(
+    inset-inline-start: calc(
       env(safe-area-inset-left)
         + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
     );
-    bottom: calc(var(--ph-mobile-nav-offset) + var(--ph-space-4));
+    inset-block-end: calc(var(--ph-mobile-nav-offset) + var(--ph-space-4));
     z-index: var(--ph-layer-header-panel);
     text-decoration: none;
   }
@@ -469,15 +519,25 @@
 
   .post-mobile-tools-dialog {
     position: fixed;
-    left: max(var(--ph-shell-gutter), env(safe-area-inset-left));
-    right: max(var(--ph-shell-gutter), env(safe-area-inset-right));
-    bottom: 0;
+    inset-inline-start: max(var(--ph-shell-gutter), env(safe-area-inset-left));
+    inset-inline-end: max(var(--ph-shell-gutter), env(safe-area-inset-right));
+    inset-block-end: 0;
     margin: 0 auto;
     padding: 0;
     border: 0;
     background: transparent;
     color: inherit;
     max-inline-size: none;
+    opacity: 0;
+    transition:
+      opacity var(--ph-duration-default) var(--ph-easing-default),
+      overlay var(--ph-duration-default) var(--ph-easing-default),
+      display var(--ph-duration-default) var(--ph-easing-default);
+    transition-behavior: allow-discrete;
+  }
+
+  .post-mobile-tools-dialog[open] {
+    opacity: 1;
   }
 
   .post-mobile-tools-dialog::backdrop {
@@ -486,6 +546,16 @@
       var(--ph-color-fg-default) 16%,
       transparent
     );
+    opacity: 0;
+    transition:
+      opacity var(--ph-duration-default) var(--ph-easing-default),
+      overlay var(--ph-duration-default) var(--ph-easing-default),
+      display var(--ph-duration-default) var(--ph-easing-default);
+    transition-behavior: allow-discrete;
+  }
+
+  .post-mobile-tools-dialog[open]::backdrop {
+    opacity: 1;
   }
 
   .post-mobile-tools-sheet {
@@ -501,7 +571,23 @@
     border-radius: var(--ph-radius-lg) var(--ph-radius-lg) 0 0;
     background: var(--ph-surface-raised);
     box-shadow: var(--ph-shadow-floating);
+    opacity: 0;
     overflow: auto;
+    transform: translateY(var(--ph-space-5));
+    transition:
+      opacity var(--ph-duration-default) var(--ph-easing-default),
+      transform var(--ph-duration-default) var(--ph-easing-default);
+    transition-behavior: allow-discrete;
+  }
+
+  .post-mobile-tools-dialog[open] .post-mobile-tools-sheet {
+    opacity: 1;
+    transform: translateY(0);
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(var(--ph-space-5));
+    }
   }
 
   .post-mobile-tools-handle {
@@ -522,7 +608,7 @@
     justify-content: space-between;
     gap: var(--ph-space-3);
     position: sticky;
-    top: 0;
+    inset-block-start: 0;
     z-index: 1;
     padding-block-end: var(--ph-space-1);
     background: inherit;
@@ -811,11 +897,11 @@
 
     html[data-post-mobile-tools-ready="true"] .post-mobile-tools-trigger {
       position: fixed;
-      right: calc(
+      inset-inline-end: calc(
         env(safe-area-inset-right)
           + clamp(var(--ph-space-4), 4vw, var(--ph-space-5))
       );
-      bottom: calc(var(--ph-mobile-nav-offset) + var(--ph-space-4));
+      inset-block-end: calc(var(--ph-mobile-nav-offset) + var(--ph-space-4));
       display: inline-flex;
       align-items: center;
       justify-content: center;

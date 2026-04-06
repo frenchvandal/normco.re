@@ -7,6 +7,9 @@ const commonSource = Deno.readTextFileSync(
 const blogAntdStyles = Deno.readTextFileSync(
   new URL("./styles/blog-antd.css", import.meta.url),
 );
+const generatedAntdStyles = Deno.readTextFileSync(
+  new URL("./styles/generated/antd-components.css", import.meta.url),
+);
 const postAntdSource = Deno.readTextFileSync(
   new URL("./blog/client/post-antd.ts", import.meta.url),
 );
@@ -161,6 +164,10 @@ describe("blog client interaction contracts", () => {
       blogAntdStyles,
       ".blog-antd-tooltip .ant-tooltip-arrow::before",
     );
+  });
+
+  it("keeps the generated Ant Design stylesheet inside the shared layout layer", () => {
+    assertStringIncludes(generatedAntdStyles, "@layer layout {");
   });
 
   it("keeps skeleton styling wired in CSS", () => {
