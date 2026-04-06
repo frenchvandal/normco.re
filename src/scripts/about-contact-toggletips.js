@@ -10,6 +10,12 @@ const CLOSE_BUTTON_SELECTOR = "[data-contact-toggletip-close]";
 const FEATURE_LAYOUT_SELECTOR = ".feature-layout";
 const FEATURE_RAIL_STICKY_SELECTOR = ".feature-rail-sticky";
 const CONTACT_LIST_SELECTOR = ".about-contact-list";
+const NATIVE_POPOVER_VALUE = "auto";
+const NATIVE_POPOVER_MARKER_ATTRIBUTE = "data-contact-native-popover";
+const DESKTOP_POPOVER_TOP_VARIABLE = "--about-contact-popover-top";
+const DESKTOP_POPOVER_LEFT_VARIABLE = "--about-contact-popover-left";
+const DESKTOP_POPOVER_CARET_OFFSET_VARIABLE =
+  "--about-contact-popover-caret-offset";
 
 /**
  * @param {Window & typeof globalThis} runtime
@@ -111,6 +117,25 @@ export function bindAboutContactToggletips(runtime) {
   }
 
   /**
+   * @param {string} tokenName
+   * @param {number} fallback
+   * @returns {number}
+   */
+  function resolveRootTokenPx(tokenName, fallback) {
+    const root = doc.documentElement;
+
+    if (!(root instanceof runtime.HTMLElement)) {
+      return fallback;
+    }
+
+    const value = runtime.getComputedStyle(root).getPropertyValue(tokenName)
+      .trim();
+    const parsed = Number.parseFloat(value);
+
+    return Number.isFinite(parsed) ? parsed : fallback;
+  }
+
+  /**
    * @param {HTMLElement} popover
    * @returns {boolean}
    */
@@ -138,9 +163,87 @@ export function bindAboutContactToggletips(runtime) {
    * @returns {boolean}
    */
   function shouldUseNativePopover(popover) {
-    return isMobileViewport() &&
-      popover.getAttribute("popover") === "auto" &&
-      supportsNativePopover(popover);
+    return supportsNativePopover(popover);
+  }
+
+  /**
+   * @param {HTMLElement | null} popover
+   * @returns {void}
+   */
+  function clearNativePopoverPosition(popover) {
+    if (popover === null) {
+      return;
+    }
+
+    popover.style.removeProperty(DESKTOP_POPOVER_TOP_VARIABLE);
+    popover.style.removeProperty(DESKTOP_POPOVER_LEFT_VARIABLE);
+    popover.style.removeProperty(DESKTOP_POPOVER_CARET_OFFSET_VARIABLE);
+  }
+
+  /**
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function syncNativePopoverPosition(container) {
+    const trigger = getTrigger(container);
+    const popover = getPopover(container);
+
+    if (
+      trigger === null ||
+      popover === null ||
+      !shouldUseNativePopover(popover) ||
+      !isNativePopoverOpen(popover) ||
+      isMobileViewport()
+    ) {
+      clearNativePopoverPosition(popover);
+      return;
+    }
+
+    const triggerRect = trigger.getBoundingClientRect();
+    const popoverRect = popover.getBoundingClientRect();
+    const offsetPx = resolveRootTokenPx("--ph-space-2", 8);
+    const viewportPaddingPx = resolveRootTokenPx("--ph-space-4", 16);
+    const desiredCenterX = triggerRect.left + (triggerRect.width / 2);
+    const halfWidth = popoverRect.width / 2;
+    const minCenterX = viewportPaddingPx + halfWidth;
+    const maxCenterX = runtime.innerWidth - viewportPaddingPx - halfWidth;
+    const centerX = minCenterX > maxCenterX
+      ? runtime.innerWidth / 2
+      : Math.min(Math.max(desiredCenterX, minCenterX), maxCenterX);
+    const top = triggerRect.bottom + offsetPx;
+    const caretOffset = desiredCenterX - centerX;
+
+    popover.style.setProperty(DESKTOP_POPOVER_TOP_VARIABLE, `${top}px`);
+    popover.style.setProperty(DESKTOP_POPOVER_LEFT_VARIABLE, `${centerX}px`);
+    popover.style.setProperty(
+      DESKTOP_POPOVER_CARET_OFFSET_VARIABLE,
+      `${caretOffset}px`,
+    );
+  }
+
+  /**
+   * @param {HTMLElement} popover
+   * @returns {boolean}
+   */
+  function syncPopoverMode(popover) {
+    if (shouldUseNativePopover(popover)) {
+      if (popover.getAttribute("popover") !== NATIVE_POPOVER_VALUE) {
+        popover.setAttribute("popover", NATIVE_POPOVER_VALUE);
+      }
+
+      popover.setAttribute(NATIVE_POPOVER_MARKER_ATTRIBUTE, "");
+
+      return true;
+    }
+
+    if (isNativePopoverOpen(popover)) {
+      popover.hidePopover();
+    }
+
+    popover.removeAttribute(NATIVE_POPOVER_MARKER_ATTRIBUTE);
+    clearNativePopoverPosition(popover);
+
+    return false;
   }
 
   /**
@@ -293,13 +396,15 @@ export function bindAboutContactToggletips(runtime) {
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
 
     if (popover !== null) {
-      if (shouldUseNativePopover(popover)) {
+      if (syncPopoverMode(popover)) {
         if (open) {
           popover.hidden = false;
 
           if (!isNativePopoverOpen(popover)) {
             popover.showPopover();
           }
+
+          syncNativePopoverPosition(container);
         } else {
           if (isNativePopoverOpen(popover)) {
             popover.hidePopover();
@@ -404,6 +509,9 @@ export function bindAboutContactToggletips(runtime) {
       popover.addEventListener("toggle", () => {
         const open = isNativePopoverOpen(popover);
         popover.hidden = !open;
+        if (open) {
+          syncNativePopoverPosition(container);
+        }
         container.classList.toggle("site-popover--open", open);
         container.classList.toggle("site-toggletip--open", open);
         trigger.setAttribute("aria-expanded", open ? "true" : "false");
@@ -530,6 +638,11 @@ export function bindAboutContactToggletips(runtime) {
   } else if (typeof mobileMedia?.addListener === "function") {
     mobileMedia.addListener(syncOpenPanelsToViewport);
   }
+
+  runtime.addEventListener("resize", syncOpenPanelsToViewport);
+  runtime.addEventListener("scroll", syncOpenPanelsToViewport, {
+    passive: true,
+  });
 }
 
 if (typeof window !== "undefined") {

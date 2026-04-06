@@ -45,7 +45,7 @@
     },
     "update-deps": {
       "description": "Update declared Deno dependencies and regenerate lock files",
-      "command": "deno outdated --update --latest && (cd src/blog/client && deno outdated --update --latest) && deno task locks:regen"
+      "command": "deno outdated --update --latest && (cd src/blog/client && deno outdated --update --latest) && deno task locks:regen && deno task serve && deno task stop"
     },
     "locks:regen": {
       "description": "Regenerate the root and frontend deno.lock files from the current dependency graphs",
@@ -124,6 +124,10 @@
     "lefthook:install": {
       "description": "Install Lefthook git hooks non-interactively via deno x (no global install or Node.js required)",
       "command": "DENO_NO_PROMPT=1 deno x lefthook install"
+    },
+    "stop": {
+      "description": "Stop running `deno task serve` processes when they exist",
+      "command": "PIDS=$(pgrep -f \"deno task serve\") && [ -n \"$PIDS\" ] && kill -SIGINT $PIDS || true"
     }
   },
 

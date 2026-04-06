@@ -190,6 +190,48 @@ function installFakePopoverApi(window: TestWindow) {
   }
 }
 
+function installFakeDesktopPopoverGeometry(window: TestWindow) {
+  const [trigger] = getTriggers(window);
+  const [popover] = getPopovers(window);
+
+  assert(trigger);
+  assert(popover);
+
+  Object.defineProperty(trigger, "getBoundingClientRect", {
+    configurable: true,
+    value: () => ({
+      x: 120,
+      y: 80,
+      width: 176,
+      height: 56,
+      top: 80,
+      right: 296,
+      bottom: 136,
+      left: 120,
+      toJSON() {
+        return this;
+      },
+    }),
+  });
+
+  Object.defineProperty(popover, "getBoundingClientRect", {
+    configurable: true,
+    value: () => ({
+      x: 104,
+      y: 144,
+      width: 208,
+      height: 320,
+      top: 144,
+      right: 312,
+      bottom: 464,
+      left: 104,
+      toJSON() {
+        return this;
+      },
+    }),
+  });
+}
+
 async function flushNodeTimers(cycles = 3) {
   for (let index = 0; index < cycles; index += 1) {
     await new Promise((resolve) => globalThis.setTimeout(resolve, 0));
@@ -481,6 +523,65 @@ describe("about-contact-toggletips.js", () => {
       );
       assertEquals(getOutsideFocus(window).hasAttribute("inert"), false);
       await flushNodeTimers();
+    } finally {
+      window.close();
+    }
+  });
+
+  it("uses the native Popover API on desktop when available", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow & {
+      matchMedia: (query: string) => MediaQueryList;
+    };
+    try {
+      const mediaQueryList = createMediaQueryList(false);
+      window.matchMedia = (_query: string) => mediaQueryList;
+      installFakePopoverApi(window);
+      installFakeDesktopPopoverGeometry(window);
+
+      bindScript(window);
+
+      const [container] = getContainers(window);
+      const [trigger] = getTriggers(window);
+      const [popover] = getPopovers(window);
+      assert(container);
+      assert(trigger);
+      assert(popover);
+
+      assertEquals(popover.getAttribute("popover"), "auto");
+      assertEquals(popover.hasAttribute("data-contact-native-popover"), true);
+      assertEquals(popover.hidden, true);
+
+      trigger.click();
+
+      assertEquals(container.classList.contains("site-popover--open"), true);
+      assertEquals(popover.hidden, false);
+      assertEquals(popover.getAttribute("data-popover-open"), "true");
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-top"),
+        "144px",
+      );
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-left"),
+        "208px",
+      );
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-caret-offset"),
+        "0px",
+      );
+
+      trigger.click();
+
+      assertEquals(popover.hidden, true);
+      assertEquals(popover.getAttribute("data-popover-open"), null);
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-top"),
+        "144px",
+      );
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-left"),
+        "208px",
+      );
     } finally {
       window.close();
     }

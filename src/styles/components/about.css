@@ -29,6 +29,20 @@
     display: block;
   }
 
+  .about-contact-toggletip > .site-popover[data-contact-native-popover] {
+    position: fixed;
+    inset-block-start: var(--about-contact-popover-top, 0);
+    inset-inline-start: var(--about-contact-popover-left, 50vw);
+  }
+
+  .about-contact-toggletip
+    > .site-popover[data-contact-native-popover]
+    > .site-popover__caret {
+    transform: translateX(
+      calc(-50% + var(--about-contact-popover-caret-offset, 0px))
+    ) rotate(45deg);
+  }
+
   .about-contact-trigger {
     inline-size: 100%;
     display: flex;
