@@ -253,22 +253,74 @@ export function observeDocumentFontLoads(
   onLoadingDone: () => void,
 ): (() => void) | undefined {
   const fontSet = document.fonts;
+  let isActive = true;
+  let activeLoadingCycle = 0;
+  let lastHandledCycle = 0;
+
+  const notifyLoadingDone = (cycle?: number) => {
+    if (!isActive) {
+      return;
+    }
+
+    if (cycle !== undefined) {
+      lastHandledCycle = Math.max(lastHandledCycle, cycle);
+    }
+
+    onLoadingDone();
+  };
+
+  const observeCurrentReadyCycle = (cycle: number) => {
+    if (!fontSet || typeof fontSet.ready?.then !== "function") {
+      return false;
+    }
+
+    void fontSet.ready.then(() => {
+      if (
+        !isActive || activeLoadingCycle !== cycle || lastHandledCycle >= cycle
+      ) {
+        return;
+      }
+
+      notifyLoadingDone(cycle);
+    });
+
+    return true;
+  };
 
   if (
     !fontSet ||
     typeof fontSet.addEventListener !== "function" ||
     typeof fontSet.removeEventListener !== "function"
   ) {
-    return undefined;
+    return observeCurrentReadyCycle(1)
+      ? () => {
+        isActive = false;
+      }
+      : undefined;
   }
 
+  const handleLoading = () => {
+    activeLoadingCycle += 1;
+    observeCurrentReadyCycle(activeLoadingCycle);
+  };
   const handleLoadingDone = () => {
-    onLoadingDone();
+    if (activeLoadingCycle > 0 && lastHandledCycle >= activeLoadingCycle) {
+      return;
+    }
+
+    notifyLoadingDone(activeLoadingCycle || undefined);
   };
 
+  if (fontSet.status === "loading") {
+    handleLoading();
+  }
+
+  fontSet.addEventListener("loading", handleLoading);
   fontSet.addEventListener("loadingdone", handleLoadingDone);
 
   return () => {
+    isActive = false;
+    fontSet.removeEventListener("loading", handleLoading);
     fontSet.removeEventListener("loadingdone", handleLoadingDone);
   };
 }

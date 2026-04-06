@@ -10,6 +10,7 @@ import {
   layoutTextBlockWithLines,
   measureTextBlock,
   measureTextBlockWidestLine,
+  observeDocumentFontLoads,
   resolveLineHeightPx,
   type TextLayoutLineRange,
 } from "./pretext-story-core.ts";
@@ -112,6 +113,134 @@ describe("buildMeasuredTextStyleVariables()", () => {
         "--pretext-summary-lines": 3,
       },
     );
+  });
+});
+
+describe("observeDocumentFontLoads()", () => {
+  function createFontSetStub() {
+    const listeners = new Map<string, Set<() => void>>();
+    let status: "loaded" | "loading" = "loaded";
+    let ready = Promise.resolve();
+
+    return {
+      emit(type: string) {
+        listeners.get(type)?.forEach((listener) => listener());
+      },
+      fontSet: {
+        addEventListener(type: string, listener: () => void) {
+          const registeredListeners = listeners.get(type) ?? new Set();
+          registeredListeners.add(listener);
+          listeners.set(type, registeredListeners);
+        },
+        removeEventListener(type: string, listener: () => void) {
+          listeners.get(type)?.delete(listener);
+        },
+        get ready() {
+          return ready;
+        },
+        get status() {
+          return status;
+        },
+      },
+      setPendingReady(nextReady: Promise<void>) {
+        status = "loading";
+        ready = nextReady;
+      },
+      settleReady() {
+        status = "loaded";
+      },
+    };
+  }
+
+  it("replays an in-flight font loading cycle when ready settles after subscription", async () => {
+    const fontSetStub = createFontSetStub();
+    let resolveReady!: () => void;
+    const calls: number[] = [];
+
+    fontSetStub.setPendingReady(
+      new Promise<void>((resolve) => {
+        resolveReady = resolve;
+      }),
+    );
+
+    const cleanup = observeDocumentFontLoads(
+      { fonts: fontSetStub.fontSet } as unknown as Document,
+      () => {
+        calls.push(1);
+      },
+    );
+
+    resolveReady();
+    fontSetStub.settleReady();
+    await Promise.resolve();
+
+    assertEquals(calls, [1]);
+    cleanup?.();
+  });
+
+  it("dedupes ready resolution and loadingdone for the same cycle", async () => {
+    const fontSetStub = createFontSetStub();
+    let resolveReady!: () => void;
+    const calls: number[] = [];
+
+    fontSetStub.setPendingReady(
+      new Promise<void>((resolve) => {
+        resolveReady = resolve;
+      }),
+    );
+
+    const cleanup = observeDocumentFontLoads(
+      { fonts: fontSetStub.fontSet } as unknown as Document,
+      () => {
+        calls.push(1);
+      },
+    );
+
+    resolveReady();
+    fontSetStub.settleReady();
+    await Promise.resolve();
+    fontSetStub.emit("loadingdone");
+
+    assertEquals(calls, [1]);
+    cleanup?.();
+  });
+
+  it("continues observing later font loading cycles after the initial catch-up", async () => {
+    const fontSetStub = createFontSetStub();
+    let resolveInitialReady!: () => void;
+    let resolveNextReady!: () => void;
+    const calls: number[] = [];
+
+    fontSetStub.setPendingReady(
+      new Promise<void>((resolve) => {
+        resolveInitialReady = resolve;
+      }),
+    );
+
+    const cleanup = observeDocumentFontLoads(
+      { fonts: fontSetStub.fontSet } as unknown as Document,
+      () => {
+        calls.push(1);
+      },
+    );
+
+    resolveInitialReady();
+    fontSetStub.settleReady();
+    await Promise.resolve();
+
+    fontSetStub.setPendingReady(
+      new Promise<void>((resolve) => {
+        resolveNextReady = resolve;
+      }),
+    );
+    fontSetStub.emit("loading");
+    fontSetStub.settleReady();
+    fontSetStub.emit("loadingdone");
+    resolveNextReady();
+    await Promise.resolve();
+
+    assertEquals(calls, [1, 1]);
+    cleanup?.();
   });
 });
 
