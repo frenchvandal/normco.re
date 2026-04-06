@@ -45,7 +45,7 @@
     },
     "update-deps": {
       "description": "Update declared Deno dependencies and regenerate lock files",
-      "command": "deno outdated --update --latest && (cd src/blog/client && deno outdated --update --latest) && deno task locks:regen && deno task serve && deno task stop"
+      "command": "deno outdated --update --latest && (cd src/blog/client && deno outdated --update --latest) && deno task locks:regen"
     },
     "locks:regen": {
       "description": "Regenerate the root and frontend deno.lock files from the current dependency graphs",
@@ -127,7 +127,7 @@
     },
     "stop": {
       "description": "Stop running `deno task serve` processes when they exist",
-      "command": "PIDS=$(pgrep -f \"deno task serve\") && [ -n \"$PIDS\" ] && kill -SIGINT $PIDS || true"
+      "command": "sh -c 'PIDS=$(pgrep -f \"LUME_SERVE=1 deno task lume -s\") && [ -n \"$PIDS\" ] && kill -SIGINT $PIDS || true'"
     }
   },
 
