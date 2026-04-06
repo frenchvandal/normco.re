@@ -48,6 +48,19 @@ const THEME_BOOTSTRAP = {
 const LANGUAGE_PREFERENCE_BOOTSTRAP = {
   __html: LANGUAGE_PREFERENCE_SCRIPT,
 } as const;
+const ADAPTIVE_PREFETCH_BASELINE = {
+  __html: JSON.stringify({
+    prefetch: [
+      {
+        where: { selector_matches: "a[href^='/']" },
+        // Start conservatively in the HTML payload, then let the runtime
+        // scheduler upgrade or remove the rule once client capabilities are
+        // known.
+        eagerness: "conservative",
+      },
+    ],
+  }),
+} as const;
 
 type BuildData = {
   swDebugLevel?: "off" | "summary" | "verbose";
@@ -178,7 +191,7 @@ function createDeferredEnhancementBootstrap(
 ): { __html: string } {
   const backgroundStatements = [
     includeLinkPrefetch
-      ? 'loadScript("/scripts/link-prefetch-intent.js", { fetchPriority: "low" });'
+      ? 'loadModule("/scripts/link-prefetch-intent.js", { fetchPriority: "low" });'
       : "",
     `loadScript("/scripts/sw-register.js", {
       dataset: {
@@ -191,8 +204,14 @@ function createDeferredEnhancementBootstrap(
 
   return {
     __html:
-      `(()=>{const doc=document;function loadScript(src,{dataset,fetchPriority}={}){const script=doc.createElement("script");script.src=src;if(fetchPriority){script.setAttribute("fetchpriority",fetchPriority);}if(dataset){for(const[key,value]of Object.entries(dataset)){script.dataset[key]=value;}}doc.body.append(script);}function loadModule(src){const script=doc.createElement("script");script.type="module";script.src=src;doc.body.append(script);}const loadInteractive=()=>loadModule("/scripts/header-client.js");const loadBackground=()=>{${backgroundStatements}};if("requestAnimationFrame"in window){window.requestAnimationFrame(loadInteractive);}else{window.setTimeout(loadInteractive,0);}if("requestIdleCallback"in window){window.requestIdleCallback(loadBackground,{timeout:2000});}else{window.setTimeout(loadBackground,1);}})();`,
+      `(()=>{const doc=document;function loadScript(src,{dataset,fetchPriority}={}){const script=doc.createElement("script");script.src=src;if(fetchPriority){script.setAttribute("fetchpriority",fetchPriority);}if(dataset){for(const[key,value]of Object.entries(dataset)){script.dataset[key]=value;}}doc.body.append(script);}function loadModule(src,{dataset,fetchPriority}={}){const script=doc.createElement("script");script.type="module";script.src=src;if(fetchPriority){script.setAttribute("fetchpriority",fetchPriority);}if(dataset){for(const[key,value]of Object.entries(dataset)){script.dataset[key]=value;}}doc.body.append(script);}const loadInteractive=()=>loadModule("/scripts/header-client.js");const loadBackground=()=>{${backgroundStatements}};if("requestAnimationFrame"in window){window.requestAnimationFrame(loadInteractive);}else{window.setTimeout(loadInteractive,0);}if("requestIdleCallback"in window){window.requestIdleCallback(loadBackground,{timeout:2000});}else{window.setTimeout(loadBackground,1);}})();`,
   };
+}
+
+function renderAdaptivePrefetchBaseline(
+  includeLinkPrefetch: boolean,
+): { __html: string } | null {
+  return includeLinkPrefetch ? ADAPTIVE_PREFETCH_BASELINE : null;
 }
 
 export default async (
@@ -253,6 +272,9 @@ export default async (
   const deferredEnhancementBootstrap = createDeferredEnhancementBootstrap(
     includeLinkPrefetch,
     swDebugLevel,
+  );
+  const adaptivePrefetchBaseline = renderAdaptivePrefetchBaseline(
+    includeLinkPrefetch,
   );
   const resolvedAfterMainContent = typeof renderAfterMainContent === "function"
     ? await renderAfterMainContent(data, _helpers)
@@ -348,6 +370,11 @@ export default async (
             title={`${resolvedSiteName} JSON feed`}
             href={feedJsonUrl}
           />
+          {adaptivePrefetchBaseline !== null && (
+            <script type="speculationrules" data-adaptive="prefetch">
+              {adaptivePrefetchBaseline}
+            </script>
+          )}
         </head>
         <body data-current-language={language}>
           <a class="skip-link" href="#main-content">

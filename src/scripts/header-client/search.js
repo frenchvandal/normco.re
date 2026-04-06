@@ -1,6 +1,6 @@
 // @ts-check
 
-import { FOCUSABLE_SELECTOR } from "./focusable-selector.js";
+import { getFocusableElements, trapFocus } from "../shared/focus-utils.js";
 
 const SEARCH_CONTAINER_SELECTOR = "[data-search-root]";
 const SEARCH_PANEL_SELECTOR = "[data-search-panel]";
@@ -85,88 +85,12 @@ export function createHeaderSearch(runtime, root, isKeyboardInteraction) {
   }
 
   /**
-   * @param {HTMLElement} container
-   * @returns {HTMLElement[]}
-   */
-  function getFocusableElements(container) {
-    /** @type {HTMLElement[]} */
-    const focusable = [];
-
-    for (const candidate of container.querySelectorAll(FOCUSABLE_SELECTOR)) {
-      if (candidate instanceof runtime.HTMLElement && !isHidden(candidate)) {
-        focusable.push(candidate);
-      }
-    }
-
-    // Selector-list queries do not always preserve DOM order consistently.
-    focusable.sort((left, right) => {
-      if (left === right) {
-        return 0;
-      }
-
-      const position = left.compareDocumentPosition(right);
-
-      if (position & runtime.Node.DOCUMENT_POSITION_FOLLOWING) {
-        return -1;
-      }
-
-      if (position & runtime.Node.DOCUMENT_POSITION_PRECEDING) {
-        return 1;
-      }
-
-      return 0;
-    });
-
-    return focusable;
-  }
-
-  /**
-   * @param {KeyboardEvent} event
-   * @param {HTMLElement} container
-   * @returns {void}
-   */
-  function trapFocus(event, container) {
-    if (event.key !== "Tab") {
-      return;
-    }
-
-    const focusable = getFocusableElements(container);
-
-    if (focusable.length === 0) {
-      return;
-    }
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-
-    if (
-      !(first instanceof runtime.HTMLElement) ||
-      !(last instanceof runtime.HTMLElement)
-    ) {
-      return;
-    }
-
-    if (event.shiftKey) {
-      if (doc.activeElement === first) {
-        event.preventDefault();
-        last.focus({ preventScroll: true });
-      }
-      return;
-    }
-
-    if (doc.activeElement === last) {
-      event.preventDefault();
-      first.focus({ preventScroll: true });
-    }
-  }
-
-  /**
    * @param {KeyboardEvent} event
    * @param {HTMLElement} container
    * @returns {boolean}
    */
   function routeFocusIntoContainer(event, container) {
-    const focusable = getFocusableElements(container);
+    const focusable = getFocusableElements(runtime, container);
 
     if (focusable.length === 0) {
       return false;
@@ -785,6 +709,46 @@ export function createHeaderSearch(runtime, root, isKeyboardInteraction) {
   }
 
   /**
+   * @param {string} href
+   * @param {"script" | "style"} as
+   * @returns {void}
+   */
+  function ensurePagefindPrefetch(href, as) {
+    if (!doc.createElement("link").relList?.supports?.("prefetch")) {
+      return;
+    }
+
+    if (doc.querySelector(`link[rel="prefetch"][href="${href}"]`) !== null) {
+      return;
+    }
+
+    if (as === "script") {
+      if (
+        getPagefindUiConstructor() !== null ||
+        doc.querySelector(`script[src="${href}"]`) !== null
+      ) {
+        return;
+      }
+    } else if (doc.querySelector(`link[rel="stylesheet"][href="${href}"]`)) {
+      return;
+    }
+
+    const prefetchLink = doc.createElement("link");
+    prefetchLink.rel = "prefetch";
+    prefetchLink.href = href;
+    prefetchLink.as = as;
+    doc.head.append(prefetchLink);
+  }
+
+  /**
+   * @returns {void}
+   */
+  function warmRuntime() {
+    ensurePagefindPrefetch(PAGEFIND_STYLE_URL, "style");
+    ensurePagefindPrefetch(PAGEFIND_SCRIPT_URL, "script");
+  }
+
+  /**
    * @param {SearchController} nextController
    * @returns {string}
    */
@@ -1067,7 +1031,7 @@ export function createHeaderSearch(runtime, root, isKeyboardInteraction) {
       return true;
     }
 
-    trapFocus(event, searchSurface);
+    trapFocus(runtime, event, searchSurface);
     return true;
   }
 
@@ -1075,5 +1039,6 @@ export function createHeaderSearch(runtime, root, isKeyboardInteraction) {
     isSearchPanel,
     initializeForOpen,
     handleGlobalKeydown,
+    warmRuntime,
   };
 }

@@ -1,10 +1,34 @@
 // @ts-check
-(() => {
-  /** @typedef {"idle" | "copied" | "error"} CopyState */
-  const copyControls = globalThis.document.querySelectorAll(
-    "[data-copy-control]",
-  );
-  const copiedStateDurationMs = 1800;
+
+import { copyText } from "./shared/clipboard.js";
+
+/**
+ * @typedef {"idle" | "copied" | "error"} CopyState
+ */
+
+/**
+ * @typedef {{
+ *   readonly control: HTMLElement;
+ *   readonly copyButton: HTMLButtonElement;
+ *   readonly buttonLabel: HTMLElement | null;
+ *   readonly status: HTMLElement | null;
+ *   readonly notice: HTMLElement | null;
+ *   readonly noticeTitle: HTMLElement | null;
+ *   readonly noticeMessage: HTMLElement | null;
+ *   readonly copyPath: string;
+ * }} CopyWidget
+ */
+
+const COPY_STATE_DURATION_MS = 1800;
+
+/**
+ * @param {Window & typeof globalThis} runtime
+ * @returns {void}
+ */
+export function bindFeedCopy(runtime) {
+  const doc = runtime.document;
+  const copyControls = Array.from(doc.querySelectorAll("[data-copy-control]"))
+    .filter((candidate) => candidate instanceof runtime.HTMLElement);
   /** @type {WeakMap<HTMLElement, number>} */
   const resetTimers = new WeakMap();
 
@@ -14,151 +38,155 @@
 
   /**
    * @param {HTMLElement} control
-   * @returns {HTMLElement | null}
+   * @returns {CopyWidget | null}
    */
-  function getStatusElement(control) {
-    const status = control.querySelector("[data-copy-status]");
-    return status instanceof HTMLElement ? status : null;
-  }
-
-  /**
-   * @param {HTMLElement} control
-   * @returns {HTMLElement | null}
-   */
-  function getNoticeElement(control) {
-    const notice = control.querySelector("[data-copy-notice]");
-    return notice instanceof HTMLElement ? notice : null;
-  }
-
-  /**
-   * @param {HTMLElement} control
-   * @returns {HTMLButtonElement | null}
-   */
-  function getCopyButton(control) {
+  function createCopyWidget(control) {
     const copyButton = control.querySelector("[data-copy-button]");
-    return copyButton instanceof HTMLButtonElement ? copyButton : null;
+
+    if (!(copyButton instanceof runtime.HTMLButtonElement)) {
+      return null;
+    }
+
+    const copyPath = copyButton.dataset.copyPath;
+
+    if (copyPath === undefined || copyPath.length === 0) {
+      return null;
+    }
+
+    const notice = control.querySelector("[data-copy-notice]");
+    const buttonLabel = copyButton.querySelector("[data-copy-button-label]");
+    const status = control.querySelector("[data-copy-status]");
+    const noticeTitle = notice instanceof runtime.HTMLElement
+      ? notice.querySelector("[data-copy-notice-title]")
+      : null;
+    const noticeMessage = notice instanceof runtime.HTMLElement
+      ? notice.querySelector("[data-copy-notice-message]")
+      : null;
+
+    return {
+      control,
+      copyButton,
+      buttonLabel: buttonLabel instanceof runtime.HTMLElement
+        ? buttonLabel
+        : null,
+      status: status instanceof runtime.HTMLElement ? status : null,
+      notice: notice instanceof runtime.HTMLElement ? notice : null,
+      noticeTitle: noticeTitle instanceof runtime.HTMLElement
+        ? noticeTitle
+        : null,
+      noticeMessage: noticeMessage instanceof runtime.HTMLElement
+        ? noticeMessage
+        : null,
+      copyPath,
+    };
   }
 
   /**
-   * @param {HTMLButtonElement} copyButton
+   * @param {CopyWidget} widget
    * @returns {string}
    */
-  function getCopyTitle(copyButton) {
-    return copyButton.dataset.copyTitle ?? "Copy URL";
+  function getCopyTitle(widget) {
+    return widget.copyButton.dataset.copyTitle ?? "Copy URL";
   }
 
   /**
-   * @param {HTMLButtonElement} copyButton
+   * @param {CopyWidget} widget
    * @returns {string}
    */
-  function getDefaultButtonLabel(copyButton) {
-    return copyButton.dataset.copyDefaultLabel ?? "Copy";
+  function getDefaultButtonLabel(widget) {
+    return widget.copyButton.dataset.copyDefaultLabel ?? "Copy";
   }
 
   /**
-   * @param {HTMLButtonElement} copyButton
-   * @returns {HTMLElement | null}
-   */
-  function getButtonLabelElement(copyButton) {
-    const labelElement = copyButton.querySelector("[data-copy-button-label]");
-    return labelElement instanceof HTMLElement ? labelElement : null;
-  }
-
-  /**
-   * @param {HTMLButtonElement} copyButton
+   * @param {CopyWidget} widget
    * @returns {string}
    */
-  function getCopiedButtonLabel(copyButton) {
-    return copyButton.dataset.copyCopiedLabel ?? "Copied";
+  function getCopiedButtonLabel(widget) {
+    return widget.copyButton.dataset.copyCopiedLabel ?? "Copied";
   }
 
   /**
-   * @param {HTMLButtonElement} copyButton
+   * @param {CopyWidget} widget
    * @returns {string}
    */
-  function getErrorButtonLabel(copyButton) {
-    return copyButton.dataset.copyErrorLabel ?? "Cannot copy";
+  function getErrorButtonLabel(widget) {
+    return widget.copyButton.dataset.copyErrorLabel ?? "Cannot copy";
   }
 
   /**
-   * @param {HTMLElement} control
+   * @param {CopyWidget} widget
    * @returns {string}
    */
-  function getCopyLabel(control) {
-    return control.dataset.copyLabel ?? "Feed";
+  function getCopyLabel(widget) {
+    return widget.control.dataset.copyLabel ?? "Feed";
   }
 
   /**
-   * @param {HTMLElement} control
+   * @param {CopyWidget} widget
    * @returns {string}
    */
-  function getCopiedStatusMessage(control) {
-    return control.dataset.copyCopiedStatus ??
-      `${getCopyLabel(control)} URL copied`;
+  function getCopiedStatusMessage(widget) {
+    return widget.control.dataset.copyCopiedStatus ??
+      `${getCopyLabel(widget)} URL copied`;
   }
 
   /**
-   * @param {HTMLElement} control
+   * @param {CopyWidget} widget
    * @returns {string}
    */
-  function getErrorStatusMessage(control) {
-    return control.dataset.copyErrorStatus ??
-      `Cannot copy ${getCopyLabel(control)} URL`;
+  function getErrorStatusMessage(widget) {
+    return widget.control.dataset.copyErrorStatus ??
+      `Cannot copy ${getCopyLabel(widget)} URL`;
   }
 
   /**
-   * @param {HTMLElement} control
+   * @param {CopyWidget} widget
    * @returns {string}
    */
-  function getSuccessNoticeTitle(control) {
-    const notice = getNoticeElement(control);
-    return notice?.dataset.copyNoticeSuccessTitle ?? "Copied";
+  function getSuccessNoticeTitle(widget) {
+    return widget.notice?.dataset.copyNoticeSuccessTitle ?? "Copied";
   }
 
   /**
-   * @param {HTMLElement} control
+   * @param {CopyWidget} widget
    * @returns {string}
    */
-  function getErrorNoticeTitle(control) {
-    const notice = getNoticeElement(control);
-    return notice?.dataset.copyNoticeErrorTitle ?? "Action failed";
+  function getErrorNoticeTitle(widget) {
+    return widget.notice?.dataset.copyNoticeErrorTitle ?? "Action failed";
   }
 
   /**
-   * @param {HTMLElement} control
+   * @param {CopyWidget} widget
    * @param {string} message
    * @returns {void}
    */
-  function setStatusMessage(control, message) {
-    const statusElement = getStatusElement(control);
-    if (statusElement === null) {
+  function setStatusMessage(widget, message) {
+    if (widget.status === null) {
       return;
     }
 
-    statusElement.textContent = message;
+    widget.status.textContent = message;
   }
 
   /**
-   * @param {HTMLElement} control
+   * @param {CopyWidget} widget
    * @param {CopyState} state
    * @param {string} message
    * @returns {void}
    */
-  function setNoticeMessage(control, state, message) {
-    const notice = getNoticeElement(control);
+  function setNoticeMessage(widget, state, message) {
+    const { notice } = widget;
 
     if (notice === null) {
       return;
     }
 
-    const title = state === "copied"
-      ? getSuccessNoticeTitle(control)
-      : state === "error"
-      ? getErrorNoticeTitle(control)
-      : "";
-    const titleElement = notice.querySelector("[data-copy-notice-title]");
-    const messageElement = notice.querySelector("[data-copy-notice-message]");
     const isVisible = state === "copied" || state === "error";
+    const title = state === "copied"
+      ? getSuccessNoticeTitle(widget)
+      : state === "error"
+      ? getErrorNoticeTitle(widget)
+      : "";
 
     notice.dataset.copyNoticeState = state;
     notice.classList.toggle(
@@ -171,84 +199,75 @@
     );
     notice.hidden = !isVisible;
 
-    if (titleElement instanceof HTMLElement) {
-      titleElement.textContent = title;
+    if (widget.noticeTitle instanceof runtime.HTMLElement) {
+      widget.noticeTitle.textContent = title;
     }
 
-    if (messageElement instanceof HTMLElement) {
-      messageElement.textContent = isVisible ? message : "";
+    if (widget.noticeMessage instanceof runtime.HTMLElement) {
+      widget.noticeMessage.textContent = isVisible ? message : "";
     }
   }
 
   /**
-   * @param {HTMLElement} control
+   * @param {CopyWidget} widget
    * @param {CopyState} state
    * @returns {void}
    */
-  function setCopyState(control, state) {
-    const copyButton = getCopyButton(control);
+  function setCopyState(widget, state) {
     const isCopied = state === "copied";
     const isError = state === "error";
     const statusMessage = isCopied
-      ? getCopiedStatusMessage(control)
+      ? getCopiedStatusMessage(widget)
       : isError
-      ? getErrorStatusMessage(control)
+      ? getErrorStatusMessage(widget)
       : "";
 
-    control.dataset.copyState = state;
-    control.classList.toggle("feed-copy-control--copied", isCopied);
-    control.classList.toggle("feed-copy-control--error", isError);
-    setStatusMessage(control, statusMessage);
-    setNoticeMessage(control, state, statusMessage);
+    widget.control.dataset.copyState = state;
+    widget.control.classList.toggle("feed-copy-control--copied", isCopied);
+    widget.control.classList.toggle("feed-copy-control--error", isError);
+    setStatusMessage(widget, statusMessage);
+    setNoticeMessage(widget, state, statusMessage);
 
-    if (copyButton !== null) {
-      const nextLabel = isCopied
-        ? getCopiedButtonLabel(copyButton)
-        : isError
-        ? getErrorButtonLabel(copyButton)
-        : getDefaultButtonLabel(copyButton);
-      const labelElement = getButtonLabelElement(copyButton);
+    const nextLabel = isCopied
+      ? getCopiedButtonLabel(widget)
+      : isError
+      ? getErrorButtonLabel(widget)
+      : getDefaultButtonLabel(widget);
 
-      if (labelElement !== null) {
-        labelElement.textContent = nextLabel;
-      } else {
-        copyButton.textContent = nextLabel;
-      }
-
-      copyButton.dataset.copyButtonState = state;
-
-      copyButton.setAttribute(
-        "aria-label",
-        state === "idle" ? getCopyTitle(copyButton) : statusMessage,
-      );
-      copyButton.setAttribute(
-        "title",
-        isCopied
-          ? statusMessage
-          : isError
-          ? statusMessage
-          : getCopyTitle(copyButton),
-      );
+    if (widget.buttonLabel instanceof runtime.HTMLElement) {
+      widget.buttonLabel.textContent = nextLabel;
+    } else {
+      widget.copyButton.textContent = nextLabel;
     }
+
+    widget.copyButton.dataset.copyButtonState = state;
+    widget.copyButton.setAttribute(
+      "aria-label",
+      state === "idle" ? getCopyTitle(widget) : statusMessage,
+    );
+    widget.copyButton.setAttribute(
+      "title",
+      isCopied || isError ? statusMessage : getCopyTitle(widget),
+    );
   }
 
   /**
-   * @param {HTMLElement} control
+   * @param {CopyWidget} widget
    * @returns {void}
    */
-  function clearCopyStateLater(control) {
-    const existingTimer = resetTimers.get(control);
+  function clearCopyStateLater(widget) {
+    const existingTimer = resetTimers.get(widget.control);
 
     if (existingTimer !== undefined) {
-      clearTimeout(existingTimer);
+      runtime.clearTimeout(existingTimer);
     }
 
-    const nextTimer = globalThis.setTimeout(() => {
-      setCopyState(control, "idle");
-      resetTimers.delete(control);
-    }, copiedStateDurationMs);
+    const nextTimer = runtime.setTimeout(() => {
+      setCopyState(widget, "idle");
+      resetTimers.delete(widget.control);
+    }, COPY_STATE_DURATION_MS);
 
-    resetTimers.set(control, nextTimer);
+    resetTimers.set(widget.control, nextTimer);
   }
 
   /**
@@ -256,105 +275,38 @@
    * @returns {string}
    */
   function toAbsoluteUrl(pathname) {
-    return new URL(pathname, globalThis.location.origin).href;
+    return new URL(pathname, runtime.location.origin).href;
   }
 
   /**
-   * @param {string} text
-   * @returns {Promise<boolean>}
-   */
-  async function copyText(text) {
-    const clipboard = globalThis.navigator.clipboard;
-
-    if (clipboard !== undefined && typeof clipboard.writeText === "function") {
-      try {
-        await clipboard.writeText(text);
-        return true;
-      } catch {
-        // Fall back to a manual copy path when the async clipboard API
-        // is unavailable for the current browser context.
-      }
-    }
-
-    const selection = globalThis.getSelection();
-    const activeElement = globalThis.document.activeElement;
-    const textArea = globalThis.document.createElement("textarea");
-
-    textArea.value = text;
-    textArea.setAttribute("readonly", "");
-    textArea.setAttribute("aria-hidden", "true");
-    textArea.style.position = "fixed";
-    textArea.style.insetBlockStart = "0";
-    textArea.style.insetInlineStart = "0";
-    textArea.style.inlineSize = "1px";
-    textArea.style.blockSize = "1px";
-    textArea.style.padding = "0";
-    textArea.style.border = "0";
-    textArea.style.opacity = "0";
-    textArea.style.pointerEvents = "none";
-    textArea.style.whiteSpace = "pre";
-    globalThis.document.body.append(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-      return globalThis.document.execCommand("copy");
-    } catch {
-      return false;
-    } finally {
-      textArea.remove();
-
-      if (selection !== null) {
-        selection.removeAllRanges();
-      }
-
-      if (
-        activeElement instanceof HTMLElement ||
-        activeElement instanceof SVGElement
-      ) {
-        activeElement.focus();
-      }
-    }
-  }
-
-  /**
-   * @param {HTMLElement} control
-   * @param {string} copyPath
+   * @param {CopyWidget} widget
    * @returns {Promise<void>}
    */
-  async function handleCopy(control, copyPath) {
-    setCopyState(control, "idle");
-    const copied = await copyText(toAbsoluteUrl(copyPath));
-    setCopyState(control, copied ? "copied" : "error");
-    clearCopyStateLater(control);
+  async function handleCopy(widget) {
+    setCopyState(widget, "idle");
+    const copied = await copyText(runtime, toAbsoluteUrl(widget.copyPath));
+    setCopyState(widget, copied ? "copied" : "error");
+    clearCopyStateLater(widget);
   }
 
-  for (const candidate of copyControls) {
-    if (!(candidate instanceof HTMLElement)) {
-      continue;
-    }
-
-    const control = candidate;
-
+  for (const control of copyControls) {
     if (control.dataset.copyBound === "true") {
       continue;
     }
 
-    const copyButton = getCopyButton(control);
+    const widget = createCopyWidget(control);
 
-    if (copyButton === null) {
-      continue;
-    }
-
-    const copyPath = copyButton.dataset.copyPath;
-
-    if (copyPath === undefined || copyPath.length === 0) {
+    if (widget === null) {
       continue;
     }
 
     control.dataset.copyBound = "true";
-    copyButton.addEventListener("click", () => {
-      void handleCopy(control, copyPath);
+    widget.copyButton.addEventListener("click", () => {
+      void handleCopy(widget);
     });
   }
-})();
+}
+
+if (typeof window !== "undefined") {
+  bindFeedCopy(window);
+}

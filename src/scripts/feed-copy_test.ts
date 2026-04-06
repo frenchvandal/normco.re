@@ -1,7 +1,7 @@
 import { assert, assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import SCRIPT_SOURCE from "./feed-copy.js" with { type: "text" };
-import { evaluateClassicScript, getJSDOM } from "../../test/jsdom.ts";
+import { bindFeedCopy } from "./feed-copy.js";
+import { getJSDOM } from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
 
@@ -68,8 +68,8 @@ function createDom(): InstanceType<typeof JSDOM> {
   );
 }
 
-function evaluateScript(window: TestWindow) {
-  evaluateClassicScript(window, SCRIPT_SOURCE);
+function bindScript(window: TestWindow) {
+  bindFeedCopy(window as Window & typeof globalThis);
 }
 
 async function flushMicrotasks(cycles = 3) {
@@ -160,7 +160,7 @@ describe("feed-copy.js", () => {
       },
     };
 
-    evaluateScript(window);
+    bindScript(window);
 
     const control = getControl(window);
     const button = getButton(window);
@@ -194,8 +194,8 @@ describe("feed-copy.js", () => {
       },
     };
 
-    evaluateScript(window);
-    evaluateScript(window);
+    bindScript(window);
+    bindScript(window);
 
     getButton(window).click();
     await flushMicrotasks();
@@ -215,7 +215,7 @@ describe("feed-copy.js", () => {
       },
     };
 
-    evaluateScript(window);
+    bindScript(window);
 
     const control = getControl(window);
     const button = getButton(window);
@@ -252,7 +252,7 @@ describe("feed-copy.js", () => {
     };
 
     getNotice(window).remove();
-    evaluateScript(window);
+    bindScript(window);
 
     const control = getControl(window);
     const button = getButton(window);

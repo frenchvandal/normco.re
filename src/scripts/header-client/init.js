@@ -1,6 +1,7 @@
 // @ts-check
 
 import { FOCUSABLE_SELECTOR } from "./focusable-selector.js";
+import { trapFocus } from "../shared/focus-utils.js";
 import { createHeaderSearch } from "./search.js";
 import { createThemeController } from "./theme.js";
 
@@ -150,14 +151,6 @@ export function bindHeaderClient(runtime) {
   }
 
   /**
-   * @param {HTMLElement} element
-   * @returns {boolean}
-   */
-  function isHidden(element) {
-    return element.hidden || element.closest("[hidden]") !== null;
-  }
-
-  /**
    * @param {HTMLElement} control
    * @param {boolean} expanded
    * @returns {void}
@@ -236,6 +229,26 @@ export function bindHeaderClient(runtime) {
    */
   function clearRememberedTrigger() {
     lastTrigger = null;
+  }
+
+  /**
+   * @param {EventTarget | null} target
+   * @returns {void}
+   */
+  function warmSearchForTarget(target) {
+    const control = closestElement(target, DISCLOSURE_CONTROL_SELECTOR);
+
+    if (!(control instanceof resolvedRuntime.HTMLElement)) {
+      return;
+    }
+
+    const surface = surfaceByControl.get(control);
+
+    if (!search.isSearchPanel(surface)) {
+      return;
+    }
+
+    search.warmRuntime();
   }
 
   /**
@@ -332,84 +345,6 @@ export function bindHeaderClient(runtime) {
     }
 
     resolvedRuntime.setTimeout(focusWhenReady, DEFERRED_FOCUS_DELAY_MS);
-  }
-
-  /**
-   * @param {HTMLElement} container
-   * @returns {HTMLElement[]}
-   */
-  function getFocusableElements(container) {
-    /** @type {HTMLElement[]} */
-    const focusable = [];
-
-    for (const candidate of container.querySelectorAll(FOCUSABLE_SELECTOR)) {
-      if (
-        candidate instanceof resolvedRuntime.HTMLElement && !isHidden(candidate)
-      ) {
-        focusable.push(candidate);
-      }
-    }
-
-    // Selector-list queries do not always preserve DOM order consistently.
-    focusable.sort((left, right) => {
-      if (left === right) {
-        return 0;
-      }
-
-      const position = left.compareDocumentPosition(right);
-
-      if (position & resolvedRuntime.Node.DOCUMENT_POSITION_FOLLOWING) {
-        return -1;
-      }
-
-      if (position & resolvedRuntime.Node.DOCUMENT_POSITION_PRECEDING) {
-        return 1;
-      }
-
-      return 0;
-    });
-
-    return focusable;
-  }
-
-  /**
-   * @param {KeyboardEvent} event
-   * @param {HTMLElement} container
-   * @returns {void}
-   */
-  function trapFocus(event, container) {
-    if (event.key !== "Tab") {
-      return;
-    }
-
-    const focusable = getFocusableElements(container);
-
-    if (focusable.length === 0) {
-      return;
-    }
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-
-    if (
-      !(first instanceof resolvedRuntime.HTMLElement) ||
-      !(last instanceof resolvedRuntime.HTMLElement)
-    ) {
-      return;
-    }
-
-    if (event.shiftKey) {
-      if (doc.activeElement === first) {
-        event.preventDefault();
-        last.focus({ preventScroll: true });
-      }
-      return;
-    }
-
-    if (doc.activeElement === last) {
-      event.preventDefault();
-      first.focus({ preventScroll: true });
-    }
   }
 
   /**
@@ -776,10 +711,6 @@ export function bindHeaderClient(runtime) {
       setInteractionModality("pointer");
     }, true);
 
-    doc.addEventListener("mousedown", () => {
-      setInteractionModality("pointer");
-    }, true);
-
     doc.addEventListener("click", (event) => {
       const target = event.target;
 
@@ -848,6 +779,8 @@ export function bindHeaderClient(runtime) {
     });
 
     doc.addEventListener("focusin", (event) => {
+      warmSearchForTarget(event.target);
+
       const container = closestElement(
         event.target,
         TOOLTIP_CONTAINER_SELECTOR,
@@ -894,6 +827,22 @@ export function bindHeaderClient(runtime) {
     });
 
     doc.addEventListener("pointerover", (event) => {
+      const searchControl = closestElement(
+        event.target,
+        DISCLOSURE_CONTROL_SELECTOR,
+      );
+      const previousSearchTarget = event.relatedTarget;
+
+      if (
+        searchControl instanceof resolvedRuntime.HTMLElement &&
+        !(
+          previousSearchTarget instanceof resolvedRuntime.Node &&
+          searchControl.contains(previousSearchTarget)
+        )
+      ) {
+        warmSearchForTarget(searchControl);
+      }
+
       const container = closestElement(
         event.target,
         TOOLTIP_CONTAINER_SELECTOR,
@@ -969,7 +918,7 @@ export function bindHeaderClient(runtime) {
       event.key === "Tab" &&
       sideNavSurface instanceof resolvedRuntime.HTMLElement
     ) {
-      trapFocus(event, sideNavSurface);
+      trapFocus(resolvedRuntime, event, sideNavSurface);
       return;
     }
 
@@ -979,7 +928,7 @@ export function bindHeaderClient(runtime) {
       openSurface instanceof resolvedRuntime.HTMLElement &&
       isMobilePanelViewport()
     ) {
-      trapFocus(event, openSurface);
+      trapFocus(resolvedRuntime, event, openSurface);
       return;
     }
 

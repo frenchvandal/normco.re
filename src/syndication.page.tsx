@@ -249,6 +249,6 @@ export default (data: Lume.Data): string => {
     </div>
   </div>
 
-  <script src="/scripts/feed-copy.js" defer></script>
+  <script type="module" src="/scripts/feed-copy.js"></script>
 </div>`;
 };

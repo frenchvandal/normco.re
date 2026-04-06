@@ -1,147 +1,68 @@
 // @ts-check
-(() => {
-  /**
-   * @typedef {{
-   *   readonly saveData?: boolean;
-   *   readonly effectiveType?: string;
-   * }} NetworkInformationLike
-   */
 
-  /**
-   * Returns the optional Network Information API object when available.
-   * @returns {NetworkInformationLike | undefined}
-   */
-  function getNavigatorConnection() {
-    const navigatorWithConnection =
-      /** @type {Navigator & { readonly connection?: unknown }} */ (
-        globalThis.navigator
-      );
-    const connectionCandidate = navigatorWithConnection.connection;
+import { createPrefetchScheduler } from "./shared/adaptive-prefetch.js";
+import { fetchWithTimeout } from "./shared/network-utils.js";
 
-    if (
-      typeof connectionCandidate !== "object" || connectionCandidate === null
-    ) {
-      return undefined;
-    }
+const PREFETCH_TIMEOUT_MS = 2000;
+const HOVER_INTENT_DELAY_MS = 180;
+const INTERSECTION_ROOT_MARGIN = "192px 0px";
+const ALLOWED_DOCUMENT_EXTENSIONS = new Set([".html"]);
 
-    return /** @type {NetworkInformationLike} */ (connectionCandidate);
-  }
-
-  const connection = getNavigatorConnection();
-  const blockedEffectiveTypes = new Set(["slow-2g", "2g"]);
-
-  if (connection?.saveData) {
-    return;
-  }
-
-  if (
-    typeof connection?.effectiveType === "string" &&
-    blockedEffectiveTypes.has(connection.effectiveType)
-  ) {
-    return;
-  }
-
-  const PREFETCH_LIMIT = 3;
-  const PREFETCH_TIMEOUT_MS = 2000;
-  const HOVER_INTENT_DELAY_MS = 180;
-  const ALLOWED_DOCUMENT_EXTENSIONS = new Set([".html"]);
-
+/**
+ * @param {Window & typeof globalThis} runtime
+ * @returns {() => void}
+ */
+export function bindLinkPrefetchIntent(runtime) {
+  const scheduler = createPrefetchScheduler(runtime);
   /** @type {Set<string>} */
   const prefetchedUrls = new Set();
+  /** @type {Set<string>} */
+  const budgetedUrls = new Set();
   /** @type {Map<string, Promise<boolean>>} */
   const pendingPrefetches = new Map();
+  /** @type {string[]} */
+  const queuedUrls = [];
+  /** @type {Set<string>} */
+  const queuedUrlSet = new Set();
   /** @type {WeakSet<HTMLAnchorElement>} */
-  const intentBoundLinks = new WeakSet();
-  /** @type {Map<HTMLAnchorElement, ReturnType<typeof globalThis.setTimeout>>} */
+  const observedLinks = new WeakSet();
+  /** @type {Map<HTMLAnchorElement, ReturnType<typeof runtime.setTimeout>>} */
   const hoverTimers = new Map();
   const currentDocumentUrl = (() => {
-    const url = new URL(globalThis.location.href);
+    const url = new URL(runtime.location.href);
     url.hash = "";
     return url.toString();
   })();
-
   const canUseDomPrefetch = (() => {
-    const link = globalThis.document.createElement("link");
+    const link = runtime.document.createElement("link");
     return Boolean(link.relList?.supports?.("prefetch"));
   })();
+  const supportsPointerEvents = typeof runtime.PointerEvent === "function";
+  /** @type {IntersectionObserver | null} */
+  let intersectionObserver = null;
+  let idleScanScheduled = false;
+  let queueDrainScheduled = false;
 
   /**
-   * Creates a timeout-backed abort signal for speculative network work while
-   * preserving an upstream signal when one is already present.
-   *
-   * @param {number} timeoutMs
-   * @param {AbortSignal | null | undefined} [upstreamSignal]
-   * @returns {{ signal: AbortSignal; cleanup: () => void }}
+   * @returns {boolean}
    */
-  function createTimeoutSignal(timeoutMs, upstreamSignal) {
-    const existingSignal = upstreamSignal ?? undefined;
-    const controller = new AbortController();
-    const timeoutId = globalThis.setTimeout(() => {
-      controller.abort();
-    }, timeoutMs);
-
-    const abortFromUpstream = () => {
-      controller.abort();
-    };
-
-    if (existingSignal !== undefined) {
-      if (existingSignal.aborted) {
-        abortFromUpstream();
-      } else {
-        existingSignal.addEventListener("abort", abortFromUpstream, {
-          once: true,
-        });
-      }
-    }
-
-    return {
-      signal: controller.signal,
-      cleanup() {
-        globalThis.clearTimeout(timeoutId);
-
-        if (existingSignal !== undefined && !existingSignal.aborted) {
-          existingSignal.removeEventListener("abort", abortFromUpstream);
-        }
-      },
-    };
+  function hasRemainingRequestBudget() {
+    return budgetedUrls.size < scheduler.budget.maxRequests;
   }
 
   /**
-   * @param {string | URL} input
-   * @param {RequestInit} init
-   * @param {number} timeoutMs
-   * @returns {Promise<Response>}
+   * @returns {boolean}
    */
-  async function fetchWithTimeout(input, init, timeoutMs) {
-    const { signal, cleanup } = createTimeoutSignal(
-      timeoutMs,
-      init.signal ?? undefined,
-    );
-
-    try {
-      return await globalThis.fetch(input, { ...init, signal });
-    } finally {
-      cleanup();
-    }
-  }
-
-  function hasPrefetchBudget() {
-    return prefetchedUrls.size + pendingPrefetches.size < PREFETCH_LIMIT;
+  function canStartAnotherRequest() {
+    return pendingPrefetches.size < scheduler.budget.maxConcurrency;
   }
 
   /**
-   * Returns the normalized URL used as the prefetch cache key.
-   *
-   * The URL fragment is dropped because it never changes the network
-   * response payload and should not consume additional prefetch budget.
-   *
-   * @param {HTMLAnchorElement} link
-   * @returns {string}
+   * @returns {boolean}
    */
-  function toPrefetchUrl(link) {
-    const url = new URL(link.href);
-    url.hash = "";
-    return url.toString();
+  function canProgrammaticallyPrefetch() {
+    const { allowed, maxConcurrency, maxRequests } = scheduler.budget;
+    return allowed && maxConcurrency > 0 && maxRequests > 0;
   }
 
   /**
@@ -163,35 +84,40 @@
   }
 
   /**
+   * Returns the normalized URL used as the prefetch cache key when a link is a
+   * valid same-origin document candidate. The URL fragment is dropped because
+   * it never changes the network response payload and should not consume
+   * additional prefetch budget.
+   *
    * @param {HTMLAnchorElement} link
-   * @returns {boolean}
+   * @returns {string | null}
    */
-  function isPrefetchCandidate(link) {
+  function getPrefetchCandidateUrl(link) {
     if (link.href.length === 0) {
-      return false;
+      return null;
     }
 
     const url = new URL(link.href);
 
-    if (url.origin !== globalThis.location.origin) {
-      return false;
+    if (url.origin !== runtime.location.origin) {
+      return null;
     }
 
     url.hash = "";
 
     if (url.toString() === currentDocumentUrl) {
-      return false;
+      return null;
     }
 
     if (link.target === "_blank" || link.download.length > 0) {
-      return false;
+      return null;
     }
 
     if (!isDocumentPath(url)) {
-      return false;
+      return null;
     }
 
-    return true;
+    return url.toString();
   }
 
   /**
@@ -209,29 +135,36 @@
       return existingPrefetch;
     }
 
-    if (!hasPrefetchBudget()) {
-      return Promise.resolve(false);
-    }
-
     /** @type {Promise<boolean>} */
+    /** @type {RequestInit & { priority?: "low" }} */
+    const fallbackRequestInit = {
+      mode: "same-origin",
+      credentials: "same-origin",
+      priority: "low",
+      headers: {
+        accept: "text/html",
+        purpose: "prefetch",
+        "x-purpose": "prefetch",
+      },
+    };
+
     const prefetchPromise = (canUseDomPrefetch
       ? new Promise(
         /** @param {(value: boolean) => void} resolve */
         (resolve) => {
-          const prefetchLink = globalThis.document.createElement("link");
+          const prefetchLink = runtime.document.createElement("link");
           prefetchLink.rel = "prefetch";
           prefetchLink.href = url;
           prefetchLink.as = "document";
           prefetchLink.onload = () => resolve(true);
           prefetchLink.onerror = () => resolve(false);
-          globalThis.document.head.append(prefetchLink);
+          runtime.document.head.append(prefetchLink);
         },
       )
-      : fetchWithTimeout(url, {
-        mode: "same-origin",
-        credentials: "same-origin",
-        headers: { accept: "text/html" },
-      }, PREFETCH_TIMEOUT_MS).then((response) => response.ok, () => false))
+      : fetchWithTimeout(url, fallbackRequestInit, PREFETCH_TIMEOUT_MS).then(
+        (response) => response.ok,
+        () => false,
+      ))
       .then((succeeded) => {
         if (succeeded) {
           prefetchedUrls.add(url);
@@ -241,10 +174,91 @@
       })
       .finally(() => {
         pendingPrefetches.delete(url);
+        scheduleQueueDrain();
       });
 
     pendingPrefetches.set(url, prefetchPromise);
     return prefetchPromise;
+  }
+
+  /**
+   * @returns {void}
+   */
+  function drainQueue() {
+    queueDrainScheduled = false;
+
+    if (!canProgrammaticallyPrefetch()) {
+      return;
+    }
+
+    while (queuedUrls.length > 0 && canStartAnotherRequest()) {
+      const nextUrl = queuedUrls.shift();
+
+      if (nextUrl === undefined) {
+        break;
+      }
+
+      queuedUrlSet.delete(nextUrl);
+      void prefetchUrl(nextUrl);
+    }
+  }
+
+  /**
+   * @returns {void}
+   */
+  function scheduleQueueDrain() {
+    if (queueDrainScheduled || queuedUrls.length === 0) {
+      return;
+    }
+
+    queueDrainScheduled = true;
+
+    if (
+      scheduler.budget.mode === "idle-only" &&
+      typeof runtime.requestIdleCallback === "function"
+    ) {
+      runtime.requestIdleCallback(
+        () => {
+          drainQueue();
+        },
+        { timeout: PREFETCH_TIMEOUT_MS },
+      );
+      return;
+    }
+
+    runtime.setTimeout(drainQueue, 0);
+  }
+
+  /**
+   * @param {string} url
+   * @returns {boolean}
+   */
+  function queuePrefetch(url) {
+    if (
+      !canProgrammaticallyPrefetch() || budgetedUrls.has(url) ||
+      !hasRemainingRequestBudget()
+    ) {
+      return false;
+    }
+
+    budgetedUrls.add(url);
+    queuedUrls.push(url);
+    queuedUrlSet.add(url);
+    scheduleQueueDrain();
+    return true;
+  }
+
+  /**
+   * @param {EventTarget | null} target
+   * @returns {HTMLAnchorElement | null}
+   */
+  function getClosestAnchor(target) {
+    if (!(target instanceof runtime.Element)) {
+      return null;
+    }
+
+    const anchor = target.closest("a[href]");
+    return anchor instanceof runtime.HTMLAnchorElement ? anchor : null;
   }
 
   /**
@@ -255,9 +269,20 @@
     const timer = hoverTimers.get(link);
 
     if (timer !== undefined) {
-      globalThis.clearTimeout(timer);
+      runtime.clearTimeout(timer);
       hoverTimers.delete(link);
     }
+  }
+
+  /**
+   * @returns {void}
+   */
+  function clearAllHoverIntents() {
+    for (const timer of hoverTimers.values()) {
+      runtime.clearTimeout(timer);
+    }
+
+    hoverTimers.clear();
   }
 
   /**
@@ -265,71 +290,281 @@
    * @returns {void}
    */
   function prefetchFromIntent(link) {
-    if (!isPrefetchCandidate(link) || !hasPrefetchBudget()) {
+    if (scheduler.budget.mode !== "normal") {
+      return;
+    }
+
+    const url = getPrefetchCandidateUrl(link);
+
+    if (url === null) {
       return;
     }
 
     clearHoverIntent(link);
-    void prefetchUrl(toPrefetchUrl(link));
+    queuePrefetch(url);
   }
 
-  /** @param {HTMLAnchorElement} link */
-  function registerIntent(link) {
-    if (intentBoundLinks.has(link)) {
+  /**
+   * @returns {void}
+   */
+  function scheduleIdleScan() {
+    if (
+      idleScanScheduled || !canProgrammaticallyPrefetch() ||
+      !hasRemainingRequestBudget()
+    ) {
       return;
     }
 
-    intentBoundLinks.add(link);
+    idleScanScheduled = true;
 
-    const onMouseEnter = () => {
-      if (!isPrefetchCandidate(link) || !hasPrefetchBudget()) {
+    const runScan = () => {
+      idleScanScheduled = false;
+
+      if (
+        !canProgrammaticallyPrefetch() || !hasRemainingRequestBudget()
+      ) {
         return;
       }
 
-      const url = toPrefetchUrl(link);
+      const links = runtime.document.querySelectorAll("a[href]");
 
-      if (prefetchedUrls.has(url)) {
-        return;
+      for (const node of links) {
+        if (!(node instanceof runtime.HTMLAnchorElement)) {
+          continue;
+        }
+
+        const url = getPrefetchCandidateUrl(node);
+
+        if (url === null) {
+          continue;
+        }
+
+        if (scheduler.budget.mode === "normal") {
+          observeLink(node);
+        }
+
+        if (!queuePrefetch(url) || !hasRemainingRequestBudget()) {
+          if (!hasRemainingRequestBudget()) {
+            break;
+          }
+
+          continue;
+        }
       }
-
-      const timer = globalThis.setTimeout(() => {
-        hoverTimers.delete(link);
-        void prefetchUrl(url);
-      }, HOVER_INTENT_DELAY_MS);
-
-      hoverTimers.set(link, timer);
     };
 
-    const onMouseLeave = () => clearHoverIntent(link);
-    const onFocus = () => prefetchFromIntent(link);
-    const onTouchStart = () => prefetchFromIntent(link);
+    if (typeof runtime.requestIdleCallback === "function") {
+      runtime.requestIdleCallback(() => {
+        runScan();
+      }, { timeout: PREFETCH_TIMEOUT_MS });
+      return;
+    }
 
-    link.addEventListener("mouseenter", onMouseEnter);
-    link.addEventListener("mouseleave", onMouseLeave);
-    link.addEventListener("focus", onFocus);
-    link.addEventListener("touchstart", onTouchStart, { passive: true });
+    runtime.setTimeout(runScan, 1);
   }
 
-  function registerCandidateLinks() {
-    const links = globalThis.document.querySelectorAll("a[href]");
+  /**
+   * @param {HTMLAnchorElement} link
+   * @returns {void}
+   */
+  function observeLink(link) {
+    if (intersectionObserver === null || observedLinks.has(link)) {
+      return;
+    }
+
+    observedLinks.add(link);
+    intersectionObserver.observe(link);
+  }
+
+  /**
+   * @returns {void}
+   */
+  function syncIntersectionObserver() {
+    if (
+      scheduler.budget.mode !== "normal" ||
+      typeof runtime.IntersectionObserver !== "function"
+    ) {
+      intersectionObserver?.disconnect();
+      intersectionObserver = null;
+      return;
+    }
+
+    if (intersectionObserver !== null) {
+      return;
+    }
+
+    intersectionObserver = new runtime.IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) {
+            continue;
+          }
+
+          intersectionObserver?.unobserve(entry.target);
+          const link = entry.target instanceof runtime.HTMLAnchorElement
+            ? entry.target
+            : null;
+
+          if (link !== null) {
+            prefetchFromIntent(link);
+          }
+        }
+      },
+      { rootMargin: INTERSECTION_ROOT_MARGIN },
+    );
+
+    const links = runtime.document.querySelectorAll("a[href]");
 
     for (const node of links) {
-      if (!(node instanceof HTMLAnchorElement) || !isPrefetchCandidate(node)) {
+      if (!(node instanceof runtime.HTMLAnchorElement)) {
         continue;
       }
 
-      registerIntent(node);
+      if (getPrefetchCandidateUrl(node) === null) {
+        continue;
+      }
+
+      observeLink(node);
     }
   }
 
-  const idleCallback = globalThis.requestIdleCallback;
+  /**
+   * @param {MouseEvent} event
+   * @returns {void}
+   */
+  function handleMouseOver(event) {
+    if (scheduler.budget.mode !== "normal") {
+      return;
+    }
 
-  if (typeof idleCallback === "function") {
-    idleCallback(() => {
-      registerCandidateLinks();
-    }, { timeout: PREFETCH_TIMEOUT_MS });
-    return;
+    const link = getClosestAnchor(event.target);
+
+    if (link === null) {
+      return;
+    }
+
+    const relatedLink = getClosestAnchor(event.relatedTarget);
+
+    if (relatedLink === link) {
+      return;
+    }
+
+    const url = getPrefetchCandidateUrl(link);
+
+    if (url === null || budgetedUrls.has(url)) {
+      return;
+    }
+
+    const timer = runtime.setTimeout(() => {
+      hoverTimers.delete(link);
+      queuePrefetch(url);
+    }, HOVER_INTENT_DELAY_MS);
+
+    hoverTimers.set(link, timer);
   }
 
-  globalThis.setTimeout(registerCandidateLinks, 1);
-})();
+  /**
+   * @param {MouseEvent} event
+   * @returns {void}
+   */
+  function handleMouseOut(event) {
+    const link = getClosestAnchor(event.target);
+
+    if (link === null) {
+      return;
+    }
+
+    const relatedLink = getClosestAnchor(event.relatedTarget);
+
+    if (relatedLink === link) {
+      return;
+    }
+
+    clearHoverIntent(link);
+  }
+
+  /**
+   * @param {FocusEvent} event
+   * @returns {void}
+   */
+  function handleFocusIn(event) {
+    const link = getClosestAnchor(event.target);
+
+    if (link !== null) {
+      prefetchFromIntent(link);
+    }
+  }
+
+  /**
+   * @param {PointerEvent} event
+   * @returns {void}
+   */
+  function handlePointerDown(event) {
+    if (event.pointerType !== "touch") {
+      return;
+    }
+
+    const link = getClosestAnchor(event.target);
+
+    if (link !== null) {
+      prefetchFromIntent(link);
+    }
+  }
+
+  /**
+   * @param {TouchEvent} event
+   * @returns {void}
+   */
+  function handleTouchStart(event) {
+    if (event.touches.length !== 1) {
+      return;
+    }
+
+    const link = getClosestAnchor(event.target);
+
+    if (link !== null) {
+      prefetchFromIntent(link);
+    }
+  }
+
+  const removeBudgetListener = scheduler.addChangeListener(() => {
+    if (scheduler.budget.mode !== "normal") {
+      clearAllHoverIntents();
+    }
+
+    syncIntersectionObserver();
+    scheduleIdleScan();
+    scheduleQueueDrain();
+  });
+
+  runtime.document.addEventListener("mouseover", handleMouseOver);
+  runtime.document.addEventListener("mouseout", handleMouseOut);
+  runtime.document.addEventListener("focusin", handleFocusIn);
+
+  if (supportsPointerEvents) {
+    runtime.document.addEventListener("pointerdown", handlePointerDown);
+  } else {
+    runtime.document.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
+    });
+  }
+
+  syncIntersectionObserver();
+  scheduleIdleScan();
+
+  return () => {
+    runtime.document.removeEventListener("mouseover", handleMouseOver);
+    runtime.document.removeEventListener("mouseout", handleMouseOut);
+    runtime.document.removeEventListener("focusin", handleFocusIn);
+    runtime.document.removeEventListener("pointerdown", handlePointerDown);
+    runtime.document.removeEventListener("touchstart", handleTouchStart);
+    clearAllHoverIntents();
+    intersectionObserver?.disconnect();
+    removeBudgetListener();
+    scheduler.destroy();
+  };
+}
+
+if (typeof window !== "undefined") {
+  bindLinkPrefetchIntent(window);
+}

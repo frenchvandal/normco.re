@@ -1,7 +1,7 @@
 import { assert, assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import SCRIPT_SOURCE from "./post-code-copy.js" with { type: "text" };
-import { evaluateClassicScript, getJSDOM } from "../../test/jsdom.ts";
+import { bindPostCodeCopy } from "./post-code-copy.js";
+import { getJSDOM } from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
 
@@ -38,8 +38,8 @@ function createDom(): InstanceType<typeof JSDOM> {
   );
 }
 
-function evaluateScript(window: TestWindow) {
-  evaluateClassicScript(window, SCRIPT_SOURCE);
+function bindScript(window: TestWindow) {
+  bindPostCodeCopy(window as Window & typeof globalThis);
 }
 
 async function flushMicrotasks(cycles = 3) {
@@ -99,8 +99,8 @@ describe("post-code-copy.js", () => {
       },
     };
 
-    evaluateScript(window);
-    evaluateScript(window);
+    bindScript(window);
+    bindScript(window);
 
     assertEquals(getCopyButtons(window).length, 1);
     const article = window.document.querySelector(".post-article");
@@ -120,7 +120,7 @@ describe("post-code-copy.js", () => {
       },
     };
 
-    evaluateScript(window);
+    bindScript(window);
 
     const [button] = getCopyButtons(window);
     assert(button);
@@ -148,7 +148,7 @@ describe("post-code-copy.js", () => {
       },
     };
 
-    evaluateScript(window);
+    bindScript(window);
 
     const [button] = getCopyButtons(window);
     assert(button);
@@ -173,7 +173,7 @@ describe("post-code-copy.js", () => {
       return command === "copy";
     };
 
-    evaluateScript(window);
+    bindScript(window);
 
     const [button] = getCopyButtons(window);
     assert(button);

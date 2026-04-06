@@ -191,6 +191,14 @@ describe("base.tsx layout", () => {
         html,
         '"/scripts/link-prefetch-intent.js"',
       );
+      assertStringIncludes(
+        html,
+        '<script type="speculationrules" data-adaptive="prefetch">',
+      );
+      assertStringIncludes(
+        html,
+        '"eagerness":"conservative"',
+      );
       assertStringIncludes(html, 'class="skip-link"');
       assertStringIncludes(html, "#main-content");
     });
@@ -231,6 +239,7 @@ describe("base.tsx layout", () => {
         url: "/posts/sample-post/",
       }));
       assertNotMatch(html, /"\/scripts\/link-prefetch-intent\.js"/);
+      assertNotMatch(html, /type="speculationrules"/);
     });
 
     it("skips link-prefetch script on localized posts archive routes", async () => {
@@ -238,6 +247,7 @@ describe("base.tsx layout", () => {
         url: "/fr/posts/",
       }));
       assertNotMatch(html, /"\/scripts\/link-prefetch-intent\.js"/);
+      assertNotMatch(html, /type="speculationrules"/);
     });
 
     it("injects the page content into <main>", async () => {

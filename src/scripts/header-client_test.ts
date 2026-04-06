@@ -762,6 +762,48 @@ describe("header-client.js", () => {
     assertEquals(container.classList.contains("site-popover--open"), false);
   });
 
+  it("prefetches Pagefind assets when the search control receives intent", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    const originalSupports = window.DOMTokenList.prototype.supports;
+
+    window.DOMTokenList.prototype.supports = function (token: string) {
+      if (token === "prefetch") {
+        return true;
+      }
+
+      return typeof originalSupports === "function"
+        ? originalSupports.call(this, token)
+        : false;
+    };
+
+    try {
+      evaluateScript(window);
+
+      const toggle = getSearchToggle(window);
+      toggle.focus();
+      toggle.dispatchEvent(
+        new window.MouseEvent("pointerover", {
+          bubbles: true,
+        }),
+      );
+      await flush(window);
+
+      const prefetchedScript = window.document.querySelector(
+        'link[rel="prefetch"][href$="/pagefind/pagefind-ui.js"]',
+      );
+      const prefetchedStylesheet = window.document.querySelector(
+        'link[rel="prefetch"][href$="/pagefind/pagefind-ui.css"]',
+      );
+
+      assert(prefetchedScript instanceof window.HTMLLinkElement);
+      assert(prefetchedStylesheet instanceof window.HTMLLinkElement);
+    } finally {
+      window.DOMTokenList.prototype.supports = originalSupports;
+    }
+  });
+
   it("initializes Pagefind on keyboard open and mirrors result status", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;

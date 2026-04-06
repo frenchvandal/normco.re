@@ -2,6 +2,9 @@ import { parseArgs } from "@std/cli";
 import { encodeHex } from "@std/encoding/hex";
 import { walk } from "@std/fs";
 import { basename, extname } from "@std/path";
+
+import { FINGERPRINTED_SCRIPT_ASSET_URLS } from "../src/utils/script-assets.ts";
+
 import {
   createUsageError,
   fileExists,
@@ -26,17 +29,7 @@ const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
  */
 const CANONICAL_ASSET_URLS = [
   "/style.css",
-  "/scripts/header-client.js",
-  "/scripts/header-client/init.js",
-  "/scripts/header-client/search.js",
-  "/scripts/header-client/theme.js",
-  "/scripts/about-contact-toggletips.js",
-  "/scripts/language-preference.js",
-  "/scripts/feed-copy.js",
-  "/scripts/post-code-copy.js",
-  "/scripts/post-mobile-tools.js",
-  "/scripts/link-prefetch-intent.js",
-  "/scripts/sw-register.js",
+  ...FINGERPRINTED_SCRIPT_ASSET_URLS,
 ] as const;
 const SERVICE_WORKER_VERSION_PLACEHOLDER = "__SW_VERSION__";
 const SERVICE_WORKER_VERSION_SOURCES = [

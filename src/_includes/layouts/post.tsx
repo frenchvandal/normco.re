@@ -225,7 +225,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
         />
       )}
       {state.includeCodeCopy && (
-        <script src="/scripts/post-code-copy.js" defer></script>
+        <script type="module" src="/scripts/post-code-copy.js"></script>
       )}
     </>
   );

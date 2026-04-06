@@ -1,11 +1,23 @@
 // @ts-check
-(() => {
-  const MOBILE_MEDIA_QUERY = "(max-width: 41.98rem)";
-  const containers = Array.from(
-    globalThis.document.querySelectorAll("[data-contact-toggletip]"),
-  ).filter((candidate) => candidate instanceof HTMLElement);
-  const mobileMedia = typeof globalThis.matchMedia === "function"
-    ? globalThis.matchMedia(MOBILE_MEDIA_QUERY)
+
+import { getFocusableElements, trapFocus } from "./shared/focus-utils.js";
+
+const MOBILE_MEDIA_QUERY = "(max-width: 41.98rem)";
+const TOGGLETIP_SELECTOR = "[data-contact-toggletip]";
+const TRIGGER_SELECTOR = "[data-contact-toggletip-trigger]";
+const PANEL_SELECTOR = "[data-contact-toggletip-panel]";
+const CLOSE_BUTTON_SELECTOR = "[data-contact-toggletip-close]";
+
+/**
+ * @param {Window & typeof globalThis} runtime
+ * @returns {void}
+ */
+export function bindAboutContactToggletips(runtime) {
+  const doc = runtime.document;
+  const containers = Array.from(doc.querySelectorAll(TOGGLETIP_SELECTOR))
+    .filter((candidate) => candidate instanceof runtime.HTMLElement);
+  const mobileMedia = typeof runtime.matchMedia === "function"
+    ? runtime.matchMedia(MOBILE_MEDIA_QUERY)
     : null;
 
   if (containers.length === 0) {
@@ -13,12 +25,20 @@
   }
 
   /**
+   * @returns {HTMLBodyElement | null}
+   */
+  function getBody() {
+    const body = doc.body;
+    return body instanceof runtime.HTMLBodyElement ? body : null;
+  }
+
+  /**
    * @param {HTMLElement} container
    * @returns {HTMLButtonElement | null}
    */
   function getTrigger(container) {
-    const trigger = container.querySelector("[data-contact-toggletip-trigger]");
-    return trigger instanceof HTMLButtonElement ? trigger : null;
+    const trigger = container.querySelector(TRIGGER_SELECTOR);
+    return trigger instanceof runtime.HTMLButtonElement ? trigger : null;
   }
 
   /**
@@ -27,7 +47,7 @@
    */
   function getPopover(container) {
     const popover = container.querySelector(".site-popover");
-    return popover instanceof HTMLElement ? popover : null;
+    return popover instanceof runtime.HTMLElement ? popover : null;
   }
 
   /**
@@ -35,8 +55,8 @@
    * @returns {HTMLElement | null}
    */
   function getPanel(container) {
-    const panel = container.querySelector("[data-contact-toggletip-panel]");
-    return panel instanceof HTMLElement ? panel : null;
+    const panel = container.querySelector(PANEL_SELECTOR);
+    return panel instanceof runtime.HTMLElement ? panel : null;
   }
 
   /**
@@ -44,8 +64,8 @@
    * @returns {HTMLButtonElement | null}
    */
   function getCloseButton(container) {
-    const button = container.querySelector("[data-contact-toggletip-close]");
-    return button instanceof HTMLButtonElement ? button : null;
+    const button = container.querySelector(CLOSE_BUTTON_SELECTOR);
+    return button instanceof runtime.HTMLButtonElement ? button : null;
   }
 
   /**
@@ -53,41 +73,31 @@
    * @returns {void}
    */
   function blurElement(element) {
-    if (element !== null && element !== globalThis.document.body) {
-      element.blur();
-    }
-  }
-
-  /**
-   * @param {HTMLElement} container
-   * @returns {HTMLElement[]}
-   */
-  function getFocusableElements(container) {
-    const panel = getPanel(container);
-
-    if (panel === null) {
-      return [];
+    if (element === null || element === getBody()) {
+      return;
     }
 
-    return Array.from(
-      panel.querySelectorAll(
-        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      ),
-    ).filter((candidate) => candidate instanceof HTMLElement);
+    element.blur();
   }
 
   /**
    * @returns {void}
    */
   function syncModalState() {
-    const hasOpenToggletip = containers.some(isOpen) && isMobileViewport();
+    const body = getBody();
 
-    if (hasOpenToggletip) {
-      globalThis.document.body.dataset.contactToggletipModalOpen = "true";
+    if (body === null) {
       return;
     }
 
-    delete globalThis.document.body.dataset.contactToggletipModalOpen;
+    const hasOpenToggletip = containers.some(isOpen) && isMobileViewport();
+
+    if (hasOpenToggletip) {
+      body.dataset.contactToggletipModalOpen = "true";
+      return;
+    }
+
+    delete body.dataset.contactToggletipModalOpen;
   }
 
   /**
@@ -98,9 +108,11 @@
       const popover = getPopover(container);
       const panel = getPanel(container);
       const open = isOpen(container);
-      if (popover) {
+
+      if (popover !== null) {
         popover.hidden = !open;
       }
+
       syncPanelModalState(panel, open);
     }
 
@@ -145,9 +157,11 @@
     container.classList.toggle("site-popover--open", open);
     container.classList.toggle("site-toggletip--open", open);
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
-    if (popover) {
+
+    if (popover !== null) {
       popover.hidden = !open;
     }
+
     syncPanelModalState(panel, open);
   }
 
@@ -158,16 +172,15 @@
    */
   function closeToggletip(container, options = {}) {
     const trigger = getTrigger(container);
-    const activeElement =
-      globalThis.document.activeElement instanceof HTMLElement
-        ? globalThis.document.activeElement
-        : null;
+    const activeElement = doc.activeElement instanceof runtime.HTMLElement
+      ? doc.activeElement
+      : null;
 
     setToggletipState(container, false);
     syncModalState();
 
     if (options.restoreFocus) {
-      trigger?.focus();
+      trigger?.focus({ preventScroll: true });
       return;
     }
 
@@ -209,12 +222,12 @@
     setToggletipState(container, true);
     syncModalState();
 
-    globalThis.setTimeout(() => {
+    runtime.setTimeout(() => {
       if (!isOpen(container)) {
         return;
       }
 
-      panel?.focus();
+      panel?.focus({ preventScroll: true });
     }, 0);
   }
 
@@ -229,6 +242,7 @@
     }
 
     setToggletipState(container, isOpen(container));
+
     trigger.addEventListener("click", (event) => {
       if (isOpen(container)) {
         closeToggletip(container, {
@@ -262,11 +276,11 @@
         return;
       }
 
-      const focusableElements = getFocusableElements(container);
+      const focusableElements = getFocusableElements(runtime, panel);
 
       if (focusableElements.length === 0) {
         event.preventDefault();
-        panel.focus();
+        panel.focus({ preventScroll: true });
         return;
       }
 
@@ -275,28 +289,19 @@
 
       if (!firstFocusable || !lastFocusable) {
         event.preventDefault();
-        panel.focus();
+        panel.focus({ preventScroll: true });
         return;
       }
 
-      const activeElement = globalThis.document.activeElement;
-
-      if (activeElement === panel) {
+      if (doc.activeElement === panel) {
         event.preventDefault();
-        (event.shiftKey ? lastFocusable : firstFocusable).focus();
+        (event.shiftKey ? lastFocusable : firstFocusable).focus({
+          preventScroll: true,
+        });
         return;
       }
 
-      if (event.shiftKey && activeElement === firstFocusable) {
-        event.preventDefault();
-        lastFocusable.focus();
-        return;
-      }
-
-      if (!event.shiftKey && activeElement === lastFocusable) {
-        event.preventDefault();
-        firstFocusable.focus();
-      }
+      trapFocus(runtime, event, panel);
     });
 
     closeButton?.addEventListener("click", (event) => {
@@ -317,11 +322,12 @@
     });
 
     container.addEventListener("focusout", () => {
-      globalThis.setTimeout(() => {
-        const activeElement = globalThis.document.activeElement;
+      runtime.setTimeout(() => {
+        const activeElement = doc.activeElement;
 
         if (
-          activeElement instanceof Node && container.contains(activeElement)
+          activeElement instanceof runtime.Node &&
+          container.contains(activeElement)
         ) {
           return;
         }
@@ -331,34 +337,32 @@
     });
   }
 
-  globalThis.document.addEventListener("pointerdown", (event) => {
+  doc.addEventListener("pointerdown", (event) => {
     const target = event.target;
 
-    if (!(target instanceof Node)) {
+    if (!(target instanceof runtime.Node)) {
       closeAll();
       return;
     }
 
-    const clickedContainer = target instanceof Element
-      ? target.closest("[data-contact-toggletip]")
+    const clickedContainer = target instanceof runtime.Element
+      ? target.closest(TOGGLETIP_SELECTOR)
       : null;
 
-    if (clickedContainer instanceof HTMLElement) {
+    if (clickedContainer instanceof runtime.HTMLElement) {
       return;
     }
 
     closeAll();
   });
 
-  if (mobileMedia) {
-    const handleViewportChange = () => {
-      syncOpenPanelsToViewport();
-    };
-
-    if (typeof mobileMedia.addEventListener === "function") {
-      mobileMedia.addEventListener("change", handleViewportChange);
-    } else if (typeof mobileMedia.addListener === "function") {
-      mobileMedia.addListener(handleViewportChange);
-    }
+  if (typeof mobileMedia?.addEventListener === "function") {
+    mobileMedia.addEventListener("change", syncOpenPanelsToViewport);
+  } else if (typeof mobileMedia?.addListener === "function") {
+    mobileMedia.addListener(syncOpenPanelsToViewport);
   }
-})();
+}
+
+if (typeof window !== "undefined") {
+  bindAboutContactToggletips(window);
+}

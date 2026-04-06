@@ -1,5 +1,7 @@
 import type Site from "lume/core/site.ts";
 
+import { SCRIPT_ASSET_URLS } from "../src/utils/script-assets.ts";
+
 const OPTIMIZED_ROOT_IMAGE_ASSETS = [
   "android-chrome-192x192.png",
   "android-chrome-512x512.png",
@@ -38,19 +40,9 @@ export function registerAssets(site: Site): void {
   site.add("/style.css");
   site.add("/styles/blog-antd.css");
 
-  site.add("/scripts/header-client.js");
-  site.add("/scripts/header-client/init.js");
-  site.add("/scripts/header-client/search.js");
-  site.add("/scripts/header-client/theme.js");
-  site.add("/scripts/about-contact-toggletips.js");
-  site.add("/scripts/language-preference.js");
-  site.add("/scripts/feed-copy.js");
-  site.add("/scripts/post-code-copy.js");
-  site.add("/scripts/post-mobile-tools-loader.js");
-  site.add("/scripts/post-mobile-tools.js");
-  site.add("/scripts/pretext-browser-probe.js");
-  site.add("/scripts/link-prefetch-intent.js");
-  site.add("/scripts/sw-register.js");
+  for (const scriptAssetUrl of SCRIPT_ASSET_URLS) {
+    site.add(scriptAssetUrl);
+  }
 
   // The service worker must be served from the site root to control the whole
   // origin, so its built asset is remapped out of `/scripts/`.

@@ -1,9 +1,7 @@
 import { assert, assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
-import SCRIPT_SOURCE from "./about-contact-toggletips.js" with {
-  type: "text",
-};
-import { evaluateClassicScript, getJSDOM } from "../../test/jsdom.ts";
+import { bindAboutContactToggletips } from "./about-contact-toggletips.js";
+import { getJSDOM } from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
 
@@ -88,8 +86,8 @@ function createDom(): InstanceType<typeof JSDOM> {
   );
 }
 
-function evaluateScript(window: TestWindow) {
-  evaluateClassicScript(window, SCRIPT_SOURCE);
+function bindScript(window: TestWindow) {
+  bindAboutContactToggletips(window as Window & typeof globalThis);
 }
 
 function createMediaQueryList(matches = false): TestMediaQueryList {
@@ -178,7 +176,7 @@ describe("about-contact-toggletips.js", () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
     try {
-      evaluateScript(window);
+      bindScript(window);
 
       const popovers = getPopovers(window);
 
@@ -195,7 +193,7 @@ describe("about-contact-toggletips.js", () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
     try {
-      evaluateScript(window);
+      bindScript(window);
 
       const [container] = getContainers(window);
       const [trigger] = getTriggers(window);
@@ -219,7 +217,7 @@ describe("about-contact-toggletips.js", () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
     try {
-      evaluateScript(window);
+      bindScript(window);
 
       const [primaryPopover, wechatPopover] = getPopovers(window);
       const [primaryContainer, wechatContainer] = getContainers(window);
@@ -253,7 +251,7 @@ describe("about-contact-toggletips.js", () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
     try {
-      evaluateScript(window);
+      bindScript(window);
 
       const [container] = getContainers(window);
       const [trigger] = getTriggers(window);
@@ -284,7 +282,7 @@ describe("about-contact-toggletips.js", () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
     try {
-      evaluateScript(window);
+      bindScript(window);
 
       const [container] = getContainers(window);
       const [trigger] = getTriggers(window);
@@ -321,7 +319,7 @@ describe("about-contact-toggletips.js", () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
     try {
-      evaluateScript(window);
+      bindScript(window);
 
       const [container] = getContainers(window);
       const [trigger] = getTriggers(window);
@@ -355,7 +353,7 @@ describe("about-contact-toggletips.js", () => {
       const mediaQueryList = createMediaQueryList(true);
       window.matchMedia = (_query: string) => mediaQueryList;
 
-      evaluateScript(window);
+      bindScript(window);
 
       const [container] = getContainers(window);
       const [trigger] = getTriggers(window);
@@ -418,7 +416,7 @@ describe("about-contact-toggletips.js", () => {
       const mediaQueryList = createMediaQueryList(false);
       window.matchMedia = (_query: string) => mediaQueryList;
 
-      evaluateScript(window);
+      bindScript(window);
 
       const [container] = getContainers(window);
       const [trigger] = getTriggers(window);

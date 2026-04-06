@@ -261,5 +261,5 @@ export default (data: Lume.Data, _helpers: Lume.Helpers): string => {
   </aside>
 </div>
 </div>
-<script src="/scripts/about-contact-toggletips.js" fetchpriority="low" defer></script>`;
+<script type="module" src="/scripts/about-contact-toggletips.js" fetchpriority="low"></script>`;
 };

@@ -11,8 +11,82 @@ type CacheStore = {
 };
 
 const EVALUABLE_SCRIPT_SOURCE = SCRIPT_SOURCE.replace(
-  'import { SITE_NAME } from "../utils/site-identity.ts";\n\n',
-  "",
+  /import \{ SITE_NAME \} from "\.\.\/utils\/site-identity\.ts";\nimport \{ fetchWithTimeout \} from "\.\/shared\/network-utils\.js";\nimport \{ PRECACHED_SCRIPT_ASSET_URLS \} from "\.\.\/utils\/script-assets\.ts";\n\n/,
+  `const PRECACHED_SCRIPT_ASSET_URLS = [];
+
+function createTimeoutSignal(timeoutMs, upstreamSignal) {
+  const existingSignal = upstreamSignal ?? undefined;
+  const abortSignalConstructor = globalThis.AbortSignal;
+  const timeoutFactory = abortSignalConstructor?.timeout;
+  const anyFactory = abortSignalConstructor?.any;
+
+  if (typeof timeoutFactory === "function") {
+    const timeoutSignal = timeoutFactory.call(
+      abortSignalConstructor,
+      timeoutMs,
+    );
+
+    if (existingSignal === undefined) {
+      return { signal: timeoutSignal, cleanup() {} };
+    }
+
+    if (typeof anyFactory === "function") {
+      return {
+        signal: anyFactory.call(abortSignalConstructor, [
+          existingSignal,
+          timeoutSignal,
+        ]),
+        cleanup() {},
+      };
+    }
+  }
+
+  const controller = new AbortController();
+  const timeoutId = globalThis.setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
+
+  const abortFromUpstream = () => {
+    controller.abort();
+  };
+
+  if (existingSignal !== undefined) {
+    if (existingSignal.aborted) {
+      abortFromUpstream();
+    } else {
+      existingSignal.addEventListener("abort", abortFromUpstream, {
+        once: true,
+      });
+    }
+  }
+
+  return {
+    signal: controller.signal,
+    cleanup() {
+      globalThis.clearTimeout(timeoutId);
+
+      if (existingSignal !== undefined && !existingSignal.aborted) {
+        existingSignal.removeEventListener("abort", abortFromUpstream);
+      }
+    },
+  };
+}
+
+async function fetchWithTimeout(input, init, timeoutMs) {
+  const { signal, cleanup } = createTimeoutSignal(
+    timeoutMs,
+    init?.signal ?? undefined,
+  );
+
+  try {
+    const requestInit = init === undefined ? { signal } : { ...init, signal };
+    return await fetch(input, requestInit);
+  } finally {
+    cleanup();
+  }
+}
+
+`,
 );
 
 function createRuntime(
