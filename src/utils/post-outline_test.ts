@@ -77,6 +77,26 @@ describe("enhancePostContent()", () => {
     assertEquals(result.html.includes("image-size"), false);
   });
 
+  it("marks standalone media paragraphs for full-width post styling", () => {
+    const result = enhancePostContent(
+      '<p><picture><img src="./images/hero.jpg" alt="Hero"></picture></p>' +
+        '<p><a href="/gallery/"><img src="./images/detail.jpg" alt="Detail"></a></p>' +
+        "<p>Body copy</p>",
+    );
+
+    assertEquals(
+      result.html.includes('<p class="post-standalone-media"><picture>'),
+      true,
+    );
+    assertEquals(
+      result.html.includes(
+        '<p class="post-standalone-media"><a href="/gallery/"><img',
+      ),
+      true,
+    );
+    assertEquals(result.html.includes("<p>Body copy</p>"), true);
+  });
+
   it("preserves explicit image attributes and skips remote images", () => {
     const result = enhancePostContent(
       '<p><img src="/images/chart.png" width="640" height="480" sizes="50vw" transform-images="webp jpg 640" alt="Chart"></p>' +

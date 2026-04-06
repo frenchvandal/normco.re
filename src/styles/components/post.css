@@ -139,6 +139,7 @@
       pre,
       .shiki,
       figure,
+      p.post-standalone-media,
       hr,
       table
     ) {
@@ -312,6 +313,16 @@
 
   .post-content figure {
     margin-block: 0;
+  }
+
+  .post-content > p.post-standalone-media > a,
+  .post-content > p.post-standalone-media picture {
+    display: block;
+    inline-size: 100%;
+  }
+
+  .post-content > p.post-standalone-media img {
+    inline-size: 100%;
   }
 
   .post-content figure figcaption {

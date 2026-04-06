@@ -3,6 +3,7 @@ import { DOMParser } from "lume/deps/dom.ts";
 import { slugify } from "./slugify.ts";
 
 const REMOTE_IMAGE_SOURCE_PATTERN = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
+const STANDALONE_MEDIA_PARAGRAPH_CLASS = "post-standalone-media";
 
 export const POST_RESPONSIVE_IMAGE_SIZES =
   "(min-width: 48rem) 42rem, calc(100vw - 2rem)";
@@ -23,6 +24,18 @@ type ResponsiveImageElement = Readonly<{
   getAttribute(name: string): string | null;
   hasAttribute(name: string): boolean;
   setAttribute(name: string, value: string): void;
+}>;
+type StandaloneMediaElement = Readonly<{
+  children: ArrayLike<StandaloneMediaElement>;
+  tagName: string;
+  textContent: string | null;
+}>;
+type StandaloneMediaParagraphElement = Readonly<{
+  children: ArrayLike<StandaloneMediaElement>;
+  classList: {
+    add(token: string): void;
+  };
+  textContent: string | null;
 }>;
 
 function isHeadingLevel(value: number): value is 2 | 3 {
@@ -89,6 +102,51 @@ function enhancePostImages(root: {
   }
 }
 
+function isStandaloneMediaElement(element: StandaloneMediaElement): boolean {
+  const tagName = element.tagName.toLowerCase();
+
+  if (tagName === "img" || tagName === "picture") {
+    return true;
+  }
+
+  if (tagName !== "a" || element.textContent?.trim()) {
+    return false;
+  }
+
+  const children = Array.from(element.children);
+
+  if (children.length !== 1) {
+    return false;
+  }
+
+  const [onlyChild] = children;
+
+  return onlyChild === undefined ? false : isStandaloneMediaElement(onlyChild);
+}
+
+function markStandaloneMediaParagraphs(root: {
+  querySelectorAll(selector: string): Iterable<StandaloneMediaParagraphElement>;
+}): void {
+  for (const paragraph of root.querySelectorAll("p")) {
+    if (paragraph.textContent?.trim()) {
+      continue;
+    }
+
+    const children = Array.from(paragraph.children);
+
+    const [onlyChild] = children;
+
+    if (
+      children.length !== 1 || !onlyChild ||
+      !isStandaloneMediaElement(onlyChild)
+    ) {
+      continue;
+    }
+
+    paragraph.classList.add(STANDALONE_MEDIA_PARAGRAPH_CLASS);
+  }
+}
+
 /**
  * Ensures post headings have stable anchor ids and returns a compact outline
  * for the article rail.
@@ -111,6 +169,7 @@ export function enhancePostContent(html: string): EnhancedPostContent {
   }
 
   enhancePostImages(root);
+  markStandaloneMediaParagraphs(root);
 
   const outline: PostOutlineItem[] = [];
   const usedIds = new Set<string>();
