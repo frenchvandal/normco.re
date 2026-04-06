@@ -62,6 +62,23 @@ export type WidestLineMeasurement = Readonly<{
   widestLineWidth: number;
 }>;
 
+export type FontLoadObserverFontSet = Readonly<{
+  addEventListener?(
+    type: "loading" | "loadingdone",
+    listener: () => void,
+  ): void;
+  removeEventListener?(
+    type: "loading" | "loadingdone",
+    listener: () => void,
+  ): void;
+  ready?: PromiseLike<unknown>;
+  status?: "loaded" | "loading";
+}>;
+
+export type FontLoadObserverDocument = Readonly<{
+  fonts?: FontLoadObserverFontSet | undefined;
+}>;
+
 export type PretextEngine<Prepared = unknown> = Readonly<{
   layout(
     prepared: Prepared,
@@ -249,10 +266,12 @@ export function buildMeasuredTextStyleVariables(
 }
 
 export function observeDocumentFontLoads(
-  document: Document,
+  document: FontLoadObserverDocument,
   onLoadingDone: () => void,
 ): (() => void) | undefined {
   const fontSet = document.fonts;
+  const addEventListener = fontSet?.addEventListener;
+  const removeEventListener = fontSet?.removeEventListener;
   let isActive = true;
   let activeLoadingCycle = 0;
   let lastHandledCycle = 0;
@@ -289,8 +308,8 @@ export function observeDocumentFontLoads(
 
   if (
     !fontSet ||
-    typeof fontSet.addEventListener !== "function" ||
-    typeof fontSet.removeEventListener !== "function"
+    typeof addEventListener !== "function" ||
+    typeof removeEventListener !== "function"
   ) {
     return observeCurrentReadyCycle(1)
       ? () => {
@@ -315,13 +334,13 @@ export function observeDocumentFontLoads(
     handleLoading();
   }
 
-  fontSet.addEventListener("loading", handleLoading);
-  fontSet.addEventListener("loadingdone", handleLoadingDone);
+  addEventListener.call(fontSet, "loading", handleLoading);
+  addEventListener.call(fontSet, "loadingdone", handleLoadingDone);
 
   return () => {
     isActive = false;
-    fontSet.removeEventListener("loading", handleLoading);
-    fontSet.removeEventListener("loadingdone", handleLoadingDone);
+    removeEventListener.call(fontSet, "loading", handleLoading);
+    removeEventListener.call(fontSet, "loadingdone", handleLoadingDone);
   };
 }
 

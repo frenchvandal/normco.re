@@ -11,8 +11,8 @@ export default (
   { name, className, width = 16, height = 16 }: SiteIconProps,
 ) => {
   const { paths, svgAttrs, viewBox } = getSiteIconData(name);
-  const pathElements = paths.map((path) => (
-    <path key={`${name}-${path.d ?? JSON.stringify(path)}`} {...path}></path>
+  const pathElements = paths.map((path, index) => (
+    <path key={path.d ?? `${name}-path-${index}`} {...path}></path>
   ));
   const svgProps = {
     ...svgAttrs,

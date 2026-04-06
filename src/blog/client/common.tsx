@@ -1,5 +1,5 @@
 /** @jsxImportSource npm/react */
-import type { CSSProperties } from "npm/react";
+import type { CSSProperties, ReactElement } from "npm/react";
 
 import {
   ArrowRightOutlined,
@@ -44,7 +44,14 @@ import {
   BLOG_ANTD_SPACE_SIZE_COMPACT,
 } from "./spacing.ts";
 
-export function renderBreadcrumbItems(items: readonly BlogBreadcrumbItem[]) {
+type BreadcrumbRenderItem = Readonly<{
+  key: string;
+  title: ReactElement;
+}>;
+
+export function renderBreadcrumbItems(
+  items: readonly BlogBreadcrumbItem[],
+): BreadcrumbRenderItem[] {
   return items.map(({ href, label }) => ({
     key: href,
     title: <a href={href}>{label}</a>,
@@ -69,7 +76,7 @@ export function TrustedHtmlSection(
     lang?: string | undefined;
     ariaLabelledby?: string | undefined;
   },
-) {
+): ReactElement {
   return (
     <section
       className={className}
@@ -88,7 +95,7 @@ export function TrustedHtmlSpan(
     html: string;
     className?: string | undefined;
   },
-) {
+): ReactElement {
   return (
     <span
       className={className}
@@ -151,7 +158,7 @@ export function MetaLine(
     separator?: string | undefined;
     className?: string | undefined;
   },
-) {
+): ReactElement {
   const datePill = (
     <span className="blog-antd-meta-pill">
       <ScheduleOutlined aria-hidden="true" />
@@ -200,7 +207,9 @@ export function MetaLine(
   );
 }
 
-export function StoryTags({ story }: { story: BlogStoryCard }) {
+export function StoryTags(
+  { story }: { story: BlogStoryCard },
+): ReactElement | null {
   const visibleTags = story.tags?.slice(0, 3) ?? [];
 
   if (visibleTags.length === 0) {
@@ -227,7 +236,7 @@ export function ReadingMeter(
     readingLabel?: string | undefined;
     className?: string | undefined;
   },
-) {
+): ReactElement | null {
   const percent = renderReadingPercent(readingLabel);
 
   if (percent === undefined || !readingLabel) {
@@ -254,7 +263,7 @@ export function HeroLatestLink(
     dateTooltip?: string | undefined;
     readingTooltip?: string | undefined;
   },
-) {
+): ReactElement {
   return (
     <div className="blog-antd-hero-note__story">
       <a href={story.url} className="blog-antd-hero-note__link">
@@ -292,7 +301,7 @@ export function StoryCard(
     dateTooltip,
     readingTooltip,
   }: StoryCardProps,
-) {
+): ReactElement {
   const measuredText = usePretextTextStyle({
     disabled: !measureText,
     summary: summaryVisible ? story.summary : undefined,
@@ -357,7 +366,7 @@ export function StoryGrid(
     dateTooltip?: string | undefined;
     readingTooltip?: string | undefined;
   },
-) {
+): ReactElement {
   const balancedTextStyles = useBalancedStoryGridTextStyles({
     posts,
     summaryVisible,
@@ -400,7 +409,7 @@ function SignalStories(
     dateTooltip?: string | undefined;
     readingTooltip?: string | undefined;
   },
-) {
+): ReactElement | null {
   if (posts.length === 0) {
     return null;
   }
@@ -432,7 +441,7 @@ export function SignalStoryLink(
     dateTooltip?: string | undefined;
     readingTooltip?: string | undefined;
   },
-) {
+): ReactElement {
   const measuredText = usePretextTextStyle({
     title: story.title,
     titleSelector: PRETEXT_SIGNAL_LIST_TITLE_SELECTOR,
@@ -476,7 +485,7 @@ export function FeaturedStory(
     dateTooltip?: string | undefined;
     readingTooltip?: string | undefined;
   },
-) {
+): ReactElement {
   const hasSecondaryStories = secondaryStories.length > 0;
   const measuredText = usePretextTextStyle({
     summary: story.summary,

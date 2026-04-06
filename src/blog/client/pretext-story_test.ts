@@ -1,6 +1,11 @@
 import { assertAlmostEquals, assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
+import type {
+  FontLoadObserverDocument,
+  FontLoadObserverFontSet,
+  TextLayoutLineRange,
+} from "./pretext-story-core.ts";
 import {
   balanceTextMeasurementsByRow,
   buildMeasuredTextStyleVariables,
@@ -12,7 +17,6 @@ import {
   measureTextBlockWidestLine,
   observeDocumentFontLoads,
   resolveLineHeightPx,
-  type TextLayoutLineRange,
 } from "./pretext-story-core.ts";
 
 describe("buildPretextFont()", () => {
@@ -117,7 +121,12 @@ describe("buildMeasuredTextStyleVariables()", () => {
 });
 
 describe("observeDocumentFontLoads()", () => {
-  function createFontSetStub() {
+  function createFontSetStub(): {
+    emit(type: "loading" | "loadingdone"): void;
+    fontSet: FontLoadObserverFontSet;
+    setPendingReady(nextReady: Promise<void>): void;
+    settleReady(): void;
+  } {
     const listeners = new Map<string, Set<() => void>>();
     let status: "loaded" | "loading" = "loaded";
     let ready = Promise.resolve();
@@ -152,6 +161,12 @@ describe("observeDocumentFontLoads()", () => {
     };
   }
 
+  function createDocumentStub(
+    fontSet: FontLoadObserverFontSet,
+  ): FontLoadObserverDocument {
+    return { fonts: fontSet };
+  }
+
   it("replays an in-flight font loading cycle when ready settles after subscription", async () => {
     const fontSetStub = createFontSetStub();
     let resolveReady!: () => void;
@@ -164,7 +179,7 @@ describe("observeDocumentFontLoads()", () => {
     );
 
     const cleanup = observeDocumentFontLoads(
-      { fonts: fontSetStub.fontSet } as unknown as Document,
+      createDocumentStub(fontSetStub.fontSet),
       () => {
         calls.push(1);
       },
@@ -190,7 +205,7 @@ describe("observeDocumentFontLoads()", () => {
     );
 
     const cleanup = observeDocumentFontLoads(
-      { fonts: fontSetStub.fontSet } as unknown as Document,
+      createDocumentStub(fontSetStub.fontSet),
       () => {
         calls.push(1);
       },
@@ -218,7 +233,7 @@ describe("observeDocumentFontLoads()", () => {
     );
 
     const cleanup = observeDocumentFontLoads(
-      { fonts: fontSetStub.fontSet } as unknown as Document,
+      createDocumentStub(fontSetStub.fontSet),
       () => {
         calls.push(1);
       },

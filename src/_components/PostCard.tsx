@@ -1,9 +1,13 @@
+import type { jsx } from "lume/jsx-runtime";
+
 /**
  * Post card used on the home page and post listings.
  *
  * Callers are responsible for formatting dates and reading labels before
  * passing them in, keeping this component free of locale logic.
  */
+
+type El = ReturnType<typeof jsx>;
 
 export default (
   {
@@ -25,7 +29,7 @@ export default (
     readonly summary?: string;
     readonly showSummary?: boolean;
   },
-) => (
+): El => (
   <article
     class={[
       "site-panel",
