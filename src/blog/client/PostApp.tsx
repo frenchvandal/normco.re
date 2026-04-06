@@ -27,7 +27,7 @@ import {
 } from "@blog/post-antd";
 
 import type { BlogPostViewData } from "../view-data.ts";
-import { resolvePostTitleViewTransitionName } from "../../utils/view-transitions.ts";
+import { resolvePostTitleViewTransitionAttributes } from "../../utils/view-transitions.ts";
 import {
   BLOG_ANTD_BACKTOP_CLASSNAMES,
   BLOG_ANTD_BREADCRUMB_CLASSNAMES,
@@ -91,14 +91,14 @@ export function PostView(
     interactive?: boolean | undefined;
   },
 ) {
-  const titleTransitionName = resolvePostTitleViewTransitionName(
+  const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
     data.breadcrumb.at(-1)?.href ?? "",
   );
-  const previousTitleTransitionName = data.previous
-    ? resolvePostTitleViewTransitionName(data.previous.url)
+  const previousTitleTransitionAttributes = data.previous
+    ? resolvePostTitleViewTransitionAttributes(data.previous.url)
     : undefined;
-  const nextTitleTransitionName = data.next
-    ? resolvePostTitleViewTransitionName(data.next.url)
+  const nextTitleTransitionAttributes = data.next
+    ? resolvePostTitleViewTransitionAttributes(data.next.url)
     : undefined;
   const hasRail = data.outline.length > 0 || data.tags.length > 0 ||
     data.backlinks.length > 0 || data.previous || data.next;
@@ -160,11 +160,7 @@ export function PostView(
                       id="post-title"
                       level={1}
                       className="blog-antd-page-title"
-                      {...(titleTransitionName
-                        ? {
-                          style: { viewTransitionName: titleTransitionName },
-                        }
-                        : {})}
+                      {...(titleTransitionAttributes ?? {})}
                     >
                       {data.title}
                     </Title>
@@ -365,14 +361,7 @@ export function PostView(
                         >
                           <span>{data.previousLabel}:</span>
                           <span
-                            {...(previousTitleTransitionName
-                              ? {
-                                style: {
-                                  viewTransitionName:
-                                    previousTitleTransitionName,
-                                },
-                              }
-                              : {})}
+                            {...(previousTitleTransitionAttributes ?? {})}
                           >
                             {data.previous.title}
                           </span>
@@ -387,13 +376,7 @@ export function PostView(
                         >
                           <span>{data.nextLabel}:</span>
                           <span
-                            {...(nextTitleTransitionName
-                              ? {
-                                style: {
-                                  viewTransitionName: nextTitleTransitionName,
-                                },
-                              }
-                              : {})}
+                            {...(nextTitleTransitionAttributes ?? {})}
                           >
                             {data.next.title}
                           </span>

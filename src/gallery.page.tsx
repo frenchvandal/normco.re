@@ -58,65 +58,6 @@ function serializeJsonForScript(value: unknown): string {
     .replaceAll("-->", "--\\>");
 }
 
-function renderGalleryHeroVisual(
-  items: Awaited<ReturnType<typeof collectGalleryItems>>,
-): string {
-  const heroItems = items.slice(0, 4);
-
-  if (heroItems.length === 0) {
-    return "";
-  }
-
-  const responsiveImageSizes = escapeHtml(
-    "(min-width: 72rem) 33vw, (min-width: 48rem) 44vw, 92vw",
-  );
-  const responsiveImageTransforms = escapeHtml(
-    GALLERY_RESPONSIVE_IMAGE_TRANSFORMS,
-  );
-
-  const renderHeroPanel = (
-    item: (typeof heroItems)[number],
-    index: number,
-    variant: "lead" | "stack-a" | "stack-b" | "stack-wide",
-  ): string => (
-    `<figure class="blog-antd-gallery-hero__panel blog-antd-gallery-hero__panel--${variant}">
-      <div class="blog-antd-gallery-hero__media">
-        <img
-          class="blog-antd-gallery-hero__image"
-          src="${escapeHtml(item.src)}"
-          alt=""
-          width="${item.width}"
-          height="${item.height}"
-          loading="${variant === "lead" ? "eager" : "lazy"}"
-          decoding="async"
-          sizes="${responsiveImageSizes}"
-          transform-images="${responsiveImageTransforms}"
-        />
-      </div>
-      <figcaption class="blog-antd-gallery-hero__caption">
-        <span class="blog-antd-gallery-hero__index">${
-      formatArchiveIndex(index + 1)
-    }</span>
-        <span class="blog-antd-gallery-hero__caption-title">${
-      escapeHtml(item.postTitle)
-    }</span>
-        <span class="blog-antd-gallery-hero__caption-meta">${
-      escapeHtml(item.postDateLabel)
-    }</span>
-      </figcaption>
-    </figure>`
-  );
-
-  return `<div class="blog-antd-gallery-hero__visual" aria-hidden="true">
-    ${heroItems[0] ? renderHeroPanel(heroItems[0], 0, "lead") : ""}
-    <div class="blog-antd-gallery-hero__stack">
-      ${heroItems[1] ? renderHeroPanel(heroItems[1], 1, "stack-a") : ""}
-      ${heroItems[2] ? renderHeroPanel(heroItems[2], 2, "stack-b") : ""}
-      ${heroItems[3] ? renderHeroPanel(heroItems[3], 3, "stack-wide") : ""}
-    </div>
-  </div>`;
-}
-
 function renderGalleryFallback(
   items: Awaited<ReturnType<typeof collectGalleryItems>>,
   openPostLabel: string,
@@ -217,7 +158,7 @@ export default async (
   return `<div class="blog-antd-root">
   <div class="site-page-shell site-page-shell--wide blog-antd-page blog-antd-page--gallery">
     <div class="blog-antd-stack">
-      <section class="blog-antd-hero blog-antd-gallery-hero" aria-labelledby="gallery-title">
+      <section class="blog-antd-gallery-hero" aria-labelledby="gallery-title">
         <div class="blog-antd-hero__copy blog-antd-gallery-hero__copy">
           <span class="blog-antd-count-tag">${escapeHtml(countLabel)}</span>
           <h1 id="gallery-title" class="blog-antd-page-title">${
@@ -230,7 +171,6 @@ export default async (
   }">${escapeHtml(t.gallery.archiveLinkLabel)}</a>
           </div>
         </div>
-        ${renderGalleryHeroVisual(items)}
       </section>
       ${
     items.length === 0

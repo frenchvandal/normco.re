@@ -7,7 +7,10 @@ import {
   resolveDateHelper,
   resolvePostCardRenderer,
 } from "./lume-helpers.ts";
-import { resolvePostTitleViewTransitionName } from "./view-transitions.ts";
+import {
+  resolvePostTitleViewTransitionName,
+  VIEW_TRANSITION_NAME_ATTRIBUTE,
+} from "./view-transitions.ts";
 
 describe("resolvePostCardRenderer()", () => {
   it("preserves the renderer context when a dynamic PostCard is available", async () => {
@@ -82,9 +85,9 @@ describe("renderFallbackPostCard()", () => {
 
     assertEquals(
       html.includes(
-        `view-transition-name: ${
+        `${VIEW_TRANSITION_NAME_ATTRIBUTE}="${
           resolvePostTitleViewTransitionName("/posts/hello/")
-        };`,
+        }"`,
       ),
       true,
     );

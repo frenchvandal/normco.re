@@ -24,7 +24,10 @@ import postStyles from "../../styles/components/post.css" with {
   type: "text",
 };
 import { POST_MOBILE_TOOLS_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
-import { resolvePostTitleViewTransitionName } from "../../utils/view-transitions.ts";
+import {
+  resolvePostTitleViewTransitionName,
+  VIEW_TRANSITION_NAME_ATTRIBUTE,
+} from "../../utils/view-transitions.ts";
 
 import postLayout, { renderAfterMainContent } from "./post.tsx";
 
@@ -140,7 +143,9 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, "Previous");
       assertStringIncludes(
         html,
-        `view-transition-name: ${resolvePostTitleViewTransitionName(prevUrl)};`,
+        `${VIEW_TRANSITION_NAME_ATTRIBUTE}="${
+          resolvePostTitleViewTransitionName(prevUrl)
+        }"`,
       );
     });
 
@@ -157,7 +162,9 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, "post-nav-item--next");
       assertStringIncludes(
         html,
-        `view-transition-name: ${resolvePostTitleViewTransitionName(nextUrl)};`,
+        `${VIEW_TRANSITION_NAME_ATTRIBUTE}="${
+          resolvePostTitleViewTransitionName(nextUrl)
+        }"`,
       );
     });
 
@@ -222,9 +229,9 @@ describe("post.tsx layout", () => {
       assertStringIncludes(html, "Entry summary");
       assertStringIncludes(
         html,
-        `view-transition-name: ${
+        `${VIEW_TRANSITION_NAME_ATTRIBUTE}="${
           resolvePostTitleViewTransitionName("/posts/entry-title/")
-        };`,
+        }"`,
       );
       assertStringIncludes(
         html,

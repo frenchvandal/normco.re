@@ -17,7 +17,7 @@ import {
   Tooltip,
 } from "@blog/common-antd";
 import type { BlogBreadcrumbItem, BlogStoryCard } from "../view-data.ts";
-import { resolvePostTitleViewTransitionName } from "../../utils/view-transitions.ts";
+import { resolvePostTitleViewTransitionAttributes } from "../../utils/view-transitions.ts";
 import {
   BLOG_ANTD_CARD_CLASSNAMES,
   BLOG_ANTD_READING_METER_PROGRESS,
@@ -265,17 +265,15 @@ export function HeroLatestLink(
     readingTooltip?: string | undefined;
   },
 ): ReactElement {
-  const titleTransitionName = resolvePostTitleViewTransitionName(story.url);
+  const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
+    story.url,
+  );
 
   return (
     <div className="blog-antd-hero-note__story">
       <a href={story.url} className="blog-antd-hero-note__link">
         <span
-          {...(titleTransitionName
-            ? {
-              style: { viewTransitionName: titleTransitionName },
-            }
-            : {})}
+          {...(titleTransitionAttributes ?? {})}
         >
           {story.title}
         </span>
@@ -320,7 +318,9 @@ export function StoryCard(
     title: story.title,
     titleSelector: PRETEXT_STORY_CARD_TITLE_SELECTOR,
   });
-  const titleTransitionName = resolvePostTitleViewTransitionName(story.url);
+  const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
+    story.url,
+  );
 
   return (
     <Card
@@ -349,11 +349,7 @@ export function StoryCard(
           <StoryTags story={story} />
           <Title level={3} className={PRETEXT_STORY_CARD_TITLE_CLASS}>
             <span
-              {...(titleTransitionName
-                ? {
-                  style: { viewTransitionName: titleTransitionName },
-                }
-                : {})}
+              {...(titleTransitionAttributes ?? {})}
             >
               {story.title}
             </span>
@@ -466,7 +462,9 @@ export function SignalStoryLink(
     title: story.title,
     titleSelector: PRETEXT_SIGNAL_LIST_TITLE_SELECTOR,
   });
-  const titleTransitionName = resolvePostTitleViewTransitionName(story.url);
+  const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
+    story.url,
+  );
 
   return (
     <a
@@ -481,11 +479,7 @@ export function SignalStoryLink(
       <span className="blog-antd-signal-list__body">
         <span
           className={PRETEXT_SIGNAL_LIST_TITLE_CLASS}
-          {...(titleTransitionName
-            ? {
-              style: { viewTransitionName: titleTransitionName },
-            }
-            : {})}
+          {...(titleTransitionAttributes ?? {})}
         >
           {story.title}
         </span>
@@ -523,7 +517,9 @@ export function FeaturedStory(
     title: story.title,
     titleSelector: PRETEXT_FEATURE_CARD_TITLE_SELECTOR,
   });
-  const titleTransitionName = resolvePostTitleViewTransitionName(story.url);
+  const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
+    story.url,
+  );
 
   return (
     <Card
@@ -553,11 +549,7 @@ export function FeaturedStory(
                   className={PRETEXT_FEATURE_CARD_TITLE_CLASS}
                 >
                   <span
-                    {...(titleTransitionName
-                      ? {
-                        style: { viewTransitionName: titleTransitionName },
-                      }
-                      : {})}
+                    {...(titleTransitionAttributes ?? {})}
                   >
                     {story.title}
                   </span>

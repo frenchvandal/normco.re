@@ -1,6 +1,9 @@
 import { escapeHtml } from "./html.ts";
 import { getRecordMethod, getRecordValue } from "./type-guards.ts";
-import { resolvePostTitleViewTransitionName } from "./view-transitions.ts";
+import {
+  renderViewTransitionNameAttribute,
+  resolvePostTitleViewTransitionName,
+} from "./view-transitions.ts";
 
 export type PostCardProps = Readonly<{
   title: string;
@@ -42,9 +45,9 @@ export function renderFallbackPostCard(
 ): Promise<string> {
   const cls = ["site-panel", "post-card", className].filter(Boolean).join(" ");
   const titleTransitionName = resolvePostTitleViewTransitionName(url);
-  const titleTransitionStyle = titleTransitionName
-    ? ` style="view-transition-name: ${escapeHtml(titleTransitionName)};"`
-    : "";
+  const titleTransitionAttribute = renderViewTransitionNameAttribute(
+    titleTransitionName,
+  );
   const summaryHtml = showSummary && summary
     ? `<p class="post-card-summary">${escapeHtml(summary)}</p>`
     : "";
@@ -57,7 +60,7 @@ export function renderFallbackPostCard(
       escapeHtml(cls)
     }"><h3 class="post-card-title"><a class="post-card-link" href="${
       escapeHtml(url)
-    }"${titleTransitionStyle}>${
+    }"${titleTransitionAttribute}>${
       escapeHtml(title)
     }</a></h3>${summaryHtml}<div class="post-card-meta"><time class="post-card-date" datetime="${
       escapeHtml(dateIso)

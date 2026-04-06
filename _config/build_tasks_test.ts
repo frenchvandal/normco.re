@@ -35,6 +35,7 @@ describe("build task definitions", () => {
         "verify browser imports",
         "format built HTML and JSON output",
         "validate built output links",
+        "assert html validation report is clean",
       ],
     );
   });

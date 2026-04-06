@@ -131,6 +131,12 @@ describe("blog client interaction contracts", () => {
     assertStringIncludes(galleryAntdBuild, "import Masonry");
   });
 
+  it("keeps gallery masonry enhancement gated to multi-column viewports", () => {
+    assertStringIncludes(galleryAppSource, "GALLERY_MASONRY_MEDIA_QUERY");
+    assertStringIncludes(galleryAppSource, 'window.matchMedia === "function"');
+    assertStringIncludes(galleryAppSource, "if (!masonryMediaQuery.matches)");
+  });
+
   it("wires Tooltip around meta pills with accessible structure", () => {
     assertStringIncludes(commonSource, "title={dateTooltip}");
     assertStringIncludes(commonSource, "title={readingTooltip}");

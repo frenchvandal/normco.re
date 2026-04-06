@@ -5,6 +5,7 @@ import { Masonry } from "@blog/gallery-antd";
 import { formatArchiveIndex } from "../../blog/archive-common.ts";
 import {
   GALLERY_DATA_SCRIPT_ID,
+  GALLERY_MASONRY_MEDIA_QUERY,
   GALLERY_ROOT_ID,
 } from "../../gallery/constants.ts";
 import type {
@@ -129,8 +130,8 @@ export function GalleryApp({ data }: { data: GalleryRuntimeData }) {
       aria-label={data.imagesAriaLabel}
     >
       <Masonry
-        columns={{ xs: 1, sm: 2, md: 3, lg: 4, xxl: 4 }}
-        gutter={{ xs: 16, sm: 18, md: 20, lg: 24 }}
+        columns={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3, xxl: 4 }}
+        gutter={{ xs: 16, sm: 18, md: 20, lg: 22, xxl: 24 }}
         fresh
         classNames={{
           root: "blog-antd-gallery-masonry",
@@ -206,8 +207,11 @@ export function mountGalleryApp(rootElement: HTMLElement): void {
     return;
   }
 
+  const runtimeData = mergeStaticMediaHtml(rootElement, data);
+  rootElement.replaceChildren();
+
   createRoot(rootElement).render(
-    <GalleryApp data={mergeStaticMediaHtml(rootElement, data)} />,
+    <GalleryApp data={runtimeData} />,
   );
 }
 
@@ -216,6 +220,25 @@ export function startGalleryApp(): void {
 
   if (!(rootElement instanceof HTMLElement)) {
     return;
+  }
+
+  const matchMedia = globalThis.matchMedia;
+
+  if (typeof matchMedia === "function") {
+    const masonryMediaQuery = matchMedia(GALLERY_MASONRY_MEDIA_QUERY);
+
+    if (!masonryMediaQuery.matches) {
+      masonryMediaQuery.addEventListener?.(
+        "change",
+        (event) => {
+          if (event.matches) {
+            mountGalleryApp(rootElement);
+          }
+        },
+        { once: true },
+      );
+      return;
+    }
   }
 
   mountGalleryApp(rootElement);

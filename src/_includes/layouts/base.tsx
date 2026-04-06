@@ -3,6 +3,9 @@ import type { jsx } from "lume/jsx-runtime";
 import LANGUAGE_PREFERENCE_SCRIPT from "../../scripts/language-preference.js" with {
   type: "text",
 };
+import VIEW_TRANSITION_NAMES_SCRIPT from "../../scripts/view-transition-names.js" with {
+  type: "text",
+};
 
 import {
   APP_MANIFEST_MIME_TYPE,
@@ -56,6 +59,9 @@ const STYLESHEET_PRELOAD_SWAP = {
 } as const;
 const LANGUAGE_PREFERENCE_BOOTSTRAP = {
   __html: LANGUAGE_PREFERENCE_SCRIPT,
+} as const;
+const VIEW_TRANSITION_NAMES_BOOTSTRAP = {
+  __html: VIEW_TRANSITION_NAMES_SCRIPT,
 } as const;
 const ADAPTIVE_PREFETCH_BASELINE = {
   __html: JSON.stringify({
@@ -481,6 +487,7 @@ export default async (
               blogStartYear={blogStartYear ?? new Date().getFullYear()}
             />
           </div>
+          <script>{VIEW_TRANSITION_NAMES_BOOTSTRAP}</script>
           <script>{deferredEnhancementBootstrap}</script>
         </body>
       </html>

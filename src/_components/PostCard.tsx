@@ -1,6 +1,6 @@
 import type { jsx } from "lume/jsx-runtime";
 
-import { resolvePostTitleViewTransitionName } from "../utils/view-transitions.ts";
+import { resolvePostTitleViewTransitionAttributes } from "../utils/view-transitions.ts";
 
 /**
  * Post card used on the home page and post listings.
@@ -32,7 +32,9 @@ export default (
     readonly showSummary?: boolean;
   },
 ): El => {
-  const titleTransitionName = resolvePostTitleViewTransitionName(url);
+  const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
+    url,
+  );
 
   return (
     <article
@@ -46,11 +48,7 @@ export default (
         <a
           class="post-card-link"
           href={url}
-          {...(titleTransitionName
-            ? {
-              style: `view-transition-name: ${titleTransitionName};`,
-            }
-            : {})}
+          {...(titleTransitionAttributes ?? {})}
         >
           {title}
         </a>

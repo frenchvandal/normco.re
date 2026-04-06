@@ -1,7 +1,7 @@
 import { POST_MOBILE_TOOLS_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
 import { resolvePageSetup } from "../../utils/page-setup.ts";
 import { resolveDateHelper } from "../../utils/lume-helpers.ts";
-import { resolvePostTitleViewTransitionName } from "../../utils/view-transitions.ts";
+import { resolvePostTitleViewTransitionAttributes } from "../../utils/view-transitions.ts";
 import {
   PostBackToTop,
   PostDetails,
@@ -115,8 +115,8 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   );
   const hasMobileTools = state.tags.length > 0 || state.backlinks.length > 0 ||
     neighbors.prev !== undefined || neighbors.next !== undefined;
-  const titleTransitionName = typeof data.url === "string"
-    ? resolvePostTitleViewTransitionName(data.url)
+  const titleTransitionAttributes = typeof data.url === "string"
+    ? resolvePostTitleViewTransitionAttributes(data.url)
     : undefined;
 
   return (
@@ -157,12 +157,7 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                     <h1
                       id="post-title"
                       class="post-title"
-                      {...(titleTransitionName
-                        ? {
-                          style:
-                            `view-transition-name: ${titleTransitionName};`,
-                        }
-                        : {})}
+                      {...(titleTransitionAttributes ?? {})}
                     >
                       {data.title ?? ""}
                     </h1>

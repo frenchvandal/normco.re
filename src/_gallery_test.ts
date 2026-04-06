@@ -60,11 +60,7 @@ describe("gallery.page.tsx", () => {
   it("renders a static Lume-friendly gallery fallback and client bootstrap", async () => {
     const html = await galleryPage(makeData([makePost()]), MOCK_HELPERS);
 
-    assertStringIncludes(html, 'class="blog-antd-gallery-hero__visual"');
-    assertStringIncludes(
-      html,
-      'class="blog-antd-gallery-hero__panel blog-antd-gallery-hero__panel--lead"',
-    );
+    assertStringIncludes(html, 'class="blog-antd-gallery-hero"');
     assertStringIncludes(html, 'class="blog-antd-gallery-root"');
     assertStringIncludes(html, 'class="blog-antd-gallery-fallback"');
     assertStringIncludes(

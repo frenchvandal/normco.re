@@ -168,6 +168,14 @@ describe("base.tsx layout", () => {
         html,
         "const currentScript = globalThis.document.currentScript;",
       );
+      assertStringIncludes(
+        html,
+        "data-view-transition-name",
+      );
+      assertStringIncludes(
+        html,
+        "view-transition-name",
+      );
       assertStringIncludes(html, 'href="/rss.xml"');
       assertStringIncludes(html, 'href="/atom.xml"');
       assertStringIncludes(html, 'href="/feed.json"');

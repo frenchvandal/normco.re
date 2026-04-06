@@ -75,6 +75,16 @@ export const POST_BUILD_TASKS: ReadonlyArray<BuildTask> = [
       "_quality/broken-links.json",
     ],
   },
+  {
+    name: "assert html validation report is clean",
+    command: "deno",
+    args: [
+      "run",
+      "--allow-read",
+      "scripts/assert-html-validation.ts",
+      "_quality/html-issues.json",
+    ],
+  },
 ];
 
 function formatCommand(command: string, args: ReadonlyArray<string>): string {

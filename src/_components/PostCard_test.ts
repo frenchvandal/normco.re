@@ -7,7 +7,10 @@ import featureStyles from "../styles/components/feature.css" with {
 };
 
 import PostCard from "./PostCard.tsx";
-import { resolvePostTitleViewTransitionName } from "../utils/view-transitions.ts";
+import {
+  resolvePostTitleViewTransitionName,
+  VIEW_TRANSITION_NAME_ATTRIBUTE,
+} from "../utils/view-transitions.ts";
 
 const POST_CARD_DATE_FORMATTER = new Intl.DateTimeFormat("en", {
   month: "short",
@@ -123,9 +126,9 @@ describe("PostCard()", () => {
       assertStringIncludes(html, 'class="post-card-link"');
       assertStringIncludes(
         html,
-        `view-transition-name: ${
+        `${VIEW_TRANSITION_NAME_ATTRIBUTE}="${
           resolvePostTitleViewTransitionName(base.url)
-        };`,
+        }"`,
       );
     });
 
