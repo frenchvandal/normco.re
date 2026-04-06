@@ -83,6 +83,7 @@ export const FEED_VARIANTS = [
     description: "Phiphi 的個人部落格，寫於中國成都。",
   },
 ] as const satisfies ReadonlyArray<FeedVariant>;
+const GENERATED_ATOM_FEED_PATH = /^\/(?:(?:fr|zh-hans|zh-hant)\/)?atom\.xml$/;
 
 export function createFeedOptions(variant: FeedVariant) {
   return {
@@ -182,30 +183,61 @@ export function createAtomFeedContent(
   return generateAtomXml(atomFeed);
 }
 
+export function createAtomFeedPage(
+  site: Site,
+  variant: FeedVariant,
+  pages: ReadonlyArray<Data>,
+  isComplete: boolean = false,
+): Page {
+  return Page.create({
+    url: `${variant.pathPrefix}${ATOM_FEED_PATH}`,
+    content: createAtomFeedContent(site, variant, pages, isComplete),
+  });
+}
+
+function isGeneratedAtomFeedPage(page: Page): boolean {
+  return page.sourcePath === "(generated)" &&
+    GENERATED_ATOM_FEED_PATH.test(String(page.data.url ?? ""));
+}
+
+export function createAtomFeedPages(site: Site): ReadonlyArray<Page> {
+  return FEED_VARIANTS.map((variant) => {
+    const allPages = site.search.pages(
+      `type=post lang=${LANGUAGE_DATA_CODE[variant.language]}`,
+      FEED_SORT,
+    ) as Data[];
+    const pages = allPages.slice(0, FEED_LIMIT);
+
+    return createAtomFeedPage(
+      site,
+      variant,
+      pages,
+      allPages.length <= FEED_LIMIT,
+    );
+  });
+}
+
+function replaceGeneratedAtomFeedPages(
+  allPages: Page[],
+  generatedPages: ReadonlyArray<Page>,
+): void {
+  for (let index = allPages.length - 1; index >= 0; index--) {
+    const page = allPages[index];
+
+    if (page !== undefined && isGeneratedAtomFeedPage(page)) {
+      allPages.splice(index, 1);
+    }
+  }
+
+  allPages.push(...generatedPages);
+}
+
 export function registerFeeds(site: Site): void {
   for (const variant of FEED_VARIANTS) {
     site.use(feed(createFeedOptions(variant)));
   }
 
   site.process(function processAtomFeeds() {
-    for (const variant of FEED_VARIANTS) {
-      const allPages = site.search.pages(
-        `type=post lang=${LANGUAGE_DATA_CODE[variant.language]}`,
-        FEED_SORT,
-      ) as Data[];
-      const pages = allPages.slice(0, FEED_LIMIT);
-
-      site.pages.push(
-        Page.create({
-          url: `${variant.pathPrefix}${ATOM_FEED_PATH}`,
-          content: createAtomFeedContent(
-            site,
-            variant,
-            pages,
-            allPages.length <= FEED_LIMIT,
-          ),
-        }),
-      );
-    }
+    replaceGeneratedAtomFeedPages(site.pages, createAtomFeedPages(site));
   });
 }

@@ -1,14 +1,19 @@
 import { assertEquals, assertMatch, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
+import type Site from "lume/core/site.ts";
+import type { Data, Page } from "lume/core/file.ts";
 
 import {
   createAtomFeedContent,
+  createAtomFeedPage,
+  createAtomFeedPages,
   createFeedOptions,
   FEED_ITEMS,
   FEED_LIMIT,
   FEED_SORT,
   FEED_STYLESHEET,
   FEED_VARIANTS,
+  registerFeeds,
 } from "./feeds.ts";
 
 describe("_config/feeds.ts", () => {
@@ -136,5 +141,136 @@ describe("_config/feeds.ts", () => {
       '<content type="html">&lt;p&gt;&lt;a href=&quot;https://normco.re/about/&quot;&gt;Body&lt;/a&gt;&lt;/p&gt;</content>',
     );
     assertStringIncludes(xml, "<updated>2026-03-27T02:09:39Z</updated>");
+  });
+
+  it("creates localized Atom feed pages from the shared serializer", () => {
+    const page = createAtomFeedPage(
+      {
+        url(path: string, _absolute: boolean): string {
+          return `https://normco.re${path}`;
+        },
+        source: {
+          data: {
+            get(path: string) {
+              return path === "/" ? { author: "Phiphi" } : undefined;
+            },
+          },
+        },
+      } as unknown as import("lume/core/site.ts").default,
+      FEED_VARIANTS[1],
+      [
+        {
+          url: "/fr/posts/bonjour/",
+          title: "Bonjour",
+          description: "Résumé",
+          children: "<p>Salut</p>",
+          date: new Date("2026-03-16T00:00:00Z"),
+        } as unknown as Data,
+      ],
+      true,
+    );
+
+    assertEquals(page.data.url, "/fr/atom.xml");
+  });
+
+  it("creates one Atom page per configured language variant", () => {
+    const searchQueries: string[] = [];
+    const pages = createAtomFeedPages({
+      pages: [],
+      search: {
+        pages(query: string): Data[] {
+          searchQueries.push(query);
+          return [];
+        },
+      },
+      url(path: string, _absolute: boolean): string {
+        return `https://normco.re${path}`;
+      },
+      source: {
+        data: {
+          get(path: string) {
+            return path === "/" ? { author: "Phiphi" } : undefined;
+          },
+        },
+      },
+    } as unknown as Site);
+
+    assertEquals(
+      pages.map((page) => page.data.url),
+      ["/atom.xml", "/fr/atom.xml", "/zh-hans/atom.xml", "/zh-hant/atom.xml"],
+    );
+    assertEquals(searchQueries, [
+      "type=post lang=en",
+      "type=post lang=fr",
+      "type=post lang=zh-hans",
+      "type=post lang=zh-hant",
+    ]);
+  });
+
+  it("replaces stale generated Atom pages on subsequent runs", () => {
+    type Processor = () => void;
+
+    const state = { pages: [] as Page[] };
+    let processor: Processor | undefined;
+
+    const site = {
+      get pages(): Page[] {
+        return state.pages;
+      },
+      use(): void {
+        // Feed plugin registration is covered by createFeedOptions assertions.
+      },
+      process(callback: Processor): void {
+        processor = callback;
+      },
+      search: {
+        pages(query: string): Data[] {
+          if (query === "type=post lang=en") {
+            return [{
+              url: "/posts/hello/",
+              title: "Hello",
+              description: "Summary",
+              children: "<p>Body</p>",
+              date: new Date("2026-03-16T00:00:00Z"),
+            } as unknown as Data];
+          }
+
+          return [];
+        },
+      },
+      url(path: string, _absolute: boolean): string {
+        return `https://normco.re${path}`;
+      },
+      source: {
+        data: {
+          get(path: string) {
+            return path === "/" ? { author: "Phiphi" } : undefined;
+          },
+        },
+      },
+    } as unknown as Site;
+
+    registerFeeds(site);
+    if (processor === undefined) {
+      throw new Error("Expected feed processor to be registered");
+    }
+
+    processor();
+    const firstRun = [...state.pages];
+
+    state.pages = [...firstRun];
+    processor();
+
+    const atomUrls = state.pages.filter((page) =>
+      String(page.data.url).endsWith("/atom.xml") ||
+      page.data.url === "/atom.xml"
+    ).map((page) => page.data.url).sort();
+
+    assertEquals(atomUrls, [
+      "/atom.xml",
+      "/fr/atom.xml",
+      "/zh-hans/atom.xml",
+      "/zh-hant/atom.xml",
+    ]);
   });
 });
