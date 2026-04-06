@@ -28,6 +28,11 @@ choses :
 3. Exécute l’action de synchronisation OSS/CDN, qui restaure `_cache`, lance
    `deno task build`, synchronise `_site`, rafraîchit le CDN et nettoie.
 
+À ce stade, ce build fingerprint aussi la feuille partagée et les feuilles
+critiques par route, retire les source maps et supprime les fichiers optionnels
+de Pagefind qui ne sont plus référencés par le HTML final avant la synchro de
+`_site`.
+
 ```yaml
 name: Deploy static content to OSS
 

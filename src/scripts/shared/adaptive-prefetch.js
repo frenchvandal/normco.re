@@ -72,6 +72,18 @@ export class AdaptivePrefetch {
   }
 
   /**
+   * @param {string} rules
+   * @returns {HTMLScriptElement}
+   */
+  createAdaptiveSpeculationScript(rules) {
+    const element = this.runtime.document.createElement("script");
+    element.type = "speculationrules";
+    element.dataset.adaptive = "prefetch";
+    element.textContent = rules;
+    return element;
+  }
+
+  /**
    * @returns {PrefetchBudget}
    */
   get budget() {
@@ -244,14 +256,18 @@ export class AdaptivePrefetch {
     });
 
     if (this.speculationScript instanceof this.runtime.HTMLScriptElement) {
-      this.speculationScript.textContent = rules;
+      if (this.speculationScript.textContent === rules) {
+        return;
+      }
+
+      const nextScript = this.createAdaptiveSpeculationScript(rules);
+      this.speculationScript.after(nextScript);
+      this.speculationScript.remove();
+      this.speculationScript = nextScript;
       return;
     }
 
-    const element = this.runtime.document.createElement("script");
-    element.type = "speculationrules";
-    element.dataset.adaptive = "prefetch";
-    element.textContent = rules;
+    const element = this.createAdaptiveSpeculationScript(rules);
     this.runtime.document.head.append(element);
     this.speculationScript = element;
   }

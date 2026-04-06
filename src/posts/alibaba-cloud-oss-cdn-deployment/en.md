@@ -25,6 +25,10 @@ In steady-state production, this repository’s workflow now does three things:
 3. Runs the OSS/CDN sync action, which restores `_cache`, executes
    `deno task build`, uploads `_site`, refreshes CDN, and cleans up.
 
+At the moment, that build also fingerprints the shared and route-scoped critical
+CSS assets, strips source maps, and prunes optional Pagefind files that are not
+referenced by the final HTML before `_site` is synced.
+
 ```yaml
 name: Deploy static content to OSS
 

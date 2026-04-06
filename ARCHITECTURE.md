@@ -39,12 +39,14 @@ normco.re/
 ├── src/
 │   ├── _archetypes/
 │   ├── blog/client/
+│   ├── critical/
 │   ├── _components/
 │   ├── _includes/layouts/
 │   ├── posts/
 │   ├── tags/
 │   ├── scripts/
 │   ├── styles/
+│   │   ├── critical/
 │   │   └── components/
 │   ├── utils/
 │   │   └── i18n/
@@ -111,6 +113,8 @@ Lume's `multilanguage` plugin provides the routing model:
 
 - prepare `_quality/` before the build
 - fingerprint CSS and JavaScript assets after the build
+- strip source-map trailers and remove `.map` files from the final output
+- prune optional Pagefind assets that are not referenced by the generated HTML
 - verify browser-safe imports in generated output
 - run the final broken-link check against the rewritten output
 
@@ -235,10 +239,22 @@ Within that order, the file imports the generated Ant Design bridge alongside
 the token layer and keeps site-specific component modules inside the shared
 `layout` layer.
 
+The production shell also exposes route-scoped critical CSS entrypoints under
+`src/critical/`. These entrypoints import `src/styles/critical/common.css` plus
+the route-specific component modules needed for the initial above-the-fold
+render. Public home, about, posts archive, tag, post detail, and syndication
+routes can therefore block on a smaller critical stylesheet before swapping in
+the fingerprinted shared `/style.css` bundle. Uncovered routes, along with the
+internal `/pretext/probe/` route, intentionally keep the full shared stylesheet
+render-blocking to preserve a conservative measurement path for editorial React
+surfaces and Pretext diagnostics.
+
 The production pipeline minifies CSS through Lightning CSS first, then runs
 PurgeCSS with a safelist for ARIA/data-state selectors, Pagefind runtime
 classes, and the small set of site-managed state classes that are only present
-after hydration.
+after hydration. After asset fingerprinting, the build strips source-map
+references, removes emitted `.map` files, and prunes optional Pagefind bundles
+that the final HTML never references.
 
 Typography relies on the local system font stacks exposed through
 `src/styles/antd/theme-tokens.css`, and the build does not generate bundled

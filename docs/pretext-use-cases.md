@@ -534,6 +534,9 @@ Verdict : **intégration utile, déjà exploitée dans le socle actuel**.
   test n'expose pas de vraie pile CSS ;
 - préférer un `line-height` explicite sur les surfaces mesurées, car CSS
   `normal` reste nécessairement approximé côté mesure ;
+- garder `/pretext/probe/` sur un chemin de styles conservateur même si les
+  routes publiques utilisent désormais du critical CSS par route, afin que les
+  mesures et captures continuent à voir le shell partagé complet ;
 - ne pas supposer qu'une idée séduisante dans le README Pretext est
   automatiquement prioritaire pour `normco.re`.
 

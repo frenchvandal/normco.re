@@ -25,7 +25,9 @@ route-scoped Ant Design blog islands, and deployed as a static site to
 - The stylesheet entrypoint is `src/style.css`, which composes the site's five
   cascade layers (`tokens`, `reset`, `base`, `layout`, `utilities`) while
   importing the generated Ant Design bridge and component modules into that
-  ordered pipeline.
+  ordered pipeline. Route-scoped critical CSS entrypoints under `src/critical/`
+  reuse the same shared modules so the initial above-the-fold shell can load
+  before the deferred full bundle without drifting from the main stylesheet.
 - The writing archive is enhanced by a route-split Ant Design client with a
   timeline and month navigator rather than duplicating the home page.
 - Search exposes inline loading, retry, and result feedback with accessible
@@ -100,6 +102,7 @@ deno task build
 ├── src/
 │   ├── _archetypes/
 │   ├── blog/client/
+│   ├── critical/
 │   ├── _components/
 │   ├── _includes/layouts/
 │   ├── posts/
@@ -112,6 +115,7 @@ deno task build
 │   ├── tags/
 │   ├── scripts/
 │   ├── styles/
+│   │   ├── critical/
 │   │   └── components/
 │   ├── utils/
 │   │   └── i18n/
@@ -218,6 +222,8 @@ for the interactive blog client bundles.
 - Local theme bridge: `src/styles/antd/theme-tokens.css`
 - Generated Ant Design bridge: `src/styles/generated/antd-components.css`
 - Component layout modules: `src/styles/components/*.css`
+- Shared critical-css imports: `src/styles/critical/common.css`
+- Route-critical entrypoints: `src/critical/*.css`
 - Shell layout implementation: `src/styles/layout.css`
 - Global stylesheet entrypoint: `src/style.css`
 - Frontend React/Ant Design config: `src/blog/client/deno.json`
@@ -233,7 +239,9 @@ folders are not part of the normal workflow.
 In production builds, Lume runs Lightning CSS before PurgeCSS. PurgeCSS is
 configured with an explicit safelist for ARIA/data-state selectors, Pagefind
 runtime classes, and the small set of site-specific state classes that are only
-visible after hydration.
+visible after hydration. After fingerprinting, the post-build pipeline also
+strips source-map trailers, removes `.map` files, and prunes optional Pagefind
+assets that are not referenced by the final HTML output.
 
 Interactive UI is intentionally narrow and explicit:
 
@@ -254,6 +262,9 @@ Interactive UI is intentionally narrow and explicit:
 
 The production build runs several checks in sequence:
 
+- CSS and JavaScript asset fingerprinting
+- source-map stripping and source-map file removal
+- pruning of unreferenced optional Pagefind output
 - HTML validation
 - browser-safe import validation
 - broken-link validation against final output after asset fingerprinting
@@ -276,7 +287,10 @@ role using GitHub OIDC, syncs `_site/` to OSS, and refreshes or preloads CDN
 paths. The workflow inherits the build-time quality gates, so a failing build or
 link check blocks deployment. The checkout step intentionally keeps
 `fetch-depth: 0` so the build can resolve per-file Git creation dates, update
-timestamps, and commit links in CI.
+timestamps, and commit links in CI. Production output now includes fingerprinted
+route-scoped critical CSS bundles alongside the shared stylesheet, while
+non-deployable source maps and unused optional Pagefind files are pruned before
+OSS sync.
 
 The deployment walkthrough in
 [src/posts/alibaba-cloud-oss-cdn-deployment/en.md](./src/posts/alibaba-cloud-oss-cdn-deployment/en.md)
