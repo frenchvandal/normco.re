@@ -109,7 +109,7 @@ export function bindLinkPrefetchIntent(runtime) {
       return null;
     }
 
-    if (link.target === "_blank" || link.download.length > 0) {
+    if (link.target === "_blank" || link.hasAttribute("download")) {
       return null;
     }
 
@@ -343,11 +343,13 @@ export function bindLinkPrefetchIntent(runtime) {
           observeLink(node);
         }
 
-        if (!queuePrefetch(url) || !hasRemainingRequestBudget()) {
-          if (!hasRemainingRequestBudget()) {
-            break;
-          }
+        const queued = queuePrefetch(url);
 
+        if (!hasRemainingRequestBudget()) {
+          break;
+        }
+
+        if (!queued) {
           continue;
         }
       }

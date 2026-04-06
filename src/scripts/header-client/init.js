@@ -685,9 +685,10 @@ export function bindHeaderClient(runtime) {
     if (getCurrentPath() === getTargetPath(targetUrl)) {
       closeCurrentDisclosure(false);
 
-      const control = getControlForSurface(
-        option.closest("[data-language-panel]") ?? doc.body,
-      );
+      const languagePanel = option.closest("[data-language-panel]");
+      const control = languagePanel instanceof resolvedRuntime.HTMLElement
+        ? getControlForSurface(languagePanel)
+        : null;
 
       if (control instanceof resolvedRuntime.HTMLElement) {
         control.focus({ preventScroll: true });

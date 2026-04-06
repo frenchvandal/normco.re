@@ -82,7 +82,6 @@ const STATIC_ASSETS = [
   OFFLINE_URL_BY_LANGUAGE.zhHant,
 ];
 
-const FEED_TTL_MS = 30 * 60 * 1000;
 const HTML_CONTENT_TYPE = "text/html; charset=UTF-8";
 const TEXT_CONTENT_TYPE = "text/plain; charset=UTF-8";
 const PRECACHE_FETCH_TIMEOUT_MS = 8_000;
@@ -279,15 +278,6 @@ function resolveLanguageByPathname(pathname) {
 }
 
 /**
- * @param {string|null} cachedAtHeader
- * @returns {number}
- */
-function parseCachedAtHeader(cachedAtHeader) {
-  const parsed = Number(cachedAtHeader ?? "0");
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-/**
  * Cache-first strategy for static assets (CSS, JS, images, fonts).
  *
  * @param {Request} request
@@ -397,13 +387,6 @@ async function staleWhileRevalidateFeed(request) {
     .catch(() => undefined);
 
   if (cached !== undefined) {
-    const cachedAt = parseCachedAtHeader(cached.headers.get("x-sw-cached-at"));
-    const isFresh = Date.now() - cachedAt < FEED_TTL_MS;
-
-    if (!isFresh) {
-      void refreshPromise;
-    }
-
     return cached;
   }
 

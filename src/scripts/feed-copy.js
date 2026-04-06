@@ -284,9 +284,15 @@ export function bindFeedCopy(runtime) {
    */
   async function handleCopy(widget) {
     setCopyState(widget, "idle");
-    const copied = await copyText(runtime, toAbsoluteUrl(widget.copyPath));
-    setCopyState(widget, copied ? "copied" : "error");
-    clearCopyStateLater(widget);
+
+    try {
+      const copied = await copyText(runtime, toAbsoluteUrl(widget.copyPath));
+      setCopyState(widget, copied ? "copied" : "error");
+    } catch {
+      setCopyState(widget, "error");
+    } finally {
+      clearCopyStateLater(widget);
+    }
   }
 
   for (const control of copyControls) {

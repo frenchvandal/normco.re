@@ -20,6 +20,14 @@ export async function copyText(runtime, text) {
     }
   }
 
+  const execCommand = typeof runtime.document.execCommand === "function"
+    ? runtime.document.execCommand.bind(runtime.document)
+    : null;
+
+  if (execCommand === null) {
+    return false;
+  }
+
   const body = runtime.document.body;
 
   if (!(body instanceof runtime.HTMLElement)) {
@@ -49,7 +57,7 @@ export async function copyText(runtime, text) {
     textArea.focus({ preventScroll: true });
     textArea.select();
     textArea.setSelectionRange(0, textArea.value.length);
-    return runtime.document.execCommand("copy");
+    return execCommand("copy");
   } catch {
     return false;
   } finally {

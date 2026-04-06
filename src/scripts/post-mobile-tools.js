@@ -202,6 +202,6 @@ export function bindPostMobileTools(runtime) {
   }
 }
 
-bindPostMobileTools(
-  /** @type {Window & typeof globalThis} */ (globalThis),
-);
+if (typeof window !== "undefined") {
+  bindPostMobileTools(window);
+}

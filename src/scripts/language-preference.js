@@ -1,4 +1,7 @@
 // @ts-check
+const LANGUAGE_SEPARATOR_PATTERN = /[-_]/gu;
+const LANGUAGE_PARTS_PATTERN = /[-_]/u;
+
 (() => {
   const currentScript = globalThis.document.currentScript;
 
@@ -23,7 +26,7 @@
   const supportedByKey = new Map(
     supportedLanguages.flatMap((language) => {
       const lowered = language.toLowerCase();
-      const collapsed = lowered.replace(/[-_]/gu, "");
+      const collapsed = lowered.replace(LANGUAGE_SEPARATOR_PATTERN, "");
       return collapsed === lowered
         ? [[lowered, language]]
         : [[lowered, language], [collapsed, language]];
@@ -45,7 +48,10 @@
       return null;
     }
 
-    const collapsedValue = normalizedValue.replace(/[-_]/gu, "");
+    const collapsedValue = normalizedValue.replace(
+      LANGUAGE_SEPARATOR_PATTERN,
+      "",
+    );
     const directLanguage = supportedByKey.get(normalizedValue) ??
       supportedByKey.get(collapsedValue);
 
@@ -53,9 +59,9 @@
       return directLanguage;
     }
 
-    const localeParts = normalizedValue.split(/[-_]/u).filter((part) =>
-      part.length > 0
-    );
+    const localeParts = normalizedValue.split(LANGUAGE_PARTS_PATTERN).filter((
+      part,
+    ) => part.length > 0);
     const base = localeParts[0];
 
     if (base === undefined) {

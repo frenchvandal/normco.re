@@ -729,7 +729,9 @@ export function createHeaderSearch(runtime, root, isKeyboardInteraction) {
       ) {
         return;
       }
-    } else if (doc.querySelector(`link[rel="stylesheet"][href="${href}"]`)) {
+    } else if (
+      doc.querySelector(`link[rel="stylesheet"][href="${href}"]`) !== null
+    ) {
       return;
     }
 
