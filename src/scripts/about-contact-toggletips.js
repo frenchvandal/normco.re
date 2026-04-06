@@ -294,12 +294,18 @@ export function bindAboutContactToggletips(runtime) {
 
     if (popover !== null) {
       if (shouldUseNativePopover(popover)) {
-        popover.hidden = false;
+        if (open) {
+          popover.hidden = false;
 
-        if (open && !isNativePopoverOpen(popover)) {
-          popover.showPopover();
-        } else if (!open && isNativePopoverOpen(popover)) {
-          popover.hidePopover();
+          if (!isNativePopoverOpen(popover)) {
+            popover.showPopover();
+          }
+        } else {
+          if (isNativePopoverOpen(popover)) {
+            popover.hidePopover();
+          }
+
+          popover.hidden = true;
         }
       } else {
         if (isNativePopoverOpen(popover)) {
@@ -397,6 +403,7 @@ export function bindAboutContactToggletips(runtime) {
     if (supportsNativePopover(popover)) {
       popover.addEventListener("toggle", () => {
         const open = isNativePopoverOpen(popover);
+        popover.hidden = !open;
         container.classList.toggle("site-popover--open", open);
         container.classList.toggle("site-toggletip--open", open);
         trigger.setAttribute("aria-expanded", open ? "true" : "false");

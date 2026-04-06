@@ -502,6 +502,8 @@ describe("about-contact-toggletips.js", () => {
       const [popover] = getPopovers(window);
       assert(trigger);
       assert(popover);
+      assertEquals(popover.hidden, true);
+      assertEquals(popover.getAttribute("data-popover-open"), null);
 
       trigger.click();
       await flushNodeTimers(1);
@@ -517,6 +519,7 @@ describe("about-contact-toggletips.js", () => {
       closeButton.click();
       await flushNodeTimers(1);
 
+      assertEquals(popover.hidden, true);
       assertEquals(popover.getAttribute("data-popover-open"), null);
       assertEquals(trigger.getAttribute("aria-expanded"), "false");
     } finally {
