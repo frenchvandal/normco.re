@@ -36,6 +36,7 @@ import {
   SITE_SHORT_NAME,
 } from "../../utils/site-identity.ts";
 import { THEME_BOOTSTRAP_SCRIPT } from "../../utils/theme-bootstrap.ts";
+import { CRITICAL_CSS } from "../../utils/critical-css.ts";
 
 // Lume JSX renders a fragment here; the document doctype still has to be
 // injected explicitly ahead of `<html>`.
@@ -44,6 +45,19 @@ const DOCTYPE = { __html: "<!doctype html>\n" } as const;
 // first paint while still setting the resolved color mode before CSS applies.
 const THEME_BOOTSTRAP = {
   __html: THEME_BOOTSTRAP_SCRIPT,
+} as const;
+// Critical CSS bundle (tokens layer, reset layer, hand-curated base and
+// layout-shell slice). Inlined before any external stylesheet so the
+// editorial routes paint without FOUC and Pretext sees `--ph-font-measure`
+// on the first computed-style read. See `src/utils/critical-css.ts`.
+const CRITICAL_STYLE = { __html: CRITICAL_CSS } as const;
+// Inline `<link>` swap that turns `/style.css` from render-blocking into a
+// preload that promotes itself to a stylesheet on load. Pages that mount
+// React/Ant Design surfaces still load `blog-antd.css` synchronously via
+// `extraStylesheets`, which keeps Pretext-instrumented components free of
+// CLS during hydration.
+const STYLESHEET_PRELOAD_SWAP = {
+  __html: "this.onload=null;this.rel='stylesheet';",
 } as const;
 const LANGUAGE_PREFERENCE_BOOTSTRAP = {
   __html: LANGUAGE_PREFERENCE_SCRIPT,
@@ -331,11 +345,17 @@ export default async (
               Explicit font preloads were removed to avoid noisy unused-preload
               warnings in Chromium. */
           }
+          <style>{CRITICAL_STYLE}</style>
           <link
-            rel="stylesheet"
+            rel="preload"
             href="/style.css"
+            as="style"
             fetchpriority="high"
+            onload={STYLESHEET_PRELOAD_SWAP.__html}
           />
+          <noscript>
+            <link rel="stylesheet" href="/style.css" />
+          </noscript>
           {extraStylesheets?.map((href: string) => (
             <link
               key={href}
