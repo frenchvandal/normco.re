@@ -3,6 +3,7 @@
     "@blog/archive-antd": "./archive-antd.ts",
     "@blog/antd-icons": "./antd-icons.ts",
     "@blog/common-antd": "./common-antd.ts",
+    "@blog/gallery-antd": "./gallery-antd.ts",
     "@blog/post-antd": "./post-antd.ts",
     "@blog/tag-antd": "./tag-antd.ts",
 

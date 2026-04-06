@@ -66,6 +66,11 @@ const SCRIPT_ASSET_DESCRIPTORS = [
     precache: true,
   },
   {
+    url: "/scripts/gallery.js",
+    fingerprint: false,
+    precache: false,
+  },
+  {
     url: "/scripts/post-code-copy.js",
     fingerprint: true,
     precache: true,

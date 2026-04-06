@@ -35,6 +35,7 @@ export const SITE_TRANSLATIONS = {
     navigation: {
       home: "Home",
       writing: "Articles",
+      gallery: "Gallery",
       about: "About",
     },
     languageNames: {
@@ -189,6 +190,18 @@ export const SITE_TRANSLATIONS = {
         "Return to the full archive when you want every topic and time period back in view.",
       archiveLinkLabel: "Back to archive",
     },
+    gallery: {
+      title: "Gallery",
+      lead:
+        "Every image published across the posts, gathered into one visual index.",
+      archiveLinkLabel: "Back to articles",
+      imagesAriaLabel: "Post image gallery",
+      openPostLabel: "Open article",
+      countOneLabel: "[COUNT] image",
+      countManyLabel: "[COUNT] images",
+      emptyStateTitle: "No images yet.",
+      emptyStateMessage: "No post images are available yet.",
+    },
     post: {
       breadcrumbAriaLabel: "Post breadcrumb",
       navigationAriaLabel: "Post navigation",
@@ -264,6 +277,7 @@ export const SITE_TRANSLATIONS = {
     navigation: {
       home: "Accueil",
       writing: "Articles",
+      gallery: "Galerie",
       about: "À propos",
     },
     languageNames: {
@@ -419,6 +433,18 @@ export const SITE_TRANSLATIONS = {
         "Revenez aux archives complètes pour retrouver tous les sujets et toutes les périodes.",
       archiveLinkLabel: "Retour aux articles",
     },
+    gallery: {
+      title: "Galerie",
+      lead:
+        "Toutes les images publiées dans les articles, réunies dans une seule archive visuelle.",
+      archiveLinkLabel: "Retour aux articles",
+      imagesAriaLabel: "Galerie d’images des articles",
+      openPostLabel: "Ouvrir l’article",
+      countOneLabel: "[COUNT] image",
+      countManyLabel: "[COUNT] images",
+      emptyStateTitle: "Aucune image pour l’instant.",
+      emptyStateMessage: "Aucune image d’article n’est encore disponible.",
+    },
     post: {
       breadcrumbAriaLabel: "Fil d’Ariane de l’article",
       navigationAriaLabel: "Navigation entre articles",
@@ -494,6 +520,7 @@ export const SITE_TRANSLATIONS = {
     navigation: {
       home: "首页",
       writing: "文章",
+      gallery: "图集",
       about: "关于",
     },
     languageNames: {
@@ -640,6 +667,17 @@ export const SITE_TRANSLATIONS = {
       archiveHint: "如果你想重新看到所有主题与时间范围，可以回到完整归档。",
       archiveLinkLabel: "返回文章",
     },
+    gallery: {
+      title: "图集",
+      lead: "把所有文章中的图片汇集到同一个可视化索引里。",
+      archiveLinkLabel: "返回文章",
+      imagesAriaLabel: "文章图片图集",
+      openPostLabel: "打开原文",
+      countOneLabel: "[COUNT] 张图片",
+      countManyLabel: "[COUNT] 张图片",
+      emptyStateTitle: "还没有图片。",
+      emptyStateMessage: "目前还没有可展示的文章图片。",
+    },
     post: {
       breadcrumbAriaLabel: "文章面包屑导航",
       navigationAriaLabel: "文章导航",
@@ -714,6 +752,7 @@ export const SITE_TRANSLATIONS = {
     navigation: {
       home: "首頁",
       writing: "文章",
+      gallery: "圖集",
       about: "關於",
     },
     languageNames: {
@@ -859,6 +898,17 @@ export const SITE_TRANSLATIONS = {
       archiveHintTitle: "查看全貌",
       archiveHint: "如果你想重新看到所有主題與時間範圍，可以回到完整彙整。",
       archiveLinkLabel: "返回文章",
+    },
+    gallery: {
+      title: "圖集",
+      lead: "把所有文章中的圖片集中到同一個視覺索引裡。",
+      archiveLinkLabel: "返回文章",
+      imagesAriaLabel: "文章圖片圖集",
+      openPostLabel: "開啟原文",
+      countOneLabel: "[COUNT] 張圖片",
+      countManyLabel: "[COUNT] 張圖片",
+      emptyStateTitle: "還沒有圖片。",
+      emptyStateMessage: "目前還沒有可顯示的文章圖片。",
     },
     post: {
       breadcrumbAriaLabel: "文章麵包屑導覽",

@@ -11,6 +11,7 @@ import {
   Empty,
   Flex,
   FloatButton,
+  Masonry,
   Progress,
   Row,
   Space,
@@ -292,6 +293,53 @@ function createBlogSeed() {
       React.createElement(Paragraph, null, "Summary copy."),
       React.createElement(Button, { href: "/posts/example/" }, "Read article"),
     ),
+    React.createElement(Masonry, {
+      columns: { xs: 1, sm: 2, md: 3 },
+      gutter: { xs: 16, sm: 20, md: 24 },
+      items: [
+        {
+          key: "gallery-a",
+          data: { title: "Gallery A" },
+          children: React.createElement(
+            "article",
+            { className: "blog-antd-gallery-card" },
+            React.createElement("img", {
+              src:
+                "/posts/lorem-ipsum/images/amol-srivastava-uOYc6OlgpUI-unsplash.jpg",
+              alt: "Gallery A",
+              width: 1260,
+              height: 840,
+            }),
+            React.createElement(
+              Paragraph,
+              null,
+              "A measured gallery caption.",
+            ),
+          ),
+        },
+        {
+          key: "gallery-b",
+          data: { title: "Gallery B" },
+          children: React.createElement(
+            "article",
+            { className: "blog-antd-gallery-card" },
+            React.createElement("img", {
+              src:
+                "/posts/vestibulum-ante/images/bruno-martins-4cwf-iW6I1Q-unsplash.jpg",
+              alt: "Gallery B",
+              width: 1500,
+              height: 1000,
+            }),
+            React.createElement(
+              Paragraph,
+              null,
+              "Another gallery caption.",
+            ),
+          ),
+        },
+      ],
+      itemRender: (itemInfo: { children: ReactNode }) => itemInfo.children,
+    }),
     React.createElement(
       Space,
       { wrap: true },

@@ -805,13 +805,15 @@
 
   .blog-antd-feature-card__title,
   .blog-antd-story-card__title,
-  .blog-antd-archive-timeline__title {
+  .blog-antd-archive-timeline__title,
+  .blog-antd-gallery-card__title {
     min-block-size: var(--pretext-title-height, auto);
   }
 
   .blog-antd-feature-card__summary,
   .blog-antd-story-card__summary,
-  .blog-antd-archive-timeline__summary {
+  .blog-antd-archive-timeline__summary,
+  .blog-antd-gallery-card__summary {
     min-block-size: var(--pretext-summary-height, auto);
   }
 
@@ -833,6 +835,227 @@
         var(--ph-color-accent-fg) 16%,
         var(--ph-color-border-default)
       );
+  }
+
+  .blog-antd-page--gallery .blog-antd-page-title {
+    max-inline-size: 8ch;
+    font-size: clamp(2.5rem, 2rem + 2vw, 4.4rem);
+  }
+
+  .blog-antd-page--gallery .blog-antd-page-lead {
+    max-inline-size: 46ch;
+  }
+
+  .blog-antd-gallery-hero {
+    display: grid;
+    gap: clamp(var(--ph-space-5), 3vw, var(--ph-space-7));
+    align-items: end;
+  }
+
+  .blog-antd-gallery-hero__copy {
+    max-inline-size: 58rem;
+  }
+
+  .blog-antd-gallery-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ph-space-3);
+    padding-block-start: var(--ph-space-2);
+  }
+
+  .blog-antd-gallery-section,
+  .blog-antd-gallery-root,
+  .blog-antd-gallery-surface {
+    min-inline-size: 0;
+  }
+
+  .blog-antd-gallery-surface {
+    padding: clamp(var(--ph-space-3), 1.6vw, var(--ph-space-4));
+    border-radius: var(--ph-radius-surface-xl);
+    background:
+      radial-gradient(
+        circle at top right,
+        color-mix(
+          in oklch,
+          var(--ph-color-accent-fg) 8%,
+          transparent
+        ),
+        transparent 44%
+      ),
+      linear-gradient(
+      180deg,
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-default) 98%,
+        var(--ph-surface-accent)
+      ),
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-default) 95%,
+        var(--ph-surface-accent)
+      )
+    );
+  }
+
+  .blog-antd-gallery-fallback {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    column-gap: clamp(var(--ph-space-4), 2vw, var(--ph-space-5));
+    columns: 1;
+  }
+
+  .blog-antd-gallery-fallback__item {
+    break-inside: avoid;
+    margin-block-end: clamp(var(--ph-space-4), 2vw, var(--ph-space-5));
+  }
+
+  .blog-antd-gallery-masonry,
+  .blog-antd-gallery-masonry__item {
+    min-inline-size: 0;
+  }
+
+  .blog-antd-gallery-card {
+    overflow: hidden;
+    border: var(--ph-border-hairline) solid
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 14%,
+        var(--ph-color-border-default)
+      );
+    border-radius: var(--ph-radius-surface-xl);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(
+          in oklch,
+          var(--ph-color-canvas-default) 99%,
+          var(--ph-surface-accent)
+        ),
+        color-mix(
+          in oklch,
+          var(--ph-color-canvas-default) 94%,
+          var(--ph-surface-accent)
+        )
+      ),
+      repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 5rem,
+      color-mix(in oklch, var(--ph-grid-rule) 88%, transparent) 5rem,
+      color-mix(in oklch, var(--ph-grid-rule) 88%, transparent) calc(5rem + 1px)
+    );
+    box-shadow: 0 16px 32px
+      color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 6%,
+        transparent
+      );
+    transition:
+      transform var(--ph-duration-default) var(--ph-easing-default),
+      border-color var(--ph-duration-default) var(--ph-easing-default),
+      box-shadow var(--ph-duration-default) var(--ph-easing-default);
+  }
+
+  .blog-antd-gallery-card:hover,
+  .blog-antd-gallery-card:focus-within {
+    transform: translateY(-2px);
+    border-color: color-mix(
+      in oklch,
+      var(--ph-color-accent-fg) 24%,
+      var(--ph-color-border-default)
+    );
+    box-shadow: 0 20px 40px
+      color-mix(
+        in oklch,
+        var(--ph-color-fg-default) 8%,
+        transparent
+      );
+  }
+
+  .blog-antd-gallery-card__media-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    background: color-mix(
+      in oklch,
+      var(--ph-color-canvas-inset) 20%,
+      var(--ph-color-canvas-default)
+    );
+  }
+
+  .blog-antd-gallery-card__media-link picture {
+    display: block;
+  }
+
+  .blog-antd-gallery-card__image,
+  .blog-antd-gallery-card__media-link img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  .blog-antd-gallery-card__copy {
+    display: grid;
+    gap: var(--ph-space-3);
+    padding: clamp(var(--ph-space-4), 2vw, var(--ph-space-5));
+  }
+
+  .blog-antd-gallery-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ph-space-2);
+    align-items: center;
+    margin: 0;
+    color: var(--ph-color-fg-muted);
+    font-family: var(--ph-font-mono);
+    font-size: var(--ph-text-xs);
+    letter-spacing: var(--ph-letter-spacing-wide);
+    text-transform: uppercase;
+  }
+
+  .blog-antd-gallery-card__title {
+    margin: 0;
+    color: var(--ph-color-fg-default);
+    font-family: var(--ph-font-sans);
+    font-size: clamp(1.35rem, 1.15rem + 0.85vw, 1.9rem);
+    font-weight: 760;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+
+  .blog-antd-gallery-card__title a,
+  .blog-antd-gallery-card__cta a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .blog-antd-gallery-card__title a:hover,
+  .blog-antd-gallery-card__title a:focus-visible {
+    color: var(--ph-color-accent-fg);
+  }
+
+  .blog-antd-gallery-card__summary {
+    max-inline-size: 36ch;
+    margin: 0;
+    color: var(--ph-color-fg-muted);
+    font-size: var(--ph-text-sm);
+    line-height: var(--ph-lh-relaxed);
+  }
+
+  .blog-antd-gallery-card__cta {
+    margin: 0;
+    color: var(--ph-color-accent-emphasis);
+    font-family: var(--ph-font-mono);
+    font-size: var(--ph-text-xs);
+    font-weight: 600;
+    letter-spacing: var(--ph-letter-spacing-wide);
+    text-transform: uppercase;
+  }
+
+  .blog-antd-gallery-card__cta a:hover,
+  .blog-antd-gallery-card__cta a:focus-visible {
+    color: var(--ph-color-accent-fg);
   }
 
   .blog-antd-signal-list {
@@ -2002,8 +2225,18 @@
   }
 
   @media (min-width: 72rem) {
+    .blog-antd-gallery-fallback {
+      columns: 3;
+    }
+
     .blog-antd-archive-layout--with-nav {
       grid-template-columns: minmax(16rem, 18rem) minmax(0, 1fr);
+    }
+  }
+
+  @media (min-width: 48rem) and (max-width: 71.99rem) {
+    .blog-antd-gallery-fallback {
+      columns: 2;
     }
   }
 

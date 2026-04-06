@@ -19,11 +19,20 @@ const archiveAntdSource = Deno.readTextFileSync(
 const archiveAntdBuild = Deno.readTextFileSync(
   new URL("./blog/client/archive-antd.build.ts", import.meta.url),
 );
+const galleryAntdSource = Deno.readTextFileSync(
+  new URL("./blog/client/gallery-antd.ts", import.meta.url),
+);
+const galleryAntdBuild = Deno.readTextFileSync(
+  new URL("./blog/client/gallery-antd.build.ts", import.meta.url),
+);
 const postAppSource = Deno.readTextFileSync(
   new URL("./blog/client/PostApp.tsx", import.meta.url),
 );
 const archiveAppSource = Deno.readTextFileSync(
   new URL("./blog/client/ArchiveApp.tsx", import.meta.url),
+);
+const galleryAppSource = Deno.readTextFileSync(
+  new URL("./blog/client/GalleryApp.tsx", import.meta.url),
 );
 const pretextStoryCoreSource = Deno.readTextFileSync(
   new URL("./blog/client/pretext-story-core.ts", import.meta.url),
@@ -109,6 +118,14 @@ describe("blog client interaction contracts", () => {
     assertStringIncludes(archiveAntdSource, "Skeleton,");
     assertStringIncludes(archiveAntdBuild, "Skeleton,");
     assertStringIncludes(archiveAntdBuild, "import Skeleton");
+  });
+
+  it("keeps the gallery Ant Design build alias aligned with its source exports", () => {
+    assertStringIncludes(
+      galleryAntdSource,
+      'import { Masonry } from "npm/antd";',
+    );
+    assertStringIncludes(galleryAntdBuild, "import Masonry");
   });
 
   it("wires Tooltip around meta pills with accessible structure", () => {
@@ -212,5 +229,25 @@ describe("blog client interaction contracts", () => {
       blogAntdStyles,
       "min-block-size: var(--pretext-title-height, auto);",
     );
+  });
+
+  it("keeps gallery text stabilization and static media reuse wired in", () => {
+    assertStringIncludes(galleryAppSource, "usePretextTextStyle");
+    assertStringIncludes(
+      galleryAppSource,
+      "titleSelector: PRETEXT_GALLERY_CARD_TITLE_SELECTOR",
+    );
+    assertStringIncludes(galleryAppSource, "mergeStaticMediaHtml");
+    assertStringIncludes(galleryAppSource, "dangerouslySetInnerHTML");
+    assertStringIncludes(
+      pretextSelectorsSource,
+      'PRETEXT_GALLERY_CARD_TITLE_CLASS = "blog-antd-gallery-card__title"',
+    );
+    assertStringIncludes(
+      pretextSelectorsSource,
+      'PRETEXT_GALLERY_CARD_SUMMARY_CLASS =\n  "blog-antd-gallery-card__summary"',
+    );
+    assertStringIncludes(blogAntdStyles, ".blog-antd-gallery-card__title {");
+    assertStringIncludes(blogAntdStyles, ".blog-antd-gallery-fallback {");
   });
 });

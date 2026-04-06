@@ -63,6 +63,7 @@ export function registerPlugins(
           "@blog/archive-antd": "./src/blog/client/archive-antd.build.ts",
           "@blog/antd-icons": "./src/blog/client/antd-icons.build.ts",
           "@blog/common-antd": "./src/blog/client/common-antd.build.ts",
+          "@blog/gallery-antd": "./src/blog/client/gallery-antd.build.ts",
           "@blog/post-antd": "./src/blog/client/post-antd.build.ts",
           "@blog/tag-antd": "./src/blog/client/tag-antd.build.ts",
         },

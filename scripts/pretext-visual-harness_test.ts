@@ -16,7 +16,11 @@ describe("buildPretextVisualHarnessScenarios()", () => {
   it("covers the public routes, the browser probe route, four languages, and both viewports", () => {
     const scenarios = buildPretextVisualHarnessScenarios();
 
-    assertEquals(scenarios.length, 40);
+    assertEquals(scenarios.length, 48);
+    assertEquals(
+      scenarios.filter((scenario) => scenario.routeKind === "gallery").length,
+      8,
+    );
     assertEquals(
       scenarios.filter((scenario) => scenario.routeKind === "archive").length,
       8,
@@ -27,11 +31,16 @@ describe("buildPretextVisualHarnessScenarios()", () => {
     );
     assertEquals(
       scenarios.filter((scenario) => scenario.language === "zhHans").length,
-      10,
+      12,
     );
     assertEquals(
       scenarios.filter((scenario) => scenario.viewportId === "desktop").length,
-      20,
+      24,
+    );
+    assertEquals(
+      scenarios.find((scenario) => scenario.stem === "gallery-fr-mobile")
+        ?.pathname,
+      "/fr/gallery/",
     );
     assertEquals(
       scenarios.find((scenario) => scenario.stem === "tag-fr-mobile")?.pathname,

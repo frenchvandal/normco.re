@@ -11,6 +11,7 @@ export type PageContext = Readonly<{
   homeUrl: string;
   archiveUrl: string;
   tagsUrl: string;
+  galleryUrl: string;
   aboutUrl: string;
   syndicationPageUrl: string;
 }>;
@@ -72,6 +73,7 @@ export function getPageContext(language: SiteLanguage): PageContext {
     homeUrl: getLocalizedUrl("/", language),
     archiveUrl: getLocalizedUrl("/posts/", language),
     tagsUrl: getLocalizedUrl("/tags/", language),
+    galleryUrl: getLocalizedUrl("/gallery/", language),
     aboutUrl: getLocalizedUrl("/about/", language),
     syndicationPageUrl: getLocalizedUrl("/syndication/", language),
   };

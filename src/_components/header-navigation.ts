@@ -55,8 +55,14 @@ export function buildHeaderNavigation(
     readonly language: SiteLanguage;
   },
 ): readonly HeaderNavigationItem[] {
-  const { aboutUrl, archiveUrl: postsUrl, homeUrl, tagsUrl, translations } =
-    getPageContext(language);
+  const {
+    aboutUrl,
+    archiveUrl: postsUrl,
+    galleryUrl,
+    homeUrl,
+    tagsUrl,
+    translations,
+  } = getPageContext(language);
 
   return [
     {
@@ -69,6 +75,11 @@ export function buildHeaderNavigation(
       label: translations.navigation.writing,
       isCurrent: isCurrentPage(postsUrl, currentUrl) ||
         isCurrentPage(tagsUrl, currentUrl),
+    },
+    {
+      href: galleryUrl,
+      label: translations.navigation.gallery,
+      isCurrent: isCurrentPage(galleryUrl, currentUrl),
     },
     {
       href: aboutUrl,

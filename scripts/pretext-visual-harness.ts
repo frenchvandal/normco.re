@@ -206,6 +206,7 @@ export type PretextVisualHarnessViewportId =
 
 export type PretextVisualHarnessRouteKind =
   | "home"
+  | "gallery"
   | "tag"
   | "archive"
   | "post"
@@ -229,6 +230,11 @@ const PRETEXT_VISUAL_HARNESS_SELECTORS = {
     { selector: ".editorial-home-featured-story__title", minCount: 1 },
     { selector: ".post-card-title", minCount: 1 },
     { selector: ".post-card-summary", minCount: 1 },
+  ],
+  gallery: [
+    { selector: "#gallery-title", minCount: 1 },
+    { selector: ".blog-antd-gallery-card__title", minCount: 1 },
+    { selector: ".blog-antd-gallery-card__summary", minCount: 1 },
   ],
   tag: [
     { selector: "#tag-page-title", minCount: 1 },
@@ -268,6 +274,8 @@ function createRoutePathname(
   switch (routeKind) {
     case "home":
       return getLocalizedUrl("/", language);
+    case "gallery":
+      return getLocalizedUrl("/gallery/", language);
     case "tag":
       return getLocalizedUrl(
         `/tags/${PRETEXT_VISUAL_HARNESS_FIXTURES.tagSlug}/`,

@@ -13,6 +13,7 @@ describe("resolvePageSetup()", () => {
       homeUrl: "/fr/",
       archiveUrl: "/fr/posts/",
       tagsUrl: "/fr/tags/",
+      galleryUrl: "/fr/gallery/",
       aboutUrl: "/fr/about/",
       syndicationPageUrl: "/fr/syndication/",
     });
@@ -27,6 +28,7 @@ describe("resolvePageSetup()", () => {
       homeUrl: "/",
       archiveUrl: "/posts/",
       tagsUrl: "/tags/",
+      galleryUrl: "/gallery/",
       aboutUrl: "/about/",
       syndicationPageUrl: "/syndication/",
     });

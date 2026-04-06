@@ -57,8 +57,10 @@ describe("header-navigation.ts", () => {
         false,
         true,
         false,
+        false,
       ]);
       assertEquals(navigationItems[1]?.href, "/posts/");
+      assertEquals(navigationItems[2]?.href, "/gallery/");
     });
 
     it("keeps localized home inactive on localized child routes", () => {
@@ -71,9 +73,24 @@ describe("header-navigation.ts", () => {
         false,
         true,
         false,
+        false,
       ]);
       assertEquals(navigationItems[0]?.href, "/fr/");
-      assertEquals(navigationItems[2]?.href, "/fr/about/");
+      assertEquals(navigationItems[2]?.href, "/fr/gallery/");
+      assertEquals(navigationItems[3]?.href, "/fr/about/");
+    });
+
+    it("places the gallery between articles and about", () => {
+      const navigationItems = buildHeaderNavigation({
+        currentUrl: "/gallery/",
+        language: "en",
+      });
+
+      assertEquals(
+        navigationItems.map((item) => item.label),
+        ["Home", "Articles", "Gallery", "About"],
+      );
+      assertEquals(navigationItems[2]?.isCurrent, true);
     });
   });
 });
