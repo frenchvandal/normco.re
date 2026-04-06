@@ -43,10 +43,12 @@
       "description": "Run and serve the site for development",
       "command": "LUME_SERVE=1 deno task lume -s"
     },
+
     "update-deps": {
-      "description": "Update declared Deno dependencies and regenerate lock files",
-      "command": "deno outdated --update --latest && (cd src/blog/client && deno outdated --update --latest) && deno task locks:regen"
+      "description": "Update declared Deno dependencies and regenerate lock files, then briefly run and stop the dev server",
+      "command": "sh -c 'set -e; deno outdated --update --latest; (cd src/blog/client && deno outdated --update --latest); deno task locks:regen; deno task serve & SERVER_PID=$!; sleep 2; kill -INT \"$SERVER_PID\"; wait \"$SERVER_PID\" || true'"
     },
+
     "locks:regen": {
       "description": "Regenerate the root and frontend deno.lock files from the current dependency graphs",
       "command": "deno run --allow-read --allow-write=deno.lock,deno.lock.bak,src/blog/client/deno.lock,src/blog/client/deno.lock.bak --allow-run scripts/regenerate-locks.ts"
@@ -102,11 +104,11 @@
       "command": "deno run --allow-read --allow-write scripts/payload-report.ts --policy=scripts/payload-policy.json"
     },
     "payload:baseline": {
-      "description": "Build and generate a policy-compatible baseline report (`deno task payload:baseline [--output=/path/to/baseline.json --markdown=/path/to/baseline.md]`)",
+      "description": "Build and generate a policy-compatible baseline report",
       "command": "deno task build && deno run --allow-read --allow-write scripts/payload-report.ts --policy=scripts/payload-policy.json --policy-baseline --output=.tmp/payload-policy-baseline.json --markdown=.tmp/payload-policy-baseline.md"
     },
     "lint-commit": {
-      "description": "Validate the commit message with @miscellaneous/commitlint (reads .git/COMMIT_EDITMSG by default)",
+      "description": "Validate the commit message with @miscellaneous/commitlint",
       "command": "deno run --allow-read scripts/lint-commit.ts"
     },
     "validate-contracts": {
@@ -114,27 +116,26 @@
       "command": "deno run --allow-read contracts/validate.ts"
     },
     "posts:fix-ids": {
-      "description": "Write UUID v7 ids into post `_data.yml` files that are still missing a shared explicit id",
+      "description": "Write UUID v7 ids into post `_data.yml` files",
       "command": "deno run --allow-read --allow-write scripts/posts-fix-ids.ts"
     },
     "android:sync-contract-assets": {
-      "description": "Build the site contracts and mirror app-manifest/posts-index outputs into the Android bootstrap assets",
+      "description": "Build the site contracts and mirror outputs into Android assets",
       "command": "deno task build && deno run --allow-read --allow-write scripts/sync-android-contract-assets.ts"
     },
     "lefthook:install": {
-      "description": "Install Lefthook git hooks non-interactively via deno x (no global install or Node.js required)",
+      "description": "Install Lefthook git hooks non-interactively",
       "command": "DENO_NO_PROMPT=1 deno x lefthook install"
     },
+
     "stop": {
       "description": "Stop running `deno task serve` processes when they exist",
-      "command": "sh -c 'PIDS=$(pgrep -f \"LUME_SERVE=1 deno task lume -s\") && [ -n \"$PIDS\" ] && kill -SIGINT $PIDS || true'"
+      "command": "sh -c 'PIDS=$(pgrep -f \"lume/cli.ts -s\" || true); [ -z \"$PIDS\" ] || kill -INT $PIDS'"
     }
   },
 
   "compilerOptions": {
-    "types": [
-      "lume/types.ts"
-    ],
+    "types": ["lume/types.ts"],
     "jsx": "react-jsx",
     "jsxImportSource": "lume",
     "noUncheckedIndexedAccess": true,
@@ -146,37 +147,26 @@
     "strict": true
   },
 
-  // Needed for importing non-TS assets as raw text.
-  "unstable": [
-    "raw-imports"
-  ],
+  "unstable": ["raw-imports"],
 
-  // This repo relies on Deno's npm cache instead of a local node_modules tree.
   "nodeModulesDir": "none",
 
   "test": {
-    "exclude": [
-      "**/*.md"
-    ]
+    "exclude": ["**/*.md"]
   },
+
   "fmt": {
-    "exclude": [
-      "**/*.xml"
-    ]
+    "exclude": ["**/*.xml"]
   },
+
   "lint": {
-    "plugins": [
-      "./plugins/lume_lint.ts"
-    ],
+    "plugins": ["./plugins/lume_lint.ts"],
     "rules": {
       "tags": ["recommended", "jsx"],
-      "exclude": [
-        "no-import-prefix"
-      ]
+      "exclude": ["no-import-prefix"]
     }
   },
 
-  // Packages that need install scripts for native binaries.
   "allowScripts": {
     "allow": [
       "npm:@parcel/watcher@2.5.6",
