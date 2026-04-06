@@ -62,6 +62,7 @@ describe("about.page.tsx", () => {
     assertStringIncludes(html, 'data-contact-toggletip-trigger=""');
     assertStringIncludes(html, 'data-contact-toggletip-close=""');
     assertStringIncludes(html, 'class="site-popover" hidden');
+    assertStringIncludes(html, 'popover="auto"');
     assertStringIncludes(html, 'class="about-contact-trigger-arrow"');
     assertStringIncludes(html, 'class="about-contact-popover-handle"');
     assertStringIncludes(html, 'class="about-contact-popover-title"');

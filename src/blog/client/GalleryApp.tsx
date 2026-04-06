@@ -222,7 +222,7 @@ export function startGalleryApp(): void {
     return;
   }
 
-  const matchMedia = globalThis.matchMedia;
+  const { matchMedia } = globalThis;
 
   if (typeof matchMedia === "function") {
     const masonryMediaQuery = matchMedia(GALLERY_MASONRY_MEDIA_QUERY);

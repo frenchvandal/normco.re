@@ -19,6 +19,8 @@ const TOOLTIP_CONTAINER_SELECTOR = "[data-header-tooltip]";
 const TOOLTIP_TRIGGER_SELECTOR = "[data-header-tooltip-trigger]";
 const LANGUAGE_STORAGE_KEY = "preferred-language";
 const MOBILE_PANEL_MEDIA_QUERY = "(max-width: 47.999rem)";
+const SITE_WRAPPER_SELECTOR = ".site-wrapper";
+const SKIP_LINK_SELECTOR = ".skip-link";
 
 /**
  * @typedef {"keyboard" | "pointer"} InteractionModality
@@ -60,8 +62,12 @@ export function bindHeaderClient(runtime) {
   const mobilePanels = typeof resolvedRuntime.matchMedia === "function"
     ? resolvedRuntime.matchMedia(MOBILE_PANEL_MEDIA_QUERY)
     : null;
+  const siteWrapper = queryElement(SITE_WRAPPER_SELECTOR);
+  const skipLink = queryElement(SKIP_LINK_SELECTOR);
   const surfaceByControl = new Map();
   const controlBySurfaceId = new Map();
+  /** @type {Set<HTMLElement>} */
+  const inertElements = new Set();
 
   for (const control of disclosureControls) {
     const surface = getLinkedSurface(control);
@@ -101,6 +107,7 @@ export function bindHeaderClient(runtime) {
   syncInitialDisclosureState();
   syncOverlayVisibility();
   syncBodyScrollLock();
+  syncModalIsolation();
   theme.setup();
   setupGlobalListeners();
 
@@ -285,6 +292,75 @@ export function bindHeaderClient(runtime) {
   }
 
   /**
+   * @returns {HTMLElement | null}
+   */
+  function getActiveModalSurface() {
+    return isSideNav(openSurface) ? openSurface : null;
+  }
+
+  /**
+   * @param {HTMLElement} element
+   * @param {boolean} inert
+   * @returns {void}
+   */
+  function setElementInert(element, inert) {
+    if (inert) {
+      element.setAttribute("inert", "");
+      inertElements.add(element);
+      return;
+    }
+
+    element.removeAttribute("inert");
+    inertElements.delete(element);
+  }
+
+  /**
+   * @returns {void}
+   */
+  function syncModalIsolation() {
+    const activeModalSurface = getActiveModalSurface();
+    const nextInertElements = new Set();
+
+    if (activeModalSurface instanceof resolvedRuntime.HTMLElement) {
+      const inertScope = siteWrapper instanceof resolvedRuntime.HTMLElement
+        ? siteWrapper
+        : doc.body;
+
+      for (const child of inertScope.children) {
+        if (!(child instanceof resolvedRuntime.HTMLElement)) {
+          continue;
+        }
+
+        if (
+          child === activeModalSurface ||
+          child.contains(activeModalSurface) ||
+          child === overlay
+        ) {
+          continue;
+        }
+
+        nextInertElements.add(child);
+      }
+
+      if (skipLink instanceof resolvedRuntime.HTMLElement) {
+        nextInertElements.add(skipLink);
+      }
+    }
+
+    for (const element of inertElements) {
+      if (!nextInertElements.has(element)) {
+        setElementInert(element, false);
+      }
+    }
+
+    for (const element of nextInertElements) {
+      if (!inertElements.has(element)) {
+        setElementInert(element, true);
+      }
+    }
+  }
+
+  /**
    * @returns {void}
    */
   function syncInitialDisclosureState() {
@@ -465,6 +541,7 @@ export function bindHeaderClient(runtime) {
     openControl = null;
     syncOverlayVisibility();
     syncBodyScrollLock();
+    syncModalIsolation();
 
     if (restoreFocus) {
       restoreRememberedTriggerFocus();
@@ -496,6 +573,7 @@ export function bindHeaderClient(runtime) {
     closeTooltipForElement(control);
     syncOverlayVisibility();
     syncBodyScrollLock();
+    syncModalIsolation();
 
     if (search.isSearchPanel(surface)) {
       void search.initializeForOpen(isKeyboardInteraction());

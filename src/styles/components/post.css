@@ -150,6 +150,11 @@
     inline-size: 100%;
   }
 
+  .post-content > :where(pre, .shiki, figure, p.post-standalone-media, table) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 24rem;
+  }
+
   .post-content > :where(h2, h3, h4, h5, h6, ul, ol, blockquote) {
     inline-size: min(100%, var(--ph-prose-max));
   }

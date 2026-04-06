@@ -31,7 +31,7 @@ function createDom(): InstanceType<typeof JSDOM> {
           >
             Primary contact
           </button>
-          <div class="site-popover" hidden>
+          <div class="site-popover" hidden popover="auto">
             <span class="site-popover__caret"></span>
             <div
               id="contact-qr-primary"
@@ -61,7 +61,7 @@ function createDom(): InstanceType<typeof JSDOM> {
           >
             WeChat
           </button>
-          <div class="site-popover" hidden>
+          <div class="site-popover" hidden popover="auto">
             <span class="site-popover__caret"></span>
             <div
               id="contact-qr-wechat"
@@ -163,6 +163,31 @@ function getPopovers(window: TestWindow): HTMLElement[] {
     .filter((candidate): candidate is HTMLElement =>
       candidate instanceof window.HTMLElement
     );
+}
+
+function getOutsideFocus(window: TestWindow): HTMLButtonElement {
+  const button = window.document.querySelector(".outside-focus");
+  assert(button instanceof window.HTMLButtonElement);
+  return button;
+}
+
+function installFakePopoverApi(window: TestWindow) {
+  for (const popover of getPopovers(window)) {
+    Object.defineProperty(popover, "showPopover", {
+      configurable: true,
+      value() {
+        popover.setAttribute("data-popover-open", "true");
+        popover.dispatchEvent(new window.Event("toggle"));
+      },
+    });
+    Object.defineProperty(popover, "hidePopover", {
+      configurable: true,
+      value() {
+        popover.removeAttribute("data-popover-open");
+        popover.dispatchEvent(new window.Event("toggle"));
+      },
+    });
+  }
 }
 
 async function flushNodeTimers(cycles = 3) {
@@ -357,6 +382,7 @@ describe("about-contact-toggletips.js", () => {
 
       const [container] = getContainers(window);
       const [trigger] = getTriggers(window);
+      const outsideFocus = getOutsideFocus(window);
       assert(container);
       assert(trigger);
 
@@ -380,6 +406,7 @@ describe("about-contact-toggletips.js", () => {
         "true",
       );
       assertEquals(window.document.activeElement, panel);
+      assertEquals(outsideFocus.hasAttribute("inert"), true);
 
       panel.dispatchEvent(
         new window.KeyboardEvent("keydown", {
@@ -452,7 +479,46 @@ describe("about-contact-toggletips.js", () => {
         window.document.body.dataset.contactToggletipModalOpen,
         undefined,
       );
+      assertEquals(getOutsideFocus(window).hasAttribute("inert"), false);
       await flushNodeTimers();
+    } finally {
+      window.close();
+    }
+  });
+
+  it("uses the native Popover API on mobile when available", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow & {
+      matchMedia: (query: string) => MediaQueryList;
+    };
+    try {
+      const mediaQueryList = createMediaQueryList(true);
+      window.matchMedia = (_query: string) => mediaQueryList;
+      installFakePopoverApi(window);
+
+      bindScript(window);
+
+      const [trigger] = getTriggers(window);
+      const [popover] = getPopovers(window);
+      assert(trigger);
+      assert(popover);
+
+      trigger.click();
+      await flushNodeTimers(1);
+
+      assertEquals(popover.hidden, false);
+      assertEquals(popover.getAttribute("data-popover-open"), "true");
+
+      const closeButton = window.document.querySelector(
+        "[data-contact-toggletip-close]",
+      );
+      assert(closeButton instanceof window.HTMLButtonElement);
+
+      closeButton.click();
+      await flushNodeTimers(1);
+
+      assertEquals(popover.getAttribute("data-popover-open"), null);
+      assertEquals(trigger.getAttribute("aria-expanded"), "false");
     } finally {
       window.close();
     }

@@ -53,8 +53,14 @@ function captureNavigation(window: TestWindow): NavigationDetail[] {
   return navigationCalls;
 }
 
+async function flush(window: TestWindow, cycles = 2) {
+  for (let index = 0; index < cycles; index += 1) {
+    await new Promise((resolve) => window.setTimeout(resolve, 0));
+  }
+}
+
 describe("language-preference.js", () => {
-  it("redirects the root route to the stored preferred language", () => {
+  it("redirects the root route to the stored preferred language", async () => {
     const dom = createDom("/");
     const window = dom.window;
     try {
@@ -67,11 +73,12 @@ describe("language-preference.js", () => {
       assertEquals(navigationCalls[0]?.kind, "replace");
       assertEquals(navigationCalls[0]?.targetUrl, "/fr/");
     } finally {
+      await flush(window);
       window.close();
     }
   });
 
-  it("does not redirect non-root routes even when a different language is preferred", () => {
+  it("does not redirect non-root routes even when a different language is preferred", async () => {
     const dom = createDom("/about/");
     const window = dom.window;
     try {
@@ -82,11 +89,12 @@ describe("language-preference.js", () => {
 
       assertEquals(navigationCalls, []);
     } finally {
+      await flush(window);
       window.close();
     }
   });
 
-  it("preserves the root query string and hash during language redirect", () => {
+  it("preserves the root query string and hash during language redirect", async () => {
     const dom = createDom("/?utm_source=test#intro");
     const window = dom.window;
     try {
@@ -99,6 +107,7 @@ describe("language-preference.js", () => {
       assertEquals(navigationCalls[0]?.kind, "replace");
       assertEquals(navigationCalls[0]?.targetUrl, "/fr/?utm_source=test#intro");
     } finally {
+      await flush(window);
       window.close();
     }
   });

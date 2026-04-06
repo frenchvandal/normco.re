@@ -133,7 +133,7 @@ describe("blog client interaction contracts", () => {
 
   it("keeps gallery masonry enhancement gated to multi-column viewports", () => {
     assertStringIncludes(galleryAppSource, "GALLERY_MASONRY_MEDIA_QUERY");
-    assertStringIncludes(galleryAppSource, 'window.matchMedia === "function"');
+    assertStringIncludes(galleryAppSource, "matchMedia } = globalThis");
     assertStringIncludes(galleryAppSource, "if (!masonryMediaQuery.matches)");
   });
 

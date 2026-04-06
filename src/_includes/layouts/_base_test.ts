@@ -1,8 +1,12 @@
 import { assertMatch, assertNotMatch, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import { renderComponent } from "lume/jsx-runtime";
+
 import { faker, seedTestFaker } from "../../../test/faker.ts";
 import { asLumeData, asLumeHelpers } from "../../../test/lume.ts";
+import baseStyles from "../../styles/base.css" with {
+  type: "text",
+};
 
 import baseLayout from "./base.tsx";
 import { THEME_BOOTSTRAP_SCRIPT } from "../../utils/theme-bootstrap.ts";
@@ -455,5 +459,11 @@ describe("base.tsx layout", () => {
       await renderBase(data);
       assertStringIncludes(receivedUrl, "/");
     });
+  });
+});
+
+describe("base.css contracts", () => {
+  it("reserves scrollbar gutter space during modal scroll locking", () => {
+    assertStringIncludes(baseStyles, "scrollbar-gutter: stable both-edges;");
   });
 });

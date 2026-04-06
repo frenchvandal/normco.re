@@ -204,6 +204,20 @@ sw.addEventListener(
     });
 
     event.waitUntil((async () => {
+      if (
+        sw.registration.navigationPreload &&
+        typeof sw.registration.navigationPreload.enable === "function"
+      ) {
+        try {
+          await sw.registration.navigationPreload.enable();
+          logSw("activate: navigation preload enabled");
+        } catch (error) {
+          logSw("activate: navigation preload unavailable", {
+            error: error instanceof Error ? error.message : String(error),
+          });
+        }
+      }
+
       const keys = await caches.keys();
       const staleKeys = keys.filter((key) =>
         ![STATIC_CACHE, PAGE_CACHE, FEED_CACHE].includes(key)
@@ -309,12 +323,25 @@ async function cacheFirst(request) {
  * Network-first strategy for HTML pages with multilingual offline fallback.
  *
  * @param {Request} request
+ * @param {Promise<Response | undefined> | undefined} preloadResponsePromise
  * @returns {Promise<Response>}
  */
-async function networkFirstPage(request) {
+async function networkFirstPage(request, preloadResponsePromise) {
   const cache = await caches.open(PAGE_CACHE);
 
   try {
+    const preloadedResponse = preloadResponsePromise === undefined
+      ? undefined
+      : await preloadResponsePromise.catch(() => undefined);
+
+    if (preloadedResponse instanceof Response) {
+      if (preloadedResponse.ok) {
+        await cache.put(request, preloadedResponse.clone());
+      }
+
+      return preloadedResponse;
+    }
+
     const response = await fetchWithTimeout(
       request,
       undefined,
@@ -445,7 +472,12 @@ sw.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
   const url = new URL(request.url);
 
   if (request.mode === "navigate") {
-    event.respondWith(networkFirstPage(request));
+    event.respondWith(
+      networkFirstPage(
+        request,
+        "preloadResponse" in event ? event.preloadResponse : undefined,
+      ),
+    );
     return;
   }
 

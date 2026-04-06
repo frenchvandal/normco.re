@@ -7,6 +7,9 @@ const TOGGLETIP_SELECTOR = "[data-contact-toggletip]";
 const TRIGGER_SELECTOR = "[data-contact-toggletip-trigger]";
 const PANEL_SELECTOR = "[data-contact-toggletip-panel]";
 const CLOSE_BUTTON_SELECTOR = "[data-contact-toggletip-close]";
+const FEATURE_LAYOUT_SELECTOR = ".feature-layout";
+const FEATURE_RAIL_STICKY_SELECTOR = ".feature-rail-sticky";
+const CONTACT_LIST_SELECTOR = ".about-contact-list";
 
 /**
  * @param {Window & typeof globalThis} runtime
@@ -19,6 +22,8 @@ export function bindAboutContactToggletips(runtime) {
   const mobileMedia = typeof runtime.matchMedia === "function"
     ? runtime.matchMedia(MOBILE_MEDIA_QUERY)
     : null;
+  /** @type {Set<HTMLElement>} */
+  const inertElements = new Set();
 
   if (containers.length === 0) {
     return;
@@ -81,6 +86,140 @@ export function bindAboutContactToggletips(runtime) {
   }
 
   /**
+   * @param {HTMLElement} element
+   * @param {boolean} inert
+   * @returns {void}
+   */
+  function setElementInert(element, inert) {
+    if (inert) {
+      element.setAttribute("inert", "");
+      inertElements.add(element);
+      return;
+    }
+
+    element.removeAttribute("inert");
+    inertElements.delete(element);
+  }
+
+  /**
+   * @param {HTMLElement} popover
+   * @returns {boolean}
+   */
+  function supportsNativePopover(popover) {
+    return typeof popover.showPopover === "function" &&
+      typeof popover.hidePopover === "function";
+  }
+
+  /**
+   * @param {HTMLElement} popover
+   * @returns {boolean}
+   */
+  function isNativePopoverOpen(popover) {
+    if (!supportsNativePopover(popover)) {
+      return false;
+    }
+
+    try {
+      if (
+        typeof popover.matches === "function" &&
+        popover.matches(":popover-open")
+      ) {
+        return true;
+      }
+    } catch {
+      // Ignore selector support issues in test environments.
+    }
+
+    return popover.getAttribute("data-popover-open") === "true";
+  }
+
+  /**
+   * @param {HTMLElement} popover
+   * @returns {boolean}
+   */
+  function shouldUseNativePopover(popover) {
+    return isMobileViewport() &&
+      popover.getAttribute("popover") === "auto" &&
+      supportsNativePopover(popover);
+  }
+
+  /**
+   * @param {HTMLElement | null} activeContainer
+   * @returns {Set<HTMLElement>}
+   */
+  function collectModalIsolationTargets(activeContainer) {
+    const targets = new Set();
+
+    if (
+      !(activeContainer instanceof runtime.HTMLElement) || !isMobileViewport()
+    ) {
+      return targets;
+    }
+
+    const scopedParents = [
+      activeContainer.closest(FEATURE_LAYOUT_SELECTOR),
+      activeContainer.closest(FEATURE_RAIL_STICKY_SELECTOR),
+      activeContainer.closest(CONTACT_LIST_SELECTOR),
+    ];
+
+    for (const parent of scopedParents) {
+      if (!(parent instanceof runtime.HTMLElement)) {
+        continue;
+      }
+
+      for (const child of parent.children) {
+        if (!(child instanceof runtime.HTMLElement)) {
+          continue;
+        }
+
+        if (child === activeContainer || child.contains(activeContainer)) {
+          continue;
+        }
+
+        targets.add(child);
+      }
+    }
+
+    if (targets.size > 0) {
+      return targets;
+    }
+
+    for (const child of doc.body.children) {
+      if (!(child instanceof runtime.HTMLElement)) {
+        continue;
+      }
+
+      if (child === activeContainer || child.contains(activeContainer)) {
+        continue;
+      }
+
+      targets.add(child);
+    }
+
+    return targets;
+  }
+
+  /**
+   * @param {HTMLElement | null} activeContainer
+   * @returns {void}
+   */
+  function syncModalIsolation(activeContainer = null) {
+    const nextInertElements = collectModalIsolationTargets(activeContainer);
+
+    for (const element of inertElements) {
+      if (!nextInertElements.has(element)) {
+        setElementInert(element, false);
+      }
+    }
+
+    for (const element of nextInertElements) {
+      if (!inertElements.has(element)) {
+        setElementInert(element, true);
+      }
+    }
+  }
+
+  /**
    * @returns {void}
    */
   function syncModalState() {
@@ -90,14 +229,16 @@ export function bindAboutContactToggletips(runtime) {
       return;
     }
 
-    const hasOpenToggletip = containers.some(isOpen) && isMobileViewport();
+    const activeContainer = containers.find(isOpen) ?? null;
+    const hasOpenToggletip = activeContainer !== null && isMobileViewport();
 
     if (hasOpenToggletip) {
       body.dataset.contactToggletipModalOpen = "true";
-      return;
+    } else {
+      delete body.dataset.contactToggletipModalOpen;
     }
 
-    delete body.dataset.contactToggletipModalOpen;
+    syncModalIsolation(activeContainer);
   }
 
   /**
@@ -105,15 +246,8 @@ export function bindAboutContactToggletips(runtime) {
    */
   function syncOpenPanelsToViewport() {
     for (const container of containers) {
-      const popover = getPopover(container);
-      const panel = getPanel(container);
       const open = isOpen(container);
-
-      if (popover !== null) {
-        popover.hidden = !open;
-      }
-
-      syncPanelModalState(panel, open);
+      setToggletipState(container, open);
     }
 
     syncModalState();
@@ -159,7 +293,21 @@ export function bindAboutContactToggletips(runtime) {
     trigger?.setAttribute("aria-expanded", open ? "true" : "false");
 
     if (popover !== null) {
-      popover.hidden = !open;
+      if (shouldUseNativePopover(popover)) {
+        popover.hidden = false;
+
+        if (open && !isNativePopoverOpen(popover)) {
+          popover.showPopover();
+        } else if (!open && isNativePopoverOpen(popover)) {
+          popover.hidePopover();
+        }
+      } else {
+        if (isNativePopoverOpen(popover)) {
+          popover.hidePopover();
+        }
+
+        popover.hidden = !open;
+      }
     }
 
     syncPanelModalState(panel, open);
@@ -208,7 +356,10 @@ export function bindAboutContactToggletips(runtime) {
    * @returns {boolean}
    */
   function isOpen(container) {
-    return container.classList.contains("site-popover--open");
+    const popover = getPopover(container);
+
+    return container.classList.contains("site-popover--open") ||
+      (popover !== null && isNativePopoverOpen(popover));
   }
 
   /**
@@ -242,6 +393,17 @@ export function bindAboutContactToggletips(runtime) {
     }
 
     setToggletipState(container, isOpen(container));
+
+    if (supportsNativePopover(popover)) {
+      popover.addEventListener("toggle", () => {
+        const open = isNativePopoverOpen(popover);
+        container.classList.toggle("site-popover--open", open);
+        container.classList.toggle("site-toggletip--open", open);
+        trigger.setAttribute("aria-expanded", open ? "true" : "false");
+        syncPanelModalState(panel, open);
+        syncModalState();
+      });
+    }
 
     trigger.addEventListener("click", (event) => {
       if (isOpen(container)) {

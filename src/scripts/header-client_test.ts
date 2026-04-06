@@ -517,6 +517,12 @@ function getTooltipContainer(window: TestWindow): HTMLElement {
   return container;
 }
 
+function getOutsideFocus(window: TestWindow): HTMLButtonElement {
+  const button = window.document.querySelector(".outside-focus");
+  assert(button instanceof window.HTMLButtonElement);
+  return button;
+}
+
 function captureNavigation(window: TestWindow): NavigationDetail[] {
   const navigationCalls: NavigationDetail[] = [];
 
@@ -660,6 +666,7 @@ describe("header-client.js", () => {
     const toggle = getMenuToggle(window);
     const firstLink = window.document.querySelector(".site-side-nav__link");
     const overlay = window.document.querySelector(".site-side-nav__overlay");
+    const outsideFocus = getOutsideFocus(window);
     assert(firstLink instanceof window.HTMLAnchorElement);
     assert(overlay instanceof window.HTMLElement);
 
@@ -676,6 +683,7 @@ describe("header-client.js", () => {
     assertEquals(window.document.activeElement, firstLink);
     assertEquals(window.document.body.style.overflow, "hidden");
     assertEquals(overlay.getAttribute("aria-hidden"), "true");
+    assertEquals(outsideFocus.hasAttribute("inert"), true);
 
     overlay.dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
     await flush(window);
@@ -684,6 +692,7 @@ describe("header-client.js", () => {
     assertEquals(window.document.activeElement, toggle);
     assertEquals(window.document.body.style.overflow, "");
     assertEquals(overlay.getAttribute("aria-hidden"), "true");
+    assertEquals(outsideFocus.hasAttribute("inert"), false);
   });
 
   it("closes the side nav from the internal close button and restores focus", async () => {

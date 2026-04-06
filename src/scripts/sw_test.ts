@@ -10,6 +10,13 @@ type CacheStore = {
   put(_request: string | { url?: string }, _response: Response): Promise<void>;
 };
 
+type ServiceWorkerRegistrationStub = {
+  navigationPreload?: {
+    enable(): Promise<void>;
+  };
+  unregister(): Promise<boolean>;
+};
+
 const EVALUABLE_SCRIPT_SOURCE = SCRIPT_SOURCE.replace(
   /import \{ SITE_NAME \} from "\.\.\/utils\/site-identity\.ts";\nimport \{ fetchWithTimeout \} from "\.\/shared\/network-utils\.js";\nimport \{ PRECACHED_SCRIPT_ASSET_URLS \} from "\.\.\/utils\/script-assets\.ts";\n\n/,
   `const PRECACHED_SCRIPT_ASSET_URLS = [];
@@ -106,7 +113,7 @@ function createRuntime(
     ) => Promise<Response>;
     cacheStores: Record<string, CacheStore>;
     serviceWorkerUrl?: string;
-    registration?: { unregister: () => Promise<boolean> };
+    registration?: ServiceWorkerRegistrationStub;
   },
 ) {
   const listeners: ListenerMap = new Map();
@@ -189,7 +196,18 @@ function createRuntime(
           destination: string;
           headers: Headers;
         };
+        preloadResponse?: Promise<Response | undefined>;
         respondWith(promise: Promise<Response>): void;
+      }) => void;
+    },
+    getActivateListener() {
+      const listener = listeners.get("activate");
+      if (typeof listener !== "function") {
+        throw new Error("Missing activate listener");
+      }
+
+      return listener as unknown as (event: {
+        waitUntil(promise: Promise<void>): void;
       }) => void;
     },
   };
@@ -636,5 +654,94 @@ describe("sw.js", () => {
     });
 
     assertEquals(intercepted, false);
+  });
+
+  it("enables navigation preload during activation when supported", async () => {
+    let enableCalls = 0;
+    const runtime = createRuntime({
+      fetchImpl() {
+        return Promise.resolve(new Response("", { status: 200 }));
+      },
+      cacheStores: {},
+      registration: {
+        navigationPreload: {
+          enable() {
+            enableCalls += 1;
+            return Promise.resolve();
+          },
+        },
+        unregister() {
+          return Promise.resolve(true);
+        },
+      },
+    });
+    const listener = runtime.getActivateListener();
+    let activationPromise: Promise<void> | undefined;
+
+    listener({
+      waitUntil(promise) {
+        activationPromise = promise;
+      },
+    });
+
+    assertExists(
+      activationPromise,
+      "Expected activate handler to call waitUntil().",
+    );
+    await activationPromise;
+    assertEquals(enableCalls, 1);
+  });
+
+  it("uses the navigation preload response for navigations when available", async () => {
+    let fetchCalls = 0;
+    let cachePutCount = 0;
+    const runtime = createRuntime({
+      fetchImpl() {
+        fetchCalls += 1;
+        return Promise.resolve(
+          new Response("<html>network</html>", {
+            status: 200,
+          }),
+        );
+      },
+      cacheStores: {
+        "pages-test": {
+          match() {
+            return Promise.resolve(undefined);
+          },
+          put() {
+            cachePutCount += 1;
+            return Promise.resolve();
+          },
+        },
+      },
+    });
+    const listener = runtime.getFetchListener();
+    let responsePromise: Promise<Response> | undefined;
+
+    listener({
+      request: {
+        url: "https://normco.re/posts/example/",
+        method: "GET",
+        mode: "navigate",
+        destination: "document",
+        headers: new Headers({ "user-agent": "Mozilla/5.0" }),
+      },
+      preloadResponse: Promise.resolve(
+        new Response("<html>preloaded</html>", { status: 200 }),
+      ),
+      respondWith(promise) {
+        responsePromise = promise;
+      },
+    });
+
+    assertExists(
+      responsePromise,
+      "Expected preload-backed navigation to call respondWith().",
+    );
+    const response = await responsePromise;
+    assertEquals(await response.text(), "<html>preloaded</html>");
+    assertEquals(fetchCalls, 0);
+    assertEquals(cachePutCount, 1);
   });
 });

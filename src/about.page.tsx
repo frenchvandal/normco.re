@@ -61,7 +61,7 @@ function renderContactItem(
                 </span>
                 <span class="about-contact-trigger-arrow" aria-hidden="true"></span>
               </button>
-	              <div class="site-popover" hidden>
+	              <div class="site-popover" hidden popover="auto">
                 <span class="site-popover__caret" aria-hidden="true"></span>
                 <div
                   id="${escapeHtml(panelId)}"

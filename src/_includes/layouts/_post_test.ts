@@ -708,4 +708,13 @@ describe("post mobile visual contracts", () => {
       'html[data-post-mobile-tools-ready="true"] .post-rail',
     );
   });
+
+  it("uses content-visibility only for heavy off-screen article blocks", () => {
+    assertStringIncludes(
+      postStyles,
+      ".post-content > :where(pre, .shiki, figure, p.post-standalone-media, table) {",
+    );
+    assertStringIncludes(postStyles, "content-visibility: auto;");
+    assertStringIncludes(postStyles, "contain-intrinsic-size: auto 24rem;");
+  });
 });
