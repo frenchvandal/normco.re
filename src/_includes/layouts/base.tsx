@@ -341,6 +341,7 @@ export default async (
               key={href}
               rel="stylesheet"
               href={href}
+              fetchpriority="high"
             />
           ))}
           <script>{THEME_BOOTSTRAP}</script>

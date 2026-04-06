@@ -214,6 +214,13 @@ describe("base.tsx layout", () => {
         html,
         /href="\/style\.css".*href="\/styles\/blog-antd\.css"/,
       );
+      // Extra stylesheets are above-the-fold on the routes that opt in
+      // (post, tag, posts index), so they get the same high fetch priority
+      // as the shared bundle to help the preload scanner.
+      assertMatch(
+        html,
+        /href="\/styles\/blog-antd\.css"[^>]*fetchpriority="high"/,
+      );
     });
 
     it("passes service-worker debug level to the register script", async () => {
