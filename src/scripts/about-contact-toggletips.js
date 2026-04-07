@@ -231,7 +231,12 @@ export function bindAboutContactToggletips(runtime) {
         popover.setAttribute("popover", NATIVE_POPOVER_VALUE);
       }
 
-      popover.setAttribute(NATIVE_POPOVER_MARKER_ATTRIBUTE, "");
+      if (isMobileViewport()) {
+        popover.removeAttribute(NATIVE_POPOVER_MARKER_ATTRIBUTE);
+        clearNativePopoverPosition(popover);
+      } else {
+        popover.setAttribute(NATIVE_POPOVER_MARKER_ATTRIBUTE, "");
+      }
 
       return true;
     }

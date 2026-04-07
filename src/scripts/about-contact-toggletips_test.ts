@@ -605,12 +605,22 @@ describe("about-contact-toggletips.js", () => {
       assert(popover);
       assertEquals(popover.hidden, true);
       assertEquals(popover.getAttribute("data-popover-open"), null);
+      assertEquals(popover.hasAttribute("data-contact-native-popover"), false);
 
       trigger.click();
       await flushNodeTimers(1);
 
       assertEquals(popover.hidden, false);
       assertEquals(popover.getAttribute("data-popover-open"), "true");
+      assertEquals(popover.hasAttribute("data-contact-native-popover"), false);
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-top"),
+        "",
+      );
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-left"),
+        "",
+      );
 
       const closeButton = window.document.querySelector(
         "[data-contact-toggletip-close]",

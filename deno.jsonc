@@ -46,7 +46,7 @@
 
     "update-deps": {
       "description": "Update declared Deno dependencies and regenerate lock files, then briefly run and stop the dev server",
-      "command": "sh -c 'set -e; deno outdated --update --latest; (cd src/blog/client && deno outdated --update --latest); deno task locks:regen; deno task serve & SERVER_PID=$!; sleep 2; kill -INT \"$SERVER_PID\"; wait \"$SERVER_PID\" || true'"
+      "command": "sh -c 'set -e; deno outdated --update --latest; (cd src/blog/client && deno outdated --update --latest); deno task locks:regen; deno task serve & SERVER_PID=$!; sleep 10; kill -INT \"$SERVER_PID\"; wait \"$SERVER_PID\" || true'"
     },
 
     "locks:regen": {
