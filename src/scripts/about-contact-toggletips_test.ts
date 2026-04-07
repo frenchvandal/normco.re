@@ -238,6 +238,74 @@ async function flushNodeTimers(cycles = 3) {
   }
 }
 
+type CapturedResizeObserver = {
+  callback: ResizeObserverCallback;
+  targets: Set<Element>;
+};
+
+function installFakeResizeObserver(window: TestWindow): CapturedResizeObserver[] {
+  const observers: CapturedResizeObserver[] = [];
+
+  class FakeResizeObserver {
+    #entry: CapturedResizeObserver;
+
+    constructor(callback: ResizeObserverCallback) {
+      this.#entry = { callback, targets: new Set<Element>() };
+      observers.push(this.#entry);
+    }
+
+    observe(target: Element) {
+      this.#entry.targets.add(target);
+    }
+
+    unobserve(target: Element) {
+      this.#entry.targets.delete(target);
+    }
+
+    disconnect() {
+      this.#entry.targets.clear();
+    }
+  }
+
+  Object.defineProperty(window, "ResizeObserver", {
+    configurable: true,
+    value: FakeResizeObserver,
+  });
+
+  return observers;
+}
+
+type ManualRaf = {
+  pendingCount(): number;
+  flush(): void;
+};
+
+function installManualRaf(window: TestWindow): ManualRaf {
+  const callbacks: FrameRequestCallback[] = [];
+  let nextId = 0;
+
+  Object.defineProperty(window, "requestAnimationFrame", {
+    configurable: true,
+    value(callback: FrameRequestCallback) {
+      callbacks.push(callback);
+      nextId += 1;
+      return nextId;
+    },
+  });
+
+  return {
+    pendingCount() {
+      return callbacks.length;
+    },
+    flush() {
+      const pending = callbacks.splice(0, callbacks.length);
+      for (const callback of pending) {
+        callback(0);
+      }
+    },
+  };
+}
+
 describe("about-contact-toggletips.js", () => {
   it("keeps contact popovers hidden until a trigger is activated", () => {
     const dom = createDom();
@@ -688,4 +756,147 @@ describe("about-contact-toggletips.js", () => {
       }
     },
   );
+
+  it("coalesces multiple scroll events into a single rAF position sync", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow & {
+      matchMedia: (query: string) => MediaQueryList;
+    };
+    try {
+      const mediaQueryList = createMediaQueryList(false);
+      window.matchMedia = (_query: string) => mediaQueryList;
+      installFakePopoverApi(window);
+      installFakeDesktopPopoverGeometry(window);
+      const raf = installManualRaf(window);
+
+      bindScript(window);
+
+      const [trigger] = getTriggers(window);
+      const [popover] = getPopovers(window);
+      assert(trigger);
+      assert(popover);
+
+      trigger.click();
+      popover.style.removeProperty("--about-contact-popover-top");
+
+      window.dispatchEvent(new window.Event("scroll"));
+      window.dispatchEvent(new window.Event("scroll"));
+      window.dispatchEvent(new window.Event("scroll"));
+
+      assertEquals(raf.pendingCount(), 1);
+
+      raf.flush();
+
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-top"),
+        "144px",
+      );
+    } finally {
+      window.close();
+    }
+  });
+
+  it("does not write popover position styles on scroll when none is open", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow & {
+      matchMedia: (query: string) => MediaQueryList;
+    };
+    try {
+      const mediaQueryList = createMediaQueryList(false);
+      window.matchMedia = (_query: string) => mediaQueryList;
+      installFakePopoverApi(window);
+      installFakeDesktopPopoverGeometry(window);
+      const raf = installManualRaf(window);
+
+      bindScript(window);
+
+      const [popover] = getPopovers(window);
+      assert(popover);
+
+      window.dispatchEvent(new window.Event("scroll"));
+      raf.flush();
+
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-top"),
+        "",
+      );
+    } finally {
+      window.close();
+    }
+  });
+
+  it("repositions the desktop popover via ResizeObserver when its size changes", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow & {
+      matchMedia: (query: string) => MediaQueryList;
+    };
+    try {
+      const mediaQueryList = createMediaQueryList(false);
+      window.matchMedia = (_query: string) => mediaQueryList;
+      installFakePopoverApi(window);
+      installFakeDesktopPopoverGeometry(window);
+      const observers = installFakeResizeObserver(window);
+      const raf = installManualRaf(window);
+
+      bindScript(window);
+
+      const [trigger] = getTriggers(window);
+      const [popover] = getPopovers(window);
+      assert(trigger);
+      assert(popover);
+
+      trigger.click();
+
+      const observed = observers.find((entry) => entry.targets.has(popover));
+      assert(observed, "popover should be observed by ResizeObserver");
+
+      popover.style.removeProperty("--about-contact-popover-top");
+
+      observed.callback([], {} as ResizeObserver);
+
+      assertEquals(raf.pendingCount(), 1);
+
+      raf.flush();
+
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-top"),
+        "144px",
+      );
+    } finally {
+      window.close();
+    }
+  });
+
+  it("ignores ResizeObserver callbacks while the popover is closed", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow & {
+      matchMedia: (query: string) => MediaQueryList;
+    };
+    try {
+      const mediaQueryList = createMediaQueryList(false);
+      window.matchMedia = (_query: string) => mediaQueryList;
+      installFakePopoverApi(window);
+      installFakeDesktopPopoverGeometry(window);
+      const observers = installFakeResizeObserver(window);
+      const raf = installManualRaf(window);
+
+      bindScript(window);
+
+      const [popover] = getPopovers(window);
+      assert(popover);
+
+      const observed = observers.find((entry) => entry.targets.has(popover));
+      assert(observed, "popover should be observed by ResizeObserver");
+
+      observed.callback([], {} as ResizeObserver);
+
+      assertEquals(raf.pendingCount(), 0);
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-top"),
+        "",
+      );
+    } finally {
+      window.close();
+    }
+  });
 });
