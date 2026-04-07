@@ -2,11 +2,12 @@
 
 import { getFocusableElements, trapFocus } from "./shared/focus-utils.js";
 
-const MOBILE_MEDIA_QUERY = "(max-width: 41.98rem)";
+const MOBILE_MEDIA_QUERY = "(max-width: 47.999rem)";
 const TOGGLETIP_SELECTOR = "[data-contact-toggletip]";
 const TRIGGER_SELECTOR = "[data-contact-toggletip-trigger]";
 const PANEL_SELECTOR = "[data-contact-toggletip-panel]";
 const CLOSE_BUTTON_SELECTOR = "[data-contact-toggletip-close]";
+const POPOVER_SELECTOR = ".site-popover";
 const FEATURE_LAYOUT_SELECTOR = ".feature-layout";
 const FEATURE_RAIL_STICKY_SELECTOR = ".feature-rail-sticky";
 const CONTACT_LIST_SELECTOR = ".about-contact-list";
@@ -30,6 +31,8 @@ export function bindAboutContactToggletips(runtime) {
     : null;
   /** @type {Set<HTMLElement>} */
   const inertElements = new Set();
+  /** @type {Set<HTMLElement>} */
+  const focusoutSuppressedContainers = new Set();
 
   if (containers.length === 0) {
     return;
@@ -57,7 +60,7 @@ export function bindAboutContactToggletips(runtime) {
    * @returns {HTMLElement | null}
    */
   function getPopover(container) {
-    const popover = container.querySelector(".site-popover");
+    const popover = container.querySelector(POPOVER_SELECTOR);
     return popover instanceof runtime.HTMLElement ? popover : null;
   }
 
@@ -241,10 +244,6 @@ export function bindAboutContactToggletips(runtime) {
       return true;
     }
 
-    if (isNativePopoverOpen(popover)) {
-      popover.hidePopover();
-    }
-
     popover.removeAttribute(NATIVE_POPOVER_MARKER_ATTRIBUTE);
     clearNativePopoverPosition(popover);
 
@@ -388,6 +387,20 @@ export function bindAboutContactToggletips(runtime) {
 
   /**
    * @param {HTMLElement} container
+   * @param {HTMLButtonElement | null} trigger
+   * @param {HTMLElement | null} panel
+   * @param {boolean} open
+   * @returns {void}
+   */
+  function syncPresentationState(container, trigger, panel, open) {
+    container.classList.toggle("site-popover--open", open);
+    container.classList.toggle("site-toggletip--open", open);
+    trigger?.setAttribute("aria-expanded", open ? "true" : "false");
+    syncPanelModalState(panel, open);
+  }
+
+  /**
+   * @param {HTMLElement} container
    * @param {boolean} open
    * @returns {void}
    */
@@ -396,9 +409,7 @@ export function bindAboutContactToggletips(runtime) {
     const popover = getPopover(container);
     const panel = getPanel(container);
 
-    container.classList.toggle("site-popover--open", open);
-    container.classList.toggle("site-toggletip--open", open);
-    trigger?.setAttribute("aria-expanded", open ? "true" : "false");
+    syncPresentationState(container, trigger, panel, open);
 
     if (popover !== null) {
       if (syncPopoverMode(popover)) {
@@ -416,6 +427,7 @@ export function bindAboutContactToggletips(runtime) {
           }
 
           popover.hidden = true;
+          clearNativePopoverPosition(popover);
         }
       } else {
         if (isNativePopoverOpen(popover)) {
@@ -440,6 +452,7 @@ export function bindAboutContactToggletips(runtime) {
       ? doc.activeElement
       : null;
 
+    focusoutSuppressedContainers.delete(container);
     setToggletipState(container, false);
     syncModalState();
 
@@ -485,16 +498,23 @@ export function bindAboutContactToggletips(runtime) {
   function openToggletip(container) {
     const panel = getPanel(container);
 
+    focusoutSuppressedContainers.add(container);
     closeAll(container);
     setToggletipState(container, true);
     syncModalState();
 
     runtime.setTimeout(() => {
-      if (!isOpen(container)) {
-        return;
-      }
+      try {
+        if (!isOpen(container)) {
+          return;
+        }
 
-      panel?.focus({ preventScroll: true });
+        panel?.focus({ preventScroll: true });
+      } finally {
+        runtime.setTimeout(() => {
+          focusoutSuppressedContainers.delete(container);
+        }, 0);
+      }
     }, 0);
   }
 
@@ -516,11 +536,10 @@ export function bindAboutContactToggletips(runtime) {
         popover.hidden = !open;
         if (open) {
           syncNativePopoverPosition(container);
+        } else {
+          clearNativePopoverPosition(popover);
         }
-        container.classList.toggle("site-popover--open", open);
-        container.classList.toggle("site-toggletip--open", open);
-        trigger.setAttribute("aria-expanded", open ? "true" : "false");
-        syncPanelModalState(panel, open);
+        syncPresentationState(container, trigger, panel, open);
         syncModalState();
       });
     }
@@ -605,6 +624,10 @@ export function bindAboutContactToggletips(runtime) {
 
     container.addEventListener("focusout", () => {
       runtime.setTimeout(() => {
+        if (focusoutSuppressedContainers.has(container)) {
+          return;
+        }
+
         const activeElement = doc.activeElement;
 
         if (

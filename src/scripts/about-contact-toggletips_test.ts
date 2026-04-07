@@ -93,7 +93,7 @@ function bindScript(window: TestWindow) {
 function createMediaQueryList(matches = false): TestMediaQueryList {
   const listeners = new Set<(event: MediaQueryListEvent) => void>();
   const mediaQuery = {
-    media: "(max-width: 41.98rem)",
+    media: "(max-width: 47.999rem)",
     matches,
     onchange: null,
     addListener(listener: (event: MediaQueryListEvent) => void) {
@@ -576,11 +576,11 @@ describe("about-contact-toggletips.js", () => {
       assertEquals(popover.getAttribute("data-popover-open"), null);
       assertEquals(
         popover.style.getPropertyValue("--about-contact-popover-top"),
-        "144px",
+        "",
       );
       assertEquals(
         popover.style.getPropertyValue("--about-contact-popover-left"),
-        "208px",
+        "",
       );
     } finally {
       window.close();
@@ -637,4 +637,55 @@ describe("about-contact-toggletips.js", () => {
       window.close();
     }
   });
+
+  it(
+    "keeps the mobile native popover open while focus is settling after open",
+    async () => {
+      const dom = createDom();
+      const window = dom.window as TestWindow & {
+        matchMedia: (query: string) => MediaQueryList;
+      };
+      try {
+        const mediaQueryList = createMediaQueryList(true);
+        window.matchMedia = (_query: string) => mediaQueryList;
+        installFakePopoverApi(window);
+
+        bindScript(window);
+
+        const [container] = getContainers(window);
+        const [trigger] = getTriggers(window);
+        const [popover] = getPopovers(window);
+        const outsideFocus = getOutsideFocus(window);
+        const panel = window.document.querySelector(
+          "[data-contact-toggletip-panel]",
+        );
+        assert(container);
+        assert(trigger);
+        assert(popover);
+        assert(panel instanceof window.HTMLElement);
+
+        Object.defineProperty(panel, "focus", {
+          configurable: true,
+          value() {
+            outsideFocus.focus();
+          },
+        });
+
+        trigger.focus();
+        trigger.click();
+        container.dispatchEvent(
+          new window.FocusEvent("focusout", {
+            bubbles: true,
+          }),
+        );
+        await flushNodeTimers(2);
+
+        assertEquals(popover.hidden, false);
+        assertEquals(popover.getAttribute("data-popover-open"), "true");
+        assertEquals(trigger.getAttribute("aria-expanded"), "true");
+      } finally {
+        window.close();
+      }
+    },
+  );
 });

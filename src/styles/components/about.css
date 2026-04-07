@@ -490,7 +490,7 @@
       position: fixed;
       inset: 0;
       display: grid;
-      align-items: end;
+      place-items: center;
       min-inline-size: 0;
       max-inline-size: none;
       padding-block-start: max(env(safe-area-inset-top), var(--ph-space-4));
@@ -523,18 +523,18 @@
     .about-contact-popover {
       display: grid;
       gap: var(--ph-space-4);
-      inline-size: min(100%, 30rem);
+      inline-size: min(30rem, calc(100vw - var(--ph-shell-gutter) * 2));
+      max-inline-size: 100%;
       max-block-size: min(80dvh, 38rem);
-      margin-inline: auto;
-      padding: var(--ph-space-3) var(--ph-space-4)
-        calc(env(safe-area-inset-bottom) + var(--ph-space-4));
+      margin: 0;
+      padding: var(--ph-space-4);
       border: var(--ph-border-hairline) solid var(--ph-color-border-default);
-      border-radius: var(--ph-radius-lg) var(--ph-radius-lg) 0 0;
+      border-radius: var(--ph-radius-lg);
       background: var(--ph-surface-raised);
       box-shadow: var(--ph-shadow-floating);
       opacity: 0;
       overflow: auto;
-      transform: translateY(var(--ph-space-5));
+      transform: translateY(var(--ph-space-3));
       transition:
         opacity var(--ph-duration-default) var(--ph-easing-default),
         transform var(--ph-duration-default) var(--ph-easing-default);
@@ -552,31 +552,20 @@
 
       @starting-style {
         opacity: 0;
-        transform: translateY(var(--ph-space-5));
+        transform: translateY(var(--ph-space-3));
       }
     }
 
     .about-contact-popover-handle {
-      display: block;
-      inline-size: 3rem;
-      block-size: 0.3rem;
-      margin-inline: auto;
-      border-radius: var(--ph-radius-pill);
-      background: color-mix(
-        in oklch,
-        var(--ph-color-fg-default) 14%,
-        transparent
-      );
+      display: none;
     }
 
     .about-contact-popover-header {
-      align-items: flex-start;
-      position: sticky;
-      inset-block-start: 0;
-      z-index: 1;
+      align-items: center;
+      position: static;
       margin-block-end: 0;
-      padding-block-end: var(--ph-space-3);
-      background: inherit;
+      padding-block-end: 0;
+      background: transparent;
     }
 
     .about-contact-popover-brand {

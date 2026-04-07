@@ -1,6 +1,9 @@
 import { assertNotMatch, assertStringIncludes } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import aboutStyles from "./styles/components/about.css" with { type: "text" };
+import aboutContactToggletipsScript from "./scripts/about-contact-toggletips.js" with {
+  type: "text",
+};
 import { asLumeData, asLumeHelpers } from "../test/lume.ts";
 
 import aboutPage from "./about.page.tsx";
@@ -150,8 +153,19 @@ describe("about page CSS contracts", () => {
     assertStringIncludes(aboutStyles, ".about-contact-trigger:hover,");
     assertStringIncludes(aboutStyles, ".about-contact-trigger-arrow {");
     assertStringIncludes(aboutStyles, ".about-contact-popover-handle {");
-    assertStringIncludes(aboutStyles, "inset-block-start: 0;");
     assertStringIncludes(aboutStyles, "transition-behavior: allow-discrete;");
+    assertStringIncludes(aboutStyles, "@media (max-width: 47.999rem) {");
+    assertStringIncludes(aboutStyles, "place-items: center;");
+    assertStringIncludes(
+      aboutStyles,
+      "inline-size: min(30rem, calc(100vw - var(--ph-shell-gutter) * 2));",
+    );
+    assertStringIncludes(aboutStyles, "border-radius: var(--ph-radius-lg);");
+    assertStringIncludes(aboutStyles, "position: static;");
+    assertStringIncludes(
+      aboutContactToggletipsScript,
+      'const MOBILE_MEDIA_QUERY = "(max-width: 47.999rem)";',
+    );
   });
 
   it("keeps the QR frame neutral and gives the field note a restrained mobile and dark treatment", () => {
