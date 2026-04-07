@@ -515,8 +515,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/util@1.10.0_react@19.2.4_react-dom@19.2.4__react@19.2.4": {
-      "integrity": "sha512-aY9GLBuiUdpyfIUpAWSYer4Tu3mVaZCo5A0q9NtXcazT3MRiI3/WNHCR+DUn5VAtR6iRRf0ynCqQUcHli5UdYw==",
+    "@rc-component/util@1.10.1_react@19.2.4_react-dom@19.2.4__react@19.2.4": {
+      "integrity": "sha512-q++9S6rUa5Idb/xIBNz6jtvumw5+O5YV5V0g4iK9mn9jWs4oGJheE3ZN1kAnE723AXyaD8v95yeOASmdk8Jnng==",
       "dependencies": [
         "is-mobile",
         "react",
