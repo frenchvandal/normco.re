@@ -3,17 +3,61 @@
   "importMap": "./import_map.json",
 
   "tasks": {
-    "lume": {
-      "description": "Run Lume command",
-      "command": "deno run -A lume/cli.ts"
+    "android:sync-contract-assets": {
+      "description": "Build the site contracts and mirror outputs into Android assets",
+      "command": "deno task build && deno run --allow-read --allow-write scripts/sync-android-contract-assets.ts"
     },
     "build": {
       "description": "Build the site for production",
       "command": "deno task lume"
     },
-    "pretext:harness:install": {
-      "description": "Install the Chromium binary used by the headless Pretext visual harness under .tmp/playwright-browsers",
-      "command": "PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run -A npm:playwright@1.59.1 install chromium"
+    "check": {
+      "description": "Type-check the entire project",
+      "command": "deno run --allow-read --allow-run scripts/check.ts"
+    },
+    "coverage:html": {
+      "description": "Generate an HTML report from the latest Deno coverage run",
+      "command": "deno coverage .tmp/deno-coverage --html"
+    },
+    "coverage:summary": {
+      "description": "Print a summary from the latest Deno coverage run",
+      "command": "deno coverage .tmp/deno-coverage"
+    },
+    "design:guard": {
+      "description": "Fail when normalized UI literals reappear outside the token bridge or explicit allowlists",
+      "command": "deno run --allow-read scripts/design-token-guard.ts"
+    },
+    "lefthook:install": {
+      "description": "Install Lefthook git hooks non-interactively",
+      "command": "DENO_NO_PROMPT=1 deno x lefthook install"
+    },
+    "lint-commit": {
+      "description": "Validate the commit message with @miscellaneous/commitlint",
+      "command": "deno run --allow-read scripts/lint-commit.ts"
+    },
+    "locks:regen": {
+      "description": "Regenerate the root and frontend deno.lock files from the current dependency graphs",
+      "command": "deno run --allow-read --allow-write=deno.lock,deno.lock.bak,src/blog/client/deno.lock,src/blog/client/deno.lock.bak --allow-run scripts/regenerate-locks.ts"
+    },
+    "lume": {
+      "description": "Run Lume command",
+      "command": "deno run -A lume/cli.ts"
+    },
+    "payload:baseline": {
+      "description": "Build and generate a policy-compatible baseline report",
+      "command": "deno task build && deno run --allow-read --allow-write scripts/payload-report.ts --policy=scripts/payload-policy.json --policy-baseline --output=.tmp/payload-policy-baseline.json --markdown=.tmp/payload-policy-baseline.md"
+    },
+    "payload:policy": {
+      "description": "Run payload report/guard with the versioned PR policy (`deno task payload:policy --baseline=/path/to/baseline.json`)",
+      "command": "deno run --allow-read --allow-write scripts/payload-report.ts --policy=scripts/payload-policy.json"
+    },
+    "payload:report": {
+      "description": "Report route-level JS/CSS payload from generated output (`_site` by default)",
+      "command": "deno run --allow-read --allow-write scripts/payload-report.ts"
+    },
+    "posts:fix-ids": {
+      "description": "Write UUID v7 ids into post `_data.yml` files",
+      "command": "deno run --allow-read --allow-write scripts/posts-fix-ids.ts"
     },
     "pretext:harness": {
       "description": "Build the site and capture multilingual headless render diagnostics for home, tag, archive, and post routes",
@@ -31,6 +75,10 @@
       "description": "Run the Pretext comparison harness with the extra permissions required for GitHub job summaries",
       "command": "deno task build && mkdir -p .tmp/pretext-harness-compare/tmp && TMPDIR=$PWD/.tmp/pretext-harness-compare/tmp PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run --allow-env --allow-net --allow-read --allow-run --allow-write --allow-sys=osRelease,cpus,homedir,uid scripts/pretext-visual-harness-compare.ts"
     },
+    "pretext:harness:install": {
+      "description": "Install the Chromium binary used by the headless Pretext visual harness under .tmp/playwright-browsers",
+      "command": "PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run -A npm:playwright@1.59.1 install chromium"
+    },
     "pretext:react-harness": {
       "description": "Run a deterministic React-focused Pretext A/B harness against the measurement hooks themselves",
       "command": "deno run --allow-env --allow-read --allow-write=.tmp/pretext-react-harness scripts/pretext-react-harness.tsx"
@@ -43,19 +91,9 @@
       "description": "Run and serve the site for development",
       "command": "LUME_SERVE=1 deno task lume -s"
     },
-
-    "update-deps": {
-      "description": "Update declared Deno dependencies and regenerate lock files, then briefly run and stop the dev server",
-      "command": "sh -c 'set -e; deno outdated --update --latest; (cd src/blog/client && deno outdated --update --latest); deno task locks:regen; deno task serve & SERVER_PID=$!; sleep 10; kill -INT \"$SERVER_PID\"; wait \"$SERVER_PID\" || true'"
-    },
-
-    "locks:regen": {
-      "description": "Regenerate the root and frontend deno.lock files from the current dependency graphs",
-      "command": "deno run --allow-read --allow-write=deno.lock,deno.lock.bak,src/blog/client/deno.lock,src/blog/client/deno.lock.bak --allow-run scripts/regenerate-locks.ts"
-    },
-    "check": {
-      "description": "Type-check the entire project",
-      "command": "deno run --allow-read --allow-run scripts/check.ts"
+    "stop": {
+      "description": "Stop running `deno task serve` processes when they exist",
+      "command": "sh -c 'PIDS=$(pgrep -f \"lume/cli.ts -s\" || true); [ -z \"$PIDS\" ] || kill -INT $PIDS'"
     },
     "test": {
       "description": "Run unit and integration tests",
@@ -65,72 +103,29 @@
       "description": "Run tests with coverage output written to .tmp/deno-coverage",
       "command": "deno test --coverage=.tmp/deno-coverage --allow-env=VSCODE_TEXTMATE_DEBUG,NODE_ENV,GITHUB_ACTIONS,GITHUB_STEP_SUMMARY,GITHUB_WORKFLOW,GITHUB_RUN_ID,GITHUB_SERVER_URL,RUNNER_ENVIRONMENT --allow-read --allow-write=.tmp/deno-tests"
     },
-    "coverage:summary": {
-      "description": "Print a summary from the latest Deno coverage run",
-      "command": "deno coverage .tmp/deno-coverage"
-    },
-    "coverage:html": {
-      "description": "Generate an HTML report from the latest Deno coverage run",
-      "command": "deno coverage .tmp/deno-coverage --html"
-    },
-    "validate": {
-      "description": "Run the full local validation suite",
-      "command": "deno task design:guard && deno task typography:guard && deno task check && deno task test && deno task build"
-    },
-    "design:guard": {
-      "description": "Fail when normalized UI literals reappear outside the token bridge or explicit allowlists",
-      "command": "deno run --allow-read scripts/design-token-guard.ts"
-    },
-    "typography:guard": {
-      "description": "Fail when smart quotes/apostrophes remain in Markdown or code comments",
-      "command": "deno run --allow-read scripts/typography-guard.ts"
+    "test:doc": {
+      "description": "Run documentation tests from inline JSDoc examples in source files",
+      "command": "deno test --doc --allow-env=VSCODE_TEXTMATE_DEBUG --allow-read --allow-write=.tmp/deno-tests --allow-sys=homedir --allow-ffi _config contracts plugins scripts src"
     },
     "typography:fix": {
       "description": "Normalize smart quotes/apostrophes in Markdown and code comments",
       "command": "deno run --allow-read --allow-write scripts/typography-guard.ts --write"
     },
-    "test:doc": {
-      "description": "Run documentation tests from inline JSDoc examples in source files",
-      "command": "deno test --doc --allow-env=VSCODE_TEXTMATE_DEBUG --allow-read --allow-write=.tmp/deno-tests --allow-sys=homedir --allow-ffi _config contracts plugins scripts src"
+    "typography:guard": {
+      "description": "Fail when smart quotes/apostrophes remain in Markdown or code comments",
+      "command": "deno run --allow-read scripts/typography-guard.ts"
     },
-
-    // Payload budget
-    "payload:report": {
-      "description": "Report route-level JS/CSS payload from generated output (`_site` by default)",
-      "command": "deno run --allow-read --allow-write scripts/payload-report.ts"
+    "update-deps": {
+      "description": "Update declared Deno dependencies and regenerate lock files, then briefly run and stop the dev server",
+      "command": "sh -c 'set -e; deno outdated --update --latest; (cd src/blog/client && deno outdated --update --latest); deno task locks:regen; deno task serve & SERVER_PID=$!; sleep 12; kill -INT \"$SERVER_PID\"; wait \"$SERVER_PID\" || true'"
     },
-    "payload:policy": {
-      "description": "Run payload report/guard with the versioned PR policy (`deno task payload:policy --baseline=/path/to/baseline.json`)",
-      "command": "deno run --allow-read --allow-write scripts/payload-report.ts --policy=scripts/payload-policy.json"
-    },
-    "payload:baseline": {
-      "description": "Build and generate a policy-compatible baseline report",
-      "command": "deno task build && deno run --allow-read --allow-write scripts/payload-report.ts --policy=scripts/payload-policy.json --policy-baseline --output=.tmp/payload-policy-baseline.json --markdown=.tmp/payload-policy-baseline.md"
-    },
-    "lint-commit": {
-      "description": "Validate the commit message with @miscellaneous/commitlint",
-      "command": "deno run --allow-read scripts/lint-commit.ts"
+    "validate": {
+      "description": "Run the full local validation suite",
+      "command": "deno task design:guard && deno task typography:guard && deno task check && deno task test && deno task build"
     },
     "validate-contracts": {
       "description": "Validate generated app contracts and feeds against schemas",
       "command": "deno run --allow-read contracts/validate.ts"
-    },
-    "posts:fix-ids": {
-      "description": "Write UUID v7 ids into post `_data.yml` files",
-      "command": "deno run --allow-read --allow-write scripts/posts-fix-ids.ts"
-    },
-    "android:sync-contract-assets": {
-      "description": "Build the site contracts and mirror outputs into Android assets",
-      "command": "deno task build && deno run --allow-read --allow-write scripts/sync-android-contract-assets.ts"
-    },
-    "lefthook:install": {
-      "description": "Install Lefthook git hooks non-interactively",
-      "command": "DENO_NO_PROMPT=1 deno x lefthook install"
-    },
-
-    "stop": {
-      "description": "Stop running `deno task serve` processes when they exist",
-      "command": "sh -c 'PIDS=$(pgrep -f \"lume/cli.ts -s\" || true); [ -z \"$PIDS\" ] || kill -INT $PIDS'"
     }
   },
 
