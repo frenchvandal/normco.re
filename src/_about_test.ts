@@ -207,18 +207,22 @@ describe("about page CSS contracts", () => {
     );
     assertStringIncludes(
       aboutStyles,
-      "inline-size: min(100%, 14.5rem);",
+      `.about-pictogram-frame {
+      inline-size: min(100%, 30rem);
+      block-size: auto;
+      margin-inline: auto;
+      aspect-ratio: 1;`,
     );
     assertStringIncludes(
       aboutStyles,
       `.about-pictogram {
       --about-pictogram-shift-y: calc(var(--ph-space-2) * 1.2);
-      inline-size: min(100%, 12.5rem);
+      inline-size: 86%;
       block-size: 100%;`,
     );
     assertStringIncludes(
       aboutStyles,
-      ".about-pictogram svg {\n      inline-size: min(100%, 10rem);",
+      ".about-pictogram svg {\n      inline-size: 100%;",
     );
     assertStringIncludes(
       aboutStyles,
