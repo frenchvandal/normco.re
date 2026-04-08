@@ -60,6 +60,10 @@ describe("about.page.tsx", () => {
       html,
       'class="feature-card about-rail-card about-notes-card"',
     );
+    assertStringIncludes(
+      html,
+      'class="feature-card about-rail-card about-pictogram-card"',
+    );
     assertStringIncludes(html, 'data-icon="wechat"');
     assertStringIncludes(html, 'data-contact-toggletip=""');
     assertStringIncludes(html, 'data-contact-toggletip-trigger=""');
@@ -204,6 +208,26 @@ describe("about page CSS contracts", () => {
     assertStringIncludes(
       aboutStyles,
       "aspect-ratio: 1;",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "@media (min-width: 48rem) and (max-width: 75.999rem) {",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      ".about-pictogram-frame {",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "inline-size: min(100%, 24rem);",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "margin-inline: 0;",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      ".about-pictogram {\n      inline-size: min(80%, 16rem);",
     );
     assertStringIncludes(
       aboutStyles,

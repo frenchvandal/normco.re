@@ -481,6 +481,21 @@
     }
   }
 
+  @media (min-width: 48rem) and (max-width: 75.999rem) {
+    .about-pictogram-frame {
+      inline-size: min(100%, 24rem);
+      margin-inline: 0;
+    }
+
+    .about-pictogram {
+      inline-size: min(80%, 16rem);
+    }
+
+    .about-pictogram svg {
+      inline-size: 100%;
+    }
+  }
+
   @media (max-width: 47.999rem) {
     body[data-contact-toggletip-modal-open="true"] {
       overflow: hidden;
