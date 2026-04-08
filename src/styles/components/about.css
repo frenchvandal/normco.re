@@ -577,9 +577,9 @@
     }
 
     .about-pictogram-frame {
-      inline-size: min(100%, 14.5rem);
+      inline-size: 100%;
       block-size: auto;
-      margin-inline: auto;
+      margin-inline: 0;
       aspect-ratio: 1;
       place-items: end center;
       padding: var(--ph-space-4);
@@ -591,14 +591,14 @@
 
     .about-pictogram {
       --about-pictogram-shift-y: calc(var(--ph-space-2) * 1.2);
-      inline-size: min(100%, 12.5rem);
+      inline-size: 86%;
       block-size: 100%;
       padding: var(--ph-space-2);
       transform: none;
     }
 
     .about-pictogram svg {
-      inline-size: min(100%, 10rem);
+      inline-size: 100%;
     }
   }
 }
