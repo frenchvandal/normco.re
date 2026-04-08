@@ -33,6 +33,10 @@ export function bindAboutContactToggletips(runtime) {
   const inertElements = new Set();
   /** @type {Set<HTMLElement>} */
   const focusoutSuppressedContainers = new Set();
+  /** @type {Map<HTMLElement, ResizeObserver>} */
+  const popoverResizeObservers = new Map();
+  /** @type {number | null} */
+  let positionSyncFrame = null;
 
   if (containers.length === 0) {
     return;
@@ -518,6 +522,67 @@ export function bindAboutContactToggletips(runtime) {
     }, 0);
   }
 
+  /**
+   * @returns {void}
+   */
+  function syncOpenPopoverPositions() {
+    if (isMobileViewport()) {
+      return;
+    }
+
+    for (const container of containers) {
+      if (!isOpen(container)) {
+        continue;
+      }
+
+      syncNativePopoverPosition(container);
+    }
+  }
+
+  /**
+   * @returns {void}
+   */
+  function schedulePositionSync() {
+    if (positionSyncFrame !== null) {
+      return;
+    }
+
+    if (typeof runtime.requestAnimationFrame !== "function") {
+      syncOpenPopoverPositions();
+      return;
+    }
+
+    positionSyncFrame = runtime.requestAnimationFrame(() => {
+      positionSyncFrame = null;
+      syncOpenPopoverPositions();
+    });
+  }
+
+  /**
+   * @param {HTMLElement} popover
+   * @param {HTMLElement} container
+   * @returns {void}
+   */
+  function observePopoverSize(popover, container) {
+    if (
+      typeof runtime.ResizeObserver !== "function" ||
+      popoverResizeObservers.has(popover)
+    ) {
+      return;
+    }
+
+    const observer = new runtime.ResizeObserver(() => {
+      if (!isOpen(container)) {
+        return;
+      }
+
+      schedulePositionSync();
+    });
+
+    observer.observe(popover);
+    popoverResizeObservers.set(popover, observer);
+  }
+
   for (const container of containers) {
     const trigger = getTrigger(container);
     const popover = getPopover(container);
@@ -529,6 +594,7 @@ export function bindAboutContactToggletips(runtime) {
     }
 
     setToggletipState(container, isOpen(container));
+    observePopoverSize(popover, container);
 
     if (supportsNativePopover(popover)) {
       popover.addEventListener("toggle", () => {
@@ -668,7 +734,7 @@ export function bindAboutContactToggletips(runtime) {
   }
 
   runtime.addEventListener("resize", syncOpenPanelsToViewport);
-  runtime.addEventListener("scroll", syncOpenPanelsToViewport, {
+  runtime.addEventListener("scroll", schedulePositionSync, {
     passive: true,
   });
 }
