@@ -208,9 +208,9 @@ describe("about page CSS contracts", () => {
     assertStringIncludes(
       aboutStyles,
       `.about-pictogram-frame {
-      inline-size: 100%;
+      inline-size: min(100%, 30rem);
       block-size: auto;
-      margin-inline: 0;
+      margin-inline: auto;
       aspect-ratio: 1;`,
     );
     assertStringIncludes(
