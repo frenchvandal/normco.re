@@ -243,7 +243,9 @@ type CapturedResizeObserver = {
   targets: Set<Element>;
 };
 
-function installFakeResizeObserver(window: TestWindow): CapturedResizeObserver[] {
+function installFakeResizeObserver(
+  window: TestWindow,
+): CapturedResizeObserver[] {
   const observers: CapturedResizeObserver[] = [];
 
   class FakeResizeObserver {
@@ -814,12 +816,39 @@ describe("about-contact-toggletips.js", () => {
       assert(popover);
 
       window.dispatchEvent(new window.Event("scroll"));
+
+      assertEquals(raf.pendingCount(), 0);
       raf.flush();
 
       assertEquals(
         popover.style.getPropertyValue("--about-contact-popover-top"),
         "",
       );
+    } finally {
+      window.close();
+    }
+  });
+
+  it("does not schedule a rAF position sync on mobile scroll", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow & {
+      matchMedia: (query: string) => MediaQueryList;
+    };
+    try {
+      const mediaQueryList = createMediaQueryList(true);
+      window.matchMedia = (_query: string) => mediaQueryList;
+      installFakePopoverApi(window);
+      const raf = installManualRaf(window);
+
+      bindScript(window);
+
+      const [trigger] = getTriggers(window);
+      assert(trigger);
+
+      trigger.click();
+      window.dispatchEvent(new window.Event("scroll"));
+
+      assertEquals(raf.pendingCount(), 0);
     } finally {
       window.close();
     }

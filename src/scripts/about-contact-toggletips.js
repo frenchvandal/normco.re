@@ -540,10 +540,21 @@ export function bindAboutContactToggletips(runtime) {
   }
 
   /**
+   * @returns {boolean}
+   */
+  function hasOpenDesktopPopover() {
+    if (isMobileViewport()) {
+      return false;
+    }
+
+    return containers.some((container) => isOpen(container));
+  }
+
+  /**
    * @returns {void}
    */
   function schedulePositionSync() {
-    if (positionSyncFrame !== null) {
+    if (positionSyncFrame !== null || !hasOpenDesktopPopover()) {
       return;
     }
 
