@@ -1,0 +1,211 @@
+name: Update Runtime and Dependencies
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+      timezone: "Asia/Shanghai"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-runtime-and-dependencies-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Set up Deno
+        uses: ./.github/actions/setup-deno
+        with:
+          deno-version: latest
+
+      - id: versions
+        name: Print runtime versions
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          deno_output="$(deno -v)"
+          printf '%s\n' "$deno_output"
+          deno_version="$(printf '%s\n' "$deno_output" | sed -n '1s/^deno //p')"
+
+          {
+            echo "deno=$deno_version"
+          } >> "$GITHUB_OUTPUT"
+
+      - id: update_tool_versions
+        name: Update .tool-versions
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          current_deno="$(sed -n 's/^deno[[:space:]]\+\(.*\)$/\1/p' .tool-versions | head -n 1)"
+          new_deno="${{ steps.versions.outputs.deno }}"
+
+          changed=false
+
+          if [[ "$current_deno" != "$new_deno" ]]; then
+            changed=true
+
+            awk \
+              -v deno_version="$new_deno"  '
+                BEGIN {
+                  seen["deno"] = 0
+                }
+                $1 == "deno" {
+                  print "deno " deno_version
+                  seen["deno"] = 1
+                  next
+                }
+
+                {
+                  print
+                }
+                END {
+                  if (!seen["deno"]) {
+                    print "deno " deno_version
+                  }
+                }
+              ' .tool-versions > .tool-versions.tmp
+
+            mv .tool-versions.tmp .tool-versions
+          fi
+
+          {
+            echo "changed=$changed"
+            echo "current_deno=$current_deno"
+            echo "new_deno=$new_deno"
+          } >> "$GITHUB_OUTPUT"
+
+      - id: update_deps
+        name: Run dependency updates
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          before_status_file="$(mktemp)"
+          after_status_file="$(mktemp)"
+
+          git status --short | LC_ALL=C sort > "${before_status_file}"
+
+          deno task update-deps
+
+          git status --short | LC_ALL=C sort > "${after_status_file}"
+
+          dependencies_changed=false
+          if ! cmp -s "${before_status_file}" "${after_status_file}"; then
+            dependencies_changed=true
+          fi
+
+          overall_changed=false
+          working_tree_status="$(git status --short)"
+          if [[ -n "${working_tree_status}" ]]; then
+            overall_changed=true
+          fi
+
+          {
+            echo "dependencies_changed=${dependencies_changed}"
+            echo "overall_changed=${overall_changed}"
+          } >> "${GITHUB_OUTPUT}"
+
+          if [[ "${dependencies_changed}" != "true" ]]; then
+            echo "No dependency updates were detected after the Deno runtime step." >> "${GITHUB_STEP_SUMMARY}"
+            exit 0
+          fi
+
+          {
+            echo "Dependency updates detected:"
+            echo
+            echo '```text'
+            printf '%s\n' "${working_tree_status}"
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Validate updated Deno runtime
+        if: steps.update_tool_versions.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          deno task check
+          deno task test
+          deno task build
+
+      - name: Build project artifacts
+        if: steps.update_tool_versions.outputs.changed != 'true' &&
+          steps.update_deps.outputs.overall_changed == 'true'
+        run: deno task build
+
+      - id: commit_message
+        if: steps.update_deps.outputs.overall_changed == 'true'
+        name: Choose commit message
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          commit_message="build(deps): update dependencies"
+
+          if [[ "${{ steps.update_tool_versions.outputs.changed }}" == 'true' && "${{ steps.update_deps.outputs.dependencies_changed }}" == 'true' ]]; then
+            commit_message="chore: update deno version and dependencies"
+          elif [[ "${{ steps.update_tool_versions.outputs.changed }}" == 'true' ]]; then
+            commit_message="chore: update deno version"
+          fi
+
+          {
+            echo "message=${commit_message}"
+          } >> "${GITHUB_OUTPUT}"
+
+      - id: commit
+        if: steps.update_deps.outputs.overall_changed == 'true'
+        name: Commit and push updates
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          working_tree_status="$(git status --short)"
+          if [[ -z "${working_tree_status}" ]]; then
+            echo "No files changed after running runtime and dependency updates."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          commit_message_file="$(mktemp)"
+          printf '%s\n' "${{ steps.commit_message.outputs.message }}" > "${commit_message_file}"
+          deno task lint-commit "${commit_message_file}"
+
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "No staged changes to commit."
+            exit 0
+          fi
+
+          git commit -m "${{ steps.commit_message.outputs.message }}"
+          git fetch origin "${GITHUB_REF_NAME}"
+          git rebase "origin/${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Write update summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Runtime And Dependency Update Summary"
+            echo
+            echo "- Ref: \`${GITHUB_REF}\`"
+            echo "- Deno: \`${{ steps.update_tool_versions.outputs.current_deno }}\` -> \`${{ steps.update_tool_versions.outputs.new_deno }}\`"
+            echo "- Updated .tool-versions: \`${{ steps.update_tool_versions.outputs.changed }}\`"
+            echo "- Dependency updates detected: \`${{ steps.update_deps.outputs.dependencies_changed || 'false' }}\`"
+            echo "- Commit message: \`${{ steps.commit_message.outputs.message || 'none' }}\`"
+            echo "- Commit step: \`${{ steps.commit.outcome || 'skipped' }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
