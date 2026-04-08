@@ -28,6 +28,7 @@ import { enUS, fr as frLocale, zhCN, zhTW } from "npm/date-fns/locale";
 
 import { SHIKI_OPTIONS } from "./code_highlighting.ts";
 import { createPurgeCssOptions } from "./purgecss.ts";
+import { writeHtmlValidationReport } from "./quality_reports.ts";
 import { registerPostDataPreparation } from "./processors.ts";
 import { buildRobotsRules } from "./robots_rules.ts";
 import { shouldEmitSourceMaps } from "./runtime_policy.ts";
@@ -166,7 +167,7 @@ export function registerPlugins(
 
   site.use(
     validateHtml({
-      output: "_quality/html-issues.json",
+      output: writeHtmlValidationReport,
       rules: {
         "require-sri": "off",
         "script-type": "off",
