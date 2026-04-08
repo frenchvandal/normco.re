@@ -343,141 +343,49 @@
 
   :root:is([data-color-mode="dark"], [data-theme-preference="dark"])
     .about-pictogram-frame {
-    --about-pictogram-frame-border: color-mix(
-      in oklch,
-      var(--ph-color-border-default) 84%,
-      var(--ph-color-canvas-default)
-    );
+    --about-pictogram-frame-border: oklch(44% 0.022 254);
     --about-pictogram-frame-background: linear-gradient(
       180deg,
-      color-mix(
-        in oklch,
-        var(--ph-color-canvas-inset) 84%,
-        var(--ph-color-canvas-default)
-      ),
-      color-mix(
-        in oklch,
-        var(--ph-color-canvas-subtle) 72%,
-        var(--ph-color-canvas-inset)
-      )
+      oklch(96% 0.006 252),
+      oklch(93% 0.010 252)
     );
-    --about-pictogram-frame-inner-border: color-mix(
-      in oklch,
-      var(--ph-color-border-muted) 82%,
-      transparent
-    );
+    --about-pictogram-frame-inner-border: oklch(87% 0.011 252);
     --about-pictogram-frame-glow: radial-gradient(
-      ellipse at center 82%,
-      color-mix(
-        in oklch,
-        var(--ph-color-fg-default) 8%,
-        transparent
-      ),
-      transparent 76%
+      ellipse at center bottom,
+      color-mix(in oklch, var(--ph-color-accent-fg) 10%, transparent),
+      transparent 72%
     );
   }
 
   :root:is([data-color-mode="dark"], [data-theme-preference="dark"])
     .about-pictogram {
-    --about-pictogram-surface: linear-gradient(
-      180deg,
-      color-mix(
-        in oklch,
-        var(--ph-color-fg-default) 46%,
-        transparent
-      ),
-      color-mix(
-        in oklch,
-        var(--ph-color-fg-default) 38%,
-        transparent
-      )
-    );
-    --about-pictogram-surface-shadow:
-      inset 0 0 0 1px color-mix(
-      in oklch,
-      var(--ph-color-fg-default) 18%,
-      transparent
-    ),
-      0 0.75rem 1.5rem -1.35rem color-mix(
-      in oklch,
-      var(--ph-color-fg-default) 12%,
-      transparent
-    );
-    --about-pictogram-ink: color-mix(
-      in oklch,
-      var(--ph-color-canvas-inset) 72%,
-      var(--ph-color-fg-muted)
-    );
+    --about-pictogram-surface: transparent;
+    --about-pictogram-surface-shadow: none;
+    --about-pictogram-ink: oklch(23% 0.018 253);
   }
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-color-mode="light"]):not([data-theme-preference="light"])
       .about-pictogram-frame {
-      --about-pictogram-frame-border: color-mix(
-        in oklch,
-        var(--ph-color-border-default) 84%,
-        var(--ph-color-canvas-default)
-      );
+      --about-pictogram-frame-border: oklch(44% 0.022 254);
       --about-pictogram-frame-background: linear-gradient(
         180deg,
-        color-mix(
-          in oklch,
-          var(--ph-color-canvas-inset) 84%,
-          var(--ph-color-canvas-default)
-        ),
-        color-mix(
-          in oklch,
-          var(--ph-color-canvas-subtle) 72%,
-          var(--ph-color-canvas-inset)
-        )
+        oklch(96% 0.006 252),
+        oklch(93% 0.010 252)
       );
-      --about-pictogram-frame-inner-border: color-mix(
-        in oklch,
-        var(--ph-color-border-muted) 82%,
-        transparent
-      );
+      --about-pictogram-frame-inner-border: oklch(87% 0.011 252);
       --about-pictogram-frame-glow: radial-gradient(
-        ellipse at center 82%,
-        color-mix(
-          in oklch,
-          var(--ph-color-fg-default) 8%,
-          transparent
-        ),
-        transparent 76%
+        ellipse at center bottom,
+        color-mix(in oklch, var(--ph-color-accent-fg) 10%, transparent),
+        transparent 72%
       );
     }
 
     :root:not([data-color-mode="light"]):not([data-theme-preference="light"])
       .about-pictogram {
-      --about-pictogram-surface: linear-gradient(
-        180deg,
-        color-mix(
-          in oklch,
-          var(--ph-color-fg-default) 46%,
-          transparent
-        ),
-        color-mix(
-          in oklch,
-          var(--ph-color-fg-default) 38%,
-          transparent
-        )
-      );
-      --about-pictogram-surface-shadow:
-        inset 0 0 0 1px color-mix(
-        in oklch,
-        var(--ph-color-fg-default) 18%,
-        transparent
-      ),
-        0 0.75rem 1.5rem -1.35rem color-mix(
-        in oklch,
-        var(--ph-color-fg-default) 12%,
-        transparent
-      );
-      --about-pictogram-ink: color-mix(
-        in oklch,
-        var(--ph-color-canvas-inset) 72%,
-        var(--ph-color-fg-muted)
-      );
+      --about-pictogram-surface: transparent;
+      --about-pictogram-surface-shadow: none;
+      --about-pictogram-ink: oklch(23% 0.018 253);
     }
   }
 
