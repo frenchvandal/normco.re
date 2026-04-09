@@ -29,8 +29,22 @@
       var(--ph-header-height) + var(--ph-space-5)
     );
     scroll-behavior: smooth;
-    scrollbar-gutter: stable both-edges;
     text-rendering: optimizeLegibility;
+  }
+
+  /*
+   * Reserve scrollbar gutter only on pointing devices that actually render
+   * classic (non-overlay) scrollbars. Mobile WebKit browsers—including
+   * Brave on iOS—can otherwise reserve asymmetric space for a gutter that
+   * will never materialize, which pushes the centered page shell off the
+   * horizontal axis. The gutter still matters on desktop so that opening
+   * the contact toggletip modal (which sets `overflow: hidden` on body)
+   * does not nudge the layout sideways by the scrollbar width.
+   */
+  @media (pointer: fine) {
+    html {
+      scrollbar-gutter: stable both-edges;
+    }
   }
 
   body {

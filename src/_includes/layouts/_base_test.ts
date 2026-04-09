@@ -463,7 +463,14 @@ describe("base.tsx layout", () => {
 });
 
 describe("base.css contracts", () => {
-  it("reserves scrollbar gutter space during modal scroll locking", () => {
-    assertStringIncludes(baseStyles, "scrollbar-gutter: stable both-edges;");
-  });
+  it(
+    "reserves scrollbar gutter space during modal scroll locking on pointing devices",
+    () => {
+      assertStringIncludes(baseStyles, "scrollbar-gutter: stable both-edges;");
+      assertMatch(
+        baseStyles,
+        /@media \(pointer: fine\)\s*\{\s*html\s*\{\s*scrollbar-gutter: stable both-edges;/,
+      );
+    },
+  );
 });
