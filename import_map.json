@@ -53,10 +53,10 @@
     "npm/faker-js": "npm:@faker-js/faker@^10.4.0",
     "npm/jsdom": "npm:jsdom@29.0.2",
     "npm/playwright": "npm:playwright@1.59.1",
-    "npm/pretext": "npm:@chenglou/pretext@0.0.4",
-    "npm/react": "npm:react@19.2.4",
-    "npm/react-dom/client": "npm:react-dom@19.2.4/client",
-    "npm/react/jsx-runtime": "npm:react@19.2.4/jsx-runtime",
+    "npm/pretext": "npm:@chenglou/pretext@0.0.5",
+    "npm/react": "npm:react@19.2.5",
+    "npm/react-dom/client": "npm:react-dom@19.2.5/client",
+    "npm/react/jsx-runtime": "npm:react@19.2.5/jsx-runtime",
     "npm/shiki": "npm:shiki@4.0.2",
 
     "shiki": "./plugins/shiki/runtime.ts"

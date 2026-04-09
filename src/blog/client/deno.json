@@ -12,12 +12,12 @@
 
     "npm/ant-design-icons": "npm:@ant-design/icons@6.1.1",
     "npm/antd": "npm:antd@6.3.5",
-    "npm/pretext": "npm:@chenglou/pretext@0.0.4",
+    "npm/pretext": "npm:@chenglou/pretext@0.0.5",
     "npm/dayjs": "npm:dayjs@1.11.20",
-    "npm/react": "npm:react@19.2.4",
-    "npm/react-dom/client": "npm:react-dom@19.2.4/client",
-    "npm/react/jsx-dev-runtime": "npm:react@19.2.4/jsx-dev-runtime",
-    "npm/react/jsx-runtime": "npm:react@19.2.4/jsx-runtime"
+    "npm/react": "npm:react@19.2.5",
+    "npm/react-dom/client": "npm:react-dom@19.2.5/client",
+    "npm/react/jsx-dev-runtime": "npm:react@19.2.5/jsx-dev-runtime",
+    "npm/react/jsx-runtime": "npm:react@19.2.5/jsx-runtime"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
