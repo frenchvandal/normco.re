@@ -67,6 +67,7 @@ If your environment requires system CA certificates, prefix commands with
 | Coverage HTML    | `deno task coverage:html`                   | Generates browsable HTML from the latest coverage run                   |
 | Doc tests        | `deno task test:doc`                        | Runs JSDoc examples as executable documentation tests                   |
 | Design guard     | `deno task design:guard`                    | Blocks normalized UI literals outside tokenized paths                   |
+| AntD CSS bridge  | `deno task generate:antd-css`               | Rebuilds `src/styles/generated/antd-components.css` from the theme      |
 | Typography guard | `deno task typography:guard`                | Fails on smart quotes/apostrophes in Markdown/comments                  |
 | Lint commit      | `deno task lint-commit .git/COMMIT_EDITMSG` | Validates a commit message with `@miscellaneous/commitlint`             |
 | Validate         | `deno task validate`                        | Runs both guards, check, test, and build                                |
@@ -235,6 +236,11 @@ color, or typography values in UI code. Prefer `var(--ph-*)`.
 Deno resolves npm packages for the repo from its global cache. The root and
 frontend configs both use `nodeModulesDir: "none"`, so local `node_modules`
 folders are not part of the normal workflow.
+
+When Ant Design or the local blog theme changes, regenerate the committed CSS
+bridge with `deno task generate:antd-css`. The `deno task update-deps` flow now
+includes that regeneration step automatically after refreshing dependency pins
+and lockfiles.
 
 In production builds, Lume runs Lightning CSS before PurgeCSS. PurgeCSS is
 configured with an explicit safelist for ARIA/data-state selectors, Pagefind

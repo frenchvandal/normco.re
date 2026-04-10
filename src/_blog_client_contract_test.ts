@@ -76,8 +76,10 @@ describe("blog client interaction contracts", () => {
   it("routes trusted post HTML through named helpers instead of inline sinks", () => {
     assertStringIncludes(commonSource, "export function TrustedHtmlSection(");
     assertStringIncludes(commonSource, "export function TrustedHtmlSpan(");
+    assertStringIncludes(commonSource, "export function TrustedHtmlAnchor(");
     assertStringIncludes(postAppSource, "<TrustedHtmlSection");
     assertStringIncludes(postAppSource, "<TrustedHtmlSpan");
+    assertStringIncludes(galleryAppSource, "<TrustedHtmlAnchor");
   });
 
   it("keeps PostApp outline links stabilized through Pretext helpers", () => {
@@ -251,7 +253,7 @@ describe("blog client interaction contracts", () => {
       "titleSelector: PRETEXT_GALLERY_CARD_TITLE_SELECTOR",
     );
     assertStringIncludes(galleryAppSource, "mergeStaticMediaHtml");
-    assertStringIncludes(galleryAppSource, "dangerouslySetInnerHTML");
+    assertStringIncludes(galleryAppSource, "TrustedHtmlAnchor");
     assertStringIncludes(
       pretextSelectorsSource,
       'PRETEXT_GALLERY_CARD_TITLE_CLASS = "blog-antd-gallery-card__title"',

@@ -1,10 +1,12 @@
-import { assertEquals } from "@std/assert";
+import { assertEquals, assertThrows } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
 import {
+  isJsonFeedDocument,
   JSON_FEED_PATH_PATTERN,
   JSON_FEED_VERSION,
   normalizeJsonFeed,
+  parseJsonFeedDocument,
   toRfc3339,
 } from "./json-feed.ts";
 
@@ -43,6 +45,47 @@ describe("normalizeJsonFeed()", () => {
     assertEquals(
       normalized.items?.[0]?.date_published,
       "2026-03-10T00:00:00Z",
+    );
+  });
+});
+
+describe("isJsonFeedDocument()", () => {
+  it("accepts object feeds with object items", () => {
+    assertEquals(
+      isJsonFeedDocument({
+        version: "https://jsonfeed.org/version/1.1",
+        language: "en",
+        items: [{ id: "post-1", date_published: "2026-03-10" }],
+      }),
+      true,
+    );
+  });
+
+  it("rejects arrays and malformed items", () => {
+    assertEquals(isJsonFeedDocument([]), false);
+    assertEquals(
+      isJsonFeedDocument({
+        items: [{ date_published: 42 }],
+      }),
+      false,
+    );
+  });
+});
+
+describe("parseJsonFeedDocument()", () => {
+  it("parses valid JSON feed objects", () => {
+    assertEquals(
+      parseJsonFeedDocument(
+        '{"version":"https://jsonfeed.org/version/1.1","items":[{"id":"post-1"}]}',
+      ).items?.[0]?.id,
+      "post-1",
+    );
+  });
+
+  it("throws for non-object payloads and malformed item shapes", () => {
+    assertThrows(() => parseJsonFeedDocument('["not","a","feed"]'));
+    assertThrows(() =>
+      parseJsonFeedDocument('{"items":[{"date_published":42}]}')
     );
   });
 });

@@ -16,10 +16,22 @@ const sw = /** @type {ServiceWorkerGlobalScope} */ (
 
 const SW_URL = new URL(sw.location.href);
 const SW_VERSION = SW_URL.searchParams.get("v") ?? "__SW_VERSION__";
-const SW_DEBUG_LEVEL = SW_URL.searchParams.get("debug") ?? "off";
 const STATIC_CACHE = `static-${SW_VERSION}`;
 const PAGE_CACHE = `pages-${SW_VERSION}`;
 const FEED_CACHE = `feeds-${SW_VERSION}`;
+const ALLOWED_SW_DEBUG_LEVELS = new Set(["off", "summary", "verbose"]);
+
+/**
+ * @param {string | null} value
+ * @returns {"off" | "summary" | "verbose"}
+ */
+function resolveSwDebugLevel(value) {
+  return typeof value === "string" && ALLOWED_SW_DEBUG_LEVELS.has(value)
+    ? /** @type {"off" | "summary" | "verbose"} */ (value)
+    : "off";
+}
+
+const SW_DEBUG_LEVEL = resolveSwDebugLevel(SW_URL.searchParams.get("debug"));
 
 const OFFLINE_URL_BY_LANGUAGE = {
   en: "/offline/",

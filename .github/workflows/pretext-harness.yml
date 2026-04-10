@@ -25,14 +25,17 @@ jobs:
       - name: Setup Deno environment
         uses: ./.github/actions/setup-deno
 
+      - name: Verify frozen lockfile
+        run: deno install --frozen
+
       - name: Install Playwright Chromium for Pretext harness
-        run: deno task pretext:harness:install
+        run: deno task --frozen pretext:harness:install
 
       - name: Run Pretext visual harness comparison
-        run: deno task pretext:harness:compare:ci
+        run: deno task --frozen pretext:harness:compare:ci
 
       - name: Run Pretext React harness
-        run: deno task pretext:react-harness:ci
+        run: deno task --frozen pretext:react-harness:ci
 
       - name: Upload Pretext harness comparison artifact
         if: ${{ always() }}

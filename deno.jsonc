@@ -27,6 +27,10 @@
       "description": "Fail when normalized UI literals reappear outside the token bridge or explicit allowlists",
       "command": "deno run --allow-read scripts/design-token-guard.ts"
     },
+    "generate:antd-css": {
+      "description": "Regenerate the generated Ant Design CSS bridge from the current theme configuration",
+      "command": "deno run --allow-read --allow-write=src/styles/generated/antd-components.css --allow-run scripts/generate-antd-css.ts"
+    },
     "lefthook:install": {
       "description": "Install Lefthook git hooks non-interactively",
       "command": "DENO_NO_PROMPT=1 deno x lefthook install"
@@ -116,8 +120,8 @@
       "command": "deno run --allow-read scripts/typography-guard.ts"
     },
     "update-deps": {
-      "description": "Update declared Deno dependencies and regenerate lock files, then briefly run and stop the dev server",
-      "command": "sh -c 'set -e; deno outdated --update --latest; (cd src/blog/client && deno outdated --update --latest); deno task locks:regen; deno task serve & SERVER_PID=$!; sleep 60; kill -INT \"$SERVER_PID\"; wait \"$SERVER_PID\" || true'"
+      "description": "Update declared Deno dependencies, regenerate generated assets, then probe the dev server before stopping it cleanly",
+      "command": "deno run --allow-read --allow-write --allow-run scripts/update-deps.ts"
     },
     "validate": {
       "description": "Run the full local validation suite",

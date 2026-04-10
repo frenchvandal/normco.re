@@ -17,9 +17,20 @@
   const swUrl = currentScript instanceof HTMLScriptElement
     ? currentScript.dataset.swUrl ?? "/sw.js"
     : "/sw.js";
-  const swDebugLevel = currentScript instanceof HTMLScriptElement
-    ? currentScript.dataset.swDebugLevel ?? "off"
-    : "off";
+  const allowedSwDebugLevels = new Set(["off", "summary", "verbose"]);
+  /**
+   * @param {string | undefined} value
+   * @returns {"off" | "summary" | "verbose"}
+   */
+  const resolveSwDebugLevel = (value) =>
+    typeof value === "string" && allowedSwDebugLevels.has(value)
+      ? /** @type {"off" | "summary" | "verbose"} */ (value)
+      : "off";
+  const swDebugLevel = resolveSwDebugLevel(
+    currentScript instanceof HTMLScriptElement
+      ? currentScript.dataset.swDebugLevel
+      : undefined,
+  );
   const sessionStorage = globalThis.sessionStorage;
   const isLocalDevelopmentHost = localHostPattern.test(
     globalThis.location.hostname,

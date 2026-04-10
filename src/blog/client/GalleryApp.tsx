@@ -19,6 +19,7 @@ import {
   PRETEXT_GALLERY_CARD_TITLE_SELECTOR,
 } from "./pretext-selectors.ts";
 import { usePretextTextStyle } from "./pretext-story.ts";
+import { TrustedHtmlAnchor } from "./common.tsx";
 
 type GalleryRuntimeItem = Readonly<
   BlogGalleryItem & {
@@ -39,11 +40,11 @@ function GalleryCardMedia({ item, openPostLabel }: {
 }) {
   if (item.mediaHtml) {
     return (
-      <a
+      <TrustedHtmlAnchor
+        html={item.mediaHtml}
         href={item.postUrl}
         className="blog-antd-gallery-card__media-link"
         aria-label={`${openPostLabel}: ${item.postTitle}`}
-        dangerouslySetInnerHTML={{ __html: item.mediaHtml }}
       />
     );
   }

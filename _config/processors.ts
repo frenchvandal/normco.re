@@ -16,6 +16,7 @@ import {
 import {
   JSON_FEED_PATH_PATTERN,
   normalizeJsonFeed,
+  parseJsonFeedDocument,
 } from "../src/utils/json-feed.ts";
 import { FEED_VARIANTS } from "../plugins/feeds.ts";
 import { getLanguageTag, type SiteLanguage } from "../src/utils/i18n.ts";
@@ -48,6 +49,19 @@ type ImageDimensions = Readonly<{
   height: number;
   type: string;
 }>;
+
+function parseGeneratedJsonFeed(
+  pageUrl: string,
+  content: unknown,
+): ReturnType<typeof parseJsonFeedDocument> {
+  try {
+    return parseJsonFeedDocument(decodePageContent(content));
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+
+    throw new Error(`Invalid JSON feed emitted for ${pageUrl}: ${reason}`);
+  }
+}
 
 function normalizeSourcePath(sourcePath: string): string {
   return normalizePosix(sourcePath.replaceAll("\\", "/"));
@@ -379,16 +393,7 @@ export function registerProcessors(site: Site): void {
         continue;
       }
 
-      let feed: Record<string, unknown>;
-      try {
-        feed = JSON.parse(decodePageContent(page.content)) as Record<
-          string,
-          unknown
-        >;
-      } catch {
-        continue;
-      }
-
+      const feed = parseGeneratedJsonFeed(pageUrl, page.content);
       const language = feedLanguageMap.get(pageUrl);
       page.content = JSON.stringify(
         normalizeJsonFeed(

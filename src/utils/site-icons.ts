@@ -50,6 +50,8 @@ type SiteIconData = Readonly<{
 }>;
 
 const SIMPLE_ICONS_ASSET_BASE = "/icons/simpleicons";
+const SITE_ICON_PRIMARY_COLOR = "var(--ph-color-feedback-info)";
+const SITE_ICON_SECONDARY_COLOR = "var(--ph-surface-accent)";
 
 function unwrapAntdIconDefinition(module: unknown): RawIconDefinition {
   const candidate = module as { default?: unknown };
@@ -61,7 +63,9 @@ function unwrapAntdIconDefinition(module: unknown): RawIconDefinition {
 }
 
 function resolveRawIconNode(icon: RawIconSource): RawIconNode {
-  return typeof icon === "function" ? icon("#1677ff", "#dbeafe") : icon;
+  return typeof icon === "function"
+    ? icon(SITE_ICON_PRIMARY_COLOR, SITE_ICON_SECONDARY_COLOR)
+    : icon;
 }
 
 const SITE_ICON_DEFINITIONS = {

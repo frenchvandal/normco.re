@@ -18,4 +18,6 @@ Deno.test("site-icons keeps targeted Ant Design SVG imports", () => {
     source,
     "npm/ant-design-icons-svg/WechatFilled.js",
   );
+  assert(!source.includes("#1677ff"));
+  assert(!source.includes("#dbeafe"));
 });

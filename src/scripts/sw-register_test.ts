@@ -86,6 +86,46 @@ describe("sw-register.js", () => {
     assertEquals(calls[0]?.options.updateViaCache, "none");
   });
 
+  it("falls back to debug=off when the requested level is invalid", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    const calls: RegisterCall[] = [];
+
+    window.requestIdleCallback = (callback: IdleRequestCallback) => {
+      callback({
+        didTimeout: false,
+        timeRemaining: () => 10,
+      });
+      return 1;
+    };
+
+    Object.defineProperty(window.navigator, "serviceWorker", {
+      configurable: true,
+      value: {
+        controller: null,
+        addEventListener() {},
+        register(url: string, options: RegistrationOptions) {
+          calls.push({ url, options });
+          return Promise.resolve({
+            active: null,
+            installing: null,
+            waiting: null,
+            addEventListener() {},
+          });
+        },
+      },
+    });
+
+    installScript(window, {
+      swUrl: "/sw.js",
+      swDebugLevel: "verbose-and-more",
+    });
+    await flush(window);
+
+    assertEquals(calls.length, 1);
+    assertEquals(calls[0]?.url, "https://normco.re/sw.js?debug=off");
+  });
+
   it("skips registration for known crawler user agents", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;

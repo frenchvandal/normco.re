@@ -66,7 +66,9 @@ export function renderBreadcrumbItems(
  * Blog client payloads already carry trusted server-rendered HTML. Keep the
  * React sink behind named helpers so raw markup remains explicit and rare.
  * This markup comes from the repo's local Markdown/layout pipeline, then gets
- * any final post-processing before it reaches these components.
+ * any final post-processing before it reaches these components. Gallery media
+ * HTML is copied from the SSR fallback DOM before hydration rather than being
+ * injected from author-controlled JSON.
  */
 export function TrustedHtmlSection(
   {
@@ -103,6 +105,29 @@ export function TrustedHtmlSpan(
   return (
     <span
       className={className}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
+
+export function TrustedHtmlAnchor(
+  {
+    html,
+    href,
+    className,
+    ariaLabel,
+  }: {
+    html: string;
+    href: string;
+    className?: string | undefined;
+    ariaLabel?: string | undefined;
+  },
+): ReactElement {
+  return (
+    <a
+      href={href}
+      className={className}
+      aria-label={ariaLabel}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
