@@ -29,18 +29,43 @@
     display: block;
   }
 
-  .about-contact-toggletip > .site-popover[data-contact-native-popover] {
+  .about-contact-toggletip
+    > .site-popover[data-contact-native-popover]:not(
+      [data-contact-anchor-ready]
+    ) {
     position: fixed;
     inset-block-start: var(--about-contact-popover-top, 0);
     inset-inline-start: var(--about-contact-popover-left, 50vw);
   }
 
   .about-contact-toggletip
-    > .site-popover[data-contact-native-popover]
+    > .site-popover[data-contact-native-popover]:not(
+      [data-contact-anchor-ready]
+    )
     > .site-popover__caret {
     transform: translateX(
       calc(-50% + var(--about-contact-popover-caret-offset, 0px))
     ) rotate(45deg);
+  }
+
+  @supports (anchor-name: --about-contact-anchor)
+    and (position-anchor: --about-contact-anchor) and (top: anchor(bottom))
+    and (left: anchor(center)) {
+    .about-contact-toggletip
+      > .site-popover[data-contact-native-popover][data-contact-anchor-ready] {
+      position: fixed;
+      inset: auto;
+      top: anchor(bottom);
+      left: anchor(center);
+      margin-top: var(--ph-space-2);
+      transform: translate(-50%, 0);
+    }
+
+    .about-contact-toggletip
+      > .site-popover[data-contact-native-popover][data-contact-anchor-ready]
+      > .site-popover__caret {
+      transform: translateX(-50%) rotate(45deg);
+    }
   }
 
   .about-contact-trigger {

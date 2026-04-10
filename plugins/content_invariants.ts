@@ -134,9 +134,7 @@ export function registerContentInvariants(site: Site): void {
         const scopeKey = getPostScopeKey(page.sourcePath);
 
         if (scopeKey !== undefined) {
-          const scopedPages = postScopes.get(scopeKey) ?? [];
-          scopedPages.push(page);
-          postScopes.set(scopeKey, scopedPages);
+          postScopes.getOrInsertComputed(scopeKey, () => []).push(page);
         }
       }
     }

@@ -1,4 +1,6 @@
 const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const RFC3339_DATE_TIME_PATTERN =
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
 
 function toValidDate(date: Date): Date | undefined {
   return Number.isNaN(date.getTime()) ? undefined : date;
@@ -8,6 +10,28 @@ function parseDateOnly(value: string): Date | undefined {
   try {
     const plainDate = Temporal.PlainDate.from(value);
     return new Date(plainDate.toZonedDateTime("UTC").epochMilliseconds);
+  } catch {
+    return undefined;
+  }
+}
+
+function parseTemporalInstantDateTime(value: string): Date | undefined {
+  try {
+    return new Date(Temporal.Instant.from(value).epochMilliseconds);
+  } catch {
+    return undefined;
+  }
+}
+
+export function tryParseRfc3339Instant(
+  value: string,
+): Temporal.Instant | undefined {
+  if (!RFC3339_DATE_TIME_PATTERN.test(value)) {
+    return undefined;
+  }
+
+  try {
+    return Temporal.Instant.from(value);
   } catch {
     return undefined;
   }
@@ -36,7 +60,12 @@ export function parseDateValue(value: unknown): Date | undefined {
     return parseDateOnly(trimmed);
   }
 
-  return toValidDate(new Date(trimmed));
+  return parseTemporalInstantDateTime(trimmed) ??
+    toValidDate(new Date(trimmed));
+}
+
+export function isValidRfc3339DateTime(value: string): boolean {
+  return tryParseRfc3339Instant(value) !== undefined;
 }
 
 export function formatRfc3339Instant(date: Date): string {

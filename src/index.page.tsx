@@ -12,7 +12,10 @@ import {
 import { getTagUrl } from "./utils/tags.ts";
 import type { SiteLanguage, SiteTranslations } from "./utils/i18n.ts";
 import { getSiteName } from "./utils/site-identity.ts";
-import { resolvePostTitleViewTransitionAttributes } from "./utils/view-transitions.ts";
+import {
+  resolvePostSummaryViewTransitionAttributes,
+  resolvePostTitleViewTransitionAttributes,
+} from "./utils/view-transitions.ts";
 
 export const lang = ["en", "fr", "zh-hans", "zh-hant"] as const;
 export const url = "/";
@@ -66,6 +69,10 @@ function FeaturedStory(
   const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
     story.url,
   );
+  const summaryTransitionAttributes =
+    resolvePostSummaryViewTransitionAttributes(
+      story.url,
+    );
 
   return (
     <article class="editorial-home-featured-story">
@@ -100,7 +107,10 @@ function FeaturedStory(
             </a>
           </h2>
           {story.summary !== undefined && (
-            <p class="editorial-home-featured-story__summary">
+            <p
+              class="editorial-home-featured-story__summary"
+              {...(summaryTransitionAttributes ?? {})}
+            >
               {story.summary}
             </p>
           )}

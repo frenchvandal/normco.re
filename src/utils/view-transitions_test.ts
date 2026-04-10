@@ -3,6 +3,8 @@ import { describe, it } from "@std/testing/bdd";
 
 import {
   renderViewTransitionNameAttribute,
+  resolvePostSummaryViewTransitionAttributes,
+  resolvePostSummaryViewTransitionName,
   resolvePostTitleViewTransitionAttributes,
   resolvePostTitleViewTransitionName,
   VIEW_TRANSITION_NAME_ATTRIBUTE,
@@ -40,6 +42,31 @@ describe("resolvePostTitleViewTransitionName()", () => {
       resolvePostTitleViewTransitionAttributes("/posts/hello-world/"),
       {
         [VIEW_TRANSITION_NAME_ATTRIBUTE]: "post-title-posts-hello-world",
+      },
+    );
+  });
+});
+
+describe("resolvePostSummaryViewTransitionName()", () => {
+  it("builds a stable transition name for canonical post routes", () => {
+    assertEquals(
+      resolvePostSummaryViewTransitionName("/posts/hello-world/"),
+      "post-summary-posts-hello-world",
+    );
+  });
+
+  it("keeps localized post routes distinct", () => {
+    assertEquals(
+      resolvePostSummaryViewTransitionName("/fr/posts/bonjour-le-monde/"),
+      "post-summary-fr-posts-bonjour-le-monde",
+    );
+  });
+
+  it("shares the data-attribute contract with title transitions", () => {
+    assertEquals(
+      resolvePostSummaryViewTransitionAttributes("/posts/hello-world/"),
+      {
+        [VIEW_TRANSITION_NAME_ATTRIBUTE]: "post-summary-posts-hello-world",
       },
     );
   });

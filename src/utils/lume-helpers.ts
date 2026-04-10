@@ -2,6 +2,7 @@ import { escapeHtml } from "./html.ts";
 import { getRecordMethod, getRecordValue } from "./type-guards.ts";
 import {
   renderViewTransitionNameAttribute,
+  resolvePostSummaryViewTransitionName,
   resolvePostTitleViewTransitionName,
 } from "./view-transitions.ts";
 
@@ -45,11 +46,17 @@ export function renderFallbackPostCard(
 ): Promise<string> {
   const cls = ["site-panel", "post-card", className].filter(Boolean).join(" ");
   const titleTransitionName = resolvePostTitleViewTransitionName(url);
+  const summaryTransitionName = resolvePostSummaryViewTransitionName(url);
   const titleTransitionAttribute = renderViewTransitionNameAttribute(
     titleTransitionName,
   );
+  const summaryTransitionAttribute = renderViewTransitionNameAttribute(
+    summaryTransitionName,
+  );
   const summaryHtml = showSummary && summary
-    ? `<p class="post-card-summary">${escapeHtml(summary)}</p>`
+    ? `<p class="post-card-summary"${summaryTransitionAttribute}>${
+      escapeHtml(summary)
+    }</p>`
     : "";
   const readingHtml = readingLabel
     ? `<span class="post-card-reading-time">${escapeHtml(readingLabel)}</span>`

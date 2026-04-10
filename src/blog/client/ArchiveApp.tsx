@@ -22,7 +22,10 @@ import {
   buildArchiveViewModel,
 } from "../archive-view-model.ts";
 import { resolveArchiveLocaleFromDocument } from "../archive-common.ts";
-import { resolvePostTitleViewTransitionAttributes } from "../../utils/view-transitions.ts";
+import {
+  resolvePostSummaryViewTransitionAttributes,
+  resolvePostTitleViewTransitionAttributes,
+} from "../../utils/view-transitions.ts";
 import {
   BLOG_ANTD_BACKTOP_CLASSNAMES,
   BLOG_ANTD_CARD_CLASSNAMES,
@@ -70,6 +73,10 @@ export function ArchiveTimelineItem(
   const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
     story.url,
   );
+  const summaryTransitionAttributes =
+    resolvePostSummaryViewTransitionAttributes(
+      story.url,
+    );
 
   const measuredText = usePretextTextStyle({
     summary: story.summary,
@@ -120,7 +127,10 @@ export function ArchiveTimelineItem(
         </a>
       </Title>
       {story.summary && (
-        <Paragraph className={PRETEXT_ARCHIVE_TIMELINE_SUMMARY_CLASS}>
+        <Paragraph
+          className={PRETEXT_ARCHIVE_TIMELINE_SUMMARY_CLASS}
+          {...(summaryTransitionAttributes ?? {})}
+        >
           {story.summary}
         </Paragraph>
       )}

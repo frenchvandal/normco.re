@@ -37,9 +37,8 @@ function collectTagBuckets(posts: Lume.Data[]): Map<string, TagBucket> {
 
       const tagName = rawTag.trim();
       const tagSlug = getTagSlug(tagName);
-      const bucket = buckets.get(tagSlug) ?? { tagName, posts: [] };
-      bucket.posts.push(post);
-      buckets.set(tagSlug, bucket);
+      buckets.getOrInsertComputed(tagSlug, () => ({ tagName, posts: [] })).posts
+        .push(post);
     }
   }
 

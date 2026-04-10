@@ -190,6 +190,24 @@ function installFakePopoverApi(window: TestWindow) {
   }
 }
 
+function installFakeAnchorPositioningSupport(window: TestWindow) {
+  Object.defineProperty(window, "CSS", {
+    configurable: true,
+    value: {
+      supports(property: string, value: string) {
+        return (
+          (property === "anchor-name" &&
+            value === "--about-contact-anchor-probe") ||
+          (property === "position-anchor" &&
+            value === "--about-contact-anchor-probe") ||
+          (property === "top" && value === "anchor(bottom)") ||
+          (property === "left" && value === "anchor(center)")
+        );
+      },
+    },
+  });
+}
+
 function installFakeDesktopPopoverGeometry(window: TestWindow) {
   const [trigger] = getTriggers(window);
   const [popover] = getPopovers(window);
@@ -657,6 +675,55 @@ describe("about-contact-toggletips.js", () => {
     }
   });
 
+  it("prefers CSS anchor positioning over desktop fallback geometry when available", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow & {
+      matchMedia: (query: string) => MediaQueryList;
+    };
+    try {
+      const mediaQueryList = createMediaQueryList(false);
+      window.matchMedia = (_query: string) => mediaQueryList;
+      installFakePopoverApi(window);
+      installFakeAnchorPositioningSupport(window);
+
+      bindScript(window);
+
+      const [trigger] = getTriggers(window);
+      const [popover] = getPopovers(window);
+      assert(trigger);
+      assert(popover);
+
+      assertEquals(
+        trigger.style.getPropertyValue("anchor-name"),
+        "--about-contact-anchor-1",
+      );
+      assertEquals(
+        popover.style.getPropertyValue("position-anchor"),
+        "--about-contact-anchor-1",
+      );
+      assertEquals(popover.hasAttribute("data-contact-anchor-ready"), true);
+
+      trigger.click();
+
+      assertEquals(popover.hidden, false);
+      assertEquals(popover.getAttribute("data-popover-open"), "true");
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-top"),
+        "",
+      );
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-left"),
+        "",
+      );
+      assertEquals(
+        popover.style.getPropertyValue("--about-contact-popover-caret-offset"),
+        "",
+      );
+    } finally {
+      window.close();
+    }
+  });
+
   it("uses the native Popover API on mobile when available", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow & {
@@ -848,6 +915,34 @@ describe("about-contact-toggletips.js", () => {
       trigger.click();
       window.dispatchEvent(new window.Event("scroll"));
 
+      assertEquals(raf.pendingCount(), 0);
+    } finally {
+      window.close();
+    }
+  });
+
+  it("skips desktop fallback positioning work when anchor positioning is available", () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow & {
+      matchMedia: (query: string) => MediaQueryList;
+    };
+    try {
+      const mediaQueryList = createMediaQueryList(false);
+      window.matchMedia = (_query: string) => mediaQueryList;
+      installFakePopoverApi(window);
+      installFakeAnchorPositioningSupport(window);
+      const observers = installFakeResizeObserver(window);
+      const raf = installManualRaf(window);
+
+      bindScript(window);
+
+      const [trigger] = getTriggers(window);
+      assert(trigger);
+
+      trigger.click();
+      window.dispatchEvent(new window.Event("scroll"));
+
+      assertEquals(observers.length, 0);
       assertEquals(raf.pendingCount(), 0);
     } finally {
       window.close();

@@ -17,7 +17,10 @@ import {
   Tooltip,
 } from "@blog/common-antd";
 import type { BlogBreadcrumbItem, BlogStoryCard } from "../view-data.ts";
-import { resolvePostTitleViewTransitionAttributes } from "../../utils/view-transitions.ts";
+import {
+  resolvePostSummaryViewTransitionAttributes,
+  resolvePostTitleViewTransitionAttributes,
+} from "../../utils/view-transitions.ts";
 import {
   BLOG_ANTD_CARD_CLASSNAMES,
   BLOG_ANTD_READING_METER_PROGRESS,
@@ -321,6 +324,10 @@ export function StoryCard(
   const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
     story.url,
   );
+  const summaryTransitionAttributes =
+    resolvePostSummaryViewTransitionAttributes(
+      story.url,
+    );
 
   return (
     <Card
@@ -355,7 +362,10 @@ export function StoryCard(
             </span>
           </Title>
           {summaryVisible && story.summary && (
-            <Paragraph className={PRETEXT_STORY_CARD_SUMMARY_CLASS}>
+            <Paragraph
+              className={PRETEXT_STORY_CARD_SUMMARY_CLASS}
+              {...(summaryTransitionAttributes ?? {})}
+            >
               {story.summary}
             </Paragraph>
           )}
@@ -520,6 +530,10 @@ export function FeaturedStory(
   const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
     story.url,
   );
+  const summaryTransitionAttributes =
+    resolvePostSummaryViewTransitionAttributes(
+      story.url,
+    );
 
   return (
     <Card
@@ -562,7 +576,10 @@ export function FeaturedStory(
                   readingTooltip={readingTooltip}
                 />
                 {story.summary && (
-                  <Paragraph className={PRETEXT_FEATURE_CARD_SUMMARY_CLASS}>
+                  <Paragraph
+                    className={PRETEXT_FEATURE_CARD_SUMMARY_CLASS}
+                    {...(summaryTransitionAttributes ?? {})}
+                  >
                     {story.summary}
                   </Paragraph>
                 )}

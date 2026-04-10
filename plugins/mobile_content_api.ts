@@ -347,14 +347,7 @@ function createPostPagesBySlugMap(
 
   for (const page of postPages) {
     const slug = requireString(page.data, "basename", page.data.basename);
-    const existing = map.get(slug);
-
-    if (existing) {
-      existing.push(page);
-      continue;
-    }
-
-    map.set(slug, [page]);
+    map.getOrInsertComputed(slug, () => []).push(page);
   }
 
   return map;

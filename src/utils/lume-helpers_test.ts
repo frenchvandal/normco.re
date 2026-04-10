@@ -8,6 +8,7 @@ import {
   resolvePostCardRenderer,
 } from "./lume-helpers.ts";
 import {
+  resolvePostSummaryViewTransitionName,
   resolvePostTitleViewTransitionName,
   VIEW_TRANSITION_NAME_ATTRIBUTE,
 } from "./view-transitions.ts";
@@ -87,6 +88,26 @@ describe("renderFallbackPostCard()", () => {
       html.includes(
         `${VIEW_TRANSITION_NAME_ATTRIBUTE}="${
           resolvePostTitleViewTransitionName("/posts/hello/")
+        }"`,
+      ),
+      true,
+    );
+  });
+
+  it("adds a shared summary transition when a visible summary is rendered", async () => {
+    const html = await renderFallbackPostCard({
+      title: "Hello",
+      url: "/posts/hello/",
+      dateStr: "Mar 29, 2026",
+      dateIso: "2026-03-29",
+      summary: "Visible summary",
+      showSummary: true,
+    });
+
+    assertEquals(
+      html.includes(
+        `${VIEW_TRANSITION_NAME_ATTRIBUTE}="${
+          resolvePostSummaryViewTransitionName("/posts/hello/")
         }"`,
       ),
       true,

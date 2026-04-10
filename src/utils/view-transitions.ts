@@ -1,5 +1,10 @@
-const VIEW_TRANSITION_NAME_PREFIX = "post-title";
+const VIEW_TRANSITION_NAME_PREFIX = {
+  summary: "post-summary",
+  title: "post-title",
+} as const;
 export const VIEW_TRANSITION_NAME_ATTRIBUTE = "data-view-transition-name";
+
+type PostViewTransitionKind = keyof typeof VIEW_TRANSITION_NAME_PREFIX;
 
 type ViewTransitionNameAttributes = Readonly<{
   [VIEW_TRANSITION_NAME_ATTRIBUTE]: string;
@@ -20,8 +25,9 @@ function decodePathSegment(segment: string): string {
   }
 }
 
-export function resolvePostTitleViewTransitionName(
+function resolvePostViewTransitionName(
   url: string,
+  kind: PostViewTransitionKind,
 ): string | undefined {
   if (url.length === 0) {
     return undefined;
@@ -45,20 +51,45 @@ export function resolvePostTitleViewTransitionName(
       return undefined;
     }
 
-    return `${VIEW_TRANSITION_NAME_PREFIX}-${segments.join("-")}`;
+    return `${VIEW_TRANSITION_NAME_PREFIX[kind]}-${segments.join("-")}`;
   } catch {
     return undefined;
   }
 }
 
-export function resolvePostTitleViewTransitionAttributes(
+function resolvePostViewTransitionAttributes(
   url: string,
+  kind: PostViewTransitionKind,
 ): ViewTransitionNameAttributes | undefined {
-  const name = resolvePostTitleViewTransitionName(url);
+  const name = resolvePostViewTransitionName(url, kind);
 
   return name === undefined
     ? undefined
     : { [VIEW_TRANSITION_NAME_ATTRIBUTE]: name };
+}
+
+export function resolvePostTitleViewTransitionName(
+  url: string,
+): string | undefined {
+  return resolvePostViewTransitionName(url, "title");
+}
+
+export function resolvePostSummaryViewTransitionName(
+  url: string,
+): string | undefined {
+  return resolvePostViewTransitionName(url, "summary");
+}
+
+export function resolvePostTitleViewTransitionAttributes(
+  url: string,
+): ViewTransitionNameAttributes | undefined {
+  return resolvePostViewTransitionAttributes(url, "title");
+}
+
+export function resolvePostSummaryViewTransitionAttributes(
+  url: string,
+): ViewTransitionNameAttributes | undefined {
+  return resolvePostViewTransitionAttributes(url, "summary");
 }
 
 export function renderViewTransitionNameAttribute(

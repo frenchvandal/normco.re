@@ -8,6 +8,7 @@ import featureStyles from "../styles/components/feature.css" with {
 
 import PostCard from "./PostCard.tsx";
 import {
+  resolvePostSummaryViewTransitionName,
   resolvePostTitleViewTransitionName,
   VIEW_TRANSITION_NAME_ATTRIBUTE,
 } from "../utils/view-transitions.ts";
@@ -87,6 +88,12 @@ describe("PostCard()", () => {
 
       assertStringIncludes(html, 'class="post-card-summary"');
       assertStringIncludes(html, "Visible summary copy");
+      assertStringIncludes(
+        html,
+        `${VIEW_TRANSITION_NAME_ATTRIBUTE}="${
+          resolvePostSummaryViewTransitionName(base.url)
+        }"`,
+      );
     });
   });
 

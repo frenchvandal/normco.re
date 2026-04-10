@@ -1,7 +1,10 @@
 import { POST_MOBILE_TOOLS_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
 import { resolvePageSetup } from "../../utils/page-setup.ts";
 import { resolveDateHelper } from "../../utils/lume-helpers.ts";
-import { resolvePostTitleViewTransitionAttributes } from "../../utils/view-transitions.ts";
+import {
+  resolvePostSummaryViewTransitionAttributes,
+  resolvePostTitleViewTransitionAttributes,
+} from "../../utils/view-transitions.ts";
 import {
   PostBackToTop,
   PostDetails,
@@ -118,6 +121,9 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
   const titleTransitionAttributes = typeof data.url === "string"
     ? resolvePostTitleViewTransitionAttributes(data.url)
     : undefined;
+  const summaryTransitionAttributes = typeof data.url === "string"
+    ? resolvePostSummaryViewTransitionAttributes(data.url)
+    : undefined;
 
   return (
     <>
@@ -182,7 +188,10 @@ export default (data: Lume.Data, helpers: Lume.Helpers) => {
                           <p class="post-pagehead-kicker">
                             {t.post.summaryEyebrow}
                           </p>
-                          <p class="post-pagehead-summary pagehead-lead">
+                          <p
+                            class="post-pagehead-summary pagehead-lead"
+                            {...(summaryTransitionAttributes ?? {})}
+                          >
                             {state.visibleSummary}
                           </p>
                         </>

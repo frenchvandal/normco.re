@@ -1,6 +1,9 @@
 import type { jsx } from "lume/jsx-runtime";
 
-import { resolvePostTitleViewTransitionAttributes } from "../utils/view-transitions.ts";
+import {
+  resolvePostSummaryViewTransitionAttributes,
+  resolvePostTitleViewTransitionAttributes,
+} from "../utils/view-transitions.ts";
 
 /**
  * Post card used on the home page and post listings.
@@ -35,6 +38,10 @@ export default (
   const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
     url,
   );
+  const summaryTransitionAttributes =
+    resolvePostSummaryViewTransitionAttributes(
+      url,
+    );
 
   return (
     <article
@@ -54,7 +61,12 @@ export default (
         </a>
       </h3>
       {showSummary === true && summary !== undefined && (
-        <p class="post-card-summary">{summary}</p>
+        <p
+          class="post-card-summary"
+          {...(summaryTransitionAttributes ?? {})}
+        >
+          {summary}
+        </p>
       )}
       <div class="post-card-meta">
         <time class="post-card-date" datetime={dateIso}>

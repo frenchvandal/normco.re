@@ -27,7 +27,10 @@ import {
 } from "@blog/post-antd";
 
 import type { BlogPostViewData } from "../view-data.ts";
-import { resolvePostTitleViewTransitionAttributes } from "../../utils/view-transitions.ts";
+import {
+  resolvePostSummaryViewTransitionAttributes,
+  resolvePostTitleViewTransitionAttributes,
+} from "../../utils/view-transitions.ts";
 import {
   BLOG_ANTD_BACKTOP_CLASSNAMES,
   BLOG_ANTD_BREADCRUMB_CLASSNAMES,
@@ -94,6 +97,10 @@ export function PostView(
   const titleTransitionAttributes = resolvePostTitleViewTransitionAttributes(
     data.breadcrumb.at(-1)?.href ?? "",
   );
+  const summaryTransitionAttributes =
+    resolvePostSummaryViewTransitionAttributes(
+      data.breadcrumb.at(-1)?.href ?? "",
+    );
   const previousTitleTransitionAttributes = data.previous
     ? resolvePostTitleViewTransitionAttributes(data.previous.url)
     : undefined;
@@ -198,7 +205,10 @@ export function PostView(
                       <p className="blog-antd-eyebrow">
                         {data.summaryEyebrow}
                       </p>
-                      <Paragraph className="blog-antd-page-lead blog-antd-page-lead--summary">
+                      <Paragraph
+                        className="blog-antd-page-lead blog-antd-page-lead--summary"
+                        {...(summaryTransitionAttributes ?? {})}
+                      >
                         {data.summary}
                       </Paragraph>
                     </div>

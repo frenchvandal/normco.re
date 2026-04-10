@@ -25,6 +25,7 @@ import postStyles from "../../styles/components/post.css" with {
 };
 import { POST_MOBILE_TOOLS_MEDIA_QUERY } from "../../utils/layout-breakpoints.ts";
 import {
+  resolvePostSummaryViewTransitionName,
   resolvePostTitleViewTransitionName,
   VIEW_TRANSITION_NAME_ATTRIBUTE,
 } from "../../utils/view-transitions.ts";
@@ -231,6 +232,12 @@ describe("post.tsx layout", () => {
         html,
         `${VIEW_TRANSITION_NAME_ATTRIBUTE}="${
           resolvePostTitleViewTransitionName("/posts/entry-title/")
+        }"`,
+      );
+      assertStringIncludes(
+        html,
+        `${VIEW_TRANSITION_NAME_ATTRIBUTE}="${
+          resolvePostSummaryViewTransitionName("/posts/entry-title/")
         }"`,
       );
       assertStringIncludes(

@@ -13,10 +13,12 @@ const FEATURE_RAIL_STICKY_SELECTOR = ".feature-rail-sticky";
 const CONTACT_LIST_SELECTOR = ".about-contact-list";
 const NATIVE_POPOVER_VALUE = "auto";
 const NATIVE_POPOVER_MARKER_ATTRIBUTE = "data-contact-native-popover";
+const ANCHOR_READY_ATTRIBUTE = "data-contact-anchor-ready";
 const DESKTOP_POPOVER_TOP_VARIABLE = "--about-contact-popover-top";
 const DESKTOP_POPOVER_LEFT_VARIABLE = "--about-contact-popover-left";
 const DESKTOP_POPOVER_CARET_OFFSET_VARIABLE =
   "--about-contact-popover-caret-offset";
+const DESKTOP_ANCHOR_NAME_PREFIX = "--about-contact-anchor";
 
 /**
  * @param {Window & typeof globalThis} runtime
@@ -29,6 +31,7 @@ export function bindAboutContactToggletips(runtime) {
   const mobileMedia = typeof runtime.matchMedia === "function"
     ? runtime.matchMedia(MOBILE_MEDIA_QUERY)
     : null;
+  const anchorPositioningSupported = supportsAnchorPositioning();
   /** @type {Set<HTMLElement>} */
   const inertElements = new Set();
   /** @type {Set<HTMLElement>} */
@@ -124,6 +127,52 @@ export function bindAboutContactToggletips(runtime) {
   }
 
   /**
+   * Keep CSS anchor-positioning strictly progressive. When unsupported, the
+   * existing viewport math remains the fallback.
+   *
+   * @returns {boolean}
+   */
+  function supportsAnchorPositioning() {
+    const css = runtime.CSS;
+
+    return typeof css?.supports === "function" &&
+      css.supports("anchor-name", `${DESKTOP_ANCHOR_NAME_PREFIX}-probe`) &&
+      css.supports(
+        "position-anchor",
+        `${DESKTOP_ANCHOR_NAME_PREFIX}-probe`,
+      ) &&
+      css.supports("top", "anchor(bottom)") &&
+      css.supports("left", "anchor(center)");
+  }
+
+  /**
+   * @param {HTMLButtonElement} trigger
+   * @param {HTMLElement} popover
+   * @param {number} index
+   * @returns {void}
+   */
+  function configureAnchorPositioning(trigger, popover, index) {
+    if (!anchorPositioningSupported) {
+      trigger.style.removeProperty("anchor-name");
+      popover.style.removeProperty("position-anchor");
+      popover.removeAttribute(ANCHOR_READY_ATTRIBUTE);
+      return;
+    }
+
+    const anchorName = `${DESKTOP_ANCHOR_NAME_PREFIX}-${index + 1}`;
+    trigger.style.setProperty("anchor-name", anchorName);
+    popover.style.setProperty("position-anchor", anchorName);
+  }
+
+  /**
+   * @param {HTMLElement | null} popover
+   * @returns {boolean}
+   */
+  function isAnchorPositioningReady(popover) {
+    return popover?.hasAttribute(ANCHOR_READY_ATTRIBUTE) === true;
+  }
+
+  /**
    * @param {string} tokenName
    * @param {number} fallback
    * @returns {number}
@@ -198,6 +247,7 @@ export function bindAboutContactToggletips(runtime) {
     if (
       trigger === null ||
       popover === null ||
+      isAnchorPositioningReady(popover) ||
       !shouldUseNativePopover(popover) ||
       !isNativePopoverOpen(popover) ||
       isMobileViewport()
@@ -240,15 +290,23 @@ export function bindAboutContactToggletips(runtime) {
 
       if (isMobileViewport()) {
         popover.removeAttribute(NATIVE_POPOVER_MARKER_ATTRIBUTE);
+        popover.removeAttribute(ANCHOR_READY_ATTRIBUTE);
         clearNativePopoverPosition(popover);
       } else {
         popover.setAttribute(NATIVE_POPOVER_MARKER_ATTRIBUTE, "");
+        if (anchorPositioningSupported) {
+          popover.setAttribute(ANCHOR_READY_ATTRIBUTE, "");
+          clearNativePopoverPosition(popover);
+        } else {
+          popover.removeAttribute(ANCHOR_READY_ATTRIBUTE);
+        }
       }
 
       return true;
     }
 
     popover.removeAttribute(NATIVE_POPOVER_MARKER_ATTRIBUTE);
+    popover.removeAttribute(ANCHOR_READY_ATTRIBUTE);
     clearNativePopoverPosition(popover);
 
     return false;
@@ -535,6 +593,12 @@ export function bindAboutContactToggletips(runtime) {
         continue;
       }
 
+      const popover = getPopover(container);
+
+      if (isAnchorPositioningReady(popover)) {
+        continue;
+      }
+
       syncNativePopoverPosition(container);
     }
   }
@@ -547,7 +611,13 @@ export function bindAboutContactToggletips(runtime) {
       return false;
     }
 
-    return containers.some((container) => isOpen(container));
+    return containers.some((container) => {
+      if (!isOpen(container)) {
+        return false;
+      }
+
+      return !isAnchorPositioningReady(getPopover(container));
+    });
   }
 
   /**
@@ -576,6 +646,7 @@ export function bindAboutContactToggletips(runtime) {
    */
   function observePopoverSize(popover, container) {
     if (
+      anchorPositioningSupported ||
       typeof runtime.ResizeObserver !== "function" ||
       popoverResizeObservers.has(popover)
     ) {
@@ -594,7 +665,7 @@ export function bindAboutContactToggletips(runtime) {
     popoverResizeObservers.set(popover, observer);
   }
 
-  for (const container of containers) {
+  for (const [index, container] of containers.entries()) {
     const trigger = getTrigger(container);
     const popover = getPopover(container);
     const panel = getPanel(container);
@@ -604,6 +675,7 @@ export function bindAboutContactToggletips(runtime) {
       continue;
     }
 
+    configureAnchorPositioning(trigger, popover, index);
     setToggletipState(container, isOpen(container));
     observePopoverSize(popover, container);
 
