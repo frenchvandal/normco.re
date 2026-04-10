@@ -254,7 +254,7 @@ describe("about page CSS contracts", () => {
     );
     assertStringIncludes(
       aboutStyles,
-      "--about-pictogram-surface: linear-gradient(",
+      "--about-pictogram-surface: transparent;",
     );
   });
 });
