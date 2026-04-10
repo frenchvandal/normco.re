@@ -25,7 +25,6 @@
     "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@0.14.16/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
 
-    "npm/ant-design-icons-svg": "npm:@ant-design/icons-svg@4.4.2",
     "npm/ant-design-icons-svg/ArrowRightOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/ArrowRightOutlined.js",
     "npm/ant-design-icons-svg/CheckOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/CheckOutlined.js",
     "npm/ant-design-icons-svg/CloseOutlined.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/CloseOutlined.js",

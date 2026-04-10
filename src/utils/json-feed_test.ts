@@ -1,4 +1,4 @@
-import { assertEquals, assertThrows } from "@std/assert";
+import { assertEquals, assertStringIncludes, assertThrows } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 
 import {
@@ -82,11 +82,46 @@ describe("parseJsonFeedDocument()", () => {
     );
   });
 
-  it("throws for non-object payloads and malformed item shapes", () => {
-    assertThrows(() => parseJsonFeedDocument('["not","a","feed"]'));
-    assertThrows(() =>
-      parseJsonFeedDocument('{"items":[{"date_published":42}]}')
+  it("preserves special characters in titles and HTML payload fields", () => {
+    const document = parseJsonFeedDocument(
+      JSON.stringify({
+        title: 'Post avec <script> et "quotes"',
+        items: [
+          {
+            id: "https://normco.re/posts/special/",
+            content_html: '<p>Bonjour <strong>"monde"</strong></p>',
+          },
+        ],
+      }),
     );
+
+    assertEquals(document.title, 'Post avec <script> et "quotes"');
+    assertEquals(
+      document.items?.[0]?.content_html,
+      '<p>Bonjour <strong>"monde"</strong></p>',
+    );
+  });
+
+  it("throws precise errors for non-object payloads and malformed item shapes", () => {
+    const rootError = assertThrows<TypeError>(
+      () => parseJsonFeedDocument('["not","a","feed"]'),
+      TypeError,
+    );
+    const itemError = assertThrows<TypeError>(
+      () =>
+        parseJsonFeedDocument(
+          '{"items":[{"id":"https://normco.re/posts/broken/","title":"Broken post","date_published":42}]}',
+        ),
+      TypeError,
+    );
+
+    assertStringIncludes(rootError.message, "top-level JSON object");
+    assertStringIncludes(itemError.message, "items[0].date_published");
+    assertStringIncludes(
+      itemError.message,
+      '"https://normco.re/posts/broken/"',
+    );
+    assertStringIncludes(itemError.message, '"Broken post"');
   });
 });
 

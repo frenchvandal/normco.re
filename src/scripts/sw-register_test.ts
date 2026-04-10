@@ -1,7 +1,11 @@
 import { assertEquals } from "@std/assert";
 import { describe, it } from "@std/testing/bdd";
 import SCRIPT_SOURCE from "./sw-register.js" with { type: "text" };
-import { getJSDOM, installClassicScript } from "../../test/jsdom.ts";
+import {
+  evaluateClassicScript,
+  getJSDOM,
+  installClassicScript,
+} from "../../test/jsdom.ts";
 
 const JSDOM = await getJSDOM();
 
@@ -27,6 +31,17 @@ function createDom(): InstanceType<typeof JSDOM> {
     {
       pretendToBeVisual: true,
       runScripts: "dangerously",
+      url: "https://normco.re/",
+    },
+  );
+}
+
+function createOutsideOnlyDom(): InstanceType<typeof JSDOM> {
+  return new JSDOM(
+    '<!doctype html><html lang="en"><body></body></html>',
+    {
+      pretendToBeVisual: true,
+      runScripts: "outside-only",
       url: "https://normco.re/",
     },
   );
@@ -120,6 +135,43 @@ describe("sw-register.js", () => {
       swUrl: "/sw.js",
       swDebugLevel: "verbose-and-more",
     });
+    await flush(window);
+
+    assertEquals(calls.length, 1);
+    assertEquals(calls[0]?.url, "https://normco.re/sw.js?debug=off");
+  });
+
+  it("falls back cleanly when document.currentScript is null", async () => {
+    const dom = createOutsideOnlyDom();
+    const window = dom.window as TestWindow;
+    const calls: RegisterCall[] = [];
+
+    window.requestIdleCallback = (callback: IdleRequestCallback) => {
+      callback({
+        didTimeout: false,
+        timeRemaining: () => 10,
+      });
+      return 1;
+    };
+
+    Object.defineProperty(window.navigator, "serviceWorker", {
+      configurable: true,
+      value: {
+        controller: null,
+        addEventListener() {},
+        register(url: string, options: RegistrationOptions) {
+          calls.push({ url, options });
+          return Promise.resolve({
+            active: null,
+            installing: null,
+            waiting: null,
+            addEventListener() {},
+          });
+        },
+      },
+    });
+
+    evaluateClassicScript(window, SCRIPT_SOURCE);
     await flush(window);
 
     assertEquals(calls.length, 1);

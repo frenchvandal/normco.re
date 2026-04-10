@@ -13,9 +13,14 @@
     return;
   }
 
-  const currentScript = globalThis.document.currentScript;
-  const swUrl = currentScript instanceof HTMLScriptElement
-    ? currentScript.dataset.swUrl ?? "/sw.js"
+  // `document.currentScript` can be null for deferred or dynamically
+  // evaluated execution paths, so keep the bootstrap dataset optional.
+  const currentScriptElement =
+    globalThis.document.currentScript instanceof HTMLScriptElement
+      ? globalThis.document.currentScript
+      : null;
+  const swUrl = currentScriptElement !== null
+    ? currentScriptElement.dataset.swUrl ?? "/sw.js"
     : "/sw.js";
   const allowedSwDebugLevels = new Set(["off", "summary", "verbose"]);
   /**
@@ -27,8 +32,8 @@
       ? /** @type {"off" | "summary" | "verbose"} */ (value)
       : "off";
   const swDebugLevel = resolveSwDebugLevel(
-    currentScript instanceof HTMLScriptElement
-      ? currentScript.dataset.swDebugLevel
+    currentScriptElement !== null
+      ? currentScriptElement.dataset.swDebugLevel
       : undefined,
   );
   const sessionStorage = globalThis.sessionStorage;
