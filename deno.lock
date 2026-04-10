@@ -6,6 +6,7 @@
     "jsr:@cliffy/internal@1.0.0": "1.0.0",
     "jsr:@cliffy/table@1.0.0": "1.0.0",
     "jsr:@deno/loader@0.3.14": "0.3.14",
+    "jsr:@miscellaneous/commitlint@~0.3.2": "0.3.2",
     "jsr:@std/assert@^1.0.17": "1.0.19",
     "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/async@^1.1.0": "1.2.0",
@@ -107,6 +108,9 @@
     },
     "@deno/loader@0.3.14": {
       "integrity": "97bc63a6cc2d27a60bcdc953f588c5213331d866d44212eebb24cebfb9b011ca"
+    },
+    "@miscellaneous/commitlint@0.3.2": {
+      "integrity": "f12be7602512b934cb501ed7a91130920b06a34a77ca9ca975148870f2d256e3"
     },
     "@std/assert@1.0.19": {
       "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
