@@ -311,6 +311,24 @@ function createDom(pathname = "/"): InstanceType<typeof JSDOM> {
   return dom;
 }
 
+function setViewportMetrics(
+  window: TestWindow,
+  { innerWidth, clientWidth }: { innerWidth: number; clientWidth: number },
+) {
+  Object.defineProperty(window, "innerWidth", {
+    configurable: true,
+    value: innerWidth,
+    writable: true,
+  });
+
+  Object.defineProperty(window.document.documentElement, "clientWidth", {
+    configurable: true,
+    get() {
+      return clientWidth;
+    },
+  });
+}
+
 function installFakePagefind(window: TestWindow) {
   window.PagefindUI = class {
     constructor(
@@ -616,6 +634,7 @@ describe("header-client.js", () => {
     assertEquals(toggle.getAttribute("aria-expanded"), "true");
     assertEquals(getLanguagePanel(window).hidden, false);
     assertEquals(window.document.body.style.overflow, "hidden");
+    assertEquals(window.document.body.style.paddingInlineEnd, "");
 
     englishOption.focus();
     englishOption.dispatchEvent(
@@ -654,13 +673,15 @@ describe("header-client.js", () => {
     assertEquals(toggle.getAttribute("aria-expanded"), "false");
     assertEquals(getLanguagePanel(window).hidden, true);
     assertEquals(window.document.body.style.overflow, "");
+    assertEquals(window.document.body.style.paddingInlineEnd, "");
     assertEquals(window.document.activeElement, toggle);
   });
 
-  it("opens the side nav from the keyboard and restores focus from the overlay", async () => {
+  it("opens the side nav from the keyboard, compensates classic scrollbars, and restores focus from the overlay", async () => {
     const dom = createDom();
     const window = dom.window as TestWindow;
     window.matchMedia = () => createMediaQueryList(false);
+    setViewportMetrics(window, { innerWidth: 1280, clientWidth: 1265 });
     evaluateScript(window);
 
     const toggle = getMenuToggle(window);
@@ -682,6 +703,7 @@ describe("header-client.js", () => {
 
     assertEquals(window.document.activeElement, firstLink);
     assertEquals(window.document.body.style.overflow, "hidden");
+    assertEquals(window.document.body.style.paddingInlineEnd, "15px");
     assertEquals(overlay.getAttribute("aria-hidden"), "true");
     assertEquals(outsideFocus.hasAttribute("inert"), true);
 
@@ -691,8 +713,25 @@ describe("header-client.js", () => {
     assertEquals(toggle.getAttribute("aria-expanded"), "false");
     assertEquals(window.document.activeElement, toggle);
     assertEquals(window.document.body.style.overflow, "");
+    assertEquals(window.document.body.style.paddingInlineEnd, "");
     assertEquals(overlay.getAttribute("aria-hidden"), "true");
     assertEquals(outsideFocus.hasAttribute("inert"), false);
+  });
+
+  it("skips scrollbar compensation when scroll locking does not change the layout viewport", async () => {
+    const dom = createDom();
+    const window = dom.window as TestWindow;
+    window.matchMedia = () => createMediaQueryList(false);
+    setViewportMetrics(window, { innerWidth: 1280, clientWidth: 1280 });
+    evaluateScript(window);
+
+    const toggle = getMenuToggle(window);
+
+    toggle.click();
+    await flush(window);
+
+    assertEquals(window.document.body.style.overflow, "hidden");
+    assertEquals(window.document.body.style.paddingInlineEnd, "");
   });
 
   it("closes the side nav from the internal close button and restores focus", async () => {

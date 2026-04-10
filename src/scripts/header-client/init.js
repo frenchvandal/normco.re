@@ -281,14 +281,41 @@ export function bindHeaderClient(runtime) {
   }
 
   /**
+   * Measure the layout viewport before scroll locking so we only compensate
+   * when a classic scrollbar actually consumes inline space.
+   *
+   * @returns {number}
+   */
+  function measureBodyScrollLockCompensationPx() {
+    const viewportWidth = resolvedRuntime.innerWidth;
+    const layoutViewportWidth = root.clientWidth;
+
+    if (
+      !Number.isFinite(viewportWidth) ||
+      !Number.isFinite(layoutViewportWidth) ||
+      layoutViewportWidth <= 0
+    ) {
+      return 0;
+    }
+
+    return Math.max(0, viewportWidth - layoutViewportWidth);
+  }
+
+  /**
    * @returns {void}
    */
   function syncBodyScrollLock() {
-    doc.body.style.overflow =
-      isSideNav(openSurface) || search.isSearchPanel(openSurface) ||
-        (isLanguagePanel(openSurface) && isMobilePanelViewport())
-        ? "hidden"
-        : "";
+    const shouldLockBodyScroll = isSideNav(openSurface) ||
+      search.isSearchPanel(openSurface) ||
+      (isLanguagePanel(openSurface) && isMobilePanelViewport());
+    const compensationPx = shouldLockBodyScroll
+      ? measureBodyScrollLockCompensationPx()
+      : 0;
+
+    doc.body.style.overflow = shouldLockBodyScroll ? "hidden" : "";
+    doc.body.style.paddingInlineEnd = compensationPx > 0
+      ? `${compensationPx}px`
+      : "";
   }
 
   /**

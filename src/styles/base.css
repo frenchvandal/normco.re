@@ -29,7 +29,6 @@
       var(--ph-header-height) + var(--ph-space-5)
     );
     scroll-behavior: smooth;
-    scrollbar-gutter: stable both-edges;
     text-rendering: optimizeLegibility;
   }
 
