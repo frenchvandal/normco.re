@@ -63,6 +63,9 @@ const LANGUAGE_PREFERENCE_BOOTSTRAP = {
 const VIEW_TRANSITION_NAMES_BOOTSTRAP = {
   __html: VIEW_TRANSITION_NAMES_SCRIPT,
 } as const;
+const LEGACY_SCROLLBAR_GUTTER_RESET = {
+  __html: "html{scrollbar-gutter:auto}",
+} as const;
 const ADAPTIVE_PREFETCH_BASELINE = {
   __html: JSON.stringify({
     prefetch: [
@@ -428,6 +431,7 @@ export default async (
                 ))}
               </>
             )}
+          <style>{LEGACY_SCROLLBAR_GUTTER_RESET.__html}</style>
           <script>{THEME_BOOTSTRAP}</script>
           <script
             data-supported-languages={SUPPORTED_LANGUAGES.join(",")}

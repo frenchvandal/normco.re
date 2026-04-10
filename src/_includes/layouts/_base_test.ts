@@ -134,6 +134,10 @@ describe("base.tsx layout", () => {
       );
       assertStringIncludes(
         html,
+        "<style>html{scrollbar-gutter:auto}</style>",
+      );
+      assertStringIncludes(
+        html,
         'name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)"',
       );
       assertStringIncludes(
