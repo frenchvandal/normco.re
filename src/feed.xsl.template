@@ -3,13 +3,8 @@
   feed.xsl — RSS 2.0 and Atom 1.0 feed browser stylesheet.
   Transforms /rss.xml and /atom.xml into a site-aligned HTML view.
 -->
-<xsl:stylesheet version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:atom="http://www.w3.org/2005/Atom"
-  xmlns:content="http://purl.org/rss/1.0/modules/content/">
-
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="1.0">
   <xsl:output method="html" encoding="UTF-8"/>
-
   <xsl:template match="/">
     <xsl:variable name="is-atom" select="count(/atom:feed) &gt; 0"/>
     <xsl:variable name="feed-title">
@@ -364,9 +359,10 @@
         <xsl:otherwise>entries available.</xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-
     <html data-color-mode="light">
-      <xsl:attribute name="lang"><xsl:value-of select="$page-language"/></xsl:attribute>
+      <xsl:attribute name="lang">
+        <xsl:value-of select="$page-language"/>
+      </xsl:attribute>
       <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -375,103 +371,113 @@
         <link rel="stylesheet" href="/style.css"/>
         <script>__THEME_BOOTSTRAP_SCRIPT__</script>
         <script src="/scripts/language-preference.js" data-supported-languages="__SUPPORTED_LANGUAGES__" data-default-language="en" defer="defer">
-          <xsl:attribute name="data-current-language"><xsl:value-of select="$page-language-key"/></xsl:attribute>
+          <xsl:attribute name="data-current-language">
+            <xsl:value-of select="$page-language-key"/>
+          </xsl:attribute>
           <xsl:attribute name="data-language-alternates">
-            <xsl:text>{"en":"</xsl:text><xsl:value-of select="$en-feed-href"/><xsl:text>","fr":"</xsl:text><xsl:value-of select="$fr-feed-href"/><xsl:text>","zhHans":"</xsl:text><xsl:value-of select="$zh-hans-feed-href"/><xsl:text>","zhHant":"</xsl:text><xsl:value-of select="$zh-hant-feed-href"/><xsl:text>"}</xsl:text>
+            <xsl:text>{"en":"</xsl:text>
+            <xsl:value-of select="$en-feed-href"/>
+            <xsl:text>","fr":"</xsl:text>
+            <xsl:value-of select="$fr-feed-href"/>
+            <xsl:text>","zhHans":"</xsl:text>
+            <xsl:value-of select="$zh-hans-feed-href"/>
+            <xsl:text>","zhHant":"</xsl:text>
+            <xsl:value-of select="$zh-hant-feed-href"/>
+            <xsl:text>"}</xsl:text>
           </xsl:attribute>
         </script>
       </head>
       <body class="feed-document">
-        <xsl:attribute name="data-current-language"><xsl:value-of select="$page-language-key"/></xsl:attribute>
-        <a class="skip-link" href="#main-content"><xsl:value-of select="$skip-label"/></a>
+        <xsl:attribute name="data-current-language">
+          <xsl:value-of select="$page-language-key"/>
+        </xsl:attribute>
+        <a class="skip-link" href="#main-content">
+          <xsl:value-of select="$skip-label"/>
+        </a>
         <div class="site-wrapper">
           <header class="site-header">
             <div class="site-header__wrapper">
               <div class="site-header__left">
-                <button
-                  type="button"
-                  class="site-header__action site-header__menu-toggle"
-                  aria-expanded="false"
-                  aria-controls="site-side-nav"
-                >
-                  <xsl:attribute name="aria-label"><xsl:value-of select="$menu-toggle-label"/></xsl:attribute>
+                <button type="button" class="site-header__action site-header__menu-toggle" aria-expanded="false" aria-controls="site-side-nav">
+                  <xsl:attribute name="aria-label">
+                    <xsl:value-of select="$menu-toggle-label"/>
+                  </xsl:attribute>
                   <!--__HEADER_MENU_ICON__-->
                 </button>
                 <a class="site-header__brand">
-                  <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                  <xsl:attribute name="href">
+                    <xsl:value-of select="$home-href"/>
+                  </xsl:attribute>
                   <span class="site-header__brand-prefix">normco</span>
                   <xsl:text>.re</xsl:text>
                 </a>
                 <nav class="site-header__nav" aria-label="{$main-navigation-label}">
                   <a class="site-header__menu-item">
-                    <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$home-href"/>
+                    </xsl:attribute>
                     <xsl:value-of select="$home-label"/>
                   </a>
                   <a class="site-header__menu-item">
-                    <xsl:attribute name="href"><xsl:value-of select="$posts-href"/></xsl:attribute>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$posts-href"/>
+                    </xsl:attribute>
                     <xsl:value-of select="$writing-label"/>
                   </a>
                   <a class="site-header__menu-item">
-                    <xsl:attribute name="href"><xsl:value-of select="$about-href"/></xsl:attribute>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$about-href"/>
+                    </xsl:attribute>
                     <xsl:value-of select="$about-label"/>
                   </a>
                 </nav>
               </div>
               <div class="site-header__global">
                 <div class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip" data-header-tooltip="">
-                  <button
-                    type="button"
-                    class="site-header__action"
-                    aria-expanded="false"
-                    aria-controls="site-search-panel"
-                    data-header-tooltip-trigger=""
-                  >
-                    <xsl:attribute name="aria-label"><xsl:value-of select="$search-label"/></xsl:attribute>
+                  <button type="button" class="site-header__action" aria-expanded="false" aria-controls="site-search-panel" data-header-tooltip-trigger="">
+                    <xsl:attribute name="aria-label">
+                      <xsl:value-of select="$search-label"/>
+                    </xsl:attribute>
                     <!--__HEADER_SEARCH_ICON__-->
                   </button>
                   <div class="site-popover" aria-hidden="true">
-                    <span class="site-popover__caret"></span>
+                    <span class="site-popover__caret"/>
                     <div class="site-popover__content">
-                      <span class="site-tooltip__content"><xsl:value-of select="$search-label"/></span>
+                      <span class="site-tooltip__content">
+                        <xsl:value-of select="$search-label"/>
+                      </span>
                     </div>
                   </div>
                 </div>
                 <div class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip" data-header-tooltip="">
-                  <button
-                    type="button"
-                    class="site-header__action site-header__language-toggle"
-                    aria-expanded="false"
-                    aria-controls="__HEADER_LANGUAGE_PANEL_ID__"
-                    aria-haspopup="menu"
-                    data-header-tooltip-trigger=""
-                  >
-                    <xsl:attribute name="aria-label"><xsl:value-of select="$language-select-aria-label"/></xsl:attribute>
+                  <button type="button" class="site-header__action site-header__language-toggle" aria-expanded="false" aria-controls="__HEADER_LANGUAGE_PANEL_ID__" aria-haspopup="menu" data-header-tooltip-trigger="">
+                    <xsl:attribute name="aria-label">
+                      <xsl:value-of select="$language-select-aria-label"/>
+                    </xsl:attribute>
                     <!--__HEADER_LANGUAGE_ICON__-->
                   </button>
                   <div class="site-popover" aria-hidden="true">
-                    <span class="site-popover__caret"></span>
+                    <span class="site-popover__caret"/>
                     <div class="site-popover__content">
-                      <span class="site-tooltip__content"><xsl:value-of select="$language-select-label"/></span>
+                      <span class="site-tooltip__content">
+                        <xsl:value-of select="$language-select-label"/>
+                      </span>
                     </div>
                   </div>
                 </div>
                 <div class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip" data-header-tooltip="">
-                  <button
-                    id="theme-toggle"
-                    type="button"
-                    class="site-header__action"
-                    data-label-switch-light="{$switch-light-label}"
-                    data-label-switch-dark="{$switch-dark-label}"
-                    data-label-follow-system="{$follow-system-label}"
-                    data-header-tooltip-trigger=""
-                  >
-                    <xsl:attribute name="aria-label"><xsl:value-of select="$theme-toggle-label"/></xsl:attribute>
+                  <button id="theme-toggle" type="button" class="site-header__action" data-label-switch-light="{$switch-light-label}" data-label-switch-dark="{$switch-dark-label}" data-label-follow-system="{$follow-system-label}" data-header-tooltip-trigger="">
+                    <xsl:attribute name="aria-label">
+                      <xsl:value-of select="$theme-toggle-label"/>
+                    </xsl:attribute>
                     <!--__HEADER_THEME_ICONS__-->
                   </button>
                   <div class="site-popover" aria-hidden="true">
-                    <span class="site-popover__caret"></span>
+                    <span class="site-popover__caret"/>
                     <div class="site-popover__content">
-                      <span class="site-tooltip__content"><xsl:value-of select="$theme-toggle-label"/></span>
+                      <span class="site-tooltip__content">
+                        <xsl:value-of select="$theme-toggle-label"/>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -479,103 +485,113 @@
             </div>
           </header>
           <!--__HEADER_LANGUAGE_MENU_PANEL__-->
-          <div
-            id="site-search-panel"
-            class="site-header__panel site-header__search-panel"
-            role="search"
-            data-search-panel=""
-            hidden=""
-          >
-            <xsl:attribute name="aria-label"><xsl:value-of select="$search-label"/></xsl:attribute>
+          <div id="site-search-panel" class="site-header__panel site-header__search-panel" role="search" data-search-panel="" hidden="">
+            <xsl:attribute name="aria-label">
+              <xsl:value-of select="$search-label"/>
+            </xsl:attribute>
             <div class="site-header__panel-content">
-              <p
-                id="site-search-status"
-                class="site-header__search-status"
-                role="status"
-                aria-live="polite"
-                aria-atomic="true"
-                data-search-status=""
-                hidden=""
-              ></p>
-              <div
-                id="search"
-                class="site-header__search-root"
-                data-search-root=""
-                aria-busy="false"
-              >
-                <xsl:attribute name="data-search-loading-label"><xsl:value-of select="$search-loading-label"/></xsl:attribute>
-                <xsl:attribute name="data-search-no-results-label"><xsl:value-of select="$search-no-results-label"/></xsl:attribute>
-                <xsl:attribute name="data-search-one-result-label"><xsl:value-of select="$search-one-result-label"/></xsl:attribute>
-                <xsl:attribute name="data-search-many-results-label"><xsl:value-of select="$search-many-results-label"/></xsl:attribute>
-                <xsl:attribute name="data-search-unavailable-label"><xsl:value-of select="$search-unavailable-label"/></xsl:attribute>
-                <xsl:attribute name="data-search-offline-label"><xsl:value-of select="$search-offline-label"/></xsl:attribute>
-                <xsl:attribute name="data-search-retry-label"><xsl:value-of select="$search-retry-label"/></xsl:attribute>
+              <p id="site-search-status" class="site-header__search-status" role="status" aria-live="polite" aria-atomic="true" data-search-status="" hidden=""/>
+              <div id="search" class="site-header__search-root" data-search-root="" aria-busy="false">
+                <xsl:attribute name="data-search-loading-label">
+                  <xsl:value-of select="$search-loading-label"/>
+                </xsl:attribute>
+                <xsl:attribute name="data-search-no-results-label">
+                  <xsl:value-of select="$search-no-results-label"/>
+                </xsl:attribute>
+                <xsl:attribute name="data-search-one-result-label">
+                  <xsl:value-of select="$search-one-result-label"/>
+                </xsl:attribute>
+                <xsl:attribute name="data-search-many-results-label">
+                  <xsl:value-of select="$search-many-results-label"/>
+                </xsl:attribute>
+                <xsl:attribute name="data-search-unavailable-label">
+                  <xsl:value-of select="$search-unavailable-label"/>
+                </xsl:attribute>
+                <xsl:attribute name="data-search-offline-label">
+                  <xsl:value-of select="$search-offline-label"/>
+                </xsl:attribute>
+                <xsl:attribute name="data-search-retry-label">
+                  <xsl:value-of select="$search-retry-label"/>
+                </xsl:attribute>
               </div>
             </div>
           </div>
-
-          <div
-            id="site-side-nav"
-            class="site-side-nav"
-            role="dialog"
-            aria-modal="true"
-            aria-label="{$navigation-menu-label}"
-            hidden=""
-          >
+          <div id="site-side-nav" class="site-side-nav" role="dialog" aria-modal="true" aria-label="{$navigation-menu-label}" hidden="">
             <nav class="site-side-nav__navigation" aria-label="{$navigation-menu-label}">
               <ul class="site-side-nav__items">
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">
-                    <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
-                    <span class="site-side-nav__link-text"><xsl:value-of select="$home-label"/></span>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$home-href"/>
+                    </xsl:attribute>
+                    <span class="site-side-nav__link-text">
+                      <xsl:value-of select="$home-label"/>
+                    </span>
                   </a>
                 </li>
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">
-                    <xsl:attribute name="href"><xsl:value-of select="$posts-href"/></xsl:attribute>
-                    <span class="site-side-nav__link-text"><xsl:value-of select="$writing-label"/></span>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$posts-href"/>
+                    </xsl:attribute>
+                    <span class="site-side-nav__link-text">
+                      <xsl:value-of select="$writing-label"/>
+                    </span>
                   </a>
                 </li>
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">
-                    <xsl:attribute name="href"><xsl:value-of select="$about-href"/></xsl:attribute>
-                    <span class="site-side-nav__link-text"><xsl:value-of select="$about-label"/></span>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$about-href"/>
+                    </xsl:attribute>
+                    <span class="site-side-nav__link-text">
+                      <xsl:value-of select="$about-label"/>
+                    </span>
                   </a>
                 </li>
               </ul>
             </nav>
           </div>
-          <div class="site-side-nav__overlay" aria-hidden="true"></div>
-
+          <div class="site-side-nav__overlay" aria-hidden="true"/>
           <main class="site-main" id="main-content" data-pagefind-body="">
             <div class="site-page-shell site-page-shell--wide feed-page-shell">
               <nav class="site-breadcrumb" aria-label="Breadcrumb">
                 <ol class="site-breadcrumb-list">
                   <li class="site-breadcrumb-item">
                     <a class="site-breadcrumb-link">
-                      <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                      <xsl:attribute name="href">
+                        <xsl:value-of select="$home-href"/>
+                      </xsl:attribute>
                       <xsl:value-of select="$home-label"/>
                     </a>
                   </li>
                 </ol>
               </nav>
-
               <section class="feed-page" aria-labelledby="feed-title">
                 <header class="pagehead" aria-labelledby="feed-title">
-                  <p class="pagehead-eyebrow"><xsl:value-of select="$structured-endpoint-label"/></p>
-                  <h1 id="feed-title" class="feeds-page-title"><xsl:value-of select="$feed-format-label"/></h1>
-                  <p class="pagehead-lead feeds-page-lead"><xsl:value-of select="$feed-description"/></p>
+                  <p class="pagehead-eyebrow">
+                    <xsl:value-of select="$structured-endpoint-label"/>
+                  </p>
+                  <h1 id="feed-title" class="feeds-page-title">
+                    <xsl:value-of select="$feed-format-label"/>
+                  </h1>
+                  <p class="pagehead-lead feeds-page-lead">
+                    <xsl:value-of select="$feed-description"/>
+                  </p>
                   <p class="feed-page-count">
                     <xsl:value-of select="$entry-count"/>
                     <xsl:text> </xsl:text>
                     <xsl:value-of select="$entry-count-suffix"/>
                   </p>
                 </header>
-
                 <section class="site-panel feed-document-panel" aria-labelledby="feed-entries-title">
                   <div class="feed-document-panel-head">
-                    <h2 id="feed-entries-title" class="feed-document-panel-title"><xsl:value-of select="$latest-entries-label"/></h2>
-                    <p class="feed-document-panel-note"><xsl:value-of select="$sorted-note-label"/></p>
+                    <h2 id="feed-entries-title" class="feed-document-panel-title">
+                      <xsl:value-of select="$latest-entries-label"/>
+                    </h2>
+                    <p class="feed-document-panel-note">
+                      <xsl:value-of select="$sorted-note-label"/>
+                    </p>
                   </div>
                   <xsl:choose>
                     <xsl:when test="$entry-count &gt; 0">
@@ -606,7 +622,9 @@
                           </xsl:variable>
                           <li class="feed-entry-item">
                             <time class="feed-entry-date">
-                              <xsl:attribute name="datetime"><xsl:value-of select="$entry-date"/></xsl:attribute>
+                              <xsl:attribute name="datetime">
+                                <xsl:value-of select="$entry-date"/>
+                              </xsl:attribute>
                               <xsl:choose>
                                 <xsl:when test="$is-atom">
                                   <xsl:value-of select="substring($entry-date, 1, 10)"/>
@@ -617,7 +635,9 @@
                               </xsl:choose>
                             </time>
                             <a class="feed-entry-link">
-                              <xsl:attribute name="href"><xsl:value-of select="$entry-link"/></xsl:attribute>
+                              <xsl:attribute name="href">
+                                <xsl:value-of select="$entry-link"/>
+                              </xsl:attribute>
                               <xsl:choose>
                                 <xsl:when test="$is-atom">
                                   <xsl:value-of select="atom:title"/>
@@ -627,20 +647,23 @@
                                 </xsl:otherwise>
                               </xsl:choose>
                             </a>
-                            <span class="feed-entry-type"><xsl:value-of select="$feed-format-label"/></span>
+                            <span class="feed-entry-type">
+                              <xsl:value-of select="$feed-format-label"/>
+                            </span>
                           </li>
                         </xsl:for-each>
                       </ol>
                     </xsl:when>
                     <xsl:otherwise>
-                      <p class="feed-entry-empty"><xsl:value-of select="$no-entries-label"/></p>
+                      <p class="feed-entry-empty">
+                        <xsl:value-of select="$no-entries-label"/>
+                      </p>
                     </xsl:otherwise>
                   </xsl:choose>
                 </section>
               </section>
             </div>
           </main>
-
           <footer class="site-footer">
             <div class="site-footer-inner">
               <span>© <span id="site-footer-years">2022</span> Phiphi</span>
@@ -650,18 +673,18 @@
                   <!--__FOOTER_GITHUB_ICON__-->
                 </a>
                 <a aria-label="{$syndication-label}">
-                  <xsl:attribute name="href"><xsl:value-of select="$syndication-href"/></xsl:attribute>
-                  <span class="site-footer-icon site-footer-icon--brand site-footer-icon--rss" aria-hidden="true"></span>
+                  <xsl:attribute name="href">
+                    <xsl:value-of select="$syndication-href"/>
+                  </xsl:attribute>
+                  <span class="site-footer-icon site-footer-icon--brand site-footer-icon--rss" aria-hidden="true"/>
                 </a>
               </nav>
             </div>
           </footer>
         </div>
-
-        <script>(()=>{const e=document.getElementById("site-footer-years");if(!e)return;const s=2022,y=new Date().getFullYear();e.textContent=y>s?String(s)+"-"+String(y):String(s)})()</script>
-        <script src="/scripts/header-client.js" type="module" defer="defer"></script>
+        <script>(()=&gt;{const e=document.getElementById("site-footer-years");if(!e)return;const s=2022,y=new Date().getFullYear();e.textContent=y&gt;s?String(s)+"-"+String(y):String(s)})()</script>
+        <script src="/scripts/header-client.js" type="module" defer="defer"/>
       </body>
     </html>
   </xsl:template>
-
 </xsl:stylesheet>

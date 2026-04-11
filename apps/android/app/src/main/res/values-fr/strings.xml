@@ -6,26 +6,16 @@
   <string name="nav_settings">Paramètres</string>
   <string name="nav_back">Retour</string>
   <string name="feed_refresh">Actualiser le contenu</string>
-  <string
-    name="feed_status_bundled"
-  >Utilise le contenu embarqué jusqu’à la première synchronisation.</string>
+  <string name="feed_status_bundled">Utilise le contenu embarqué jusqu’à la première synchronisation.</string>
   <string name="feed_status_checked">Dernière vérification %1$s</string>
-  <string
-    name="feed_status_check_failed"
-  >La dernière vérification a échoué %1$s. Affichage du cache local.</string>
+  <string name="feed_status_check_failed">La dernière vérification a échoué %1$s. Affichage du cache local.</string>
   <string name="home_recent_title">Reprendre la lecture</string>
-  <string
-    name="home_recent_subtitle"
-  >Articles récemment ouverts dans la langue actuelle.</string>
+  <string name="home_recent_subtitle">Articles récemment ouverts dans la langue actuelle.</string>
   <string name="home_bookmarked_title">Lectures enregistrées</string>
-  <string
-    name="home_bookmarked_subtitle"
-  >Accès rapide aux articles favoris.</string>
+  <string name="home_bookmarked_subtitle">Accès rapide aux articles favoris.</string>
   <string name="home_bookmarked_view_all">Tout voir</string>
   <string name="home_feed_title">Derniers articles</string>
-  <string
-    name="home_feed_subtitle"
-  >Articles récents dans la langue de lecture actuelle.</string>
+  <string name="home_feed_subtitle">Articles récents dans la langue de lecture actuelle.</string>
   <string name="home_loading">Chargement des articles…</string>
   <string name="home_empty">Aucun article disponible pour le moment.</string>
   <string name="home_retry">Réessayer</string>
@@ -34,53 +24,29 @@
   <string name="home_tags">Tags : %1$s</string>
   <string name="archive_loading">Chargement des archives…</string>
   <string name="archive_empty">Aucun article archivé disponible.</string>
-  <string
-    name="archive_empty_filtered"
-  >Aucun article ne correspond aux filtres actuels.</string>
+  <string name="archive_empty_filtered">Aucun article ne correspond aux filtres actuels.</string>
   <string name="archive_retry">Réessayer</string>
-  <string
-    name="archive_error"
-  >Impossible de charger les archives : %1$s</string>
+  <string name="archive_error">Impossible de charger les archives : %1$s</string>
   <string name="archive_search_label">Rechercher dans les archives</string>
   <string name="archive_search_placeholder">Titre, résumé ou tag</string>
-  <string
-    name="archive_feed_subtitle"
-  >Rechercher et filtrer dans l’index complet.</string>
+  <string name="archive_feed_subtitle">Rechercher et filtrer dans l’index complet.</string>
   <string name="archive_filter_bookmarked">Favoris uniquement</string>
   <string name="archive_filter_topics">Thèmes</string>
   <string name="archive_filter_all_topics">Tous les thèmes</string>
   <string name="settings_title">Paramètres</string>
-  <string
-    name="settings_intro"
-  >La langue et les préférences hors ligne sont maintenant enregistrées via DataStore et appliquées dans tout le lecteur.</string>
+  <string name="settings_intro">La langue et les préférences hors ligne sont maintenant enregistrées via DataStore et appliquées dans tout le lecteur.</string>
   <string name="settings_loading">Chargement des préférences…</string>
-  <string
-    name="settings_error"
-  >Impossible de charger les paramètres : %1$s</string>
+  <string name="settings_error">Impossible de charger les paramètres : %1$s</string>
   <string name="settings_retry">Réessayer</string>
   <string name="settings_language_title">Langue de lecture</string>
-  <string
-    name="settings_language_body"
-  >Choisissez la version localisée lue par défaut dans Accueil, Archives et Article.</string>
+  <string name="settings_language_body">Choisissez la version localisée lue par défaut dans Accueil, Archives et Article.</string>
   <string name="settings_offline_title">Préférences hors ligne</string>
-  <string
-    name="settings_save_opened_posts_title"
-  >Conserver les articles ouverts hors ligne</string>
-  <string
-    name="settings_save_opened_posts_body"
-  >Garde les détails des articles ouverts en stockage local pour une lecture ultérieure.</string>
-  <string
-    name="settings_background_sync_title"
-  >Actualisation en arrière-plan en Wi‑Fi uniquement</string>
-  <string
-    name="settings_background_sync_body"
-  >Lorsque cette option est activée, les actualisations planifiées ne s’exécutent que sur un réseau non limité.</string>
-  <string
-    name="settings_background_sync_schedule"
-  >Les vérifications planifiées s’exécutent environ toutes les 6 heures.</string>
-  <string
-    name="settings_clear_reading_history"
-  >Effacer l’historique de lecture</string>
+  <string name="settings_save_opened_posts_title">Conserver les articles ouverts hors ligne</string>
+  <string name="settings_save_opened_posts_body">Garde les détails des articles ouverts en stockage local pour une lecture ultérieure.</string>
+  <string name="settings_background_sync_title">Actualisation en arrière-plan en Wi‑Fi uniquement</string>
+  <string name="settings_background_sync_body">Lorsque cette option est activée, les actualisations planifiées ne s’exécutent que sur un réseau non limité.</string>
+  <string name="settings_background_sync_schedule">Les vérifications planifiées s’exécutent environ toutes les 6 heures.</string>
+  <string name="settings_clear_reading_history">Effacer l’historique de lecture</string>
   <string name="language_en">English</string>
   <string name="language_fr">Français</string>
   <string name="language_zh_hans">简体中文</string>
@@ -89,9 +55,7 @@
   <string name="post_title">Article</string>
   <string name="post_error">Impossible de charger l’article : %1$s</string>
   <string name="post_retry">Réessayer</string>
-  <string
-    name="post_refresh_failed"
-  >Impossible d’actualiser l’article. Affichage de la version précédente.</string>
+  <string name="post_refresh_failed">Impossible d’actualiser l’article. Affichage de la version précédente.</string>
   <string name="post_updated_at">Mis à jour %1$s</string>
   <string name="post_contents_title">Dans cette page</string>
   <string name="post_languages_title">Langues disponibles</string>

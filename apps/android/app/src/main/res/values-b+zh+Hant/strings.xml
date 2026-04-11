@@ -8,9 +8,7 @@
   <string name="feed_refresh">刷新內容</string>
   <string name="feed_status_bundled">首次同步前使用內建內容。</string>
   <string name="feed_status_checked">上次檢查：%1$s</string>
-  <string
-    name="feed_status_check_failed"
-  >上次檢查失敗：%1$s。正在顯示快取內容。</string>
+  <string name="feed_status_check_failed">上次檢查失敗：%1$s。正在顯示快取內容。</string>
   <string name="home_recent_title">繼續閱讀</string>
   <string name="home_recent_subtitle">目前語言中最近開啟的文章。</string>
   <string name="home_bookmarked_title">已儲存閱讀</string>
@@ -36,30 +34,18 @@
   <string name="archive_filter_topics">主題</string>
   <string name="archive_filter_all_topics">全部主題</string>
   <string name="settings_title">設定</string>
-  <string
-    name="settings_intro"
-  >語言和離線偏好現已透過 DataStore 儲存，並套用到整個閱讀器。</string>
+  <string name="settings_intro">語言和離線偏好現已透過 DataStore 儲存，並套用到整個閱讀器。</string>
   <string name="settings_loading">正在載入偏好設定…</string>
   <string name="settings_error">設定載入失敗：%1$s</string>
   <string name="settings_retry">重試</string>
   <string name="settings_language_title">閱讀語言</string>
-  <string
-    name="settings_language_body"
-  >選擇首頁、歸檔和文章預設讀取的本地化內容。</string>
+  <string name="settings_language_body">選擇首頁、歸檔和文章預設讀取的本地化內容。</string>
   <string name="settings_offline_title">離線偏好</string>
-  <string
-    name="settings_save_opened_posts_title"
-  >儲存已開啟文章以供離線閱讀</string>
-  <string
-    name="settings_save_opened_posts_body"
-  >將已開啟文章的詳細內容儲存在本機，方便稍後閱讀。</string>
+  <string name="settings_save_opened_posts_title">儲存已開啟文章以供離線閱讀</string>
+  <string name="settings_save_opened_posts_body">將已開啟文章的詳細內容儲存在本機，方便稍後閱讀。</string>
   <string name="settings_background_sync_title">僅在 Wi‑Fi 下背景刷新</string>
-  <string
-    name="settings_background_sync_body"
-  >啟用後，排程中的背景刷新只會在非計量網路上執行。</string>
-  <string
-    name="settings_background_sync_schedule"
-  >排程檢查大約每 6 小時執行一次。</string>
+  <string name="settings_background_sync_body">啟用後，排程中的背景刷新只會在非計量網路上執行。</string>
+  <string name="settings_background_sync_schedule">排程檢查大約每 6 小時執行一次。</string>
   <string name="settings_clear_reading_history">清除閱讀歷史</string>
   <string name="language_en">English</string>
   <string name="language_fr">Français</string>
@@ -69,9 +55,7 @@
   <string name="post_title">文章</string>
   <string name="post_error">文章載入失敗：%1$s</string>
   <string name="post_retry">重試</string>
-  <string
-    name="post_refresh_failed"
-  >文章重新整理失敗。正在顯示上一版內容。</string>
+  <string name="post_refresh_failed">文章重新整理失敗。正在顯示上一版內容。</string>
   <string name="post_updated_at">更新於 %1$s</string>
   <string name="post_contents_title">本頁內容</string>
   <string name="post_languages_title">可用語言</string>

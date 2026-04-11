@@ -3,12 +3,8 @@
   sitemap.xsl — Sitemap browser stylesheet.
   Transforms /sitemap.xml into a site-aligned HTML view.
 -->
-<xsl:stylesheet version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:sm="http://www.sitemaps.org/schemas/sitemap/0.9">
-
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:sm="http://www.sitemaps.org/schemas/sitemap/0.9" version="1.0">
   <xsl:output method="html" encoding="UTF-8"/>
-
   <xsl:template match="/">
     <xsl:variable name="home-href">/</xsl:variable>
     <xsl:variable name="posts-href">/posts/</xsl:variable>
@@ -18,7 +14,6 @@
     <xsl:variable name="zh-hans-home-href">/zh-hans/</xsl:variable>
     <xsl:variable name="zh-hant-home-href">/zh-hant/</xsl:variable>
     <xsl:variable name="url-count" select="count(/sm:urlset/sm:url)"/>
-
     <html lang="en" data-color-mode="light">
       <head>
         <meta charset="utf-8"/>
@@ -37,88 +32,66 @@
           <header class="site-header">
             <div class="site-header__wrapper">
               <div class="site-header__left">
-                <button
-                  type="button"
-                  class="site-header__action site-header__menu-toggle"
-                  aria-label="Open navigation menu"
-                  aria-expanded="false"
-                  aria-controls="site-side-nav"
-                >
+                <button type="button" class="site-header__action site-header__menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="site-side-nav">
                   <!--__HEADER_MENU_ICON__-->
                 </button>
                 <a class="site-header__brand">
-                  <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                  <xsl:attribute name="href">
+                    <xsl:value-of select="$home-href"/>
+                  </xsl:attribute>
                   <span class="site-header__brand-prefix">normco</span>
                   <xsl:text>.re</xsl:text>
                 </a>
                 <nav class="site-header__nav" aria-label="Main navigation">
                   <a class="site-header__menu-item">
-                    <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$home-href"/>
+                    </xsl:attribute>
                     <xsl:text>Home</xsl:text>
                   </a>
                   <a class="site-header__menu-item">
-                    <xsl:attribute name="href"><xsl:value-of select="$posts-href"/></xsl:attribute>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$posts-href"/>
+                    </xsl:attribute>
                     <xsl:text>Articles</xsl:text>
                   </a>
                   <a class="site-header__menu-item">
-                    <xsl:attribute name="href"><xsl:value-of select="$about-href"/></xsl:attribute>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$about-href"/>
+                    </xsl:attribute>
                     <xsl:text>About</xsl:text>
                   </a>
                 </nav>
               </div>
               <div class="site-header__global">
                 <div class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip" data-header-tooltip="">
-                  <button
-                    type="button"
-                    class="site-header__action"
-                    aria-label="Search"
-                    aria-expanded="false"
-                    aria-controls="site-search-panel"
-                    data-header-tooltip-trigger=""
-                  >
+                  <button type="button" class="site-header__action" aria-label="Search" aria-expanded="false" aria-controls="site-search-panel" data-header-tooltip-trigger="">
                     <!--__HEADER_SEARCH_ICON__-->
                   </button>
                   <div class="site-popover" aria-hidden="true">
-                    <span class="site-popover__caret"></span>
+                    <span class="site-popover__caret"/>
                     <div class="site-popover__content">
                       <span class="site-tooltip__content">Search</span>
                     </div>
                   </div>
                 </div>
                 <div class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip" data-header-tooltip="">
-                  <button
-                    type="button"
-                    class="site-header__action site-header__language-toggle"
-                    aria-label="Select language"
-                    aria-expanded="false"
-                    aria-controls="__HEADER_LANGUAGE_PANEL_ID__"
-                    aria-haspopup="menu"
-                    data-header-tooltip-trigger=""
-                  >
+                  <button type="button" class="site-header__action site-header__language-toggle" aria-label="Select language" aria-expanded="false" aria-controls="__HEADER_LANGUAGE_PANEL_ID__" aria-haspopup="menu" data-header-tooltip-trigger="">
                     <!--__HEADER_LANGUAGE_ICON__-->
                   </button>
                   <div class="site-popover" aria-hidden="true">
-                    <span class="site-popover__caret"></span>
+                    <span class="site-popover__caret"/>
                     <div class="site-popover__content">
                       <span class="site-tooltip__content">Language</span>
                     </div>
                   </div>
                 </div>
                 <div class="site-popover-container site-icon-tooltip site-popover--bottom site-popover--align-center site-header-tooltip" data-header-tooltip="">
-                  <button
-                    id="theme-toggle"
-                    type="button"
-                    class="site-header__action"
-                    aria-label="Toggle color theme"
-                    data-label-switch-light="Switch to light theme"
-                    data-label-switch-dark="Switch to dark theme"
-                    data-label-follow-system="Follow system theme"
-                    data-header-tooltip-trigger=""
-                  >
+                  <button id="theme-toggle" type="button" class="site-header__action" aria-label="Toggle color theme" data-label-switch-light="Switch to light theme" data-label-switch-dark="Switch to dark theme" data-label-follow-system="Follow system theme" data-header-tooltip-trigger="">
                     <!--__HEADER_THEME_ICONS__-->
                   </button>
                   <div class="site-popover" aria-hidden="true">
-                    <span class="site-popover__caret"></span>
+                    <span class="site-popover__caret"/>
                     <div class="site-popover__content">
                       <span class="site-tooltip__content">Toggle color theme</span>
                     </div>
@@ -128,86 +101,57 @@
             </div>
           </header>
           <!--__HEADER_LANGUAGE_MENU_PANEL__-->
-          <div
-            id="site-search-panel"
-            class="site-header__panel site-header__search-panel"
-            role="search"
-            aria-label="Search"
-            hidden=""
-            data-search-panel=""
-          >
+          <div id="site-search-panel" class="site-header__panel site-header__search-panel" role="search" aria-label="Search" hidden="" data-search-panel="">
             <div class="site-header__panel-content">
-              <p
-                id="site-search-status"
-                class="site-header__search-status"
-                role="status"
-                aria-live="polite"
-                aria-atomic="true"
-                data-search-status=""
-                hidden=""
-              ></p>
-              <div
-                id="search"
-                class="site-header__search-root"
-                data-search-root=""
-                aria-busy="false"
-                data-search-loading-label="Loading search results."
-                data-search-no-results-label="No results found."
-                data-search-one-result-label="[COUNT] result"
-                data-search-many-results-label="[COUNT] results"
-                data-search-unavailable-label="Search is temporarily unavailable."
-                data-search-offline-label="Search is unavailable while offline."
-                data-search-retry-label="Retry"
-              ></div>
+              <p id="site-search-status" class="site-header__search-status" role="status" aria-live="polite" aria-atomic="true" data-search-status="" hidden=""/>
+              <div id="search" class="site-header__search-root" data-search-root="" aria-busy="false" data-search-loading-label="Loading search results." data-search-no-results-label="No results found." data-search-one-result-label="[COUNT] result" data-search-many-results-label="[COUNT] results" data-search-unavailable-label="Search is temporarily unavailable." data-search-offline-label="Search is unavailable while offline." data-search-retry-label="Retry"/>
             </div>
           </div>
-
-          <div
-            id="site-side-nav"
-            class="site-side-nav"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Navigation menu"
-            hidden=""
-          >
+          <div id="site-side-nav" class="site-side-nav" role="dialog" aria-modal="true" aria-label="Navigation menu" hidden="">
             <nav class="site-side-nav__navigation" aria-label="Navigation menu">
               <ul class="site-side-nav__items">
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">
-                    <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$home-href"/>
+                    </xsl:attribute>
                     <span class="site-side-nav__link-text">Home</span>
                   </a>
                 </li>
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">
-                    <xsl:attribute name="href"><xsl:value-of select="$posts-href"/></xsl:attribute>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$posts-href"/>
+                    </xsl:attribute>
                     <span class="site-side-nav__link-text">Articles</span>
                   </a>
                 </li>
                 <li class="site-side-nav__item">
                   <a class="site-side-nav__link">
-                    <xsl:attribute name="href"><xsl:value-of select="$about-href"/></xsl:attribute>
+                    <xsl:attribute name="href">
+                      <xsl:value-of select="$about-href"/>
+                    </xsl:attribute>
                     <span class="site-side-nav__link-text">About</span>
                   </a>
                 </li>
               </ul>
             </nav>
           </div>
-          <div class="site-side-nav__overlay" aria-hidden="true"></div>
-
+          <div class="site-side-nav__overlay" aria-hidden="true"/>
           <main class="site-main" id="main-content" data-pagefind-body="">
             <div class="site-page-shell site-page-shell--wide feed-page-shell">
               <nav class="site-breadcrumb" aria-label="Breadcrumb">
                 <ol class="site-breadcrumb-list">
                   <li class="site-breadcrumb-item">
                     <a class="site-breadcrumb-link">
-                      <xsl:attribute name="href"><xsl:value-of select="$home-href"/></xsl:attribute>
+                      <xsl:attribute name="href">
+                        <xsl:value-of select="$home-href"/>
+                      </xsl:attribute>
                       <xsl:text>Home</xsl:text>
                     </a>
                   </li>
                 </ol>
               </nav>
-
               <section class="feed-page" aria-labelledby="sitemap-title">
                 <header class="pagehead" aria-labelledby="sitemap-title">
                   <p class="pagehead-eyebrow">Structured endpoint</p>
@@ -218,7 +162,6 @@
                     <xsl:text> URLs indexed in this sitemap.</xsl:text>
                   </p>
                 </header>
-
                 <section class="site-panel feed-document-panel" aria-labelledby="sitemap-urls-title">
                   <div class="feed-document-panel-head">
                     <h2 id="sitemap-urls-title" class="feed-document-panel-title">Indexed URLs</h2>
@@ -233,7 +176,9 @@
                             <xsl:choose>
                               <xsl:when test="sm:lastmod">
                                 <time class="feed-entry-date">
-                                  <xsl:attribute name="datetime"><xsl:value-of select="sm:lastmod"/></xsl:attribute>
+                                  <xsl:attribute name="datetime">
+                                    <xsl:value-of select="sm:lastmod"/>
+                                  </xsl:attribute>
                                   <xsl:value-of select="substring(sm:lastmod, 1, 10)"/>
                                 </time>
                               </xsl:when>
@@ -242,7 +187,9 @@
                               </xsl:otherwise>
                             </xsl:choose>
                             <a class="feed-entry-link">
-                              <xsl:attribute name="href"><xsl:value-of select="sm:loc"/></xsl:attribute>
+                              <xsl:attribute name="href">
+                                <xsl:value-of select="sm:loc"/>
+                              </xsl:attribute>
                               <xsl:value-of select="sm:loc"/>
                             </a>
                             <span class="feed-entry-type">URL</span>
@@ -258,7 +205,6 @@
               </section>
             </div>
           </main>
-
           <footer class="site-footer">
             <div class="site-footer-inner">
               <span>© <span id="site-footer-years">2022</span> Phiphi</span>
@@ -268,18 +214,18 @@
                   <!--__FOOTER_GITHUB_ICON__-->
                 </a>
                 <a aria-label="Open syndication page">
-                  <xsl:attribute name="href"><xsl:value-of select="$syndication-href"/></xsl:attribute>
-                  <span class="site-footer-icon site-footer-icon--brand site-footer-icon--rss" aria-hidden="true"></span>
+                  <xsl:attribute name="href">
+                    <xsl:value-of select="$syndication-href"/>
+                  </xsl:attribute>
+                  <span class="site-footer-icon site-footer-icon--brand site-footer-icon--rss" aria-hidden="true"/>
                 </a>
               </nav>
             </div>
           </footer>
         </div>
-
-        <script>(()=>{const e=document.getElementById("site-footer-years");if(!e)return;const s=2022,y=new Date().getFullYear();e.textContent=y>s?String(s)+"-"+String(y):String(s)})()</script>
-        <script src="/scripts/header-client.js" type="module" defer="defer"></script>
+        <script>(()=&gt;{const e=document.getElementById("site-footer-years");if(!e)return;const s=2022,y=new Date().getFullYear();e.textContent=y&gt;s?String(s)+"-"+String(y):String(s)})()</script>
+        <script src="/scripts/header-client.js" type="module" defer="defer"/>
       </body>
     </html>
   </xsl:template>
-
 </xsl:stylesheet>

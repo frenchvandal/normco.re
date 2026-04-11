@@ -27,6 +27,10 @@
       "description": "Fail when normalized UI literals reappear outside the token bridge or explicit allowlists",
       "command": "deno run --allow-read scripts/design-token-guard.ts"
     },
+    "fmt:xml": {
+      "description": "Format XML and XSL template files with xmllint",
+      "command": "deno run --allow-read --allow-write --allow-run=xmllint scripts/format-xml.ts"
+    },
     "generate:antd-css": {
       "description": "Regenerate the generated Ant Design CSS bridge from the current theme configuration",
       "command": "deno run --allow-read --allow-write=src/styles/generated/antd-components.css --allow-run scripts/generate-antd-css.ts"
