@@ -1,36 +1,40 @@
 import { assertEquals } from "@std/assert";
 
-import { buildInstallArgs } from "./regenerate-locks.ts";
+import { buildRefreshArgs } from "./regenerate-locks.ts";
 
-Deno.test("buildInstallArgs() preserves root lock install args", () => {
+Deno.test("buildRefreshArgs() builds root lock check args", () => {
   assertEquals(
-    buildInstallArgs({
+    buildRefreshArgs({
+      files: ["src/index.page.tsx"],
       label: "root",
       lockPath: "deno.lock",
     }),
     [
-      "install",
+      "check",
       "--lock",
       "deno.lock",
       "--frozen=false",
+      "src/index.page.tsx",
     ],
   );
 });
 
-Deno.test("buildInstallArgs() includes config for frontend lock regeneration", () => {
+Deno.test("buildRefreshArgs() includes config for frontend lock regeneration", () => {
   assertEquals(
-    buildInstallArgs({
+    buildRefreshArgs({
+      files: ["src/blog/client/main.tsx"],
       label: "frontend",
       lockPath: "src/blog/client/deno.lock",
       configPath: "src/blog/client/deno.json",
     }),
     [
-      "install",
+      "check",
       "--lock",
       "src/blog/client/deno.lock",
       "--frozen=false",
       "--config",
       "src/blog/client/deno.json",
+      "src/blog/client/main.tsx",
     ],
   );
 });

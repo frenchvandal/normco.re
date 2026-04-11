@@ -1,4 +1,6 @@
 import {
+  collectFrontendFiles,
+  collectRootLockFiles,
   FRONTEND_CONFIG,
   FRONTEND_LOCK,
   REPO_ROOT,
@@ -6,16 +8,15 @@ import {
 } from "./deno_graph.ts";
 
 type LockTarget = Readonly<{
+  files: readonly string[];
   label: string;
   lockPath: string;
   configPath?: string;
 }>;
 
-export function buildInstallArgs(target: LockTarget): string[] {
-  // Reuse cached dependency metadata by default so a lock refresh does not
-  // fail just because an upstream registry hiccups during an unrelated review.
+export function buildRefreshArgs(target: LockTarget): string[] {
   const args = [
-    "install",
+    "check",
     "--lock",
     target.lockPath,
     "--frozen=false",
@@ -24,6 +25,8 @@ export function buildInstallArgs(target: LockTarget): string[] {
   if (target.configPath !== undefined) {
     args.push("--config", target.configPath);
   }
+
+  args.push(...target.files);
 
   return args;
 }
@@ -59,13 +62,17 @@ async function removeFileIfExists(path: string): Promise<void> {
 }
 
 async function regenerateLock(target: LockTarget): Promise<void> {
+  if (target.files.length === 0) {
+    return;
+  }
+
   console.log(`Regenerating ${target.label} lockfile at ${target.lockPath}`);
 
   const backupPath = `${target.lockPath}.bak`;
   const hadBackup = await backupFileIfExists(target.lockPath, backupPath);
 
   await removeFileIfExists(target.lockPath);
-  const args = buildInstallArgs(target);
+  const args = buildRefreshArgs(target);
 
   const status = await new Deno.Command("deno", {
     args,
@@ -88,17 +95,19 @@ async function regenerateLock(target: LockTarget): Promise<void> {
   await removeFileIfExists(backupPath);
 
   throw new Error(
-    `deno install exited with code ${status.code} while regenerating ${target.label} lockfile`,
+    `deno check exited with code ${status.code} while regenerating ${target.label} lockfile`,
   );
 }
 
 if (import.meta.main) {
   await regenerateLock({
+    files: await collectRootLockFiles(),
     label: "root",
     lockPath: ROOT_LOCK,
   });
 
   await regenerateLock({
+    files: await collectFrontendFiles(),
     label: "frontend",
     lockPath: FRONTEND_LOCK,
     configPath: FRONTEND_CONFIG,
