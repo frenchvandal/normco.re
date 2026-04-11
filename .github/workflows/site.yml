@@ -5,13 +5,16 @@ on:
   push:
     branches: ["master"]
     paths:
+      - ".github/workflows/pretext-harness.yml"
       - ".github/workflows/site.yml"
       - ".tool-versions"
       - "_config.ts"
       - "_config/**"
       - "contracts/**"
-      - "deno.json"
+      - "deno.jsonc"
       - "deno.lock"
+      - "src/blog/client/deno.json"
+      - "src/blog/client/deno.lock"
       - "package.json"
       - "package-lock.json"
       - "plugins/**"
@@ -49,8 +52,8 @@ jobs:
       - name: Setup Deno environment
         uses: ./.github/actions/setup-deno
 
-      - name: Verify frozen lockfile
-        run: deno install --frozen
+      - name: Verify frozen lockfiles
+        run: deno task locks:check
 
       - name: Deploy to Aliyun OSS
         uses: frenchvandal/aliyun-oss-cdn-sync-action@master

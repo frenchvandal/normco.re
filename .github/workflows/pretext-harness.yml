@@ -25,8 +25,8 @@ jobs:
       - name: Setup Deno environment
         uses: ./.github/actions/setup-deno
 
-      - name: Verify frozen lockfile
-        run: deno install --frozen
+      - name: Verify frozen lockfiles
+        run: deno task locks:check
 
       - name: Install Playwright Chromium for Pretext harness
         run: deno task --frozen pretext:harness:install

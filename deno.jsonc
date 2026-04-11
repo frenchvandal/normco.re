@@ -39,6 +39,10 @@
       "description": "Validate the commit message with @miscellaneous/commitlint",
       "command": "deno run --allow-read scripts/lint-commit.ts"
     },
+    "locks:check": {
+      "description": "Verify the root and frontend Deno graphs against their frozen lockfiles",
+      "command": "deno run --allow-read --allow-run scripts/check-locks.ts"
+    },
     "locks:regen": {
       "description": "Regenerate the root and frontend deno.lock files from the current dependency graphs",
       "command": "deno run --allow-read --allow-write=deno.lock,deno.lock.bak,src/blog/client/deno.lock,src/blog/client/deno.lock.bak --allow-run scripts/regenerate-locks.ts"

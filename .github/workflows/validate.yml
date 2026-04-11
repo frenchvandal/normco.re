@@ -1,0 +1,55 @@
+name: Validate
+
+on:
+  pull_request:
+    paths:
+      - ".github/actions/setup-deno/**"
+      - ".github/workflows/**"
+      - ".tool-versions"
+      - "_config.ts"
+      - "_config/**"
+      - "contracts/**"
+      - "deno.jsonc"
+      - "deno.lock"
+      - "package.json"
+      - "package-lock.json"
+      - "plugins/**"
+      - "pnpm-lock.yaml"
+      - "scripts/**"
+      - "src/**"
+      - "src/blog/client/deno.json"
+      - "src/blog/client/deno.lock"
+      - "test/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          # Full history is required for build-time per-file git metadata.
+          fetch-depth: 0
+
+      - name: Setup Deno environment
+        uses: ./.github/actions/setup-deno
+
+      - name: Verify frozen lockfiles
+        run: deno task locks:check
+
+      - name: Run type checks
+        run: deno task check
+
+      - name: Run tests
+        run: deno task test
+
+      - name: Build site
+        run: deno task build

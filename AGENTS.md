@@ -79,6 +79,17 @@ For browser bundles under `src/blog/client/`:
 - Prefer Deno's npm cache and import-map aliases over introducing a repo-local
   `node_modules` workflow.
 
+### Lockfiles
+
+- Treat the root `deno.lock` and `src/blog/client/deno.lock` as versioned source
+  files, and review both diffs deliberately when dependencies change.
+- Keep local development additive by default; do not turn on checked-in global
+  frozen mode in `deno.jsonc` for everyday work.
+- CI, deploy, and other non-interactive validation surfaces should verify both
+  lockfiles in frozen mode via `deno task locks:check`.
+- For intentional dependency updates, regenerate both lockfiles explicitly with
+  `deno task locks:regen` and commit the reviewed results.
+
 ### Pretext
 
 When touching `@chenglou/pretext` integrations under `src/blog/client/`:
@@ -228,6 +239,12 @@ For a meaningful change, run:
 deno task check
 deno task test
 deno task build
+```
+
+When you change Deno dependencies, Deno config, or either lockfile, also run:
+
+```sh
+deno task locks:check
 ```
 
 Run `deno task validate-contracts` when your changes affect feeds or generated
