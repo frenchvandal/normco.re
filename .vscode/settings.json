@@ -1,9 +1,39 @@
 {
-  "editor.inlayHints.enabled": "on",
-  "editor.formatOnSave": true,
+  "deno.codeLens.implementations": true,
+  "deno.codeLens.references": true,
+  "deno.codeLens.test": true,
+  "deno.disablePaths": [
+    "apps/android"
+  ],
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.path": "/opt/homebrew/bin/deno",
+  "deno.suggest.imports.hosts": {
+    "https://cdn.jsdelivr.net": true,
+    "https://deno.land": true,
+    "https://jsr.io": true
+  },
+  "deno.unstable": [
+    "bare-node-builtins",
+    "broadcast-channel",
+    "byonm",
+    "cron",
+    "ffi",
+    "fs",
+    "http",
+    "kv",
+    "net",
+    "sloppy-imports",
+    "unsafe-proto",
+    "webgpu",
+    "worker-options"
+  ],
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
   },
+  "editor.formatOnSave": true,
+  "editor.inlayHints.enabled": "on",
+  "editor.linkedEditing": true,
   "files.eol": "\n",
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
@@ -16,6 +46,10 @@
     "**/apps/android/**/build/**": true,
     "**/coverage/**": true
   },
+  "gradle.nestedProjects": true,
+  "js/ts.experimental.useTsgo": false,
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": false,
+  "js/ts.validate.enabled": false,
   "search.exclude": {
     "**/.deno_cache/**": true,
     "**/.gradle/**": true,
@@ -25,14 +59,22 @@
     "**/apps/android/**/build/**": true,
     "**/coverage/**": true
   },
+  "workbench.startupEditor": "readme",
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-action.json": [
+      ".github/actions/*/action.yml",
+      "file:///Users/normcore/Code/normco.re/.github/actions/setup-deno/action.yml"
+    ],
+    "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
   "[javascript]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
   "[javascriptreact]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "vscode.css-language-features"
   },
   "[json]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
@@ -58,37 +100,5 @@
   },
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
-  },
-  "deno.enable": true,
-  "deno.path": "/opt/homebrew/bin/deno",
-  "deno.disablePaths": [
-    "apps/android"
-  ],
-  "deno.lint": true,
-  "deno.unstable": [
-    "bare-node-builtins",
-    "byonm",
-    "sloppy-imports",
-    "unsafe-proto",
-    "webgpu",
-    "broadcast-channel",
-    "worker-options",
-    "cron",
-    "kv",
-    "ffi",
-    "fs",
-    "http",
-    "net"
-  ],
-  "deno.suggest.imports.hosts": {
-    "https://cdn.jsdelivr.net": true,
-    "https://deno.land": true,
-    "https://jsr.io": true
-  },
-  "editor.linkedEditing": true,
-  "gradle.nestedProjects": true,
-  "js/ts.validate.enabled": false,
-  "js/ts.experimental.useTsgo": false,
-  "js/ts.tsserver.experimental.enableProjectDiagnostics": false,
-  "workbench.startupEditor": "readme"
+  }
 }

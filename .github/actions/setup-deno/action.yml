@@ -1,12 +1,15 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
 name: Setup Deno
-description: Install Deno from either an explicit version or a version file and enable the built-in cache.
+description: Install Deno from either an explicit version or a version file and
+  enable the built-in cache.
 
 inputs:
   cache:
     description: Whether to enable setup-deno cache support.
     default: "true"
   deno-version:
-    description: Explicit Deno version to install. Takes precedence over deno-version-file when set.
+    description: Explicit Deno version to install. Takes precedence over
+      deno-version-file when set.
     default: ""
   deno-version-file:
     description: File containing the Deno version when deno-version is not provided.

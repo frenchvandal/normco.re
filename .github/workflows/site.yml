@@ -3,7 +3,7 @@ name: Deploy static content to OSS
 
 on:
   push:
-    branches: ["master"]
+    branches: [ "master" ]
     paths:
       - ".github/workflows/pretext-harness.yml"
       - ".github/workflows/site.yml"
@@ -64,7 +64,8 @@ jobs:
           role-session-expiration: 3600
           cache-enabled: true
           cache-key: >-
-            lume-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('deno.lock') }}-${{ hashFiles('_cache/**/*') || 'empty' }}
+            lume-cache-${{ runner.os }}-${{ runner.arch }}-${{
+            hashFiles('deno.lock') }}-${{ hashFiles('_cache/**/*') || 'empty' }}
           cache-restore-keys: |
             lume-cache-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('deno.lock') }}-
             lume-cache-${{ runner.os }}-${{ runner.arch }}-
