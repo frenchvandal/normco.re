@@ -78,7 +78,7 @@
     position: absolute;
     inset: var(--site-side-nav-safe-top) auto var(--site-side-nav-safe-bottom)
       0;
-    inline-size: 1px;
+    inline-size: var(--ph-border-hairline);
     background: linear-gradient(
       180deg,
       color-mix(
@@ -268,8 +268,6 @@
       border-color var(--ph-duration-default) var(--ph-easing-default),
       background-color var(--ph-duration-default) var(--ph-easing-default),
       color var(--ph-duration-default) var(--ph-easing-default),
-      background-color var(--ph-duration-default) var(--ph-easing-default),
-      border-color var(--ph-duration-default) var(--ph-easing-default),
       transform var(--ph-duration-default) var(--ph-easing-default);
   }
 

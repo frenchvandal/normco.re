@@ -387,6 +387,14 @@ describe("base.tsx layout", () => {
       assertNotMatch(html, /rel="canonical"/);
     });
 
+    it("omits the canonical link when site origin data is invalid", async () => {
+      const html = await renderBase(makeData({
+        siteOrigin: "not a valid origin",
+      }));
+
+      assertNotMatch(html, /rel="canonical"/);
+    });
+
     it("renders the mocked Header and Footer", async () => {
       const html = await renderBase(makeData({}));
       assertStringIncludes(html, "<header>mock</header>");

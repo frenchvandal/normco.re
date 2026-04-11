@@ -212,6 +212,22 @@ function resolveCriticalStylesheetHref(currentUrl: string): string | null {
   return null;
 }
 
+function resolveCanonicalUrl(
+  currentUrl: string,
+  siteOrigin: string,
+  isIndexable: boolean,
+): string | undefined {
+  if (!isIndexable) {
+    return undefined;
+  }
+
+  try {
+    return new URL(currentUrl, siteOrigin).href;
+  } catch {
+    return undefined;
+  }
+}
+
 function resolveComponent<TProps>(
   value: unknown,
   key: ComponentKey,
@@ -312,9 +328,11 @@ export default async (
   const currentUrl = typeof url === "string" && url ? url : "/";
   const criticalStylesheetHref = resolveCriticalStylesheetHref(currentUrl);
   const isIndexable = unlisted !== true;
-  const canonicalUrl = isIndexable
-    ? new URL(currentUrl, resolvedSiteOrigin).href
-    : undefined;
+  const canonicalUrl = resolveCanonicalUrl(
+    currentUrl,
+    resolvedSiteOrigin,
+    isIndexable,
+  );
   const includeLinkPrefetch = !isPostDetailUrl(currentUrl) &&
     !isPostsArchiveUrl(currentUrl);
   const swDebugLevel = build?.swDebugLevel ?? "off";

@@ -324,11 +324,19 @@ describe("Header CSS contracts", () => {
     );
     assertStringIncludes(
       layoutStyles,
+      "inline-size: var(--ph-border-hairline);",
+    );
+    assertStringIncludes(
+      layoutStyles,
       "z-index: calc(var(--ph-layer-header-panel) + 1);",
     );
     assertStringIncludes(layoutStyles, "inset: 0;");
     assertStringIncludes(layoutStyles, ".site-header__panel[hidden] {");
     assertStringIncludes(layoutStyles, ".site-side-nav[hidden] {");
     assertStringIncludes(layoutStyles, "transition-behavior: allow-discrete;");
+    assertNotMatch(
+      layoutStyles,
+      /\.site-side-nav__link \{[\s\S]*background-color var\(--ph-duration-default\) var\(--ph-easing-default\),\s*color var\(--ph-duration-default\) var\(--ph-easing-default\),\s*background-color/s,
+    );
   });
 });
