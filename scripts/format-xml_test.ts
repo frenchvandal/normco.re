@@ -7,6 +7,7 @@ import {
   formatXmlFile,
   shouldSkipEntryPath,
 } from "./format-xml.ts";
+import { withTempDir } from "../test/temp_fs.ts";
 
 Deno.test("buildXmllintArgs() writes formatted output to the target path", () => {
   assertEquals(
@@ -16,9 +17,7 @@ Deno.test("buildXmllintArgs() writes formatted output to the target path", () =>
 });
 
 Deno.test("collectXmlFormatTargets() discovers XML files and skips ignored directories", async () => {
-  const root = await Deno.makeTempDir();
-
-  try {
+  await withTempDir("format-xml-", async (root) => {
     await Deno.mkdir(join(root, "nested"), { recursive: true });
     await Deno.mkdir(join(root, "build"), { recursive: true });
     await Deno.writeTextFile(join(root, "keep.xml"), "<keep/>");
@@ -36,16 +35,12 @@ Deno.test("collectXmlFormatTargets() discovers XML files and skips ignored direc
       targets.map((target) => relative(root, target)),
       ["feed.xsl.template", "keep.xml", join("nested", "child.xml")],
     );
-  } finally {
-    await Deno.remove(root, { recursive: true });
-  }
+  });
 });
 
 Deno.test("formatXmlFile() replaces the source file with the formatter output", async () => {
-  const root = await Deno.makeTempDir();
-  const target = join(root, "sample.xml");
-
-  try {
+  await withTempDir("format-xml-", async (root) => {
+    const target = join(root, "sample.xml");
     await Deno.writeTextFile(target, "<root/>");
 
     await formatXmlFile(
@@ -59,16 +54,12 @@ Deno.test("formatXmlFile() replaces the source file with the formatter output", 
       await Deno.readTextFile(target),
       "<root>\n  <child/>\n</root>\n",
     );
-  } finally {
-    await Deno.remove(root, { recursive: true });
-  }
+  });
 });
 
 Deno.test("formatXmlFile() removes temporary output when formatting fails", async () => {
-  const root = await Deno.makeTempDir();
-  const target = join(root, "sample.xml");
-
-  try {
+  await withTempDir("format-xml-", async (root) => {
+    const target = join(root, "sample.xml");
     await Deno.writeTextFile(target, "<root/>");
 
     await assertRejects(
@@ -92,9 +83,7 @@ Deno.test("formatXmlFile() removes temporary output when formatting fails", asyn
     }
 
     assertEquals(remainingEntries, ["sample.xml"]);
-  } finally {
-    await Deno.remove(root, { recursive: true });
-  }
+  });
 });
 
 Deno.test("shouldSkipEntryPath() matches ignored directory names", () => {
