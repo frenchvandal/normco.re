@@ -22,10 +22,10 @@ Deno.test("buildRefreshArgs() builds root lock check args", () => {
 Deno.test("buildRefreshArgs() includes config for frontend lock regeneration", () => {
   assertEquals(
     buildRefreshArgs({
+      configPath: "src/blog/client/deno.json",
       files: ["src/blog/client/main.tsx"],
       label: "frontend",
       lockPath: "src/blog/client/deno.lock",
-      configPath: "src/blog/client/deno.json",
     }),
     [
       "check",

@@ -8,12 +8,17 @@ import {
 } from "./deno_graph.ts";
 
 type LockTarget = Readonly<{
+  configPath?: string;
   files: readonly string[];
   label: string;
   lockPath: string;
-  configPath?: string;
 }>;
 
+// Regenerate by running `deno check --frozen=false` over the same file graph
+// that `check-locks.ts` verifies in frozen mode. Sharing the graph guarantees
+// the refreshed lockfile matches exactly what the verification step expects,
+// so a regenerated lockfile can never disagree with the frozen check that CI
+// runs afterwards.
 export function buildRefreshArgs(target: LockTarget): string[] {
   const args = [
     "check",
@@ -107,9 +112,9 @@ if (import.meta.main) {
   });
 
   await regenerateLock({
+    configPath: FRONTEND_CONFIG,
     files: await collectFrontendFiles(),
     label: "frontend",
     lockPath: FRONTEND_LOCK,
-    configPath: FRONTEND_CONFIG,
   });
 }
