@@ -1,6 +1,5 @@
 import { parseArgs } from "@std/cli";
-import { walk } from "@std/fs";
-import { dirname, extname, relative, resolve } from "@std/path";
+import { dirname, extname, join, relative, resolve } from "@std/path";
 
 import { createUsageError, getErrorMessage, hasHelpFlag } from "./_shared.ts";
 
@@ -64,21 +63,26 @@ async function collectXmlTargetsFromDirectory(
   directoryPath: string,
   targets: Set<string>,
 ): Promise<void> {
-  for await (
-    const entry of walk(directoryPath, {
-      includeDirs: false,
-      skip: [SKIP_DIRECTORY_PATTERN],
-    })
-  ) {
-    if (shouldSkipEntryPath(entry.path)) {
+  // Recurse with explicit directory-name pruning so that an incidental
+  // occurrence of a skip name in the parent chain (for example a repo-level
+  // `.tmp/` test sandbox) does not suppress discovery inside the target tree.
+  for await (const entry of Deno.readDir(directoryPath)) {
+    if (SKIP_DIRECTORY_NAMES.has(entry.name)) {
       continue;
     }
 
-    if (!isXmlLikeFilePath(entry.path)) {
+    const entryPath = join(directoryPath, entry.name);
+
+    if (entry.isDirectory) {
+      await collectXmlTargetsFromDirectory(entryPath, targets);
       continue;
     }
 
-    targets.add(resolve(entry.path));
+    if (!entry.isFile || !isXmlLikeFilePath(entryPath)) {
+      continue;
+    }
+
+    targets.add(resolve(entryPath));
   }
 }
 
