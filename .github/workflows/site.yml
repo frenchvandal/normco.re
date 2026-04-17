@@ -3,7 +3,7 @@ name: Deploy static content to OSS
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
     paths:
       - ".github/workflows/pretext-harness.yml"
       - ".github/workflows/site.yml"
