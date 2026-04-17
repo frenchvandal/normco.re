@@ -644,6 +644,103 @@ async function importPlaywright(): Promise<RuntimePlaywright> {
   }
 }
 
+type LaunchedChromium = Readonly<{
+  browser: RuntimeBrowser;
+  close: () => Promise<void>;
+}>;
+
+const CHROME_STARTUP_TIMEOUT_MS = 30_000;
+const CHROME_DEVTOOLS_URL_PATTERN = /DevTools listening on (ws:\/\/\S+)/;
+
+async function launchChromiumViaCdp(
+  playwright: RuntimePlaywright,
+  executablePath: string,
+  userDataDir: string,
+): Promise<LaunchedChromium> {
+  const chrome = new Deno.Command(executablePath, {
+    args: [
+      "--headless=new",
+      "--no-sandbox",
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
+      "--no-first-run",
+      "--no-default-browser-check",
+      "--hide-scrollbars",
+      "--mute-audio",
+      `--user-data-dir=${userDataDir}`,
+      "--remote-debugging-port=0",
+    ],
+    stdout: "null",
+    stderr: "piped",
+  }).spawn();
+
+  const reader = chrome.stderr.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let wsUrl: string | null = null;
+  const deadline = Date.now() + CHROME_STARTUP_TIMEOUT_MS;
+
+  while (Date.now() < deadline) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const match = buffer.match(CHROME_DEVTOOLS_URL_PATTERN);
+    if (match?.[1] !== undefined) {
+      wsUrl = match[1];
+      break;
+    }
+  }
+
+  const drainStderr = async (): Promise<void> => {
+    try {
+      while (true) {
+        const { done } = await reader.read();
+        if (done) break;
+      }
+    } catch {
+      // ignore
+    } finally {
+      try {
+        reader.releaseLock();
+      } catch {
+        // ignore
+      }
+    }
+  };
+  const drainTask = drainStderr();
+
+  if (wsUrl === null) {
+    try {
+      chrome.kill("SIGKILL");
+    } catch {
+      // ignore
+    }
+    await drainTask;
+    await chrome.status;
+    throw new Error(
+      `Timed out waiting for DevTools WebSocket URL from ${executablePath}`,
+    );
+  }
+
+  const browser = await playwright.chromium.connectOverCDP(wsUrl);
+  const close = async (): Promise<void> => {
+    try {
+      await browser.close();
+    } catch {
+      // ignore
+    }
+    try {
+      chrome.kill("SIGTERM");
+    } catch {
+      // ignore
+    }
+    await drainTask;
+    await chrome.status;
+  };
+
+  return { browser, close };
+}
+
 function createIssue(
   severity: HarnessIssue["severity"],
   code: HarnessIssue["code"],
@@ -1048,7 +1145,7 @@ export async function runPretextVisualHarness(
   const executablePath = await resolvePlaywrightChromiumExecutablePath(
     playwrightBrowsersPath,
   );
-  let browser: RuntimeBrowser | undefined;
+  let launched: LaunchedChromium | undefined;
 
   try {
     if (baseUrl === undefined) {
@@ -1063,11 +1160,17 @@ export async function runPretextVisualHarness(
       );
     }
 
+    const userDataDir = await Deno.makeTempDir({
+      dir: join(options.outputDir, "tmp"),
+      prefix: "chromium-profile-",
+    });
+
     try {
-      browser = await playwright.chromium.launch({
+      launched = await launchChromiumViaCdp(
+        playwright,
         executablePath,
-        headless: true,
-      });
+        userDataDir,
+      );
     } catch (error) {
       throw new Error(
         `${
@@ -1075,6 +1178,7 @@ export async function runPretextVisualHarness(
         }\n\nInstall Chromium with: deno task pretext:harness:install`,
       );
     }
+    const browser = launched.browser;
 
     const scenarios = buildPretextVisualHarnessScenarios();
     const results: ScenarioResult[] = [];
@@ -1111,7 +1215,7 @@ export async function runPretextVisualHarness(
 
     return report;
   } finally {
-    await browser?.close();
+    await launched?.close();
     await server?.close();
   }
 }
