@@ -88,8 +88,8 @@
       "command": "deno task build && mkdir -p .tmp/pretext-harness-compare/tmp && TMPDIR=$PWD/.tmp/pretext-harness-compare/tmp PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run --allow-env --allow-net --allow-read --allow-run --allow-write --allow-sys=osRelease,cpus,homedir,uid scripts/pretext-visual-harness-compare.ts"
     },
     "pretext:harness:install": {
-      "description": "Install the Chromium binary used by the headless Pretext visual harness under .tmp/playwright-browsers",
-      "command": "PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run -A npm:playwright@1.59.1 install chromium"
+      "description": "Install the Chromium headless shell used by the headless Pretext visual harness under .tmp/playwright-browsers",
+      "command": "PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run -A npm:playwright@1.59.1 install --only-shell chromium"
     },
     "pretext:react-harness": {
       "description": "Run a deterministic React-focused Pretext A/B harness against the measurement hooks themselves",
