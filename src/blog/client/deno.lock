@@ -8,7 +8,7 @@
     "npm:@ant-design/icons@6.1.1": "6.1.1_react@19.2.5_react-dom@19.2.5__react@19.2.5",
     "npm:@chenglou/pretext@0.0.5": "0.0.5",
     "npm:@types/react@19.2.4": "19.2.4",
-    "npm:antd@6.3.5": "6.3.5_react@19.2.5_react-dom@19.2.5__react@19.2.5",
+    "npm:antd@6.3.6": "6.3.6_react@19.2.5_react-dom@19.2.5__react@19.2.5",
     "npm:react-dom@19.2.5": "19.2.5_react@19.2.5",
     "npm:react@19.2.5": "19.2.5"
   },
@@ -198,8 +198,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/image@1.8.1_react@19.2.5_react-dom@19.2.5__react@19.2.5": {
-      "integrity": "sha512-JfPCijmMl+EaMvbftsEs/4VHmTyJKsZBh5ujFowSA45i9NTVYS1vuHtgpVV/QrGa27kXwbVOZriffCe/PNKuMw==",
+    "@rc-component/image@1.9.0_react@19.2.5_react-dom@19.2.5__react@19.2.5": {
+      "integrity": "sha512-khF7w7xkBH5B1bsBcI1FSUZdkyd1aqpl2eYyILCqCzzQH3XdfehGUaZTnptyaJJfs09/R5hv9jXWyazOMFIClQ==",
       "dependencies": [
         "@rc-component/motion",
         "@rc-component/portal",
@@ -286,8 +286,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/overflow@1.0.0_react@19.2.5_react-dom@19.2.5__react@19.2.5": {
-      "integrity": "sha512-GSlBeoE0XTBi5cf3zl8Qh7Uqhn7v8RrlJ8ajeVpEkNe94HWy5l5BQ0Mwn2TVUq9gdgbfEMUmTX7tJFAg7mz0Rw==",
+    "@rc-component/overflow@1.0.1_react@19.2.5_react-dom@19.2.5__react@19.2.5": {
+      "integrity": "sha512-syfmgAABaHCnCDzPwHZ/2tuvIcpOO3jefYZMmfkN+pmo8HKTzsfhS57vxo4ksPdN0By+uWVJhJWNFozNBxi2eA==",
       "dependencies": [
         "@babel/runtime",
         "@rc-component/resize-observer",
@@ -541,8 +541,8 @@
         "csstype"
       ]
     },
-    "antd@6.3.5_react@19.2.5_react-dom@19.2.5__react@19.2.5": {
-      "integrity": "sha512-8BPz9lpZWQm42PTx7yL4KxWAotVuqINiKcoYRcLtdd5BFmAcAZicVyFTnBJyRDlzGZFZeRW3foGu6jXYFnej6Q==",
+    "antd@6.3.6_react@19.2.5_react-dom@19.2.5__react@19.2.5": {
+      "integrity": "sha512-zdCYjusrTUn4gNxEg4PH8MWlfuXYbKfuGOkjgZ0Rg6DpWbIVmG/MwvsZ5yvG6z3Y6UI/gzYpaQ82iTt4KdbeaA==",
       "dependencies": [
         "@ant-design/colors",
         "@ant-design/cssinjs",
@@ -656,7 +656,7 @@
       "npm:@ant-design/icons@6.1.1",
       "npm:@chenglou/pretext@0.0.5",
       "npm:@types/react@19.2.4",
-      "npm:antd@6.3.5",
+      "npm:antd@6.3.6",
       "npm:dayjs@1.11.20",
       "npm:react-dom@19.2.5",
       "npm:react@19.2.5"

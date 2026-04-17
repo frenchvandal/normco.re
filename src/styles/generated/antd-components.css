@@ -690,6 +690,7 @@
     --ant-lime-8: #5b8c00;
     --ant-lime-9: #3f6600;
     --ant-lime-10: #254000;
+    --ant-color-shadow: #000;
     --ant-color-text-tertiary: rgba(0, 0, 0, 0.45);
     --ant-color-text-quaternary: rgba(0, 0, 0, 0.25);
     --ant-color-fill: rgba(0, 0, 0, 0.15);
@@ -1195,6 +1196,7 @@
     --ant-lime-8: #5b8c00;
     --ant-lime-9: #3f6600;
     --ant-lime-10: #254000;
+    --ant-color-shadow: #000;
     --ant-color-text-tertiary: rgba(0, 0, 0, 0.45);
     --ant-color-text-quaternary: rgba(0, 0, 0, 0.25);
     --ant-color-fill: rgba(0, 0, 0, 0.15);
@@ -2193,6 +2195,7 @@
     --ant-lime-8: #5b8c00;
     --ant-lime-9: #3f6600;
     --ant-lime-10: #254000;
+    --ant-color-shadow: #000;
     --ant-color-text-tertiary: rgba(0, 0, 0, 0.45);
     --ant-color-text-quaternary: rgba(0, 0, 0, 0.25);
     --ant-color-fill: rgba(0, 0, 0, 0.15);

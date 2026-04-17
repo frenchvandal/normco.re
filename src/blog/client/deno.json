@@ -11,7 +11,7 @@
     "@std/testing/": "jsr:/@std/testing@^1.0.17/",
 
     "npm/ant-design-icons": "npm:@ant-design/icons@6.1.1",
-    "npm/antd": "npm:antd@6.3.5",
+    "npm/antd": "npm:antd@6.3.6",
     "npm/pretext": "npm:@chenglou/pretext@0.0.5",
     "npm/dayjs": "npm:dayjs@1.11.20",
     "npm/react": "npm:react@19.2.5",

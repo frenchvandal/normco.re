@@ -47,7 +47,7 @@
     "npm/ant-design-icons-svg/WechatFilled.js": "npm:@ant-design/icons-svg@4.4.2/lib/asn/WechatFilled.js",
     "npm/ant-design-static-style-extract": "npm:@ant-design/static-style-extract@2.1.0",
     "npm/actions-core": "npm:@actions/core@3.0.0",
-    "npm/antd": "npm:antd@6.3.5",
+    "npm/antd": "npm:antd@6.3.6",
     "npm/date-fns/locale": "npm:date-fns@4.1.0/locale",
     "npm/faker-js": "npm:@faker-js/faker@^10.4.0",
     "npm/jsdom": "npm:jsdom@29.0.2",
