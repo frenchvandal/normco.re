@@ -89,7 +89,7 @@
     },
     "pretext:harness:install": {
       "description": "Install the Chromium headless shell used by the headless Pretext visual harness under .tmp/playwright-browsers",
-      "command": "PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers deno run -A npm:playwright@1.59.1 install --only-shell chromium"
+      "command": "PLAYWRIGHT_BROWSERS_PATH=$PWD/.tmp/playwright-browsers npx playwright@1.59.1 install --only-shell chromium"
     },
     "pretext:react-harness": {
       "description": "Run a deterministic React-focused Pretext A/B harness against the measurement hooks themselves",
