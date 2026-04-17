@@ -7,7 +7,7 @@ on:
         description: GitHub runner label used for the Pretext harness job.
         required: false
         type: string
-        default: macos-26
+        default: ubuntu-latest
 
 permissions:
   contents: read

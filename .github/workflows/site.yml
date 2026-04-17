@@ -35,7 +35,7 @@ jobs:
   pretext-harness:
     uses: ./.github/workflows/pretext-harness.yml
     with:
-      runs-on: macos-26
+      runs-on: ubuntu-latest
 
   deploy:
     needs: pretext-harness
