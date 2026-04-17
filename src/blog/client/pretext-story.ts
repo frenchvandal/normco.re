@@ -22,6 +22,7 @@ import {
   type PretextEngine,
   readTextStyleSnapshot,
   resolveLineHeightPx,
+  resolveLocaleWordBreak,
   type TextMeasurement,
 } from "./pretext-story-core.ts";
 
@@ -59,13 +60,15 @@ function measureElementText(
     textStyle,
     rootStyle.getPropertyValue(PRETEXT_MEASURE_FONT_TOKEN),
   );
+  const locale = element.ownerDocument.documentElement.lang;
 
   return measureTextBlock(engine, {
     font,
     lineHeight: resolveLineHeightPx(textStyle.lineHeight, textStyle.fontSize),
-    locale: element.ownerDocument.documentElement.lang,
+    locale,
     text,
     width,
+    wordBreak: resolveLocaleWordBreak(locale),
   });
 }
 

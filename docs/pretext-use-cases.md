@@ -2,7 +2,7 @@
 
 Ce mémo recense les usages vraiment pertinents de `@chenglou/pretext` pour
 `normco.re`, à partir du code réel du repo et de l'API effectivement disponible
-dans la version actuellement installée (`0.0.4`).
+dans la version actuellement installée (`0.0.5`).
 
 ## Verdict rapide
 
@@ -21,7 +21,7 @@ Les usages à plus faible intérêt aujourd'hui sont :
 2. les skeletons calibrés ;
 3. les layouts magazine complexes pilotés en JS ;
 4. les scénarios qui reposent sur `prepareInlineFlow`, car cette API n'est pas
-   exportée par `@chenglou/pretext@0.0.4`.
+   exportée par `@chenglou/pretext@0.0.5`.
 
 ## Pourquoi c'est pertinent ici
 
@@ -43,7 +43,7 @@ doit être recalculé souvent à cause :
 - d'un rail étroit ;
 - d'un recalcul au `resize`.
 
-## API réellement disponible dans `0.0.4`
+## API réellement disponible dans `0.0.5`
 
 La version installée expose :
 
@@ -58,13 +58,33 @@ La version installée expose :
 
 Elle **n'expose pas** `prepareInlineFlow`.
 
-À date, le registre npm ne publie pas de version plus récente :
-`@chenglou/pretext` s'arrête toujours à `0.0.4`. Il n'y a donc pas encore de
-chemin réaliste de mise à niveau immédiat pour débloquer une API plus riche.
+`0.0.5` ajoute en plus quelques points d'entrée optionnels. Une partie est
+désormais branchée dans le socle du repo :
+
+- `measureLineStats` remplace l'itération manuelle via `walkLineRanges()` dans
+  `measureTextBlockWidestLine(...)` : même sémantique, chemin officiellement «
+  geometry-first » et moins de callbacks à tenir.
+- `measureNaturalWidth` alimente un nouveau helper
+  `measureTextBlockNaturalWidth(...)`, utile pour les cas de shrink-wrap (par
+  exemple une tuile de navigation mensuelle qui veut la largeur minimale d'une
+  ligne unique, sans passer par un layout jetable).
+- L'option `{ wordBreak: 'keep-all' }` est propagée depuis les helpers de mesure
+  jusqu'à `prepare()` / `prepareWithSegments()`, et auto-résolue via
+  `resolveLocaleWordBreak(locale)` pour les locales `zh-*` et `ko-*`. Les hooks
+  `usePretextTextStyle`, `useBalancedStoryGridTextStyles` et la route
+  `/pretext/probe/` l'appliquent automatiquement selon la locale du document.
+
+Restent non branchés, faute de consommateur concret :
+
+- le sous-export `@chenglou/pretext/rich-inline` pour du texte riche inline
+  (mentions, chips, collapse d'espaces type navigateur) ;
+- les helpers géométriques `layoutNextLineRange` et `materializeLineRange` pour
+  l'itération ligne par ligne.
 
 Conséquence pratique : les idées autour des éléments atomiques dans
-`SignalStories` sont intéressantes conceptuellement, mais ne doivent pas être
-considérées comme la prochaine étape naturelle dans l'état actuel du repo.
+`SignalStories` restent intéressantes conceptuellement mais ne deviennent pas
+pour autant la prochaine étape naturelle ; `rich-inline` reste un ajout opt-in,
+pas un remplacement du chemin principal.
 
 ## Réalité du repo à garder en tête
 
@@ -109,9 +129,15 @@ Surfaces déjà couvertes :
 Socle bas niveau désormais disponible aussi :
 
 - `layoutTextBlockWithLines(...)` pour inspecter les lignes calculées ;
-- `measureTextBlockWidestLine(...)` pour récupérer la largeur réelle de la ligne
-  la plus large après layout ;
-- cache dédié `prepareWithSegments(...)` avec invalidation par locale ;
+- `measureTextBlockWidestLine(...)` adossé à `measureLineStats` pour récupérer
+  la largeur réelle de la ligne la plus large après layout ;
+- `measureTextBlockNaturalWidth(...)` pour la largeur naturelle sur une seule
+  ligne (shrink-wrap) via `measureNaturalWidth` ;
+- option `wordBreak` propagée à `prepare()` / `prepareWithSegments()` et helper
+  `resolveLocaleWordBreak(locale)` qui applique `keep-all` aux locales
+  CJK/Hangul par défaut ;
+- cache dédié `prepareWithSegments(...)` avec invalidation par locale et par
+  mode `wordBreak` ;
 - invalidation explicite des caches de mesure quand `document.fonts` signale la
   fin d'un chargement, pour éviter de conserver des mesures faites avant
   l'arrivée d'une webfont.
@@ -439,7 +465,7 @@ Verdict : **à reformuler**.
 Le besoin visuel est légitime, mais la piste initiale n'est pas la bonne
 prochaine étape :
 
-- `prepareInlineFlow` n'est pas exporté dans `0.0.4` ;
+- `prepareInlineFlow` n'est pas exporté dans `0.0.5` ;
 - la stabilisation simple des titres couvre déjà une bonne partie du bénéfice ;
 - la complexité des éléments atomiques ne se justifie pas encore ici.
 
@@ -554,7 +580,9 @@ Le socle couvre aussi maintenant les usages plus avancés de l'API Pretext qui
 étaient vraiment crédibles dans ce repo :
 
 - inspection de lignes avec `layoutWithLines()` ;
-- mesure de la ligne la plus large avec `walkLineRanges()` ;
+- mesure de la ligne la plus large avec `measureLineStats()` ;
+- mesure de la largeur naturelle avec `measureNaturalWidth()` ;
+- option `wordBreak: 'keep-all'` automatique pour les locales CJK/Hangul ;
 - invalidation explicite des caches de préparation segmentée lors des
   changements de locale.
 

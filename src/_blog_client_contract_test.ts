@@ -225,6 +225,14 @@ describe("blog client interaction contracts", () => {
     );
     assertStringIncludes(
       pretextStoryCoreSource,
+      "export function measureTextBlockNaturalWidth",
+    );
+    assertStringIncludes(
+      pretextStoryCoreSource,
+      "export function resolveLocaleWordBreak",
+    );
+    assertStringIncludes(
+      pretextStoryCoreSource,
       "PREPARED_SEGMENT_TEXT_CACHE",
     );
   });

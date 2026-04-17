@@ -25,6 +25,7 @@ import {
   PRETEXT_MEASURE_FONT_TOKEN,
   readTextStyleSnapshot,
   resolveLineHeightPx,
+  resolveLocaleWordBreak,
   type TextStyleSnapshot,
 } from "./pretext-story-core.ts";
 import {
@@ -138,6 +139,7 @@ function measureStoryFromSample(
     sample.title.style,
     sample.measureFontFamily,
   );
+  const wordBreak = resolveLocaleWordBreak(sample.locale);
   const title = measureTextBlock(PRETEXT_ENGINE, {
     font: titleFont,
     lineHeight: resolveLineHeightPx(
@@ -147,6 +149,7 @@ function measureStoryFromSample(
     locale: sample.locale,
     text: story.title,
     width: sample.title.width,
+    wordBreak,
   });
 
   const summary = sample.summary
@@ -159,6 +162,7 @@ function measureStoryFromSample(
       locale: sample.locale,
       text: story.summary,
       width: sample.summary.width,
+      wordBreak,
     })
     : EMPTY_MEASURED_TEXT_STATE.summary;
 

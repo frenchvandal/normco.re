@@ -50,6 +50,7 @@ import {
   PRETEXT_MEASURE_FONT_TOKEN,
   readTextStyleSnapshot,
   resolveLineHeightPx,
+  resolveLocaleWordBreak,
 } from "./pretext-story-core.ts";
 
 type PretextProbeDiagnosticLine = Readonly<{
@@ -178,6 +179,7 @@ function collectPretextProbeDiagnostics(
     container.ownerDocument.documentElement,
   );
   const locale = container.ownerDocument.documentElement.lang;
+  const wordBreak = resolveLocaleWordBreak(locale);
   const measureFontFamily = rootStyle.getPropertyValue(
     PRETEXT_MEASURE_FONT_TOKEN,
   );
@@ -202,6 +204,7 @@ function collectPretextProbeDiagnostics(
             locale,
             text,
             width,
+            wordBreak,
           });
           const lineLayout = layoutTextBlockWithLines(PRETEXT_ENGINE, {
             font,
@@ -209,12 +212,14 @@ function collectPretextProbeDiagnostics(
             locale,
             text,
             width,
+            wordBreak,
           });
           const widestLine = measureTextBlockWidestLine(PRETEXT_ENGINE, {
             font,
             locale,
             text,
             width,
+            wordBreak,
           });
           const actualHeight = roundProbeMetric(
             element.getBoundingClientRect().height,

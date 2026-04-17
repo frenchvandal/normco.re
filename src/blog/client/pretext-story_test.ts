@@ -4,7 +4,7 @@ import { describe, it } from "@std/testing/bdd";
 import type {
   FontLoadObserverDocument,
   FontLoadObserverFontSet,
-  TextLayoutLineRange,
+  PretextPrepareOptions,
 } from "./pretext-story-core.ts";
 import {
   balanceTextMeasurementsByRow,
@@ -14,9 +14,11 @@ import {
   isPretextRuntimeEnabled,
   layoutTextBlockWithLines,
   measureTextBlock,
+  measureTextBlockNaturalWidth,
   measureTextBlockWidestLine,
   observeDocumentFontLoads,
   resolveLineHeightPx,
+  resolveLocaleWordBreak,
 } from "./pretext-story-core.ts";
 
 describe("buildPretextFont()", () => {
@@ -418,6 +420,15 @@ describe("layoutTextBlockWithLines()", () => {
           ],
         };
       },
+      measureLineStats(_prepared: string, maxWidth: number) {
+        return {
+          lineCount: 2,
+          maxLineWidth: maxWidth - 12,
+        };
+      },
+      measureNaturalWidth(_prepared: string) {
+        return 360;
+      },
       prepare(text: string, font: string) {
         return `${font}::${text}`;
       },
@@ -428,23 +439,6 @@ describe("layoutTextBlockWithLines()", () => {
       },
       setLocale(locale?: string) {
         localeCalls.push(locale);
-      },
-      walkLineRanges(
-        _prepared: string,
-        maxWidth: number,
-        onLine: (line: TextLayoutLineRange) => void,
-      ) {
-        onLine({
-          end: { graphemeIndex: 5, segmentIndex: 0 },
-          start: { graphemeIndex: 0, segmentIndex: 0 },
-          width: maxWidth - 28,
-        });
-        onLine({
-          end: { graphemeIndex: 11, segmentIndex: 0 },
-          start: { graphemeIndex: 5, segmentIndex: 0 },
-          width: maxWidth - 12,
-        });
-        return 2;
       },
     };
 
@@ -501,6 +495,12 @@ describe("layoutTextBlockWithLines()", () => {
           ],
         };
       },
+      measureLineStats(_prepared: string, _maxWidth: number) {
+        return { lineCount: 1, maxLineWidth: 88 };
+      },
+      measureNaturalWidth(_prepared: string) {
+        return 88;
+      },
       prepare(text: string, font: string) {
         return `${font}::${text}`;
       },
@@ -511,18 +511,6 @@ describe("layoutTextBlockWithLines()", () => {
       },
       setLocale(locale?: string) {
         localeCalls.push(locale);
-      },
-      walkLineRanges(
-        _prepared: string,
-        _maxWidth: number,
-        onLine: (line: TextLayoutLineRange) => void,
-      ) {
-        onLine({
-          end: { graphemeIndex: 7, segmentIndex: 0 },
-          start: { graphemeIndex: 0, segmentIndex: 0 },
-          width: 88,
-        });
-        return 1;
       },
     };
 
@@ -542,6 +530,206 @@ describe("layoutTextBlockWithLines()", () => {
 
     assertEquals(segmentedPreparedKeys.length, 2);
     assertEquals(localeCalls, ["fr", "en"]);
+  });
+});
+
+describe("measureTextBlockNaturalWidth()", () => {
+  it("returns the engine-reported natural width via the segment cache", () => {
+    const segmentedPreparedKeys: string[] = [];
+    const naturalWidthCalls: string[] = [];
+    const engine = {
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return { height: lineHeight, lineCount: 1 };
+      },
+      layoutWithLines(
+        _prepared: string,
+        _maxWidth: number,
+        lineHeight: number,
+      ) {
+        return { height: lineHeight, lineCount: 1, lines: [] };
+      },
+      measureLineStats(_prepared: string, _maxWidth: number) {
+        return { lineCount: 1, maxLineWidth: 0 };
+      },
+      measureNaturalWidth(prepared: string) {
+        naturalWidthCalls.push(prepared);
+        return 184;
+      },
+      prepare(text: string, font: string) {
+        return `${font}::${text}`;
+      },
+      prepareWithSegments(text: string, font: string) {
+        const key = `${font}::${text}`;
+        segmentedPreparedKeys.push(key);
+        return key;
+      },
+      setLocale(_locale?: string) {},
+    };
+
+    const naturalWidth = measureTextBlockNaturalWidth(engine, {
+      font: '600 18px "Segoe UI"',
+      locale: "fr",
+      text: "Archives de mars",
+    });
+    const cachedNaturalWidth = measureTextBlockNaturalWidth(engine, {
+      font: '600 18px "Segoe UI"',
+      locale: "fr",
+      text: "Archives de mars",
+    });
+
+    assertEquals(naturalWidth, 184);
+    assertEquals(cachedNaturalWidth, 184);
+    assertEquals(segmentedPreparedKeys.length, 1);
+    assertEquals(naturalWidthCalls.length, 2);
+  });
+
+  it("returns zero for empty text without touching the engine", () => {
+    let prepareCalls = 0;
+    const engine = {
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return { height: lineHeight, lineCount: 0 };
+      },
+      layoutWithLines(
+        _prepared: string,
+        _maxWidth: number,
+        lineHeight: number,
+      ) {
+        return { height: lineHeight, lineCount: 0, lines: [] };
+      },
+      measureLineStats(_prepared: string, _maxWidth: number) {
+        return { lineCount: 0, maxLineWidth: 0 };
+      },
+      measureNaturalWidth(_prepared: string) {
+        return 0;
+      },
+      prepare(_text: string, _font: string) {
+        prepareCalls += 1;
+        return "";
+      },
+      prepareWithSegments(_text: string, _font: string) {
+        prepareCalls += 1;
+        return "";
+      },
+    };
+
+    assertEquals(
+      measureTextBlockNaturalWidth(engine, {
+        font: '600 18px "Segoe UI"',
+        text: "   ",
+      }),
+      0,
+    );
+    assertEquals(prepareCalls, 0);
+  });
+});
+
+describe("resolveLocaleWordBreak()", () => {
+  it("returns keep-all for zh and ko locales to match browser CJK behavior", () => {
+    assertEquals(resolveLocaleWordBreak("zh-hans"), "keep-all");
+    assertEquals(resolveLocaleWordBreak("zh-Hant"), "keep-all");
+    assertEquals(resolveLocaleWordBreak("ko"), "keep-all");
+  });
+
+  it("leaves Latin-script locales untouched", () => {
+    assertEquals(resolveLocaleWordBreak("en"), undefined);
+    assertEquals(resolveLocaleWordBreak("fr"), undefined);
+    assertEquals(resolveLocaleWordBreak(""), undefined);
+    assertEquals(resolveLocaleWordBreak(undefined), undefined);
+  });
+});
+
+describe("wordBreak option threading", () => {
+  it("forwards the prepare option to prepare() and partitions the cache", () => {
+    const prepareCalls: Array<{
+      text: string;
+      options: PretextPrepareOptions | undefined;
+    }> = [];
+    const engine = {
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return { height: lineHeight, lineCount: 1 };
+      },
+      prepare(
+        text: string,
+        _font: string,
+        options?: PretextPrepareOptions,
+      ) {
+        prepareCalls.push({ text, options });
+        return `${options?.wordBreak ?? "default"}::${text}`;
+      },
+      setLocale(_locale?: string) {},
+    };
+
+    measureTextBlock(engine, {
+      font: '600 18px "Segoe UI"',
+      lineHeight: 24,
+      locale: "zh-hans",
+      text: "设计系统",
+      width: 200,
+      wordBreak: "keep-all",
+    });
+    measureTextBlock(engine, {
+      font: '600 18px "Segoe UI"',
+      lineHeight: 24,
+      locale: "zh-hans",
+      text: "设计系统",
+      width: 200,
+      wordBreak: "keep-all",
+    });
+    measureTextBlock(engine, {
+      font: '600 18px "Segoe UI"',
+      lineHeight: 24,
+      locale: "zh-hans",
+      text: "设计系统",
+      width: 200,
+    });
+
+    assertEquals(prepareCalls.length, 2);
+    assertEquals(prepareCalls[0]?.options, { wordBreak: "keep-all" });
+    assertEquals(prepareCalls[1]?.options, undefined);
+  });
+
+  it("forwards the prepare option to prepareWithSegments() as well", () => {
+    const prepareCalls: Array<PretextPrepareOptions | undefined> = [];
+    const engine = {
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return { height: lineHeight, lineCount: 1 };
+      },
+      layoutWithLines(
+        _prepared: string,
+        _maxWidth: number,
+        lineHeight: number,
+      ) {
+        return { height: lineHeight, lineCount: 1, lines: [] };
+      },
+      measureLineStats(_prepared: string, _maxWidth: number) {
+        return { lineCount: 1, maxLineWidth: 120 };
+      },
+      measureNaturalWidth(_prepared: string) {
+        return 120;
+      },
+      prepare(text: string, font: string) {
+        return `${font}::${text}`;
+      },
+      prepareWithSegments(
+        text: string,
+        _font: string,
+        options?: PretextPrepareOptions,
+      ) {
+        prepareCalls.push(options);
+        return text;
+      },
+      setLocale(_locale?: string) {},
+    };
+
+    measureTextBlockWidestLine(engine, {
+      font: '600 18px "Segoe UI"',
+      locale: "zh-hant",
+      text: "設計",
+      width: 200,
+      wordBreak: "keep-all",
+    });
+
+    assertEquals(prepareCalls, [{ wordBreak: "keep-all" }]);
   });
 });
 
