@@ -124,12 +124,20 @@ export async function collectGalleryItems(
 ): Promise<readonly BlogGalleryItem[]> {
   const parser = new DOMParser();
   const items: BlogGalleryItem[] = [];
+  const diagnostics: string[] = [];
 
   for (const post of posts) {
     const slug = resolveOptionalTrimmedString(post.basename);
     const html = resolveHtmlChildren(post.children);
+    const childrenType = typeof post.children;
+    const htmlLen = html?.length ?? -1;
 
     if (slug === undefined || html === undefined) {
+      diagnostics.push(
+        `skip post basename=${
+          String(post.basename)
+        } childrenType=${childrenType} htmlLen=${htmlLen}`,
+      );
       continue;
     }
 
@@ -140,17 +148,25 @@ export async function collectGalleryItems(
     const root = document?.querySelector("article");
 
     if (root === null || root === undefined) {
+      diagnostics.push(`skip post ${slug}: article root missing`);
       continue;
     }
 
     const story = toStoryData(post, language, dateFormat);
     const seenPostImages = new Set<string>();
     let imageIndex = 0;
+    const imgs = Array.from(root.querySelectorAll("img"));
+    diagnostics.push(
+      `post ${slug} lang=${language} htmlLen=${htmlLen} imgCount=${imgs.length}`,
+    );
 
-    for (const image of root.querySelectorAll("img")) {
+    for (const image of imgs) {
       const src = resolveGalleryAssetUrl(slug, image.getAttribute("src") ?? "");
 
       if (src === undefined || seenPostImages.has(src)) {
+        diagnostics.push(
+          `  skip img src=${image.getAttribute("src")} resolved=${src}`,
+        );
         continue;
       }
 
@@ -177,6 +193,14 @@ export async function collectGalleryItems(
         tags: story.tags,
       });
     }
+  }
+
+  if (items.length === 0) {
+    console.error(
+      `[gallery] empty (lang=${language}, postsIn=${posts.length})\n${
+        diagnostics.join("\n")
+      }`,
+    );
   }
 
   return items;
