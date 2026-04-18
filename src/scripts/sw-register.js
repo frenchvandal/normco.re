@@ -39,6 +39,7 @@
   const safeSessionStorage = (() => {
     const storage = globalThis.sessionStorage;
     return {
+      /** @param {string} key */
       getItem: (key) => {
         try {
           return storage?.getItem(key) ?? null;
@@ -46,6 +47,7 @@
           return null;
         }
       },
+      /** @param {string} key */
       removeItem: (key) => {
         try {
           storage?.removeItem(key);
@@ -53,6 +55,7 @@
           // Ignore storage errors (e.g. private mode, quota exceeded).
         }
       },
+      /** @param {string} key @param {string} value */
       setItem: (key, value) => {
         try {
           storage?.setItem(key, value);
