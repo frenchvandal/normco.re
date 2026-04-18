@@ -7,7 +7,7 @@
   const localHostPattern =
     /^(localhost|127(?:\.\d{1,3}){3}|\[::1\]|0\.0\.0\.0)$/i;
   const knownCrawlerPattern =
-    /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
+    /Googlebot|Google-Extended|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot|Amazonbot|Bytespider|facebookexternalhit|Twitterbot|LinkedInBot|Slackbot|Discordbot|TelegramBot|Pinterestbot|GPTBot|ChatGPT-User|OAI-SearchBot|ClaudeBot|anthropic-ai|PerplexityBot|CCBot|Meta-ExternalAgent|Google-CloudVertexBot|AhrefsBot|SemrushBot|MJ12bot|DotBot/i;
 
   if (knownCrawlerPattern.test(globalThis.navigator.userAgent)) {
     return;
@@ -19,9 +19,7 @@
     globalThis.document.currentScript instanceof HTMLScriptElement
       ? globalThis.document.currentScript
       : null;
-  const swUrl = currentScriptElement !== null
-    ? currentScriptElement.dataset.swUrl ?? "/sw.js"
-    : "/sw.js";
+  const swUrl = currentScriptElement?.dataset.swUrl ?? "/sw.js";
   const allowedSwDebugLevels = new Set(["off", "summary", "verbose"]);
   /**
    * @param {string | undefined} value
@@ -32,9 +30,7 @@
       ? /** @type {"off" | "summary" | "verbose"} */ (value)
       : "off";
   const swDebugLevel = resolveSwDebugLevel(
-    currentScriptElement !== null
-      ? currentScriptElement.dataset.swDebugLevel
-      : undefined,
+    currentScriptElement?.dataset.swDebugLevel,
   );
   const safeSessionStorage = (() => {
     const storage = globalThis.sessionStorage;
@@ -167,7 +163,7 @@
           globalThis.navigator.serviceWorker.controller !== null
         ) {
           log("new version installed -> skip waiting");
-          registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+          installingWorker.postMessage({ type: "SKIP_WAITING" });
         }
       });
     });
