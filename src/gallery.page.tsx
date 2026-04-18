@@ -18,6 +18,13 @@ export const layout = "layouts/base.tsx";
 export const extraStylesheets = ["/styles/blog-antd.css"];
 export const searchIndexed = false;
 export const type = "listing";
+// Defer rendering until after posts so `search.pages("type=post")` returns
+// pages whose `children` have already been rendered from Markdown to HTML —
+// `collectGalleryItems` scans that HTML for `<img>` tags. Without this, on
+// runners where posts are discovered after `gallery.page.tsx` (observed on
+// ubuntu-latest CI), the gallery collects zero items and renders the empty
+// state.
+export const renderOrder = 1;
 export const title = "Image Index";
 export const description =
   "A visual index of every image published across the posts.";
