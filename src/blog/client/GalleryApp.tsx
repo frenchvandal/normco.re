@@ -195,6 +195,8 @@ function mergeStaticMediaHtml(
   };
 }
 
+let galleryRoot: ReturnType<typeof createRoot> | null = null;
+
 export function mountGalleryApp(rootElement: HTMLElement): void {
   const dataElement = document.getElementById(GALLERY_DATA_SCRIPT_ID);
 
@@ -211,9 +213,9 @@ export function mountGalleryApp(rootElement: HTMLElement): void {
   const runtimeData = mergeStaticMediaHtml(rootElement, data);
   rootElement.replaceChildren();
 
-  createRoot(rootElement).render(
-    <GalleryApp data={runtimeData} />,
-  );
+  galleryRoot?.unmount();
+  galleryRoot = createRoot(rootElement);
+  galleryRoot.render(<GalleryApp data={runtimeData} />);
 }
 
 export function startGalleryApp(): void {

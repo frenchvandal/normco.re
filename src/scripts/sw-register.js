@@ -36,7 +36,32 @@
       ? currentScriptElement.dataset.swDebugLevel
       : undefined,
   );
-  const sessionStorage = globalThis.sessionStorage;
+  const safeSessionStorage = (() => {
+    const storage = globalThis.sessionStorage;
+    return {
+      getItem: (key) => {
+        try {
+          return storage?.getItem(key) ?? null;
+        } catch {
+          return null;
+        }
+      },
+      removeItem: (key) => {
+        try {
+          storage?.removeItem(key);
+        } catch {
+          // Ignore storage errors (e.g. private mode, quota exceeded).
+        }
+      },
+      setItem: (key, value) => {
+        try {
+          storage?.setItem(key, value);
+        } catch {
+          // Ignore storage errors (e.g. private mode, quota exceeded).
+        }
+      },
+    };
+  })();
   const isLocalDevelopmentHost = localHostPattern.test(
     globalThis.location.hostname,
   );
@@ -89,15 +114,15 @@
     }
 
     if (!hadController) {
-      sessionStorage?.removeItem("sw-localhost-reset");
+      safeSessionStorage.removeItem("sw-localhost-reset");
       return;
     }
 
-    if (sessionStorage?.getItem("sw-localhost-reset") === "true") {
+    if (safeSessionStorage.getItem("sw-localhost-reset") === "true") {
       return;
     }
 
-    sessionStorage?.setItem("sw-localhost-reset", "true");
+    safeSessionStorage.setItem("sw-localhost-reset", "true");
     globalThis.location.reload();
   }
 

@@ -108,15 +108,18 @@ export function registerContentInvariants(site: Site): void {
       }
 
       if (url !== undefined) {
-        const expectedPrefix = lang !== undefined && lang in LANGUAGE_URL_PREFIX
-          ? LANGUAGE_URL_PREFIX[lang as keyof typeof LANGUAGE_URL_PREFIX]
-          : undefined;
-        const expectedPostsPrefix = `${expectedPrefix ?? ""}/posts/`;
+        if (
+          lang !== undefined && lang in LANGUAGE_URL_PREFIX
+        ) {
+          const expectedPrefix =
+            LANGUAGE_URL_PREFIX[lang as keyof typeof LANGUAGE_URL_PREFIX];
+          const expectedPostsPrefix = `${expectedPrefix}/posts/`;
 
-        if (!url.startsWith(expectedPostsPrefix)) {
-          issues.push(
-            `${label}: expected post URL to start with \`${expectedPostsPrefix}\`, got \`${url}\``,
-          );
+          if (!url.startsWith(expectedPostsPrefix)) {
+            issues.push(
+              `${label}: expected post URL to start with \`${expectedPostsPrefix}\`, got \`${url}\``,
+            );
+          }
         }
 
         const duplicateUrlSource = seenUrls.get(url);

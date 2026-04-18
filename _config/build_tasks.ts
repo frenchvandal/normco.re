@@ -172,6 +172,8 @@ export async function runBuildTask(
   try {
     const args = await resolveTaskArgs(task);
 
+    // When the fmt glob matches no files, deno fmt would error.
+    // Skip the task gracefully instead.
     if (task.command === "deno" && args.length === 1 && args[0] === "fmt") {
       return;
     }

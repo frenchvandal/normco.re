@@ -302,6 +302,20 @@ function createPostDetailBlocks(page: PostPage): ReadonlyArray<ContentBlock> {
   return blocks;
 }
 
+function isRemoteImage(value: unknown): value is RemoteImage {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as Record<string, unknown>).url === "string" &&
+    typeof (value as Record<string, unknown>).alt === "string"
+  );
+}
+
+function resolveHeroImage(page: Data): RemoteImage | null {
+  const value = page.heroImage;
+  return isRemoteImage(value) ? value : null;
+}
+
 function createPostDetailDocument(
   site: SiteUrlResolver,
   page: PostPage,
@@ -321,6 +335,7 @@ function createPostDetailDocument(
   const updatedAt = resolveUpdatedAt(page.data);
   const readingTime = resolveReadingMinutes(page.data.readingInfo);
   const tags = resolveOptionalStringArray(page.data.tags);
+  const heroImage = resolveHeroImage(page.data);
 
   return {
     version: APP_CONTRACT_VERSION,
@@ -334,7 +349,7 @@ function createPostDetailDocument(
     ...(readingTime !== undefined ? { readingTime } : {}),
     ...(tags ? { tags } : {}),
     alternates: createPostDetailAlternates(site, page, siblingPages),
-    heroImage: null,
+    heroImage,
     webUrl: site.url(webPath, true),
     blocks: createPostDetailBlocks(page),
   };

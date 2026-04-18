@@ -49,7 +49,13 @@ export default {
         return {
           "ImportDeclaration[source.value=/lume\\/plugins\\//]"(node) {
             const source = node.source.value;
-            const identifier = node.specifiers[0].local.name;
+            const specifier = node.specifiers[0];
+
+            if (!specifier) {
+              return;
+            }
+
+            const identifier = specifier.local.name;
             const position = VALID_PLUGIN_ORDER.indexOf(source);
 
             if (position !== -1) {
