@@ -24,6 +24,7 @@ export type TextStyleSnapshot = Readonly<{
   fontSize: string;
   fontStyle: string;
   fontWeight: string;
+  letterSpacing: string;
   lineHeight: string;
 }>;
 
@@ -65,6 +66,7 @@ export type WidestLineMeasurement = Readonly<{
 export type PretextWordBreakMode = "normal" | "keep-all";
 
 export type PretextPrepareOptions = Readonly<{
+  letterSpacing?: number;
   wordBreak?: PretextWordBreakMode;
 }>;
 
@@ -177,9 +179,8 @@ export function normalizePretextLocale(
 }
 
 // `{ wordBreak: "keep-all" }` stays closer to browser behavior for CJK/Hangul
-// runs where greedy word breaking otherwise splits at every grapheme. The
-// feature landed in Pretext 0.0.5; apply it only to locales it is documented
-// for so Latin text keeps its default behavior.
+// runs where greedy word breaking otherwise splits at every grapheme. Apply it
+// only to locales it is documented for so Latin text keeps its default behavior.
 export function resolveLocaleWordBreak(
   locale?: string,
 ): PretextWordBreakMode | undefined {
@@ -276,6 +277,7 @@ export function readTextStyleSnapshot(
     fontSize: computedStyle?.fontSize ?? "16px",
     fontStyle: computedStyle?.fontStyle ?? "normal",
     fontWeight: computedStyle?.fontWeight ?? "400",
+    letterSpacing: computedStyle?.letterSpacing ?? "normal",
     lineHeight: computedStyle?.lineHeight ?? "normal",
   };
 }
@@ -429,25 +431,74 @@ export function resolveLineHeightPx(
     : fontSize * 1.2;
 }
 
+// Pretext 0.0.6 accepts a numeric CSS-pixel `letterSpacing` so measurement can
+// match the tracking applied in CSS. Returning `undefined` for `normal` keeps
+// the prepare cache key free of a noise value for the common default.
+export function resolveLetterSpacingPx(
+  letterSpacingValue: string,
+  fontSizeValue: string,
+): number | undefined {
+  const trimmedLetterSpacing = letterSpacingValue.trim();
+
+  if (trimmedLetterSpacing === "" || trimmedLetterSpacing === "normal") {
+    return undefined;
+  }
+
+  const letterSpacingPx = parsePixelValue(trimmedLetterSpacing);
+
+  if (letterSpacingPx !== undefined) {
+    return letterSpacingPx === 0 ? undefined : letterSpacingPx;
+  }
+
+  const letterSpacingEm = parseRelativeEmValue(trimmedLetterSpacing);
+
+  if (letterSpacingEm !== undefined) {
+    if (letterSpacingEm === 0) {
+      return undefined;
+    }
+
+    const fontSize = parsePixelValue(fontSizeValue) ?? 16;
+    return letterSpacingEm * fontSize;
+  }
+
+  return undefined;
+}
+
 function buildPreparedCacheKey(
   locale: string | undefined,
   font: string,
   text: string,
   wordBreak: PretextWordBreakMode | undefined,
+  letterSpacing: number | undefined,
 ): string {
-  return [locale ?? "", wordBreak ?? "", font, text].join("\0");
+  return [
+    locale ?? "",
+    wordBreak ?? "",
+    letterSpacing ?? "",
+    font,
+    text,
+  ].join("\0");
 }
 
 function buildPretextPrepareOptions(
   wordBreak: PretextWordBreakMode | undefined,
+  letterSpacing: number | undefined,
 ): PretextPrepareOptions | undefined {
-  return wordBreak ? { wordBreak } : undefined;
+  if (!wordBreak && letterSpacing === undefined) {
+    return undefined;
+  }
+
+  return {
+    ...(wordBreak ? { wordBreak } : {}),
+    ...(letterSpacing !== undefined ? { letterSpacing } : {}),
+  };
 }
 
 export function measureTextBlock<Prepared>(
   engine: PretextEngine<Prepared>,
   {
     font,
+    letterSpacing,
     lineHeight,
     locale,
     text,
@@ -455,6 +506,7 @@ export function measureTextBlock<Prepared>(
     wordBreak,
   }: {
     font: string;
+    letterSpacing?: number | undefined;
     lineHeight: number;
     locale?: string | undefined;
     text?: string | undefined;
@@ -474,6 +526,7 @@ export function measureTextBlock<Prepared>(
     font,
     normalizedText,
     wordBreak,
+    letterSpacing,
   );
   const engineCache =
     (PREPARED_TEXT_CACHE.get(engine) as Map<string, Prepared> | undefined) ??
@@ -489,7 +542,7 @@ export function measureTextBlock<Prepared>(
     preparedText = engine.prepare(
       normalizedText,
       font,
-      buildPretextPrepareOptions(wordBreak),
+      buildPretextPrepareOptions(wordBreak, letterSpacing),
     );
     engineCache.set(cacheKey, preparedText);
   }
@@ -503,6 +556,7 @@ function getPreparedSegmentText<PreparedWithSegments>(
   text: string,
   font: string,
   wordBreak: PretextWordBreakMode | undefined,
+  letterSpacing: number | undefined,
 ): PreparedWithSegments {
   const engineCache = (PREPARED_SEGMENT_TEXT_CACHE.get(engine) as
     | Map<
@@ -521,7 +575,7 @@ function getPreparedSegmentText<PreparedWithSegments>(
     preparedText = engine.prepareWithSegments(
       text,
       font,
-      buildPretextPrepareOptions(wordBreak),
+      buildPretextPrepareOptions(wordBreak, letterSpacing),
     );
     engineCache.set(cacheKey, preparedText);
   }
@@ -533,6 +587,7 @@ export function layoutTextBlockWithLines<PreparedWithSegments>(
   engine: PretextSegmentEngine<unknown, PreparedWithSegments>,
   {
     font,
+    letterSpacing,
     lineHeight,
     locale,
     text,
@@ -540,6 +595,7 @@ export function layoutTextBlockWithLines<PreparedWithSegments>(
     wordBreak,
   }: {
     font: string;
+    letterSpacing?: number | undefined;
     lineHeight: number;
     locale?: string | undefined;
     text?: string | undefined;
@@ -559,6 +615,7 @@ export function layoutTextBlockWithLines<PreparedWithSegments>(
     font,
     normalizedText,
     wordBreak,
+    letterSpacing,
   );
   const preparedText = getPreparedSegmentText(
     engine,
@@ -566,6 +623,7 @@ export function layoutTextBlockWithLines<PreparedWithSegments>(
     normalizedText,
     font,
     wordBreak,
+    letterSpacing,
   );
 
   return engine.layoutWithLines(preparedText, width, lineHeight);
@@ -575,12 +633,14 @@ export function measureTextBlockWidestLine<PreparedWithSegments>(
   engine: PretextSegmentEngine<unknown, PreparedWithSegments>,
   {
     font,
+    letterSpacing,
     locale,
     text,
     width,
     wordBreak,
   }: {
     font: string;
+    letterSpacing?: number | undefined;
     locale?: string | undefined;
     text?: string | undefined;
     width: number;
@@ -599,6 +659,7 @@ export function measureTextBlockWidestLine<PreparedWithSegments>(
     font,
     normalizedText,
     wordBreak,
+    letterSpacing,
   );
   const preparedText = getPreparedSegmentText(
     engine,
@@ -606,6 +667,7 @@ export function measureTextBlockWidestLine<PreparedWithSegments>(
     normalizedText,
     font,
     wordBreak,
+    letterSpacing,
   );
   const stats = engine.measureLineStats(preparedText, width);
 
@@ -615,18 +677,20 @@ export function measureTextBlockWidestLine<PreparedWithSegments>(
   };
 }
 
-// Pretext 0.0.5 exposes `measureNaturalWidth` as the geometry-first way to ask
+// Pretext exposes `measureNaturalWidth` as the geometry-first way to ask
 // "what single-line width would this text need?". Useful for shrink-wrapping
 // compact navigation tiles without painting a throwaway layout first.
 export function measureTextBlockNaturalWidth<PreparedWithSegments>(
   engine: PretextSegmentEngine<unknown, PreparedWithSegments>,
   {
     font,
+    letterSpacing,
     locale,
     text,
     wordBreak,
   }: {
     font: string;
+    letterSpacing?: number | undefined;
     locale?: string | undefined;
     text?: string | undefined;
     wordBreak?: PretextWordBreakMode | undefined;
@@ -644,6 +708,7 @@ export function measureTextBlockNaturalWidth<PreparedWithSegments>(
     font,
     normalizedText,
     wordBreak,
+    letterSpacing,
   );
   const preparedText = getPreparedSegmentText(
     engine,
@@ -651,6 +716,7 @@ export function measureTextBlockNaturalWidth<PreparedWithSegments>(
     normalizedText,
     font,
     wordBreak,
+    letterSpacing,
   );
 
   return engine.measureNaturalWidth(preparedText);

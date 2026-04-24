@@ -17,6 +17,7 @@ import {
   measureTextBlockNaturalWidth,
   measureTextBlockWidestLine,
   observeDocumentFontLoads,
+  resolveLetterSpacingPx,
   resolveLineHeightPx,
   resolveLocaleWordBreak,
 } from "./pretext-story-core.ts";
@@ -29,6 +30,7 @@ describe("buildPretextFont()", () => {
           fontSize: "20px",
           fontStyle: "normal",
           fontWeight: "700",
+          letterSpacing: "normal",
           lineHeight: "24px",
         },
         '"Segoe UI", Roboto, sans-serif',
@@ -45,6 +47,7 @@ describe("buildPretextFont()", () => {
           fontSize: "20px",
           fontStyle: "normal",
           fontWeight: "700",
+          letterSpacing: "normal",
           lineHeight: "24px",
         },
         '"Segoe UI", Roboto, sans-serif',
@@ -60,6 +63,7 @@ describe("buildPretextFont()", () => {
           fontSize: "16px",
           fontStyle: "normal",
           fontWeight: "400",
+          letterSpacing: "normal",
           lineHeight: "24px",
         },
         '"Segoe UI", Roboto, sans-serif',
@@ -102,6 +106,40 @@ describe("resolveLineHeightPx()", () => {
 
   it("falls back to a readable default for unsupported units", () => {
     assertAlmostEquals(resolveLineHeightPx("1.5rem", "18px"), 21.6);
+  });
+});
+
+describe("resolveLetterSpacingPx()", () => {
+  it("returns undefined for the default `normal` tracking", () => {
+    assertEquals(resolveLetterSpacingPx("normal", "18px"), undefined);
+  });
+
+  it("returns undefined for an empty value", () => {
+    assertEquals(resolveLetterSpacingPx("", "18px"), undefined);
+  });
+
+  it("returns undefined for a zero-px tracking to keep the cache key clean", () => {
+    assertEquals(resolveLetterSpacingPx("0px", "18px"), undefined);
+  });
+
+  it("returns undefined for a zero-em tracking", () => {
+    assertEquals(resolveLetterSpacingPx("0em", "18px"), undefined);
+  });
+
+  it("passes through an explicit pixel tracking", () => {
+    assertEquals(resolveLetterSpacingPx("1.5px", "16px"), 1.5);
+  });
+
+  it("resolves a negative em tracking against the computed font size", () => {
+    const resolved = resolveLetterSpacingPx("-0.055em", "40px");
+    if (resolved === undefined) {
+      throw new Error("expected a resolved pixel value");
+    }
+    assertAlmostEquals(resolved, -2.2);
+  });
+
+  it("returns undefined for unsupported CSS units", () => {
+    assertEquals(resolveLetterSpacingPx("0.1rem", "18px"), undefined);
   });
 });
 
@@ -730,6 +768,127 @@ describe("wordBreak option threading", () => {
     });
 
     assertEquals(prepareCalls, [{ wordBreak: "keep-all" }]);
+  });
+});
+
+describe("letterSpacing option threading", () => {
+  it("forwards the numeric letterSpacing to prepare() and partitions the cache per value", () => {
+    const prepareCalls: Array<PretextPrepareOptions | undefined> = [];
+    const engine = {
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return { height: lineHeight, lineCount: 1 };
+      },
+      prepare(
+        text: string,
+        _font: string,
+        options?: PretextPrepareOptions,
+      ) {
+        prepareCalls.push(options);
+        return `${options?.letterSpacing ?? "default"}::${text}`;
+      },
+      setLocale(_locale?: string) {},
+    };
+
+    measureTextBlock(engine, {
+      font: '700 40px "Segoe UI"',
+      letterSpacing: -2.2,
+      lineHeight: 40,
+      text: "Typography",
+      width: 320,
+    });
+    measureTextBlock(engine, {
+      font: '700 40px "Segoe UI"',
+      letterSpacing: -2.2,
+      lineHeight: 40,
+      text: "Typography",
+      width: 320,
+    });
+    measureTextBlock(engine, {
+      font: '700 40px "Segoe UI"',
+      lineHeight: 40,
+      text: "Typography",
+      width: 320,
+    });
+
+    assertEquals(prepareCalls.length, 2);
+    assertEquals(prepareCalls[0], { letterSpacing: -2.2 });
+    assertEquals(prepareCalls[1], undefined);
+  });
+
+  it("combines wordBreak and letterSpacing in a single prepare() options object", () => {
+    const prepareCalls: Array<PretextPrepareOptions | undefined> = [];
+    const engine = {
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return { height: lineHeight, lineCount: 1 };
+      },
+      prepare(
+        text: string,
+        _font: string,
+        options?: PretextPrepareOptions,
+      ) {
+        prepareCalls.push(options);
+        return text;
+      },
+      setLocale(_locale?: string) {},
+    };
+
+    measureTextBlock(engine, {
+      font: '700 18px "Segoe UI"',
+      letterSpacing: 0.4,
+      lineHeight: 22,
+      locale: "zh-hans",
+      text: "排版",
+      width: 200,
+      wordBreak: "keep-all",
+    });
+
+    assertEquals(prepareCalls, [{
+      wordBreak: "keep-all",
+      letterSpacing: 0.4,
+    }]);
+  });
+
+  it("forwards letterSpacing through measureTextBlockWidestLine() as well", () => {
+    const prepareCalls: Array<PretextPrepareOptions | undefined> = [];
+    const engine = {
+      layout(_prepared: string, _maxWidth: number, lineHeight: number) {
+        return { height: lineHeight, lineCount: 1 };
+      },
+      layoutWithLines(
+        _prepared: string,
+        _maxWidth: number,
+        lineHeight: number,
+      ) {
+        return { height: lineHeight, lineCount: 1, lines: [] };
+      },
+      measureLineStats(_prepared: string, _maxWidth: number) {
+        return { lineCount: 1, maxLineWidth: 120 };
+      },
+      measureNaturalWidth(_prepared: string) {
+        return 120;
+      },
+      prepare(text: string, _font: string) {
+        return text;
+      },
+      prepareWithSegments(
+        text: string,
+        _font: string,
+        options?: PretextPrepareOptions,
+      ) {
+        prepareCalls.push(options);
+        return text;
+      },
+      setLocale(_locale?: string) {},
+    };
+
+    measureTextBlockWidestLine(engine, {
+      font: '700 40px "Segoe UI"',
+      letterSpacing: -1.8,
+      text: "Editorial",
+      width: 600,
+    });
+
+    assertEquals(prepareCalls, [{ letterSpacing: -1.8 }]);
   });
 });
 

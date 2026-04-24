@@ -21,6 +21,7 @@ import {
   PRETEXT_MEASURE_FONT_TOKEN,
   type PretextEngine,
   readTextStyleSnapshot,
+  resolveLetterSpacingPx,
   resolveLineHeightPx,
   resolveLocaleWordBreak,
   type TextMeasurement,
@@ -64,6 +65,10 @@ function measureElementText(
 
   return measureTextBlock(engine, {
     font,
+    letterSpacing: resolveLetterSpacingPx(
+      textStyle.letterSpacing,
+      textStyle.fontSize,
+    ),
     lineHeight: resolveLineHeightPx(textStyle.lineHeight, textStyle.fontSize),
     locale,
     text,

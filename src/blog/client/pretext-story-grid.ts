@@ -24,6 +24,7 @@ import {
   PRETEXT_ENGINE,
   PRETEXT_MEASURE_FONT_TOKEN,
   readTextStyleSnapshot,
+  resolveLetterSpacingPx,
   resolveLineHeightPx,
   resolveLocaleWordBreak,
   type TextStyleSnapshot,
@@ -142,6 +143,10 @@ function measureStoryFromSample(
   const wordBreak = resolveLocaleWordBreak(sample.locale);
   const title = measureTextBlock(PRETEXT_ENGINE, {
     font: titleFont,
+    letterSpacing: resolveLetterSpacingPx(
+      sample.title.style.letterSpacing,
+      sample.title.style.fontSize,
+    ),
     lineHeight: resolveLineHeightPx(
       sample.title.style.lineHeight,
       sample.title.style.fontSize,
@@ -155,6 +160,10 @@ function measureStoryFromSample(
   const summary = sample.summary
     ? measureTextBlock(PRETEXT_ENGINE, {
       font: buildPretextFont(sample.summary.style, sample.measureFontFamily),
+      letterSpacing: resolveLetterSpacingPx(
+        sample.summary.style.letterSpacing,
+        sample.summary.style.fontSize,
+      ),
       lineHeight: resolveLineHeightPx(
         sample.summary.style.lineHeight,
         sample.summary.style.fontSize,

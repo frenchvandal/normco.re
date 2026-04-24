@@ -99,20 +99,28 @@ When touching `@chenglou/pretext` integrations under `src/blog/client/`:
   balancing, widest-line inspection, and internal diagnostics. It is not the
   right tool for HTML-rich content, CSS-native layout that already works, or
   server-side/build-time measurement without a real canvas context.
-- Assume the currently supported package surface is `@chenglou/pretext@0.0.5`.
+- Assume the currently supported package surface is `@chenglou/pretext@0.0.6`.
   The wrappers in `pretext-story-core.ts` already cover `prepare`,
   `prepareWithSegments`, `layout`, `layoutWithLines`, `measureLineStats`,
   `measureNaturalWidth`, `setLocale`, and `clearCache`. Do not plan around
   `prepareInlineFlow`; it is not exported in the version used by this repo. The
   `@chenglou/pretext/rich-inline` sub-export and the remaining geometry-first
   helpers (`layoutNextLineRange`, `materializeLineRange`) are available in
-  `0.0.5` but are not yet wired into this repo; prefer the main layout API
+  `0.0.6` but are not yet wired into this repo; prefer the main layout API
   unless a new use case really calls for them.
 - For CJK/Hangul surfaces, pass `wordBreak: "keep-all"` to the measure helpers.
   The shared `resolveLocaleWordBreak(locale)` helper returns the right value for
   `zh-*` and `ko-*` locales, and the hooks under `pretext-story.ts` and
   `pretext-story-grid.ts` already call it. Latin locales should keep the default
   `wordBreak` behavior.
+- When measured surfaces apply CSS `letter-spacing`, forward a numeric CSS-pixel
+  `letterSpacing` to `prepare()` / `prepareWithSegments()` via the shared
+  measurement helpers. `resolveLetterSpacingPx(value, fontSize)` converts the
+  computed style, resolving `em` units against the element font size and
+  returning `undefined` for `normal` / `0` so the prepare cache stays
+  partitioned only when tracking is actually active. Letter-spacing must be
+  synced with the CSS applied to the measured element — remember to re-measure
+  when tracking changes at runtime.
 - `layout()` and `layoutWithLines()` expect `lineHeight` in absolute CSS pixels,
   not a unitless multiplier. Always resolve computed `line-height` to pixels
   before passing it into Pretext.
