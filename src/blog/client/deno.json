@@ -8,11 +8,11 @@
     "@blog/tag-antd": "./tag-antd.ts",
 
     "@std/assert": "jsr:@std/assert@^1.0.19",
-    "@std/testing/": "jsr:/@std/testing@^1.0.17/",
+    "@std/testing/": "jsr:/@std/testing@^1.0.18/",
 
     "npm/ant-design-icons": "npm:@ant-design/icons@6.1.1",
     "npm/antd": "npm:antd@6.3.6",
-    "npm/pretext": "npm:@chenglou/pretext@0.0.5",
+    "npm/pretext": "npm:@chenglou/pretext@0.0.6",
     "npm/dayjs": "npm:dayjs@1.11.20",
     "npm/react": "npm:react@19.2.5",
     "npm/react-dom/client": "npm:react-dom@19.2.5/client",
