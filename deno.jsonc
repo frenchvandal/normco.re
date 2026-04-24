@@ -33,7 +33,7 @@
     },
     "generate:antd-css": {
       "description": "Regenerate the generated Ant Design CSS bridge from the current theme configuration",
-      "command": "deno run --allow-read --allow-write=src/styles/generated/antd-components.css --allow-run scripts/generate-antd-css.ts"
+      "command": "deno run --allow-env --allow-read --allow-write=src/styles/generated/antd-components.css --allow-run scripts/generate-antd-css.ts"
     },
     "lefthook:install": {
       "description": "Install Lefthook git hooks non-interactively",
