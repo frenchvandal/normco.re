@@ -8,6 +8,7 @@ import { createUsageError, getErrorMessage } from "./_shared.ts";
 import { REPO_ROOT } from "./deno_graph.ts";
 import { writeGitHubJobSummary } from "./github-actions.ts";
 import { getJSDOM } from "../test/jsdom.ts";
+import { StubOffscreenCanvas } from "../test/pretext-canvas-stub.ts";
 import {
   clearPretextMeasurementCaches,
   PRETEXT_DISABLE_GLOBAL_FLAG,
@@ -367,80 +368,6 @@ function createMediaQueryList(matches: boolean): MediaQueryList {
       return true;
     },
   };
-}
-
-function parseCanvasFontSize(font: string): number {
-  const match = font.match(/(\d+(?:\.\d+)?)px/);
-  const matchedValue = match?.[1];
-
-  if (matchedValue === undefined) {
-    return 16;
-  }
-
-  const value = Number.parseFloat(matchedValue);
-  return Number.isFinite(value) ? value : 16;
-}
-
-function measureCanvasCharacterWidth(
-  character: string,
-  fontSize: number,
-): number {
-  if (/\s/u.test(character)) {
-    return fontSize * 0.32;
-  }
-
-  if (/[\u3000-\u30ff\u3400-\u9fff\uf900-\ufaff]/u.test(character)) {
-    return fontSize;
-  }
-
-  if (/[A-Z0-9]/u.test(character)) {
-    return fontSize * 0.62;
-  }
-
-  if (/[a-z]/u.test(character)) {
-    return fontSize * 0.56;
-  }
-
-  if (/[.,;:!?'"`]/u.test(character)) {
-    return fontSize * 0.28;
-  }
-
-  if (/[-_/\\|()[\]{}]/u.test(character)) {
-    return fontSize * 0.36;
-  }
-
-  return fontSize * 0.68;
-}
-
-function measureCanvasTextWidth(
-  text: string,
-  font: string,
-): number {
-  const fontSize = parseCanvasFontSize(font);
-
-  return Array.from(text).reduce(
-    (width, character) =>
-      width + measureCanvasCharacterWidth(character, fontSize),
-    0,
-  );
-}
-
-class TestCanvasRenderingContext2D {
-  font = "16px sans-serif";
-
-  measureText(text: string): TextMetrics {
-    return {
-      width: Number(measureCanvasTextWidth(text, this.font).toFixed(3)),
-    } as TextMetrics;
-  }
-}
-
-class TestOffscreenCanvas {
-  constructor(_width: number, _height: number) {}
-
-  getContext(contextId: string): TestCanvasRenderingContext2D | null {
-    return contextId === "2d" ? new TestCanvasRenderingContext2D() : null;
-  }
 }
 
 function createGlobalPropertySetter<T>(
@@ -1120,7 +1047,7 @@ async function withReactDomHarness<T>(
     createGlobalPropertySetter("Event", window.Event),
     createGlobalPropertySetter("CustomEvent", window.CustomEvent),
     createGlobalPropertySetter("MutationObserver", window.MutationObserver),
-    createGlobalPropertySetter("OffscreenCanvas", TestOffscreenCanvas),
+    createGlobalPropertySetter("OffscreenCanvas", StubOffscreenCanvas),
     createGlobalPropertySetter(
       "getComputedStyle",
       window.getComputedStyle.bind(window),

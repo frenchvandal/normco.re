@@ -146,6 +146,14 @@ When touching `@chenglou/pretext` integrations under `src/blog/client/`:
   harnesses in mind. The important validation tasks are
   `deno task pretext:harness:compare` and `deno task pretext:react-harness`,
   alongside the normal repo validation commands.
+- `src/utils/i18n/copy-overflow_test.ts` is the dev-time i18n overflow guard.
+  Each entry in `COPY_OVERFLOW_BUDGETS` pins a CSS surface (font, width,
+  letter-spacing, line-height) and asserts that every localized string in
+  `SITE_TRANSLATIONS` wraps to at most `maxLines` lines. Measurement is
+  heuristic — the canvas stub in `test/pretext-canvas-stub.ts` approximates
+  character widths by class — so budgets should stay loose enough to avoid false
+  positives while tight enough to catch doubled-length regressions. Add a new
+  budget whenever a new localized surface with a visible line cap ships.
 
 ### Imports
 
