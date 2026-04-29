@@ -2,7 +2,7 @@
 
 Ce mémo recense les usages vraiment pertinents de `@chenglou/pretext` pour
 `normco.re`, à partir du code réel du repo et de l'API effectivement disponible
-dans la version actuellement installée (`0.0.5`).
+dans la version actuellement installée (`0.0.6`).
 
 ## Verdict rapide
 
@@ -21,7 +21,7 @@ Les usages à plus faible intérêt aujourd'hui sont :
 2. les skeletons calibrés ;
 3. les layouts magazine complexes pilotés en JS ;
 4. les scénarios qui reposent sur `prepareInlineFlow`, car cette API n'est pas
-   exportée par `@chenglou/pretext@0.0.5`.
+   exportée par `@chenglou/pretext@0.0.6`.
 
 ## Pourquoi c'est pertinent ici
 
@@ -43,7 +43,7 @@ doit être recalculé souvent à cause :
 - d'un rail étroit ;
 - d'un recalcul au `resize`.
 
-## API réellement disponible dans `0.0.5`
+## API réellement disponible dans `0.0.6`
 
 La version installée expose :
 
@@ -58,8 +58,8 @@ La version installée expose :
 
 Elle **n'expose pas** `prepareInlineFlow`.
 
-`0.0.5` ajoute en plus quelques points d'entrée optionnels. Une partie est
-désormais branchée dans le socle du repo :
+`0.0.5` avait introduit des points d'entrée optionnels, et `0.0.6` les complète.
+Le socle du repo branche désormais ce qui est réellement utile ici :
 
 - `measureLineStats` remplace l'itération manuelle via `walkLineRanges()` dans
   `measureTextBlockWidestLine(...)` : même sémantique, chemin officiellement «
@@ -73,6 +73,17 @@ désormais branchée dans le socle du repo :
   `resolveLocaleWordBreak(locale)` pour les locales `zh-*` et `ko-*`. Les hooks
   `usePretextTextStyle`, `useBalancedStoryGridTextStyles` et la route
   `/pretext/probe/` l'appliquent automatiquement selon la locale du document.
+- L'option `letterSpacing` (numérique, en pixels CSS) ajoutée par `0.0.6` à
+  `prepare()` / `prepareWithSegments()` est désormais effective : le helper
+  `resolveLetterSpacingPx(value, fontSize)` convertit le `letter-spacing`
+  calculé du DOM, partitionne le cache de préparation par valeur de tracking, et
+  n'engage la cache supplémentaire que lorsque le tracking est non nul. Les
+  hooks et le panneau `/pretext/probe/` y branchent les surfaces où le CSS
+  applique du tracking.
+- Les fixes apportés par `0.0.6` sont transparents pour le code applicatif :
+  meilleur wrap CJK suivi d'un crochet d'ouverture, et `keep-all` plus proche
+  des navigateurs sur du texte mixte Latin/numérique/CJK sans espaces. Aucune
+  intégration spécifique requise au-delà du bump de version.
 
 Restent non branchés, faute de consommateur concret :
 
@@ -136,8 +147,11 @@ Socle bas niveau désormais disponible aussi :
 - option `wordBreak` propagée à `prepare()` / `prepareWithSegments()` et helper
   `resolveLocaleWordBreak(locale)` qui applique `keep-all` aux locales
   CJK/Hangul par défaut ;
-- cache dédié `prepareWithSegments(...)` avec invalidation par locale et par
-  mode `wordBreak` ;
+- option `letterSpacing` (numérique, en pixels CSS) propagée à `prepare()` /
+  `prepareWithSegments()` et helper `resolveLetterSpacingPx(value, fontSize)`
+  pour aligner la mesure sur le tracking CSS effectivement appliqué ;
+- cache dédié `prepareWithSegments(...)` avec invalidation par locale, par mode
+  `wordBreak` et par valeur de `letterSpacing` ;
 - invalidation explicite des caches de mesure quand `document.fonts` signale la
   fin d'un chargement, pour éviter de conserver des mesures faites avant
   l'arrivée d'une webfont.
@@ -465,7 +479,7 @@ Verdict : **à reformuler**.
 Le besoin visuel est légitime, mais la piste initiale n'est pas la bonne
 prochaine étape :
 
-- `prepareInlineFlow` n'est pas exporté dans `0.0.5` ;
+- `prepareInlineFlow` n'est pas exporté dans `0.0.6` ;
 - la stabilisation simple des titres couvre déjà une bonne partie du bénéfice ;
 - la complexité des éléments atomiques ne se justifie pas encore ici.
 
