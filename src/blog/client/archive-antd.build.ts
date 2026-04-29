@@ -1,4 +1,4 @@
-import VerticalAlignTopOutlined from "npm/ant-design-icons/VerticalAlignTopOutlined.js";
+import VerticalAlignTopOutlined from "npm/ant-design-icons/VerticalAlignTopOutlined";
 import Anchor from "npm/antd/lib/anchor/index.js";
 import BackTop from "npm/antd/lib/float-button/BackTop.js";
 import Button from "npm/antd/lib/button/index.js";
