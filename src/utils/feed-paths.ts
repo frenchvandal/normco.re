@@ -1,7 +1,7 @@
 import { getLocalizedUrl, type SiteLanguage } from "./i18n.ts";
 
-export const RSS_FEED_PATH = "/rss.xml";
-export const ATOM_FEED_PATH = "/atom.xml";
+export const RSS_FEED_PATH = "/feed.xml";
+export const ATOM_FEED_PATH = "/feed.atom";
 export const JSON_FEED_PATH = "/feed.json";
 export const FEED_STYLESHEET_PATH = "/feed.xsl";
 

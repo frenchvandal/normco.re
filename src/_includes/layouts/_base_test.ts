@@ -184,8 +184,8 @@ describe("base.tsx layout", () => {
         html,
         "view-transition-name",
       );
-      assertStringIncludes(html, 'href="/rss.xml"');
-      assertStringIncludes(html, 'href="/atom.xml"');
+      assertStringIncludes(html, 'href="/feed.xml"');
+      assertStringIncludes(html, 'href="/feed.atom"');
       assertStringIncludes(html, 'href="/feed.json"');
       assertStringIncludes(
         html,

@@ -171,10 +171,10 @@ the SSR renderer and client views stay aligned.
 
 The site emits localized RSS, Atom, and JSON feeds:
 
-- `/rss.xml`, `/atom.xml`, and `/feed.json`
-- `/fr/rss.xml`, `/fr/atom.xml`, and `/fr/feed.json`
-- `/zh-hans/rss.xml`, `/zh-hans/atom.xml`, and `/zh-hans/feed.json`
-- `/zh-hant/rss.xml`, `/zh-hant/atom.xml`, and `/zh-hant/feed.json`
+- `/feed.xml`, `/feed.atom`, and `/feed.json`
+- `/fr/feed.xml`, `/fr/feed.atom`, and `/fr/feed.json`
+- `/zh-hans/feed.xml`, `/zh-hans/feed.atom`, and `/zh-hans/feed.json`
+- `/zh-hant/feed.xml`, `/zh-hant/feed.atom`, and `/zh-hant/feed.json`
 
 `src/_includes/layouts/base.tsx` publishes the localized RSS, Atom, and JSON
 feed endpoints via standard `rel="alternate"` links in the document head.

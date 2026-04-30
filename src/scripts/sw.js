@@ -75,18 +75,18 @@ const STATIC_ASSETS = [
   "/critical/syndication.css",
   "/critical/tag.css",
   ...PRECACHED_SCRIPT_ASSET_URLS,
-  "/atom.xml",
-  "/rss.xml",
+  "/feed.atom",
+  "/feed.xml",
   "/feed.json",
   "/sitemap.xml",
-  "/fr/atom.xml",
-  "/fr/rss.xml",
+  "/fr/feed.atom",
+  "/fr/feed.xml",
   "/fr/feed.json",
-  "/zh-hans/atom.xml",
-  "/zh-hans/rss.xml",
+  "/zh-hans/feed.atom",
+  "/zh-hans/feed.xml",
   "/zh-hans/feed.json",
-  "/zh-hant/atom.xml",
-  "/zh-hant/rss.xml",
+  "/zh-hant/feed.atom",
+  "/zh-hant/feed.xml",
   "/zh-hant/feed.json",
   OFFLINE_URL_BY_LANGUAGE.en,
   OFFLINE_URL_BY_LANGUAGE.fr,
@@ -493,8 +493,8 @@ sw.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
     return;
   }
 
-  const isFeedRoute = url.pathname.endsWith("/atom.xml") ||
-    url.pathname.endsWith("/rss.xml") ||
+  const isFeedRoute = url.pathname.endsWith("/feed.atom") ||
+    url.pathname.endsWith("/feed.xml") ||
     url.pathname.endsWith("/feed.json");
 
   if (isFeedRoute) {

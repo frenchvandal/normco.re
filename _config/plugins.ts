@@ -184,7 +184,7 @@ export function registerPlugins(
       checkUrls({
         anchors: true,
         throw: true,
-        ignore: ["/rss.xml", "/feed.json", "/atom.xml", "/sitemap.xml"],
+        ignore: ["/feed.xml", "/feed.json", "/feed.atom", "/sitemap.xml"],
         output: "_quality/broken-links-pre-fingerprint.json",
       }),
     );

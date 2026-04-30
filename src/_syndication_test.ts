@@ -65,8 +65,8 @@ describe("syndication.page.tsx", () => {
     );
     assertStringIncludes(html, 'class="feeds-description-term"');
     assertStringIncludes(html, 'class="feeds-description-body"');
-    assertStringIncludes(html, 'href="/rss.xml"');
-    assertStringIncludes(html, 'href="/atom.xml"');
+    assertStringIncludes(html, 'href="/feed.xml"');
+    assertStringIncludes(html, 'href="/feed.atom"');
     assertStringIncludes(html, 'href="/feed.json"');
     assertNotMatch(html, /sitemap\.xml/);
     assertStringIncludes(html, "application/rss+xml");
@@ -111,8 +111,8 @@ describe("syndication.page.tsx", () => {
   it("localizes feed routes and copy labels in French", () => {
     const html = syndicationPage(asLumeData({ lang: "fr" }));
 
-    assertStringIncludes(html, 'href="/fr/rss.xml"');
-    assertStringIncludes(html, 'href="/fr/atom.xml"');
+    assertStringIncludes(html, 'href="/fr/feed.xml"');
+    assertStringIncludes(html, 'href="/fr/feed.atom"');
     assertStringIncludes(html, 'href="/fr/feed.json"');
     assertNotMatch(html, /sitemap\.xml/);
     assertStringIncludes(html, 'data-copy-default-label="Copier"');

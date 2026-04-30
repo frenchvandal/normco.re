@@ -4,7 +4,7 @@
  * Usage: `deno task validate-contracts [--site-dir=_site]`
  *
  * Validates:
- * - `/feed.json`, `/rss.xml`, and `/atom.xml` (and localized variants)
+ * - `/feed.json`, `/feed.xml`, and `/feed.atom` (and localized variants)
  *   against the active feed validators
  * - `/api/app-manifest.json` against `contracts/app-manifest.schema.json`
  * - localized `/api/posts/index.json` files against

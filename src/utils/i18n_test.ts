@@ -194,8 +194,8 @@ describe("getLocalizedUrl()", () => {
     assertStrictEquals(getLocalizedUrl("/posts/", "fr"), "/fr/posts/");
     assertStrictEquals(getLocalizedUrl("/about/", "zhHans"), "/zh-hans/about/");
     assertStrictEquals(
-      getLocalizedUrl("/rss.xml", "zhHant"),
-      "/zh-hant/rss.xml",
+      getLocalizedUrl("/feed.xml", "zhHant"),
+      "/zh-hant/feed.xml",
     );
   });
 

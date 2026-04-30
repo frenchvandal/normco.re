@@ -320,7 +320,7 @@ describe("sw.js", () => {
 
     listener({
       request: {
-        url: "https://normco.re/rss.xml",
+        url: "https://normco.re/feed.xml",
         method: "GET",
         mode: "cors",
         destination: "document",
@@ -369,7 +369,7 @@ describe("sw.js", () => {
               ? request
               : request.url ?? "";
             return Promise.resolve(
-              key === "https://normco.re/rss.xml"
+              key === "https://normco.re/feed.xml"
                 ? new Response("<rss>cached</rss>", {
                   status: 200,
                   headers: {
@@ -392,7 +392,7 @@ describe("sw.js", () => {
 
     listener({
       request: {
-        url: "https://normco.re/rss.xml",
+        url: "https://normco.re/feed.xml",
         method: "GET",
         mode: "cors",
         destination: "document",
@@ -449,7 +449,7 @@ describe("sw.js", () => {
               ? request
               : request.url ?? "";
             return Promise.resolve(
-              key === "https://normco.re/rss.xml"
+              key === "https://normco.re/feed.xml"
                 ? new Response("<rss>cached</rss>", {
                   status: 200,
                   headers: {
@@ -472,7 +472,7 @@ describe("sw.js", () => {
 
     listener({
       request: {
-        url: "https://normco.re/rss.xml",
+        url: "https://normco.re/feed.xml",
         method: "GET",
         mode: "cors",
         destination: "document",

@@ -153,16 +153,16 @@ describe("validate()", () => {
 
 describe("createOutputFilePattern()", () => {
   it("matches root and localized output files by public path suffix", () => {
-    const rssPattern = createOutputFilePattern("/rss.xml");
-    const atomPattern = createOutputFilePattern("/atom.xml");
+    const rssPattern = createOutputFilePattern("/feed.xml");
+    const atomPattern = createOutputFilePattern("/feed.atom");
 
-    assertEquals(rssPattern.test("_site/rss.xml"), true);
-    assertEquals(rssPattern.test("_site/fr/rss.xml"), true);
-    assertEquals(rssPattern.test("_site/feed.rss"), false);
+    assertEquals(rssPattern.test("_site/feed.xml"), true);
+    assertEquals(rssPattern.test("_site/fr/feed.xml"), true);
+    assertEquals(rssPattern.test("_site/rss.xml"), false);
 
-    assertEquals(atomPattern.test("_site/atom.xml"), true);
-    assertEquals(atomPattern.test("_site/zh-hans/atom.xml"), true);
-    assertEquals(atomPattern.test("_site/feed.atom"), false);
+    assertEquals(atomPattern.test("_site/feed.atom"), true);
+    assertEquals(atomPattern.test("_site/zh-hans/feed.atom"), true);
+    assertEquals(atomPattern.test("_site/atom.xml"), false);
   });
 
   it("escapes regex metacharacters in literal output paths", () => {
@@ -226,7 +226,7 @@ describe("readSchemaFile()", () => {
 describe("validateAtomFeed()", () => {
   it("requires feed-level fields even when an entry contains the same tag", () => {
     const errors = validateAtomFeed(
-      `<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/feed.xsl"?><feed xmlns="http://www.w3.org/2005/Atom"><title>normco.re</title><updated>2026-03-16T00:00:00Z</updated><author><name>Phiphi</name></author><link rel="self" type="application/atom+xml" href="https://normco.re/atom.xml"/><link rel="alternate" type="text/html" href="https://normco.re/"/><entry><id>https://normco.re/posts/hello/</id><title>Hello</title><updated>2026-03-16T00:00:00Z</updated></entry></feed>`,
+      `<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/feed.xsl"?><feed xmlns="http://www.w3.org/2005/Atom"><title>normco.re</title><updated>2026-03-16T00:00:00Z</updated><author><name>Phiphi</name></author><link rel="self" type="application/atom+xml" href="https://normco.re/feed.atom"/><link rel="alternate" type="text/html" href="https://normco.re/"/><entry><id>https://normco.re/posts/hello/</id><title>Hello</title><updated>2026-03-16T00:00:00Z</updated></entry></feed>`,
     );
 
     assertEquals(errors.some((error) => error.path === "$.feed.id"), true);
@@ -234,7 +234,7 @@ describe("validateAtomFeed()", () => {
 
   it("rejects raw child markup inside content[type=html]", () => {
     const errors = validateAtomFeed(
-      `<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/feed.xsl"?><feed xmlns="http://www.w3.org/2005/Atom"><id>https://normco.re/atom.xml</id><title>normco.re</title><updated>2026-03-16T00:00:00Z</updated><author><name>Phiphi</name></author><link rel="self" type="application/atom+xml" href="https://normco.re/atom.xml"/><link rel="alternate" type="text/html" href="https://normco.re/"/><entry><id>https://normco.re/posts/hello/</id><title>Hello</title><updated>2026-03-16T00:00:00Z</updated><content type="html"><p>Raw HTML</p></content></entry></feed>`,
+      `<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/feed.xsl"?><feed xmlns="http://www.w3.org/2005/Atom"><id>https://normco.re/feed.atom</id><title>normco.re</title><updated>2026-03-16T00:00:00Z</updated><author><name>Phiphi</name></author><link rel="self" type="application/atom+xml" href="https://normco.re/feed.atom"/><link rel="alternate" type="text/html" href="https://normco.re/"/><entry><id>https://normco.re/posts/hello/</id><title>Hello</title><updated>2026-03-16T00:00:00Z</updated><content type="html"><p>Raw HTML</p></content></entry></feed>`,
     );
 
     assertEquals(
@@ -247,7 +247,7 @@ describe("validateAtomFeed()", () => {
 describe("validateRssFeed()", () => {
   it("requires a channel-level link even when an item contains one", () => {
     const errors = validateRssFeed(
-      `<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/feed.xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>normco.re</title><description>Personal blog</description><language>en</language><lastBuildDate>Tue, 16 Mar 2026 00:00:00 GMT</lastBuildDate><atom:link rel="self" type="application/rss+xml" href="https://normco.re/rss.xml"/><item><title>Hello</title><link>https://normco.re/posts/hello/</link><guid>https://normco.re/posts/hello/</guid><pubDate>Tue, 16 Mar 2026 00:00:00 GMT</pubDate></item></channel></rss>`,
+      `<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="/feed.xsl"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>normco.re</title><description>Personal blog</description><language>en</language><lastBuildDate>Tue, 16 Mar 2026 00:00:00 GMT</lastBuildDate><atom:link rel="self" type="application/rss+xml" href="https://normco.re/feed.xml"/><item><title>Hello</title><link>https://normco.re/posts/hello/</link><guid>https://normco.re/posts/hello/</guid><pubDate>Tue, 16 Mar 2026 00:00:00 GMT</pubDate></item></channel></rss>`,
     );
 
     assertEquals(

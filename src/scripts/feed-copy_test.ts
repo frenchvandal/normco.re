@@ -29,7 +29,7 @@ function createDom(): InstanceType<typeof JSDOM> {
           <button
             type="button"
             data-copy-button=""
-            data-copy-path="/fr/rss.xml"
+            data-copy-path="/fr/feed.xml"
             data-copy-title="Copier Flux RSS"
             data-copy-default-label="Copier"
             data-copy-copied-label="Copié"
@@ -167,7 +167,7 @@ describe("feed-copy.js", () => {
     button.click();
     await flushMicrotasks();
 
-    assertEquals(copiedTexts, ["https://normco.re/fr/rss.xml"]);
+    assertEquals(copiedTexts, ["https://normco.re/fr/feed.xml"]);
     assertEquals(control.dataset.copyState, "copied");
     assertEquals(getButtonLabel(window).textContent, "Copié");
     assertEquals(getStatus(window).textContent, "URL de Flux RSS copiée");

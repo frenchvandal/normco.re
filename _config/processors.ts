@@ -378,8 +378,8 @@ export function registerProcessors(site: Site): void {
     ) => [`${variant.pathPrefix}/feed.json`, variant.language]),
   );
 
-  // Lume's feed plugin still emits JSON Feed 1.0-shaped output, so normalize
-  // generated files after the plugin runs.
+  // Lume 3.2.4 emits JSON Feed 1.1, but we re-normalize to defend against
+  // schema drift and to keep date strings RFC 3339-compliant.
   site.process([".json"], (pages: Page[]) => {
     for (const page of pages) {
       const pageUrl = typeof page.data.url === "string"
