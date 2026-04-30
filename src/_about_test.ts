@@ -250,7 +250,11 @@ describe("about page CSS contracts", () => {
     );
     assertStringIncludes(
       aboutStyles,
-      ':root:is([data-color-mode="dark"], [data-theme-preference="dark"])',
+      "--about-pictogram-frame-border: var(--ph-about-pictogram-frame-border)",
+    );
+    assertStringIncludes(
+      aboutStyles,
+      "--about-pictogram-ink: var(--ph-about-pictogram-ink);",
     );
     assertStringIncludes(
       aboutStyles,

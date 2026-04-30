@@ -335,6 +335,49 @@
       0 6px 16px 0 rgb(0 0 0 / 0.08),
       0 3px 6px -4px rgb(0 0 0 / 0.12),
       0 9px 28px 8px rgb(0 0 0 / 0.05);
+
+    --ph-z-skip-link: 1000;
+
+    --ph-about-pictogram-frame-border: light-dark(
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 12%,
+        var(--ph-color-border-default)
+      ),
+      oklch(44% 0.022 254)
+    );
+    --ph-about-pictogram-frame-bg-stop-top: light-dark(
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-default) 96%,
+        var(--ph-surface-accent)
+      ),
+      oklch(96% 0.006 252)
+    );
+    --ph-about-pictogram-frame-bg-stop-bottom: light-dark(
+      color-mix(
+        in oklch,
+        var(--ph-color-canvas-subtle) 94%,
+        var(--ph-surface-accent)
+      ),
+      oklch(93% 0.010 252)
+    );
+    --ph-about-pictogram-frame-inner-border: light-dark(
+      color-mix(
+        in oklch,
+        var(--ph-color-accent-fg) 10%,
+        var(--ph-color-border-muted)
+      ),
+      oklch(87% 0.011 252)
+    );
+    --ph-about-pictogram-ink: light-dark(
+      color-mix(
+        in oklch,
+        var(--ph-color-fg-subtle) 88%,
+        var(--ph-color-accent-fg)
+      ),
+      oklch(23% 0.018 253)
+    );
   }
 
   :root[data-color-mode="dark"],

@@ -123,7 +123,7 @@
     color: var(--ph-color-fg-muted);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--ph-letter-spacing-wide);
     text-transform: uppercase;
   }
 
@@ -169,7 +169,7 @@
     color: var(--ph-color-fg-muted);
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
-    letter-spacing: 0.08em;
+    letter-spacing: var(--ph-letter-spacing-wide);
     text-transform: uppercase;
   }
 
@@ -244,7 +244,7 @@
     font-family: var(--ph-font-mono);
     font-size: var(--ph-text-xs);
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--ph-letter-spacing-wide);
     text-transform: uppercase;
   }
 
@@ -839,7 +839,7 @@
 
   .blog-antd-page--gallery .blog-antd-page-title {
     max-inline-size: 9ch;
-    font-size: clamp(2.25rem, 1.85rem + 1.5vw, 3.5rem);
+    font-size: clamp(2.2rem, 1.85rem + 1.5vw, 3.5rem);
   }
 
   .blog-antd-page--gallery .blog-antd-page-lead {
