@@ -19,6 +19,7 @@ const SW_VERSION = SW_URL.searchParams.get("v") ?? "__SW_VERSION__";
 const STATIC_CACHE = `static-${SW_VERSION}`;
 const PAGE_CACHE = `pages-${SW_VERSION}`;
 const FEED_CACHE = `feeds-${SW_VERSION}`;
+const PAGEFIND_CACHE = `pagefind-${SW_VERSION}`;
 const ALLOWED_SW_DEBUG_LEVELS = new Set(["off", "summary", "verbose"]);
 
 /**
@@ -101,6 +102,14 @@ const STATIC_FETCH_TIMEOUT_MS = 5_000;
 const PAGE_NETWORK_TIMEOUT_MS = 5_000;
 const FEED_NETWORK_TIMEOUT_MS = 5_000;
 const FEED_CACHE_TTL_MS = 30 * 60 * 1_000;
+const PAGEFIND_NETWORK_TIMEOUT_MS = 3_000;
+
+// Hashed Pagefind asset filenames carry the content hash inside the basename
+// (`<lang>_<hash>.pf_meta`, `.pf_fragment`, `.pf_index`), so a content change
+// always produces a new URL — `cacheFirst` is safe. Stable-named runtime files
+// (`pagefind.js`, `pagefind-entry.json`, `pagefind-ui.js`, `wasm.<lang>.pagefind`,
+// etc.) keep the same URL across deploys, so they need network-first refresh.
+const HASHED_PAGEFIND_PATTERN = /\.pf_(?:meta|fragment|index)$/;
 
 const KNOWN_BOT_PATTERN =
   /Googlebot|Bingbot|DuckDuckBot|YandexBot|Baiduspider|Applebot|PetalBot/i;
@@ -213,6 +222,7 @@ sw.addEventListener(
       staticCache: STATIC_CACHE,
       pageCache: PAGE_CACHE,
       feedCache: FEED_CACHE,
+      pagefindCache: PAGEFIND_CACHE,
     });
 
     event.waitUntil((async () => {
@@ -232,7 +242,7 @@ sw.addEventListener(
 
       const keys = await caches.keys();
       const staleKeys = keys.filter((key) =>
-        ![STATIC_CACHE, PAGE_CACHE, FEED_CACHE].includes(key)
+        ![STATIC_CACHE, PAGE_CACHE, FEED_CACHE, PAGEFIND_CACHE].includes(key)
       );
 
       logSw("activate: pruning stale caches", {
@@ -329,6 +339,78 @@ async function cacheFirst(request) {
   }
 
   return response;
+}
+
+/**
+ * Cache-first strategy for hashed Pagefind assets (`.pf_meta`, `.pf_fragment`,
+ * `.pf_index`). Their filenames embed a content hash, so a stale cache entry
+ * only ever wins when the URL hasn't changed.
+ *
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
+async function cacheFirstPagefind(request) {
+  const cache = await caches.open(PAGEFIND_CACHE);
+  const cached = await cache.match(request);
+
+  if (cached !== undefined) {
+    return cached;
+  }
+
+  const response = await fetchWithTimeout(
+    request,
+    undefined,
+    STATIC_FETCH_TIMEOUT_MS,
+  );
+
+  if (response.ok) {
+    await cache.put(request, response.clone());
+  }
+
+  return response;
+}
+
+/**
+ * Network-first strategy for stable-named Pagefind runtime assets
+ * (`pagefind.js`, `pagefind-entry.json`, `pagefind-worker.js`,
+ * `pagefind-ui.{js,css}`, `pagefind-component-ui.{js,css}`,
+ * `wasm.<lang>.pagefind`). Their filenames stay the same across rebuilds so
+ * a deploy can change their bytes — refresh from the network with a short
+ * timeout. Fall back to the cached copy on network failure or any non-ok HTTP
+ * response (e.g. transient 404/503 during a deploy) so search keeps working
+ * with a previously-validated copy instead of bubbling up the error.
+ *
+ * @param {Request} request
+ * @returns {Promise<Response>}
+ */
+async function networkFirstPagefind(request) {
+  const cache = await caches.open(PAGEFIND_CACHE);
+  const cached = await cache.match(request);
+
+  try {
+    const response = await fetchWithTimeout(
+      request,
+      undefined,
+      PAGEFIND_NETWORK_TIMEOUT_MS,
+    );
+
+    if (response.ok) {
+      await cache.put(request, response.clone());
+      return response;
+    }
+
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    return response;
+  } catch (error) {
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    throw error;
+  }
 }
 
 /**
@@ -503,7 +585,11 @@ sw.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
   }
 
   if (url.pathname.startsWith("/pagefind/")) {
-    event.respondWith(cacheFirst(request));
+    if (HASHED_PAGEFIND_PATTERN.test(url.pathname)) {
+      event.respondWith(cacheFirstPagefind(request));
+    } else {
+      event.respondWith(networkFirstPagefind(request));
+    }
     return;
   }
 
