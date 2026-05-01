@@ -100,6 +100,8 @@ function createRuntime(
   {
     fetchImpl,
     cacheStores,
+    cacheKeys,
+    onCacheDelete,
     serviceWorkerUrl = "https://normco.re/sw.js?v=test&debug=off",
     registration = {
       unregister() {
@@ -112,6 +114,8 @@ function createRuntime(
       init?: RequestInit,
     ) => Promise<Response>;
     cacheStores: Record<string, CacheStore>;
+    cacheKeys?: ReadonlyArray<string>;
+    onCacheDelete?: (cacheName: string) => void;
     serviceWorkerUrl?: string;
     registration?: ServiceWorkerRegistrationStub;
   },
@@ -149,9 +153,12 @@ function createRuntime(
       return Promise.resolve(cache);
     },
     keys() {
-      return Promise.resolve(Object.keys(cacheStores));
+      return Promise.resolve(
+        cacheKeys === undefined ? Object.keys(cacheStores) : [...cacheKeys],
+      );
     },
-    delete() {
+    delete(name: string) {
+      onCacheDelete?.(name);
       return Promise.resolve(true);
     },
   };
@@ -536,13 +543,13 @@ describe("sw.js", () => {
     assertEquals(intercepted, false);
   });
 
-  it("serves cached Pagefind assets while offline", async () => {
+  it("serves cached stable-named Pagefind assets while offline", async () => {
     const runtime = createRuntime({
       fetchImpl() {
         return Promise.reject(new Error("offline"));
       },
       cacheStores: {
-        "static-test": {
+        "pagefind-test": {
           match(request) {
             const key = typeof request === "string"
               ? request
@@ -581,6 +588,145 @@ describe("sw.js", () => {
     );
     const response = await responsePromise;
     assertEquals(await response.text(), '{"cached":true}');
+  });
+
+  it("serves hashed Pagefind index assets from the cache without hitting the network", async () => {
+    let fetchCalls = 0;
+    const runtime = createRuntime({
+      fetchImpl() {
+        fetchCalls += 1;
+        return Promise.resolve(
+          new Response("network-fragment", { status: 200 }),
+        );
+      },
+      cacheStores: {
+        "pagefind-test": {
+          match(request) {
+            const key = typeof request === "string"
+              ? request
+              : request.url ?? "";
+            return Promise.resolve(
+              key === "https://normco.re/pagefind/index/en_97a2b88.pf_index"
+                ? new Response("cached-index", { status: 200 })
+                : undefined,
+            );
+          },
+          put() {
+            return Promise.resolve();
+          },
+        },
+      },
+    });
+    const listener = runtime.getFetchListener();
+    let responsePromise: Promise<Response> | undefined;
+
+    listener({
+      request: {
+        url: "https://normco.re/pagefind/index/en_97a2b88.pf_index",
+        method: "GET",
+        mode: "cors",
+        destination: "",
+        headers: new Headers({ "user-agent": "Mozilla/5.0" }),
+      },
+      respondWith(promise) {
+        responsePromise = promise;
+      },
+    });
+
+    assertExists(
+      responsePromise,
+      "Expected hashed pagefind asset to call respondWith().",
+    );
+    const response = await responsePromise;
+    assertEquals(await response.text(), "cached-index");
+    assertEquals(fetchCalls, 0);
+  });
+
+  it("refreshes stable-named Pagefind assets from the network when online", async () => {
+    let fetchCalls = 0;
+    let cachePutCount = 0;
+    const runtime = createRuntime({
+      fetchImpl() {
+        fetchCalls += 1;
+        return Promise.resolve(
+          new Response("fresh-runtime", { status: 200 }),
+        );
+      },
+      cacheStores: {
+        "pagefind-test": {
+          match() {
+            return Promise.resolve(
+              new Response("stale-runtime", { status: 200 }),
+            );
+          },
+          put() {
+            cachePutCount += 1;
+            return Promise.resolve();
+          },
+        },
+      },
+    });
+    const listener = runtime.getFetchListener();
+    let responsePromise: Promise<Response> | undefined;
+
+    listener({
+      request: {
+        url: "https://normco.re/pagefind/pagefind.js",
+        method: "GET",
+        mode: "cors",
+        destination: "script",
+        headers: new Headers({ "user-agent": "Mozilla/5.0" }),
+      },
+      respondWith(promise) {
+        responsePromise = promise;
+      },
+    });
+
+    assertExists(
+      responsePromise,
+      "Expected stable-named pagefind asset to call respondWith().",
+    );
+    const response = await responsePromise;
+    assertEquals(await response.text(), "fresh-runtime");
+    assertEquals(fetchCalls, 1);
+    assertEquals(cachePutCount, 1);
+  });
+
+  it("prunes stale caches but keeps the Pagefind cache version intact during activation", async () => {
+    const deletedKeys: string[] = [];
+    const runtime = createRuntime({
+      fetchImpl() {
+        return Promise.resolve(new Response("", { status: 200 }));
+      },
+      cacheStores: {},
+      cacheKeys: [
+        "static-test",
+        "pages-test",
+        "feeds-test",
+        "pagefind-test",
+        "pagefind-old",
+        "static-old",
+      ],
+      onCacheDelete(name) {
+        deletedKeys.push(name);
+      },
+    });
+    const listener = runtime.getActivateListener();
+    let activationPromise: Promise<void> | undefined;
+
+    listener({
+      waitUntil(promise) {
+        activationPromise = promise;
+      },
+    });
+
+    assertExists(
+      activationPromise,
+      "Expected activate handler to call waitUntil().",
+    );
+    await activationPromise;
+
+    assertEquals(deletedKeys.sort(), ["pagefind-old", "static-old"]);
   });
 
   it("passes an abort signal to timed network requests", async () => {
