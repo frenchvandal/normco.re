@@ -27,7 +27,7 @@ const TEXT_EXTENSIONS = new Set([".html", ".xml", ".xsl", ".js", ".css"]);
  * _config/assets.ts, whether they originate from site.add() or site.copy().
  * Service worker files are excluded — they use internal versioning instead.
  */
-const CANONICAL_ASSET_URLS = [
+export const CANONICAL_ASSET_URLS = [
   "/critical/about.css",
   "/critical/archive.css",
   "/critical/home.css",
@@ -37,7 +37,7 @@ const CANONICAL_ASSET_URLS = [
   "/style.css",
   ...FINGERPRINTED_SCRIPT_ASSET_URLS,
 ] as const;
-const SERVICE_WORKER_VERSION_PLACEHOLDER = "__SW_VERSION__";
+export const SERVICE_WORKER_VERSION_PLACEHOLDER = "__SW_VERSION__";
 const SERVICE_WORKER_VERSION_SOURCES = [
   "/sw.js",
 ] as const;
@@ -211,7 +211,9 @@ function parseCliArgs(
   };
 }
 
-async function injectServiceWorkerVersion(rootDir: string): Promise<string> {
+export async function injectServiceWorkerVersion(
+  rootDir: string,
+): Promise<string> {
   const swPath = toOutputPath(rootDir, "/sw.js");
   const swCode = await Deno.readTextFile(swPath);
   const swVersionInputs = await Promise.all(
@@ -239,14 +241,14 @@ async function injectServiceWorkerVersion(rootDir: string): Promise<string> {
   return swVersion;
 }
 
-async function main(): Promise<void> {
-  const { rootDir, showHelp } = parseCliArgs(Deno.args);
+export type FingerprintPipelineResult = {
+  readonly rewrites: ReadonlyArray<readonly [string, string]>;
+  readonly swVersion: string;
+};
 
-  if (showHelp) {
-    console.info(USAGE);
-    return;
-  }
-
+export async function runFingerprintPipeline(
+  rootDir: string,
+): Promise<FingerprintPipelineResult> {
   const rewrites: [string, string][] = [];
 
   for (const sourceUrl of CANONICAL_ASSET_URLS) {
@@ -268,7 +270,20 @@ async function main(): Promise<void> {
   await rewriteUrlsInSiteOutput(rootDir, orderedRewrites);
   const swVersion = await injectServiceWorkerVersion(rootDir);
 
-  for (const [sourceUrl, fingerprintedUrl] of orderedRewrites) {
+  return { rewrites: orderedRewrites, swVersion };
+}
+
+async function main(): Promise<void> {
+  const { rootDir, showHelp } = parseCliArgs(Deno.args);
+
+  if (showHelp) {
+    console.info(USAGE);
+    return;
+  }
+
+  const { rewrites, swVersion } = await runFingerprintPipeline(rootDir);
+
+  for (const [sourceUrl, fingerprintedUrl] of rewrites) {
     console.info(`[fingerprint] ${sourceUrl} -> ${fingerprintedUrl}`);
   }
   console.info(`[fingerprint] service worker graph version -> ${swVersion}`);
