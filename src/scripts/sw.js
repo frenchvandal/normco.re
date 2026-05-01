@@ -372,16 +372,20 @@ async function cacheFirstPagefind(request) {
 
 /**
  * Network-first strategy for stable-named Pagefind runtime assets
- * (`pagefind.js`, `pagefind-entry.json`, `pagefind-ui.{js,css}`,
- * `wasm.<lang>.pagefind`, …). Their filenames stay the same across rebuilds so
+ * (`pagefind.js`, `pagefind-entry.json`, `pagefind-worker.js`,
+ * `pagefind-ui.{js,css}`, `pagefind-component-ui.{js,css}`,
+ * `wasm.<lang>.pagefind`). Their filenames stay the same across rebuilds so
  * a deploy can change their bytes — refresh from the network with a short
- * timeout and fall back to the cached copy when offline.
+ * timeout. Fall back to the cached copy on network failure or any non-ok HTTP
+ * response (e.g. transient 404/503 during a deploy) so search keeps working
+ * with a previously-validated copy instead of bubbling up the error.
  *
  * @param {Request} request
  * @returns {Promise<Response>}
  */
 async function networkFirstPagefind(request) {
   const cache = await caches.open(PAGEFIND_CACHE);
+  const cached = await cache.match(request);
 
   try {
     const response = await fetchWithTimeout(
@@ -392,12 +396,15 @@ async function networkFirstPagefind(request) {
 
     if (response.ok) {
       await cache.put(request, response.clone());
+      return response;
+    }
+
+    if (cached !== undefined) {
+      return cached;
     }
 
     return response;
   } catch (error) {
-    const cached = await cache.match(request);
-
     if (cached !== undefined) {
       return cached;
     }
