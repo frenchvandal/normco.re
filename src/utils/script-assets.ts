@@ -67,7 +67,7 @@ const SCRIPT_ASSET_DESCRIPTORS = [
   },
   {
     url: "/scripts/gallery.js",
-    fingerprint: false,
+    fingerprint: true,
     precache: false,
   },
   {
@@ -77,7 +77,7 @@ const SCRIPT_ASSET_DESCRIPTORS = [
   },
   {
     url: "/scripts/post-mobile-tools-loader.js",
-    fingerprint: false,
+    fingerprint: true,
     precache: true,
   },
   {
@@ -87,7 +87,7 @@ const SCRIPT_ASSET_DESCRIPTORS = [
   },
   {
     url: "/scripts/pretext-browser-probe.js",
-    fingerprint: false,
+    fingerprint: true,
     precache: false,
   },
   {
