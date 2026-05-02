@@ -2007,7 +2007,7 @@
     color: var(--ph-color-accent-emphasis);
   }
 
-  @media (max-width: 63.99rem) {
+  @media (max-width: 63.999rem) {
     .blog-antd-page--archive {
       padding-block-end: calc(env(safe-area-inset-bottom) + var(--ph-space-7));
     }
@@ -2237,7 +2237,7 @@
     }
   }
 
-  @media (min-width: 48rem) and (max-width: 71.99rem) {
+  @media (min-width: 48rem) and (max-width: 71.999rem) {
     .blog-antd-gallery-fallback {
       columns: 2;
     }
