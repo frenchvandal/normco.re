@@ -6,7 +6,7 @@
     "jsr:@std/internal@^1.0.13": "1.0.13",
     "jsr:@std/testing@^1.0.18": "1.0.18",
     "npm:@ant-design/icons@6.2.2": "6.2.2_react@19.2.6_react-dom@19.2.6__react@19.2.6",
-    "npm:@chenglou/pretext@0.0.6": "0.0.6",
+    "npm:@chenglou/pretext@0.0.7": "0.0.7",
     "npm:@types/react@19.2.4": "19.2.4",
     "npm:antd@6.3.7": "6.3.7_react@19.2.6_react-dom@19.2.6__react@19.2.6",
     "npm:react-dom@19.2.6": "19.2.6_react@19.2.6",
@@ -92,8 +92,8 @@
     "@babel/runtime@7.29.2": {
       "integrity": "sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g=="
     },
-    "@chenglou/pretext@0.0.6": {
-      "integrity": "sha512-U10s4tFeyu3oVHfXuNWwZSKqHXefhaigpcBkGj60qQFRJ+yUoQ+ez3cGJelP7BWDAB58HCgjcTSmOcg+77afBQ=="
+    "@chenglou/pretext@0.0.7": {
+      "integrity": "sha512-FV5hj3fGqpBlzbANUbR+s+6XuNRrghVVyuNs33zdH2SzU7MvK+7GlW6xREjDCreixKbexEn7OEkDgAFeWuu5Hg=="
     },
     "@emotion/hash@0.8.0": {
       "integrity": "sha512-kBJtf7PH6aWwZ6fka3zQ0p6SBYzx4fl1LoZXE2RrnYST9Xljm7WfKJrU4g/Xr3Beg72MLrp1AWNUmuYJTL7Cow=="
@@ -654,7 +654,7 @@
       "jsr:@std/assert@^1.0.19",
       "jsr:@std/testing@^1.0.18",
       "npm:@ant-design/icons@6.2.2",
-      "npm:@chenglou/pretext@0.0.6",
+      "npm:@chenglou/pretext@0.0.7",
       "npm:@types/react@19.2.4",
       "npm:antd@6.3.7",
       "npm:dayjs@1.11.20",

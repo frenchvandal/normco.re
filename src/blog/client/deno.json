@@ -12,7 +12,7 @@
 
     "npm/ant-design-icons": "npm:@ant-design/icons@6.2.2",
     "npm/antd": "npm:antd@6.3.7",
-    "npm/pretext": "npm:@chenglou/pretext@0.0.6",
+    "npm/pretext": "npm:@chenglou/pretext@0.0.7",
     "npm/dayjs": "npm:dayjs@1.11.20",
     "npm/react": "npm:react@19.2.6",
     "npm/react-dom/client": "npm:react-dom@19.2.6/client",
