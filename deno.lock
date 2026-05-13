@@ -368,8 +368,8 @@
     "@ant-design/icons-svg@4.4.2": {
       "integrity": "sha512-vHbT+zJEVzllwP+CM+ul7reTEfBR0vgxFe7+lREAsAA7YGsYpboiq2sQNeQeRvh09GfQgs/GyFEvZpJ9cLXpXA=="
     },
-    "@ant-design/icons@6.2.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
-      "integrity": "sha512-zlJtE7AMbG12TeYVPhtBXwNpFInNy8mjLzcIm+0BPw16/b8ODG87YJ1G37VIF5VFscdgfsf6EweAFPTobu/3iQ==",
+    "@ant-design/icons@6.2.3_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+      "integrity": "sha512-Pl3aoAtxQeKryYnt6VvDJtOxMOtA8wrRSACe/pTjOAIG3fdHrWm6Ivb4ku9tsFjYroSXBKirvuxG4QkwBXD9gg==",
       "dependencies": [
         "@ant-design/colors",
         "@ant-design/icons-svg",

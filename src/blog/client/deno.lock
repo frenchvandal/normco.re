@@ -5,7 +5,7 @@
     "jsr:@std/internal@^1.0.12": "1.0.13",
     "jsr:@std/internal@^1.0.13": "1.0.13",
     "jsr:@std/testing@^1.0.18": "1.0.18",
-    "npm:@ant-design/icons@6.2.2": "6.2.2_react@19.2.6_react-dom@19.2.6__react@19.2.6",
+    "npm:@ant-design/icons@6.2.3": "6.2.3_react@19.2.6_react-dom@19.2.6__react@19.2.6",
     "npm:@chenglou/pretext@0.0.7": "0.0.7",
     "npm:@types/react@19.2.4": "19.2.4",
     "npm:antd@6.3.7": "6.3.7_react@19.2.6_react-dom@19.2.6__react@19.2.6",
@@ -67,8 +67,8 @@
     "@ant-design/icons-svg@4.4.2": {
       "integrity": "sha512-vHbT+zJEVzllwP+CM+ul7reTEfBR0vgxFe7+lREAsAA7YGsYpboiq2sQNeQeRvh09GfQgs/GyFEvZpJ9cLXpXA=="
     },
-    "@ant-design/icons@6.2.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
-      "integrity": "sha512-zlJtE7AMbG12TeYVPhtBXwNpFInNy8mjLzcIm+0BPw16/b8ODG87YJ1G37VIF5VFscdgfsf6EweAFPTobu/3iQ==",
+    "@ant-design/icons@6.2.3_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+      "integrity": "sha512-Pl3aoAtxQeKryYnt6VvDJtOxMOtA8wrRSACe/pTjOAIG3fdHrWm6Ivb4ku9tsFjYroSXBKirvuxG4QkwBXD9gg==",
       "dependencies": [
         "@ant-design/colors",
         "@ant-design/icons-svg",
@@ -653,7 +653,7 @@
     "dependencies": [
       "jsr:@std/assert@^1.0.19",
       "jsr:@std/testing@^1.0.18",
-      "npm:@ant-design/icons@6.2.2",
+      "npm:@ant-design/icons@6.2.3",
       "npm:@chenglou/pretext@0.0.7",
       "npm:@types/react@19.2.4",
       "npm:antd@6.3.7",
