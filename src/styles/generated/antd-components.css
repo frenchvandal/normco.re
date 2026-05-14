@@ -34,6 +34,7 @@
     --ant-badge-text-font-size-sm: 12px;
     --ant-badge-text-font-weight: normal;
     --ant-badge-status-size: 6px;
+    --ant-badge-padding-inline: 8px;
   }
   .css-var-_R_0_.ant-ribbon-wrapper {
     --ant-badge-indicator-z-index: auto;
@@ -44,6 +45,7 @@
     --ant-badge-text-font-size-sm: 12px;
     --ant-badge-text-font-weight: normal;
     --ant-badge-status-size: 6px;
+    --ant-badge-padding-inline: 8px;
   }
   .css-var-_R_0_.ant-picker-calendar {
     --ant-calendar-full-bg: var(--ph-color-canvas-default);
@@ -126,6 +128,7 @@
     --ant-image-preview-operation-hover-color: rgba(255, 255, 255, 0.85);
     --ant-image-preview-operation-color-disabled: rgba(255, 255, 255, 0.25);
     --ant-image-preview-operation-size: 18px;
+    --ant-image-progress-animation-duration: 3s;
   }
   .css-var-_R_0_.ant-otp {
     --ant-input-padding-block: 4px;
@@ -413,7 +416,7 @@
     --ant-modal-confirm-icon-margin-inline-end: 12px;
     --ant-modal-confirm-btns-margin-top: 12px;
   }
-  .css-var-_R_94f_.ant-css-var {
+  .css-var-_R_95f_.ant-css-var {
     --ant-modal-footer-bg: transparent;
     --ant-modal-header-bg: transparent;
     --ant-modal-title-line-height: 1.5;
@@ -433,7 +436,7 @@
     --ant-modal-confirm-icon-margin-inline-end: 12px;
     --ant-modal-confirm-btns-margin-top: 12px;
   }
-  .css-var-_R_94f_.ant-btn {
+  .css-var-_R_95f_.ant-btn {
     --ant-button-blue-shadow-color: 0 2px 0 rgb(230, 244, 255);
     --ant-button-purple-shadow-color: 0 2px 0 rgb(249, 240, 255);
     --ant-button-cyan-shadow-color: 0 2px 0 rgb(230, 255, 251);
@@ -497,7 +500,7 @@
     --ant-button-default-bg-disabled: rgba(0, 0, 0, 0.04);
     --ant-button-dashed-bg-disabled: rgba(0, 0, 0, 0.04);
   }
-  .css-var-_R_94f_ {
+  .css-var-_R_95f_ {
     --ant-blue: #1677ff;
     --ant-purple: #722ed1;
     --ant-cyan: #13c2c2;
@@ -833,6 +836,8 @@
     --ant-color-icon-hover: var(--ph-color-fg-default);
     --ant-color-error-outline: rgb(255, 242, 240);
     --ant-color-warning-outline: rgb(255, 251, 230);
+    --ant-color-error-affix: #ff4d4f;
+    --ant-color-warning-affix: #faad14;
     --ant-font-size-icon: 12px;
     --ant-line-width-focus: 3px;
     --ant-control-interactive-size: 16px;
@@ -919,7 +924,7 @@
       0.08
     );
   }
-  .css-var-_R_d4f_.ant-css-var {
+  .css-var-_R_d5f_.ant-css-var {
     --ant-modal-footer-bg: transparent;
     --ant-modal-header-bg: transparent;
     --ant-modal-title-line-height: 1.5;
@@ -939,7 +944,7 @@
     --ant-modal-confirm-icon-margin-inline-end: 12px;
     --ant-modal-confirm-btns-margin-top: 12px;
   }
-  .css-var-_R_d4f_.ant-btn {
+  .css-var-_R_d5f_.ant-btn {
     --ant-button-blue-shadow-color: 0 2px 0 rgb(230, 244, 255);
     --ant-button-purple-shadow-color: 0 2px 0 rgb(249, 240, 255);
     --ant-button-cyan-shadow-color: 0 2px 0 rgb(230, 255, 251);
@@ -1003,7 +1008,7 @@
     --ant-button-default-bg-disabled: rgba(0, 0, 0, 0.04);
     --ant-button-dashed-bg-disabled: rgba(0, 0, 0, 0.04);
   }
-  .css-var-_R_d4f_ {
+  .css-var-_R_d5f_ {
     --ant-blue: #1677ff;
     --ant-purple: #722ed1;
     --ant-cyan: #13c2c2;
@@ -1339,6 +1344,8 @@
     --ant-color-icon-hover: var(--ph-color-fg-default);
     --ant-color-error-outline: rgb(255, 242, 240);
     --ant-color-warning-outline: rgb(255, 251, 230);
+    --ant-color-error-affix: #ff4d4f;
+    --ant-color-warning-affix: #faad14;
     --ant-font-size-icon: 12px;
     --ant-line-width-focus: 3px;
     --ant-control-interactive-size: 16px;
@@ -2338,6 +2345,8 @@
     --ant-color-icon-hover: var(--ph-color-fg-default);
     --ant-color-error-outline: rgb(255, 242, 240);
     --ant-color-warning-outline: rgb(255, 251, 230);
+    --ant-color-error-affix: #ff4d4f;
+    --ant-color-warning-affix: #faad14;
     --ant-font-size-icon: 12px;
     --ant-line-width-focus: 3px;
     --ant-control-interactive-size: 16px;
