@@ -8,7 +8,7 @@
     "npm:@ant-design/icons@6.2.3": "6.2.3_react@19.2.6_react-dom@19.2.6__react@19.2.6",
     "npm:@chenglou/pretext@0.0.7": "0.0.7",
     "npm:@types/react@19.2.4": "19.2.4",
-    "npm:antd@6.4.2": "6.4.2_react@19.2.6_react-dom@19.2.6__react@19.2.6",
+    "npm:antd@6.4.3": "6.4.3_react@19.2.6_react-dom@19.2.6__react@19.2.6",
     "npm:react-dom@19.2.6": "19.2.6_react@19.2.6",
     "npm:react@19.2.6": "19.2.6"
   },
@@ -276,8 +276,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/notification@2.0.6_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
-      "integrity": "sha512-BsrVo4CBRWwG6G9HrNZtx/0PkMAZup3QAfIc7h4UdjFQfzrOKBhHuJ5c7fzUCbCSGYgAPHW9gn3sfoh+cZLSmw==",
+    "@rc-component/notification@2.0.7_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+      "integrity": "sha512-nqZzpf6BPdaj+3ILx7si79LLmqPKyUmQoXa+/9gg0SkH0v1DbD66oJgRMSBEVnd/zUT3D4gwxWIHUKebYf2ZXQ==",
       "dependencies": [
         "@rc-component/motion",
         "@rc-component/util",
@@ -504,8 +504,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/util@1.10.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
-      "integrity": "sha512-q++9S6rUa5Idb/xIBNz6jtvumw5+O5YV5V0g4iK9mn9jWs4oGJheE3ZN1kAnE723AXyaD8v95yeOASmdk8Jnng==",
+    "@rc-component/util@1.11.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+      "integrity": "sha512-awVlI3ub2vqfqkYxOBc/uQ0efm3jw0wcrhtO/YWLyZfxiKXczKwNbVuhlnyxytDt7H9pbbVQiqr+O6MLATtRYg==",
       "dependencies": [
         "is-mobile",
         "react",
@@ -513,8 +513,8 @@
         "react-is"
       ]
     },
-    "@rc-component/virtual-list@1.0.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
-      "integrity": "sha512-uvTol/mH74FYsn5loDGJxo+7kjkO4i+y4j87Re1pxJBs0FaeuMuLRzQRGaXwnMcV1CxpZLi2Z56Rerj2M00fjQ==",
+    "@rc-component/virtual-list@1.1.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+      "integrity": "sha512-fSzVg8xFDCK+xKJJ9lljBpaGDmur4REZwXHJjsNFRi4UbfOXuH/FSbGC2oliCE5krFqM3lSZqB4Ly4vc3xQHOQ==",
       "dependencies": [
         "@babel/runtime",
         "@rc-component/resize-observer",
@@ -530,8 +530,8 @@
         "csstype"
       ]
     },
-    "antd@6.4.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
-      "integrity": "sha512-PNJz8Vxc/mC3EsOg/h3e2YuaZduJ1RDp4RmySDuDmKPCxVgyp4Da4kB36o87p9hbLbOWdAWCKQlnyopsN8utKQ==",
+    "antd@6.4.3_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+      "integrity": "sha512-6H2avkxCGfxcF67r3J2mwm9Ck50el1pks/73vfM1wDsPL/tPtj5vHuauMgJFnrqmq7CH3g8aoZ0VBQbt+jpAsw==",
       "dependencies": [
         "@ant-design/colors",
         "@ant-design/cssinjs",
@@ -644,7 +644,7 @@
       "npm:@ant-design/icons@6.2.3",
       "npm:@chenglou/pretext@0.0.7",
       "npm:@types/react@19.2.4",
-      "npm:antd@6.4.2",
+      "npm:antd@6.4.3",
       "npm:dayjs@1.11.20",
       "npm:react-dom@19.2.6",
       "npm:react@19.2.6"
