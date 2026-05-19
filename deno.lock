@@ -97,7 +97,7 @@
     "npm:remove-markdown@0.6.3": "0.6.3",
     "npm:schema-dts@2.0.0": "2.0.0_typescript@6.0.3",
     "npm:sharp@0.34.5": "0.34.5",
-    "npm:shiki@4.0.2": "4.0.2",
+    "npm:shiki@4.1.0": "4.1.0",
     "npm:svgo@4.0.1": "4.0.1",
     "npm:terser@5.46.1": "5.46.1"
   },
@@ -1290,8 +1290,8 @@
     "@resvg/resvg-wasm@2.6.2": {
       "integrity": "sha512-FqALmHI8D4o6lk/LRWDnhw95z5eO+eAa6ORjVg09YRR7BkcM6oPHU9uyC0gtQG5vpFLvgpeU4+zEAz2H8APHNw=="
     },
-    "@shikijs/core@4.0.2": {
-      "integrity": "sha512-hxT0YF4ExEqB8G/qFdtJvpmHXBYJ2lWW7qTHDarVkIudPFE6iCIrqdgWxGn5s+ppkGXI0aEGlibI0PAyzP3zlw==",
+    "@shikijs/core@4.1.0": {
+      "integrity": "sha512-jLJtSJeuFffqX6/inRE1zqU5aFv2hrszvYgq3OjbAgFRZiWv7abKMDdQzYxuSDfmUPQozZvI/kuy6VMTvnvqTQ==",
       "dependencies": [
         "@shikijs/primitive",
         "@shikijs/types",
@@ -1300,43 +1300,43 @@
         "hast-util-to-html"
       ]
     },
-    "@shikijs/engine-javascript@4.0.2": {
-      "integrity": "sha512-7PW0Nm49DcoUIQEXlJhNNBHyoGMjalRETTCcjMqEaMoJRLljy1Bi/EGV3/qLBgLKQejdspiiYuHGQW6dX94Nag==",
+    "@shikijs/engine-javascript@4.1.0": {
+      "integrity": "sha512-YquhawCUgaBfhsS72e2Y/dI59gCBNPHu3fEO/tvLaXrTssxZrY5ddjtNLTwndrMgPo8b3IscE+xoICDzpTmlFQ==",
       "dependencies": [
         "@shikijs/types",
         "@shikijs/vscode-textmate",
         "oniguruma-to-es"
       ]
     },
-    "@shikijs/engine-oniguruma@4.0.2": {
-      "integrity": "sha512-UpCB9Y2sUKlS9z8juFSKz7ZtysmeXCgnRF0dlhXBkmQnek7lAToPte8DkxmEYGNTMii72zU/lyXiCB6StuZeJg==",
+    "@shikijs/engine-oniguruma@4.1.0": {
+      "integrity": "sha512-axLpjVs45YBvvINa+dJF+NPW+KtFkNXsFr4SDw2BMj9GdeMnGxVB9PQb2xXlJYovslt/nz6giedAyOANkfc7hg==",
       "dependencies": [
         "@shikijs/types",
         "@shikijs/vscode-textmate"
       ]
     },
-    "@shikijs/langs@4.0.2": {
-      "integrity": "sha512-KaXby5dvoeuZzN0rYQiPMjFoUrz4hgwIE+D6Du9owcHcl6/g16/yT5BQxSW5cGt2MZBz6Hl0YuRqf12omRfUUg==",
+    "@shikijs/langs@4.1.0": {
+      "integrity": "sha512-nwOMruEkbgdZfQ/b8CgpNBVOpvG1k0N5tbmgiFeqsan401+x3ILqlzZJowSla4Agmq4hG2Uf2wh5jLTEhR8VSg==",
       "dependencies": [
         "@shikijs/types"
       ]
     },
-    "@shikijs/primitive@4.0.2": {
-      "integrity": "sha512-M6UMPrSa3fN5ayeJwFVl9qWofl273wtK1VG8ySDZ1mQBfhCpdd8nEx7nPZ/tk7k+TYcpqBZzj/AnwxT9lO+HJw==",
+    "@shikijs/primitive@4.1.0": {
+      "integrity": "sha512-zx2/2Uwj2q9X3KSyYREEhXO23xBw5WUhP4orK2lE4r+t9JGITmEe0JH+wPmJhqHpOT2bRRs6lAL945+LDvOAGw==",
       "dependencies": [
         "@shikijs/types",
         "@shikijs/vscode-textmate",
         "@types/hast"
       ]
     },
-    "@shikijs/themes@4.0.2": {
-      "integrity": "sha512-mjCafwt8lJJaVSsQvNVrJumbnnj1RI8jbUKrPKgE6E3OvQKxnuRoBaYC51H4IGHePsGN/QtALglWBU7DoKDFnA==",
+    "@shikijs/themes@4.1.0": {
+      "integrity": "sha512-emCcTnUM7yO2wltYbaxm+yLvcCI4+h8XBKc4KmJ7EZUXoSGjcCHifkI//R4OFit9ewpg7H2/9tjOuXrT2v/Knw==",
       "dependencies": [
         "@shikijs/types"
       ]
     },
-    "@shikijs/types@4.0.2": {
-      "integrity": "sha512-qzbeRooUTPnLE+sHD/Z8DStmaDgnbbc/pMrU203950aRqjX/6AFHeDYT+j00y2lPdz0ywJKx7o/7qnqTivtlXg==",
+    "@shikijs/types@4.1.0": {
+      "integrity": "sha512-3EQWX54fMpniOrDblzAhiwiJwpiTMW6+B9DWyUd9ska483tbayFYuw47UxwuPknI31bKnySfVQ/QW+jFL4rFdA==",
       "dependencies": [
         "@shikijs/vscode-textmate",
         "@types/hast"
@@ -1620,8 +1620,8 @@
         "domhandler"
       ]
     },
-    "electron-to-chromium@1.5.357": {
-      "integrity": "sha512-NHlTIQDK8fmVwHwuIzmXYEJ1Ewq3D9wDNc0cWXxDGysP6Pb21giwGNkxiTifyKy/4SoPuN5l6GLP1W9Sv7zB2g=="
+    "electron-to-chromium@1.5.359": {
+      "integrity": "sha512-8lPELWuYZIWk7NDvCNthtmMw/7Q5Wu25NpM4djFMHBmk8DubPAtL4YTOp7ou0e7HyJtwkVlWv8XMLURnrtgJQw=="
     },
     "entities@4.5.0": {
       "integrity": "sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw=="
@@ -2232,8 +2232,8 @@
       ],
       "scripts": true
     },
-    "shiki@4.0.2": {
-      "integrity": "sha512-eAVKTMedR5ckPo4xne/PjYQYrU3qx78gtJZ+sHlXEg5IHhhoQhMfZVzetTYuaJS0L2Ef3AcCRzCHV8T0WI6nIQ==",
+    "shiki@4.1.0": {
+      "integrity": "sha512-l/ABZPUR5v70jI10EzqfMS/I96vjSGv2y0ihUV+WYFzv0EfvW4s54m0Lg8wCrrL+2IkwBzFTuxkZjPf8b2NX9Q==",
       "dependencies": [
         "@shikijs/core",
         "@shikijs/engine-javascript",
@@ -2765,7 +2765,7 @@
       "npm:playwright@1.60.0",
       "npm:react-dom@19.2.6",
       "npm:react@19.2.6",
-      "npm:shiki@4.0.2"
+      "npm:shiki@4.1.0"
     ]
   }
 }

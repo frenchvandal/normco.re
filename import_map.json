@@ -54,7 +54,7 @@
     "npm/react": "npm:react@19.2.6",
     "npm/react-dom/client": "npm:react-dom@19.2.6/client",
     "npm/react/jsx-runtime": "npm:react@19.2.6/jsx-runtime",
-    "npm/shiki": "npm:shiki@4.0.2",
+    "npm/shiki": "npm:shiki@4.1.0",
     "shiki": "./plugins/shiki/runtime.ts"
   }
 }
