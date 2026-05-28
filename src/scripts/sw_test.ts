@@ -408,7 +408,7 @@ describe("sw.js", () => {
       "Expected stale feed request to call respondWith().",
     );
 
-    let timeoutId = 0;
+    let timeoutId: ReturnType<typeof setTimeout> | number = 0;
     const resolutionState = await Promise.race([
       responsePromise.then(() => "resolved"),
       new Promise<"pending">((resolve) => {
@@ -488,7 +488,7 @@ describe("sw.js", () => {
       "Expected expired feed request to call respondWith().",
     );
 
-    let timeoutId = 0;
+    let timeoutId: ReturnType<typeof setTimeout> | number = 0;
     const resolutionState = await Promise.race([
       responsePromise.then(() => "resolved"),
       new Promise<"pending">((resolve) => {

@@ -26,7 +26,7 @@ export function bindLinkPrefetchIntent(runtime) {
   const queuedUrlSet = new Set();
   /** @type {WeakSet<HTMLAnchorElement>} */
   const observedLinks = new WeakSet();
-  /** @type {Map<HTMLAnchorElement, ReturnType<typeof runtime.setTimeout>>} */
+  /** @type {Map<HTMLAnchorElement, number>} */
   const hoverTimers = new Map();
   const currentDocumentUrl = (() => {
     const url = new URL(runtime.location.href);

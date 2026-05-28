@@ -71,7 +71,7 @@ export function createHeaderSearch(runtime, root, isKeyboardInteraction) {
    * @returns {boolean}
    */
   function isHidden(element) {
-    return element.hidden || element.closest("[hidden]") !== null;
+    return Boolean(element.hidden) || element.closest("[hidden]") !== null;
   }
 
   /**

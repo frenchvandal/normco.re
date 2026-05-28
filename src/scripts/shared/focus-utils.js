@@ -7,7 +7,7 @@ import { FOCUSABLE_SELECTOR } from "../header-client/focusable-selector.js";
  * @returns {boolean}
  */
 function isHidden(element) {
-  return element.hidden || element.closest("[hidden]") !== null;
+  return Boolean(element.hidden) || element.closest("[hidden]") !== null;
 }
 
 /**
