@@ -46,7 +46,7 @@
     "npm/ant-design-static-style-extract": "npm:@ant-design/static-style-extract@2.1.0",
     "npm/actions-core": "npm:@actions/core@3.0.1",
     "npm/antd": "npm:antd@6.4.3",
-    "npm/date-fns/locale": "npm:date-fns@4.3.0/locale",
+    "npm/date-fns/locale": "npm:date-fns@4.4.0/locale",
     "npm/faker-js": "npm:@faker-js/faker@^10.4.0",
     "npm/jsdom": "npm:jsdom@29.1.1",
     "npm/playwright": "npm:playwright@1.60.0",
