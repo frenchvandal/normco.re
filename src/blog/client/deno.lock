@@ -5,12 +5,12 @@
     "jsr:@std/internal@^1.0.12": "1.0.14",
     "jsr:@std/internal@^1.0.14": "1.0.14",
     "jsr:@std/testing@^1.0.19": "1.0.19",
-    "npm:@ant-design/icons@6.2.5": "6.2.5_react@19.2.6_react-dom@19.2.6__react@19.2.6",
+    "npm:@ant-design/icons@6.2.5": "6.2.5_react@19.2.7_react-dom@19.2.7__react@19.2.7",
     "npm:@chenglou/pretext@0.0.7": "0.0.7",
     "npm:@types/react@19.2.4": "19.2.4",
-    "npm:antd@6.4.3": "6.4.3_react@19.2.6_react-dom@19.2.6__react@19.2.6",
-    "npm:react-dom@19.2.6": "19.2.6_react@19.2.6",
-    "npm:react@19.2.6": "19.2.6"
+    "npm:antd@6.4.3": "6.4.3_react@19.2.7_react-dom@19.2.7__react@19.2.7",
+    "npm:react-dom@19.2.7": "19.2.7_react@19.2.7",
+    "npm:react@19.2.7": "19.2.7"
   },
   "jsr": {
     "@std/assert@1.0.19": {
@@ -37,7 +37,7 @@
         "@ant-design/fast-color"
       ]
     },
-    "@ant-design/cssinjs-utils@2.1.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@ant-design/cssinjs-utils@2.1.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-5fTHQ158jJJ5dC/ECeyIdZUzKxE/mpEMRZxthyG1sw/AKRHKgJBg00Yi6ACVXgycdje7KahRNvNET/uBccwCnA==",
       "dependencies": [
         "@ant-design/cssinjs",
@@ -47,7 +47,7 @@
         "react-dom"
       ]
     },
-    "@ant-design/cssinjs@2.1.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@ant-design/cssinjs@2.1.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-2Hy8BnCEH31xPeSLbhhB2ctCPXE2ZnASdi+KbSeS79BNbUhL9hAEe20SkUk+BR8aKTmqb6+FKFruk7w8z0VoRQ==",
       "dependencies": [
         "@babel/runtime",
@@ -67,7 +67,7 @@
     "@ant-design/icons-svg@4.4.2": {
       "integrity": "sha512-vHbT+zJEVzllwP+CM+ul7reTEfBR0vgxFe7+lREAsAA7YGsYpboiq2sQNeQeRvh09GfQgs/GyFEvZpJ9cLXpXA=="
     },
-    "@ant-design/icons@6.2.5_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@ant-design/icons@6.2.5_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-0hKtoKqTjGFOndUyJLJmC9Cg6k4rEO7rLo6xmgbNJH+/ZX1C57RVals2v1j1knHl9n7Q+sBOveTvn931wLOCKw==",
       "dependencies": [
         "@ant-design/colors",
@@ -78,7 +78,7 @@
         "react-dom"
       ]
     },
-    "@ant-design/react-slick@2.0.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@ant-design/react-slick@2.0.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-HMS9sRoEmZey8LsE/Yo6+klhlzU12PisjrVcydW3So7RdklyEd2qehyU6a7Yp+OYN72mgsYs3NFCyP2lCPFVqg==",
       "dependencies": [
         "@babel/runtime",
@@ -107,7 +107,7 @@
         "@babel/runtime"
       ]
     },
-    "@rc-component/cascader@1.15.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/cascader@1.15.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-ZzpMtwFCRo3fbXHuDnncARJMZQjdqA2w7aDuPofNQt+aDx39st1hgfIpEwTBLhe2Hqsvs/zOr8RTtgxTkCPySw==",
       "dependencies": [
         "@rc-component/select",
@@ -118,7 +118,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/checkbox@2.0.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/checkbox@2.0.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-3CXGPpAR9gsPKeO2N78HAPOzU30UdemD6HGJoWVJOpa6WleaGB5kzZj3v6bdTZab31YuWgY/RxV3VKPctn0DwQ==",
       "dependencies": [
         "@rc-component/util",
@@ -127,7 +127,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/collapse@1.2.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/collapse@1.2.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-ZRYSKSS39qsFx93p26bde7JUZJshsUBEQRlRXPuJYlAiNX0vyYlF5TsAm8JZN3LcF8XvKikdzPbgAtXSbkLUkw==",
       "dependencies": [
         "@babel/runtime",
@@ -138,7 +138,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/color-picker@3.1.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/color-picker@3.1.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-OHaCHLHszCegdXmIq2ZRIZBN/EtpT6Wm8SG/gpzLATHbVKc/avvuKi+zlOuk05FTWvgaMmpxAko44uRJ3M+2pg==",
       "dependencies": [
         "@ant-design/fast-color",
@@ -148,7 +148,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/context@2.0.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/context@2.0.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-HyZbYm47s/YqtP6pKXNMjPEMaukyg7P0qVfgMLzr7YiFNMHbK2fKTAGzms9ykfGHSfyf75nBbgWw+hHkp+VImw==",
       "dependencies": [
         "@rc-component/util",
@@ -156,7 +156,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/dialog@1.9.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/dialog@1.9.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-zbAAogkg4kkKum79sLE6M+vq1jSAW25zdkafrahgcTP9t9S//SD634Znd1A4c8F2Gc12ZKnehGLsVaaOvZzD2A==",
       "dependencies": [
         "@rc-component/motion",
@@ -167,7 +167,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/drawer@1.4.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/drawer@1.4.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-1ib+fZEp6FBu+YvcIktm+nCQ+Q+qIpwpoaJH6opGr4ofh2QMq+qdr5DLC4oCf5qf3pcWX9lUWPYX652k4ini8Q==",
       "dependencies": [
         "@rc-component/motion",
@@ -178,7 +178,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/dropdown@1.0.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/dropdown@1.0.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-6PY2ecUSYhDPhkNHHb4wfeAya04WhpmUSKzdR60G+kMNVUCX2vjT/AgTS0Lz0I/K6xrPMJ3enQbwVpeN3sHCgg==",
       "dependencies": [
         "@rc-component/trigger",
@@ -188,7 +188,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/form@1.8.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/form@1.8.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-ZidCvOLmM9Xr+3vzk4UAoR7Aj1W/5IHyrzlBB7sNkygpTeRVrohQSo4TN7W/nARTH+nt8zSAPsn4BEl4zLEO2g==",
       "dependencies": [
         "@rc-component/async-validator",
@@ -198,7 +198,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/image@1.9.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/image@1.9.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-khF7w7xkBH5B1bsBcI1FSUZdkyd1aqpl2eYyILCqCzzQH3XdfehGUaZTnptyaJJfs09/R5hv9jXWyazOMFIClQ==",
       "dependencies": [
         "@rc-component/motion",
@@ -209,7 +209,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/input-number@1.6.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/input-number@1.6.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-Gjcq7meZlCOiWN1t1xCC+7/s85humHVokTBI7PJgTfoyw5OWF74y3e6P8PHX104g9+b54jsodFIzyaj6p8LI9w==",
       "dependencies": [
         "@rc-component/mini-decimal",
@@ -219,7 +219,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/input@1.3.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/input@1.3.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-iFvTUT9W+JC/MSin2aGAk8NqsVlTzcExNC9DZariON1IWirju9NoNeEk47an4Q8iHazkoVI/y1LnDi88+CPcig==",
       "dependencies": [
         "@rc-component/resize-observer",
@@ -229,7 +229,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/mentions@1.9.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/mentions@1.9.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-WUwfFKDSOF5S9UPsNsXcLYtzjTxBGsftTXWRbZuxX6BYrsySISTnujfJNgaaQ6qVzaCDJ35QUkZKvsYxip1C5g==",
       "dependencies": [
         "@rc-component/input",
@@ -241,7 +241,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/menu@1.3.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/menu@1.3.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-pSZl9nBPgKgxN0aaW7NilIBEwWsc+43S+ulGdWAg9afak96dNOGWsGx0DLLBB1VQsAJvo6bQMTDzXoPlEHsBEw==",
       "dependencies": [
         "@rc-component/motion",
@@ -259,7 +259,7 @@
         "@babel/runtime"
       ]
     },
-    "@rc-component/motion@1.3.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/motion@1.3.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-itfd+GztzJYAb04Z4RkEub1TbJAfZc2Iuy8p44U44xD1F5+fNYFKI3897ijlbIyfvXkTmMm+KGcjkQQGMHywEQ==",
       "dependencies": [
         "@rc-component/util",
@@ -268,7 +268,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/mutate-observer@2.0.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/mutate-observer@2.0.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-AyarjoLU5YlxuValRi+w8JRH2Z84TBbFO2RoGWz9d8bSu0FqT8DtugH3xC3BV7mUwlmROFauyWuXFuq4IFbH+w==",
       "dependencies": [
         "@rc-component/util",
@@ -276,7 +276,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/notification@2.0.7_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/notification@2.0.7_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-nqZzpf6BPdaj+3ILx7si79LLmqPKyUmQoXa+/9gg0SkH0v1DbD66oJgRMSBEVnd/zUT3D4gwxWIHUKebYf2ZXQ==",
       "dependencies": [
         "@rc-component/motion",
@@ -286,7 +286,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/overflow@1.0.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/overflow@1.0.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-syfmgAABaHCnCDzPwHZ/2tuvIcpOO3jefYZMmfkN+pmo8HKTzsfhS57vxo4ksPdN0By+uWVJhJWNFozNBxi2eA==",
       "dependencies": [
         "@babel/runtime",
@@ -297,7 +297,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/pagination@1.2.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/pagination@1.2.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-YcpUFE8dMLfSo6OARJlK6DbHHvrxz7pMGPGmC/caZSJJz6HRKHC1RPP001PRHCvG9Z/veD039uOQmazVuLJzlw==",
       "dependencies": [
         "@rc-component/util",
@@ -306,7 +306,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/picker@1.10.0_dayjs@1.11.21_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/picker@1.10.0_dayjs@1.11.21_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-vVOXP2RVWozwpERGUFAehVH1Jz6o/uRrAb9qSZm1LC+iJs8rvEwFo1bzz2jlOYV+uWwu0dIuG86tnDui14Ea0w==",
       "dependencies": [
         "@rc-component/overflow",
@@ -322,7 +322,7 @@
         "dayjs"
       ]
     },
-    "@rc-component/portal@2.2.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/portal@2.2.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-oc6FlA+uXCMiwArHsJyHcIkX4q6uKyndrPol2eWX8YPkAnztHOPsFIRtmWG4BMlGE5h7YIRE3NiaJ5VS8Lb1QQ==",
       "dependencies": [
         "@rc-component/util",
@@ -331,7 +331,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/progress@1.0.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/progress@1.0.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-WZUnH9eGxH1+xodZKqdrHke59uyGZSWgj5HBM5Kwk5BrTMuAORO7VJ2IP5Qbm9aH3n9x3IcesqHHR0NWPBC7fQ==",
       "dependencies": [
         "@rc-component/util",
@@ -340,7 +340,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/qrcode@1.1.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/qrcode@1.1.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-LfLGNymzKdUPjXUbRP+xOhIWY4jQ+YMj5MmWAcgcAq1Ij8XP7tRmAXqyuv96XvLUBE/5cA8hLFl9eO1JQMujrA==",
       "dependencies": [
         "@babel/runtime",
@@ -348,7 +348,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/rate@1.0.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/rate@1.0.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-bkXxeBqDpl5IOC7yL7GcSYjQx9G8H+6kLYQnNZWeBYq2OYIv1MONd6mqKTjnnJYpV0cQIU2z3atdW0j1kttpTw==",
       "dependencies": [
         "@rc-component/util",
@@ -357,7 +357,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/resize-observer@1.1.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/resize-observer@1.1.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-t/Bb0W8uvL4PYKAB3YcChC+DlHh0Wt5kM7q/J+0qpVEUMLe7Hk5zuvc9km0hMnTFPSx5Z7Wu/fzCLN6erVLE8Q==",
       "dependencies": [
         "@rc-component/util",
@@ -365,7 +365,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/segmented@1.3.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/segmented@1.3.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-5J/bJ01mbDnoA6P/FW8SxUvKn+OgUSTZJPzCNnTBntG50tzoP7DydGhqxp7ggZXZls7me3mc2EQDXakU3iTVFg==",
       "dependencies": [
         "@babel/runtime",
@@ -376,7 +376,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/select@1.6.15_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/select@1.6.15_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-SyVCWnqxCQZZcQvQJ/CxSjx2bGma6ds/HtnpkIfZVnt6RoEgbqUmHgD6vrzNarNXwbLXerwVzWwq8F3d1sst7g==",
       "dependencies": [
         "@rc-component/overflow",
@@ -388,7 +388,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/slider@1.0.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/slider@1.0.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-uDhEPU1z3WDfCJhaL9jfd2ha/Eqpdfxsn0Zb0Xcq1NGQAman0TWaR37OWp2vVXEOdV2y0njSILTMpTfPV1454g==",
       "dependencies": [
         "@rc-component/util",
@@ -397,7 +397,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/steps@1.2.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/steps@1.2.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-/yVIZ00gDYYPHSY0JP+M+s3ZvuXLu2f9rEjQqiUDs7EcYsUYrpJ/1bLj9aI9R7MBR3fu/NGh6RM9u2qGfqp+Nw==",
       "dependencies": [
         "@rc-component/util",
@@ -406,7 +406,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/switch@1.0.3_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/switch@1.0.3_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-Jgi+EbOBquje/XNdofr7xbJQZPYJP+BlPfR0h+WN4zFkdtB2EWqEfvkXJWeipflwjWip0/17rNbxEAqs8hVHfw==",
       "dependencies": [
         "@rc-component/util",
@@ -415,7 +415,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/table@1.10.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/table@1.10.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-b3PjqB9Gp25p5t/zq+9QrbXbodkptT8/zvLmwgd2FNPUUtaYyDnQqfxeD5a7ao8E8lpinLHsi2u2vdfPhyNvAw==",
       "dependencies": [
         "@rc-component/context",
@@ -427,7 +427,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/tabs@1.9.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/tabs@1.9.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-6mY08Fce6aNOHuGsxbzT+f2ekgL9mg1cGGHkittMlVGymjGg+kGupu5v90sRxcUd/paRU9jclLLXtF/PkK1FUA==",
       "dependencies": [
         "@rc-component/dropdown",
@@ -440,7 +440,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/tooltip@1.4.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/tooltip@1.4.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-8Rx5DCctIlLI4raR0I0xHjVTf1aF48+gKCNeAAo5bmF5VoR5YED+A/XEqzXv9KKqrJDRcd3Wndpxh2hyzrTtSg==",
       "dependencies": [
         "@rc-component/trigger",
@@ -450,7 +450,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/tour@2.4.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/tour@2.4.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-aui4r4TqmTzwaBgcQxHYep8kM8PTjZFufjokObpy35KfFeZ0k9ArquWFZqegQlH24P14t+F0qO0mGTgzlav1yg==",
       "dependencies": [
         "@rc-component/portal",
@@ -461,7 +461,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/tree-select@1.9.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/tree-select@1.9.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-GXcFe15a+trUl1/J3OHWQhsVWFpwFpGFK2cqYWZ1sK22Zs3KZTvMwDpzr75PIo1s6QVioVxpE/pRwRopkeDQ6w==",
       "dependencies": [
         "@rc-component/select",
@@ -472,7 +472,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/tree@1.3.2_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/tree@1.3.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-bJFj46wEkpBPnWyTm18XmgAgNQ/4YvprxMOPPY2a6rmhGJYxLuNKEFiL5Qej4Qctu9wHJm8WW+v2SYskafE0kA==",
       "dependencies": [
         "@rc-component/motion",
@@ -483,8 +483,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/trigger@3.9.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
-      "integrity": "sha512-X8btpwfrT27AgrZVOz4swclhEHTZcqaHeQMXXBgveagOiakTa36uObXbdwerXffgV8G9dH1fAAE0DHtVQs8EHg==",
+    "@rc-component/trigger@3.9.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
+      "integrity": "sha512-LNsYvz60mrLJ/kRvKcHE7boUvcQfVMCfRqZ71x3Fo9AOiZ1KKIEqkzMA8DNvz2V3Bcvir/vwQNn7JF1NPODQ7Q==",
       "dependencies": [
         "@rc-component/motion",
         "@rc-component/portal",
@@ -495,7 +495,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/upload@1.1.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/upload@1.1.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-GvYWSKeaJTOxxC5p6+nOSadzfvXA1h8C/iHFPFZX+szH3JUXrvs+DLiW8YUTBgvMh8m63mJeHrlYlJzAlg+pDA==",
       "dependencies": [
         "@rc-component/util",
@@ -504,7 +504,7 @@
         "react-dom"
       ]
     },
-    "@rc-component/util@1.11.1_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/util@1.11.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-awVlI3ub2vqfqkYxOBc/uQ0efm3jw0wcrhtO/YWLyZfxiKXczKwNbVuhlnyxytDt7H9pbbVQiqr+O6MLATtRYg==",
       "dependencies": [
         "is-mobile",
@@ -513,7 +513,7 @@
         "react-is"
       ]
     },
-    "@rc-component/virtual-list@1.2.0_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "@rc-component/virtual-list@1.2.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-iavRm1Jo4GDbASQwdGa7jFyk93RvSOo9xHyBT4QL1pgFJj/Fdf1G+3RErH7/7BmAMvx2AkF62mjGYxDbXsK9TQ==",
       "dependencies": [
         "@babel/runtime",
@@ -530,7 +530,7 @@
         "csstype"
       ]
     },
-    "antd@6.4.3_react@19.2.6_react-dom@19.2.6__react@19.2.6": {
+    "antd@6.4.3_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-6H2avkxCGfxcF67r3J2mwm9Ck50el1pks/73vfM1wDsPL/tPtj5vHuauMgJFnrqmq7CH3g8aoZ0VBQbt+jpAsw==",
       "dependencies": [
         "@ant-design/colors",
@@ -605,8 +605,8 @@
         "string-convert"
       ]
     },
-    "react-dom@19.2.6_react@19.2.6": {
-      "integrity": "sha512-0prMI+hvBbPjsWnxDLxlCGyM8PN6UuWjEUCYmZhO67xIV9Xasa/r/vDnq+Xyq4Lo27g8QSbO5YzARu0D1Sps3g==",
+    "react-dom@19.2.7_react@19.2.7": {
+      "integrity": "sha512-t0BRVXvbiE/o20Hfw669rLbMCDWtYZLvmJigy2f0MxsXF+71pxhR3xOkspmsO8h3ZlNzyibAmtCa3l4lYKk6gQ==",
       "dependencies": [
         "react",
         "scheduler"
@@ -615,8 +615,8 @@
     "react-is@18.3.1": {
       "integrity": "sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg=="
     },
-    "react@19.2.6": {
-      "integrity": "sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q=="
+    "react@19.2.7": {
+      "integrity": "sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ=="
     },
     "scheduler@0.27.0": {
       "integrity": "sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q=="
@@ -646,8 +646,8 @@
       "npm:@types/react@19.2.4",
       "npm:antd@6.4.3",
       "npm:dayjs@1.11.21",
-      "npm:react-dom@19.2.6",
-      "npm:react@19.2.6"
+      "npm:react-dom@19.2.7",
+      "npm:react@19.2.7"
     ]
   }
 }

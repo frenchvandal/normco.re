@@ -14,10 +14,10 @@
     "npm/antd": "npm:antd@6.4.3",
     "npm/pretext": "npm:@chenglou/pretext@0.0.7",
     "npm/dayjs": "npm:dayjs@1.11.21",
-    "npm/react": "npm:react@19.2.6",
-    "npm/react-dom/client": "npm:react-dom@19.2.6/client",
-    "npm/react/jsx-dev-runtime": "npm:react@19.2.6/jsx-dev-runtime",
-    "npm/react/jsx-runtime": "npm:react@19.2.6/jsx-runtime"
+    "npm/react": "npm:react@19.2.7",
+    "npm/react-dom/client": "npm:react-dom@19.2.7/client",
+    "npm/react/jsx-dev-runtime": "npm:react@19.2.7/jsx-dev-runtime",
+    "npm/react/jsx-runtime": "npm:react@19.2.7/jsx-runtime"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

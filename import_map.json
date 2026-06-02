@@ -51,9 +51,9 @@
     "npm/jsdom": "npm:jsdom@29.1.1",
     "npm/playwright": "npm:playwright@1.60.0",
     "npm/pretext": "npm:@chenglou/pretext@0.0.7",
-    "npm/react": "npm:react@19.2.6",
-    "npm/react-dom/client": "npm:react-dom@19.2.6/client",
-    "npm/react/jsx-runtime": "npm:react@19.2.6/jsx-runtime",
+    "npm/react": "npm:react@19.2.7",
+    "npm/react-dom/client": "npm:react-dom@19.2.7/client",
+    "npm/react/jsx-runtime": "npm:react@19.2.7/jsx-runtime",
     "npm/shiki": "npm:shiki@4.1.0",
     "shiki": "./plugins/shiki/runtime.ts"
   }
