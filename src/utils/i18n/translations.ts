@@ -1,4 +1,4 @@
-import { DEFAULT_LANGUAGE, type SiteLanguage } from "./languages.ts";
+import type { DEFAULT_LANGUAGE, SiteLanguage } from "./languages.ts";
 
 // Translation data is defined first so the type can be derived from it,
 // eliminating ~180 lines of manual type definition.

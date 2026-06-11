@@ -2,11 +2,11 @@ import { pooledMap } from "@std/async/pool";
 import type { Page } from "lume/core/file.ts";
 import type Site from "lume/core/site.ts";
 import type { Plugin } from "lume/core/site.ts";
-import {
-  type BundledLanguage,
-  type BundledTheme,
-  type CodeToHastOptions,
-  type Highlighter,
+import type {
+  BundledLanguage,
+  BundledTheme,
+  CodeToHastOptions,
+  Highlighter,
 } from "shiki";
 
 import type {

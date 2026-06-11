@@ -164,8 +164,10 @@ When adding or rewriting imports:
 - Import order must be: (1) Node built-ins (`node:*`) -> (2) external
   dependencies -> (3) local modules.
 - Separate each import group with one blank line.
-- Use `import type` for type-only imports, as enforced by
-  `compilerOptions.verbatimModuleSyntax`.
+- Use `import type` for type-only imports, as enforced by the
+  `verbatim-module-syntax` lint rule. The matching compiler option is kept off
+  because, since Deno 2.8, it also applies to runtime transpilation of remote TS
+  dependencies and breaks deno-dom.
 - All external imports must be aliased in the relevant Deno config:
   `import_map.json` for the main repo, and `src/blog/client/deno.json` for
   browser bundles under `src/blog/client/`.

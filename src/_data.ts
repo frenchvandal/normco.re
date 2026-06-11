@@ -1,6 +1,6 @@
-import {
-  type SiteChromeData,
-  type SiteManifestData,
+import type {
+  SiteChromeData,
+  SiteManifestData,
 } from "./utils/site-manifest.ts";
 import {
   getDefaultSiteDescription,

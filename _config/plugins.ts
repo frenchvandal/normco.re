@@ -151,6 +151,9 @@ export function registerPlugins(
   );
   site.use(
     robots({
+      // Disable the default `allow: "*"` rule: the grouped wildcard rule
+      // below already covers it and the default would emit a duplicate group.
+      allow: [],
       rules: buildRobotsRules(),
     }),
   );

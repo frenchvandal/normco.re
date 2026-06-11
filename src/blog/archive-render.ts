@@ -1,6 +1,6 @@
-import {
-  type ArchiveMonthNavModel,
-  type ArchiveTimelineItemModel,
+import type {
+  ArchiveMonthNavModel,
+  ArchiveTimelineItemModel,
 } from "./archive-view-model.ts";
 import type { SiteLanguage } from "../utils/i18n.ts";
 import { escapeHtml } from "../utils/html.ts";

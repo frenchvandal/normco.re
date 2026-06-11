@@ -159,7 +159,11 @@
     "jsxImportSource": "lume",
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    "verbatimModuleSyntax": true,
+    // Kept off at the compiler level: since Deno 2.8 this option also applies
+    // to runtime transpilation of remote TS dependencies, and deno-dom 0.1.56
+    // imports type-only symbols without `import type`. Local `import type`
+    // discipline is enforced by the `verbatim-module-syntax` lint rule below.
+    "verbatimModuleSyntax": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
@@ -175,13 +179,15 @@
   },
 
   "fmt": {
-    "exclude": ["**/*.xml"]
+    // SVG files are static artwork, not source; Deno 2.8 fmt would rewrap them.
+    "exclude": ["**/*.xml", "**/*.svg"]
   },
 
   "lint": {
     "plugins": ["./plugins/lume_lint.ts"],
     "rules": {
       "tags": ["recommended", "jsx"],
+      "include": ["verbatim-module-syntax"],
       "exclude": ["no-import-prefix"]
     }
   },
