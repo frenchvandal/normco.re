@@ -26,6 +26,7 @@ export const FEED_ITEMS = {
   published: "=date",
   updated: "=update_date",
   content: "=children",
+  categories: "=tags",
 } as const;
 
 export type FeedVariant = {

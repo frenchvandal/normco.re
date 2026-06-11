@@ -115,7 +115,12 @@ export function registerPlugins(
       order: ["avif", "webp", "jpg"],
     }),
   );
-  site.use(transformImages());
+  site.use(
+    transformImages({
+      // Limit parallel image processing to avoid memory pressure on CI runners.
+      concurrency: 8,
+    }),
+  );
   site.use(
     inline({
       copyAttributes: [/^data-/, /^aria-/, "focusable", "role"],

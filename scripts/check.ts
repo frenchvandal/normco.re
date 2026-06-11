@@ -8,12 +8,13 @@ import {
 async function runDenoCheck(
   files: readonly string[],
   configPath?: string,
+  forwardArgs: readonly string[] = [],
 ): Promise<void> {
   if (files.length === 0) {
     return;
   }
 
-  const args = ["check"];
+  const args = ["check", ...forwardArgs];
 
   if (configPath !== undefined) {
     args.push("--config", configPath);
@@ -35,6 +36,14 @@ async function runDenoCheck(
 }
 
 if (import.meta.main) {
-  await runDenoCheck(await collectRootCheckFiles());
-  await runDenoCheck(await collectFrontendFiles(), FRONTEND_CONFIG);
+  const forwardArgs = Deno.args.filter((arg) =>
+    arg === "--watch" || arg.startsWith("--watch=")
+  );
+
+  await runDenoCheck(await collectRootCheckFiles(), undefined, forwardArgs);
+  await runDenoCheck(
+    await collectFrontendFiles(),
+    FRONTEND_CONFIG,
+    forwardArgs,
+  );
 }

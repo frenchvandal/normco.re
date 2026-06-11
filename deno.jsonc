@@ -15,6 +15,10 @@
       "description": "Type-check the entire project",
       "command": "deno run --allow-read --allow-run scripts/check.ts"
     },
+    "check:watch": {
+      "description": "Type-check the entire project in watch mode",
+      "command": "deno run --allow-read --allow-run scripts/check.ts -- --watch"
+    },
     "coverage:html": {
       "description": "Generate an HTML report from the latest Deno coverage run",
       "command": "deno coverage .tmp/deno-coverage --html"
@@ -50,6 +54,14 @@
     "locks:regen": {
       "description": "Regenerate the root and frontend deno.lock files from the current dependency graphs",
       "command": "deno run --allow-read --allow-write=deno.lock,deno.lock.bak,src/blog/client/deno.lock,src/blog/client/deno.lock.bak --allow-run scripts/regenerate-locks.ts"
+    },
+    "audit": {
+      "description": "Audit dependencies for known vulnerabilities",
+      "command": "deno audit"
+    },
+    "audit:fix": {
+      "description": "Audit and auto-fix vulnerable dependencies where possible",
+      "command": "deno audit --fix"
     },
     "lume": {
       "description": "Run Lume command",
@@ -154,7 +166,7 @@
     "strict": true
   },
 
-  "unstable": ["raw-imports"],
+  "unstable": [],
 
   "nodeModulesDir": "none",
 

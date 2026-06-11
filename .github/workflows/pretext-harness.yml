@@ -41,6 +41,8 @@ jobs:
 
       - name: Run Pretext visual harness comparison
         run: deno task --frozen pretext:harness:compare:ci
+        env:
+          LUME_CONCURRENCY: 4
 
       - name: Run Pretext React harness
         run: deno task --frozen pretext:react-harness:ci

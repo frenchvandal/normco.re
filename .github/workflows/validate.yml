@@ -53,3 +53,5 @@ jobs:
 
       - name: Build site
         run: deno task build
+        env:
+          LUME_CONCURRENCY: 4

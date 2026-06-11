@@ -18,6 +18,7 @@ describe("plugins/feeds.ts", () => {
     assertEquals(FEED_ITEMS.content, "=children");
     assertEquals(FEED_ITEMS.published, "=date");
     assertEquals(FEED_ITEMS.updated, "=update_date");
+    assertEquals(FEED_ITEMS.categories, "=tags");
   });
 
   it("defines one localized feed variant per supported language", () => {

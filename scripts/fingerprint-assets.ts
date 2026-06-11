@@ -1,5 +1,4 @@
 import { parseArgs } from "@std/cli";
-import { encodeHex } from "@std/encoding/hex";
 import { walk } from "@std/fs";
 import { basename, extname } from "@std/path";
 
@@ -66,7 +65,7 @@ function toFingerprintedUrl(urlPath: string, hash: string): string {
 
 async function hashContent(content: Uint8Array): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", content.slice());
-  const hash = encodeHex(new Uint8Array(digest));
+  const hash = new Uint8Array(digest).toHex();
 
   return hash.slice(0, HASH_LENGTH);
 }
