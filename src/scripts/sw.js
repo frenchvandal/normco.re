@@ -68,12 +68,6 @@ const STATIC_ASSETS = [
   "/android-chrome-192x192.png",
   "/android-chrome-512x512.png",
   "/style.css",
-  "/critical/about.css",
-  "/critical/archive.css",
-  "/critical/home.css",
-  "/critical/post.css",
-  "/critical/syndication.css",
-  "/critical/tag.css",
   ...PRECACHED_SCRIPT_ASSET_URLS,
   "/feed.atom",
   "/feed.xml",
@@ -395,12 +389,10 @@ async function networkFirstPage(request, preloadResponsePromise) {
  * Stale-while-revalidate strategy for feeds with a 30-minute TTL.
  *
  * @param {Request} request
+ * @param {FetchEvent | undefined} event
  * @returns {Promise<Response>}
  */
-async function staleWhileRevalidateFeed(request) {
-  const cache = await caches.open(FEED_CACHE);
-  const cached = await cache.match(request);
-
+async function staleWhileRevalidateFeed(request, event) {
   const refreshPromise = fetchWithTimeout(
     request,
     undefined,
@@ -408,6 +400,7 @@ async function staleWhileRevalidateFeed(request) {
   )
     .then(async (networkResponse) => {
       if (networkResponse.ok) {
+        const cache = await caches.open(FEED_CACHE);
         const headers = new Headers(networkResponse.headers);
         headers.set("x-sw-cached-at", Date.now().toString());
 
@@ -425,6 +418,13 @@ async function staleWhileRevalidateFeed(request) {
       return networkResponse;
     })
     .catch(() => undefined);
+
+  if (event !== undefined && typeof event.waitUntil === "function") {
+    event.waitUntil(refreshPromise);
+  }
+
+  const cache = await caches.open(FEED_CACHE);
+  const cached = await cache.match(request);
 
   if (cached !== undefined) {
     const cachedAt = Number.parseInt(
@@ -498,7 +498,7 @@ sw.addEventListener("fetch", /** @param {FetchEvent} event */ (event) => {
     url.pathname.endsWith("/feed.json");
 
   if (isFeedRoute) {
-    event.respondWith(staleWhileRevalidateFeed(request));
+    event.respondWith(staleWhileRevalidateFeed(request, event));
     return;
   }
 

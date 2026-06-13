@@ -8,6 +8,7 @@ import { asLumeData, asLumeHelpers } from "../test/lume.ts";
 
 import galleryPage, { searchIndexed } from "./gallery.page.tsx";
 import {
+  GALLERY_MASONRY_MEDIA_QUERY,
   GALLERY_RESPONSIVE_IMAGE_SIZES,
   GALLERY_RESPONSIVE_IMAGE_TRANSFORMS,
 } from "./gallery/constants.ts";
@@ -73,7 +74,11 @@ describe("gallery.page.tsx", () => {
       `transform-images="${GALLERY_RESPONSIVE_IMAGE_TRANSFORMS}"`,
     );
     assertStringIncludes(html, 'script id="blog-gallery-data"');
-    assertStringIncludes(html, 'src="/scripts/gallery.js"');
+    assertStringIncludes(html, 'script.src = "/scripts/gallery.js"');
+    assertStringIncludes(html, 'script.type = "module"');
+    assertStringIncludes(html, `matchMedia("${GALLERY_MASONRY_MEDIA_QUERY}")`);
+    assertStringIncludes(html, 'addEventListener("change"');
+    assertNotMatch(html, /script\.defer\s*=/);
     assertStringIncludes(html, 'href="/posts/example-post/"');
     assertStringIncludes(html, "Open article");
   });

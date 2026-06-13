@@ -15,4 +15,10 @@ describe("slugify()", () => {
   it("trims surrounding whitespace", () => {
     assertEquals(slugify("  one two  "), "one-two");
   });
+
+  it("trims leading and trailing dashes", () => {
+    assertEquals(slugify("& Design"), "design");
+    assertEquals(slugify("Note —"), "note");
+    assertEquals(slugify("--hello--"), "hello");
+  });
 });

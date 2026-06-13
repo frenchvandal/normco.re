@@ -50,6 +50,21 @@ function textOf(element: Element): string {
 }
 
 /**
+ * Parses a numeric dimension attribute, keeping only positive integers so the
+ * emitted block stays within the `integer, minimum 1` contract schema. Values
+ * like `"100px"`, `"50%"`, `"0"`, or `"100.5"` are ignored.
+ */
+function parseDimension(value: string | null): number | undefined {
+  if (value === null) {
+    return undefined;
+  }
+
+  const parsed = Number(value);
+
+  return Number.isInteger(parsed) && parsed >= 1 ? parsed : undefined;
+}
+
+/**
  * Parses a DOM element into a content block, or returns `undefined`
  * if the element does not map to a known block type.
  */
@@ -82,18 +97,14 @@ function parseBlock(element: Element): ContentBlock | undefined {
   if (tag === "img") {
     const src = element.getAttribute("src") ?? "";
     const alt = element.getAttribute("alt") ?? "";
+    const width = parseDimension(element.getAttribute("width"));
+    const height = parseDimension(element.getAttribute("height"));
     const block: ImageBlock = { type: "image", src, alt };
-    const width = element.getAttribute("width");
-    const height = element.getAttribute("height");
-
-    if (width === null) {
-      return block;
-    }
 
     return {
       ...block,
-      width: Number(width),
-      ...(height !== null ? { height: Number(height) } : {}),
+      ...(width !== undefined ? { width } : {}),
+      ...(height !== undefined ? { height } : {}),
     };
   }
 

@@ -4,6 +4,7 @@ import { asLumeData } from "../../test/lume.ts";
 
 import pretextProbePage, {
   description,
+  draft,
   extraStylesheets,
   searchIndexed,
   title,
@@ -22,6 +23,7 @@ describe("pretext/probe.page.tsx", () => {
     assertEquals(extraStylesheets, ["/styles/blog-antd.css"]);
     assertEquals(searchIndexed, false);
     assertEquals(unlisted, true);
+    assertEquals(draft, false);
   });
 
   it("renders the localized probe root and browser entrypoint", () => {

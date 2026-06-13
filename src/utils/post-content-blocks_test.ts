@@ -70,4 +70,26 @@ describe("parsePostContent()", () => {
       text: "From main",
     }]);
   });
+
+  it("ignores non-numeric image dimensions and keeps valid ones", () => {
+    const document = createDocument(`
+      <article class="post-content">
+        <img src="/a.jpg" alt="A" width="100px" height="auto">
+        <img src="/b.jpg" alt="B" width="50%">
+        <img src="/c.jpg" alt="C" height="600">
+        <img src="/d.jpg" alt="D" width="800" height="invalid">
+        <img src="/e.jpg" alt="E" width="0" height="0">
+        <img src="/f.jpg" alt="F" width="100.5" height="80.2">
+      </article>
+    `);
+
+    assertEquals(parsePostContent(document), [
+      { type: "image", src: "/a.jpg", alt: "A" },
+      { type: "image", src: "/b.jpg", alt: "B" },
+      { type: "image", src: "/c.jpg", alt: "C", height: 600 },
+      { type: "image", src: "/d.jpg", alt: "D", width: 800 },
+      { type: "image", src: "/e.jpg", alt: "E" },
+      { type: "image", src: "/f.jpg", alt: "F" },
+    ]);
+  });
 });

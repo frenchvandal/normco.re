@@ -55,30 +55,23 @@ describe("_config/assets.ts", () => {
     assertEquals(
       calls.some((call) =>
         call.method === "add" &&
-        call.args[0] === "/critical/about.css"
+        call.args[0] === "/style.css"
       ),
       true,
     );
     assertEquals(
       calls.some((call) =>
         call.method === "add" &&
-        call.args[0] === "/critical/home.css"
+        call.args[0] === "/styles/blog-antd.css"
       ),
       true,
     );
     assertEquals(
       calls.some((call) =>
         call.method === "add" &&
-        call.args[0] === "/critical/post.css"
+        String(call.args[0]).startsWith("/critical/")
       ),
-      true,
-    );
-    assertEquals(
-      calls.some((call) =>
-        call.method === "add" &&
-        call.args[0] === "/critical/syndication.css"
-      ),
-      true,
+      false,
     );
     assertEquals(
       calls.some((call) =>

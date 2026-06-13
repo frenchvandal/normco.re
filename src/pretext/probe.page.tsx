@@ -11,6 +11,18 @@ export const layout = "layouts/base.tsx";
 export const extraStylesheets = ["/styles/blog-antd.css"];
 export const searchIndexed = false;
 export const unlisted = true;
+
+function resolveProbeDraft(): boolean {
+  try {
+    return Deno.env.get("SKIP_PRETEXT_PROBE") === "true";
+  } catch {
+    // In restricted runtimes without env access, keep the probe available for
+    // local development and harness runs.
+    return false;
+  }
+}
+
+export const draft = resolveProbeDraft();
 export const title = "Pretext Browser Probe";
 export const description =
   "Internal browser-only route for measuring Pretext-driven React surfaces.";

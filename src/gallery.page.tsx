@@ -1,6 +1,7 @@
 import StatePanel from "./_components/StatePanel.tsx";
 import {
   GALLERY_DATA_SCRIPT_ID,
+  GALLERY_MASONRY_MEDIA_QUERY,
   GALLERY_RESPONSIVE_IMAGE_SIZES,
   GALLERY_RESPONSIVE_IMAGE_TRANSFORMS,
   GALLERY_ROOT_ID,
@@ -198,7 +199,30 @@ export default async (
           <script id="${GALLERY_DATA_SCRIPT_ID}" type="application/json">${
         serializeJsonForScript(galleryPayload)
       }</script>
-          <script src="/scripts/gallery.js" type="module" defer="defer"></script>
+          <script>
+            (() => {
+              if (window.__phGalleryLoaded) return;
+              const load = () => {
+                window.__phGalleryLoaded = true;
+                const script = document.createElement("script");
+                script.src = "/scripts/gallery.js";
+                script.type = "module";
+                document.body.append(script);
+              };
+              const mql = window.matchMedia("${GALLERY_MASONRY_MEDIA_QUERY}");
+              if (mql.matches) {
+                load();
+                return;
+              }
+              const onChange = (event) => {
+                if (event.matches) {
+                  mql.removeEventListener("change", onChange);
+                  load();
+                }
+              };
+              mql.addEventListener("change", onChange);
+            })();
+          </script>
         </section>`
   }
     </div>

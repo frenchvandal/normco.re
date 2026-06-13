@@ -36,7 +36,7 @@ export function buildRobotsRules(): RobotsRule[] {
     {
       userAgent: "*",
       allow: "/",
-      disallow: ["/404", "/404.html", ...buildOfflineDisallows()],
+      disallow: ["/404", "/404.html", "/pretext/", ...buildOfflineDisallows()],
     },
     { contentSignal: ROBOTS_CONTENT_SIGNAL },
   ];

@@ -219,21 +219,18 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, "#main-content");
     });
 
-    it("uses a route-scoped critical stylesheet before deferring /style.css", async () => {
+    it("keeps /style.css render-blocking on the home route", async () => {
       const html = await renderBase(makeData({}));
 
       assertMatch(
         html,
-        /<link[^>]*rel="stylesheet"[^>]*href="\/critical\/home\.css"[^>]*fetchpriority="high"/,
+        /<link[^>]*rel="stylesheet"[^>]*href="\/style\.css"[^>]*fetchpriority="high"/,
       );
-      assertMatch(
-        html,
-        /href="\/critical\/home\.css"[\s\S]*<link[^>]*rel="preload"[^>]*href="\/style\.css"[^>]*as="style"/,
-      );
-      assertNotMatch(html, /<style>[\s\S]*--ph-font-measure[\s\S]*<\/style>/);
+      assertNotMatch(html, /href="\/critical\//);
+      assertNotMatch(html, /rel="preload"[^>]*href="\/style\.css"/);
     });
 
-    it("keeps route-level above-the-fold styles render-blocking on deferred routes", async () => {
+    it("keeps /style.css render-blocking on post detail routes", async () => {
       const html = await renderBase(makeData({
         url: "/posts/lorem-ipsum/",
         extraStylesheets: ["/styles/blog-antd.css"],
@@ -243,50 +240,14 @@ describe("base.tsx layout", () => {
       assertStringIncludes(html, 'href="/styles/blog-antd.css"');
       assertMatch(
         html,
-        /href="\/critical\/post\.css".*href="\/styles\/blog-antd\.css".*href="\/style\.css"/,
-      );
-      assertMatch(
-        html,
-        /<link[^>]*rel="preload"[^>]*href="\/style\.css"[^>]*as="style"/,
-      );
-      assertMatch(
-        html,
-        /<noscript>\s*<link rel="stylesheet" href="\/style\.css"/,
+        /<link[^>]*rel="stylesheet"[^>]*href="\/style\.css"[^>]*fetchpriority="high"/,
       );
       assertMatch(
         html,
         /href="\/styles\/blog-antd\.css"[^>]*fetchpriority="high"/,
       );
-    });
-
-    it("extends route-scoped critical CSS to the about page", async () => {
-      const html = await renderBase(makeData({
-        url: "/about/",
-      }));
-
-      assertMatch(
-        html,
-        /<link[^>]*rel="stylesheet"[^>]*href="\/critical\/about\.css"[^>]*fetchpriority="high"/,
-      );
-      assertMatch(
-        html,
-        /href="\/critical\/about\.css"[\s\S]*<link[^>]*rel="preload"[^>]*href="\/style\.css"[^>]*as="style"/,
-      );
-    });
-
-    it("extends route-scoped critical CSS to the syndication page", async () => {
-      const html = await renderBase(makeData({
-        url: "/syndication/",
-      }));
-
-      assertMatch(
-        html,
-        /<link[^>]*rel="stylesheet"[^>]*href="\/critical\/syndication\.css"[^>]*fetchpriority="high"/,
-      );
-      assertMatch(
-        html,
-        /href="\/critical\/syndication\.css"[\s\S]*<link[^>]*rel="preload"[^>]*href="\/style\.css"[^>]*as="style"/,
-      );
+      assertNotMatch(html, /href="\/critical\//);
+      assertNotMatch(html, /rel="preload"[^>]*href="\/style\.css"/);
     });
 
     it("keeps /style.css render-blocking on routes without critical coverage", async () => {
@@ -302,7 +263,7 @@ describe("base.tsx layout", () => {
       assertNotMatch(html, /rel="preload"[^>]*href="\/style\.css"/);
     });
 
-    it("keeps the Pretext probe on the conservative blocking stylesheet path", async () => {
+    it("keeps the Pretext probe on the blocking stylesheet path", async () => {
       const html = await renderBase(makeData({
         url: "/pretext/probe/",
         extraStylesheets: ["/styles/blog-antd.css"],

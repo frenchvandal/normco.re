@@ -76,4 +76,4 @@ jobs:
           cdn-enabled: true
           cdn-base-url: ${{ secrets.OSS_CDN_BASE_URL }}
           cdn-actions: refresh
-          build-command: deno task --frozen build
+          build-command: SKIP_PRETEXT_PROBE=true deno task --frozen build

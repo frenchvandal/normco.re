@@ -45,7 +45,7 @@ function isHeadingLevel(value: number): value is 2 | 3 {
 const headingTextEncoder = new TextEncoder();
 
 function sanitizeHeadingId(value: string): string {
-  return slugify(value).replace(/^-+|-+$/g, "");
+  return slugify(value);
 }
 
 function ensureLeadingLetter(value: string): string {

@@ -198,6 +198,7 @@ function createRuntime(
         };
         preloadResponse?: Promise<Response | undefined>;
         respondWith(promise: Promise<Response>): void;
+        waitUntil?(promise: Promise<unknown>): void;
       }) => void;
     },
     getActivateListener() {
@@ -355,6 +356,7 @@ describe("sw.js", () => {
   it("serves stale cached feeds immediately while refreshing in the background", async () => {
     let resolveFeedFetch: ((response: Response) => void) | undefined;
     let cachePutCount = 0;
+    let waitUntilPromise: Promise<unknown> | undefined;
     const cachedAt = Date.now().toString();
     const runtime = createRuntime({
       fetchImpl() {
@@ -401,11 +403,18 @@ describe("sw.js", () => {
       respondWith(promise) {
         responsePromise = promise;
       },
+      waitUntil(promise) {
+        waitUntilPromise = promise;
+      },
     });
 
     assertExists(
       responsePromise,
       "Expected stale feed request to call respondWith().",
+    );
+    assertExists(
+      waitUntilPromise,
+      "Expected stale feed request to extend the SW lifetime with waitUntil().",
     );
 
     let timeoutId: ReturnType<typeof setTimeout> | number = 0;
@@ -429,7 +438,7 @@ describe("sw.js", () => {
       }),
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitUntilPromise;
     assertEquals(cachePutCount, 1);
   });
 
