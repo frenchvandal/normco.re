@@ -188,8 +188,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/form@1.8.3_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
-      "integrity": "sha512-jNkat3uxZ246ELudKwnjQhnDI8+rSxgLxjztvQU3Mrb0G+LwDyOrPu9RNfekOjqU5GQ5QJepi225x+9LhCizJw==",
+    "@rc-component/form@1.8.4_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
+      "integrity": "sha512-I2FHNMWoiGQNjC+hQFhAj/rQeScAIBc+AkZqvu4Zyaxe4I3WOVpQte2E5lyZhruswyT8aULYHu1clPaPwE9L2A==",
       "dependencies": [
         "@rc-component/async-validator",
         "@rc-component/util",
