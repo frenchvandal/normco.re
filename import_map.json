@@ -48,7 +48,7 @@
     "npm/antd": "npm:antd@6.4.4",
     "npm:esbuild@0.28.0": "npm:esbuild@0.28.1",
     "npm/date-fns/locale": "npm:date-fns@4.4.0/locale",
-    "npm/faker-js": "npm:@faker-js/faker@^10.4.0",
+    "npm/faker-js": "npm:@faker-js/faker@^10.5.0",
     "npm/jsdom": "npm:jsdom@29.1.1",
     "npm/playwright": "npm:playwright@1.61.0",
     "npm/pretext": "npm:@chenglou/pretext@0.0.8",
