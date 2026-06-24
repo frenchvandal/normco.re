@@ -50,7 +50,7 @@
     "npm/date-fns/locale": "npm:date-fns@4.4.0/locale",
     "npm/faker-js": "npm:@faker-js/faker@^10.5.0",
     "npm/jsdom": "npm:jsdom@29.1.1",
-    "npm/playwright": "npm:playwright@1.61.0",
+    "npm/playwright": "npm:playwright@1.61.1",
     "npm/pretext": "npm:@chenglou/pretext@0.0.8",
     "npm/react": "npm:react@19.2.7",
     "npm/react-dom/client": "npm:react-dom@19.2.7/client",
