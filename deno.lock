@@ -64,7 +64,7 @@
     "jsr:@std/yaml@^1.0.5": "1.1.1",
     "jsr:@std/yaml@^1.1.1": "1.1.1",
     "npm:@actions/core@3.0.1": "3.0.1",
-    "npm:@ant-design/icons-svg@4.4.2": "4.4.2",
+    "npm:@ant-design/icons-svg@4.5.0": "4.5.0",
     "npm:@ant-design/static-style-extract@2.1.0": "2.1.0_antd@6.4.5__react@19.2.7__react-dom@19.2.7___react@19.2.7__date-fns@4.4.0_react@19.2.7_react-dom@19.2.7__react@19.2.7_date-fns@4.4.0",
     "npm:@chenglou/pretext@0.0.8": "0.0.8",
     "npm:@faker-js/faker@^10.5.0": "10.5.0",
@@ -363,8 +363,8 @@
     "@ant-design/fast-color@3.0.1": {
       "integrity": "sha512-esKJegpW4nckh0o6kV3Tkb7NPIZYbPnnFxmQDUmL08ukXZAvV85TZBr70eGuke/CIArLaP6aw8lt9KILjnWuOw=="
     },
-    "@ant-design/icons-svg@4.4.2": {
-      "integrity": "sha512-vHbT+zJEVzllwP+CM+ul7reTEfBR0vgxFe7+lREAsAA7YGsYpboiq2sQNeQeRvh09GfQgs/GyFEvZpJ9cLXpXA=="
+    "@ant-design/icons-svg@4.5.0": {
+      "integrity": "sha512-1BTUFyKPTBZ53MuTP8s0k5SFEXL7o3VHEOwLgzaoWKwnBeqIcqUtVshc4SKzhI6uACfqhJqBwBUE9FsWR3uULA=="
     },
     "@ant-design/icons@6.2.5_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
       "integrity": "sha512-0hKtoKqTjGFOndUyJLJmC9Cg6k4rEO7rLo6xmgbNJH+/ZX1C57RVals2v1j1knHl9n7Q+sBOveTvn931wLOCKw==",
@@ -2717,7 +2717,7 @@
       "jsr:@std/xml@~0.1.2",
       "jsr:@std/yaml@^1.1.1",
       "npm:@actions/core@3.0.1",
-      "npm:@ant-design/icons-svg@4.4.2",
+      "npm:@ant-design/icons-svg@4.5.0",
       "npm:@ant-design/static-style-extract@2.1.0",
       "npm:@chenglou/pretext@0.0.8",
       "npm:@faker-js/faker@^10.5.0",
