@@ -415,8 +415,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/table@1.10.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
-      "integrity": "sha512-b3PjqB9Gp25p5t/zq+9QrbXbodkptT8/zvLmwgd2FNPUUtaYyDnQqfxeD5a7ao8E8lpinLHsi2u2vdfPhyNvAw==",
+    "@rc-component/table@1.10.3_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
+      "integrity": "sha512-AiONZrgXVIewFC2Pk3GTqbov+sJhWDZZ96QbJZQGNSrX/vcMzkqoFJVcipGH4OY6EmFSKApwbOhQth6DVyB6gQ==",
       "dependencies": [
         "@rc-component/context",
         "@rc-component/resize-observer",
