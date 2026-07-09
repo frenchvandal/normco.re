@@ -1181,8 +1181,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/table@1.10.3_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
-      "integrity": "sha512-AiONZrgXVIewFC2Pk3GTqbov+sJhWDZZ96QbJZQGNSrX/vcMzkqoFJVcipGH4OY6EmFSKApwbOhQth6DVyB6gQ==",
+    "@rc-component/table@1.10.4_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
+      "integrity": "sha512-HwoTnrwc29zeoXkXGhWqzJh8FIibGUxi1jM4LtoSzmR9d5Vv5osUQpZxnXKBP8iOCvyD6BQzZm1nXJRcnrxpAg==",
       "dependencies": [
         "@rc-component/context",
         "@rc-component/resize-observer",
@@ -1473,8 +1473,8 @@
         "fill-range"
       ]
     },
-    "browserslist@4.28.5": {
-      "integrity": "sha512-Cu2E6QejHWzuDMTkuwgpABFgDfZrXLQq5V13YOACZx4mFAG4IwGTbTfHPMr4WtxlHoXSM8FIuRwYYCz5XiabaQ==",
+    "browserslist@4.28.4": {
+      "integrity": "sha512-MTc8i/x9jBQd1iMw2CFGS+rwMa07eYjLR0CCTLDACl9xhxy+nIs3KeML/biicXtk9JrZ6dnnTatmc7ErPXIxqw==",
       "dependencies": [
         "baseline-browser-mapping",
         "caniuse-lite",
@@ -1487,8 +1487,8 @@
     "buffer-from@1.1.2": {
       "integrity": "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ=="
     },
-    "caniuse-lite@1.0.30001803": {
-      "integrity": "sha512-g/uHREV2ZpK9qMalCsWaxmA6ol+DX8GYhuf3T40RKoP+oL7vhRJh8LNt73PCjpnR6l14FzfPrB5Yux4PKm2meg=="
+    "caniuse-lite@1.0.30001800": {
+      "integrity": "sha512-MMHtuAz9Ys840zAY5F4k6fV5GaivZ9sPk+nz0mY+GYVzRBnYkN0mpqkSR92oWRQ19yQWo4HvBV/FnC16AJX8MA=="
     },
     "ccount@2.0.1": {
       "integrity": "sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg=="
@@ -1613,8 +1613,8 @@
         "domhandler"
       ]
     },
-    "electron-to-chromium@1.5.388": {
-      "integrity": "sha512-Pl/aJaqOOxYxda3vcx1IKSJimwYXHDkEnGn0F+kG2EE68dDtx2uCinaS+Vih8Z91B9t8CSAbiF/HKyWcnXjhzw=="
+    "electron-to-chromium@1.5.387": {
+      "integrity": "sha512-TaxwufTFDufvPEoXdhwVrA3UdFWBeWGkYoJ1K8ldF1xe6gKfth6iRNS5lTQ5JPNOHdGQm8PT1QYKUqFLCiUefQ=="
     },
     "entities@4.5.0": {
       "integrity": "sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw=="
@@ -2273,11 +2273,11 @@
     "throttle-debounce@5.0.2": {
       "integrity": "sha512-B71/4oyj61iNH0KeCamLuE2rmKuTO5byTOSVwECM5FA7TiAiAW+UqTKZ9ERueC4qvgSttUhdmq1mXC3kJqGX7A=="
     },
-    "tldts-core@7.4.7": {
-      "integrity": "sha512-rNlAI8fKn/JckBMUSbNL/ES2kmDiurWaE49l+ikwEc9A6lFR7gMx9AhgQMQKBK4H5w4pKLH64JzZfB99uRsGNQ=="
+    "tldts-core@7.4.6": {
+      "integrity": "sha512-TkQNGJIhlEphpHCjKodMTSe23egUZr/g+flI2qkLgiJ/maAzSgXypSLRTNH3nCmqgayEmtcJBiLcfODSAr1xoA=="
     },
-    "tldts@7.4.7": {
-      "integrity": "sha512-56L0/9HELHSsG1bFCzay8UoLxzRL7kpFf7Wl5q/kSYwiSJGACvro61xnKzPNM+SadxllzdtXsKDSXE7HPeqIAw==",
+    "tldts@7.4.6": {
+      "integrity": "sha512-rbP0Gyx8b3Ae9yO//CU2wbSnQNoQ66m1nJdSbSHmnwKwzkkz/u8mERYU8T2rmlmy+bJvRNn84yNCW8gYqox44Q==",
       "dependencies": [
         "tldts-core"
       ],
@@ -2356,7 +2356,7 @@
         "unist-util-visit-parents"
       ]
     },
-    "update-browserslist-db@1.2.3_browserslist@4.28.5": {
+    "update-browserslist-db@1.2.3_browserslist@4.28.4": {
       "integrity": "sha512-Js0m9cx+qOgDxo0eMiFGEueWztz+d4+M3rGlmKPT+T4IS/jP4ylw3Nwpu6cpTTP8R1MAC1kF4VbdLt3ARf209w==",
       "dependencies": [
         "browserslist",
