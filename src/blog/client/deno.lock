@@ -8,7 +8,7 @@
     "npm:@ant-design/icons@6.3.2": "6.3.2_react@19.2.7_react-dom@19.2.7__react@19.2.7",
     "npm:@chenglou/pretext@0.0.8": "0.0.8",
     "npm:@types/react@19.2.4": "19.2.4",
-    "npm:antd@6.5.0": "6.5.0_react@19.2.7_react-dom@19.2.7__react@19.2.7",
+    "npm:antd@6.5.1": "6.5.1_react@19.2.7_react-dom@19.2.7__react@19.2.7",
     "npm:react-dom@19.2.7": "19.2.7_react@19.2.7",
     "npm:react@19.2.7": "19.2.7"
   },
@@ -181,8 +181,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/dropdown@1.0.2_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
-      "integrity": "sha512-6PY2ecUSYhDPhkNHHb4wfeAya04WhpmUSKzdR60G+kMNVUCX2vjT/AgTS0Lz0I/K6xrPMJ3enQbwVpeN3sHCgg==",
+    "@rc-component/dropdown@1.0.3_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
+      "integrity": "sha512-YTST/N6kpqpDz3IMuM/PSSZnrDpSOA6dgHv12gPA90ZTSLv2CoqkZ0+9NtwTY6BeO7dstPblSic2QJg7dSFy/g==",
       "dependencies": [
         "@rc-component/trigger",
         "@rc-component/util",
@@ -486,8 +486,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/trigger@3.9.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
-      "integrity": "sha512-LNsYvz60mrLJ/kRvKcHE7boUvcQfVMCfRqZ71x3Fo9AOiZ1KKIEqkzMA8DNvz2V3Bcvir/vwQNn7JF1NPODQ7Q==",
+    "@rc-component/trigger@3.10.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
+      "integrity": "sha512-uC3QSG7Ax3qLOE5Q2jLqJCJc4iBtJEHzNTPhqGvlRvRcU8x8CT5moIavRVe24YSQKCp2/D1GSq7y76SCSheuVA==",
       "dependencies": [
         "@rc-component/motion",
         "@rc-component/portal",
@@ -507,8 +507,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/util@1.11.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
-      "integrity": "sha512-awVlI3ub2vqfqkYxOBc/uQ0efm3jw0wcrhtO/YWLyZfxiKXczKwNbVuhlnyxytDt7H9pbbVQiqr+O6MLATtRYg==",
+    "@rc-component/util@1.12.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
+      "integrity": "sha512-AEjPL8JVdohIITaiXokyjL9WQ6tKWWjAYK9QU16tGNE9JaQABBQy+hA4H2Lup5MgXy9yY3iLrbZJheuU13hTdQ==",
       "dependencies": [
         "is-mobile",
         "react",
@@ -533,8 +533,8 @@
         "csstype"
       ]
     },
-    "antd@6.5.0_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
-      "integrity": "sha512-9zbVc9UukfGuqCvIAov01nlpDQWfARNmZQyt21ZhqLX7ilXmi4cdkp12xA48WEmXRXwZvno8A03qQuGE9JG8fg==",
+    "antd@6.5.1_react@19.2.7_react-dom@19.2.7__react@19.2.7": {
+      "integrity": "sha512-VZVVF9zYI6S0NHqboVhCoY9Iiqj6dphW1NPB+sEaAf2HuIQ0haXWXj7ZvAXTRDzusktV6+cvvrSZEdRi4twATg==",
       "dependencies": [
         "@ant-design/colors",
         "@ant-design/cssinjs",
@@ -615,8 +615,8 @@
         "scheduler"
       ]
     },
-    "react-is@18.3.1": {
-      "integrity": "sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg=="
+    "react-is@19.2.7": {
+      "integrity": "sha512-kZFnouyVv7eP/Phmrlo9FK+zcAdriZJvzxXHF1Sl1P377WSGe2G/JxVolhTrB/jeV47lKImhNUsijjHAAbcl/A=="
     },
     "react@19.2.7": {
       "integrity": "sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ=="
@@ -647,7 +647,7 @@
       "npm:@ant-design/icons@6.3.2",
       "npm:@chenglou/pretext@0.0.8",
       "npm:@types/react@19.2.4",
-      "npm:antd@6.5.0",
+      "npm:antd@6.5.1",
       "npm:dayjs@1.11.21",
       "npm:react-dom@19.2.7",
       "npm:react@19.2.7"
