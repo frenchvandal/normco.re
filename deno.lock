@@ -81,7 +81,7 @@
     "npm:html-validate@11.2.0": "11.2.0",
     "npm:ico-endec@0.1.6": "0.1.6",
     "npm:image-dimensions@2.5.1": "2.5.1",
-    "npm:jsdom@30.0.0": "30.0.0",
+    "npm:jsdom@30.0.1": "30.0.1",
     "npm:lightningcss-wasm@1.32.0": "1.32.0",
     "npm:markdown-it-attrs@4.5.0": "4.5.0_markdown-it@14.1.1",
     "npm:markdown-it-deflist@3.0.0": "3.0.0",
@@ -1888,8 +1888,8 @@
     "is-potential-custom-element-name@1.0.1": {
       "integrity": "sha512-bCYeRA2rVibKZd+s2625gGnGF/t7DSqDs4dP7CrLA1m7jKWz6pps0LpYLJN8Q64HtmPKJ1hrN3nzPNKFEKOUiQ=="
     },
-    "jsdom@30.0.0": {
-      "integrity": "sha512-JQHfRGmmKmaZoUAvIgff5jjG/0SzTQlGz8c7t72KzBzo8ZULEjAjnYE0sNwBOUA4QtWwYE2xoYitg8NFsmiYxA==",
+    "jsdom@30.0.1": {
+      "integrity": "sha512-52v7mUVUfNQVYYqE1lcdaymWL0njO7lTLUog6ZvW2U5KsbiLk/GnZlVJ+qx0xfNJZ6Gn+KSpPNE52vurbxZwrA==",
       "dependencies": [
         "@asamuzakjp/css-color",
         "@asamuzakjp/dom-selector",
@@ -2856,7 +2856,7 @@
       "npm:antd@6.5.2",
       "npm:date-fns@4.4.0",
       "npm:esbuild@0.28.1",
-      "npm:jsdom@30.0.0",
+      "npm:jsdom@30.0.1",
       "npm:playwright@1.62.0",
       "npm:react-dom@19.2.8",
       "npm:react@19.2.8",
