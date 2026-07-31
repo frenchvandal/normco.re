@@ -191,8 +191,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/form@1.8.5_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
-      "integrity": "sha512-d24EYtvUOBhxEtSd/EqIu9DaMuqrWF2IRIvAFCTM6NQ/GJIYNr8DvEpUSUlv2uPxEJ0ZPwYQ+wwlGIAaiHvdrw==",
+    "@rc-component/form@1.8.6_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
+      "integrity": "sha512-1EXVsSKPZC6kGrIqxVck7kAWM6T65b6et/n5wIcyiaIa41VrDshD0nVLHoBDEIZr2ATQsOP6icb4XQkNFMLBAw==",
       "dependencies": [
         "@rc-component/async-validator",
         "@rc-component/util",
