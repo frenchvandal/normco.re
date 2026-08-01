@@ -2321,8 +2321,15 @@
   }
   .anticon svg {
     display: inline-block;
+    vertical-align: inherit;
   }
-  .anticon .anticon .anticon-icon {
+  .anticon::before {
+    display: none;
+  }
+  .anticon[tabindex] {
+    cursor: pointer;
+  }
+  .anticon .anticon-icon {
     display: block;
   }
   .anticon-spin {
@@ -2337,6 +2344,6 @@
     }
   }
   .data-ant-cssinjs-cache-path {
-    content: "|ant-design-icons|anticon:m7a8xa";
+    content: "|ant-design-icons|anticon:mtsb22";
   }
 }

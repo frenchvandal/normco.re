@@ -8,7 +8,7 @@
     "npm:@ant-design/icons@6.3.2": "6.3.2_react@19.2.8_react-dom@19.2.8__react@19.2.8",
     "npm:@chenglou/pretext@0.0.8": "0.0.8",
     "npm:@types/react@19.2.4": "19.2.4",
-    "npm:antd@6.5.2": "6.5.2_react@19.2.8_react-dom@19.2.8__react@19.2.8",
+    "npm:antd@6.5.3": "6.5.3_react@19.2.8_react-dom@19.2.8__react@19.2.8",
     "npm:react-dom@19.2.8": "19.2.8_react@19.2.8",
     "npm:react@19.2.8": "19.2.8"
   },
@@ -309,8 +309,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/picker@1.11.0_dayjs@1.11.21_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
-      "integrity": "sha512-6qXGKtoJvO8sUd17m5cyNEbEJub0zflCHnaZTBBmj63DPRZYc0WEHN8rp6hFSl+yMCJS/dJY5G+1fQ8bLCuD7A==",
+    "@rc-component/picker@1.12.0_dayjs@1.11.21_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
+      "integrity": "sha512-0FZGgDiDZFMm2hcfGv4jyjm7yWIj2MiwfeTzLL0vWkO+8cCSKdiM9XhWpkn1aAsoI2EwUy48Oz2cGfvL8ZKrfw==",
       "dependencies": [
         "@rc-component/overflow",
         "@rc-component/resize-observer",
@@ -516,8 +516,8 @@
         "react-is"
       ]
     },
-    "@rc-component/virtual-list@1.4.0_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
-      "integrity": "sha512-qoyNStkTJQDezPjBibGA5HNxS9NiKJvemD1bLp7qfyxDlwy7ofPLUP0ZqJ47hR8AKcFaizd0AP/7QWLTLpudKQ==",
+    "@rc-component/virtual-list@1.5.1_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
+      "integrity": "sha512-boqHxdtyWC88u8quYgEO49bcBy5fzRiOcnBge+N4nLzs2k8hUQ/yw7JE9dM6yCBE4jSm5YSHVCVMS+suBuJGKA==",
       "dependencies": [
         "@babel/runtime@8.0.0",
         "@rc-component/resize-observer",
@@ -533,8 +533,8 @@
         "csstype"
       ]
     },
-    "antd@6.5.2_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
-      "integrity": "sha512-ntYx0lr4Jq192QnBkDWkDqEeoberXZ34vSE9SgiP/0J6DY8O0pzR3bVZLBsdpCSguVkwjtEAP+QNeMN7LNAvgw==",
+    "antd@6.5.3_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
+      "integrity": "sha512-Q5r8sztf9Yk9B70bSUjnPYMCJ4A/eZM7uMoTj8UAhlSKR9aftjEuBEPcNSmRux7hB+87rxO8vN1X4HNjR97qyQ==",
       "dependencies": [
         "@ant-design/colors",
         "@ant-design/cssinjs",
@@ -647,7 +647,7 @@
       "npm:@ant-design/icons@6.3.2",
       "npm:@chenglou/pretext@0.0.8",
       "npm:@types/react@19.2.4",
-      "npm:antd@6.5.2",
+      "npm:antd@6.5.3",
       "npm:dayjs@1.11.21",
       "npm:react-dom@19.2.8",
       "npm:react@19.2.8"
