@@ -4,7 +4,7 @@
     "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/internal@^1.0.12": "1.0.14",
     "jsr:@std/internal@^1.0.14": "1.0.14",
-    "jsr:@std/testing@^1.0.19": "1.0.19",
+    "jsr:@std/testing@^1.0.20": "1.0.20",
     "npm:@ant-design/icons@6.3.2": "6.3.2_react@19.2.8_react-dom@19.2.8__react@19.2.8",
     "npm:@chenglou/pretext@0.0.8": "0.0.8",
     "npm:@types/react@19.2.4": "19.2.4",
@@ -22,8 +22,8 @@
     "@std/internal@1.0.14": {
       "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
     },
-    "@std/testing@1.0.19": {
-      "integrity": "f4236172365b216728dc3cc8b5e80a9f4c33083d1e4ede7613d5b25b4014898e",
+    "@std/testing@1.0.20": {
+      "integrity": "21380ed438672762e4ec549cbf4fe41c5b68f5598773a30b64abe7375513e721",
       "dependencies": [
         "jsr:@std/assert",
         "jsr:@std/internal@^1.0.14"
@@ -643,7 +643,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/assert@^1.0.19",
-      "jsr:@std/testing@^1.0.19",
+      "jsr:@std/testing@^1.0.20",
       "npm:@ant-design/icons@6.3.2",
       "npm:@chenglou/pretext@0.0.8",
       "npm:@types/react@19.2.4",
