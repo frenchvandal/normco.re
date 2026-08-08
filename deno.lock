@@ -67,11 +67,11 @@
     "jsr:@std/yaml@^1.2.0": "1.2.0",
     "npm:@actions/core@3.0.1": "3.0.1",
     "npm:@ant-design/icons-svg@4.5.0": "4.5.0",
-    "npm:@ant-design/static-style-extract@2.1.0": "2.1.0_antd@6.5.3__react@19.2.8__react-dom@19.2.8___react@19.2.8__date-fns@4.4.0_react@19.2.8_react-dom@19.2.8__react@19.2.8_date-fns@4.4.0",
+    "npm:@ant-design/static-style-extract@2.1.0": "2.1.0_antd@6.5.4__react@19.2.8__react-dom@19.2.8___react@19.2.8__date-fns@4.4.0_react@19.2.8_react-dom@19.2.8__react@19.2.8_date-fns@4.4.0",
     "npm:@chenglou/pretext@0.0.8": "0.0.8",
     "npm:@faker-js/faker@^10.5.0": "10.5.0",
     "npm:@resvg/resvg-wasm@2.6.2": "2.6.2",
-    "npm:antd@6.5.3": "6.5.3_react@19.2.8_react-dom@19.2.8__react@19.2.8_date-fns@4.4.0",
+    "npm:antd@6.5.4": "6.5.4_react@19.2.8_react-dom@19.2.8__react@19.2.8_date-fns@4.4.0",
     "npm:autoprefixer@10.5.0": "10.5.0_postcss@8.5.15",
     "npm:date-fns@4.3.0": "4.3.0",
     "npm:date-fns@4.4.0": "4.4.0",
@@ -393,7 +393,7 @@
         "throttle-debounce"
       ]
     },
-    "@ant-design/static-style-extract@2.1.0_antd@6.5.3__react@19.2.8__react-dom@19.2.8___react@19.2.8__date-fns@4.4.0_react@19.2.8_react-dom@19.2.8__react@19.2.8_date-fns@4.4.0": {
+    "@ant-design/static-style-extract@2.1.0_antd@6.5.4__react@19.2.8__react-dom@19.2.8___react@19.2.8__date-fns@4.4.0_react@19.2.8_react-dom@19.2.8__react@19.2.8_date-fns@4.4.0": {
       "integrity": "sha512-P6PiUZ8IVaiEDUkVSL3fRKyZJNr7xRWnq0MG1HmvxrK6quvGYQ7Vc2qRILJCLuk1svziTp0zWdasR3ndhi2HoA==",
       "dependencies": [
         "@ant-design/cssinjs",
@@ -1480,8 +1480,8 @@
         "require-from-string"
       ]
     },
-    "antd@6.5.3_react@19.2.8_react-dom@19.2.8__react@19.2.8_date-fns@4.4.0": {
-      "integrity": "sha512-Q5r8sztf9Yk9B70bSUjnPYMCJ4A/eZM7uMoTj8UAhlSKR9aftjEuBEPcNSmRux7hB+87rxO8vN1X4HNjR97qyQ==",
+    "antd@6.5.4_react@19.2.8_react-dom@19.2.8__react@19.2.8_date-fns@4.4.0": {
+      "integrity": "sha512-jchA6i0rEwHjLpgC+l6HeLHP0gL4Q4yjs6Mxqt6PlhGD5ArxCj3ZH+fKFbNquCtd6Rlzzi+emfNFpP2dGLwZzg==",
       "dependencies": [
         "@ant-design/colors",
         "@ant-design/cssinjs",
@@ -1582,8 +1582,8 @@
     "buffer-from@1.1.2": {
       "integrity": "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ=="
     },
-    "caniuse-lite@1.0.30001807": {
-      "integrity": "sha512-daRXJ9EB/rdRgu7kV+TTl1YUKtlsMWblPl2sLnpg9DZae16QCegol6A1SmCE31Lm9mXC1sRWGt/krouH+/dl7Q=="
+    "caniuse-lite@1.0.30001809": {
+      "integrity": "sha512-xxWVywk6a6Arlk+hymeycyn/VgqEfLDxupvhH/xiY5SJ/18kmi9o6MiO320DCUzypORHLtvh0I4i04tUhCNHNQ=="
     },
     "ccount@2.0.1": {
       "integrity": "sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg=="
@@ -2109,8 +2109,8 @@
         "resolve"
       ]
     },
-    "postcss-selector-parser@7.1.4": {
-      "integrity": "sha512-HeP7D2wyhkR+XaK6v4W8oRF62Dsz4flyuczALJp61GckGm42u1saSSJ/0auvcBqxs3jMRFEcPK34At/0JBKdOg==",
+    "postcss-selector-parser@7.1.5": {
+      "integrity": "sha512-KvvtD7SrlBP7dlgkBghEE3r84CABm5SmV2aNcG4oCA+qDnJ/tvKonFVvwWAyyWUEwxuNawdfEAZKP9zM3oZ2Uw==",
       "dependencies": [
         "cssesc",
         "util-deprecate"
@@ -2473,8 +2473,8 @@
         "unist-util-visit-parents"
       ]
     },
-    "update-browserslist-db@1.2.3_browserslist@4.28.7": {
-      "integrity": "sha512-Js0m9cx+qOgDxo0eMiFGEueWztz+d4+M3rGlmKPT+T4IS/jP4ylw3Nwpu6cpTTP8R1MAC1kF4VbdLt3ARf209w==",
+    "update-browserslist-db@1.3.0_browserslist@4.28.7": {
+      "integrity": "sha512-x/M6q3w4Ybp91CNaS4S69UnliqR3BzRpOT6LWbksjth0S/+jhfaPJsWjt/TewpT8j9eLIojUf5jr29WextHroA==",
       "dependencies": [
         "browserslist",
         "escalade",
@@ -2852,7 +2852,7 @@
       "npm:@ant-design/static-style-extract@2.1.0",
       "npm:@chenglou/pretext@0.0.8",
       "npm:@faker-js/faker@^10.5.0",
-      "npm:antd@6.5.3",
+      "npm:antd@6.5.4",
       "npm:date-fns@4.4.0",
       "npm:esbuild@0.28.1",
       "npm:jsdom@30.0.1",

@@ -8,7 +8,7 @@
     "npm:@ant-design/icons@6.3.2": "6.3.2_react@19.2.8_react-dom@19.2.8__react@19.2.8",
     "npm:@chenglou/pretext@0.0.8": "0.0.8",
     "npm:@types/react@19.2.4": "19.2.4",
-    "npm:antd@6.5.3": "6.5.3_react@19.2.8_react-dom@19.2.8__react@19.2.8",
+    "npm:antd@6.5.4": "6.5.4_react@19.2.8_react-dom@19.2.8__react@19.2.8",
     "npm:react-dom@19.2.8": "19.2.8_react@19.2.8",
     "npm:react@19.2.8": "19.2.8"
   },
@@ -533,8 +533,8 @@
         "csstype"
       ]
     },
-    "antd@6.5.3_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
-      "integrity": "sha512-Q5r8sztf9Yk9B70bSUjnPYMCJ4A/eZM7uMoTj8UAhlSKR9aftjEuBEPcNSmRux7hB+87rxO8vN1X4HNjR97qyQ==",
+    "antd@6.5.4_react@19.2.8_react-dom@19.2.8__react@19.2.8": {
+      "integrity": "sha512-jchA6i0rEwHjLpgC+l6HeLHP0gL4Q4yjs6Mxqt6PlhGD5ArxCj3ZH+fKFbNquCtd6Rlzzi+emfNFpP2dGLwZzg==",
       "dependencies": [
         "@ant-design/colors",
         "@ant-design/cssinjs",
@@ -647,7 +647,7 @@
       "npm:@ant-design/icons@6.3.2",
       "npm:@chenglou/pretext@0.0.8",
       "npm:@types/react@19.2.4",
-      "npm:antd@6.5.3",
+      "npm:antd@6.5.4",
       "npm:dayjs@1.11.21",
       "npm:react-dom@19.2.8",
       "npm:react@19.2.8"
