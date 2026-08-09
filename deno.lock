@@ -403,8 +403,8 @@
         "react-dom"
       ]
     },
-    "@asamuzakjp/css-color@6.0.5": {
-      "integrity": "sha512-mbhpPMmnw/kwW19aRNmSUl1QzLbdGo1SCuE49BT98MNwqF6zaHb3o2owssFc/PEO/4t2UjqtCNwocuDtJornzA==",
+    "@asamuzakjp/css-color@6.0.7": {
+      "integrity": "sha512-vC/bk1Lz7Tn/EfU9/apOTBk80/8dyGyWMowPoV1tJ52muDGsDqt2HPT2klrFUiY60MQmQv9q8yIht15JnBgDGw==",
       "dependencies": [
         "@csstools/css-calc",
         "@csstools/css-color-parser",
@@ -1549,8 +1549,8 @@
       ],
       "bin": true
     },
-    "baseline-browser-mapping@2.11.12": {
-      "integrity": "sha512-r7WnVImvVCeFpf2DOXfy41aPWzeNg3H/A2X4dKmy1QL0MSyyk/e7z8ihJ3N6Nn2PsdhkVlqnEfnUE4a05P2aTA==",
+    "baseline-browser-mapping@2.11.13": {
+      "integrity": "sha512-k9HNuUVMlqVjQ9UHzfPjIqiDbWw7WqT1AoT7GL8VwvF3r0ZfArtgiSPAlmupyNquNgOJHTuH4CKYf8ttMTWBTQ==",
       "bin": true
     },
     "bidi-js@1.0.3": {
@@ -1568,8 +1568,8 @@
         "fill-range"
       ]
     },
-    "browserslist@4.28.7": {
-      "integrity": "sha512-JxV13hNrFxqjOc8alRbq9dK1MM79NEXYpma2B2J4wAtpWS5zIEIKqWPGCl7N4o7Uc7B7itylh7SuDujATRyyTw==",
+    "browserslist@4.28.8": {
+      "integrity": "sha512-V2NpofLblG64mfOtSgDhOJESZEGogzDMBv/q+W6oc4LXWP/q75eOXoOaaOu1EOadB9U4Bwx/e0yzbvwKH8zalA==",
       "dependencies": [
         "baseline-browser-mapping",
         "caniuse-lite",
@@ -2018,8 +2018,8 @@
         "picomatch"
       ]
     },
-    "nanoid@3.3.17": {
-      "integrity": "sha512-xQLf0A3HOMlgHq0n247/LRuAOYmB7dXJ/DvAxGvsSBij45XtBSmQycu+F8ODbHwns/XyFZagyL1+J0Offw1E0g==",
+    "nanoid@3.3.18": {
+      "integrity": "sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==",
       "bin": true
     },
     "node-releases@2.0.53": {
@@ -2473,7 +2473,7 @@
         "unist-util-visit-parents"
       ]
     },
-    "update-browserslist-db@1.3.0_browserslist@4.28.7": {
+    "update-browserslist-db@1.3.0_browserslist@4.28.8": {
       "integrity": "sha512-x/M6q3w4Ybp91CNaS4S69UnliqR3BzRpOT6LWbksjth0S/+jhfaPJsWjt/TewpT8j9eLIojUf5jr29WextHroA==",
       "dependencies": [
         "browserslist",
