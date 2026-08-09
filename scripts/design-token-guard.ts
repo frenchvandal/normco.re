@@ -2,6 +2,19 @@ import { parseArgs } from "@std/cli";
 import { walk } from "@std/fs";
 import { join, relative } from "@std/path";
 import { createUsageError, hasHelpFlag, lineNumberAt } from "./_shared.ts";
+import {
+  ABOUT_PICTOGRAM_TABLET_MAX_WIDTH,
+  FEATURE_RAIL_BREAKPOINT,
+  GALLERY_FOUR_COLUMN_BREAKPOINT,
+  GALLERY_THREE_COLUMN_BREAKPOINT,
+  GALLERY_TWO_COLUMN_MAX_WIDTH,
+  HEADER_NAV_BREAKPOINT,
+  HEADER_NAV_MAX_WIDTH,
+  MOBILE_VIEWPORT_MAX_WIDTH,
+  PAGEHEAD_CONTEXT_BREAKPOINT,
+  POST_MOBILE_TOOLS_MAX_WIDTH,
+  STORY_GRID_TWO_COLUMN_BREAKPOINT,
+} from "../src/utils/layout-breakpoints.ts";
 
 export type StyleSource = {
   readonly filePath: string;
@@ -125,6 +138,59 @@ function ruleAllowsFile(rule: GuardRule, filePath: string): boolean {
   ) ?? false;
 }
 
+const ALLOWED_BREAKPOINT_VALUES: ReadonlySet<string> = new Set([
+  ABOUT_PICTOGRAM_TABLET_MAX_WIDTH,
+  FEATURE_RAIL_BREAKPOINT,
+  GALLERY_FOUR_COLUMN_BREAKPOINT,
+  GALLERY_THREE_COLUMN_BREAKPOINT,
+  GALLERY_TWO_COLUMN_MAX_WIDTH,
+  HEADER_NAV_BREAKPOINT,
+  HEADER_NAV_MAX_WIDTH,
+  MOBILE_VIEWPORT_MAX_WIDTH,
+  PAGEHEAD_CONTEXT_BREAKPOINT,
+  POST_MOBILE_TOOLS_MAX_WIDTH,
+  STORY_GRID_TWO_COLUMN_BREAKPOINT,
+]);
+
+const BREAKPOINT_RULE_HEAD_PATTERN = /@(?:media|container)\b[^{]*/g;
+const BREAKPOINT_FEATURE_PATTERN =
+  /\b(?:min|max)-(?:width|height):\s*([0-9.]+rem)/g;
+const BREAKPOINT_GUARD_RULE_NAME = "unregistered-breakpoint-literal";
+const BREAKPOINT_GUARD_MESSAGE =
+  "Use one of the breakpoint constants from `src/utils/layout-breakpoints.ts` " +
+  "(or extend that module if a new semantic threshold is required).";
+
+function scanBreakpointLiterals(
+  styleSource: StyleSource,
+): ReadonlyArray<DesignTokenGuardIssue> {
+  const issues: DesignTokenGuardIssue[] = [];
+
+  for (
+    const headMatch of styleSource.source.matchAll(BREAKPOINT_RULE_HEAD_PATTERN)
+  ) {
+    const headStart = headMatch.index ?? 0;
+    const headText = headMatch[0];
+
+    for (const featureMatch of headText.matchAll(BREAKPOINT_FEATURE_PATTERN)) {
+      const value = featureMatch[1];
+      if (value === undefined || ALLOWED_BREAKPOINT_VALUES.has(value)) {
+        continue;
+      }
+
+      const featureStart = headStart + (featureMatch.index ?? 0);
+      issues.push({
+        filePath: styleSource.filePath,
+        line: lineNumberAt(styleSource.source, featureStart),
+        rule: BREAKPOINT_GUARD_RULE_NAME,
+        message: BREAKPOINT_GUARD_MESSAGE,
+        match: featureMatch[0],
+      });
+    }
+  }
+
+  return issues;
+}
+
 export function scanStyleSources(
   styleSources: ReadonlyArray<StyleSource>,
 ): ReadonlyArray<DesignTokenGuardIssue> {
@@ -147,6 +213,8 @@ export function scanStyleSources(
         });
       }
     }
+
+    issues.push(...scanBreakpointLiterals(styleSource));
   }
 
   return issues.sort((left, right) =>
