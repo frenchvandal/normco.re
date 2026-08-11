@@ -1,5 +1,6 @@
 @layer layout {
   .css-var-_R_0_.ant-alert {
+    --ant-alert-border-radius: 12px;
     --ant-alert-with-description-icon-size: 24px;
     --ant-alert-default-padding: 8px 12px;
     --ant-alert-with-description-padding: 20px 24px;
@@ -136,6 +137,7 @@
     --ant-image-progress-animation-duration: 3s;
   }
   .css-var-_R_0_.ant-input-search {
+    --ant-input-line-width-focus: 1px;
     --ant-input-padding-block: 4px;
     --ant-input-padding-block-sm: 0px;
     --ant-input-padding-block-lg: 7px;
@@ -155,6 +157,7 @@
     --ant-input-input-font-size-sm: 14px;
   }
   .css-var-_R_0_.ant-otp {
+    --ant-input-line-width-focus: 1px;
     --ant-input-padding-block: 4px;
     --ant-input-padding-block-sm: 0px;
     --ant-input-padding-block-lg: 7px;
@@ -174,6 +177,7 @@
     --ant-input-input-font-size-sm: 14px;
   }
   .css-var-_R_0_.ant-input {
+    --ant-input-line-width-focus: 1px;
     --ant-input-padding-block: 4px;
     --ant-input-padding-block-sm: 0px;
     --ant-input-padding-block-lg: 7px;
@@ -193,6 +197,7 @@
     --ant-input-input-font-size-sm: 14px;
   }
   .css-var-_R_0_.ant-input-css-var {
+    --ant-input-line-width-focus: 1px;
     --ant-input-padding-block: 4px;
     --ant-input-padding-block-sm: 0px;
     --ant-input-padding-block-lg: 7px;
@@ -212,6 +217,7 @@
     --ant-input-input-font-size-sm: 14px;
   }
   .css-var-_R_0_.ant-input-number-css-var {
+    --ant-input-number-line-width-focus: 1px;
     --ant-input-number-padding-block: 4px;
     --ant-input-number-padding-block-sm: 0px;
     --ant-input-number-padding-block-lg: 7px;
@@ -297,7 +303,12 @@
     --ant-list-title-margin-bottom: 12px;
     --ant-list-description-font-size: 14px;
   }
+  .css-var-_R_0_.ant-listy-css-var {
+    --ant-listy-item-padding-block: 12px;
+    --ant-listy-item-padding-inline: 16px;
+  }
   .css-var-_R_0_.ant-mentions-css-var {
+    --ant-mentions-line-width-focus: 1px;
     --ant-mentions-padding-block: 4px;
     --ant-mentions-padding-block-sm: 0px;
     --ant-mentions-padding-block-lg: 7px;
@@ -421,7 +432,7 @@
     --ant-modal-confirm-icon-margin-inline-end: 12px;
     --ant-modal-confirm-btns-margin-top: 12px;
   }
-  .css-var-_R_95f_.ant-css-var {
+  .css-var-_R_96f_.ant-css-var {
     --ant-modal-footer-bg: transparent;
     --ant-modal-header-bg: transparent;
     --ant-modal-title-line-height: 1.5;
@@ -441,7 +452,7 @@
     --ant-modal-confirm-icon-margin-inline-end: 12px;
     --ant-modal-confirm-btns-margin-top: 12px;
   }
-  .css-var-_R_95f_.ant-btn {
+  .css-var-_R_96f_.ant-btn {
     --ant-button-blue-shadow-color: 0 2px 0 rgb(230,244,255);
     --ant-button-purple-shadow-color: 0 2px 0 rgb(249,240,255);
     --ant-button-cyan-shadow-color: 0 2px 0 rgb(230,255,251);
@@ -501,7 +512,7 @@
     --ant-button-default-bg-disabled: rgba(0,0,0,0.04);
     --ant-button-dashed-bg-disabled: rgba(0,0,0,0.04);
   }
-  .css-var-_R_95f_ {
+  .css-var-_R_96f_ {
     --ant-blue: #1677FF;
     --ant-purple: #722ED1;
     --ant-cyan: #13C2C2;
@@ -902,7 +913,7 @@
     --ant-box-shadow-tabs-overflow-top: inset 0 10px 8px -8px rgba(0,0,0,0.08);
     --ant-box-shadow-tabs-overflow-bottom: inset 0 -10px 8px -8px rgba(0,0,0,0.08);
   }
-  .css-var-_R_d5f_.ant-css-var {
+  .css-var-_R_d6f_.ant-css-var {
     --ant-modal-footer-bg: transparent;
     --ant-modal-header-bg: transparent;
     --ant-modal-title-line-height: 1.5;
@@ -922,7 +933,7 @@
     --ant-modal-confirm-icon-margin-inline-end: 12px;
     --ant-modal-confirm-btns-margin-top: 12px;
   }
-  .css-var-_R_d5f_.ant-btn {
+  .css-var-_R_d6f_.ant-btn {
     --ant-button-blue-shadow-color: 0 2px 0 rgb(230,244,255);
     --ant-button-purple-shadow-color: 0 2px 0 rgb(249,240,255);
     --ant-button-cyan-shadow-color: 0 2px 0 rgb(230,255,251);
@@ -982,7 +993,7 @@
     --ant-button-default-bg-disabled: rgba(0,0,0,0.04);
     --ant-button-dashed-bg-disabled: rgba(0,0,0,0.04);
   }
-  .css-var-_R_d5f_ {
+  .css-var-_R_d6f_ {
     --ant-blue: #1677FF;
     --ant-purple: #722ED1;
     --ant-cyan: #13C2C2;
@@ -1396,6 +1407,7 @@
     --ant-pagination-item-active-bg-disabled: rgba(0,0,0,0.15);
     --ant-pagination-item-input-bg: var(--ph-color-canvas-default);
     --ant-pagination-mini-options-size-changer-top: 0px;
+    --ant-pagination-line-width-focus: 1px;
     --ant-pagination-padding-block: 4px;
     --ant-pagination-padding-block-sm: 0px;
     --ant-pagination-padding-block-lg: 7px;
@@ -1462,6 +1474,7 @@
     --ant-radio-radio-bg-color: #000000;
   }
   .css-var-_R_0_.ant-rate {
+    --ant-rate-line-width-focus: 1px;
     --ant-rate-star-color: #fadb14;
     --ant-rate-star-size: 20px;
     --ant-rate-star-size-sm: 15px;
@@ -1600,6 +1613,7 @@
     --ant-tabs-card-gutter: 2px;
   }
   .css-var-_R_0_.ant-picker-css-var {
+    --ant-date-picker-line-width-focus: 1px;
     --ant-date-picker-padding-block: 4px;
     --ant-date-picker-padding-block-sm: 0px;
     --ant-date-picker-padding-block-lg: 7px;
@@ -1695,6 +1709,7 @@
     --ant-tree-directory-node-selected-bg: #000000;
   }
   .css-var-_R_0_.ant-select-css-var {
+    --ant-select-line-width-focus: 1px;
     --ant-select-internal_fixed_item_margin: 2px;
     --ant-select-z-index-popup: 1050;
     --ant-select-option-selected-color: var(--ph-color-fg-default);
