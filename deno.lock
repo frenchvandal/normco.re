@@ -69,7 +69,7 @@
     "npm:@ant-design/icons-svg@4.5.0": "4.5.0",
     "npm:@ant-design/static-style-extract@2.1.0": "2.1.0_antd@6.6.0__react@19.2.8__react-dom@19.2.8___react@19.2.8__date-fns@4.4.0_react@19.2.8_react-dom@19.2.8__react@19.2.8_date-fns@4.4.0",
     "npm:@chenglou/pretext@0.0.8": "0.0.8",
-    "npm:@faker-js/faker@^10.5.0": "10.5.0",
+    "npm:@faker-js/faker@^10.6.0": "10.6.0",
     "npm:@resvg/resvg-wasm@2.6.2": "2.6.2",
     "npm:antd@6.6.0": "6.6.0_react@19.2.8_react-dom@19.2.8__react@19.2.8_date-fns@4.4.0",
     "npm:autoprefixer@10.5.0": "10.5.0_postcss@8.5.15",
@@ -620,8 +620,8 @@
     "@exodus/bytes@1.15.1": {
       "integrity": "sha512-S6mL0yNB/Abt9Ei4tq8gDhcczc4S3+vQ4ra7vxnAf+YHC02srtqxKKZghx2Dq6p0e66THKwR6r8N6P95wEty7Q=="
     },
-    "@faker-js/faker@10.5.0": {
-      "integrity": "sha512-bsxD8WLS5lIj7aaoCx1YJkktqYj5vlBUE6HWzu2Q51ksrGJ0H737ECCKlFU7Yf8Br45z9t99frBp/J7kzbMPAg=="
+    "@faker-js/faker@10.6.0": {
+      "integrity": "sha512-3RQHgEtvL1Frl/d1cSreo7qhJ3Gk1OdNUai/CtZ8G+wYeRQnJih3s9xJ9/kgYekPQRdwgh0HXRPqMlzWGwivIQ=="
     },
     "@html-validate/stylish@6.0.0": {
       "integrity": "sha512-d1/lI3qIXhGVJF3+MmKEBn1dRX6U4Z+BDaOdDI3E6SXcO+OQ7hC/3mSo6BIjwQlcuV6NdDOKm6QCrzIQL1EezQ=="
@@ -2865,7 +2865,7 @@
       "npm:@ant-design/icons-svg@4.5.0",
       "npm:@ant-design/static-style-extract@2.1.0",
       "npm:@chenglou/pretext@0.0.8",
-      "npm:@faker-js/faker@^10.5.0",
+      "npm:@faker-js/faker@^10.6.0",
       "npm:antd@6.6.0",
       "npm:date-fns@4.4.0",
       "npm:esbuild@0.28.2",
