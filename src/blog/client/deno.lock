@@ -520,8 +520,8 @@
         "react-dom"
       ]
     },
-    "@rc-component/util@1.12.0_react@19.2.8_react-dom@19.2.8": {
-      "integrity": "sha512-AEjPL8JVdohIITaiXokyjL9WQ6tKWWjAYK9QU16tGNE9JaQABBQy+hA4H2Lup5MgXy9yY3iLrbZJheuU13hTdQ==",
+    "@rc-component/util@1.13.0_react@19.2.8_react-dom@19.2.8": {
+      "integrity": "sha512-IXf2zBfZrbQGT+G8LxnoICDBGnMHIPIiq5HCRn3EDfKUx28x1rnbZBj46ULJf4sM8ImTG1SepqfNBdxZziqQ4w==",
       "dependencies": [
         "is-mobile",
         "react",
